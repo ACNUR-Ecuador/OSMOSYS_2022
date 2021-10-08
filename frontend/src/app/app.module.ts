@@ -129,10 +129,10 @@ import {AppCrudComponent} from './pages/app.crud.component';
 import {AppCalendarComponent} from './pages/app.calendar.component';
 import {AppInvoiceComponent} from './pages/app.invoice.component';
 import {AppHelpComponent} from './pages/app.help.component';
-import {AppNotfoundComponent} from './pages/app.notfound.component';
-import {AppErrorComponent} from './pages/app.error.component';
-import {AppAccessdeniedComponent} from './pages/app.accessdenied.component';
-import {AppLoginComponent} from './pages/app.login.component';
+import {AppNotfoundComponent} from './template/errorPages/app.notfound.component';
+import {AppErrorComponent} from './template/errorPages/app.error.component';
+import {AppAccessdeniedComponent} from './template/errorPages/app.accessdenied.component';
+import {AppLoginComponent} from './security/app.login.component';
 
 import {CountryService} from './demo/service/countryservice';
 import {CustomerService} from './demo/service/customerservice';

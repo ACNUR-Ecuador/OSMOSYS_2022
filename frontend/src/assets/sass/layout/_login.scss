@@ -17,7 +17,7 @@
             @include flex-direction-column();
 
             .logo {
-                height: 50px;
+                height: 300px;
             }
 
             .login-form {
@@ -69,15 +69,17 @@
             padding: 40px 20px;
 
             .login-image-content {
+                background-color: rgba(255,255,255, 0.4);
+
                 > h1 {
                     font-size: 60px;
                     margin: 0;
-                    color: #ffffff;
+                    color: #0072BC;
                 }
 
                 h3 {
                     font-size: 24px;
-                    color: #ffffff;
+                    color: #0072BC;
                     margin: 0;
                     font-weight: 600;
                     margin-top: 32px;
@@ -85,13 +87,15 @@
             }
 
             .image-footer {
+                background-color: rgba(255,255,255, 0.6);
                 @include flex();
                 @include flex-align-center();
 
                 > p {
-                    font-weight: 600;
+                    font-size: large;
+                    font-weight: 1200;
                     margin: 0;
-                    color: #ffffff;
+                    color: #000000;
                     margin-right: 20px;
                 }
 
@@ -130,7 +134,7 @@
             .login-image {
                 background-size: cover;
                 background-repeat: no-repeat;
-                background-image: url("../../layout/images/pages/bg-login.jpg");
+                background-image: url("../../images/unhcr_photo.jpg");
             }
         }
     }
