@@ -1,0 +1,17 @@
+/* Add your customizations of the layout styles here */
+// tamaño logo sidebar
+.layout-sidebar .logo-image {
+    width: 7.9rem;
+    height: 4rem;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+.layout-sidebar .logo {
+    text-align: center;
+    display: block;
+    outline: 0 none;
+    padding: 0rem;
+    margin-left: 0rem;
+    margin-right: 0rem;
+    transition: background-color 0.2s, box-shadow 0.2s;
+}

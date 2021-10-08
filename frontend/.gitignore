@@ -1,0 +1,90 @@
+build
+dist
+node_modules
+.DS_Store
+.idea
+sassdoc
+
+src/assets/theme/*/*.css
+src/assets/layout/css/*.css
+src/assets/sass/theme/designer
+src/assets/sass/theme/extensions
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/dist
+/tmp
+/out-tsc
+
+# dependencies
+/node_modules
+
+# profiling files
+chrome-profiler-events.json
+speed-measure-plugin.json
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+
+# System Files
+.DS_Store
+Thumbs.db
+/src/assets/layout/css/layout-dark.css.map
+/src/assets/theme/deeppurple/theme-dim.css.map
+/src/assets/theme/orange/theme-dim.css.map
+/src/assets/theme/cyan/theme-dim.css.map
+/src/assets/theme/cyan/theme-light.css.map
+/src/assets/theme/blue/theme-dim.css.map
+/src/assets/theme/purple/theme-light.css.map
+/src/assets/theme/lightgreen/theme-dark.css.map
+/src/assets/theme/orange/theme-light.css.map
+/src/assets/theme/lightgreen/theme-light.css.map
+/src/assets/theme/orange/theme-dark.css.map
+/src/assets/theme/cyan/theme-dark.css.map
+/src/assets/theme/deeppurple/theme-light.css.map
+/src/assets/theme/pink/theme-dark.css.map
+/src/assets/theme/green/theme-dark.css.map
+/src/assets/theme/teal/theme-dim.css.map
+/src/assets/theme/teal/theme-dark.css.map
+/src/assets/layout/css/layout-light.css.map
+/src/assets/theme/green/theme-dim.css.map
+/src/assets/theme/green/theme-light.css.map
+/src/assets/theme/deeppurple/theme-dark.css.map
+/src/assets/theme/indigo/theme-dim.css.map
+/src/assets/theme/purple/theme-dark.css.map
+/src/assets/theme/unhcr/theme-light.css.map
+/src/assets/theme/indigo/theme-light.css.map
+/src/assets/theme/lightgreen/theme-dim.css.map
+/src/assets/theme/unhcr/theme-dim.css.map
+/src/assets/theme/blue/theme-light.css.map
+/src/assets/theme/blue/theme-dark.css.map
+/src/assets/theme/pink/theme-light.css.map
+/src/assets/theme/purple/theme-dim.css.map
+/src/assets/theme/indigo/theme-dark.css.map
+/src/assets/theme/unhcr/theme-dark.css.map
+/src/assets/theme/pink/theme-dim.css.map
+/src/assets/layout/css/layout-dim.css.map
+/src/assets/theme/teal/theme-light.css.map

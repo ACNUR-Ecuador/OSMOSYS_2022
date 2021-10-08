@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"
+             version="2.2">
+    <persistence-unit name="main-persistence-unit" transaction-type="JTA">
+        <jta-data-source>java:jboss/datasources/osmosys</jta-data-source>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <validation-mode>AUTO</validation-mode>
+        <!--<shared-cache-mode>NONE</shared-cache-mode>-->
+        <properties>
+
+            <!--<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>-->
+            <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisPG95Dialect" />
+            <!--Write all SQL statements to console. This is an alternative to setting the log category org.hibernate.SQL to debug.-->
+            <property name="hibernate.show_sql" value="true"/>
+            <!--Pretty print the SQL in the log and console. e.g. true | false-->
+            <property name="hibernate.format_sql" value="true"/>
+            <!--If enabled, Hibernate will collect statistics useful for performance tuning. e.g. true | false-->
+            <property name="hibernate.generate_statistics" value="false"/>
+            <!--If turned on, Hibernate will generate comments inside the SQL, for easier debugging, defaults to false./   -->
+            <property name="hibernate.use_sql_comments" value="true"/>
+            <!--Setting is relevant when using @GeneratedValue. It indicates whether or not the new IdentifierGenerator
+            implementations are used for javax.persistence.GenerationType.AUTO, javax.persistence.GenerationType.TABLE and
+            javax.persistence.GenerationType.SEQUENCE. Default to false to keep backward compatibility.-->
+            <property name="hibernate.id.new_generator_mappings" value="true"/>
+            <!--Qualifies unqualified table names with the given catalog in generated SQL. e.g. CATALOG_NAME-->
+            <property name="hibernate.default_schema" value="program_monitoring"/>
+            <!--Automatically validates or exports schema DDL to the database when the SessionFactory is created.
+            With create-drop, the database schema will be dropped when the SessionFactory is closed explicitly.
+            e.g. validate | update | create | create-drop-->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <!--File order matters, the statements of a give file are executed before the statements of the following files.
+            These statements are only executed if the schema is created ie if hibernate.hbm2ddl.auto is set to create or create-drop.
+            e.g. /humans.sql,/dogs.sql-->
+            <property name="hibernate.hbm2ddl.import_files" value=""/>
+            <property name="javax.persistence.create-database-schemas" value="true"/>
+
+            <!--<property name="javax.persistence.lock.timeout" value="100"/>-->
+            <!--<property name="javax.persistence.query.timeout" value="100"/>-->
+            <!-- DON'T USE THIS IN PRODUCTION -->
+            <!--&lt;!&ndash; automatically drop and create required database tables &ndash;&gt;
+            <property name="javax.persistence.schema-generation.database.action" value="update" />
+            <property name="javax.persistence.schema-generation.create-script-source" value="create-db.sql" />
+            <property name="javax.persistence.schema-generation.drop-script-source" value="drop-db.sql" />
+            <property name="javax.persistence.sql-load-script-source" value="data.sql" />-->
+        </properties>
+
+
+    </persistence-unit>
+
+</persistence>

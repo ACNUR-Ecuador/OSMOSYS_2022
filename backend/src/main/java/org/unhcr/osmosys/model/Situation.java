@@ -1,0 +1,102 @@
+package org.unhcr.osmosys.model;
+
+import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.State;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.unhcr.osmosys.model.enums.AreaType;
+
+import javax.persistence.*;
+
+
+@Entity
+@Table(schema = "osmosys", name = "situations")
+public class Situation extends BaseEntity<Long> {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
+    private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "state", nullable = false, length = 12, unique = false)
+    private State state;
+
+    @Column(name = "code", unique = true)
+    private String code;
+
+    @Column(name = "short_description", unique = true)
+    private String shortDescription;
+
+
+    @Column(name = "description", columnDefinition = "text", unique = true)
+    private String description;
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Situation situation = (Situation) o;
+
+        return new EqualsBuilder().append(id, situation.id).append(state, situation.state).append(code, situation.code).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(id).append(state).append(code).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Situation{" +
+                "id=" + id +
+                ", state=" + state +
+                ", code='" + code + '\'' +
+                ", shortDescription='" + shortDescription + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
+}
