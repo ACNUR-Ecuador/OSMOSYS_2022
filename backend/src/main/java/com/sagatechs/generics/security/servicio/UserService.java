@@ -18,7 +18,12 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import io.jsonwebtoken.security.WeakKeyException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.jboss.logging.Logger;
+import org.unhcr.osmosys.model.Office;
+import org.unhcr.osmosys.model.Organization;
+import org.unhcr.osmosys.services.OfficeService;
+import org.unhcr.osmosys.services.OrganizacionService;
 
 import javax.crypto.SecretKey;
 import javax.ejb.Stateless;
@@ -37,6 +42,13 @@ public class UserService implements Serializable {
 
     @Inject
     UserDao userDao;
+
+    @Inject
+    OrganizacionService organizacionService;
+
+    @Inject
+    OfficeService officeService;
+
 
     @Inject
     SecurityUtils securityUtils;
@@ -61,305 +73,10 @@ public class UserService implements Serializable {
 
     public static final String salt = "NwhZ2MFDH0JDXmUSM8q5JydFiVg";
 
-
-    /**
-     * Verifica las credenciales del usuario, por nombre de usuario y contraseña
-     *
-     * @param username
-     * @param password
-     * @return
-     */
-    @SuppressWarnings("unused")
-    public User verifyUsernamePassword(String username, String password, String appCode) {
-        if (StringUtils.isBlank(username) || StringUtils.isBlank(password) || StringUtils.isBlank(appCode)) {
-            return null;
-        }
-
-        // obtengo el hash del pass enviado
-        byte[] hashedPass = this.securityUtils.hashPasswordByte(password, salt);
-        return this.userDao.findByUserNameAndPasswordWithRoles(username, hashedPass, State.ACTIVE);
-
-    }
-
-    /**
-     * Autentica Rests y genera tolens
-     *
-     * @param username
-     * @param password
-     * @return tokens
-     * @throws AccessDeniedException
-     */
-    public UserWeb authenticateRest(String username, String password) {
-        User user = this.verifyUsernamePassword(username, password);
-        if (user != null) {
-
-
-            return this.userToUserWeb(user);
-        } else {
-            throw new AuthorizationException(
-                    "Acceso denegado. Por favor ingrese correctamente el nombre de usuario y contraseña.");
-        }
-
-    }
-
-    private List<UserWeb> usersToUsersWeb(List<User> users) {
-        List<UserWeb> userWebs = new ArrayList<>();
-        for (User user : users) {
-            userWebs.add(this.userToUserWeb(user));
-        }
-        return userWebs;
-    }
-
-    public UserWeb userToUserWeb(User user) {
-        if (user == null) {
-            return null;
-        }
-        UserWeb userWeb = new UserWeb();
-        userWeb.setId(user.getId());
-        userWeb.setName(user.getName());
-        userWeb.setEmail(user.getEmail());
-        userWeb.setUsername(user.getUsername());
-        userWeb.setState(user.getState());
-
-        List<RoleWeb> roles = new ArrayList<>();
-        for (RoleAssigment userRoleAssigment : user.getRoleAssigments()) {
-            if (userRoleAssigment.getState().equals(State.ACTIVE) && userRoleAssigment.getRole().getState().equals(State.ACTIVE)) {
-                roles.add(this.roleService.roleToRoleWeb(userRoleAssigment.getRole()));
-            }
-        }
-        userWeb.setRoles(roles);
-
-        return userWeb;
-    }
-
-
-    public String issueTokenForLogin(UserWeb userWeb) {
-
-
-        return buildToken(userWeb);
-
-    }
-
-    private String buildToken(UserWeb userWeb) {
-        if (userWeb != null) {
-            Date now = new Date();
-
-            String token = Jwts.builder()
-                    // .serializeToJsonWith(serializer)// (1)
-                    .setSubject(userWeb.getUsername()) // (2)
-                    .setIssuedAt(now)
-                    .setExpiration(getExpirationDate(now))
-                    .claim("roles", userWeb.getRoles())
-                    .claim("username", userWeb.getUsername())
-                    .claim("name", userWeb.getName())
-                    .claim("id", userWeb.getId())
-                    .claim("email", userWeb.getEmail())
-//                    .claim("projectImplementer", userWeb.getProjectImplementer())
-                    .signWith(getSecretKey()).compact();
-            LOGGER.debug(token);
-            return token;
-        }
-        throw new AccessDeniedException("usuario no encontrado");
-    }
-
-    public String refreshTokenFromToken(String token) {
-
-        UserWeb user = this.validateTokenGetUserWeb(token);
-
-        return buildToken(user);
-
-    }
-
-    /**
-     * Genera fecha de expìracion de token
-     *
-     * @param date
-     * @return
-     */
-    private Date getExpirationDate(Date date) {
-        Calendar cal = Calendar.getInstance(); // creates calendar
-        cal.setTime(date); // sets calendar time/date
-        cal.add(Calendar.SECOND, EXPIRATION_TIME_SECONDS);
-        return cal.getTime(); // returns new date object, one hour in the future
-    }
-
-    public UserWeb validateTokenGetUserWeb(String token) {
-        // obtengo el usuario
-        try {
-            Jws<Claims> jws = Jwts.parser() // (1)
-                    // .deserializeJsonWith(deserializer)
-                    .setSigningKey(getSecretKey()) // (2)
-                    .parseClaimsJws(token); // (3)
-
-            // hasta ahi se valida el token*
-            UserWeb user = new UserWeb();
-            Long id = null;
-            if (jws.getBody().get("id") != null) {
-                try {
-                    id = ((Integer) jws.getBody().get("id")).longValue();
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            user.setId(id);
-            user.setUsername(jws.getBody().getSubject());
-            user.setEmail((String) jws.getBody().get("email"));
-            //noinspection unchecked
-            List<HashMap> rolesMaps = (List<HashMap>) jws.getBody().get("roles");
-            LOGGER.info(rolesMaps);
-            List<RoleWeb> rolesWeb = new ArrayList<>();
-            for (Map<String, Object> rolesS : rolesMaps) {
-                RoleWeb roleWeb = new RoleWeb();
-                Integer roleId = (Integer) rolesS.get("id");
-                if (roleId != null) {
-                    roleWeb.setId(roleId.longValue());
-                }
-                roleWeb.setName((String) rolesS.get("name"));
-                roleWeb.setState(State.valueOf((String) rolesS.get("state")));
-                rolesWeb.add(roleWeb);
-            }
-            user.setRoles(rolesWeb);
-            user.setName((String) jws.getBody().get("name"));
-            LinkedHashMap projectImplementerMap = (LinkedHashMap) jws.getBody().get("projectImplementer");
-/*
-            if (projectImplementerMap!=null && projectImplementerMap.size() > 0) {
-                ProjectImplementerWeb projectImplementerWeb = new ProjectImplementerWeb();
-                projectImplementerWeb.setId( Long.valueOf((Integer)projectImplementerMap.get("id")));
-                projectImplementerWeb.setState(State.valueOf((String) projectImplementerMap.get("state")));
-                projectImplementerWeb.setCode((String) projectImplementerMap.get("code"));
-                projectImplementerWeb.setDescription((String) projectImplementerMap.get("description"));
-            }*/
-            //user.setProjectImplementer(projectImplementerWeb);
-            return user;
-        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
-            e.printStackTrace();
-            throw new AccessDeniedException("token invalido");
-        }
-    }
-
-    public void changePassworSimple(String username, String oldPassword, String newPassword)
-            throws GeneralAppException {
-        // recupero un usuario
-        if (StringUtils.isBlank(username) || StringUtils.isBlank(newPassword) || StringUtils.isBlank(oldPassword)) {
-            throw new GeneralAppException("Los datos no son correctos", Response.Status.BAD_REQUEST.getStatusCode());
-        }
-        byte[] hashedPass = this.securityUtils.hashPasswordByte(oldPassword, salt);
-        User user = this.userDao.findByUserNameAndPassword(username, hashedPass);
-        if (user == null) {
-            throw new GeneralAppException("No se encontró un usuario con el nombre de usuario: " + username,
-                    Response.Status.NOT_FOUND.getStatusCode());
-
-        }
-
-        // ya que esta verificado, reseteo el pass
-
-        byte[] newHashedPass = this.securityUtils.hashPasswordByte(newPassword, UserService.salt);
-        user.setPassword(newHashedPass);
-        this.userDao.update(user);
-
-    }
-
-    public void changePasswordTest(String username, String newPassword)
-            throws GeneralAppException {
-        // recupero un usuario
-
-        User user = this.findByUserName(username);
-        if (user == null) {
-            throw new GeneralAppException("Usuario no encontrado: " + username, Response.Status.NOT_FOUND.getStatusCode());
-        }
-
-        byte[] newHashedPass = this.securityUtils.hashPasswordByte(newPassword, UserService.salt);
-        user.setPassword(newHashedPass);
-        this.userDao.update(user);
-    }
-
-    public User findByUserName(String username) {
-        return this.userDao.findByUserName(username);
-    }
-
-
-    /**
-     * Persiste un nuevo usuario
-     *
-     * @param user usuario ya asignado roles y contraseñas
-     */
-    public void saveOrUpdate(User user) {
-        if (user.getId() == null) {
-            this.userDao.save(user);
-        } else {
-            this.userDao.update(user);
-        }
-
-    }
-
-    /**
-     * Verifica las credenciales del usuario, por nombre de usuario y contraseña
-     *
-     * @param username
-     * @param password
-     * @return
-     */
-    public User verifyUsernamePassword(String username, String password) {
-        if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
-            return null;
-        }
-
-        // obtengo el hash del pass enviado
-        byte[] hashedPass = this.securityUtils.hashPasswordByte(password, salt);
-        return this.userDao.findByUserNameAndPasswordWithRoles(username, hashedPass, State.ACTIVE);
-
-    }
-
-
-    /**
-     * Crea la clave secret de jwt
-     *
-     * @return
-     */
-    private SecretKey getSecretKey() {
-
-        try {
-            if (key == null) {
-                key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
-            }
-            return key;
-        } catch (WeakKeyException e) {
-            e.printStackTrace();
-        }
-        return null;
-
-    }
-
-    /**
-     * Genera fecha de exìracion de token
-     *
-     * @param date
-     * @param refreshToken
-     * @return
-     */
-    private Date getExpirationDate(Date date, boolean refreshToken) {
-        Calendar cal = Calendar.getInstance(); // creates calendar
-        cal.setTime(date); // sets calendar time/date
-        if (refreshToken) {
-            // cal.add(Calendar.MINUTE, 3);
-            cal.add(Calendar.SECOND, EXPIRATION_TIME_SECONDS_REFRESH);
-            // return null;
-        } else {
-            cal.add(Calendar.SECOND, EXPIRATION_TIME_SECONDS); // adds one 24
-        }
-
-        return cal.getTime(); // returns new date object, one hour in the future
-    }
-
-
-    public List<UserWeb> getAllUsersWeb() {
-        List<User> users = this.userDao.findAllWithRoles();
-        return this.usersToUsersWeb(users);
-    }
-
-    public void createUser(UserWeb userWeb) throws GeneralAppException {
+    public User creaUser(UserWeb userWeb) throws GeneralAppException {
         // primero busco si existe el usuario
+
+        this.validateUserWeb(userWeb);
         User user = this.userDao.findByUserName(userWeb.getUsername());
         if (user != null) {
             throw new GeneralAppException("El usuario " + userWeb.getUsername() + " ya existe", Response.Status.CONFLICT.getStatusCode());
@@ -370,6 +87,21 @@ public class UserService implements Serializable {
         user.setEmail(userWeb.getEmail());
         user.setName(userWeb.getName());
         user.setState(userWeb.getState());
+
+        Organization organization = this.organizacionService.getById(userWeb.getOrganization().getId());
+        if(organization==null){
+            throw new GeneralAppException("Organización requerida", Response.Status.BAD_REQUEST);
+        }
+        user.setOrganization(organization);
+
+        if(organization.getAcronym().equalsIgnoreCase("acnur")){
+            Office office = this.officeService.getById(userWeb.getOffice().getId());
+            if(office==null){
+                throw new GeneralAppException("Oficina requerida", Response.Status.BAD_REQUEST);
+            }
+            user.setOffice(office);
+        }
+
         Set<RoleAssigment> userRoleAssigments = new HashSet<>();
         for (RoleWeb roleWeb : userWeb.getRoles()) {
             Role role = this.roleService.findById(roleWeb.getId());
@@ -392,9 +124,9 @@ public class UserService implements Serializable {
 
         // send email
         String message = "<p>Bienvenid@:</p>" +
-                "<p>Se ha creado un nuevo usuario para su acceso al Sistema de Monitoreo de Programas.</p>" +
+                "<p>Se ha creado un nuevo usuario para su acceso Osmosys.</p>" +
                 "<p>Puede acceder al sistema utilizando los siguientes datos:</p>" +
-                "<p>Direcci&oacute;n: <a href=\"https://imecuador.unhcr.org/programs\">" + "https://imecuador.unhcr.org/programs" + "</a> (Se recomienda el uso de Google Chrome)</p>" +
+                "<p>Direcci&oacute;n: <a href=\"https://imecuador.unhcr.org/osmosys\">" + "https://imecuador.unhcr.org/osmosys" + "</a> (Se recomienda el uso de Google Chrome)</p>" +
                 "<p>Nombre de usuario: " + user.getUsername() + "</p>" +
                 "<p>Contrase&ntilde;a: " + password + "</p>" +
                 "<p>&nbsp;</p>" +
@@ -404,112 +136,58 @@ public class UserService implements Serializable {
                 "<p>Si necesitas ayuda por favor cont&aacute;ctate con la Unidad de Gesti&oacute;n de la Informaci&oacute;n con <a href=\"\\&quot;mailto:salazart@unhcr.org\\&quot;\">salazart@unhcr.org.</a></p>";
 
         this.emailService.sendEmailMessage(user.getEmail()
-                , "Bienvenid@ al Sistema de Monitoreo de Programas",
+                , "Bienvenid@ a OSMOSYS ACNUR",
                 message
         );
+
+        return user;
+
     }
 
-    public void updateUser(UserWeb userWeb) throws GeneralAppException {
-        User user = this.userDao.find(userWeb.getId());
+    public void changePasswordTest(String username, String newPassword)
+            throws GeneralAppException {
+        // recupero un usuario
+
+        User user = this.userDao.findByUserName(username);
         if (user == null) {
-            throw new GeneralAppException("El usuario " + userWeb.getUsername() + " no existe.(" + userWeb.getId() + ")", Response.Status.BAD_REQUEST.getStatusCode());
-        }
-        user.setUsername(userWeb.getUsername());
-        user.setEmail(userWeb.getEmail());
-        user.setName(userWeb.getName());
-        user.setState(userWeb.getState());
-        /*if (userWeb.getProjectImplementer() == null || userWeb.getProjectImplementer().getId() == null) {
-            user.setProjectImplementer(null);
-        } else {
-            ProjectImplementer projectImplementer = this.projectImplementerService.find(userWeb.getProjectImplementer().getId());
-            user.setProjectImplementer(projectImplementer);
-        }*/
-
-        this.userDao.save(user);
-
-        // verifico los roles
-        Set<RoleAssigment> userRoleAssigments = new HashSet<>();
-
-        // vreo q tenga todos
-        Set<RoleAssigment> rolesToCreate = new HashSet<>();
-        for (RoleWeb roleWeb : userWeb.getRoles()) {
-            Role role = this.roleService.findById(roleWeb.getId());
-            for (RoleAssigment userRoleAssigmentCurrent : user.getRoleAssigments()) {
-                if (userRoleAssigmentCurrent.getRole().getId().equals(role.getId())) {
-                    // ya existe
-                    // me aseguro de q este activo
-                    userRoleAssigmentCurrent.setState(State.ACTIVE);
-                } else {
-                    // creo
-                    RoleAssigment userRoleAssigment = new RoleAssigment(user, role);
-                    rolesToCreate.add(userRoleAssigment);
-                }
-
-            }
+            throw new GeneralAppException("Usuario no encontrado: " + username, Response.Status.NOT_FOUND.getStatusCode());
         }
 
-        // veo lo q tengo que borrar
-        for (RoleAssigment userRoleAssigmentCurrent : user.getRoleAssigments()) {
-            Boolean delete = Boolean.TRUE;
-            for (RoleWeb roleWeb : userWeb.getRoles()) {
-                if (roleWeb.getId().equals(userRoleAssigmentCurrent.getRole().getId())) {
-                    delete = Boolean.FALSE;
-                    break;
-                }
-            }
-            if (delete) {
-                userRoleAssigmentCurrent.setState(State.INACTIVE);
-            }
-        }
-        user.getRoleAssigments().addAll(rolesToCreate);
+        byte[] newHashedPass = this.securityUtils.hashPasswordByte(newPassword, UserService.salt);
+        user.setPassword(newHashedPass);
+        this.userDao.update(user);
+    }
 
-        for (RoleAssigment userRoleAssigment : user.getRoleAssigments()) {
-            this.roleAssigmentDao.saveOrUpdate(userRoleAssigment);
+    private void validateUserWeb(UserWeb userWeb) throws GeneralAppException {
+        if (userWeb == null) {
+            throw new GeneralAppException("Usuario es nulo", Response.Status.BAD_REQUEST);
+        }
+
+        if (StringUtils.isBlank(userWeb.getUsername())) {
+            throw new GeneralAppException("Nombre de usuario no válido", Response.Status.BAD_REQUEST);
+        }
+
+        if (StringUtils.isBlank(userWeb.getEmail())) {
+            throw new GeneralAppException("correo no válido", Response.Status.BAD_REQUEST);
+        }
+        if (!EmailValidator.getInstance().isValid(userWeb.getEmail())) {
+            throw new GeneralAppException("Correo no válido", Response.Status.BAD_REQUEST);
+
+        }
+
+        if (userWeb.getState() == null) {
+            throw new GeneralAppException("Estado no válido", Response.Status.BAD_REQUEST);
+        }
+
+        if (userWeb.getOrganization() == null) {
+            throw new GeneralAppException("Organización requerida", Response.Status.BAD_REQUEST);
+        }
+
+
+        if (userWeb.getOffice() == null && userWeb.getOrganization().getAcronym().equalsIgnoreCase("acnur")) {
+            throw new GeneralAppException("Oficina requerida", Response.Status.BAD_REQUEST);
         }
 
     }
 
-    public void recoverPassword(String email, String appcode) throws GeneralAppException {
-        User user = this.userDao.getByEmail(email);
-        if (user == null) {
-            throw new GeneralAppException("Usuario no encontrado", Response.Status.NOT_FOUND.getStatusCode());
-        } else {
-
-            String password = this.securityUtils.generateRamdomPassword();
-            byte[] pass = this.securityUtils.hashPasswordByte(password, UserService.salt);
-            user.setPassword(pass);
-
-            userDao.save(user);
-            String message = "<p>Bienvenid@:</p>" +
-                    "<p>Se ha generado una nueva contraseña para el acceso al Sistema de Monitoreo de Programas.</p>" +
-                    "<p>Puede acceder al sistema utilizando los siguientes datos:</p>" +
-                    "<p>Direcci&oacute;n: <a href=\"https://imecuador.unhcr.org/programs\">" + "https://imecuador.unhcr.org/programs" + "</a> (Se recomienda el uso de Google Chrome)</p>" +
-                    "<p>Nombre de usuario: " + user.getUsername() + "</p>" +
-                    "<p>Contraseña: " + password + "</p>" +
-                    "<p>&nbsp;</p>" +
-                    "<p>Si necesitas ayuda por favor cont&aacute;ctate con la Unidad de Gesti&oacute;n de la Informaci&oacute;n con <a href=\"\\&quot;mailto:salazart@unhcr.org\\&quot;\">salazart@unhcr.org.</a></p>";
-
-            this.emailService.sendEmailMessage(user.getEmail()
-                    , "Bienvenid@ al Sistema de Monitoreo de Programas.",
-                    message
-            );
-        }
-    }
-
-    public List<User> getUNHCRUsersByState(State state) {
-        return this.userDao.getUNHCRUsersByState(state);
-    }
-
-    public List<UserWeb> getUNHCRUsersWebByState(State state) {
-        return this.usersToUsersWeb(this.getUNHCRUsersByState(state));
-    }
-
-    public User getById(Long userId) {
-        return this.userDao.find(userId);
-    }
-
-    public List<UserWeb> getOfficeUsersByOfficeId(Long officeId) {
-        List<User> user = this.userDao.getOfficeUsersByOfficeId(officeId);
-        return this.usersToUsersWeb(user);
-    }
 }

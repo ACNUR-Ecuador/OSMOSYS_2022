@@ -1,6 +1,10 @@
 package com.sagatechs.generics.appConfiguration;
 
 
+import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.dao.RoleDao;
+import com.sagatechs.generics.security.model.Role;
+import com.sagatechs.generics.security.model.RoleType;
 import org.jboss.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -19,12 +23,17 @@ public class AppDataConfigLlenadoAutomatico {
     @Inject
     AppConfigurationDao appConfigurationDao;
 
+    @Inject
+    RoleDao roleDao;
+
+    private Role roleSuperAdministrador;
+
     @PostConstruct
     private void init() {
         LOGGER.debug("Iniciando llenado automatico");
-       /*this.createAppConfigs();
+       this.createAppConfigs();
         this.cargarRoles();
-        this.cargarUsuarios();*/
+       // this.cargarUsuarios();*/
        // this.createFileAppConfigs();
         LOGGER.debug("Terminado llenado automático");
     }
@@ -36,6 +45,13 @@ public class AppDataConfigLlenadoAutomatico {
         instantiateConfigurationValues("Directorio de archivos",
                 "Directio de archivo",
                 AppConfigurationKey.FILE_DIRECTORY, "/opt/fileAttachments/");
+    }
+
+    private void cargarRoles() {
+
+        this.roleSuperAdministrador = new Role(RoleType.SUPER_ADMINISTRADOR, State.ACTIVE);
+        this.instantiateRole(roleSuperAdministrador);
+
     }
 
     @SuppressWarnings("unused")
@@ -57,13 +73,16 @@ public class AppDataConfigLlenadoAutomatico {
                 AppConfigurationKey.EMAIL_SMTP_PORT, "465");
         instantiateConfigurationValues("Configuración de correo electrónico. Nombre de usuario",
                 "Nombre de usuario de correo electrónico",
-                AppConfigurationKey.EMAIL_USERNAME, "care.ecuador.proyectos@gmail.com");
+                AppConfigurationKey.EMAIL_USERNAME, "im.ecuador.acnur@gmail.com");
         instantiateConfigurationValues("Configuración de correo electrónico. Contraseña",
                 "Contraseña de correo",
-                AppConfigurationKey.EMAIL_PASSOWRD, "Sagatechs2019");
+                AppConfigurationKey.EMAIL_PASSOWRD, "A1a2a3a4a5a6$");
         instantiateConfigurationValues("Configuración de correo electrónico. Dirrección de correo electrónico",
                 "Dirrección de correo electrónico",
-                AppConfigurationKey.EMAIL_ADDRES, "care.ecuador.proyectos@gmail.com");
+                AppConfigurationKey.EMAIL_ADDRES, "im.ecuador.acnur@gmail.com");
+        instantiateConfigurationValues("path to folder files",
+                "path to folder files",
+                AppConfigurationKey.FILE_DIRECTORY, "FILE_DIRECTORY");
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -76,5 +95,13 @@ public class AppDataConfigLlenadoAutomatico {
         }
     }
 
+    private Role instantiateRole(Role role) {
+        Role roleTmp = this.roleDao.findByRoleType(role.getRoleType());
+        if (roleTmp == null) {
+            return this.roleDao.save(role);
+        } else {
+            return role;
+        }
+    }
 
 }

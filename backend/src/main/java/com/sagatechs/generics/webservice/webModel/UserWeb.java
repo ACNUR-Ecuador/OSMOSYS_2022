@@ -1,6 +1,8 @@
 package com.sagatechs.generics.webservice.webModel;
 
 import com.sagatechs.generics.persistence.model.State;
+import org.unhcr.osmosys.webServices.model.OfficeWeb;
+import org.unhcr.osmosys.webServices.model.OrganizationWeb;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,17 +10,13 @@ import java.util.List;
 public class UserWeb {
 
 	private Long id;
-
 	private String name;
-
 	private String username;
-
 	private String email;
-
 	private State state;
-
 	private List<RoleWeb> roles = new ArrayList<>();
-
+	private OrganizationWeb organization;
+	private OfficeWeb office;
 	public Long getId() {
 		return id;
 	}
@@ -67,6 +65,19 @@ public class UserWeb {
 		this.roles = roles;
 	}
 
+	public OrganizationWeb getOrganization() {
+		return organization;
+	}
 
+	public void setOrganization(OrganizationWeb organization) {
+		this.organization = organization;
+	}
 
+	public OfficeWeb getOffice() {
+		return office;
+	}
+
+	public void setOffice(OfficeWeb office) {
+		this.office = office;
+	}
 }

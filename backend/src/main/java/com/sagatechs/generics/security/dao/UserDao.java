@@ -164,24 +164,5 @@ public class UserDao extends GenericDaoJpa<User, Long> {
 
     }
 
-    public List<User> getUNHCRUsersByState(State state) {
-        String jpql = "SELECT DISTINCT o FROM User o " +
-                " left outer join fetch o.roleAssigments ra " +
-                " left outer join fetch ra.role ro " +
-                " WHERE o.projectImplementer is null and o.state=:state ";
-        Query query = getEntityManager().createQuery(jpql, User.class);
-        query.setParameter("state", state);
-        return query.getResultList();
-    }
 
-    public List<User> getOfficeUsersByOfficeId(Long officeId) {
-
-        String jpql = "SELECT DISTINCT o FROM IndicatorExecution ie " +
-                " inner  join ie.reportingOffice off " +
-                " inner  join ie.assignedUser o " +
-                " WHERE ie.isDirectImplementation = true and off.id=:officeId ";
-        Query query = getEntityManager().createQuery(jpql, User.class);
-        query.setParameter("officeId", officeId);
-        return query.getResultList();
-    }
 }

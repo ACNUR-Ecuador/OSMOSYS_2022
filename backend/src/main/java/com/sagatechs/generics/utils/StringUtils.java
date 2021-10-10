@@ -1,5 +1,7 @@
 package com.sagatechs.generics.utils;
 
+import com.sagatechs.generics.exceptions.GeneralAppException;
+import org.apache.commons.validator.routines.EmailValidator;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
@@ -35,6 +37,14 @@ public class StringUtils {
             return "xxxxxx"+phone.substring(phone.length() - 4);
         } else {
             return phone;
+        }
+    }
+
+    public void emailValidate(String email) throws GeneralAppException {
+
+        if(!EmailValidator.getInstance().isValid(email)){
+         throw new GeneralAppException("Correo no válido");
+
         }
     }
 

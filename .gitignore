@@ -1,1 +1,6 @@
 /.idea/
+/wildfly-17.0.1.Final/standalone/data
+/wildfly-17.0.1.Final/standalone/log
+/wildfly-17.0.1.Final/standalone/tmp
+/wildfly-17.0.1.Final/standalone/configuration/standalone_xml_history
+/backend/target
