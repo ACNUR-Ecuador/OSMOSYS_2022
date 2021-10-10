@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {CountryService} from '../service/countryservice';
-import {BreadcrumbService} from '../../template/app.breadcrumb.service';
+import {BreadcrumbService} from '../../shared/template/app.breadcrumb.service';
 
 @Component({
     templateUrl: './invalidstatedemo.component.html'
@@ -59,7 +59,7 @@ export class InvalidStateDemoComponent implements OnInit {
         const query = event.query;
         for (let i = 0; i < this.countries.length; i++) {
             const country = this.countries[i];
-            if (country.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+            if (country.name.toLowerCase().indexOf(query.toLowerCase()) === 0) {
                 filtered.push(country);
             }
         }

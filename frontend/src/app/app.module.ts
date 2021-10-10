@@ -3,7 +3,7 @@ import {FormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {HashLocationStrategy, LocationStrategy} from '@angular/common';
+import {CommonModule, HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {AppRoutingModule} from './app-routing.module';
 
 import {AccordionModule} from 'primeng/accordion';
@@ -87,36 +87,12 @@ import {TreeTableModule} from 'primeng/treetable';
 import {AppComponent} from './app.component';
 import {VirtualScrollerModule} from 'primeng/virtualscroller';
 
-import {AppCodeModule} from './template/app.code.component';
-
-import {AppMainComponent} from './template/app.main.component';
-import {AppConfigComponent} from './template/app.config.component';
-import {AppRightmenuComponent} from './template/app.rightmenu.component';
-import {AppMenuComponent} from './template/app.menu.component';
-import {AppMenuitemComponent} from './template/app.menuitem.component';
-import {AppTopBarComponent} from './template/app.topbar.component';
-import {AppSearchComponent} from './template/app.search.component';
-import {AppFooterComponent} from './template/app.footer.component';
-
-import {AppNotfoundComponent} from './template/errorPages/app.notfound.component';
-import {AppErrorComponent} from './template/errorPages/app.error.component';
-import {AppAccessdeniedComponent} from './template/errorPages/app.accessdenied.component';
-import {AppLoginComponent} from './security/app.login.component';
-
-import {CountryService} from './demo/service/countryservice';
-import {CustomerService} from './demo/service/customerservice';
-import {EventService} from './demo/service/eventservice';
-import {IconService} from './demo/service/iconservice';
-import {NodeService} from './demo/service/nodeservice';
-import {PhotoService} from './demo/service/photoservice';
-import {ProductService} from './demo/service/productservice';
-import {BreadcrumbService} from './template/app.breadcrumb.service';
-import {MenuService} from './template/app.menu.service';
 
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import {DemoModule} from './demo/demo.module';
+import {SharedModule} from './shared/shared.module';
 
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
@@ -209,32 +185,18 @@ FullCalendarModule.registerPlugins([
         TreeModule,
         TreeTableModule,
         VirtualScrollerModule,
-        AppCodeModule,
         // modulos
         DemoModule,
+        SharedModule,
         // routing
         AppRoutingModule
     ],
     declarations: [
         AppComponent,
-        AppMainComponent,
-        AppRightmenuComponent,
-        AppMenuComponent,
-        AppMenuitemComponent,
-        AppConfigComponent,
-        AppTopBarComponent,
-        AppSearchComponent,
-        AppFooterComponent,
-        AppLoginComponent,
-        AppNotfoundComponent,
-        AppErrorComponent,
 
-        AppAccessdeniedComponent,
     ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
-        CountryService, CustomerService, EventService, IconService, NodeService,
-        PhotoService, ProductService, MenuService, BreadcrumbService
     ],
     bootstrap: [AppComponent]
 })

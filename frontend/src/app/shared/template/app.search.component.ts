@@ -1,5 +1,5 @@
 import {Component, ViewChild, ElementRef} from '@angular/core';
-import {AppMainComponent} from './app.main.component';
+import {AppMainComponent} from '../../app.main.component';
 import {animate, state, style, transition, trigger, AnimationEvent} from '@angular/animations';
 
 @Component({

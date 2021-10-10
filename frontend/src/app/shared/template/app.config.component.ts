@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import { AppMainComponent } from './app.main.component';
-import { AppComponent } from '../app.component';
+import {AppMainComponent} from '../../app.main.component';
+import {AppComponent} from '../../app.component';
+
 
 @Component({
     selector: 'app-config',
@@ -11,39 +12,46 @@ import { AppComponent } from '../app.component';
         <div class="layout-config" [ngClass]="{'layout-config-active': appMain.configActive}" (click)="appMain.onConfigClick($event)">
             <h5>Menu Type</h5>
             <div class="p-field-radiobutton">
-                <p-radioButton name="menuMode" value="static" [(ngModel)]="app.menuMode" inputId="mode1" (onClick)="changeMenuMode('static')"></p-radioButton>
+                <p-radioButton name="menuMode" value="static" [(ngModel)]="app.menuMode" inputId="mode1"
+                               (onClick)="changeMenuMode('static')"></p-radioButton>
                 <label for="mode1">Static</label>
             </div>
             <div class="p-field-radiobutton">
-                <p-radioButton name="menuMode" value="overlay" [(ngModel)]="app.menuMode" inputId="mode2" (onClick)="changeMenuMode('overlay')"></p-radioButton>
+                <p-radioButton name="menuMode" value="overlay" [(ngModel)]="app.menuMode" inputId="mode2"
+                               (onClick)="changeMenuMode('overlay')"></p-radioButton>
                 <label for="mode2">Overlay</label>
             </div>
             <div class="p-field-radiobutton">
-                <p-radioButton name="menuMode" value="slim" [(ngModel)]="app.menuMode" inputId="mode3" (onClick)="changeMenuMode('slim')"></p-radioButton>
+                <p-radioButton name="menuMode" value="slim" [(ngModel)]="app.menuMode" inputId="mode3"
+                               (onClick)="changeMenuMode('slim')"></p-radioButton>
                 <label for="mode3">Slim</label>
             </div>
             <div class="p-field-radiobutton">
-                <p-radioButton name="menuMode" value="horizontal" [(ngModel)]="app.menuMode" inputId="mode4" (onClick)="changeMenuMode('horizontal')"></p-radioButton>
+                <p-radioButton name="menuMode" value="horizontal" [(ngModel)]="app.menuMode" inputId="mode4"
+                               (onClick)="changeMenuMode('horizontal')"></p-radioButton>
                 <label for="mode4">Horizontal</label>
             </div>
 
-            <hr />
+            <hr/>
 
             <h5>Color Scheme</h5>
             <div class="p-field-radiobutton">
-                <p-radioButton name="colorScheme" value="dark" [(ngModel)]="app.colorScheme" inputId="theme1" (onClick)="changeColorScheme('dark')"></p-radioButton>
+                <p-radioButton name="colorScheme" value="dark" [(ngModel)]="app.colorScheme" inputId="theme1"
+                               (onClick)="changeColorScheme('dark')"></p-radioButton>
                 <label for="theme1">Dark</label>
             </div>
             <div class="p-field-radiobutton">
-                <p-radioButton name="colorScheme" value="dim" [(ngModel)]="app.colorScheme" inputId="theme2" (onClick)="changeColorScheme('dim')"></p-radioButton>
+                <p-radioButton name="colorScheme" value="dim" [(ngModel)]="app.colorScheme" inputId="theme2"
+                               (onClick)="changeColorScheme('dim')"></p-radioButton>
                 <label for="theme2">Dim</label>
             </div>
             <div class="p-field-radiobutton">
-                <p-radioButton name="colorScheme" value="light" [(ngModel)]="app.colorScheme" inputId="theme3" (onClick)="changeColorScheme('light')"></p-radioButton>
+                <p-radioButton name="colorScheme" value="light" [(ngModel)]="app.colorScheme" inputId="theme3"
+                               (onClick)="changeColorScheme('light')"></p-radioButton>
                 <label for="theme3">Light</label>
             </div>
 
-            <hr />
+            <hr/>
 
             <h5>Input Style</h5>
             <div class="p-field-radiobutton">
@@ -55,24 +63,26 @@ import { AppComponent } from '../app.component';
                 <label for="inputStyle2">Filled</label>
             </div>
 
-            <hr />
+            <hr/>
 
             <h5>Ripple Effect</h5>
-			<p-inputSwitch [ngModel]="app.ripple" (onChange)="appMain.onRippleChange($event)"></p-inputSwitch>
+            <p-inputSwitch [ngModel]="app.ripple" (onChange)="appMain.onRippleChange($event)"></p-inputSwitch>
 
-            <hr />
+            <hr/>
 
             <h5>Menu Themes</h5>
             <div class="layout-themes" *ngIf="app.colorScheme === 'light' && !appMain.isHorizontal()">
                 <div *ngFor="let theme of menuThemes">
-                    <a style="cursor: pointer" (click)="changeMenuTheme(theme.name, theme.logoColor, theme.componentTheme)" [ngStyle]="{'background-color': theme.color}"></a>
+                    <a style="cursor: pointer" (click)="changeMenuTheme(theme.name, theme.logoColor, theme.componentTheme)"
+                       [ngStyle]="{'background-color': theme.color}"></a>
                 </div>
             </div>
             <div *ngIf="app.colorScheme !== 'light' || appMain.isHorizontal()">
-                <p>Menu themes are available in light mode and static, slim, overlay menu modes by design as large surfaces can emit too much brightness in dark mode.</p>
+                <p>Menu themes are available in light mode and static, slim, overlay menu modes by design as large surfaces can emit too
+                    much brightness in dark mode.</p>
             </div>
 
-            <hr />
+            <hr/>
 
             <h5>Component Themes</h5>
             <div class="layout-themes">
@@ -93,7 +103,8 @@ export class AppConfigComponent implements OnInit {
 
     tempLogoColor = 'white';
 
-    constructor(public app: AppComponent, public appMain: AppMainComponent) {}
+    constructor(public app: AppComponent, public appMain: AppMainComponent) {
+    }
 
     ngOnInit() {
         this.componentThemes = [
@@ -134,22 +145,18 @@ export class AppConfigComponent implements OnInit {
             if (this.app.colorScheme === 'light') {
                 this.app.menuTheme = 'layout-sidebar-white';
                 appLogoLink.src = 'assets/images/logo_white_cuadrado.png';
-            }
-            else {
+            } else {
                 this.app.menuTheme = 'layout-sidebar-' + this.app.colorScheme;
                 appLogoLink.src = 'assets/images/logo_white_cuadrado.png';
             }
-        }
-        else {
+        } else {
             this.app.menuTheme = 'layout-sidebar-' + this.tempMenuColor;
-            if(this.app.colorScheme !== 'light') {
+            if (this.app.colorScheme !== 'light') {
                 appLogoLink.src = 'assets/images/logo_white_cuadrado.png';
-            }
-            else {
+            } else {
                 if (this.tempLogoColor === 'white') {
                     appLogoLink.src = 'assets/images/logo_white_cuadrado.png';
-                }
-                else {
+                } else {
                     appLogoLink.src = 'assets/images/logo_white_cuadrado.png';
                 }
             }
@@ -166,17 +173,14 @@ export class AppConfigComponent implements OnInit {
             if (this.appMain.isHorizontal()) {
                 this.app.menuTheme = 'layout-sidebar-white';
                 appLogoLink.src = 'assets/images/logo_white_cuadrado.png';
-            }
-            else {
+            } else {
                 if (this.tempLogoColor === 'white') {
                     appLogoLink.src = 'assets/images/logo_white_cuadrado.png';
-                }
-                else {
+                } else {
                     appLogoLink.src = 'assets/images/logo_white_cuadrado.png';
                 }
             }
-        }
-        else {
+        } else {
             appLogoLink.src = 'assets/images/logo_white_cuadrado.png';
         }
     }
@@ -191,8 +195,7 @@ export class AppConfigComponent implements OnInit {
 
         if (logoColor === 'dark') {
             appLogoLink.src = 'assets/images/logo_white_cuadrado.png';
-        }
-        else {
+        } else {
             appLogoLink.src = 'assets/images/logo_white_cuadrado.png';
         }
     }
@@ -207,13 +210,11 @@ export class AppConfigComponent implements OnInit {
 
         if (from === 1) {           // which function invoked this function
             urlTokens[urlTokens.length - 1] = value;
-        }
-        else if (from === 2) {       // which function invoked this function
+        } else if (from === 2) {       // which function invoked this function
             if (value !== null) {
                 urlTokens[urlTokens.length - 2] = value;
             }
-        }
-        else if (from === 3) {       // which function invoked this function
+        } else if (from === 3) {       // which function invoked this function
             urlTokens[urlTokens.length - 2] = value;
         }
 
@@ -225,8 +226,7 @@ export class AppConfigComponent implements OnInit {
     replaceLink(linkElement, href) {
         if (this.isIE()) {
             linkElement.setAttribute('href', href);
-        }
-        else {
+        } else {
             const id = linkElement.getAttribute('id');
             const cloneLinkElement = linkElement.cloneNode(true);
 

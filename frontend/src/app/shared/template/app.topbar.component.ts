@@ -1,9 +1,10 @@
 import {Component, OnDestroy} from '@angular/core';
-import { AppComponent } from '../app.component';
-import { AppMainComponent } from './app.main.component';
+
+import { AppMainComponent } from '../../app.main.component';
 import { BreadcrumbService } from './app.breadcrumb.service';
 import { Subscription } from 'rxjs';
 import { MenuItem } from 'primeng/api';
+import {AppComponent} from '../../app.component';
 
 @Component({
   selector: 'app-topbar',

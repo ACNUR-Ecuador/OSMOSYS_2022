@@ -103,7 +103,6 @@ import {TooltipModule} from 'primeng/tooltip';
 import {TreeModule} from 'primeng/tree';
 import {TreeTableModule} from 'primeng/treetable';
 import {VirtualScrollerModule} from 'primeng/virtualscroller';
-import {AppCodeModule} from '../template/app.code.component';
 import {DisplayComponent} from './utilities/display.component';
 import {ElevationComponent} from './utilities/elevation.component';
 import {FlexboxComponent} from './utilities/flexbox.component';
@@ -117,44 +116,18 @@ import {SpacingComponent} from './utilities/spacing.component';
 import {AppCrudComponent} from './view/app.crud.component';
 import {AppCalendarComponent} from './view/app.calendar.component';
 import {AppHelpComponent} from './view/app.help.component';
+import {AppCodeModule} from '../shared/template/app.code.component';
+import {SharedModule} from '../shared/shared.module';
+import {CountryService} from './service/countryservice';
+import {CustomerService} from './service/customerservice';
+import {EventService} from './service/eventservice';
+import {IconService} from './service/iconservice';
+import {NodeService} from './service/nodeservice';
+import {ProductService} from './service/productservice';
+import {PhotoService} from './service/photoservice';
 
 
 @NgModule({
-    declarations: [
-        DashboardDemoComponent,
-        FormLayoutDemoComponent,
-        FloatLabelDemoComponent,
-        InvalidStateDemoComponent,
-        InputDemoComponent,
-        ButtonDemoComponent,
-        TableDemoComponent,
-        ListDemoComponent,
-        TreeDemoComponent,
-        PanelsDemoComponent,
-        OverlaysDemoComponent,
-        MediaDemoComponent,
-        MenusDemoComponent,
-        MessagesDemoComponent,
-        MiscDemoComponent,
-        EmptyDemoComponent,
-        ChartsDemoComponent,
-        FileDemoComponent,
-        DocumentationComponent,
-        AppTimelineDemoComponent,
-        DisplayComponent,
-        ElevationComponent,
-        FlexboxComponent,
-        GridComponent,
-        IconsComponent,
-        WidgetsComponent,
-        TypographyComponent,
-        TextComponent,
-        AppInvoiceComponent,
-        SpacingComponent,
-        AppCrudComponent,
-        AppCalendarComponent,
-        AppHelpComponent,
-    ],
     imports: [
         CommonModule,
         DemoRoutingModule,
@@ -238,8 +211,52 @@ import {AppHelpComponent} from './view/app.help.component';
         TreeModule,
         TreeTableModule,
         VirtualScrollerModule,
-        AppCodeModule
-    ]
+        AppCodeModule,
+        SharedModule
+    ],
+    declarations: [
+        DashboardDemoComponent,
+        FormLayoutDemoComponent,
+        FloatLabelDemoComponent,
+        InvalidStateDemoComponent,
+        InputDemoComponent,
+        ButtonDemoComponent,
+        TableDemoComponent,
+        ListDemoComponent,
+        TreeDemoComponent,
+        PanelsDemoComponent,
+        OverlaysDemoComponent,
+        MediaDemoComponent,
+        MenusDemoComponent,
+        MessagesDemoComponent,
+        MiscDemoComponent,
+        EmptyDemoComponent,
+        ChartsDemoComponent,
+        FileDemoComponent,
+        DocumentationComponent,
+        AppTimelineDemoComponent,
+        DisplayComponent,
+        ElevationComponent,
+        FlexboxComponent,
+        GridComponent,
+        IconsComponent,
+        WidgetsComponent,
+        TypographyComponent,
+        TextComponent,
+        AppInvoiceComponent,
+        SpacingComponent,
+        AppCrudComponent,
+        AppCalendarComponent,
+        AppHelpComponent,
+    ],
+    providers: [CountryService,
+        CustomerService,
+        EventService,
+        IconService,
+        NodeService,
+        PhotoService,
+        ProductService]
+
 })
 export class DemoModule {
 }

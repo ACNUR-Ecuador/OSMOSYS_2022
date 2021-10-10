@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {SelectItem} from 'primeng/api';
-import {AppMainComponent} from './app.main.component';
+import {AppMainComponent} from '../../app.main.component';
 
 @Component({
     selector: 'app-rightmenu',

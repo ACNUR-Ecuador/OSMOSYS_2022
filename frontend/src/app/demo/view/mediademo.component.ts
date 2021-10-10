@@ -2,8 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import { ProductService } from '../service/productservice';
 import { PhotoService } from '../service/photoservice';
 import { Product } from '../domain/product';
-import {BreadcrumbService} from '../../template/app.breadcrumb.service';
-
+import {BreadcrumbService} from '../../shared/template/app.breadcrumb.service';
 @Component({
     templateUrl: './mediademo.component.html',
     styleUrls: ['./mediademo.scss'],

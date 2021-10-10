@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {BreadcrumbService} from '../../template/app.breadcrumb.service';
 import {PrimeIcons} from 'primeng/api';
+import {BreadcrumbService} from '../../shared/template/app.breadcrumb.service';
 
 @Component({
     templateUrl: './app.timelinedemo.component.html',

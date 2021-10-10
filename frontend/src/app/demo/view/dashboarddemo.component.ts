@@ -2,8 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import {Product} from '../domain/product';
 import {ProductService} from '../service/productservice';
-import {BreadcrumbService} from '../../template/app.breadcrumb.service';
-import {Chart} from "chart.js";
+import {Chart} from 'chart.js';
+import {BreadcrumbService} from '../../shared/template/app.breadcrumb.service';
 
 @Component({
     templateUrl: './dashboard.component.html',

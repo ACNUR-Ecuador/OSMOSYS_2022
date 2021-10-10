@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
-import {BreadcrumbService} from '../../template/app.breadcrumb.service';
 import {AppComponent} from '../../app.component';
+import {BreadcrumbService} from '../../shared/template/app.breadcrumb.service';
 
 @Component({
     templateUrl: './app.invoice.component.html'
