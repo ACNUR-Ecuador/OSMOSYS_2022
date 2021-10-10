@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {BreadcrumbService} from '../../shared/template/app.breadcrumb.service';
+import {BreadcrumbService} from '../../shared/services/app.breadcrumb.service';
 
 @Component({
     templateUrl: './formlayoutdemo.component.html'

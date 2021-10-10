@@ -1,9 +1,9 @@
 import {Component, OnDestroy} from '@angular/core';
-import {MenuService} from './shared/template/app.menu.service';
+import {MenuService} from './shared/services/app.menu.service';
 import {MenuItem, PrimeNGConfig} from 'primeng/api';
 import {Subscription} from 'rxjs';
 import {AppComponent} from './app.component';
-import {BreadcrumbService} from './shared/template/app.breadcrumb.service';
+import {BreadcrumbService} from './shared/services/app.breadcrumb.service';
 
 
 @Component({

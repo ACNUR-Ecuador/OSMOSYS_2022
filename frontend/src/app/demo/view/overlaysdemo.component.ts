@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {Product} from '../domain/product';
 import {ProductService} from '../service/productservice';
-import {BreadcrumbService} from '../../shared/template/app.breadcrumb.service';
+import {BreadcrumbService} from '../../shared/services/app.breadcrumb.service';
 
 
 @Component({
