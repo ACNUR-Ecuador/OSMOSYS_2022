@@ -3,13 +3,15 @@ package org.unhcr.osmosys.services;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import org.apache.commons.lang3.StringUtils;
 import org.unhcr.osmosys.daos.OfficeDao;
-import org.unhcr.osmosys.daos.OrganizactionDao;
 import org.unhcr.osmosys.model.Office;
 import org.unhcr.osmosys.webServices.model.OfficeWeb;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Stateless
 public class OfficeService {
@@ -61,4 +63,29 @@ public class OfficeService {
         }
     }
 
+    public OfficeWeb officeToOfficeWeb(Office office, boolean returnChilds) {
+        if (office == null) {
+            return null;
+        }
+        OfficeWeb o = new OfficeWeb();
+        o.setId(office.getId());
+        o.setAcronym(office.getAcronym());
+        o.setType(office.getType());
+        o.setState(office.getState());
+        o.setDescription(office.getDescription());
+        o.setParentOffice(this.officeToOfficeWeb(office.getParentOffice(), false));
+        if (returnChilds) {
+            o.setChildOffices(this.officesToOfficesWeb(office.getChildOffices(), false));
+        }
+        return o;
+    }
+
+    public List<OfficeWeb> officesToOfficesWeb(Set<Office> offices, boolean returnChilds) {
+        List<OfficeWeb> r = new ArrayList<>();
+        for (Office o : offices) {
+            this.officeToOfficeWeb(o, returnChilds);
+        }
+        return r;
+
+    }
 }

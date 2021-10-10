@@ -51,4 +51,17 @@ public class OrganizacionService {
         }
     }
 
+    public OrganizationWeb organizationToOrganizationWeb(Organization organization){
+        if(organization==null){
+            return null;
+        }
+        OrganizationWeb o = new OrganizationWeb();
+        o.setId(organization.getId());
+        o.setAcronym(organization.getAcronym());
+        o.setCode(organization.getCode());
+        o.setState(organization.getState());
+        o.setDescription(organization.getDescription());
+        return o;
+    }
+
 }

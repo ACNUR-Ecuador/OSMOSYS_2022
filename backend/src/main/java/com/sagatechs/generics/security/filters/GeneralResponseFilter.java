@@ -39,7 +39,7 @@ public class GeneralResponseFilter implements ContainerResponseFilter {
             if (status != 401 && status != 403) {
                 // Extract the token from the Authorization header
                 String token = authorizationHeader.substring(AUTHENTICATION_SCHEME.length()).trim();
-                //String newToken = this.userService.refreshTokenFromToken(token);
+                String newToken = this.userService.refreshTokenFromToken(token);
                 containerResponseContext.getHeaders().add("refresh-token", "newToken");
                 return;
             }
@@ -48,14 +48,11 @@ public class GeneralResponseFilter implements ContainerResponseFilter {
             if (status >= 200 && status < 300) {
 
                 if (containerRequestContext.getMethod().equals("POST") && containerRequestContext.getUriInfo().getPath().equals("/authentication/login")) {
-               /* GeneralResponseJWT responseBodyJWT = new GeneralResponseJWT();
-                responseBodyJWT.setState("ok");*/
+
                     UserWeb user = (UserWeb) containerResponseContext.getEntity();
-                /*responseBodyJWT.setData(user);
-                containerResponseContext.setEntity(responseBodyJWT);*/
-                    //String token = this.userService.issueTokenForLogin(user);
-                    //responseBodyJWT.setToken(token);
-                    containerResponseContext.getHeaders().add("refresh-token", "token");
+
+                    String token = this.userService.issueTokenForLogin(user);
+                    containerResponseContext.getHeaders().add("refresh-token", token);
                 }
             }
         }

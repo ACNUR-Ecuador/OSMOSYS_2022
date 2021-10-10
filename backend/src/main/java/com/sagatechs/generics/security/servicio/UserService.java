@@ -22,8 +22,11 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.Office;
 import org.unhcr.osmosys.model.Organization;
+import org.unhcr.osmosys.model.enums.OfficeType;
 import org.unhcr.osmosys.services.OfficeService;
 import org.unhcr.osmosys.services.OrganizacionService;
+import org.unhcr.osmosys.webServices.model.OfficeWeb;
+import org.unhcr.osmosys.webServices.model.OrganizationWeb;
 
 import javax.crypto.SecretKey;
 import javax.ejb.Stateless;
@@ -89,14 +92,14 @@ public class UserService implements Serializable {
         user.setState(userWeb.getState());
 
         Organization organization = this.organizacionService.getById(userWeb.getOrganization().getId());
-        if(organization==null){
+        if (organization == null) {
             throw new GeneralAppException("Organización requerida", Response.Status.BAD_REQUEST);
         }
         user.setOrganization(organization);
 
-        if(organization.getAcronym().equalsIgnoreCase("acnur")){
+        if (organization.getAcronym().equalsIgnoreCase("acnur")) {
             Office office = this.officeService.getById(userWeb.getOffice().getId());
-            if(office==null){
+            if (office == null) {
                 throw new GeneralAppException("Oficina requerida", Response.Status.BAD_REQUEST);
             }
             user.setOffice(office);
@@ -141,6 +144,45 @@ public class UserService implements Serializable {
         );
 
         return user;
+
+    }
+
+    /**
+     * Autentica Rests y genera tolens
+     *
+     * @param username
+     * @param password
+     * @return tokens
+     * @throws AccessDeniedException
+     */
+    public UserWeb authenticateRest(String username, String password) {
+        User user = this.verifyUsernamePassword(username, password);
+        if (user != null) {
+
+
+            return this.userToUserWeb(user);
+        } else {
+            throw new AuthorizationException(
+                    "Acceso denegado. Por favor ingrese correctamente el nombre de usuario y contraseña.");
+        }
+
+    }
+
+    /**
+     * Verifica las credenciales del usuario, por nombre de usuario y contraseña
+     *
+     * @param username
+     * @param password
+     * @return
+     */
+    public User verifyUsernamePassword(String username, String password) {
+        if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+            return null;
+        }
+
+        // obtengo el hash del pass enviado
+        byte[] hashedPass = this.securityUtils.hashPasswordByte(password, salt);
+        return this.userDao.findByUserNameAndPasswordWithRoles(username, hashedPass, State.ACTIVE);
 
     }
 
@@ -190,4 +232,161 @@ public class UserService implements Serializable {
 
     }
 
+    public UserWeb userToUserWeb(User user) {
+        if (user == null) {
+            return null;
+        }
+        UserWeb userWeb = new UserWeb();
+        userWeb.setId(user.getId());
+        userWeb.setName(user.getName());
+        userWeb.setEmail(user.getEmail());
+        userWeb.setUsername(user.getUsername());
+        userWeb.setState(user.getState());
+        userWeb.setOffice(this.officeService.officeToOfficeWeb(user.getOffice(), true));
+        userWeb.setOrganization(this.organizacionService.organizationToOrganizationWeb(user.getOrganization()));
+        List<RoleWeb> roles = new ArrayList<>();
+        for (RoleAssigment userRoleAssigment : user.getRoleAssigments()) {
+            if (userRoleAssigment.getState().equals(State.ACTIVE) && userRoleAssigment.getRole().getState().equals(State.ACTIVE)) {
+                roles.add(this.roleService.roleToRoleWeb(userRoleAssigment.getRole()));
+            }
+        }
+        userWeb.setRoles(roles);
+
+        return userWeb;
+    }
+
+    public String issueTokenForLogin(UserWeb userWeb) {
+
+
+        return buildToken(userWeb);
+
+    }
+
+    private String buildToken(UserWeb userWeb) {
+        if (userWeb != null) {
+            Date now = new Date();
+
+            String token = Jwts.builder()
+                    // .serializeToJsonWith(serializer)// (1)
+                    .setSubject(userWeb.getUsername()) // (2)
+                    .setIssuedAt(now)
+                    .setExpiration(getExpirationDate(now))
+                    .claim("roles", userWeb.getRoles())
+                    .claim("username", userWeb.getUsername())
+                    .claim("name", userWeb.getName())
+                    .claim("id", userWeb.getId())
+                    .claim("email", userWeb.getEmail())
+                    .claim("organization", userWeb.getOrganization())
+                    .claim("office", userWeb.getOffice())
+                    .signWith(getSecretKey()).compact();
+            LOGGER.debug(token);
+            return token;
+        }
+        throw new AccessDeniedException("usuario no encontrado");
+    }
+
+    /**
+     * Genera fecha de expìracion de token
+     *
+     * @param date
+     * @return
+     */
+    private Date getExpirationDate(Date date) {
+        Calendar cal = Calendar.getInstance(); // creates calendar
+        cal.setTime(date); // sets calendar time/date
+        cal.add(Calendar.SECOND, EXPIRATION_TIME_SECONDS);
+        return cal.getTime(); // returns new date object, one hour in the future
+    }
+
+    /**
+     * Crea la clave secret de jwt
+     *
+     * @return
+     */
+    private SecretKey getSecretKey() {
+
+        try {
+            if (key == null) {
+                key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+            }
+            return key;
+        } catch (WeakKeyException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
+    public String refreshTokenFromToken(String token) {
+
+        UserWeb user = this.validateTokenGetUserWeb(token);
+
+        return buildToken(user);
+
+    }
+    public UserWeb validateTokenGetUserWeb(String token) {
+        // obtengo el usuario
+        try {
+            Jws<Claims> jws = Jwts.parser() // (1)
+                    // .deserializeJsonWith(deserializer)
+                    .setSigningKey(getSecretKey()) // (2)
+                    .parseClaimsJws(token); // (3)
+
+            // hasta ahi se valida el token*
+            UserWeb user = new UserWeb();
+            Long id = null;
+            if (jws.getBody().get("id") != null) {
+                try {
+                    id = ((Integer) jws.getBody().get("id")).longValue();
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            user.setId(id);
+            user.setUsername(jws.getBody().getSubject());
+            user.setEmail((String) jws.getBody().get("email"));
+            //noinspection unchecked
+            List<HashMap> rolesMaps = (List<HashMap>) jws.getBody().get("roles");
+            LOGGER.info(rolesMaps);
+            List<RoleWeb> rolesWeb = new ArrayList<>();
+            for (Map<String, Object> rolesS : rolesMaps) {
+                RoleWeb roleWeb = new RoleWeb();
+                Integer roleId = (Integer) rolesS.get("id");
+                if (roleId != null) {
+                    roleWeb.setId(roleId.longValue());
+                }
+                roleWeb.setName((String) rolesS.get("name"));
+                roleWeb.setState(State.valueOf((String) rolesS.get("state")));
+                rolesWeb.add(roleWeb);
+            }
+            user.setRoles(rolesWeb);
+            user.setName((String) jws.getBody().get("name"));
+
+            LinkedHashMap organizationMap = (LinkedHashMap) jws.getBody().get("organization");
+            if (organizationMap!=null && organizationMap.size() > 0) {
+                OrganizationWeb organizationWeb = new OrganizationWeb();
+                organizationWeb.setId( Long.valueOf((Integer)organizationMap.get("id")));
+                organizationWeb.setState(State.valueOf((String) organizationMap.get("state")));
+                organizationWeb.setCode((String) organizationMap.get("code"));
+                organizationWeb.setDescription((String) organizationMap.get("description"));
+                organizationWeb.setAcronym((String) organizationMap.get("acronym"));
+                user.setOrganization(organizationWeb);
+            }
+            LinkedHashMap officeMap = (LinkedHashMap) jws.getBody().get("office");
+            if (officeMap!=null && officeMap.size() > 0) {
+                OfficeWeb officeWeb = new OfficeWeb();
+                officeWeb.setId( Long.valueOf((Integer)officeMap.get("id")));
+                officeWeb.setState(State.valueOf((String) officeMap.get("state")));
+                officeWeb.setType(OfficeType.valueOf((String) officeMap.get("type")));
+                officeWeb.setDescription((String) officeMap.get("description"));
+                officeWeb.setAcronym((String) officeMap.get("acronym"));
+                user.setOffice(officeWeb);
+            }
+            return user;
+        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
+            e.printStackTrace();
+            throw new AccessDeniedException("token invalido");
+        }
+    }
 }

@@ -42,5 +42,22 @@ public class UserRestEndpoint {
     }
 
 
+    /**
+     * Autentica usuarios
+     *
+     * @param credentials
+     * @return
+     * @throws AccessDeniedException
+     */
+    @Path("/login")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public UserWeb authenticateUser(CredentialsWeb credentials) {
+        String username = credentials.getUsername();
+        String password = credentials.getPassword();
+        return userService.authenticateRest(username, password);
+
+    }
 
 }

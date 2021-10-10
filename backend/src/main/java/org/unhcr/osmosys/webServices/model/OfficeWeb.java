@@ -20,7 +20,7 @@ public class OfficeWeb implements Serializable {
 
     private State state;
 
-    private Office parentOffice;
+    private OfficeWeb parentOffice;
 
     private List<OfficeWeb> childOffices = new ArrayList<>();
 
@@ -64,11 +64,11 @@ public class OfficeWeb implements Serializable {
         this.state = state;
     }
 
-    public Office getParentOffice() {
+    public OfficeWeb getParentOffice() {
         return parentOffice;
     }
 
-    public void setParentOffice(Office parentOffice) {
+    public void setParentOffice(OfficeWeb parentOffice) {
         this.parentOffice = parentOffice;
     }
 
