@@ -93,6 +93,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import {DemoModule} from './demo/demo.module';
 import {SharedModule} from './shared/shared.module';
+import {HomeModule} from './home/home.module';
 
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
@@ -185,11 +186,12 @@ FullCalendarModule.registerPlugins([
         TreeModule,
         TreeTableModule,
         VirtualScrollerModule,
+        // routing
+        AppRoutingModule,
         // modulos
         DemoModule,
         SharedModule,
-        // routing
-        AppRoutingModule
+        HomeModule
     ],
     declarations: [
         AppComponent,
