@@ -34,11 +34,13 @@ public class UserRestEndpoint {
     RoleService roleService;
 
 
-    @Path("/authentication")
+    @Path("/users")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public void createUser(@HeaderParam("appCode") String appCode, UserWeb user) throws GeneralAppException {
         this.userService.creaUser(user);
     }
+
+
 
 }
