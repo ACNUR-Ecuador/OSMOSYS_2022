@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {Product} from '../demo/domain/product';
-import {ProductService} from '../demo/service/productservice';
+import {Product} from '../domain/product';
+import {ProductService} from '../service/productservice';
 import {ConfirmationService, MessageService} from 'primeng/api';
 
 @Component({
     templateUrl: './app.crud.component.html',
-    styleUrls: ['../demo/view/tabledemo.scss'],
+    styleUrls: ['./tabledemo.scss'],
     styles: [`
         :host ::ng-deep .p-dialog .product-image {
             width: 150px;

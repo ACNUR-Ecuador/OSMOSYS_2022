@@ -1,11 +1,29 @@
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
-import {BrowserModule} from '@angular/platform-browser';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {HashLocationStrategy, LocationStrategy} from '@angular/common';
-import {AppRoutingModule} from './app-routing.module';
+import {CommonModule} from '@angular/common';
+import {DemoRoutingModule} from './demo-routing.module';
 
+
+import {DashboardDemoComponent} from './view/dashboarddemo.component';
+import {FormLayoutDemoComponent} from './view/formlayoutdemo.component';
+import {FloatLabelDemoComponent} from './view/floatlabeldemo.component';
+import {InvalidStateDemoComponent} from './view/invalidstatedemo.component';
+import {InputDemoComponent} from './view/inputdemo.component';
+import {ButtonDemoComponent} from './view/buttondemo.component';
+import {TableDemoComponent} from './view/tabledemo.component';
+import {ListDemoComponent} from './view/listdemo.component';
+import {TreeDemoComponent} from './view/treedemo.component';
+import {PanelsDemoComponent} from './view/panelsdemo.component';
+import {OverlaysDemoComponent} from './view/overlaysdemo.component';
+import {MediaDemoComponent} from './view/mediademo.component';
+import {MenusDemoComponent} from './view/menusdemo.component';
+import {MessagesDemoComponent} from './view/messagesdemo.component';
+import {MiscDemoComponent} from './view/miscdemo.component';
+import {EmptyDemoComponent} from './view/emptydemo.component';
+import {ChartsDemoComponent} from './view/chartsdemo.component';
+import {FileDemoComponent} from './view/filedemo.component';
+import {DocumentationComponent} from './view/documentation.component';
+import {AppTimelineDemoComponent} from './view/app.timelinedemo.component';
+import {FormsModule} from '@angular/forms';
 import {AccordionModule} from 'primeng/accordion';
 import {AutoCompleteModule} from 'primeng/autocomplete';
 import {AvatarModule} from 'primeng/avatar';
@@ -46,8 +64,8 @@ import {ListboxModule} from 'primeng/listbox';
 import {MegaMenuModule} from 'primeng/megamenu';
 import {MenuModule} from 'primeng/menu';
 import {MenubarModule} from 'primeng/menubar';
-import {MessagesModule} from 'primeng/messages';
 import {MessageModule} from 'primeng/message';
+import {MessagesModule} from 'primeng/messages';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {OrderListModule} from 'primeng/orderlist';
 import {OrganizationChartModule} from 'primeng/organizationchart';
@@ -71,65 +89,76 @@ import {SliderModule} from 'primeng/slider';
 import {SplitButtonModule} from 'primeng/splitbutton';
 import {SplitterModule} from 'primeng/splitter';
 import {StepsModule} from 'primeng/steps';
-import {TabMenuModule} from 'primeng/tabmenu';
 import {TableModule} from 'primeng/table';
+import {TabMenuModule} from 'primeng/tabmenu';
 import {TabViewModule} from 'primeng/tabview';
 import {TagModule} from 'primeng/tag';
 import {TerminalModule} from 'primeng/terminal';
-import {TieredMenuModule} from 'primeng/tieredmenu';
 import {TimelineModule} from 'primeng/timeline';
+import {TieredMenuModule} from 'primeng/tieredmenu';
 import {ToastModule} from 'primeng/toast';
 import {ToggleButtonModule} from 'primeng/togglebutton';
 import {ToolbarModule} from 'primeng/toolbar';
 import {TooltipModule} from 'primeng/tooltip';
 import {TreeModule} from 'primeng/tree';
 import {TreeTableModule} from 'primeng/treetable';
-import {AppComponent} from './app.component';
 import {VirtualScrollerModule} from 'primeng/virtualscroller';
+import {AppCodeModule} from '../template/app.code.component';
+import {DisplayComponent} from './utilities/display.component';
+import {ElevationComponent} from './utilities/elevation.component';
+import {FlexboxComponent} from './utilities/flexbox.component';
+import {GridComponent} from './utilities/grid.component';
+import {IconsComponent} from './utilities/icons.component';
+import {WidgetsComponent} from './utilities/widgets.component';
+import {TypographyComponent} from './utilities/typography.component';
+import {TextComponent} from './utilities/text.component';
+import {AppInvoiceComponent} from './view/app.invoice.component';
+import {SpacingComponent} from './utilities/spacing.component';
+import {AppCrudComponent} from './view/app.crud.component';
+import {AppCalendarComponent} from './view/app.calendar.component';
+import {AppHelpComponent} from './view/app.help.component';
 
-import {AppCodeModule} from './template/app.code.component';
-
-import {AppMainComponent} from './template/app.main.component';
-import {AppConfigComponent} from './template/app.config.component';
-import {AppRightmenuComponent} from './template/app.rightmenu.component';
-import {AppMenuComponent} from './template/app.menu.component';
-import {AppMenuitemComponent} from './template/app.menuitem.component';
-import {AppTopBarComponent} from './template/app.topbar.component';
-import {AppSearchComponent} from './template/app.search.component';
-import {AppFooterComponent} from './template/app.footer.component';
-
-import {AppNotfoundComponent} from './template/errorPages/app.notfound.component';
-import {AppErrorComponent} from './template/errorPages/app.error.component';
-import {AppAccessdeniedComponent} from './template/errorPages/app.accessdenied.component';
-import {AppLoginComponent} from './security/app.login.component';
-
-import {CountryService} from './demo/service/countryservice';
-import {CustomerService} from './demo/service/customerservice';
-import {EventService} from './demo/service/eventservice';
-import {IconService} from './demo/service/iconservice';
-import {NodeService} from './demo/service/nodeservice';
-import {PhotoService} from './demo/service/photoservice';
-import {ProductService} from './demo/service/productservice';
-import {BreadcrumbService} from './template/app.breadcrumb.service';
-import {MenuService} from './template/app.menu.service';
-
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import {DemoModule} from './demo/demo.module';
-
-FullCalendarModule.registerPlugins([
-    dayGridPlugin,
-    timeGridPlugin,
-    interactionPlugin
-]);
 
 @NgModule({
+    declarations: [
+        DashboardDemoComponent,
+        FormLayoutDemoComponent,
+        FloatLabelDemoComponent,
+        InvalidStateDemoComponent,
+        InputDemoComponent,
+        ButtonDemoComponent,
+        TableDemoComponent,
+        ListDemoComponent,
+        TreeDemoComponent,
+        PanelsDemoComponent,
+        OverlaysDemoComponent,
+        MediaDemoComponent,
+        MenusDemoComponent,
+        MessagesDemoComponent,
+        MiscDemoComponent,
+        EmptyDemoComponent,
+        ChartsDemoComponent,
+        FileDemoComponent,
+        DocumentationComponent,
+        AppTimelineDemoComponent,
+        DisplayComponent,
+        ElevationComponent,
+        FlexboxComponent,
+        GridComponent,
+        IconsComponent,
+        WidgetsComponent,
+        TypographyComponent,
+        TextComponent,
+        AppInvoiceComponent,
+        SpacingComponent,
+        AppCrudComponent,
+        AppCalendarComponent,
+        AppHelpComponent,
+    ],
     imports: [
-        BrowserModule,
+        CommonModule,
+        DemoRoutingModule,
         FormsModule,
-        HttpClientModule,
-        BrowserAnimationsModule,
         AccordionModule,
         AutoCompleteModule,
         AvatarModule,
@@ -209,34 +238,8 @@ FullCalendarModule.registerPlugins([
         TreeModule,
         TreeTableModule,
         VirtualScrollerModule,
-        AppCodeModule,
-        // modulos
-        DemoModule,
-        // routing
-        AppRoutingModule
-    ],
-    declarations: [
-        AppComponent,
-        AppMainComponent,
-        AppRightmenuComponent,
-        AppMenuComponent,
-        AppMenuitemComponent,
-        AppConfigComponent,
-        AppTopBarComponent,
-        AppSearchComponent,
-        AppFooterComponent,
-        AppLoginComponent,
-        AppNotfoundComponent,
-        AppErrorComponent,
-
-        AppAccessdeniedComponent,
-    ],
-    providers: [
-        {provide: LocationStrategy, useClass: HashLocationStrategy},
-        CountryService, CustomerService, EventService, IconService, NodeService,
-        PhotoService, ProductService, MenuService, BreadcrumbService
-    ],
-    bootstrap: [AppComponent]
+        AppCodeModule
+    ]
 })
-export class AppModule {
+export class DemoModule {
 }

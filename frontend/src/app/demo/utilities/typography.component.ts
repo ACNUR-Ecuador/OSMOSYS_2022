@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {BreadcrumbService} from '../template/app.breadcrumb.service';
+import {BreadcrumbService} from '../../template/app.breadcrumb.service';
 
 @Component({
     templateUrl: './typography.component.html'
