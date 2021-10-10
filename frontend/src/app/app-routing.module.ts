@@ -3,7 +3,7 @@ import {NgModule} from '@angular/core';
 
 import {AppLoginComponent} from './security/app.login.component';
 
-import {content} from './content-routes';
+import {content} from './shared/routes/content-routes';
 import {AppMainComponent} from './app.main.component';
 import {AppErrorComponent} from './shared/template/errorPages/app.error.component';
 import {AppAccessdeniedComponent} from './shared/template/errorPages/app.accessdenied.component';
