@@ -17,6 +17,13 @@
             @include flex-direction-column();
 
             .logo {
+                /*image-rendering: -moz-crisp-edges; !* Firefox *!
+                image-rendering: -o-crisp-edges; !* Opera *!
+                image-rendering: -moz-crisp-edges; !* Webkit (non-standard naming) *!
+                image-rendering: crisp-edges;
+                image-rendering: high-quality;
+                image-resolution: from-image;
+                -ms-interpolation-mode: nearest-neighbor; !* IE (non-standard property) *!*/
                 height: 300px;
             }
 
@@ -24,10 +31,11 @@
                 @include flex();
                 @include flex-align-center();
                 @include flex-direction-column();
+
                 > p {
                     font-weight: 600;
                     margin: 0;
-                    color:$textSecondaryColor;
+                    color: $textSecondaryColor;
                     margin-bottom: 32px;
 
                     > a {
@@ -51,7 +59,7 @@
             p {
                 font-weight: 600;
                 margin: 0;
-                color:$textSecondaryColor;
+                color: $textSecondaryColor;
 
                 > a {
                     color: $linkColor;
@@ -69,7 +77,7 @@
             padding: 40px 20px;
 
             .login-image-content {
-                background-color: rgba(255,255,255, 0.4);
+                background-color: rgba(255, 255, 255, 0.4);
 
                 > h1 {
                     font-size: 60px;
@@ -87,7 +95,7 @@
             }
 
             .image-footer {
-                background-color: rgba(255,255,255, 0.6);
+                background-color: rgba(255, 255, 255, 0.6);
                 @include flex();
                 @include flex-align-center();
 
@@ -105,7 +113,7 @@
 
                     i {
                         font-size: 22px;
-                        color:#2196F3;
+                        color: #2196F3;
                         margin-right: 20px;
                         cursor: pointer;
                         height: 32px;
@@ -128,7 +136,7 @@
     }
 }
 
-@media(min-width:993px) {
+@media(min-width: 993px) {
     .login-body {
         .login-wrapper {
             .login-image {
@@ -140,7 +148,7 @@
     }
 }
 
-@media(max-width:992px) {
+@media(max-width: 992px) {
     .login-body {
         .login-wrapper {
             .login-panel {
