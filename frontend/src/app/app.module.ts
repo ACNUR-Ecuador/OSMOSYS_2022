@@ -98,6 +98,7 @@ import {AuthenticationModule} from './authentication/authentication.module';
 import {AppCodeInterceptor} from './shared/interceptors/app-code.interceptor';
 import {TokenResponseInterceptor} from './shared/interceptors/token-response.interceptor';
 import {TokenRequestInterceptor} from './shared/interceptors/token-request.interceptor';
+import {NgxPermissionsModule} from 'ngx-permissions';
 
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
@@ -192,11 +193,15 @@ FullCalendarModule.registerPlugins([
         VirtualScrollerModule,
         // routing
         AppRoutingModule,
+        // permisos
+        NgxPermissionsModule.forRoot(),
         // modulos
         DemoModule,
         SharedModule,
         HomeModule,
         AuthenticationModule
+
+
     ],
     declarations: [
         AppComponent,

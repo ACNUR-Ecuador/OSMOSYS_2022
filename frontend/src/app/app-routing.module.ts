@@ -28,7 +28,9 @@ import {AppNotfoundComponent} from './shared/template/errorPages/app.notfound.co
             {path: 'login', component: AppLoginComponent},
             {path: '**', redirectTo: '/notfound'},
 
-        ], {scrollPositionRestoration: 'enabled', enableTracing: true})
+        ], {scrollPositionRestoration: 'enabled'
+            // , enableTracing: true
+        })
     ],
     exports: [RouterModule]
 })

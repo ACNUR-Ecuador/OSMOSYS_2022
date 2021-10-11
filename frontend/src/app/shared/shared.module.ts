@@ -95,6 +95,7 @@ import {TreeModule} from 'primeng/tree';
 import {TreeTableModule} from 'primeng/treetable';
 import {VirtualScrollerModule} from 'primeng/virtualscroller';
 import {UserService} from './services/user.service';
+import {NgxPermissionsModule, NgxPermissionsService} from 'ngx-permissions';
 
 
 @NgModule({
@@ -193,11 +194,14 @@ import {UserService} from './services/user.service';
         TreeModule,
         TreeTableModule,
         VirtualScrollerModule,
+        NgxPermissionsModule
     ],
     providers: [
         MenuService,
         BreadcrumbService,
-        UserService
+        UserService,
+        NgxPermissionsService
+
     ],
     exports: [
         AppMainComponent,
