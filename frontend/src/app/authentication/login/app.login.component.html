@@ -1,4 +1,5 @@
 <div class="login-body">
+    <p-toast id="loginToast"></p-toast>
     <div class="login-wrapper">
         <div class="login-panel">
             <img src="../../../assets/images/logos_unhcr/Horizontal%202%20lines%20blue.png" class="logo"
@@ -12,7 +13,7 @@
                                 formControlName="password"></p-password>
                     <br>
                     <button pButton label="Ingresar" type="submit"></button>
-
+                    <p-messages></p-messages>
                 </div>
             </form>
             <p><a href="#">Recuperar contraseña</a></p>

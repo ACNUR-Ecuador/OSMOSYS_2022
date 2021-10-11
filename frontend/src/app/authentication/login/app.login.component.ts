@@ -14,6 +14,7 @@ export class AppLoginComponent {
         password: ['', [Validators.required]]
     });
     submitted = false;
+
     constructor(private router: Router,
                 private fb: FormBuilder,
                 private userService: UserService,
@@ -23,6 +24,7 @@ export class AppLoginComponent {
 
     login() {
         this.submitted = true;
+        this.messageService.clear();
         if (this.loginForm.invalid) {
             return;
         } else {
@@ -31,9 +33,12 @@ export class AppLoginComponent {
             }, error => {
                 console.error(error.error.message);
                 if (error.status === 0) {
-                    this.messageService.add({severity: 'error', summary: 'Al momento estamos realizando mantenimiento del sistema. Por favor vuelve a intentar despues de 30 minutos'});
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Al momento estamos realizando mantenimiento del sistema. Por favor vuelve a intentar despues de 30 minutos'
+                    });
                 } else {
-                    this.messageService.add({severity: 'error', summary: 'Usuario o contraseña incorrectos'});
+                    this.messageService.add({ severity: 'error', summary: 'Usuario o contraseña incorrectos'});
                 }
             });
         }
