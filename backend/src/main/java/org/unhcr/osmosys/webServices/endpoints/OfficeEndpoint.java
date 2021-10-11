@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.webServices.endpoints;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.security.annotations.Secured;
 import org.unhcr.osmosys.model.Office;
 import org.unhcr.osmosys.services.OfficeService;
 import org.unhcr.osmosys.webServices.model.OfficeWeb;
@@ -22,6 +23,7 @@ public class OfficeEndpoint {
 
     @Path("/")
     @POST
+    @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public Long create(OfficeWeb officeWeb) throws GeneralAppException {
         Office office =this.officeService.create(officeWeb);

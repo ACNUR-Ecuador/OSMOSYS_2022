@@ -1,13 +1,16 @@
 package com.sagatechs.generics.webservice.webModel;
 
 import com.sagatechs.generics.persistence.model.State;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.webServices.model.OfficeWeb;
 import org.unhcr.osmosys.webServices.model.OrganizationWeb;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserWeb {
+public class UserWeb implements Serializable {
 
 	private Long id;
 	private String name;
@@ -79,5 +82,34 @@ public class UserWeb {
 
 	public void setOffice(OfficeWeb office) {
 		this.office = office;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+
+		if (o == null || getClass() != o.getClass()) return false;
+
+		UserWeb userWeb = (UserWeb) o;
+
+		return new EqualsBuilder().append(id, userWeb.id).append(username, userWeb.username).isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(17, 37).append(id).append(username).toHashCode();
+	}
+
+	@Override
+	public String toString() {
+		return "UserWeb{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", username='" + username + '\'' +
+				", email='" + email + '\'' +
+				", state=" + state +
+				", organization=" + organization +
+				", office=" + office +
+				'}';
 	}
 }

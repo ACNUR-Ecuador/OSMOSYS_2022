@@ -67,13 +67,12 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		try {
 
 			// Validate the token
-			//UserWeb user = userService.validateTokenGetUserWeb(token);
-			UserWeb user= new UserWeb();
+			UserWeb user = userService.validateTokenGetUserWeb(token);
 			Set<String> roles = new HashSet<>();
 			for(RoleWeb role: user.getRoles()){
 				roles.add(role.getName());
 			}
-			UsernameJwtCredential credential = new UsernameJwtCredential(user.getUsername(), token, roles);
+			UsernameJwtCredential credential = new UsernameJwtCredential(user, token, roles);
 			credential.setToken(token);
 			AuthenticationParameters authenticationParameters = AuthenticationParameters.withParams()
 					.credential(credential);

@@ -1,14 +1,18 @@
 package org.unhcr.osmosys.services;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.security.CustomPrincipal;
 import org.apache.commons.lang3.StringUtils;
+import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.OfficeDao;
 import org.unhcr.osmosys.model.Office;
 import org.unhcr.osmosys.webServices.model.OfficeWeb;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.security.enterprise.SecurityContext;
 import javax.ws.rs.core.Response;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -19,12 +23,28 @@ public class OfficeService {
     @Inject
     OfficeDao officeDao;
 
+    @Inject
+    SecurityContext securityContext;
+
+    private final static Logger LOGGER = Logger.getLogger(OfficeService.class);
     public Office getById(Long id) {
         return this.officeDao.find(id);
     }
 
     public Office create(OfficeWeb officeWeb) throws GeneralAppException {
-        this.valida(officeWeb);
+        LOGGER.error(this.securityContext.getCallerPrincipal());
+        LOGGER.error(this.securityContext.getCallerPrincipal().getName());
+        if(this.securityContext.getCallerPrincipal() instanceof  CustomPrincipal){
+            CustomPrincipal principal = (CustomPrincipal) this.securityContext.getCallerPrincipal();
+            LOGGER.info(principal);
+            LOGGER.info(principal.getUser());
+        }
+
+
+
+
+
+        this.validate(officeWeb);
         Office office = new Office();
         office.setAcronym(officeWeb.getAcronym());
         office.setState(officeWeb.getState());
@@ -44,7 +64,7 @@ public class OfficeService {
         return office;
     }
 
-    public void valida(OfficeWeb officeWeb) throws GeneralAppException {
+    public void validate(OfficeWeb officeWeb) throws GeneralAppException {
         if (officeWeb == null) {
             throw new GeneralAppException("Oficina es nulo", Response.Status.BAD_REQUEST);
         }
