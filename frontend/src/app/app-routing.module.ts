@@ -1,7 +1,7 @@
 import {RouterModule} from '@angular/router';
 import {NgModule} from '@angular/core';
 
-import {AppLoginComponent} from './security/app.login.component';
+import {AppLoginComponent} from './authentication/login/app.login.component';
 
 import {content} from './shared/routes/content-routes';
 import {AppMainComponent} from './app.main.component';

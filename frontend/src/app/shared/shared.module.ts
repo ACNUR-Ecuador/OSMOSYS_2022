@@ -94,6 +94,7 @@ import {TooltipModule} from 'primeng/tooltip';
 import {TreeModule} from 'primeng/tree';
 import {TreeTableModule} from 'primeng/treetable';
 import {VirtualScrollerModule} from 'primeng/virtualscroller';
+import {UserService} from './services/user.service';
 
 
 @NgModule({
@@ -195,7 +196,8 @@ import {VirtualScrollerModule} from 'primeng/virtualscroller';
     ],
     providers: [
         MenuService,
-        BreadcrumbService
+        BreadcrumbService,
+        UserService
     ],
     exports: [
         AppMainComponent,

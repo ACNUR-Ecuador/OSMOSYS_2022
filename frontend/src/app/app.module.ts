@@ -1,9 +1,9 @@
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {CommonModule, HashLocationStrategy, LocationStrategy} from '@angular/common';
+import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {AppRoutingModule} from './app-routing.module';
 
 import {AccordionModule} from 'primeng/accordion';
@@ -94,6 +94,10 @@ import interactionPlugin from '@fullcalendar/interaction';
 import {DemoModule} from './demo/demo.module';
 import {SharedModule} from './shared/shared.module';
 import {HomeModule} from './home/home.module';
+import {AuthenticationModule} from './authentication/authentication.module';
+import {AppCodeInterceptor} from './shared/interceptors/app-code.interceptor';
+import {TokenResponseInterceptor} from './shared/interceptors/token-response.interceptor';
+import {TokenRequestInterceptor} from './shared/interceptors/token-request.interceptor';
 
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
@@ -191,7 +195,8 @@ FullCalendarModule.registerPlugins([
         // modulos
         DemoModule,
         SharedModule,
-        HomeModule
+        HomeModule,
+        AuthenticationModule
     ],
     declarations: [
         AppComponent,
@@ -199,6 +204,21 @@ FullCalendarModule.registerPlugins([
     ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: TokenResponseInterceptor,
+            multi: true
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: TokenRequestInterceptor,
+            multi: true
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AppCodeInterceptor,
+            multi: true
+        },
     ],
     bootstrap: [AppComponent]
 })
