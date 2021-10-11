@@ -1,12 +1,12 @@
 package org.unhcr.osmosys.model.enums;
 
 public enum DissagregationType {
-	POPULATION_TYPE("Tipo de población"),
-	AGE("Edade"),
-	GENDER("Género"),
-	SITE("Lugar"),
-	COUNTRY_OF_ORIGIN("Pís de Origen"),
-	DISABILITY("Discapacidad"),
+	TIPO_POBLACION("Tipo de población"),
+	EDAD("Edad"),
+	GENERO("Género"),
+	LUGAR("Lugar"),
+	PAIS_ORIGEN("País de Origen"),
+	DISCAPACIDAD("Discapacidad"),
 	;
 
 

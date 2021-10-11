@@ -1,9 +1,9 @@
 package org.unhcr.osmosys.model.enums;
 
 public enum PopulationType {
-	REFUGEES("Refugiados"),
-	ASYLUM_SEEKERS("Solicitantes de Asilo"),
-	HOST_COMUNITY("Comidad de Acogida"),
+	REFUGIADOS("Refugiados"),
+	SOLICITANTES_DE_ASILO("Solicitantes de Asilo"),
+	COMUNIDAD_DE_ACOGIDA("Comidad de Acogida"),
 	;
 
 

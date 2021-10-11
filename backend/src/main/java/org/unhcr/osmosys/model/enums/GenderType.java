@@ -1,9 +1,9 @@
 package org.unhcr.osmosys.model.enums;
 
 public enum GenderType {
-	MALE("Masculino",1),
-	FEMALE("Femenino",2),
-	OTHER("Otros",3);
+	MASCULINO("Masculino",1),
+	FEMENINO("Femenino",2),
+	OTRO("Otros",3);
 
 	private String label;
 

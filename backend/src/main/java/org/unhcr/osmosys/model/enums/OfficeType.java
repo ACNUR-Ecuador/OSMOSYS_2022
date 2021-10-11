@@ -2,9 +2,9 @@ package org.unhcr.osmosys.model.enums;
 
 public enum OfficeType {
     BO("BO", 1),
-    SUB_OFFICE("Sub oficina", 2),
-    FIELD_OFFICE("Oficina de campo", 3),
-    FIELD_UNIT("Unidad de campo", 4);
+    SUB_OFICINA("Sub oficina", 2),
+    OFICINA_DE_CAMPO("Oficina de campo", 3),
+    UNIDAD_DE_CAMPO("Unidad de campo", 4);
 
 
     private String label;

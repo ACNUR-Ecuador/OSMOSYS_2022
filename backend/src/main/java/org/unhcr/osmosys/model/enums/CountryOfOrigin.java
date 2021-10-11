@@ -1,10 +1,10 @@
 package org.unhcr.osmosys.model.enums;
 
 public enum CountryOfOrigin {
-	VENEZUELAN("Venezuela",1),
-	COLOMBIAN("Colombia",2),
-	ECUADORIAN("Ecuatoriana",3),
-	OTHER("Otros países",4);
+	VENEZUELA("Venezuela",1),
+	COLOMBIA("Colombia",2),
+	ECUADOR("Ecuatoriana",3),
+	OTRO("Otros países",4);
 
 
 	private String label;

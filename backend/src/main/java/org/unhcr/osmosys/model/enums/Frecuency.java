@@ -1,10 +1,10 @@
 package org.unhcr.osmosys.model.enums;
 
 public enum Frecuency {
-	MONTHLY("Mensual"),
-	QUARTERLY("Trimestral"),
-	HALF("Semestral"),
-	ANNUAL("Anual")
+	MENSUAL("Mensual"),
+	TRIMESTRAL("Trimestral"),
+	SEMESTRAL("Semestral"),
+	ANUAL("Anual")
 	;
 
 

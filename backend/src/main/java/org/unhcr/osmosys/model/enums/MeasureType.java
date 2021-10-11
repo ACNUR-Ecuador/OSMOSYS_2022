@@ -1,9 +1,9 @@
 package org.unhcr.osmosys.model.enums;
 
 public enum MeasureType {
-	INTEGER("Número enteros"),
-	PROPORTION("Proporción"),
-	TEXT("Texto"),
+	NUMERO("Número enteros"),
+	PROPORCION("Proporción"),
+	TEXTO("Texto"),
 	;
 
 

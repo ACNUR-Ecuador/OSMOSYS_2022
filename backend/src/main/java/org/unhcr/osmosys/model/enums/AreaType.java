@@ -2,7 +2,11 @@ package org.unhcr.osmosys.model.enums;
 
 public enum AreaType {
 
-    IMPACT("Impacto"), OUTCOME("Outcome"),  Output("Resultado");
+    IMPACTO("Impacto"),
+    RESULTADOS("Resultados"),
+    PRODUCTO("Producto"),
+    APOYO("Apoyo"),
+    ;
 
     private String label;
 

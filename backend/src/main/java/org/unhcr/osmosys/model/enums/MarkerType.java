@@ -1,8 +1,8 @@
 package org.unhcr.osmosys.model.enums;
 
 public enum MarkerType {
-	ORGANIZATIONAL("Operacional"),
-	OPERATIONAL("Organizacional");
+	ORGANIZACIONAL("Organizacional"),
+	OPERACIONAL("Operacional");
 
 
 	private String label;
