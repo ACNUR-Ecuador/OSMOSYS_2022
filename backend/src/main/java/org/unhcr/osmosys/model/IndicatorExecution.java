@@ -116,7 +116,7 @@ public class IndicatorExecution extends BaseEntity<Long> {
 
     public void addDissagregationAssignationToIndicatorExecution(DissagregationAssignationToIndicatorExecution dissagregationAssignationToIndicatorExecution) {
         dissagregationAssignationToIndicatorExecution.setIndicatorExecution(this);
-        dissagregationAssignationToIndicatorExecution.setState(State.ACTIVE);
+        dissagregationAssignationToIndicatorExecution.setState(State.ACTIVO);
         if (!this.dissagregationsAssignationsToIndicatorExecutions.add(dissagregationAssignationToIndicatorExecution)) {
             this.dissagregationsAssignationsToIndicatorExecutions.remove(dissagregationAssignationToIndicatorExecution);
             this.dissagregationsAssignationsToIndicatorExecutions.add(dissagregationAssignationToIndicatorExecution);
@@ -128,7 +128,7 @@ public class IndicatorExecution extends BaseEntity<Long> {
 
         if (dissagregationAssignationToIndicatorExecution.getId() != null) {
             dissagregationAssignationToIndicatorExecution.setIndicatorExecution(this);
-            dissagregationAssignationToIndicatorExecution.setState(State.INACTIVE);
+            dissagregationAssignationToIndicatorExecution.setState(State.INACTIVO);
         } else {
             this.dissagregationsAssignationsToIndicatorExecutions.remove(dissagregationAssignationToIndicatorExecution);
         }

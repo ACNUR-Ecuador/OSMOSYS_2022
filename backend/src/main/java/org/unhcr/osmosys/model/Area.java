@@ -112,7 +112,7 @@ public class Area extends BaseEntity<Long> {
 
     private void removeStatement(Statement statement) {
         if (statement.getId() != null) {
-            statement.setState(State.INACTIVE);
+            statement.setState(State.INACTIVO);
         } else {
             this.statements.remove(statement);
         }

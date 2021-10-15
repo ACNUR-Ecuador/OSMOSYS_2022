@@ -31,7 +31,6 @@ export class AppLoginComponent {
             this.userService.login(this.loginForm.value).subscribe(value => {
                 this.router.navigateByUrl('/');
             }, error => {
-                console.error(error.error.message);
                 if (error.status === 0) {
                     this.messageService.add({
                         severity: 'error',

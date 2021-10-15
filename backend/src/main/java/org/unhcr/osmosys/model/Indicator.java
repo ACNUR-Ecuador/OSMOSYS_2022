@@ -60,7 +60,7 @@ public class Indicator extends BaseEntity<Long> {
     private AreaType areaType;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "indicators_markers", joinColumns = @JoinColumn(name = "indicator_id"), inverseJoinColumns = @JoinColumn(name = "marker_id"))
+    @JoinTable(schema ="osmosys" ,name = "indicators_markers", joinColumns = @JoinColumn(name = "indicator_id"), inverseJoinColumns = @JoinColumn(name = "marker_id"))
     private Set<Marker> markers = new HashSet<>();
 
     @Column(name = "is_monitored", nullable = false)
@@ -207,7 +207,7 @@ public class Indicator extends BaseEntity<Long> {
 
         if (dissagregationAssignationToIndicator.getId() != null) {
 
-            dissagregationAssignationToIndicator.setState(State.INACTIVE);
+            dissagregationAssignationToIndicator.setState(State.INACTIVO);
         } else {
             this.dissagregationsAssignationToIndicator.remove(dissagregationAssignationToIndicator);
         }

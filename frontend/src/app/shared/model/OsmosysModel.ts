@@ -15,3 +15,18 @@ export class Office {
     public parentOffice: Office;
     public childOffices: Office[];
 }
+
+export class Area {
+
+    constructor() {
+        this.state = 'ACTIVO';
+    }
+
+    public id: number;
+    public state: string;
+    public areaType: string;
+    public code: string;
+    public shortDescription: string;
+    public description: string;
+    public definition: string[];
+}

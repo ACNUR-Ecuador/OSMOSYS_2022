@@ -12,7 +12,7 @@ import java.util.Set;
 
 
 @Entity
-@Table(schema = "osmosys", name = "areas")
+@Table(schema = "osmosys", name = "statements")
 public class Statement extends BaseEntity<Long> {
 
     @Id
@@ -152,7 +152,7 @@ public class Statement extends BaseEntity<Long> {
 
     public void addPeriodStatementAsignation(Period period){
         PeriodStatementAsignation periodStatementAsignation = new PeriodStatementAsignation();
-        periodStatementAsignation.setState(State.ACTIVE);
+        periodStatementAsignation.setState(State.ACTIVO);
         periodStatementAsignation.setPeriod(period);
         periodStatementAsignation.setStatement(this);
         if(!this.periodStatementAsignations.add(periodStatementAsignation)){

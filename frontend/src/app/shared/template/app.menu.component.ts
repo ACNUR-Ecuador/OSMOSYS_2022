@@ -16,6 +16,5 @@ export class AppMenuComponent implements OnInit {
 
     ngOnInit() {
         this.model = this.menuService.MENUITEMS;
-        console.log(this.model);
     }
 }

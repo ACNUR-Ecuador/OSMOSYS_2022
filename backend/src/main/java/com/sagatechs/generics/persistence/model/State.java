@@ -1,6 +1,6 @@
 package com.sagatechs.generics.persistence.model;
 public enum State {
-	ACTIVE("ACTIVO"), INACTIVE("INACTIVO");
+	ACTIVO("ACTIVO"), INACTIVO("INACTIVO");
 
 	private String label;
 

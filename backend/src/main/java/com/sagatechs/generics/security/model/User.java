@@ -123,7 +123,7 @@ public class User extends BaseEntity<Long> {
         // busco si setá incativo, y los activo
         for (RoleAssigment roleAssigment : roleAssigments) {
             if (roleAssigment.getUser().equals(this) && roleAssigment.getRole().equals(role)) {
-                roleAssigment.setState(State.ACTIVE);
+                roleAssigment.setState(State.ACTIVO);
                 return;
             }
         }
@@ -138,7 +138,7 @@ public class User extends BaseEntity<Long> {
 
         for (RoleAssigment roleAssigment : roleAssigments) {
             if (roleAssigment.getUser().equals(this) && roleAssigment.getRole().equals(role)) {
-                roleAssigment.setState(State.INACTIVE);
+                roleAssigment.setState(State.INACTIVO);
             }
         }
     }

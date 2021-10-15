@@ -74,7 +74,7 @@ public class DissagregationAssignationToIndicator extends BaseEntity<Long> {
 
     public void removeDissagregationFilterIndicator(DissagregationFilterIndicator dissagregationFilterIndicator){
         if (dissagregationFilterIndicator.getId() != null) {
-            dissagregationFilterIndicator.setState(State.INACTIVE);
+            dissagregationFilterIndicator.setState(State.INACTIVO);
         } else {
             this.dissagregationFilterIndicators.remove(dissagregationFilterIndicator);
         }

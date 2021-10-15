@@ -29,7 +29,7 @@ import {AppNotfoundComponent} from './shared/template/errorPages/app.notfound.co
             {path: '**', redirectTo: '/notfound'},
 
         ], {scrollPositionRestoration: 'enabled'
-            // , enableTracing: true
+           // , enableTracing: true
         })
     ],
     exports: [RouterModule]

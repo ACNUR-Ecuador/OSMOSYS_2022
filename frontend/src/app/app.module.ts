@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -99,6 +99,7 @@ import {AppCodeInterceptor} from './shared/interceptors/app-code.interceptor';
 import {TokenResponseInterceptor} from './shared/interceptors/token-response.interceptor';
 import {TokenRequestInterceptor} from './shared/interceptors/token-request.interceptor';
 import {NgxPermissionsModule} from 'ngx-permissions';
+import {AdministrationModule} from './administration/administration.module';
 
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
@@ -110,6 +111,7 @@ FullCalendarModule.registerPlugins([
     imports: [
         BrowserModule,
         FormsModule,
+        ReactiveFormsModule,
         HttpClientModule,
         BrowserAnimationsModule,
         AccordionModule,
@@ -199,7 +201,8 @@ FullCalendarModule.registerPlugins([
         DemoModule,
         SharedModule,
         HomeModule,
-        AuthenticationModule
+        AuthenticationModule,
+        AdministrationModule
 
 
     ],

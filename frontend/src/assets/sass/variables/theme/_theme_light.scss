@@ -13,7 +13,7 @@ $colors: (
 
 //reused color variables
 $shade000:#ffffff !default;    //surface
-$shade100:#f8f9fa !default;    //header background
+$shade100:#CCE3F2 !default;    //header background
 $shade200:#e9ecef !default;    //hover background
 $shade300:#dee2e6 !default;    //border, divider
 $shade400:#ced4da !default;    //input border
@@ -57,7 +57,7 @@ $actionIconWidth:2rem !default;
 $actionIconHeight:2rem !default;
 $actionIconBg:transparent !default;
 $actionIconBorder:0 none !default;
-$actionIconColor:$shade600 !default;
+$actionIconColor:#ffffff !default;
 $actionIconHoverBg:$shade200 !default;
 $actionIconHoverBorderColor:transparent !default;
 $actionIconHoverColor:$shade700 !default;
@@ -339,8 +339,8 @@ $inputSwitchHandleOnBg:$shade000 !default;
 //panel
 $panelHeaderBorderColor:$shade300 !default;
 $panelHeaderBorder:1px solid $shade300 !default;
-$panelHeaderBg:$shade100 !default;
-$panelHeaderTextColor:$shade700 !default;
+$panelHeaderBg:#0072BC !default;
+$panelHeaderTextColor:#ffffff !default;
 $panelHeaderFontWeight:600 !default;
 $panelHeaderPadding:1rem !default;
 $panelToggleableHeaderPadding:.5rem 1rem !default;
@@ -462,20 +462,20 @@ $paginatorElementPadding:0 !default;
 //table
 $tableHeaderBorder:1px solid $shade200 !default;
 $tableHeaderBorderWidth:1px 0 1px 0 !default;
-$tableHeaderBg:$shade100 !default;
-$tableHeaderTextColor:$shade700 !default;
+$tableHeaderBg:#0072BC !default;
+$tableHeaderTextColor:white !default;
 $tableHeaderFontWeight:600 !default;
 $tableHeaderPadding:1rem 1rem !default;
 
 $tableHeaderCellPadding:1rem 1rem !default;
-$tableHeaderCellBg:$shade100 !default;
-$tableHeaderCellTextColor:$shade700 !default;
+$tableHeaderCellBg: #0072BC !default;
+$tableHeaderCellTextColor:#ffffff !default;
 $tableHeaderCellFontWeight:600 !default;
 $tableHeaderCellBorder:1px solid $shade200 !default;
 $tableHeaderCellBorderWidth:0 0 1px 0 !default;
-$tableHeaderCellHoverBg:$shade200 !default;
+$tableHeaderCellHoverBg:#99C7E4 !default;
 $tableHeaderCellTextHoverColor:$shade700 !default;
-$tableHeaderCellIconColor:$shade600 !default;
+$tableHeaderCellIconColor:#ffffff!default;
 $tableHeaderCellIconHoverColor:$shade600 !default;
 $tableHeaderCellHighlightBg:$shade100 !default;
 $tableHeaderCellHighlightTextColor:$primaryColor !default;
@@ -486,7 +486,7 @@ $tableSortableColumnBadgeSize:1.143rem !default;
 $tableBodyRowBg:$shade000 !default;
 $tableBodyRowTextColor:$shade700 !default;
 $tableBodyRowEvenBg:scale-color($tableBodyRowBg, $lightness: -1%) !default;
-$tableBodyRowHoverBg:$shade200 !default;
+$tableBodyRowHoverBg:#CCE3F2 !default;
 $tableBodyRowTextHoverColor:$shade700 !default;
 $tableBodyCellBorder:1px solid $shade200 !default;
 $tableBodyCellBorderWidth:0 0 1px 0 !default;
@@ -502,8 +502,8 @@ $tableResizerHelperBg:$primaryColor !default;
 
 $tableFooterBorder:1px solid $shade200 !default;
 $tableFooterBorderWidth:0 0 1px 0 !default;
-$tableFooterBg:$shade100 !default;
-$tableFooterTextColor:$shade700 !default;
+$tableFooterBg:#0072BC !default;
+$tableFooterTextColor:#ffffff !default;
 $tableFooterFontWeight:600 !default;
 $tableFooterPadding:1rem 1rem !default;
 
@@ -601,9 +601,9 @@ $overlayContentBg:$panelContentBg !default;
 $overlayContainerShadow:0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0,0,0,.12) !default;
 
 //dialog
-$dialogHeaderBg:$shade000 !default;
+$dialogHeaderBg:yellow !default;
 $dialogHeaderBorder:0 none !default;
-$dialogHeaderTextColor:$shade700 !default;
+$dialogHeaderTextColor:#000000 !default;
 $dialogHeaderFontWeight:600 !default;
 $dialogHeaderFontSize:1.25rem !default;
 $dialogHeaderPadding:1.5rem !default;

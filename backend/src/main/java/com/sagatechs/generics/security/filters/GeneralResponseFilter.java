@@ -40,7 +40,7 @@ public class GeneralResponseFilter implements ContainerResponseFilter {
                 // Extract the token from the Authorization header
                 String token = authorizationHeader.substring(AUTHENTICATION_SCHEME.length()).trim();
                 String newToken = this.userService.refreshTokenFromToken(token);
-                containerResponseContext.getHeaders().add("refresh-token", "newToken");
+                containerResponseContext.getHeaders().add("refresh-token", newToken);
                 return;
             }
         } else {

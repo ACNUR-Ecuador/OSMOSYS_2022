@@ -25,7 +25,8 @@ export class MenuService {
         {
             label: 'Administration', icon: 'pi pi-home',  roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR'],
             items: [
-                {label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']}
+                {label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
+                {label: 'Areas', icon: 'pi pi-fw pi-home', routerLink: ['/administration/areas'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']}
             ]
         },
         {separator: true},
@@ -159,10 +160,7 @@ export class MenuService {
     ) {
 
         ngxPermissionsService.permissions$.subscribe((permissions) => {
-            console.log('wwwwwwwwwwwwwwwwwwwwwww');
-            console.log(permissions);
             this.setCanChow(this.MENUITEMS, permissions);
-            console.log('wwwwwwwwwwwwwwwwwwwwwww');
         });
 
     }

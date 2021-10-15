@@ -49,7 +49,7 @@ public class AppDataConfigLlenadoAutomatico {
 
     private void cargarRoles() {
 
-        this.roleSuperAdministrador = new Role(RoleType.SUPER_ADMINISTRADOR, State.ACTIVE);
+        this.roleSuperAdministrador = new Role(RoleType.SUPER_ADMINISTRADOR, State.ACTIVO);
         this.instantiateRole(roleSuperAdministrador);
 
     }

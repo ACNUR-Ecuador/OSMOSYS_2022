@@ -39,7 +39,7 @@ public class RoleAssigment extends BaseEntity<RoleAssigmentId> {
         this.user = user;
         this.role = role;
         this.id = new RoleAssigmentId(user.getId(), role.getId());
-        this.state = State.ACTIVE;
+        this.state = State.ACTIVO;
     }
 
     public RoleAssigment(User user, Role role, State state) {

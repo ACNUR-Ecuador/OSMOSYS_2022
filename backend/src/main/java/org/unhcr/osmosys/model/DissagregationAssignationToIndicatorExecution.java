@@ -67,7 +67,7 @@ public class DissagregationAssignationToIndicatorExecution extends BaseEntity<Lo
 
     public void addDissagregationFilterIndicatorExecution(DissagregationFilterIndicatorExecution dissagregationFilterIndicatorExecution){
         dissagregationFilterIndicatorExecution.setDissagregationAssignationToIndicatorExecution(this);
-        dissagregationFilterIndicatorExecution.setState(State.ACTIVE);
+        dissagregationFilterIndicatorExecution.setState(State.ACTIVO);
 
         if(!this.dissagregationFilterIndicatorsExecutions.add(dissagregationFilterIndicatorExecution)){
             this.dissagregationFilterIndicatorsExecutions.remove(dissagregationFilterIndicatorExecution);
@@ -79,7 +79,7 @@ public class DissagregationAssignationToIndicatorExecution extends BaseEntity<Lo
     public void removeDissagregationFilterIndicatorExecution(DissagregationFilterIndicatorExecution dissagregationFilterIndicatorExecution){
         if (dissagregationFilterIndicatorExecution.getId() != null) {
 
-            dissagregationFilterIndicatorExecution.setState(State.INACTIVE);
+            dissagregationFilterIndicatorExecution.setState(State.INACTIVO);
         } else {
             this.dissagregationFilterIndicatorsExecutions.remove(dissagregationFilterIndicatorExecution);
         }

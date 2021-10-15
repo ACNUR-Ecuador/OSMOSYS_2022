@@ -182,7 +182,7 @@ public class UserService implements Serializable {
 
         // obtengo el hash del pass enviado
         byte[] hashedPass = this.securityUtils.hashPasswordByte(password, salt);
-        return this.userDao.findByUserNameAndPasswordWithRoles(username, hashedPass, State.ACTIVE);
+        return this.userDao.findByUserNameAndPasswordWithRoles(username, hashedPass, State.ACTIVO);
 
     }
 
@@ -246,7 +246,7 @@ public class UserService implements Serializable {
         userWeb.setOrganization(this.organizacionService.organizationToOrganizationWeb(user.getOrganization()));
         List<RoleWeb> roles = new ArrayList<>();
         for (RoleAssigment userRoleAssigment : user.getRoleAssigments()) {
-            if (userRoleAssigment.getState().equals(State.ACTIVE) && userRoleAssigment.getRole().getState().equals(State.ACTIVE)) {
+            if (userRoleAssigment.getState().equals(State.ACTIVO) && userRoleAssigment.getRole().getState().equals(State.ACTIVO)) {
                 roles.add(this.roleService.roleToRoleWeb(userRoleAssigment.getRole()));
             }
         }

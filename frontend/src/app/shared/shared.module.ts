@@ -14,7 +14,7 @@ import {AppAccessdeniedComponent} from './template/errorPages/app.accessdenied.c
 import {MenuService} from './services/app.menu.service';
 import {BreadcrumbService} from './services/app.breadcrumb.service';
 
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AccordionModule} from 'primeng/accordion';
 import {AutoCompleteModule} from 'primeng/autocomplete';
 import {AvatarModule} from 'primeng/avatar';
@@ -115,6 +115,7 @@ import {NgxPermissionsModule, NgxPermissionsService} from 'ngx-permissions';
     imports: [
         CommonModule,
         FormsModule,
+        ReactiveFormsModule,
         AccordionModule,
         AutoCompleteModule,
         AvatarModule,

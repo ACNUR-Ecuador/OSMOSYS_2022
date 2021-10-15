@@ -94,7 +94,7 @@ public class PeriodStatementAsignation extends BaseEntity<Long> {
 
         if (periodStatementPopulationCoverage.getId() != null) {
             periodStatementPopulationCoverage.setPopulationCoverage(0l);
-            periodStatementPopulationCoverage.setState(State.INACTIVE);
+            periodStatementPopulationCoverage.setState(State.INACTIVO);
         } else {
             this.periodStatementPopulationCoverages.remove(periodStatementPopulationCoverage);
         }

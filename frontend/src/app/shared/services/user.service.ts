@@ -28,18 +28,15 @@ export class UserService {
 
 
         this.currentUserSubject.subscribe(value => {
-            console.log('------------------------------------------');
             if (value) {
                 const roles: string[] = value.roles.filter(role => {
-                    return role.state === 'ACTIVE';
+                    return role.state === 'ACTIVO';
                 }).map(role => {
                     return role.name;
                 });
-                console.log(roles);
                 ngxPermissionsService.loadPermissions(roles);
                 // ngxPermissionsService.addPermission('tester');
             }
-            console.log('------------------------------------------');
         });
     }
 
@@ -82,8 +79,6 @@ export class UserService {
             user.organization = decToken.organization;
             user.office = decToken.office;
             this.currentUserSubject.next(user);
-            console.log('asdddddddddddd');
-            console.log(user);
         } else {
             this.logout();
             return;
