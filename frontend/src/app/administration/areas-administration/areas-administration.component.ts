@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {AreaService} from '../../shared/services/area.service';
 import {Area} from '../../shared/model/OsmosysModel';
@@ -20,6 +20,8 @@ export class AreasAdministrationComponent implements OnInit {
     formItem: FormGroup;
     private areaTypes: string[];
     private states: string[];
+    // tslint:disable-next-line:variable-name
+    _selectedColumns: ColumnTable[];
 
     constructor(
         private messageService: MessageService,
@@ -41,6 +43,7 @@ export class AreasAdministrationComponent implements OnInit {
             {field: 'areaType', header: 'Tipo', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
         ];
+        this._selectedColumns = this.cols.filter(value => value.field !== 'id');
 
         this.formItem = this.fb.group({
             id: new FormControl(''),
@@ -76,11 +79,22 @@ export class AreasAdministrationComponent implements OnInit {
 
     exportExcel() {
         import('xlsx').then(xlsx => {
-            const worksheet = xlsx.utils.json_to_sheet(this.items);
+            const headers = this.cols.map(value => value.header);
+            console.log(this.items);
+            const itemsRenamed = this.utilsService.renameKeys(this.items, this.cols);
+            console.log(itemsRenamed);
+            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
             const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
+
             const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.utilsService.saveAsExcelFile(excelBuffer, 'products');
+            this.utilsService.saveAsExcelFile(excelBuffer, 'areas');
         });
+    }
+
+
+    renameKey(obj, oldKey, newKey) {
+        obj[newKey] = obj[oldKey];
+        delete obj[oldKey];
     }
 
     createItem() {
@@ -99,10 +113,6 @@ export class AreasAdministrationComponent implements OnInit {
         this.showDialog = true;
         this.formItem.patchValue(area);
         console.log(this.formItem.value);
-    }
-
-    disableItem(area: Area) {
-
     }
 
 
@@ -164,4 +174,12 @@ export class AreasAdministrationComponent implements OnInit {
         this.submitted = false;
     }
 
+    @Input() get selectedColumns(): any[] {
+        return this._selectedColumns;
+    }
+
+    set selectedColumns(val: any[]) {
+        // restore original order
+        this._selectedColumns = this.cols.filter(col => val.includes(col));
+    }
 }

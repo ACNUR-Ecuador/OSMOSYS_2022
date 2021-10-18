@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import * as FileSaver from 'file-saver';
-import {FormGroup} from "@angular/forms";
+import {FormGroup} from '@angular/forms';
+import {ColumnTable} from '../model/UtilsModel';
 
 @Injectable({
     providedIn: 'root'
@@ -19,10 +20,11 @@ export class UtilsService {
         FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
     }
 
+
     /**
      * utilidad para tablas para uso de pipes
-     * @param data
-     * @param field
+     * @param data recupera el datp
+     * @param field nombre del campo
      */
     public resolveFieldData(data: any, field: string): any {
         if (data && field) {
@@ -46,7 +48,7 @@ export class UtilsService {
 
     /**
      * Resetera el formulario
-     * @param form
+     * @param form formularios a resetar
      */
     public resetForm(form: FormGroup): void {
         form.reset();
@@ -56,5 +58,22 @@ export class UtilsService {
 
     showErrorForm(formControlName: string, formGroup: FormGroup): boolean {
         return formGroup.get(formControlName).invalid && formGroup.get(formControlName).dirty;
+    }
+
+    /**
+     * cambia keys del objeto a nombre del header para exportar
+     * @param objects lista e objetos
+     * @param cols columna de tipos columnas de tabla
+     */
+    renameKeys(objects: any[], cols: ColumnTable[]) {
+        const result = [];
+        objects.forEach(obj => {
+            const on = {};
+            cols.forEach(col => {
+                on[col.header] = obj[col.field];
+            });
+            result.push(on);
+        });
+        return result;
     }
 }

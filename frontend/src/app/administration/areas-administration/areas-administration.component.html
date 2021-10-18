@@ -15,7 +15,7 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt [value]="items" [columns]="cols" [rows]="10" [paginator]="true"
+            <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true"
                      [rowHover]="true" dataKey="id"
                      styleClass="p-datatable-customers"
                      currentPageReportTemplate=" {first} a {last} de {totalRecords} "
@@ -26,8 +26,13 @@
                         <span class="p-input-icon-left">
                         <!--<i class="pi pi-search"></i>-->
                             <!--<input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />-->
-                    </span>
+                        </span>
+                        <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
+
+                                       selectedItemsLabel="{0} columns selected" [style]="{minWidth: '200px'}"
+                                       placeholder="Seleccione las columnas"></p-multiSelect>
                     </div>
+
                 </ng-template>
                 <ng-template pTemplate="header" let-columns>
                     <tr>
