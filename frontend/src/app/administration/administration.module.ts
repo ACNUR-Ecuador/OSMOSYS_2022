@@ -14,6 +14,7 @@ import {InputTextModule} from 'primeng/inputtext';
 import {InputTextareaModule} from 'primeng/inputtextarea';
 import {DropdownModule} from 'primeng/dropdown';
 import {SelectButtonModule} from 'primeng/selectbutton';
+import {MultiSelectModule} from 'primeng/multiselect';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import {SelectButtonModule} from 'primeng/selectbutton';
         InputTextModule,
         InputTextareaModule,
         DropdownModule,
-        SelectButtonModule
+        SelectButtonModule,
+        MultiSelectModule
     ],
     providers: [
         ConfirmationService
