@@ -72,14 +72,8 @@ export class PeriodAdministrationComponent implements OnInit {
             const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
             const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
             const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.utilsService.saveAsExcelFile(excelBuffer, 'areas');
+            this.utilsService.saveAsExcelFile(excelBuffer, 'periodos');
         });
-    }
-
-
-    renameKey(obj, oldKey, newKey) {
-        obj[newKey] = obj[oldKey];
-        delete obj[oldKey];
     }
 
     createItem() {

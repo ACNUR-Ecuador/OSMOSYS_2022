@@ -17,12 +17,14 @@ import {SelectButtonModule} from 'primeng/selectbutton';
 import {MultiSelectModule} from 'primeng/multiselect';
 import { PeriodAdministrationComponent } from './period-administration/period-administration.component';
 import {InputNumberModule} from 'primeng/inputnumber';
+import { PillarAdministrationComponent } from './pillar-administration/pillar-administration.component';
 
 
 @NgModule({
     declarations: [
         AreasAdministrationComponent,
-        PeriodAdministrationComponent
+        PeriodAdministrationComponent,
+        PillarAdministrationComponent
     ],
     imports: [
         CommonModule,
