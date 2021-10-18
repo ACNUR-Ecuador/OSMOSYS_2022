@@ -43,11 +43,20 @@ export class Period {
 }
 
 export class Pillar {
-
     constructor() {
         this.state = 'ACTIVO';
     }
+    public id: string;
+    public code: string;
+    public shortDescription: string;
+    public description: string;
+    public state: string;
+}
 
+export class Situation {
+    constructor() {
+        this.state = 'ACTIVO';
+    }
     public id: string;
     public code: string;
     public shortDescription: string;

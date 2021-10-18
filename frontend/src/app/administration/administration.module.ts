@@ -20,13 +20,15 @@ import {InputNumberModule} from 'primeng/inputnumber';
 import { PillarAdministrationComponent } from './pillar-administration/pillar-administration.component';
 import {MessageModule} from 'primeng/message';
 import {MessagesModule} from 'primeng/messages';
+import { SituationAdministrationComponent } from './situation-administration/situation-administration.component';
 
 
 @NgModule({
     declarations: [
         AreasAdministrationComponent,
         PeriodAdministrationComponent,
-        PillarAdministrationComponent
+        PillarAdministrationComponent,
+        SituationAdministrationComponent
     ],
     imports: [
         CommonModule,

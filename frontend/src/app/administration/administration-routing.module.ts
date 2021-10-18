@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {AreasAdministrationComponent} from './areas-administration/areas-administration.component';
 import {PeriodAdministrationComponent} from './period-administration/period-administration.component';
 import {PillarAdministrationComponent} from './pillar-administration/pillar-administration.component';
+import {SituationAdministrationComponent} from './situation-administration/situation-administration.component';
 
 const routes: Routes = [
     {
@@ -10,7 +11,8 @@ const routes: Routes = [
         children: [
             {path: 'areas', component: AreasAdministrationComponent},
             {path: 'periods', component: PeriodAdministrationComponent},
-            {path: 'pillars', component: PillarAdministrationComponent}
+            {path: 'pillars', component: PillarAdministrationComponent},
+            {path: 'situations', component: SituationAdministrationComponent}
         ]
     }
 ];
