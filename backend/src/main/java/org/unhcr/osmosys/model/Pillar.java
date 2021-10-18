@@ -10,7 +10,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(schema = "osmosys", name = "pilars")
-public class Pilar extends BaseEntity<Long> {
+public class Pillar extends BaseEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -78,9 +78,9 @@ public class Pilar extends BaseEntity<Long> {
 
         if (o == null || getClass() != o.getClass()) return false;
 
-        Pilar pilar = (Pilar) o;
+        Pillar pillar = (Pillar) o;
 
-        return new EqualsBuilder().append(id, pilar.id).append(code, pilar.code).isEquals();
+        return new EqualsBuilder().append(id, pillar.id).append(code, pillar.code).isEquals();
     }
 
     @Override
@@ -90,7 +90,7 @@ public class Pilar extends BaseEntity<Long> {
 
     @Override
     public String toString() {
-        return "Pilar{" +
+        return "Pillar{" +
                 "id=" + id +
                 ", state=" + state +
                 ", code='" + code + '\'' +

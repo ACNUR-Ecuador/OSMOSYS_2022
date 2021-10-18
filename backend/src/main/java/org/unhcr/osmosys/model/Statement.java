@@ -46,8 +46,8 @@ public class Statement extends BaseEntity<Long> {
     private Area area;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pilar_id", foreignKey = @ForeignKey(name = "fk_statemet_pilar"))
-    private Pilar pilar;
+    @JoinColumn(name = "pillar_id", foreignKey = @ForeignKey(name = "fk_statemet_pillar"))
+    private Pillar pillar;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "situation_id", foreignKey = @ForeignKey(name = "fk_statemet_situation"))
@@ -108,12 +108,12 @@ public class Statement extends BaseEntity<Long> {
         this.parentStatement = parentStatement;
     }
 
-    public Pilar getPilar() {
-        return pilar;
+    public Pillar getPillar() {
+        return pillar;
     }
 
-    public void setPilar(Pilar pilar) {
-        this.pilar = pilar;
+    public void setPillar(Pillar pillar) {
+        this.pillar = pillar;
     }
 
     public Situation getSituation() {
@@ -196,7 +196,7 @@ public class Statement extends BaseEntity<Long> {
                 ", description='" + description + '\'' +
                 ", parentStatement=" + parentStatement +
                 ", area=" + area +
-                ", pilar=" + pilar +
+                ", pilar=" + pillar +
                 ", situation=" + situation +
                 '}';
     }
