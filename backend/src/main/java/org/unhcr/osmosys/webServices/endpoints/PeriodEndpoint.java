@@ -1,0 +1,44 @@
+package org.unhcr.osmosys.webServices.endpoints;
+
+import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.security.annotations.Secured;
+import org.unhcr.osmosys.services.PeriodService;
+import org.unhcr.osmosys.webServices.model.PeriodWeb;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
+
+@Path("/periods")
+@RequestScoped
+public class PeriodEndpoint {
+
+    @Inject
+    PeriodService periodService;
+
+    @Path("/")
+    @POST
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public Long create(PeriodWeb periodWeb) throws GeneralAppException {
+        return this.periodService.save(periodWeb);
+    }
+
+    @Path("/")
+    @PUT
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public Long update(PeriodWeb periodWeb) throws GeneralAppException {
+        return this.periodService.update(periodWeb);
+    }
+
+    @Path("/")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PeriodWeb> getAll() {
+        return this.periodService.getAll();
+    }
+}

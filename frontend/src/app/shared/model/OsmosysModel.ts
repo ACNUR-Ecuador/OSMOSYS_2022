@@ -30,3 +30,14 @@ export class Area {
     public description: string;
     public definition: string[];
 }
+
+export class Period {
+
+    constructor() {
+        this.state = 'ACTIVO';
+    }
+
+    public id: number;
+    public year: number;
+    public state: string;
+}

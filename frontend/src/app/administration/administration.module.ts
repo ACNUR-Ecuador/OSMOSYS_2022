@@ -15,11 +15,14 @@ import {InputTextareaModule} from 'primeng/inputtextarea';
 import {DropdownModule} from 'primeng/dropdown';
 import {SelectButtonModule} from 'primeng/selectbutton';
 import {MultiSelectModule} from 'primeng/multiselect';
+import { PeriodAdministrationComponent } from './period-administration/period-administration.component';
+import {InputNumberModule} from 'primeng/inputnumber';
 
 
 @NgModule({
     declarations: [
-        AreasAdministrationComponent
+        AreasAdministrationComponent,
+        PeriodAdministrationComponent
     ],
     imports: [
         CommonModule,
@@ -35,7 +38,8 @@ import {MultiSelectModule} from 'primeng/multiselect';
         InputTextareaModule,
         DropdownModule,
         SelectButtonModule,
-        MultiSelectModule
+        MultiSelectModule,
+        InputNumberModule
     ],
     providers: [
         ConfirmationService

@@ -26,7 +26,8 @@ export class MenuService {
             label: 'Administration', icon: 'pi pi-home',  roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR'],
             items: [
                 {label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
-                {label: 'Areas', icon: 'pi pi-fw pi-home', routerLink: ['/administration/areas'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']}
+                {label: 'Areas', icon: 'pi pi-fw pi-home', routerLink: ['/administration/areas'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
+                {label: 'Periodos', icon: 'pi pi-fw pi-home', routerLink: ['/administration/periods'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']}
             ]
         },
         {separator: true},
