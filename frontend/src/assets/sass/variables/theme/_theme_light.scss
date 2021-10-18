@@ -601,13 +601,13 @@ $overlayContentBg:$panelContentBg !default;
 $overlayContainerShadow:0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0,0,0,.12) !default;
 
 //dialog
-$dialogHeaderBg:yellow !default;
+$dialogHeaderBg: #0072BC !default;
 $dialogHeaderBorder:0 none !default;
-$dialogHeaderTextColor:#000000 !default;
+$dialogHeaderTextColor:#ffffff !default;
 $dialogHeaderFontWeight:600 !default;
 $dialogHeaderFontSize:1.25rem !default;
 $dialogHeaderPadding:1.5rem !default;
-$dialogContentPadding:0 1.5rem 2rem 1.5rem !default;
+$dialogContentPadding:1.5rem 1.5rem 2rem 1.5rem !default;
 $dialogFooterBorder:0 none !default;
 $dialogFooterPadding:0 1.5rem 1.5rem 1.5rem !default;
 
