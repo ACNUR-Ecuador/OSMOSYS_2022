@@ -18,6 +18,8 @@ import {MultiSelectModule} from 'primeng/multiselect';
 import { PeriodAdministrationComponent } from './period-administration/period-administration.component';
 import {InputNumberModule} from 'primeng/inputnumber';
 import { PillarAdministrationComponent } from './pillar-administration/pillar-administration.component';
+import {MessageModule} from 'primeng/message';
+import {MessagesModule} from 'primeng/messages';
 
 
 @NgModule({
@@ -41,7 +43,9 @@ import { PillarAdministrationComponent } from './pillar-administration/pillar-ad
         DropdownModule,
         SelectButtonModule,
         MultiSelectModule,
-        InputNumberModule
+        InputNumberModule,
+        MessageModule,
+        MessagesModule
     ],
     providers: [
         ConfirmationService

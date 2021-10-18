@@ -63,7 +63,7 @@ export class PillarAdministrationComponent implements OnInit {
         }, error => {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Error al cargar los pillaros',
+                summary: 'Error al cargar los pilares',
                 detail: error.error.message,
                 life: 3000
             });
@@ -124,7 +124,7 @@ export class PillarAdministrationComponent implements OnInit {
             }, error => {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Error al actualizar el pillaro',
+                    summary: 'Error al actualizar el pilar',
                     detail: error.error.message,
                     life: 3000
                 });
@@ -137,7 +137,7 @@ export class PillarAdministrationComponent implements OnInit {
             }, error => {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Error al guardar el pillaro',
+                    summary: 'Error al guardar el pilar',
                     detail: error.error.message,
                     life: 3000
                 });

@@ -4,6 +4,7 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.PillarDao;
+import org.unhcr.osmosys.model.Area;
 import org.unhcr.osmosys.model.Pillar;
 import org.unhcr.osmosys.webServices.model.PillarWeb;
 
@@ -125,6 +126,20 @@ public class PillarService {
         }
         if (pillarWeb.getState() == null) {
             throw new GeneralAppException("Estádo no válido", Response.Status.BAD_REQUEST);
+        }
+
+        Pillar itemRecovered = this.pillarDao.getByCode(pillarWeb.getCode());
+        if (itemRecovered != null) {
+            if (pillarWeb.getId() == null || !pillarWeb.getId().equals(itemRecovered)){
+                throw new GeneralAppException("Ya existe un ítem con este código", Response.Status.BAD_REQUEST);
+            }
+        }
+
+        itemRecovered = this.pillarDao.getByShortDescription(pillarWeb.getShortDescription());
+        if (itemRecovered != null) {
+            if (pillarWeb.getId() == null || !pillarWeb.getId().equals(itemRecovered)){
+                throw new GeneralAppException("Ya existe un ítem con esta descripción corta", Response.Status.BAD_REQUEST);
+            }
         }
     }
 }

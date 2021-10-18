@@ -4,6 +4,7 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.PeriodDao;
+import org.unhcr.osmosys.model.Area;
 import org.unhcr.osmosys.model.Period;
 import org.unhcr.osmosys.webServices.model.PeriodWeb;
 
@@ -118,6 +119,13 @@ public class PeriodService {
         }
         if (periodWeb.getState() == null) {
             throw new GeneralAppException("Estádo no válido", Response.Status.BAD_REQUEST);
+        }
+
+        Period itemRecovered = this.periodDao.getByYear(periodWeb.getYear());
+        if (itemRecovered != null) {
+            if (periodWeb.getId() == null || !periodWeb.getId().equals(itemRecovered)){
+                throw new GeneralAppException("Ya existe un ítem con este año", Response.Status.BAD_REQUEST);
+            }
         }
     }
 }

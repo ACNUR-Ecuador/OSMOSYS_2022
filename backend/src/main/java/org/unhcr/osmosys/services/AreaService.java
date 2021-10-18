@@ -27,46 +27,46 @@ public class AreaService {
         return this.areaDao.find(id);
     }
 
-    public Area saveOrUpdate(Area area){
-        if(area.getId()==null){
+    public Area saveOrUpdate(Area area) {
+        if (area.getId() == null) {
             this.areaDao.save(area);
-        }else {
+        } else {
             this.areaDao.update(area);
         }
         return area;
     }
 
     public Long save(AreaWeb areaWeb) throws GeneralAppException {
-        if(areaWeb==null){
+        if (areaWeb == null) {
             throw new GeneralAppException("No se puede guardar un area null", Response.Status.BAD_REQUEST);
         }
-        if(areaWeb.getId()!=null){
+        if (areaWeb.getId() != null) {
             throw new GeneralAppException("No se puede crear un area con id", Response.Status.BAD_REQUEST);
         }
         this.validate(areaWeb);
-        Area area=this.saveOrUpdate(this.areaToAreaWeb(areaWeb));
+        Area area = this.saveOrUpdate(this.areaToAreaWeb(areaWeb));
         return area.getId();
     }
 
-    public List<AreaWeb> getAll(){
+    public List<AreaWeb> getAll() {
         List<AreaWeb> r = new ArrayList<>();
         return this.areasToAreasWeb(this.areaDao.findAll());
     }
 
-    public List<AreaWeb> getByState(State state){
+    public List<AreaWeb> getByState(State state) {
         List<AreaWeb> r = new ArrayList<>();
         return this.areasToAreasWeb(this.areaDao.getByState(state));
     }
 
     public Long update(AreaWeb areaWeb) throws GeneralAppException {
-        if(areaWeb==null){
+        if (areaWeb == null) {
             throw new GeneralAppException("No se puede actualizar un area null", Response.Status.BAD_REQUEST);
         }
-        if(areaWeb.getId()==null){
+        if (areaWeb.getId() == null) {
             throw new GeneralAppException("No se puede crear un area sin id", Response.Status.BAD_REQUEST);
         }
         this.validate(areaWeb);
-        Area area=this.saveOrUpdate(this.areaToAreaWeb(areaWeb));
+        Area area = this.saveOrUpdate(this.areaToAreaWeb(areaWeb));
         return area.getId();
     }
 
@@ -93,6 +93,7 @@ public class AreaService {
 
         return areaWeb;
     }
+
     public List<Area> areasWebToAreas(List<AreaWeb> areasWebs) {
         List<Area> r = new ArrayList<>();
         for (AreaWeb areaWeb : areasWebs) {
@@ -100,6 +101,7 @@ public class AreaService {
         }
         return r;
     }
+
     public Area areaToAreaWeb(AreaWeb areaWeb) {
         if (areaWeb == null) {
             return null;
@@ -135,5 +137,20 @@ public class AreaService {
         if (areaWeb.getAreaType() == null) {
             throw new GeneralAppException("Tipo no válida", Response.Status.BAD_REQUEST);
         }
+
+        Area itemRecovered = this.areaDao.getByCode(areaWeb.getCode());
+        if (itemRecovered != null) {
+            if (areaWeb.getId() == null || !areaWeb.getId().equals(itemRecovered)){
+                throw new GeneralAppException("Ya existe un área con este código", Response.Status.BAD_REQUEST);
+            }
+        }
+
+        itemRecovered = this.areaDao.getByShortDescription(areaWeb.getShortDescription());
+        if (itemRecovered != null) {
+            if (areaWeb.getId() == null || !areaWeb.getId().equals(itemRecovered)){
+                throw new GeneralAppException("Ya existe un área con esta descripción corta", Response.Status.BAD_REQUEST);
+            }
+        }
+
     }
 }
