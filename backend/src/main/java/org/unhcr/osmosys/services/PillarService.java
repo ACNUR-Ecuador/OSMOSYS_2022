@@ -130,14 +130,14 @@ public class PillarService {
 
         Pillar itemRecovered = this.pillarDao.getByCode(pillarWeb.getCode());
         if (itemRecovered != null) {
-            if (pillarWeb.getId() == null || !pillarWeb.getId().equals(itemRecovered)){
+            if (pillarWeb.getId() == null || !pillarWeb.getId().equals(itemRecovered.getId())){
                 throw new GeneralAppException("Ya existe un ítem con este código", Response.Status.BAD_REQUEST);
             }
         }
 
         itemRecovered = this.pillarDao.getByShortDescription(pillarWeb.getShortDescription());
         if (itemRecovered != null) {
-            if (pillarWeb.getId() == null || !pillarWeb.getId().equals(itemRecovered)){
+            if (pillarWeb.getId() == null || !pillarWeb.getId().equals(itemRecovered.getId())){
                 throw new GeneralAppException("Ya existe un ítem con esta descripción corta", Response.Status.BAD_REQUEST);
             }
         }

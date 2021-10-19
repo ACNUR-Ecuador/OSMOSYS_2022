@@ -123,7 +123,7 @@ public class PeriodService {
 
         Period itemRecovered = this.periodDao.getByYear(periodWeb.getYear());
         if (itemRecovered != null) {
-            if (periodWeb.getId() == null || !periodWeb.getId().equals(itemRecovered)){
+            if (periodWeb.getId() == null || !periodWeb.getId().equals(itemRecovered.getId())){
                 throw new GeneralAppException("Ya existe un ítem con este año", Response.Status.BAD_REQUEST);
             }
         }

@@ -21,6 +21,7 @@ import { PillarAdministrationComponent } from './pillar-administration/pillar-ad
 import {MessageModule} from 'primeng/message';
 import {MessagesModule} from 'primeng/messages';
 import { SituationAdministrationComponent } from './situation-administration/situation-administration.component';
+import { OrganizationAdministrationComponent } from './organization-administration/organization-administration.component';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { SituationAdministrationComponent } from './situation-administration/sit
         AreasAdministrationComponent,
         PeriodAdministrationComponent,
         PillarAdministrationComponent,
-        SituationAdministrationComponent
+        SituationAdministrationComponent,
+        OrganizationAdministrationComponent
     ],
     imports: [
         CommonModule,

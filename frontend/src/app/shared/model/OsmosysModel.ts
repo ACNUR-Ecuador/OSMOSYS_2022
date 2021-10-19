@@ -1,4 +1,7 @@
 export class Organization {
+    constructor() {
+        this.state = 'ACTIVO';
+    }
     public id: number;
     public code: string;
     public state: string;
@@ -7,6 +10,9 @@ export class Organization {
 }
 
 export class Office {
+    constructor() {
+        this.state = 'ACTIVO';
+    }
     public id: number;
     public state: string;
     public description: string;

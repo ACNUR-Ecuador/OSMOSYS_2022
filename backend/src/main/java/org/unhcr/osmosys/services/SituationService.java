@@ -133,20 +133,20 @@ public class SituationService {
 
         Situation itemRecovered = this.situationDao.getByCode(situationWeb.getCode());
         if (itemRecovered != null) {
-            if (situationWeb.getId() == null || !situationWeb.getId().equals(itemRecovered)){
+            if (situationWeb.getId() == null || !situationWeb.getId().equals(itemRecovered.getId())){
                 throw new GeneralAppException("Ya existe un ítem con este código", Response.Status.BAD_REQUEST);
             }
         }
 
         itemRecovered = this.situationDao.getByShortDescription(situationWeb.getShortDescription());
         if (itemRecovered != null) {
-            if (situationWeb.getId() == null || !situationWeb.getId().equals(itemRecovered)){
+            if (situationWeb.getId() == null || !situationWeb.getId().equals(itemRecovered.getId())){
                 throw new GeneralAppException("Ya existe un ítem con esta descripción corta", Response.Status.BAD_REQUEST);
             }
         }
-        itemRecovered = this.situationDao.getByDescription(situationWeb.getShortDescription());
+        itemRecovered = this.situationDao.getByDescription(situationWeb.getDescription());
         if (itemRecovered != null) {
-            if (situationWeb.getId() == null || !situationWeb.getId().equals(itemRecovered)){
+            if (situationWeb.getId() == null || !situationWeb.getId().equals(itemRecovered.getId())){
                 throw new GeneralAppException("Ya existe un ítem con esta descripción", Response.Status.BAD_REQUEST);
             }
         }

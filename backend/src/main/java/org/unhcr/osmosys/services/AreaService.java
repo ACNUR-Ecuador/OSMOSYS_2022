@@ -140,14 +140,14 @@ public class AreaService {
 
         Area itemRecovered = this.areaDao.getByCode(areaWeb.getCode());
         if (itemRecovered != null) {
-            if (areaWeb.getId() == null || !areaWeb.getId().equals(itemRecovered)){
+            if (areaWeb.getId() == null || !areaWeb.getId().equals(itemRecovered.getId())){
                 throw new GeneralAppException("Ya existe un área con este código", Response.Status.BAD_REQUEST);
             }
         }
 
         itemRecovered = this.areaDao.getByShortDescription(areaWeb.getShortDescription());
         if (itemRecovered != null) {
-            if (areaWeb.getId() == null || !areaWeb.getId().equals(itemRecovered)){
+            if (areaWeb.getId() == null || !areaWeb.getId().equals(itemRecovered.getId())){
                 throw new GeneralAppException("Ya existe un área con esta descripción corta", Response.Status.BAD_REQUEST);
             }
         }

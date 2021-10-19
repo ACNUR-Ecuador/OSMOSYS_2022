@@ -3,7 +3,7 @@
         <p-toast></p-toast>
 
         <div class="card">
-            <h3 class="page-title">Administración de Periodos</h3>
+            <h3 class="page-title">Administración de Situaciones</h3>
             <p-toolbar styleClass="p-mb-4">
                 <ng-template pTemplate="left">
                     <button pButton pRipple label="Crear" icon="pi pi-plus" class="p-button-success p-mr-2 p-mb-2"
@@ -23,10 +23,8 @@
                      [showCurrentPageReport]="true">
                 <ng-template pTemplate="caption">
                     <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between table-header">
-                        <h5 class="p-m-0">Periodos</h5>
+                        <h5 class="p-m-0">Situaciones</h5>
                         <span class="p-input-icon-left">
-                        <!--<i class="pi pi-search"></i>-->
-                            <!--<input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />-->
                         </span>
                         <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
                                        selectedItemsLabel="{0} columnas seleccionadas"
@@ -88,22 +86,43 @@
                 </ng-template>
                 <ng-template pTemplate="summary">
                     <div class="p-d-flex p-ai-center p-jc-between">
-                        Total {{items ? items.length : 0 }} periodos.
+                        Total {{items ? items.length : 0 }} situaciones.
                     </div>
                 </ng-template>
             </p-table>
         </div>
         <form [formGroup]="formItem" (ngSubmit)="saveItem()">
-            <p-dialog [(visible)]="showDialog" [style]="{width: '450px'}" header="Periodo" [modal]="true"
+            <p-dialog [(visible)]="showDialog" [style]="{width: '450px'}" header="Situación" [modal]="true"
                       styleClass="p-fluid" [closable]="false">
 
                 <ng-template pTemplate="content">
                     <p-messages></p-messages>
+
                     <div class="p-field">
-                        <label for="yearI">Año</label>
-                        <p-inputNumber id="yearI"
-                                       formControlName="year" autofocus></p-inputNumber>
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('year',formItem)">Campo
+                        <label for="codeI">Código</label>
+                        <input type="text" pInputText id="codeI"
+                               formControlName="code" autofocus/>
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('code',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+
+                    <div class="p-field">
+                        <label for="shortDescriptionI">Descripción Corta</label>
+                        <input type="text" pInputText id="shortDescriptionI"
+                               formControlName="shortDescription"/>
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('shortDescription',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+
+                    <div class="p-field">
+                        <label for="descriptionI">Descripción Completa</label>
+
+                        <textarea pInputTextarea id="descriptionI"
+                                  formControlName="description"
+                                  autoResize="autoResize">
+                        </textarea>
+
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('description',formItem)">Campo
                             obligatorio.</small>
                     </div>
                     <div class="p-field">
