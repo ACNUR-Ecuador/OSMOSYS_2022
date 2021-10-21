@@ -96,6 +96,7 @@ import {TreeTableModule} from 'primeng/treetable';
 import {VirtualScrollerModule} from 'primeng/virtualscroller';
 import {UserService} from './services/user.service';
 import {NgxPermissionsModule, NgxPermissionsService} from 'ngx-permissions';
+import { OfficeOrganizationPipe } from './pipes/officeOrganization.pipe';
 
 
 @NgModule({
@@ -111,6 +112,7 @@ import {NgxPermissionsModule, NgxPermissionsService} from 'ngx-permissions';
         AppNotfoundComponent,
         AppErrorComponent,
         AppAccessdeniedComponent,
+        OfficeOrganizationPipe,
     ],
     imports: [
         CommonModule,

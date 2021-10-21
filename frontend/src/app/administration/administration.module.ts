@@ -22,6 +22,10 @@ import {MessageModule} from 'primeng/message';
 import {MessagesModule} from 'primeng/messages';
 import { SituationAdministrationComponent } from './situation-administration/situation-administration.component';
 import { OrganizationAdministrationComponent } from './organization-administration/organization-administration.component';
+import { OfficeAdministrationComponent } from './office-administration/office-administration.component';
+import {OfficeOrganizationPipe} from '../shared/pipes/officeOrganization.pipe';
+import {TabViewModule} from 'primeng/tabview';
+import {OrganizationChartModule} from 'primeng/organizationchart';
 
 
 @NgModule({
@@ -30,7 +34,8 @@ import { OrganizationAdministrationComponent } from './organization-administrati
         PeriodAdministrationComponent,
         PillarAdministrationComponent,
         SituationAdministrationComponent,
-        OrganizationAdministrationComponent
+        OrganizationAdministrationComponent,
+        OfficeAdministrationComponent
     ],
     imports: [
         CommonModule,
@@ -49,10 +54,13 @@ import { OrganizationAdministrationComponent } from './organization-administrati
         MultiSelectModule,
         InputNumberModule,
         MessageModule,
-        MessagesModule
+        MessagesModule,
+        TabViewModule,
+        OrganizationChartModule
     ],
     providers: [
-        ConfirmationService
+        ConfirmationService,
+        OfficeOrganizationPipe
     ]
 })
 export class AdministrationModule {

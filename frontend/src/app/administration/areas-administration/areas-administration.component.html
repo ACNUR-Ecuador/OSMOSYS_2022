@@ -139,7 +139,7 @@
                             obligatorio.</small>
                     </div>
                     <div class="p-field">
-                        <label for="descriptionI">Descripción Completa</label>
+                        <label for="descriptionI">Tipo</label>
 
                         <p-dropdown id="areaTypeI"
                                     formControlName="areaType"
@@ -147,11 +147,11 @@
                                     placeholder="Selecciona...">
                         </p-dropdown>
 
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('description',formItem)">Campo
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('areaType',formItem)">Campo
                             obligatorio.</small>
                     </div>
                     <div class="p-field">
-                        <label for="stateI">Descripción Completa</label>
+                        <label for="stateI">Estado</label>
 
                         <p-selectButton id="stateI"
                                         formControlName="state"
@@ -160,7 +160,7 @@
                         >
                         </p-selectButton>
 
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('description',formItem)">Campo
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('state',formItem)">Campo
                             obligatorio.</small>
                     </div>
                     <div class="p-field">

@@ -1,20 +1,18 @@
 package org.unhcr.osmosys.webServices.endpoints;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
-import org.unhcr.osmosys.model.Office;
 import org.unhcr.osmosys.services.OfficeService;
 import org.unhcr.osmosys.webServices.model.OfficeWeb;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
-@Path("/office")
+@Path("/offices")
 @RequestScoped
 public class OfficeEndpoint {
 
@@ -26,7 +24,46 @@ public class OfficeEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public Long create(OfficeWeb officeWeb) throws GeneralAppException {
-        Office office =this.officeService.create(officeWeb);
-        return office.getId();
+        return this.officeService.save(officeWeb);
+    }
+
+    @Path("/")
+    @PUT
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public Long update(OfficeWeb officeWeb) throws GeneralAppException {
+        return this.officeService.update(officeWeb);
+    }
+
+    @Path("/")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<OfficeWeb> getAll() {
+        return this.officeService.getAll(false);
+    }
+
+    @Path("/active")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<OfficeWeb> getActive() {
+        return this.officeService.getByState(State.ACTIVO,false);
+    }
+
+    @Path("/withChilds")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<OfficeWeb> getAllWithChildren() {
+        return this.officeService.getAll(true);
+    }
+
+    @Path("/tree")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<OfficeWeb> getTree() {
+        return this.officeService.getOfficeTree();
     }
 }

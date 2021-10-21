@@ -1,0 +1,41 @@
+:host ::ng-deep .p-organizationchart .p-person {
+  padding: 0;
+  border: 0 none;
+}
+
+:host ::ng-deep .p-organizationchart .node-header, :host ::ng-deep .p-organizationchart .node-content {
+  padding: 0.5em 0.7rem;
+}
+
+:host ::ng-deep .p-organizationchart .node-header {
+  background-color: #495ebb;
+  color: #ffffff;
+}
+
+:host ::ng-deep .p-organizationchart .node-content {
+  text-align: center;
+  border: 1px solid #495ebb;
+}
+
+:host ::ng-deep .p-organizationchart .node-content img {
+  border-radius: 50%;
+}
+
+:host ::ng-deep .p-organizationchart .department-cfo {
+  background-color: #7247bc;
+  color: #ffffff;
+}
+
+:host ::ng-deep .p-organizationchart .department-coo {
+  background-color: #a534b6;
+  color: #ffffff;
+}
+
+:host ::ng-deep .p-organizationchart .department-cto {
+  background-color: #e9286f;
+  color: #ffffff;
+}
+
+/*# sourceMappingURL=situation-administration.component.css.map */
+
+/*# sourceMappingURL=office-administration.component.css.map */

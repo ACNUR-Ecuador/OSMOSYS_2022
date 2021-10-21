@@ -207,7 +207,7 @@ FullCalendarModule.registerPlugins([
 
     ],
     declarations: [
-        AppComponent,
+        AppComponent
 
     ],
     providers: [

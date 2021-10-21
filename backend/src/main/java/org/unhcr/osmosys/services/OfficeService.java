@@ -1,8 +1,7 @@
 package org.unhcr.osmosys.services;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
-import com.sagatechs.generics.security.CustomPrincipal;
-import org.apache.commons.lang3.StringUtils;
+import com.sagatechs.generics.persistence.model.State;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.OfficeDao;
 import org.unhcr.osmosys.model.Office;
@@ -12,10 +11,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.security.enterprise.SecurityContext;
 import javax.ws.rs.core.Response;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Stateless
 public class OfficeService {
@@ -27,85 +24,141 @@ public class OfficeService {
     SecurityContext securityContext;
 
     private final static Logger LOGGER = Logger.getLogger(OfficeService.class);
+
     public Office getById(Long id) {
         return this.officeDao.find(id);
     }
 
-    public Office create(OfficeWeb officeWeb) throws GeneralAppException {
-        LOGGER.error(this.securityContext.getCallerPrincipal());
-        LOGGER.error(this.securityContext.getCallerPrincipal().getName());
-        if(this.securityContext.getCallerPrincipal() instanceof  CustomPrincipal){
-            CustomPrincipal principal = (CustomPrincipal) this.securityContext.getCallerPrincipal();
-            LOGGER.info(principal);
-            LOGGER.info(principal.getUser());
-        }
-
-
-
-
-
-        this.validate(officeWeb);
-        Office office = new Office();
-        office.setAcronym(officeWeb.getAcronym());
-        office.setState(officeWeb.getState());
-        office.setDescription(officeWeb.getDescription());
-        office.setType(officeWeb.getType());
-        Office parent = null;
-        if (officeWeb.getParentOffice() != null) {
-            parent = this.getById(officeWeb.getParentOffice().getId());
-            parent.getChildOffices().add(office);
-            office.setParentOffice(parent);
-        }
-
-        this.officeDao.save(office);
-        if (parent != null) {
-            this.officeDao.save(parent);
+    public Office saveOrUpdate(Office office) {
+        if (office.getId() == null) {
+            this.officeDao.save(office);
+        } else {
+            this.officeDao.update(office);
         }
         return office;
     }
 
-    public void validate(OfficeWeb officeWeb) throws GeneralAppException {
+    public Long save(OfficeWeb officeWeb) throws GeneralAppException {
         if (officeWeb == null) {
-            throw new GeneralAppException("Oficina es nulo", Response.Status.BAD_REQUEST);
+            throw new GeneralAppException("No se puede guardar un pilar null", Response.Status.BAD_REQUEST);
         }
+        if (officeWeb.getId() != null) {
+            throw new GeneralAppException("No se puede crear un pilar con id", Response.Status.BAD_REQUEST);
+        }
+        this.validate(officeWeb);
+        Office office = this.saveOrUpdate(this.officeWebToOffice(officeWeb));
+        return office.getId();
+    }
 
-        if (StringUtils.isBlank(officeWeb.getAcronym())) {
-            throw new GeneralAppException("Acrónimo no válido", Response.Status.BAD_REQUEST);
+    public List<OfficeWeb> getAll(boolean returnChilds) {
+        List<OfficeWeb> r = new ArrayList<>();
+        return this.officesToOfficesWeb(this.officeDao.findAll(), returnChilds);
+    }
+
+    public List<OfficeWeb> getByState(State state, boolean returnChilds) {
+        List<OfficeWeb> r = new ArrayList<>();
+        return this.officesToOfficesWeb(this.officeDao.getByState(state), returnChilds);
+    }
+
+    public Long update(OfficeWeb officeWeb) throws GeneralAppException {
+        if (officeWeb == null) {
+            throw new GeneralAppException("No se puede actualizar un office null", Response.Status.BAD_REQUEST);
         }
-        if (StringUtils.isBlank(officeWeb.getDescription())) {
-            throw new GeneralAppException("Descripción no válida", Response.Status.BAD_REQUEST);
+        if (officeWeb.getId() == null) {
+            throw new GeneralAppException("No se puede crear un office sin id", Response.Status.BAD_REQUEST);
         }
-        if (officeWeb.getState() == null) {
-            throw new GeneralAppException("Estádo no válida", Response.Status.BAD_REQUEST);
+        this.validate(officeWeb);
+        Office office = this.saveOrUpdate(this.officeWebToOffice(officeWeb));
+        return office.getId();
+    }
+
+    public List<OfficeWeb> officesToOfficesWeb(List<Office> offices, boolean returnChilds) {
+        List<OfficeWeb> r = new ArrayList<>();
+        for (Office office : offices) {
+            r.add(this.officeToOfficeWeb(office, returnChilds));
         }
-        if (officeWeb.getType() == null) {
-            throw new GeneralAppException("Tipo no válida", Response.Status.BAD_REQUEST);
-        }
+        return r;
     }
 
     public OfficeWeb officeToOfficeWeb(Office office, boolean returnChilds) {
         if (office == null) {
             return null;
         }
-        OfficeWeb o = new OfficeWeb();
-        o.setId(office.getId());
-        o.setAcronym(office.getAcronym());
-        o.setType(office.getType());
-        o.setState(office.getState());
-        o.setDescription(office.getDescription());
-        o.setParentOffice(this.officeToOfficeWeb(office.getParentOffice(), false));
+        OfficeWeb officeWeb = new OfficeWeb();
+        officeWeb.setId(office.getId());
+        officeWeb.setDescription(office.getDescription());
+        officeWeb.setAcronym(office.getAcronym());
+        officeWeb.setType(office.getType());
+        officeWeb.setState(office.getState());
+        officeWeb.setParentOffice(this.officeToOfficeWeb(office.getParentOffice(), false));
         if (returnChilds) {
-            o.setChildOffices(this.officesToOfficesWeb(office.getChildOffices(), false));
+            officeWeb.setChildOffices(this.officesToOfficesWeb(new ArrayList<>(office.getChildOffices()), returnChilds));
         }
-        return o;
+
+        return officeWeb;
     }
 
-    public List<OfficeWeb> officesToOfficesWeb(Set<Office> offices, boolean returnChilds) {
-        List<OfficeWeb> r = new ArrayList<>();
-        for (Office o : offices) {
-            this.officeToOfficeWeb(o, returnChilds);
+    public List<Office> officesWebToOffices(List<OfficeWeb> officesWebs) {
+        List<Office> r = new ArrayList<>();
+        for (OfficeWeb officeWeb : officesWebs) {
+            r.add(this.officeWebToOffice(officeWeb));
         }
         return r;
-
     }
+
+    public Office officeWebToOffice(OfficeWeb officeWeb) {
+        if (officeWeb == null) {
+            return null;
+        }
+        Office office = new Office();
+        office.setId(officeWeb.getId());
+        office.setDescription(officeWeb.getDescription());
+        office.setAcronym(officeWeb.getAcronym());
+        office.setType(officeWeb.getType());
+        office.setState(officeWeb.getState());
+        office.setParentOffice(this.officeWebToOffice(officeWeb.getParentOffice()));
+        // office.setChildOffices(this.officesToOfficesWeb(office.getChildOffices()));
+        return office;
+    }
+
+    public void validate(OfficeWeb officeWeb) throws GeneralAppException {
+        if (officeWeb == null) {
+            throw new GeneralAppException("Pilar es nulo", Response.Status.BAD_REQUEST);
+        }
+
+        if (officeWeb.getDescription() == null) {
+            throw new GeneralAppException("Descripción no válido", Response.Status.BAD_REQUEST);
+        }
+        if (officeWeb.getAcronym() == null) {
+            throw new GeneralAppException("Acrónimo no válido", Response.Status.BAD_REQUEST);
+        }
+        if (officeWeb.getState() == null) {
+            throw new GeneralAppException("Estádo no válido", Response.Status.BAD_REQUEST);
+        }
+        if (officeWeb.getType() == null) {
+            throw new GeneralAppException("Tipo no válido", Response.Status.BAD_REQUEST);
+        }
+
+        Office itemRecovered = this.officeDao.getByAcronym(officeWeb.getAcronym());
+        if (itemRecovered != null) {
+            if (officeWeb.getId() == null || !officeWeb.getId().equals(itemRecovered.getId())) {
+                throw new GeneralAppException("Ya existe un ítem con este acrónimo", Response.Status.BAD_REQUEST);
+            }
+        }
+
+        itemRecovered = this.officeDao.getByDescription(officeWeb.getDescription());
+        if (itemRecovered != null) {
+            if (officeWeb.getId() == null || !officeWeb.getId().equals(itemRecovered.getId())) {
+                throw new GeneralAppException("Ya existe un ítem con esta descripción", Response.Status.BAD_REQUEST);
+            }
+        }
+    }
+
+    public List<OfficeWeb> getOfficeTree() {
+        List<Office> offices = this.officeDao.getByNoParent();
+
+        return this.officesToOfficesWeb(offices, true);
+    }
+
+
 }

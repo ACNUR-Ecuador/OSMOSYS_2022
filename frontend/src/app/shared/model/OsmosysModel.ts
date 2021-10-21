@@ -17,7 +17,7 @@ export class Office {
     public state: string;
     public description: string;
     public acronym: string;
-    public officeType: string;
+    public type: string;
     public parentOffice: Office;
     public childOffices: Office[];
 }

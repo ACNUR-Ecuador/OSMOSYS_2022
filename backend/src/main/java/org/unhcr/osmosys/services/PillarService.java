@@ -4,7 +4,6 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.PillarDao;
-import org.unhcr.osmosys.model.Area;
 import org.unhcr.osmosys.model.Pillar;
 import org.unhcr.osmosys.webServices.model.PillarWeb;
 

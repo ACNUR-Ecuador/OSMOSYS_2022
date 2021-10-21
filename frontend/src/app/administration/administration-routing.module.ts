@@ -5,6 +5,7 @@ import {PeriodAdministrationComponent} from './period-administration/period-admi
 import {PillarAdministrationComponent} from './pillar-administration/pillar-administration.component';
 import {SituationAdministrationComponent} from './situation-administration/situation-administration.component';
 import {OrganizationAdministrationComponent} from './organization-administration/organization-administration.component';
+import {OfficeAdministrationComponent} from './office-administration/office-administration.component';
 
 const routes: Routes = [
     {
@@ -14,7 +15,8 @@ const routes: Routes = [
             {path: 'periods', component: PeriodAdministrationComponent},
             {path: 'pillars', component: PillarAdministrationComponent},
             {path: 'situations', component: SituationAdministrationComponent},
-            {path: 'organizations', component: OrganizationAdministrationComponent}
+            {path: 'organizations', component: OrganizationAdministrationComponent},
+            {path: 'offices', component: OfficeAdministrationComponent}
         ]
     }
 ];
