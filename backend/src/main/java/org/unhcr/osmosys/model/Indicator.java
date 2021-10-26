@@ -28,9 +28,8 @@ public class Indicator extends BaseEntity<Long> {
     @Column(name = "description", nullable = false, unique = true)
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "statement_id")
-    private Statement statement;
+    @ManyToMany(mappedBy = "indicators")
+    private Set<Statement> statements = new HashSet<>();
 
 
     @Column(name = "guide_partners", columnDefinition = "text")
@@ -71,6 +70,9 @@ public class Indicator extends BaseEntity<Long> {
 
     @OneToMany(mappedBy = "indicator", fetch = FetchType.LAZY)
     private Set<DissagregationAssignationToIndicator> dissagregationsAssignationToIndicator = new HashSet<>();
+
+    @OneToMany(mappedBy = "indicator", fetch = FetchType.LAZY)
+    private Set<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicators = new HashSet<>();
 
     @Override
     public Long getId() {
@@ -187,12 +189,21 @@ public class Indicator extends BaseEntity<Long> {
         isCalculated = calculated;
     }
 
-    public Statement getStatement() {
-        return statement;
+
+    public Set<Statement> getStatements() {
+        return statements;
     }
 
-    public void setStatement(Statement statement) {
-        this.statement = statement;
+    public void setStatements(Set<Statement> statements) {
+        this.statements = statements;
+    }
+
+    public Set<CustomDissagregationAssignationToIndicator> getCustomDissagregationAssignationToIndicators() {
+        return customDissagregationAssignationToIndicators;
+    }
+
+    public void setCustomDissagregationAssignationToIndicators(Set<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicators) {
+        this.customDissagregationAssignationToIndicators = customDissagregationAssignationToIndicators;
     }
 
     public void addDissagregationAssignationToIndicator(DissagregationAssignationToIndicator dissagregationAssignationToIndicator) {
@@ -240,10 +251,9 @@ public class Indicator extends BaseEntity<Long> {
     @Override
     public String toString() {
         return "Indicator{" +
-                "id=" + id +
-                ", code='" + code + '\'' +
+                "code='" + code + '\'' +
                 ", description='" + description + '\'' +
-                ", statement=" + statement +
+                ", statements=" + statements +
                 ", guidePartners='" + guidePartners + '\'' +
                 ", guideDirectImplementation='" + guideDirectImplementation + '\'' +
                 ", state=" + state +
@@ -251,6 +261,7 @@ public class Indicator extends BaseEntity<Long> {
                 ", measureType=" + measureType +
                 ", frecuency=" + frecuency +
                 ", areaType=" + areaType +
+                ", markers=" + markers +
                 ", isMonitored=" + isMonitored +
                 ", isCalculated=" + isCalculated +
                 '}';

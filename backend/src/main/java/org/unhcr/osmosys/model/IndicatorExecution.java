@@ -41,10 +41,13 @@ public class IndicatorExecution extends BaseEntity<Long> {
     private Period period;
 
     @OneToMany(mappedBy = "indicatorExecution")
-    private Set<IndicatorValue> indicatorValues = new HashSet<>();
+    private Set<Quarter> quarters = new HashSet<>();
 
     @OneToMany(mappedBy = "indicatorExecution", fetch = FetchType.LAZY)
     private Set<DissagregationAssignationToIndicatorExecution> dissagregationsAssignationsToIndicatorExecutions = new HashSet<>();
+
+    @OneToMany(mappedBy = "indicatorExecution", fetch = FetchType.LAZY)
+    private Set<CustomDissagregationAssignationToIndicatorExecution> customDissagregationAssignationToIndicatorExecutions = new HashSet<>();
 
     /*socios ii*/
     @ManyToOne(fetch = FetchType.LAZY)
@@ -63,6 +66,10 @@ public class IndicatorExecution extends BaseEntity<Long> {
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_user_backup_id", foreignKey = @ForeignKey(name = "fk_indicator_execution_user_backup"))
     private User assignedUserBackup;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(schema ="osmosys" ,name = "indicator_executions_markers", joinColumns = @JoinColumn(name = "indicator_execution_id"), inverseJoinColumns = @JoinColumn(name = "marker_id"))
+    private Set<Marker> markers = new HashSet<>();
 
     @Override
     public Long getId() {
@@ -104,14 +111,6 @@ public class IndicatorExecution extends BaseEntity<Long> {
 
     public void setPeriod(Period period) {
         this.period = period;
-    }
-
-    public Set<IndicatorValue> getIndicatorValues() {
-        return indicatorValues;
-    }
-
-    public void setIndicatorValues(Set<IndicatorValue> indicatorValues) {
-        this.indicatorValues = indicatorValues;
     }
 
     public void addDissagregationAssignationToIndicatorExecution(DissagregationAssignationToIndicatorExecution dissagregationAssignationToIndicatorExecution) {
@@ -183,35 +182,27 @@ public class IndicatorExecution extends BaseEntity<Long> {
         this.indicatorType = indicatorType;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-
-        if (o == null || getClass() != o.getClass()) return false;
-
-        IndicatorExecution that = (IndicatorExecution) o;
-
-        return new EqualsBuilder().append(id, that.id).append(period, that.period).append(indicatorValues, that.indicatorValues).append(project, that.project).append(reportingOffice, that.reportingOffice).append(assignedUser, that.assignedUser).isEquals();
+    public Set<Quarter> getQuarters() {
+        return quarters;
     }
 
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(period).append(indicatorValues).append(project).append(reportingOffice).append(assignedUser).toHashCode();
+    public void setQuarters(Set<Quarter> quarters) {
+        this.quarters = quarters;
     }
 
-    @Override
-    public String toString() {
-        return "IndicatorExecution{" +
-                "id=" + id +
-                ", commentary='" + commentary + '\'' +
-                ", indicator=" + indicator +
-                ", indicatorType=" + indicatorType +
-                ", state=" + state +
-                ", period=" + period +
-                ", project=" + project +
-                ", reportingOffice=" + reportingOffice +
-                ", assignedUser=" + assignedUser +
-                ", assignedUserBackup=" + assignedUserBackup +
-                '}';
+    public Set<CustomDissagregationAssignationToIndicatorExecution> getCustomDissagregationAssignationToIndicatorExecutions() {
+        return customDissagregationAssignationToIndicatorExecutions;
+    }
+
+    public void setCustomDissagregationAssignationToIndicatorExecutions(Set<CustomDissagregationAssignationToIndicatorExecution> customDissagregationAssignationToIndicatorExecutions) {
+        this.customDissagregationAssignationToIndicatorExecutions = customDissagregationAssignationToIndicatorExecutions;
+    }
+
+    public Set<Marker> getMarkers() {
+        return markers;
+    }
+
+    public void setMarkers(Set<Marker> markers) {
+        this.markers = markers;
     }
 }

@@ -2,27 +2,24 @@ package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(schema = "osmosys", name = "indicator_values")
-public class IndicatorValue extends BaseEntity<Long> {
+@Table(schema = "osmosys", name = "indicator_values_custom_dissagregation")
+public class IndicatorValueCustomDissagregation extends BaseEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
-
-
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "month_id", foreignKey = @ForeignKey(name = "fk_value_month"))
     private Month month;
+
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", nullable = false, length = 12, unique = false)
@@ -32,25 +29,11 @@ public class IndicatorValue extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private MonthEnum monthEnum;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "dissagregation_type", nullable = false, length = 12, unique = false)
-    private DissagregationType dissagregationType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "population_type", nullable = false, length = 12, unique = false)
-    private PopulationType populationType;
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @JoinColumn(name = "custom_dissagregation_option", foreignKey = @ForeignKey(name = "fk_indicator_values_custom_dissagregation_option"))
+    private CustomDissagregationOption customDissagregationOption;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "country_of_origin", nullable = false, length = 12, unique = false)
-    private CountryOfOrigin countryOfOrigin;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "gender_type", nullable = false, length = 12, unique = false)
-    private GenderType genderType;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "age_type", nullable = false, length = 12, unique = false)
-    private AgeType ageType;
 
     @Column(name = "value")
     private BigDecimal value;
@@ -78,7 +61,6 @@ public class IndicatorValue extends BaseEntity<Long> {
         this.month = month;
     }
 
-
     public State getState() {
         return state;
     }
@@ -95,44 +77,12 @@ public class IndicatorValue extends BaseEntity<Long> {
         this.monthEnum = monthEnum;
     }
 
-    public DissagregationType getDissagregationType() {
-        return dissagregationType;
+    public CustomDissagregationOption getCustomDissagregationOption() {
+        return customDissagregationOption;
     }
 
-    public void setDissagregationType(DissagregationType dissagregationType) {
-        this.dissagregationType = dissagregationType;
-    }
-
-    public PopulationType getPopulationType() {
-        return populationType;
-    }
-
-    public void setPopulationType(PopulationType populationType) {
-        this.populationType = populationType;
-    }
-
-    public CountryOfOrigin getCountryOfOrigin() {
-        return countryOfOrigin;
-    }
-
-    public void setCountryOfOrigin(CountryOfOrigin countryOfOrigin) {
-        this.countryOfOrigin = countryOfOrigin;
-    }
-
-    public GenderType getGenderType() {
-        return genderType;
-    }
-
-    public void setGenderType(GenderType genderType) {
-        this.genderType = genderType;
-    }
-
-    public AgeType getAgeType() {
-        return ageType;
-    }
-
-    public void setAgeType(AgeType ageType) {
-        this.ageType = ageType;
+    public void setCustomDissagregationOption(CustomDissagregationOption customDissagregationOption) {
+        this.customDissagregationOption = customDissagregationOption;
     }
 
     public BigDecimal getValue() {

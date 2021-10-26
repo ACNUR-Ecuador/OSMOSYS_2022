@@ -41,8 +41,8 @@ public class Statement extends BaseEntity<Long> {
     @JoinColumn(name = "parent_statement_id", foreignKey = @ForeignKey(name = "fk_statemet_statement_parent"))
     private Statement parentStatement;
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "area_id",foreignKey = @ForeignKey(name = "fk_statement_area"))
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "area_id", foreignKey = @ForeignKey(name = "fk_statement_area"))
     private Area area;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -53,10 +53,14 @@ public class Statement extends BaseEntity<Long> {
     @JoinColumn(name = "situation_id", foreignKey = @ForeignKey(name = "fk_statemet_situation"))
     private Situation situation;
 
-    @OneToMany(mappedBy = "statement",fetch = FetchType.LAZY)
-    private Set<PeriodStatementAsignation> periodStatementAsignations  = new HashSet<>();
+    @OneToMany(mappedBy = "statement", fetch = FetchType.LAZY)
+    private Set<PeriodStatementAsignation> periodStatementAsignations = new HashSet<>();
 
-    @OneToMany(mappedBy = "statement",fetch = FetchType.LAZY)
+    @ManyToMany
+    @JoinTable(name = "statement_indicator_assignations",
+            joinColumns = {@JoinColumn(name = "statement_id")},
+            inverseJoinColumns = { @JoinColumn(name = "indicator_id")}
+    )
     private Set<Indicator> indicators = new HashSet<>();
 
     @Override
@@ -132,14 +136,6 @@ public class Statement extends BaseEntity<Long> {
         this.area = area;
     }
 
-    public void addIndicator(Indicator indicator){
-        indicator.setAreaType(this.areaType);
-        indicator.setStatement(this);
-        if(!this.indicators.add(indicator)){
-            this.indicators.remove(indicator);
-            this.indicators.add(indicator);
-        }
-    }
 
     public Set<Indicator> getIndicators() {
         return indicators;
@@ -150,16 +146,17 @@ public class Statement extends BaseEntity<Long> {
     }
 
 
-    public void addPeriodStatementAsignation(Period period){
+    public void addPeriodStatementAsignation(Period period) {
         PeriodStatementAsignation periodStatementAsignation = new PeriodStatementAsignation();
         periodStatementAsignation.setState(State.ACTIVO);
         periodStatementAsignation.setPeriod(period);
         periodStatementAsignation.setStatement(this);
-        if(!this.periodStatementAsignations.add(periodStatementAsignation)){
+        if (!this.periodStatementAsignations.add(periodStatementAsignation)) {
             this.periodStatementAsignations.remove(periodStatementAsignation);
             this.periodStatementAsignations.add(periodStatementAsignation);
         }
     }
+
     public Set<PeriodStatementAsignation> getPeriodStatementAsignations() {
         return periodStatementAsignations;
     }
