@@ -97,6 +97,7 @@ import {VirtualScrollerModule} from 'primeng/virtualscroller';
 import {UserService} from './services/user.service';
 import {NgxPermissionsModule, NgxPermissionsService} from 'ngx-permissions';
 import { OfficeOrganizationPipe } from './pipes/officeOrganization.pipe';
+import { CodeShortDescriptionPipe } from './pipes/code-short-description.pipe';
 
 
 @NgModule({
@@ -113,6 +114,7 @@ import { OfficeOrganizationPipe } from './pipes/officeOrganization.pipe';
         AppErrorComponent,
         AppAccessdeniedComponent,
         OfficeOrganizationPipe,
+        CodeShortDescriptionPipe,
     ],
     imports: [
         CommonModule,

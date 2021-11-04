@@ -30,3 +30,7 @@ export enum EnumsType {
     State = 'State',
 }
 
+export enum EnumsState {
+    ACTIVE = 'ACTIVO',
+    INACTIVE = 'INACTIVO'
+}

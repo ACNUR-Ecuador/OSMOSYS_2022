@@ -1,15 +1,15 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Pillar} from '../model/OsmosysModel';
-
+import {EnumsState} from '../model/UtilsModel';
 
 
 const mainServiceUrl = environment.base_url + '/pillars';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class PillarService {
 
@@ -26,5 +26,9 @@ export class PillarService {
 
     public update(pillar: Pillar): Observable<number> {
         return this.http.put<number>(`${mainServiceUrl}`, pillar);
+    }
+
+    public getByState(state: EnumsState): Observable<Pillar[]> {
+        return this.http.get<Pillar[]>(`${mainServiceUrl}/byState/${state}`);
     }
 }

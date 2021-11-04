@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Area, Period} from '../model/OsmosysModel';
+import {Period} from '../model/OsmosysModel';
 import {environment} from '../../../environments/environment';
+import {EnumsState} from '../model/UtilsModel';
 
 
 const mainServiceUrl = environment.base_url + '/periods';
@@ -25,5 +26,9 @@ export class PeriodService {
 
     public update(period: Period): Observable<number> {
         return this.http.put<number>(`${mainServiceUrl}`, period);
+    }
+
+    public getByState(state: EnumsState): Observable<Period[]> {
+        return this.http.get<Period[]>(`${mainServiceUrl}/byState/${state}`);
     }
 }

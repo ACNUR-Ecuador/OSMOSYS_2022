@@ -101,7 +101,7 @@ public class Area extends BaseEntity<Long> {
     }
 
 
-    private void addStatement(Statement statement) {
+    public void addStatement(Statement statement) {
         statement.setArea(this);
         statement.setAreaType(this.areaType);
         if (!this.statements.add(statement)) {
@@ -110,7 +110,7 @@ public class Area extends BaseEntity<Long> {
         }
     }
 
-    private void removeStatement(Statement statement) {
+    public void removeStatement(Statement statement) {
         if (statement.getId() != null) {
             statement.setState(State.INACTIVO);
         } else {

@@ -4,7 +4,6 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.PeriodDao;
-import org.unhcr.osmosys.model.Area;
 import org.unhcr.osmosys.model.Period;
 import org.unhcr.osmosys.webServices.model.PeriodWeb;
 
@@ -73,12 +72,12 @@ public class PeriodService {
     public List<PeriodWeb> periodsToPeriodsWeb(List<Period> periods) {
         List<PeriodWeb> r = new ArrayList<>();
         for (Period period : periods) {
-            r.add(this.periodToPeriodWeg(period));
+            r.add(this.periodToPeriodWeb(period));
         }
         return r;
     }
 
-    public PeriodWeb periodToPeriodWeg(Period period) {
+    public PeriodWeb periodToPeriodWeb(Period period) {
         if (period == null) {
             return null;
         }

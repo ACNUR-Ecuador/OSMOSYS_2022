@@ -1,8 +1,10 @@
 package org.unhcr.osmosys.webServices.endpoints;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
 import org.unhcr.osmosys.services.SituationService;
+import org.unhcr.osmosys.webServices.model.AreaWeb;
 import org.unhcr.osmosys.webServices.model.SituationWeb;
 
 import javax.enterprise.context.RequestScoped;
@@ -40,5 +42,13 @@ public class SituationEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public List<SituationWeb> getAll() {
         return this.situationService.getAll();
+    }
+
+    @Path("/byState/{state}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<SituationWeb> getByState(@PathParam("state") State state) {
+        return this.situationService.getByState(state);
     }
 }

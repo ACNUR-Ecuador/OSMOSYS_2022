@@ -1,12 +1,9 @@
 package org.unhcr.osmosys.webServices.endpoints;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
-import org.unhcr.osmosys.model.Office;
-import org.unhcr.osmosys.model.Organization;
 import org.unhcr.osmosys.services.OrganizacionService;
-import org.unhcr.osmosys.webServices.model.AreaWeb;
-import org.unhcr.osmosys.webServices.model.OfficeWeb;
 import org.unhcr.osmosys.webServices.model.OrganizationWeb;
 
 import javax.enterprise.context.RequestScoped;
@@ -44,5 +41,13 @@ public class OrganizationEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public List<OrganizationWeb> getAll() {
         return this.organizacionService.getAll();
+    }
+
+    @Path("/byState/{state}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<OrganizationWeb> getByState(@PathParam("state") State state) {
+        return this.organizacionService.getByState(state);
     }
 }

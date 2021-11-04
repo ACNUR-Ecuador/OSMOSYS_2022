@@ -6,6 +6,8 @@ import {PillarAdministrationComponent} from './pillar-administration/pillar-admi
 import {SituationAdministrationComponent} from './situation-administration/situation-administration.component';
 import {OrganizationAdministrationComponent} from './organization-administration/organization-administration.component';
 import {OfficeAdministrationComponent} from './office-administration/office-administration.component';
+import {Statement} from '@angular/compiler';
+import {StatementAdministrationComponent} from './statement-administration/statement-administration.component';
 
 const routes: Routes = [
     {
@@ -16,7 +18,8 @@ const routes: Routes = [
             {path: 'pillars', component: PillarAdministrationComponent},
             {path: 'situations', component: SituationAdministrationComponent},
             {path: 'organizations', component: OrganizationAdministrationComponent},
-            {path: 'offices', component: OfficeAdministrationComponent}
+            {path: 'offices', component: OfficeAdministrationComponent},
+            {path: 'statements', component: StatementAdministrationComponent}
         ]
     }
 ];

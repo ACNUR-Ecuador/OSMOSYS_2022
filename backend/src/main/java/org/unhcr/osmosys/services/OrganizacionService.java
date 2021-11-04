@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.services;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.StringUtils;
 import org.unhcr.osmosys.daos.OrganizationDao;
 import org.unhcr.osmosys.model.Organization;
@@ -142,4 +143,7 @@ public class OrganizacionService {
         return o;
     }
 
+    public List<OrganizationWeb> getByState(State state) {
+        return this.organizationsToOrganizationsWeb(this.organizationDao.getByState(state));
+    }
 }

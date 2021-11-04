@@ -26,6 +26,9 @@ import { OfficeAdministrationComponent } from './office-administration/office-ad
 import {OfficeOrganizationPipe} from '../shared/pipes/officeOrganization.pipe';
 import {TabViewModule} from 'primeng/tabview';
 import {OrganizationChartModule} from 'primeng/organizationchart';
+import { StatementAdministrationComponent } from './statement-administration/statement-administration.component';
+import {CodeShortDescriptionPipe} from '../shared/pipes/code-short-description.pipe';
+import {CheckboxModule} from 'primeng/checkbox';
 
 
 @NgModule({
@@ -35,7 +38,8 @@ import {OrganizationChartModule} from 'primeng/organizationchart';
         PillarAdministrationComponent,
         SituationAdministrationComponent,
         OrganizationAdministrationComponent,
-        OfficeAdministrationComponent
+        OfficeAdministrationComponent,
+        StatementAdministrationComponent
     ],
     imports: [
         CommonModule,
@@ -56,11 +60,13 @@ import {OrganizationChartModule} from 'primeng/organizationchart';
         MessageModule,
         MessagesModule,
         TabViewModule,
-        OrganizationChartModule
+        OrganizationChartModule,
+        CheckboxModule
     ],
     providers: [
         ConfirmationService,
-        OfficeOrganizationPipe
+        OfficeOrganizationPipe,
+        CodeShortDescriptionPipe
     ]
 })
 export class AdministrationModule {

@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.webServices.endpoints;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
 import org.unhcr.osmosys.services.PeriodService;
 import org.unhcr.osmosys.webServices.model.PeriodWeb;
@@ -40,5 +41,13 @@ public class PeriodEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public List<PeriodWeb> getAll() {
         return this.periodService.getAll();
+    }
+
+    @Path("/byState/{state}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PeriodWeb> getByState(@PathParam("state") State state) {
+        return this.periodService.getByState(state);
     }
 }

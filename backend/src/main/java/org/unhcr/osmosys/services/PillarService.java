@@ -43,7 +43,7 @@ public class PillarService {
             throw new GeneralAppException("No se puede crear un pilar con id", Response.Status.BAD_REQUEST);
         }
         this.validate(pillarWeb);
-        Pillar pillar = this.saveOrUpdate(this.pillarToPillarWeb(pillarWeb));
+        Pillar pillar = this.saveOrUpdate(this.pillarWebToPillar(pillarWeb));
         return pillar.getId();
     }
 
@@ -65,19 +65,19 @@ public class PillarService {
             throw new GeneralAppException("No se puede crear un pillar sin id", Response.Status.BAD_REQUEST);
         }
         this.validate(pillarWeb);
-        Pillar pillar = this.saveOrUpdate(this.pillarToPillarWeb(pillarWeb));
+        Pillar pillar = this.saveOrUpdate(this.pillarWebToPillar(pillarWeb));
         return pillar.getId();
     }
 
     public List<PillarWeb> pillarsToPillarsWeb(List<Pillar> pillars) {
         List<PillarWeb> r = new ArrayList<>();
         for (Pillar pillar : pillars) {
-            r.add(this.pillarToPillarWeg(pillar));
+            r.add(this.pillarToPillarWeb(pillar));
         }
         return r;
     }
 
-    public PillarWeb pillarToPillarWeg(Pillar pillar) {
+    public PillarWeb pillarToPillarWeb(Pillar pillar) {
         if (pillar == null) {
             return null;
         }
@@ -94,12 +94,12 @@ public class PillarService {
     public List<Pillar> pillarsWebToPillars(List<PillarWeb> pillarsWebs) {
         List<Pillar> r = new ArrayList<>();
         for (PillarWeb pillarWeb : pillarsWebs) {
-            r.add(this.pillarToPillarWeb(pillarWeb));
+            r.add(this.pillarWebToPillar(pillarWeb));
         }
         return r;
     }
 
-    public Pillar pillarToPillarWeb(PillarWeb pillarWeb) {
+    public Pillar pillarWebToPillar(PillarWeb pillarWeb) {
         if (pillarWeb == null) {
             return null;
         }

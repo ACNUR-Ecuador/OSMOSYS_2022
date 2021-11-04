@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.webServices.endpoints;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
 import org.unhcr.osmosys.model.Office;
 import org.unhcr.osmosys.services.AreaService;
@@ -41,5 +42,13 @@ public class AreaEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public List<AreaWeb> getAll() {
         return this.areaService.getAll();
+    }
+
+    @Path("/byState/{state}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AreaWeb> getByState(@PathParam("state") State state) {
+        return this.areaService.getByState(state);
     }
 }

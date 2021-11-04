@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Organization} from '../model/OsmosysModel';
 import {environment} from '../../../environments/environment';
+import {EnumsState} from '../model/UtilsModel';
 
 const mainServiceUrl = environment.base_url + '/organizations';
 
@@ -24,5 +25,9 @@ export class OrganizationService {
 
     public update(organization: Organization): Observable<number> {
         return this.http.put<number>(`${mainServiceUrl}`, organization);
+    }
+
+    public getByState(state: EnumsState): Observable<Organization[]> {
+        return this.http.get<Organization[]>(`${mainServiceUrl}/byState/${state}`);
     }
 }

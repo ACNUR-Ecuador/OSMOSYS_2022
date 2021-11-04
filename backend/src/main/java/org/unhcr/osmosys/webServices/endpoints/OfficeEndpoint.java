@@ -4,6 +4,7 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
 import org.unhcr.osmosys.services.OfficeService;
+import org.unhcr.osmosys.webServices.model.AreaWeb;
 import org.unhcr.osmosys.webServices.model.OfficeWeb;
 
 import javax.enterprise.context.RequestScoped;
@@ -48,7 +49,7 @@ public class OfficeEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public List<OfficeWeb> getActive() {
-        return this.officeService.getByState(State.ACTIVO,false);
+        return this.officeService.getByState(State.ACTIVO, false);
     }
 
     @Path("/withChilds")
@@ -65,5 +66,13 @@ public class OfficeEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public List<OfficeWeb> getTree() {
         return this.officeService.getOfficeTree();
+    }
+
+    @Path("/byState/{state}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<OfficeWeb> getByState(@PathParam("state") State state) {
+        return this.officeService.getByState(state, false);
     }
 }

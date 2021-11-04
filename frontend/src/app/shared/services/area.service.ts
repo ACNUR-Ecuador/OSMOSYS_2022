@@ -3,6 +3,7 @@ import {environment} from '../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Area} from '../model/OsmosysModel';
+import {EnumsState} from '../model/UtilsModel';
 
 const mainServiceUrl = environment.base_url + '/areas';
 
@@ -24,5 +25,9 @@ export class AreaService {
 
     public update(area: Area): Observable<number> {
         return this.http.put<number>(`${mainServiceUrl}`, area);
+    }
+
+    public getByState(state: EnumsState): Observable<Area[]> {
+        return this.http.get<Area[]>(`${mainServiceUrl}/byState/${state}`);
     }
 }

@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 
 @Entity
-@Table(schema = "osmosys", name = "pilars")
+@Table(schema = "osmosys", name = "pillars")
 public class Pillar extends BaseEntity<Long> {
 
     @Id

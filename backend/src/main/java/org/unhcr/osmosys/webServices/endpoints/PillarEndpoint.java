@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.webServices.endpoints;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
 import org.unhcr.osmosys.services.PillarService;
 import org.unhcr.osmosys.webServices.model.PillarWeb;
@@ -40,5 +41,13 @@ public class PillarEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public List<PillarWeb> getAll() {
         return this.pillarService.getAll();
+    }
+
+    @Path("/byState/{state}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PillarWeb> getByState(@PathParam("state") State state) {
+        return this.pillarService.getByState(state);
     }
 }

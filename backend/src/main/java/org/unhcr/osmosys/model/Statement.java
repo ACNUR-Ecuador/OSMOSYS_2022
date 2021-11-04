@@ -28,6 +28,11 @@ public class Statement extends BaseEntity<Long> {
     @Column(name = "area_type", nullable = false, length = 12, unique = false)
     private AreaType areaType;
 
+
+    @Column(name = "code", unique = true)
+    private String code;
+
+
     @Column(name = "short_description", unique = true)
     private String shortDescription;
 
@@ -53,7 +58,7 @@ public class Statement extends BaseEntity<Long> {
     @JoinColumn(name = "situation_id", foreignKey = @ForeignKey(name = "fk_statemet_situation"))
     private Situation situation;
 
-    @OneToMany(mappedBy = "statement", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "statement", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<PeriodStatementAsignation> periodStatementAsignations = new HashSet<>();
 
     @ManyToMany
@@ -146,17 +151,6 @@ public class Statement extends BaseEntity<Long> {
     }
 
 
-    public void addPeriodStatementAsignation(Period period) {
-        PeriodStatementAsignation periodStatementAsignation = new PeriodStatementAsignation();
-        periodStatementAsignation.setState(State.ACTIVO);
-        periodStatementAsignation.setPeriod(period);
-        periodStatementAsignation.setStatement(this);
-        if (!this.periodStatementAsignations.add(periodStatementAsignation)) {
-            this.periodStatementAsignations.remove(periodStatementAsignation);
-            this.periodStatementAsignations.add(periodStatementAsignation);
-        }
-    }
-
     public Set<PeriodStatementAsignation> getPeriodStatementAsignations() {
         return periodStatementAsignations;
     }
@@ -165,6 +159,21 @@ public class Statement extends BaseEntity<Long> {
         this.periodStatementAsignations = periodStatementAsignations;
     }
 
+    public void addPeriodStatementAsignation(PeriodStatementAsignation periodStatementAsignation){
+        periodStatementAsignation.setStatement(this);
+        if (!this.periodStatementAsignations.add(periodStatementAsignation)) {
+            this.periodStatementAsignations.remove(periodStatementAsignation);
+            this.periodStatementAsignations.add(periodStatementAsignation);
+        }
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     @Override
     public boolean equals(Object o) {
