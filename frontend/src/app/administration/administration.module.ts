@@ -29,6 +29,9 @@ import {OrganizationChartModule} from 'primeng/organizationchart';
 import { StatementAdministrationComponent } from './statement-administration/statement-administration.component';
 import {CodeShortDescriptionPipe} from '../shared/pipes/code-short-description.pipe';
 import {CheckboxModule} from 'primeng/checkbox';
+import { PerformanceIndicatorAdministrationComponent } from './performance-indicator-administration/performance-indicator-administration.component';
+import { MarkerAdministrationComponent } from './marker-administration/marker-administration.component';
+import { CustomDissagregationAdministrationComponent } from './custom-dissagregation-administration/custom-dissagregation-administration.component';
 
 
 @NgModule({
@@ -39,7 +42,10 @@ import {CheckboxModule} from 'primeng/checkbox';
         SituationAdministrationComponent,
         OrganizationAdministrationComponent,
         OfficeAdministrationComponent,
-        StatementAdministrationComponent
+        StatementAdministrationComponent,
+        PerformanceIndicatorAdministrationComponent,
+        MarkerAdministrationComponent,
+        CustomDissagregationAdministrationComponent
     ],
     imports: [
         CommonModule,

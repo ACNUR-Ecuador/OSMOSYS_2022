@@ -8,8 +8,9 @@ import org.unhcr.osmosys.model.enums.*;
 
 import javax.persistence.*;
 
+
 @Entity
-@Table(schema = "osmosys", name = "dissagregation_filter_indicator")
+@Table(schema = "osmosys", name = "dissagregation_filter_indicator_execution")
 public class DissagregationFilterIndicatorExecution extends BaseEntity<Long> {
 
     @Id

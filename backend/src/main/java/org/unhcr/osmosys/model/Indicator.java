@@ -4,10 +4,7 @@ import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.unhcr.osmosys.model.enums.AreaType;
-import org.unhcr.osmosys.model.enums.Frecuency;
-import org.unhcr.osmosys.model.enums.IndicatorType;
-import org.unhcr.osmosys.model.enums.MeasureType;
+import org.unhcr.osmosys.model.enums.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -67,6 +64,9 @@ public class Indicator extends BaseEntity<Long> {
 
     @Column(name = "is_calculated", nullable = false)
     private Boolean isCalculated;
+
+    @Column(name = "total_indicator_calculation_type", nullable = false)
+    private TotalIndicatorCalculationType totalIndicatorCalculationType;
 
     @OneToMany(mappedBy = "indicator", fetch = FetchType.LAZY)
     private Set<DissagregationAssignationToIndicator> dissagregationsAssignationToIndicator = new HashSet<>();
@@ -230,6 +230,14 @@ public class Indicator extends BaseEntity<Long> {
 
     public void setDissagregationsAssignationToIndicator(Set<DissagregationAssignationToIndicator> dissagregationsAssignationToIndicator) {
         this.dissagregationsAssignationToIndicator = dissagregationsAssignationToIndicator;
+    }
+
+    public TotalIndicatorCalculationType getTotalIndicatorCalculationType() {
+        return totalIndicatorCalculationType;
+    }
+
+    public void setTotalIndicatorCalculationType(TotalIndicatorCalculationType totalIndicatorCalculationType) {
+        this.totalIndicatorCalculationType = totalIndicatorCalculationType;
     }
 
     @Override

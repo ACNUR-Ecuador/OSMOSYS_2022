@@ -32,7 +32,12 @@ export class MenuService {
                 {label: 'Situaciones', icon: 'pi pi-fw pi-home', routerLink: ['/administration/situations'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
                 {label: 'Organizaciones', icon: 'pi pi-fw pi-home', routerLink: ['/administration/organizations'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
                 {label: 'Oficinas', icon: 'pi pi-fw pi-home', routerLink: ['/administration/offices'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
-                {label: 'Statements', icon: 'pi pi-fw pi-home', routerLink: ['/administration/statements'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']}
+                {label: 'Statements', icon: 'pi pi-fw pi-home', routerLink: ['/administration/statements'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
+                // tslint:disable-next-line:max-line-length
+                {label: 'Indicadores de Rendimiento', icon: 'pi pi-fw pi-home', routerLink: ['/administration/performanceIndicator'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
+                {label: 'Marcadores', icon: 'pi pi-fw pi-home', routerLink: ['/administration/marker'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
+                // tslint:disable-next-line:max-line-length
+                {label: 'Desagregaciones Personalizadas', icon: 'pi pi-fw pi-home', routerLink: ['/administration/customDissagregation'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']}
             ]
         },
         {separator: true},

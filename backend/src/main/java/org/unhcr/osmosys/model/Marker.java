@@ -9,7 +9,10 @@ import javax.persistence.*;
 
 
 @Entity
-@Table(schema = "osmosys", name = "markers")
+@Table(schema = "osmosys", name = "markers",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_marker_unique", columnNames = {"type","subType","short_description"})
+        })
 public class Marker extends BaseEntity<Long> {
 
     @Id
@@ -21,12 +24,19 @@ public class Marker extends BaseEntity<Long> {
     @Column(name = "state", nullable = false, length = 12, unique = false)
     private State state;
 
-    @Column(name = "type", nullable = false, length = 12, unique = false)
+    @Column(name = "type", nullable = false, length = 50, unique = false)
     @Enumerated(EnumType.STRING)
     private MarkerType type;
 
-    @Column(name = "subtype", nullable = true, length = 12, unique = false)
+    @Column(name = "subtype", nullable = true, length = 255, unique = false)
     private String subType;
+
+    @Column(name = "short_description", unique = false)
+    private String shortDescription;
+
+
+    @Column(name = "description", columnDefinition = "text", unique = false)
+    private String description;
 
     @Override
     public Long getId() {
@@ -59,5 +69,21 @@ public class Marker extends BaseEntity<Long> {
 
     public void setSubType(String subType) {
         this.subType = subType;
+    }
+
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

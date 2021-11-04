@@ -97,8 +97,21 @@ export class PeriodStatementAsignation {
     constructor() {
         this.state = 'ACTIVO';
     }
+
     public id: string;
     public state: string;
     public period: Period;
     public populationCoverage: number;
+}
+
+export class Marker {
+    constructor() {
+        this.state = 'ACTIVO';
+    }
+    public id: string;
+    public state: string;
+    public type: string;
+    public subType: string;
+    public description: string;
+    public shortDescription: string;
 }

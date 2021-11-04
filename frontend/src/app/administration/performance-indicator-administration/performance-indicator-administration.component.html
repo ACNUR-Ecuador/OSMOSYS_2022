@@ -1,0 +1,155 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <p-toast></p-toast>
+
+        <div class="card">
+            <h3 class="page-title">Administración de Indicadores de Rendimiento</h3>
+            <p-toolbar styleClass="p-mb-4">
+                <ng-template pTemplate="left">
+                    <button pButton pRipple label="Crear" icon="pi pi-plus" class="p-button-success p-mr-2 p-mb-2"
+                            (click)="createItem()"></button>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+                            class="p-button-success p-mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true"
+                     [rowHover]="true" dataKey="id"
+                     styleClass="p-datatable-customers"
+                     currentPageReportTemplate=" {first} a {last} de {totalRecords} "
+                     [showCurrentPageReport]="true">
+                <ng-template pTemplate="caption">
+                    <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between table-header">
+                        <h5 class="p-m-0">Situaciones</h5>
+                        <span class="p-input-icon-left">
+                        </span>
+                        <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
+                                       selectedItemsLabel="{0} columnas seleccionadas"
+                                       [style]="{minWidth: '200px',color:'#6c757d'}"
+                                       placeholder="Seleccione las columnas"></p-multiSelect>
+                    </div>
+
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                            {{col.header}}
+                            <p-sortIcon [field]="col.field"></p-sortIcon>
+                        </th>
+                        <th>
+
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th *ngFor="let col of columns" [ngSwitch]="col.field">
+                            <p-columnFilter *ngSwitchDefault [type]="col.type" [field]="col.field"
+                                            [matchMode]="'contains'"
+                                            [showMenu]="false"> matchMode="contains
+                            </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'state'" type="equals" [field]="col.field"
+                                            [showMenu]="false"
+                            >
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown [ngModel]="value" [options]="states"
+                                                (onChange)="filter($event.value)"
+                                                placeholder="Selecciona..." [showClear]="true">
+                                        <ng-template let-option pTemplate="item">
+                                            <span
+                                                [class]="'customer-badge status-' + option">{{option}}</span>
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                        </th>
+                        <th>
+
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <tr>
+                        <td *ngFor="let col of columns"
+                            [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
+                        >
+                            {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
+                        </td>
+                        <td>
+                            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2"
+                                    (click)="editItem(rowData)"></button>
+
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <div class="p-d-flex p-ai-center p-jc-between">
+                        Total {{items ? items.length : 0 }} situaciones.
+                    </div>
+                </ng-template>
+            </p-table>
+        </div>
+        <form [formGroup]="formItem" (ngSubmit)="saveItem()">
+            <p-dialog [(visible)]="showDialog" [style]="{width: '450px'}" header="Situación" [modal]="true"
+                      styleClass="p-fluid" [closable]="false">
+
+                <ng-template pTemplate="content">
+                    <p-messages></p-messages>
+
+                    <div class="p-field">
+                        <label for="codeI">Código</label>
+                        <input type="text" pInputText id="codeI"
+                               formControlName="code" autofocus/>
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('code',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+
+                    <div class="p-field">
+                        <label for="shortDescriptionI">Descripción Corta</label>
+                        <input type="text" pInputText id="shortDescriptionI"
+                               formControlName="shortDescription"/>
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('shortDescription',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+
+                    <div class="p-field">
+                        <label for="descriptionI">Descripción Completa</label>
+
+                        <textarea pInputTextarea id="descriptionI"
+                                  formControlName="description"
+                                  autoResize="autoResize">
+                        </textarea>
+
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('description',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+                    <div class="p-field">
+                        <label for="stateI">Estado</label>
+
+                        <p-selectButton id="stateI"
+                                        formControlName="state"
+                                        [options]="states"
+                                        placeholder="Selecciona..."
+                        >
+                        </p-selectButton>
+
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('state',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="footer">
+                    <button pButton type="submit"
+                            [disabled]="!formItem.valid"
+                            pRipple label="Guardar" icon="pi pi-check"
+                    ></button>
+                    <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
+                            (click)="cancelDialog()"></button>
+
+                </ng-template>
+            </p-dialog>
+        </form>
+    </div>
+</div>
