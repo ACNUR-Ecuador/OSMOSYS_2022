@@ -2,6 +2,8 @@ package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -30,7 +32,7 @@ public class CustomDissagregationOption extends BaseEntity<Long> {
     @JoinColumn(name = "custom_dissagregation_id", foreignKey = @ForeignKey(name = "fk_diss_optiop_dissagretion"))
     private CustomDissagregation customDissagregation;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(schema ="osmosys" ,name = "custom_dissagregation_option_markers", joinColumns = @JoinColumn(name = "custom_dissagregation_option__id"), inverseJoinColumns = @JoinColumn(name = "marker_id"))
     private Set<Marker> markers = new HashSet<>();
 
@@ -81,5 +83,21 @@ public class CustomDissagregationOption extends BaseEntity<Long> {
 
     public void setMarkers(Set<Marker> markers) {
         this.markers = markers;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CustomDissagregationOption that = (CustomDissagregationOption) o;
+
+        return new EqualsBuilder().append(name, that.name).append(customDissagregation, that.customDissagregation).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(name).append(customDissagregation).toHashCode();
     }
 }

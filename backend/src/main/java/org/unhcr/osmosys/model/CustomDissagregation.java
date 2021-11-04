@@ -29,7 +29,7 @@ public class CustomDissagregation extends BaseEntity<Long> {
     @Column(name = "state", nullable = false, length = 12, unique = false)
     private State state;
 
-    @OneToMany(mappedBy = "customDissagregation",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "customDissagregation",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<CustomDissagregationOption> customDissagregationOptions = new HashSet<>();
 
     @Override

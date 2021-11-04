@@ -108,10 +108,37 @@ export class Marker {
     constructor() {
         this.state = 'ACTIVO';
     }
+
     public id: string;
     public state: string;
     public type: string;
     public subType: string;
     public description: string;
     public shortDescription: string;
+}
+
+export class CustomDissagregation {
+    constructor() {
+        this.state = 'ACTIVO';
+        this.controlTotalValue = false;
+    }
+
+    public id: string;
+    public name: string;
+    public description: string;
+    public controlTotalValue: boolean;
+    public state: string;
+    public customDissagregationOptions: CustomDissagregationOption[];
+}
+
+export class CustomDissagregationOption {
+    constructor() {
+        this.state = 'ACTIVO';
+    }
+
+    public id: string;
+    public name: string;
+    public description: string;
+    public state: string;
+    public markers: Marker[];
 }
