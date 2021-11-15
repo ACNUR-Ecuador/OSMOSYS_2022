@@ -20,3 +20,10 @@ $gutter: 1rem; //for primeflex grid system
 .page-title{
     color: #0072BC;
 }
+
+.logo-osmosys {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+}

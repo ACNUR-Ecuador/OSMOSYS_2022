@@ -4676,4 +4676,11 @@
   color: #0072BC;
 }
 
+.logo-osmosys {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
 /*# sourceMappingURL=styles.css.map */

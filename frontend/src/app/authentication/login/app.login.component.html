@@ -2,8 +2,11 @@
     <p-toast id="loginToast"></p-toast>
     <div class="login-wrapper">
         <div class="login-panel">
-            <img src="../../../assets/images/logos_unhcr/Horizontal%202%20lines%20blue.png" class="logo"
-                 alt="diamond-layout"/>
+            <div class="logo-osmosys">
+                <img style="margin: auto;" src="../../../assets/images/osmosys_unhcr_blue.png" alt="diamond-layout"/>
+            </div>
+
+
             <form [formGroup]="loginForm" (ngSubmit)="login()">
                 <div class="login-form">
 
@@ -20,18 +23,22 @@
             </form>
 
             <div class="icons">
-                <p>Si necesitas ayuda comunícate con nosotros.<a href="mailto:salazart@unhcr.org"><i class="pi pi-envelope"></i></a></p>
+                <p>Si necesitas ayuda comunícate con nosotros.<a href="mailto:salazart@unhcr.org"><i
+                    class="pi pi-envelope"></i></a></p>
             </div>
 
         </div>
         <div class="login-image">
-            <div class="login-image-content">
-                <h1>OSMOSYS</h1>
-                <h3>Sistema de Monitoreo de Operaciones<br>Ecuador</h3>
+            <div class="login-image-content"
+                 style=" "
+            >
+
 
             </div>
             <div class="image-footer">
-
+               <!-- <img src="../../../assets/images/logos_unhcr/Horizontal%202%20lines%20blue.png" class="logo"
+                     alt="diamond-layout" style="width: inherit">-->
+                <!--<h3>Sistema de Monitoreo de Operaciones<br>Ecuador</h3>-->
             </div>
         </div>
     </div>
