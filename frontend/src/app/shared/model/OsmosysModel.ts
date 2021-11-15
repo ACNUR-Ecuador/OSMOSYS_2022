@@ -121,6 +121,7 @@ export class CustomDissagregation {
     constructor() {
         this.state = 'ACTIVO';
         this.controlTotalValue = false;
+        this.customDissagregationOptions = [];
     }
 
     public id: string;
@@ -134,9 +135,10 @@ export class CustomDissagregation {
 export class CustomDissagregationOption {
     constructor() {
         this.state = 'ACTIVO';
+        this.markers = [];
     }
 
-    public id: string;
+    public id: number;
     public name: string;
     public description: string;
     public state: string;
