@@ -98,6 +98,8 @@ import {UserService} from './services/user.service';
 import {NgxPermissionsModule, NgxPermissionsService} from 'ngx-permissions';
 import { OfficeOrganizationPipe } from './pipes/officeOrganization.pipe';
 import { CodeShortDescriptionPipe } from './pipes/code-short-description.pipe';
+import { MarkersListPipe } from './pipes/markers-list.pipe';
+import { CustomDissagregationOptionsListPipe } from './pipes/custom-dissagregation-options-list.pipe';
 
 
 @NgModule({
@@ -115,6 +117,8 @@ import { CodeShortDescriptionPipe } from './pipes/code-short-description.pipe';
         AppAccessdeniedComponent,
         OfficeOrganizationPipe,
         CodeShortDescriptionPipe,
+        MarkersListPipe,
+        CustomDissagregationOptionsListPipe,
     ],
     imports: [
         CommonModule,

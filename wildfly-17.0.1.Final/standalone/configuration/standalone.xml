@@ -96,7 +96,7 @@
     <profile>
         <subsystem xmlns="urn:jboss:domain:logging:7.0">
             <console-handler name="CONSOLE">
-                <level name="INFO"/>
+                <level name="TRACE"/>
                 <formatter>
                     <named-formatter name="COLOR-PATTERN"/>
                 </formatter>
@@ -124,8 +124,14 @@
             <logger category="com.sagatechs.generics">
                 <level name="DEBUG"/>
             </logger>
-            <logger category="org.unhcr.programMonitoring">
+            <logger category="org.unhcr.osmosys">
                 <level name="DEBUG"/>
+            </logger>
+            <logger category="org.hibernate.SQL">
+                <level name="DEBUG"/>
+            </logger>
+            <logger category="org.hibernate.type.descriptor.sql">
+                <level name="TRACE"/>
             </logger>
             <logger category="net.sf.jasperreports.engine.query.JRJdbcQueryExecuter">
                 <level name="DEBUG"/>

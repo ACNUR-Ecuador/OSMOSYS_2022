@@ -33,6 +33,8 @@ import {PerformanceIndicatorAdministrationComponent} from './performance-indicat
 import {MarkerAdministrationComponent} from './marker-administration/marker-administration.component';
 import {CustomDissagregationAdministrationComponent} from './custom-dissagregation-administration/custom-dissagregation-administration.component';
 import {PickListModule} from 'primeng/picklist';
+import {MarkersListPipe} from '../shared/pipes/markers-list.pipe';
+import {CustomDissagregationOptionsListPipe} from '../shared/pipes/custom-dissagregation-options-list.pipe';
 
 
 @NgModule({
@@ -74,7 +76,9 @@ import {PickListModule} from 'primeng/picklist';
     providers: [
         ConfirmationService,
         OfficeOrganizationPipe,
-        CodeShortDescriptionPipe
+        CodeShortDescriptionPipe,
+        MarkersListPipe,
+        CustomDissagregationOptionsListPipe
     ]
 })
 export class AdministrationModule {

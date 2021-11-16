@@ -159,7 +159,7 @@
                                         tooltipPosition="bottom"></button>
                             </ng-template>
                         </p-toolbar>
-                        <p-table #dt1 [value]=""
+                        <p-table #dt1 [value]="formItem.get('customDissagregationOptions').value"
                                  [columns]="selectedColumnsOptions" [rows]="10"
                                  [paginator]="true"
                                  [rowHover]="true" dataKey="id"

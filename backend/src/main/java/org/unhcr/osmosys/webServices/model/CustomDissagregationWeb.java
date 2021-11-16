@@ -3,7 +3,9 @@ package org.unhcr.osmosys.webServices.model;
 import com.sagatechs.generics.persistence.model.State;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -13,7 +15,7 @@ public class CustomDissagregationWeb implements Serializable {
     private String description;
     private Boolean controlTotalValue;
     private State state;
-    private Set<CustomDissagregationOptionWeb> customDissagregationOptions = new HashSet<>();
+    private List<CustomDissagregationOptionWeb> customDissagregationOptions = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -55,11 +57,11 @@ public class CustomDissagregationWeb implements Serializable {
         this.state = state;
     }
 
-    public Set<CustomDissagregationOptionWeb> getCustomDissagregationOptions() {
+    public List<CustomDissagregationOptionWeb> getCustomDissagregationOptions() {
         return customDissagregationOptions;
     }
 
-    public void setCustomDissagregationOptions(Set<CustomDissagregationOptionWeb> customDissagregationOptions) {
+    public void setCustomDissagregationOptions(List<CustomDissagregationOptionWeb> customDissagregationOptions) {
         this.customDissagregationOptions = customDissagregationOptions;
     }
 }

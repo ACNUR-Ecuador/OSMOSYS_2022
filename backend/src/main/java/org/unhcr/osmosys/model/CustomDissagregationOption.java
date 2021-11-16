@@ -33,7 +33,7 @@ public class CustomDissagregationOption extends BaseEntity<Long> {
     private CustomDissagregation customDissagregation;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(schema ="osmosys" ,name = "custom_dissagregation_option_markers", joinColumns = @JoinColumn(name = "custom_dissagregation_option__id"), inverseJoinColumns = @JoinColumn(name = "marker_id"))
+    @JoinTable(schema ="osmosys" ,name = "custom_dissagregation_option_markers", joinColumns = @JoinColumn(name = "custom_dissagregation_option_id"), inverseJoinColumns = @JoinColumn(name = "marker_id"))
     private Set<Marker> markers = new HashSet<>();
 
     @Override
@@ -85,6 +85,14 @@ public class CustomDissagregationOption extends BaseEntity<Long> {
         this.markers = markers;
     }
 
+    public void addMarker(Marker marker){
+        marker.getCustomDissagregationOptions().add(this);
+
+        if(!this.markers.add(marker)){
+            this.markers.remove(marker);
+            this.markers.add(marker);
+        }
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -93,11 +101,11 @@ public class CustomDissagregationOption extends BaseEntity<Long> {
 
         CustomDissagregationOption that = (CustomDissagregationOption) o;
 
-        return new EqualsBuilder().append(name, that.name).append(customDissagregation, that.customDissagregation).isEquals();
+        return new EqualsBuilder().append(id, that.id).append(name, that.name).append(state, that.state).append(customDissagregation, that.customDissagregation).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(name).append(customDissagregation).toHashCode();
+        return new HashCodeBuilder(17, 37).append(id).append(name).append(state).append(customDissagregation).toHashCode();
     }
 }

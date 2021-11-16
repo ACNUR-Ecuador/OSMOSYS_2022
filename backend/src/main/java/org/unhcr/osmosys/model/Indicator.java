@@ -156,11 +156,10 @@ public class Indicator extends BaseEntity<Long> {
     }
 
     public void addMarker(Marker marker){
-        this.markers.add(marker);
-    }
-
-    public void removeMarker(Marker marker){
-        this.markers.remove(marker);
+        if(!this.markers.add(marker)){
+            this.markers.remove(marker);
+            this.markers.add(marker);
+        }
     }
 
 

@@ -80,4 +80,12 @@ public class CustomDissagregation extends BaseEntity<Long> {
     public void setCustomDissagregationOptions(Set<CustomDissagregationOption> customDissagregationOptions) {
         this.customDissagregationOptions = customDissagregationOptions;
     }
+
+    public void addCustomDissagregationOption(CustomDissagregationOption customDissagregationOption){
+        customDissagregationOption.setCustomDissagregation(this);
+        if(!this.getCustomDissagregationOptions().add(customDissagregationOption)){
+            this.getCustomDissagregationOptions().remove(customDissagregationOption);
+            this.getCustomDissagregationOptions().add(customDissagregationOption);
+        }
+    }
 }

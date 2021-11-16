@@ -10,13 +10,13 @@ import org.unhcr.osmosys.model.CustomDissagregation;
 import org.unhcr.osmosys.model.CustomDissagregationOption;
 import org.unhcr.osmosys.webServices.model.CustomDissagregationOptionWeb;
 import org.unhcr.osmosys.webServices.model.CustomDissagregationWeb;
+import org.unhcr.osmosys.webServices.model.MarkerWeb;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Stateless
 public class CustomDissagregationService {
@@ -95,6 +95,8 @@ public class CustomDissagregationService {
         customDissagregationWeb.setDescription(customDissagregation.getDescription());
         customDissagregationWeb.setName(customDissagregation.getName());
         customDissagregationWeb.setState(customDissagregation.getState());
+        customDissagregationWeb.setCustomDissagregationOptions(this.customDissagregationOptionsToCustomDissagregationOptionsWeb(new ArrayList<>(customDissagregation.getCustomDissagregationOptions())));
+
         return customDissagregationWeb;
     }
 
@@ -126,6 +128,12 @@ public class CustomDissagregationService {
         customDissagregation.setDescription(customDissagregationWeb.getDescription());
         customDissagregation.setControlTotalValue(customDissagregationWeb.getControlTotalValue());
 
+        List<CustomDissagregationOption> options = this.customDissagregationOptionsWebToCustomDissagregationOptions(new ArrayList<>(customDissagregationWeb.getCustomDissagregationOptions()));
+
+        options.forEach(customDissagregationOption -> {
+            customDissagregation.addCustomDissagregationOption(customDissagregationOption);
+        });
+
         return customDissagregation;
     }
 
@@ -136,6 +144,7 @@ public class CustomDissagregationService {
         }
         return r;
     }
+
     public CustomDissagregationOptionWeb customDissagregationOptionToCustomDissagregationOptionWeb(CustomDissagregationOption customDissagregationOption) {
         if (customDissagregationOption == null) {
             return null;
@@ -158,7 +167,10 @@ public class CustomDissagregationService {
         customDissagregationOption.setName(customDissagregationOptionWeb.getName());
         customDissagregationOption.setState(customDissagregationOptionWeb.getState());
         customDissagregationOption.setDescription(customDissagregationOptionWeb.getDescription());
-        customDissagregationOption.setMarkers(new HashSet<>(this.markerService.markersWebToMarkers(new ArrayList<>(customDissagregationOptionWeb.getMarkers()))));
+        //customDissagregationOption.setMarkers(new HashSet<>(this.markerService.markersWebToMarkers(new ArrayList<>(customDissagregationOptionWeb.getMarkers()))));
+        for (MarkerWeb marker : customDissagregationOptionWeb.getMarkers()) {
+            customDissagregationOption.addMarker(this.markerService.markerWebToMarker(marker));
+        }
         return customDissagregationOption;
     }
 
@@ -170,7 +182,7 @@ public class CustomDissagregationService {
         if (StringUtils.isBlank(customDissagregationWeb.getName())) {
             throw new GeneralAppException("Nombre no válido", Response.Status.BAD_REQUEST);
         }
-        if (customDissagregationWeb.getControlTotalValue()==null) {
+        if (customDissagregationWeb.getControlTotalValue() == null) {
             throw new GeneralAppException("Control de valor no válido", Response.Status.BAD_REQUEST);
         }
 
@@ -194,6 +206,36 @@ public class CustomDissagregationService {
                 throw new GeneralAppException("Ya existe un área con esta descripción corta", Response.Status.BAD_REQUEST);
             }
         }
+
+        this.validateOptions(customDissagregationWeb.getCustomDissagregationOptions());
+
+    }
+
+    private void validateOptions(List<CustomDissagregationOptionWeb> customDissagregationOptions) throws GeneralAppException {
+        if (CollectionUtils.isEmpty(customDissagregationOptions)) {
+            throw new GeneralAppException("No tiene opciones", Response.Status.BAD_REQUEST);
+        }
+        Map<String, Long> counting = customDissagregationOptions.stream().collect(
+                Collectors.groupingBy(CustomDissagregationOptionWeb::getName,
+                        Collectors.counting()));
+        for(String optionName:counting.keySet()){
+            if(counting.get(optionName)>1) {
+                throw new GeneralAppException("La opción " + optionName + " está repetida", Response.Status.BAD_REQUEST);
+            }
+        }
+
+        for (CustomDissagregationOptionWeb customDissagregationOption : customDissagregationOptions) {
+            if (StringUtils.isBlank(customDissagregationOption.getName())) {
+                throw new GeneralAppException("El nombre de la opción es obligatorio", Response.Status.BAD_REQUEST);
+            }
+            if (customDissagregationOption.getState() == null) {
+                throw new GeneralAppException("El estado de la opción es obligatorio", Response.Status.BAD_REQUEST);
+            }
+
+
+
+        }
+
 
     }
 }

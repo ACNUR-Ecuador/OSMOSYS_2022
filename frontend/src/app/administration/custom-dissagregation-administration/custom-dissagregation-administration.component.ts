@@ -7,6 +7,8 @@ import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {CustomDissagregationService} from '../../shared/services/custom-dissagregation.service';
 import {MarkerService} from '../../shared/services/marker.service';
+import {MarkersListPipe} from '../../shared/pipes/markers-list.pipe';
+import {CustomDissagregationOptionsListPipe} from '../../shared/pipes/custom-dissagregation-options-list.pipe';
 
 @Component({
     selector: 'app-custom-dissagregation-administration',
@@ -43,6 +45,8 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
         public utilsService: UtilsService,
         private enumsService: EnumsService,
         private customDissagregationService: CustomDissagregationService,
+        private markersListPipe: MarkersListPipe,
+        private customDissagregationOptionsListPipe: CustomDissagregationOptionsListPipe,
         private markerService: MarkerService
     ) {
     }
@@ -53,11 +57,16 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
         this.loadItems();
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
-            {field: 'name', header: 'Tipo', type: ColumnDataType.text},
-            {field: 'description', header: 'Subtipo', type: ColumnDataType.text},
-            {field: 'controlTotalValue', header: 'Descripción', type: ColumnDataType.text},
-            {field: 'state', header: 'Descripción Corta', type: ColumnDataType.text},
-            {field: 'customDissagregationOptions', header: 'Estado', type: ColumnDataType.text}
+            {field: 'name', header: 'Nombre', type: ColumnDataType.text},
+            {field: 'description', header: 'Descripción', type: ColumnDataType.text},
+            {field: 'controlTotalValue', header: 'Control de valores totales', type: ColumnDataType.text},
+            {field: 'state', header: 'Estado', type: ColumnDataType.text},
+            {
+                field: 'customDissagregationOptions',
+                header: 'Desagregaciones',
+                type: ColumnDataType.text,
+                pipeRef: this.customDissagregationOptionsListPipe
+            }
         ];
 
         this.colOptions = [
@@ -65,7 +74,7 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
             {field: 'name', header: 'Nombre', type: ColumnDataType.text},
             {field: 'description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
-            {field: 'markers', header: 'Marcadores', type: ColumnDataType.text},
+            {field: 'markers', header: 'Marcadores', type: ColumnDataType.text, pipeRef: this.markersListPipe},
         ];
         this._selectedColumns = this.cols.filter(value => value.field !== 'id');
         this._selectedColumnsOptions = this.colOptions.filter(value => value.field !== 'id');
@@ -95,7 +104,7 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
     private loadItems() {
         this.customDissagregationService.getAll().subscribe(value => {
             this.items = value;
-            this.loadMarkers();
+            this.loadMarkers(null);
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -106,9 +115,21 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
         });
     }
 
-    private loadMarkers() {
+    private loadMarkers(markersToRemove: Marker[]) {
         this.markerService.getByState(EnumsState.ACTIVE).subscribe(value => {
-            this.markers = value;
+
+            if (markersToRemove && markersToRemove.length > 0) {
+                this.markers = value.filter(value1 => {
+                    for (const marker of markersToRemove) {
+                        if (marker.id === value1.id) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+            } else {
+                this.markers = value;
+            }
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -139,9 +160,6 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
         const newItem = new CustomDissagregation();
         this.formItem.patchValue(newItem);
         this.formItem.get('customDissagregationOptions').patchValue(newItem.customDissagregationOptions);
-        // this.itemsOptions = [];
-
-        console.log(this.formItem.value);
     }
 
 
@@ -150,15 +168,17 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
         this.submitted = false;
         this.showDialog = true;
         this.formItem.patchValue(customDissagregation);
-        // this.itemsOptions = customDissagregation.customDissagregationOptions;
+        for (const customDissagregationOption of customDissagregation.customDissagregationOptions) {
+            this.formItem.get('customDissagregationOptions').value.push(customDissagregationOption);
+        }
     }
 
     createOption() {
+        this.loadMarkers(null);
         const op1 = new CustomDissagregationOption();
-        this.showDialogOption = true;
+        this.utilsService.resetForm(this.formOptionItem);
         this.formOptionItem.patchValue(op1);
-        console.log(this.formOptionItem);
-        console.log(this.formOptionItem.get('markers').value);
+        this.showDialogOption = true;
     }
 
     editOption(customDissagregationOption: CustomDissagregationOption) {
@@ -166,6 +186,10 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
             customDissagregationOption.markers = [];
         }
         this.formOptionItem.patchValue(customDissagregationOption);
+        for (const marker of customDissagregationOption.markers) {
+            this.formOptionItem.get('markers').value.push(marker);
+        }
+        this.loadMarkers(customDissagregationOption.markers);
         this.showDialogOption = true;
         // this.itemsOptions.push(op1);
     }
@@ -220,12 +244,35 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
     }
 
     saveOptionItem() {
-
-        this.formItem.get('customDissagregationOptions').value.push(this.formOptionItem);
         this.showDialogOption = false;
+        const {
+            id,
+            name,
+            description,
+            state,
+            markers,
+        }
+            =
+            this.formOptionItem.value;
 
-        console.log(this.formOptionItem);
-        console.log(this.formItem);
+        const option = {
+            id,
+            name,
+            description,
+            state,
+            markers,
+        };
+
+        let options = this.formItem.get('customDissagregationOptions').value as CustomDissagregationOption[];
+        options = options.filter(value => {
+            return option.id === null || value.id !== option.id;
+        });
+        options.push(option);
+        this.formItem.get('customDissagregationOptions').reset();
+        options.forEach(value => {
+            this.formItem.get('customDissagregationOptions').value.push(value);
+        });
+
     }
 
     cancelDialog() {
@@ -235,14 +282,7 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
 
 
     cancelDialogOption() {
-        console.log(this.formOptionItem);
-        Object.keys(this.formOptionItem.controls).forEach(key => {
-            if (!this.formOptionItem.get(key).valid) {
-                console.log(key);
-                console.log(this.formOptionItem.get(key));
-            }
-        });
-        // this.showDialogOption = false;
+        this.showDialogOption = false;
     }
 
     @Input() get selectedColumns(): any[] {

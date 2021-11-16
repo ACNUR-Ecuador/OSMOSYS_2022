@@ -62,9 +62,9 @@ public class Statement extends BaseEntity<Long> {
     private Set<PeriodStatementAsignation> periodStatementAsignations = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "statement_indicator_assignations",
+    @JoinTable(name = "statement_indicator_assignations", schema = "osmosys",
             joinColumns = {@JoinColumn(name = "statement_id")},
-            inverseJoinColumns = { @JoinColumn(name = "indicator_id")}
+            inverseJoinColumns = {@JoinColumn(name = "indicator_id")}
     )
     private Set<Indicator> indicators = new HashSet<>();
 
@@ -159,7 +159,7 @@ public class Statement extends BaseEntity<Long> {
         this.periodStatementAsignations = periodStatementAsignations;
     }
 
-    public void addPeriodStatementAsignation(PeriodStatementAsignation periodStatementAsignation){
+    public void addPeriodStatementAsignation(PeriodStatementAsignation periodStatementAsignation) {
         periodStatementAsignation.setStatement(this);
         if (!this.periodStatementAsignations.add(periodStatementAsignation)) {
             this.periodStatementAsignations.remove(periodStatementAsignation);
