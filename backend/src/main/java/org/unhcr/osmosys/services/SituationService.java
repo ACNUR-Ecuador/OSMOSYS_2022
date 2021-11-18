@@ -7,11 +7,12 @@ import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.SituationDao;
 import org.unhcr.osmosys.model.Situation;
 import org.unhcr.osmosys.webServices.model.SituationWeb;
+import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Stateless
@@ -19,6 +20,9 @@ public class SituationService {
 
     @Inject
     SituationDao situationDao;
+
+    @Inject
+    ModelWebTransformationService modelWebTransformationService;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(SituationService.class);
@@ -44,18 +48,16 @@ public class SituationService {
             throw new GeneralAppException("No se puede crear un situation con id", Response.Status.BAD_REQUEST);
         }
         this.validate(situationWeb);
-        Situation situation = this.saveOrUpdate(this.situationToSituationWeb(situationWeb));
+        Situation situation = this.saveOrUpdate(this.modelWebTransformationService.situationWebToSituation(situationWeb));
         return situation.getId();
     }
 
     public List<SituationWeb> getAll() {
-        List<SituationWeb> r = new ArrayList<>();
-        return this.situationsToSituationsWeb(this.situationDao.findAll());
+        return this.modelWebTransformationService.situationsToSituationsWeb(new HashSet<>(this.situationDao.findAll()));
     }
 
     public List<SituationWeb> getByState(State state) {
-        List<SituationWeb> r = new ArrayList<>();
-        return this.situationsToSituationsWeb(this.situationDao.getByState(state));
+        return this.modelWebTransformationService.situationsToSituationsWeb(new HashSet<>(this.situationDao.getByState(state)));
     }
 
     public Long update(SituationWeb situationWeb) throws GeneralAppException {
@@ -66,52 +68,10 @@ public class SituationService {
             throw new GeneralAppException("No se puede crear un situation sin id", Response.Status.BAD_REQUEST);
         }
         this.validate(situationWeb);
-        Situation situation = this.saveOrUpdate(this.situationToSituationWeb(situationWeb));
+        Situation situation = this.saveOrUpdate(this.modelWebTransformationService.situationWebToSituation(situationWeb));
         return situation.getId();
     }
 
-    public List<SituationWeb> situationsToSituationsWeb(List<Situation> situations) {
-        List<SituationWeb> r = new ArrayList<>();
-        for (Situation situation : situations) {
-            r.add(this.situationToSituationWeb(situation));
-        }
-        return r;
-    }
-
-    public SituationWeb situationToSituationWeb(Situation situation) {
-        if (situation == null) {
-            return null;
-        }
-        SituationWeb situationWeb = new SituationWeb();
-        situationWeb.setId(situation.getId());
-        situationWeb.setCode(situation.getCode());
-        situationWeb.setDescription(situation.getDescription());
-        situationWeb.setShortDescription(situation.getShortDescription());
-        situationWeb.setState(situation.getState());
-
-        return situationWeb;
-    }
-
-    public List<Situation> situationsWebToSituations(List<SituationWeb> situationsWebs) {
-        List<Situation> r = new ArrayList<>();
-        for (SituationWeb situationWeb : situationsWebs) {
-            r.add(this.situationToSituationWeb(situationWeb));
-        }
-        return r;
-    }
-
-    public Situation situationToSituationWeb(SituationWeb situationWeb) {
-        if (situationWeb == null) {
-            return null;
-        }
-        Situation situation = new Situation();
-        situation.setId(situationWeb.getId());
-        situation.setState(situationWeb.getState());
-        situation.setDescription(situationWeb.getDescription());
-        situation.setCode(situationWeb.getCode());
-        situation.setShortDescription(situationWeb.getShortDescription());
-        return situation;
-    }
 
     public void validate(SituationWeb situationWeb) throws GeneralAppException {
         if (situationWeb == null) {
@@ -122,7 +82,7 @@ public class SituationService {
             throw new GeneralAppException("Código no válido", Response.Status.BAD_REQUEST);
         }
         if (StringUtils.isBlank(situationWeb.getShortDescription())) {
-            throw new GeneralAppException("Descripción no válida", Response.Status.BAD_REQUEST);
+            throw new GeneralAppException("Descripción corta no válida", Response.Status.BAD_REQUEST);
         }
         if (StringUtils.isBlank(situationWeb.getDescription())) {
             throw new GeneralAppException("Descripción no válida", Response.Status.BAD_REQUEST);

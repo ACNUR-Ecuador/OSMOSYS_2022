@@ -6,18 +6,16 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.StatementDao;
-import org.unhcr.osmosys.model.PeriodStatementAsignation;
 import org.unhcr.osmosys.model.Statement;
 import org.unhcr.osmosys.webServices.model.PeriodStatementAsignationWeb;
 import org.unhcr.osmosys.webServices.model.StatementWeb;
+import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 @Stateless
 public class StatementService {
@@ -26,16 +24,10 @@ public class StatementService {
     StatementDao statementDao;
 
     @Inject
-    PeriodService periodService;
+    StatementService statementService;
 
     @Inject
-    AreaService areaService;
-
-    @Inject
-    PillarService pillarService;
-
-    @Inject
-    SituationService situationService;
+    ModelWebTransformationService modelWebTransformationService;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(StatementService.class);
@@ -61,18 +53,18 @@ public class StatementService {
             throw new GeneralAppException("No se puede crear un statement con id", Response.Status.BAD_REQUEST);
         }
         this.validate(statementWeb);
-        Statement statement = this.saveOrUpdate(this.statementToStatementWeb(statementWeb));
+        Statement statement = this.saveOrUpdate(this.modelWebTransformationService.statementWebToStatement(statementWeb));
         return statement.getId();
     }
 
     public List<StatementWeb> getAll() {
         List<StatementWeb> r = new ArrayList<>();
-        return this.statementsToStatementsWeb(this.statementDao.findAll());
+        return this.modelWebTransformationService.statementsToStatementsWeb(this.statementDao.findAll());
     }
 
     public List<StatementWeb> getByState(State state) {
         List<StatementWeb> r = new ArrayList<>();
-        return this.statementsToStatementsWeb(this.statementDao.getByState(state));
+        return this.modelWebTransformationService.statementsToStatementsWeb(this.statementDao.getByState(state));
     }
 
     public Long update(StatementWeb statementWeb) throws GeneralAppException {
@@ -83,111 +75,16 @@ public class StatementService {
             throw new GeneralAppException("No se puede crear un statement sin id", Response.Status.BAD_REQUEST);
         }
         this.validate(statementWeb);
-        Statement statement = this.saveOrUpdate(this.statementToStatementWeb(statementWeb));
+        Statement statement = this.saveOrUpdate(this.modelWebTransformationService.statementWebToStatement(statementWeb));
         return statement.getId();
     }
 
-    public List<StatementWeb> statementsToStatementsWeb(List<Statement> statements) {
-        List<StatementWeb> r = new ArrayList<>();
-        for (Statement statement : statements) {
-            r.add(this.statementToStatementWeb(statement));
-        }
-        return r;
-    }
 
-    public StatementWeb statementToStatementWeb(Statement statement) {
-        if (statement == null) {
-            return null;
-        }
-        StatementWeb statementWeb = new StatementWeb();
-        statementWeb.setId(statement.getId());
-        statementWeb.setCode(statement.getCode());
-        statementWeb.setDescription(statement.getDescription());
-        statementWeb.setShortDescription(statement.getShortDescription());
-        statementWeb.setState(statement.getState());
-        statementWeb.setParentStatement(this.statementToStatementWeb(statement.getParentStatement()));
-        statementWeb.setArea(this.areaService.areaToAreaWeb(statement.getArea()));
-        statementWeb.setAreaType(statement.getAreaType());
-        statementWeb.setPillar(this.pillarService.pillarToPillarWeb(statement.getPillar()));
-        statementWeb.setSituation(this.situationService.situationToSituationWeb(statement.getSituation()));
 
-        statementWeb.setPeriodStatementAsignations(this.periodStatementAsignationsToPeriodStatementAsignationsWeb(statement.getPeriodStatementAsignations()));
 
-        return statementWeb;
-    }
 
-    private List<PeriodStatementAsignationWeb> periodStatementAsignationsToPeriodStatementAsignationsWeb(Set<PeriodStatementAsignation> periodStatementAsignations) {
-        List<PeriodStatementAsignationWeb> periodStatementAsignationWebs = new ArrayList<>();
-        for (PeriodStatementAsignation periodStatementAsignation : periodStatementAsignations) {
-            periodStatementAsignationWebs.add(this.periodStatementAsignationToPeriodStatementAsignationWeb(periodStatementAsignation));
 
-        }
-        return periodStatementAsignationWebs;
-    }
 
-    private PeriodStatementAsignationWeb periodStatementAsignationToPeriodStatementAsignationWeb(PeriodStatementAsignation periodStatementAsignation) {
-        PeriodStatementAsignationWeb paw = new PeriodStatementAsignationWeb();
-        paw.setId(periodStatementAsignation.getId());
-        paw.setState(periodStatementAsignation.getState());
-        paw.setPopulationCoverage(periodStatementAsignation.getPopulationCoverage());
-        paw.setPeriod(this.periodService.periodToPeriodWeb(periodStatementAsignation.getPeriod()));
-        return paw;
-    }
-
-    public List<Statement> statementsWebToStatements(List<StatementWeb> statementsWebs) {
-        List<Statement> r = new ArrayList<>();
-        for (StatementWeb statementWeb : statementsWebs) {
-            r.add(this.statementToStatementWeb(statementWeb));
-        }
-        return r;
-    }
-
-    public Statement statementToStatementWeb(StatementWeb statementWeb) {
-        if (statementWeb == null) {
-            return null;
-        }
-        Statement statement;
-        if (statementWeb.getId() == null) {
-            statement = new Statement();
-            statement.setState(statementWeb.getState());
-            statement.setDescription(statementWeb.getDescription());
-            statement.setCode(statementWeb.getCode());
-            statement.setShortDescription(statementWeb.getShortDescription());
-            statement.setAreaType(statementWeb.getArea().getAreaType());
-            statement.setParentStatement(this.statementToStatementWeb(statementWeb.getParentStatement()));
-            statement.setArea(this.areaService.areaToAreaWeb(statementWeb.getArea()));
-            statement.getArea().addStatement(statement);
-            statement.setPillar(this.pillarService.pillarWebToPillar(statementWeb.getPillar()));
-            statement.setSituation(this.situationService.situationToSituationWeb(statementWeb.getSituation()));
-
-        } else {
-            statement = this.statementDao.find(statementWeb.getId());
-            statement.setState(statementWeb.getState());
-            statement.setDescription(statementWeb.getDescription());
-            statement.setCode(statementWeb.getCode());
-            statement.setShortDescription(statementWeb.getShortDescription());
-            statement.setAreaType(statementWeb.getArea().getAreaType());
-            statement.setParentStatement(this.statementToStatementWeb(statementWeb.getParentStatement()));
-            statement.setArea(this.areaService.areaToAreaWeb(statementWeb.getArea()));
-            statement.setPillar(this.pillarService.pillarWebToPillar(statementWeb.getPillar()));
-            statement.setSituation(this.situationService.situationToSituationWeb(statementWeb.getSituation()));
-        }
-
-        statement.getPeriodStatementAsignations().forEach(periodStatementAsignation -> periodStatementAsignation.setState(State.INACTIVO));
-        for (PeriodStatementAsignationWeb periodStatementAsignationWeb : statementWeb.getPeriodStatementAsignations()) {
-            Optional<PeriodStatementAsignation> assignation = statement.getPeriodStatementAsignations().stream().filter(periodStatementAsignation -> periodStatementAsignation.getPeriod().getId().equals(periodStatementAsignationWeb.getPeriod().getId())).findFirst();
-            if(assignation.isPresent()){
-                assignation.get().setState(periodStatementAsignationWeb.getState());
-            }else {
-                PeriodStatementAsignation psa = new PeriodStatementAsignation();
-                psa.setState(periodStatementAsignationWeb.getState());
-                psa.setPeriod(this.periodService.periodToPeriodWeb(periodStatementAsignationWeb.getPeriod()));
-                psa.setPopulationCoverage(0L);
-                statement.addPeriodStatementAsignation(psa);
-            }
-        }
-        return statement;
-    }
 
     public void validate(StatementWeb statementWeb) throws GeneralAppException {
         if (statementWeb == null) {

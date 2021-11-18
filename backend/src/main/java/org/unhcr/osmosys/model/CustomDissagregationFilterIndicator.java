@@ -28,7 +28,7 @@ public class CustomDissagregationFilterIndicator extends BaseEntity<Long> {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(schema ="osmosys" ,name = "custom_dissagregation_filter_indicator_options", joinColumns = @JoinColumn(name = "custom_dissagregation_filter_indicator_id"), inverseJoinColumns = @JoinColumn(name = "custom_dissagregation_option_id"))
-    private Set<CustomDissagregationOption> customDissagregationOptios;
+    private Set<CustomDissagregationOption> customDissagregationOptions;
 
     @Override
     public Long getId() {
@@ -47,11 +47,21 @@ public class CustomDissagregationFilterIndicator extends BaseEntity<Long> {
         this.state = state;
     }
 
-    public Set<CustomDissagregationOption> getCustomDissagregationOptios() {
-        return customDissagregationOptios;
+    public CustomDissagregationAssignationToIndicator getCustomDissagregationAssignationToIndicator() {
+        return customDissagregationAssignationToIndicator;
     }
 
-    public void setCustomDissagregationOptios(Set<CustomDissagregationOption> customDissagregationOptios) {
-        this.customDissagregationOptios = customDissagregationOptios;
+    public void setCustomDissagregationAssignationToIndicator(CustomDissagregationAssignationToIndicator customDissagregationAssignationToIndicator) {
+        this.customDissagregationAssignationToIndicator = customDissagregationAssignationToIndicator;
     }
+
+    public Set<CustomDissagregationOption> getCustomDissagregationOptions() {
+        return customDissagregationOptions;
+    }
+
+    public void setCustomDissagregationOptions(Set<CustomDissagregationOption> customDissagregationOptions) {
+        this.customDissagregationOptions = customDissagregationOptions;
+    }
+
+
 }

@@ -7,15 +7,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.CustomDissagregationDao;
 import org.unhcr.osmosys.model.CustomDissagregation;
-import org.unhcr.osmosys.model.CustomDissagregationOption;
 import org.unhcr.osmosys.webServices.model.CustomDissagregationOptionWeb;
 import org.unhcr.osmosys.webServices.model.CustomDissagregationWeb;
-import org.unhcr.osmosys.webServices.model.MarkerWeb;
+import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -25,7 +25,7 @@ public class CustomDissagregationService {
     CustomDissagregationDao customDissagregationDao;
 
     @Inject
-    MarkerService markerService;
+    ModelWebTransformationService modelWebTransformationService;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(CustomDissagregationService.class);
@@ -51,18 +51,16 @@ public class CustomDissagregationService {
             throw new GeneralAppException("No se puede crear un customDissagregation con id", Response.Status.BAD_REQUEST);
         }
         this.validate(customDissagregationWeb);
-        CustomDissagregation customDissagregation = this.saveOrUpdate(this.customDissagregationToCustomDissagregationWeb(customDissagregationWeb));
+        CustomDissagregation customDissagregation = this.saveOrUpdate(this.modelWebTransformationService.customDissagregationWebToCustomDissagregation(customDissagregationWeb));
         return customDissagregation.getId();
     }
 
     public List<CustomDissagregationWeb> getAll() {
-        List<CustomDissagregationWeb> r = new ArrayList<>();
-        return this.customDissagregationsToCustomDissagregationsWeb(this.customDissagregationDao.findAll());
+        return this.modelWebTransformationService.customDissagregationsToCustomDissagregationsWeb(this.customDissagregationDao.findAll());
     }
 
     public List<CustomDissagregationWeb> getByState(State state) {
-        List<CustomDissagregationWeb> r = new ArrayList<>();
-        return this.customDissagregationsToCustomDissagregationsWeb(this.customDissagregationDao.getByState(state));
+        return this.modelWebTransformationService.customDissagregationsToCustomDissagregationsWeb(this.customDissagregationDao.getByState(state));
     }
 
     public Long update(CustomDissagregationWeb customDissagregationWeb) throws GeneralAppException {
@@ -73,106 +71,19 @@ public class CustomDissagregationService {
             throw new GeneralAppException("No se puede crear un customDissagregation sin id", Response.Status.BAD_REQUEST);
         }
         this.validate(customDissagregationWeb);
-        CustomDissagregation customDissagregation = this.saveOrUpdate(this.customDissagregationToCustomDissagregationWeb(customDissagregationWeb));
+        CustomDissagregation customDissagregation = this.saveOrUpdate(this.modelWebTransformationService.customDissagregationWebToCustomDissagregation(customDissagregationWeb));
         return customDissagregation.getId();
     }
 
-    public List<CustomDissagregationWeb> customDissagregationsToCustomDissagregationsWeb(List<CustomDissagregation> customDissagregations) {
-        List<CustomDissagregationWeb> r = new ArrayList<>();
-        for (CustomDissagregation customDissagregation : customDissagregations) {
-            r.add(this.customDissagregationToCustomDissagregationWeb(customDissagregation));
-        }
-        return r;
-    }
-
-    public CustomDissagregationWeb customDissagregationToCustomDissagregationWeb(CustomDissagregation customDissagregation) {
-        if (customDissagregation == null) {
-            return null;
-        }
-        CustomDissagregationWeb customDissagregationWeb = new CustomDissagregationWeb();
-        customDissagregationWeb.setId(customDissagregation.getId());
-        customDissagregationWeb.setControlTotalValue(customDissagregation.getControlTotalValue());
-        customDissagregationWeb.setDescription(customDissagregation.getDescription());
-        customDissagregationWeb.setName(customDissagregation.getName());
-        customDissagregationWeb.setState(customDissagregation.getState());
-        customDissagregationWeb.setCustomDissagregationOptions(this.customDissagregationOptionsToCustomDissagregationOptionsWeb(new ArrayList<>(customDissagregation.getCustomDissagregationOptions())));
-
-        return customDissagregationWeb;
-    }
-
-    public List<CustomDissagregationOptionWeb> customDissagregationOptionsToCustomDissagregationOptionsWeb(List<CustomDissagregationOption> customDissagregationOptions) {
-        List<CustomDissagregationOptionWeb> r = new ArrayList<>();
-        for (CustomDissagregationOption customDissagregationOption : customDissagregationOptions) {
-            r.add(this.customDissagregationOptionToCustomDissagregationOptionWeb(customDissagregationOption));
-        }
-        return r;
-    }
 
 
-    public List<CustomDissagregation> customDissagregationsWebToCustomDissagregations(List<CustomDissagregationWeb> customDissagregationsWebs) {
-        List<CustomDissagregation> r = new ArrayList<>();
-        for (CustomDissagregationWeb customDissagregationWeb : customDissagregationsWebs) {
-            r.add(this.customDissagregationToCustomDissagregationWeb(customDissagregationWeb));
-        }
-        return r;
-    }
 
-    public CustomDissagregation customDissagregationToCustomDissagregationWeb(CustomDissagregationWeb customDissagregationWeb) {
-        if (customDissagregationWeb == null) {
-            return null;
-        }
-        CustomDissagregation customDissagregation = new CustomDissagregation();
-        customDissagregation.setId(customDissagregationWeb.getId());
-        customDissagregation.setName(customDissagregationWeb.getName());
-        customDissagregation.setState(customDissagregationWeb.getState());
-        customDissagregation.setDescription(customDissagregationWeb.getDescription());
-        customDissagregation.setControlTotalValue(customDissagregationWeb.getControlTotalValue());
 
-        List<CustomDissagregationOption> options = this.customDissagregationOptionsWebToCustomDissagregationOptions(new ArrayList<>(customDissagregationWeb.getCustomDissagregationOptions()));
 
-        options.forEach(customDissagregationOption -> {
-            customDissagregation.addCustomDissagregationOption(customDissagregationOption);
-        });
 
-        return customDissagregation;
-    }
 
-    public List<CustomDissagregationOption> customDissagregationOptionsWebToCustomDissagregationOptions(List<CustomDissagregationOptionWeb> customDissagregationOptionsWeb) {
-        List<CustomDissagregationOption> r = new ArrayList<>();
-        for (CustomDissagregationOptionWeb customDissagregationOptionWeb : customDissagregationOptionsWeb) {
-            r.add(this.customDissagregationOptionWebToCustomDissagregationOption(customDissagregationOptionWeb));
-        }
-        return r;
-    }
 
-    public CustomDissagregationOptionWeb customDissagregationOptionToCustomDissagregationOptionWeb(CustomDissagregationOption customDissagregationOption) {
-        if (customDissagregationOption == null) {
-            return null;
-        }
-        CustomDissagregationOptionWeb customDissagregationOptionWeb = new CustomDissagregationOptionWeb();
-        customDissagregationOptionWeb.setId(customDissagregationOption.getId());
-        customDissagregationOptionWeb.setName(customDissagregationOption.getName());
-        customDissagregationOptionWeb.setState(customDissagregationOption.getState());
-        customDissagregationOptionWeb.setDescription(customDissagregationOption.getDescription());
-        customDissagregationOptionWeb.setMarkers(this.markerService.markersToMarkersWeb(new ArrayList<>(customDissagregationOption.getMarkers())));
-        return customDissagregationOptionWeb;
-    }
 
-    public CustomDissagregationOption customDissagregationOptionWebToCustomDissagregationOption(CustomDissagregationOptionWeb customDissagregationOptionWeb) {
-        if (customDissagregationOptionWeb == null) {
-            return null;
-        }
-        CustomDissagregationOption customDissagregationOption = new CustomDissagregationOption();
-        customDissagregationOption.setId(customDissagregationOptionWeb.getId());
-        customDissagregationOption.setName(customDissagregationOptionWeb.getName());
-        customDissagregationOption.setState(customDissagregationOptionWeb.getState());
-        customDissagregationOption.setDescription(customDissagregationOptionWeb.getDescription());
-        //customDissagregationOption.setMarkers(new HashSet<>(this.markerService.markersWebToMarkers(new ArrayList<>(customDissagregationOptionWeb.getMarkers()))));
-        for (MarkerWeb marker : customDissagregationOptionWeb.getMarkers()) {
-            customDissagregationOption.addMarker(this.markerService.markerWebToMarker(marker));
-        }
-        return customDissagregationOption;
-    }
 
     public void validate(CustomDissagregationWeb customDissagregationWeb) throws GeneralAppException {
         if (customDissagregationWeb == null) {

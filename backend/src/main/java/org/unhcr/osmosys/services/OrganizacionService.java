@@ -6,11 +6,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.unhcr.osmosys.daos.OrganizationDao;
 import org.unhcr.osmosys.model.Organization;
 import org.unhcr.osmosys.webServices.model.OrganizationWeb;
+import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -18,6 +18,9 @@ public class OrganizacionService {
 
     @Inject
     OrganizationDao organizationDao;
+
+    @Inject
+    ModelWebTransformationService modelWebTransformationService;
 
     public Organization getById(Long id) {
         return this.organizationDao.find(id);
@@ -40,7 +43,7 @@ public class OrganizacionService {
             throw new GeneralAppException("No se puede crear un organization con id", Response.Status.BAD_REQUEST);
         }
         this.validate(organizationWeb);
-        Organization organization = this.saveOrUpdate(this.organizationWebToOrganization(organizationWeb));
+        Organization organization = this.saveOrUpdate(this.modelWebTransformationService.organizationWebToOrganization(organizationWeb));
         return organization.getId();
     }
 
@@ -52,12 +55,12 @@ public class OrganizacionService {
             throw new GeneralAppException("No se puede crear una organización sin id", Response.Status.BAD_REQUEST);
         }
         this.validate(organizationWeb);
-        Organization organization = this.saveOrUpdate(this.organizationWebToOrganization(organizationWeb));
+        Organization organization = this.saveOrUpdate(this.modelWebTransformationService.organizationWebToOrganization(organizationWeb));
         return organization.getId();
     }
 
     public List<OrganizationWeb> getAll() {
-        return this.organizationsToOrganizationsWeb(this.organizationDao.findAll());
+        return this.modelWebTransformationService.organizationsToOrganizationsWeb(this.organizationDao.findAll());
     }
 
 
@@ -101,49 +104,8 @@ public class OrganizacionService {
         }
     }
 
-    public List<Organization> organizationsWebToOrganizations(List<OrganizationWeb> organizationsWebs) {
-        List<Organization> r = new ArrayList<>();
-        for (OrganizationWeb organizationWeb : organizationsWebs) {
-            r.add(this.organizationWebToOrganization(organizationWeb));
-        }
-        return r;
-    }
-
-    private List<OrganizationWeb> organizationsToOrganizationsWeb(List<Organization> organizations) {
-        List<OrganizationWeb> r = new ArrayList<>();
-        for (Organization organization : organizations) {
-            r.add(this.organizationToOrganizationWeb(organization));
-        }
-        return r;
-    }
-
-    public OrganizationWeb organizationToOrganizationWeb(Organization organization){
-        if(organization==null){
-            return null;
-        }
-        OrganizationWeb o = new OrganizationWeb();
-        o.setId(organization.getId());
-        o.setAcronym(organization.getAcronym());
-        o.setCode(organization.getCode());
-        o.setState(organization.getState());
-        o.setDescription(organization.getDescription());
-        return o;
-    }
-
-    public Organization organizationWebToOrganization(OrganizationWeb organizationWeb){
-        if(organizationWeb==null){
-            return null;
-        }
-        Organization o = new Organization();
-        o.setId(organizationWeb.getId());
-        o.setAcronym(organizationWeb.getAcronym());
-        o.setCode(organizationWeb.getCode());
-        o.setState(organizationWeb.getState());
-        o.setDescription(organizationWeb.getDescription());
-        return o;
-    }
 
     public List<OrganizationWeb> getByState(State state) {
-        return this.organizationsToOrganizationsWeb(this.organizationDao.getByState(state));
+        return this.modelWebTransformationService.organizationsToOrganizationsWeb(this.organizationDao.getByState(state));
     }
 }

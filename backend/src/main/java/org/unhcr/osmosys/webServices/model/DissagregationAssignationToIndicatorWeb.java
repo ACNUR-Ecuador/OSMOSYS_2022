@@ -1,14 +1,12 @@
 package org.unhcr.osmosys.webServices.model;
 
 import com.sagatechs.generics.persistence.model.State;
-import org.unhcr.osmosys.model.DissagregationFilterIndicator;
-import org.unhcr.osmosys.model.Indicator;
 import org.unhcr.osmosys.model.enums.DissagregationType;
-import org.unhcr.osmosys.model.enums.MarkerType;
 
-import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -16,7 +14,7 @@ public class DissagregationAssignationToIndicatorWeb implements Serializable {
     private Long id;
     private State state;
     private DissagregationType dissagregationType;
-    private Set<DissagregationFilterIndicatorWeb> dissagregationFilterIndicators = new HashSet<>();
+    private List<DissagregationFilterIndicatorWeb> dissagregationFilterIndicators = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -42,11 +40,11 @@ public class DissagregationAssignationToIndicatorWeb implements Serializable {
         this.dissagregationType = dissagregationType;
     }
 
-    public Set<DissagregationFilterIndicatorWeb> getDissagregationFilterIndicators() {
+    public List<DissagregationFilterIndicatorWeb> getDissagregationFilterIndicators() {
         return dissagregationFilterIndicators;
     }
 
-    public void setDissagregationFilterIndicators(Set<DissagregationFilterIndicatorWeb> dissagregationFilterIndicators) {
+    public void setDissagregationFilterIndicators(List<DissagregationFilterIndicatorWeb> dissagregationFilterIndicators) {
         this.dissagregationFilterIndicators = dissagregationFilterIndicators;
     }
 }

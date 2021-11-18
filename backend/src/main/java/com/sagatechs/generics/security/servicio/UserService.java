@@ -27,6 +27,7 @@ import org.unhcr.osmosys.services.OfficeService;
 import org.unhcr.osmosys.services.OrganizacionService;
 import org.unhcr.osmosys.webServices.model.OfficeWeb;
 import org.unhcr.osmosys.webServices.model.OrganizationWeb;
+import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.crypto.SecretKey;
 import javax.ejb.Stateless;
@@ -65,6 +66,9 @@ public class UserService implements Serializable {
 
     @Inject
     RoleAssigmentDao roleAssigmentDao;
+
+    @Inject
+    ModelWebTransformationService modelWebTransformationService;
 
 
     private static final int EXPIRATION_TIME_SECONDS = 6400;
@@ -242,8 +246,8 @@ public class UserService implements Serializable {
         userWeb.setEmail(user.getEmail());
         userWeb.setUsername(user.getUsername());
         userWeb.setState(user.getState());
-        userWeb.setOffice(this.officeService.officeToOfficeWeb(user.getOffice(), true));
-        userWeb.setOrganization(this.organizacionService.organizationToOrganizationWeb(user.getOrganization()));
+        userWeb.setOffice(this.modelWebTransformationService.officeToOfficeWeb(user.getOffice(), true));
+        userWeb.setOrganization(this.modelWebTransformationService.organizationToOrganizationWeb(user.getOrganization()));
         List<RoleWeb> roles = new ArrayList<>();
         for (RoleAssigment userRoleAssigment : user.getRoleAssigments()) {
             if (userRoleAssigment.getState().equals(State.ACTIVO) && userRoleAssigment.getRole().getState().equals(State.ACTIVO)) {

@@ -55,4 +55,36 @@ public class CustomDissagregationAssignationToIndicator extends BaseEntity<Long>
     public void setState(State state) {
         this.state = state;
     }
+
+    public Indicator getIndicator() {
+        return indicator;
+    }
+
+    public void setIndicator(Indicator indicator) {
+        this.indicator = indicator;
+    }
+
+    public CustomDissagregation getCustomDissagregation() {
+        return customDissagregation;
+    }
+
+    public void setCustomDissagregation(CustomDissagregation customDissagregation) {
+        this.customDissagregation = customDissagregation;
+    }
+
+    public Set<CustomDissagregationFilterIndicator> getCustomDissagregationFilterIndicators() {
+        return customDissagregationFilterIndicators;
+    }
+
+    public void setCustomDissagregationFilterIndicators(Set<CustomDissagregationFilterIndicator> customDissagregationFilterIndicators) {
+        this.customDissagregationFilterIndicators = customDissagregationFilterIndicators;
+    }
+
+    public void addCustomDissagregationFilterIndicator(CustomDissagregationFilterIndicator customDissagregationFilterIndicator) {
+        customDissagregationFilterIndicator.setCustomDissagregationAssignationToIndicator(this);
+        if (!this.customDissagregationFilterIndicators.add(customDissagregationFilterIndicator)) {
+            this.customDissagregationFilterIndicators.remove(customDissagregationFilterIndicator);
+            this.customDissagregationFilterIndicators.add(customDissagregationFilterIndicator);
+        }
+    }
 }

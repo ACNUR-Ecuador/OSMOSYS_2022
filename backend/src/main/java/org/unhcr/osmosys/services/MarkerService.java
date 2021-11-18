@@ -7,11 +7,12 @@ import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.MarkerDao;
 import org.unhcr.osmosys.model.Marker;
 import org.unhcr.osmosys.webServices.model.MarkerWeb;
+import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Stateless
@@ -19,6 +20,9 @@ public class MarkerService {
 
     @Inject
     MarkerDao markerDao;
+
+    @Inject
+    ModelWebTransformationService modelWebTransformationService;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(MarkerService.class);
@@ -44,18 +48,16 @@ public class MarkerService {
             throw new GeneralAppException("No se puede crear un marker con id", Response.Status.BAD_REQUEST);
         }
         this.validate(markerWeb);
-        Marker marker = this.saveOrUpdate(this.markerWebToMarker(markerWeb));
+        Marker marker = this.saveOrUpdate(this.modelWebTransformationService.markerWebToMarker(markerWeb));
         return marker.getId();
     }
 
     public List<MarkerWeb> getAll() {
-        List<MarkerWeb> r = new ArrayList<>();
-        return this.markersToMarkersWeb(this.markerDao.findAll());
+        return this.modelWebTransformationService.markersToMarkersWeb(new HashSet<>());
     }
 
     public List<MarkerWeb> getByState(State state) {
-        List<MarkerWeb> r = new ArrayList<>();
-        return this.markersToMarkersWeb(this.markerDao.getByState(state));
+        return this.modelWebTransformationService.markersToMarkersWeb(new HashSet<>(this.markerDao.getByState(state)));
     }
 
     public Long update(MarkerWeb markerWeb) throws GeneralAppException {
@@ -66,52 +68,8 @@ public class MarkerService {
             throw new GeneralAppException("No se puede crear un marker sin id", Response.Status.BAD_REQUEST);
         }
         this.validate(markerWeb);
-        Marker marker = this.saveOrUpdate(this.markerWebToMarker(markerWeb));
+        Marker marker = this.saveOrUpdate(this.modelWebTransformationService.markerWebToMarker(markerWeb));
         return marker.getId();
-    }
-
-    public List<MarkerWeb> markersToMarkersWeb(List<Marker> markers) {
-        List<MarkerWeb> r = new ArrayList<>();
-        for (Marker marker : markers) {
-            r.add(this.markerToMarkerWeb(marker));
-        }
-        return r;
-    }
-
-    public MarkerWeb markerToMarkerWeb(Marker marker) {
-        if (marker == null) {
-            return null;
-        }
-        MarkerWeb markerWeb = new MarkerWeb();
-        markerWeb.setId(marker.getId());
-        markerWeb.setSubType(marker.getSubType());
-        markerWeb.setType(marker.getType());
-        markerWeb.setDescription(marker.getDescription());
-        markerWeb.setShortDescription(marker.getShortDescription());
-        markerWeb.setState(marker.getState());
-        return markerWeb;
-    }
-
-    public List<Marker> markersWebToMarkers(List<MarkerWeb> markersWebs) {
-        List<Marker> r = new ArrayList<>();
-        for (MarkerWeb markerWeb : markersWebs) {
-            r.add(this.markerWebToMarker(markerWeb));
-        }
-        return r;
-    }
-
-    public Marker markerWebToMarker(MarkerWeb markerWeb) {
-        if (markerWeb == null) {
-            return null;
-        }
-        Marker marker = new Marker();
-        marker.setId(markerWeb.getId());
-        marker.setType(markerWeb.getType());
-        marker.setSubType(markerWeb.getSubType());
-        marker.setState(markerWeb.getState());
-        marker.setDescription(markerWeb.getDescription());
-        marker.setShortDescription(markerWeb.getShortDescription());
-        return marker;
     }
 
     public void validate(MarkerWeb markerWeb) throws GeneralAppException {

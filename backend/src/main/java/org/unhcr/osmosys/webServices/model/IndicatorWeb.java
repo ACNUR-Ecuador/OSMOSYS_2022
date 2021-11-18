@@ -1,15 +1,13 @@
 package org.unhcr.osmosys.webServices.model;
 
 import com.sagatechs.generics.persistence.model.State;
-import org.unhcr.osmosys.model.CustomDissagregationAssignationToIndicator;
-import org.unhcr.osmosys.model.DissagregationAssignationToIndicator;
-import org.unhcr.osmosys.model.Marker;
 import org.unhcr.osmosys.model.Statement;
 import org.unhcr.osmosys.model.enums.*;
 
-import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -17,7 +15,7 @@ public class IndicatorWeb implements Serializable {
     private Long id;
     private String code;
     private String description;
-    private Set<Statement> statements = new HashSet<>();
+    private List<StatementWeb> statements = new ArrayList<>();
     private String guidePartners;
     private String guideDirectImplementation;
     private State state;
@@ -25,13 +23,12 @@ public class IndicatorWeb implements Serializable {
     private MeasureType measureType;
     private Frecuency frecuency;
     private AreaType areaType;
-    private Set<MarkerWeb> markers = new HashSet<>();//todo
+    private List<MarkerWeb> markers = new ArrayList<>();
     private Boolean isMonitored;
     private Boolean isCalculated;
     private TotalIndicatorCalculationType totalIndicatorCalculationType;
-    private Set<DissagregationAssignationToIndicator> dissagregationsAssignationToIndicator = new HashSet<>();// todo
-    private Set<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicators = new HashSet<>(); // todo
-
+    private List<DissagregationAssignationToIndicatorWeb> dissagregationsAssignationToIndicator = new ArrayList<>();
+    private List<CustomDissagregationAssignationToIndicatorWeb> customDissagregationAssignationToIndicators = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -57,11 +54,11 @@ public class IndicatorWeb implements Serializable {
         this.description = description;
     }
 
-    public Set<Statement> getStatements() {
+    public List<StatementWeb> getStatements() {
         return statements;
     }
 
-    public void setStatements(Set<Statement> statements) {
+    public void setStatements(List<StatementWeb> statements) {
         this.statements = statements;
     }
 
@@ -121,11 +118,11 @@ public class IndicatorWeb implements Serializable {
         this.areaType = areaType;
     }
 
-    public Set<MarkerWeb> getMarkers() {
+    public List<MarkerWeb> getMarkers() {
         return markers;
     }
 
-    public void setMarkers(Set<MarkerWeb> markers) {
+    public void setMarkers(List<MarkerWeb> markers) {
         this.markers = markers;
     }
 
@@ -145,27 +142,27 @@ public class IndicatorWeb implements Serializable {
         isCalculated = calculated;
     }
 
-    public Set<DissagregationAssignationToIndicator> getDissagregationsAssignationToIndicator() {
-        return dissagregationsAssignationToIndicator;
-    }
-
-    public void setDissagregationsAssignationToIndicator(Set<DissagregationAssignationToIndicator> dissagregationsAssignationToIndicator) {
-        this.dissagregationsAssignationToIndicator = dissagregationsAssignationToIndicator;
-    }
-
-    public Set<CustomDissagregationAssignationToIndicator> getCustomDissagregationAssignationToIndicators() {
-        return customDissagregationAssignationToIndicators;
-    }
-
-    public void setCustomDissagregationAssignationToIndicators(Set<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicators) {
-        this.customDissagregationAssignationToIndicators = customDissagregationAssignationToIndicators;
-    }
-
     public TotalIndicatorCalculationType getTotalIndicatorCalculationType() {
         return totalIndicatorCalculationType;
     }
 
     public void setTotalIndicatorCalculationType(TotalIndicatorCalculationType totalIndicatorCalculationType) {
         this.totalIndicatorCalculationType = totalIndicatorCalculationType;
+    }
+
+    public List<DissagregationAssignationToIndicatorWeb> getDissagregationsAssignationToIndicator() {
+        return dissagregationsAssignationToIndicator;
+    }
+
+    public void setDissagregationsAssignationToIndicator(List<DissagregationAssignationToIndicatorWeb> dissagregationsAssignationToIndicator) {
+        this.dissagregationsAssignationToIndicator = dissagregationsAssignationToIndicator;
+    }
+
+    public List<CustomDissagregationAssignationToIndicatorWeb> getCustomDissagregationAssignationToIndicators() {
+        return customDissagregationAssignationToIndicators;
+    }
+
+    public void setCustomDissagregationAssignationToIndicators(List<CustomDissagregationAssignationToIndicatorWeb> customDissagregationAssignationToIndicators) {
+        this.customDissagregationAssignationToIndicators = customDissagregationAssignationToIndicators;
     }
 }

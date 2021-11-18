@@ -6,6 +6,7 @@ import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.PeriodDao;
 import org.unhcr.osmosys.model.Period;
 import org.unhcr.osmosys.webServices.model.PeriodWeb;
+import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -18,6 +19,9 @@ public class PeriodService {
 
     @Inject
     PeriodDao periodDao;
+
+    @Inject
+    ModelWebTransformationService modelWebTransformationService;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(PeriodService.class);
@@ -43,18 +47,16 @@ public class PeriodService {
             throw new GeneralAppException("No se puede crear un period con id", Response.Status.BAD_REQUEST);
         }
         this.validate(periodWeb);
-        Period period = this.saveOrUpdate(this.periodToPeriodWeb(periodWeb));
+        Period period = this.saveOrUpdate(this.modelWebTransformationService.periodWebToPeriod(periodWeb));
         return period.getId();
     }
 
     public List<PeriodWeb> getAll() {
-        List<PeriodWeb> r = new ArrayList<>();
-        return this.periodsToPeriodsWeb(this.periodDao.findAll());
+        return this.modelWebTransformationService.periodsToPeriodsWeb(this.periodDao.findAll());
     }
 
     public List<PeriodWeb> getByState(State state) {
-        List<PeriodWeb> r = new ArrayList<>();
-        return this.periodsToPeriodsWeb(this.periodDao.getByState(state));
+        return this.modelWebTransformationService.periodsToPeriodsWeb(this.periodDao.getByState(state));
     }
 
     public Long update(PeriodWeb periodWeb) throws GeneralAppException {
@@ -65,48 +67,12 @@ public class PeriodService {
             throw new GeneralAppException("No se puede crear un period sin id", Response.Status.BAD_REQUEST);
         }
         this.validate(periodWeb);
-        Period period = this.saveOrUpdate(this.periodToPeriodWeb(periodWeb));
+        Period period = this.saveOrUpdate(this.modelWebTransformationService.periodWebToPeriod(periodWeb));
         return period.getId();
     }
 
-    public List<PeriodWeb> periodsToPeriodsWeb(List<Period> periods) {
-        List<PeriodWeb> r = new ArrayList<>();
-        for (Period period : periods) {
-            r.add(this.periodToPeriodWeb(period));
-        }
-        return r;
-    }
 
-    public PeriodWeb periodToPeriodWeb(Period period) {
-        if (period == null) {
-            return null;
-        }
-        PeriodWeb periodWeb = new PeriodWeb();
-        periodWeb.setId(period.getId());
-        periodWeb.setYear(period.getYear());
-        periodWeb.setState(period.getState());
 
-        return periodWeb;
-    }
-
-    public List<Period> periodsWebToPeriods(List<PeriodWeb> periodsWebs) {
-        List<Period> r = new ArrayList<>();
-        for (PeriodWeb periodWeb : periodsWebs) {
-            r.add(this.periodToPeriodWeb(periodWeb));
-        }
-        return r;
-    }
-
-    public Period periodToPeriodWeb(PeriodWeb periodWeb) {
-        if (periodWeb == null) {
-            return null;
-        }
-        Period period = new Period();
-        period.setId(periodWeb.getId());
-        period.setYear(periodWeb.getYear());
-        period.setState(periodWeb.getState());
-        return period;
-    }
 
     public void validate(PeriodWeb periodWeb) throws GeneralAppException {
         if (periodWeb == null) {

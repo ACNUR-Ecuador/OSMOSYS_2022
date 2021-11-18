@@ -205,6 +205,13 @@ public class Indicator extends BaseEntity<Long> {
         this.customDissagregationAssignationToIndicators = customDissagregationAssignationToIndicators;
     }
 
+    public void addCustomDissagregationAssignationToIndicator(CustomDissagregationAssignationToIndicator customDissagregationAssignationToIndicator) {
+        customDissagregationAssignationToIndicator.setIndicator(this);
+        if (!this.customDissagregationAssignationToIndicators.add(customDissagregationAssignationToIndicator)) {
+            this.customDissagregationAssignationToIndicators.remove(customDissagregationAssignationToIndicator);
+            this.customDissagregationAssignationToIndicators.add(customDissagregationAssignationToIndicator);
+        }
+    }
     public void addDissagregationAssignationToIndicator(DissagregationAssignationToIndicator dissagregationAssignationToIndicator) {
         dissagregationAssignationToIndicator.setIndicator(this);
         if (!this.dissagregationsAssignationToIndicator.add(dissagregationAssignationToIndicator)) {
