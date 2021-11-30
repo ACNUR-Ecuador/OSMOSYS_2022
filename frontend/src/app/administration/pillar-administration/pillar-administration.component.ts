@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Pillar} from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsType} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ConfirmationService, MessageService} from 'primeng/api';
+import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
 import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {PillarService} from '../../shared/services/pillar.service';
@@ -18,7 +18,7 @@ export class PillarAdministrationComponent implements OnInit {
     showDialog = false;
     private submitted = false;
     formItem: FormGroup;
-    private states: string[];
+    private states: SelectItem[];
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
 

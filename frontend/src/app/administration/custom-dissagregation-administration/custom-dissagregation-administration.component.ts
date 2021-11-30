@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {CustomDissagregation, CustomDissagregationOption, Marker} from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ConfirmationService, MessageService} from 'primeng/api';
+import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
 import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {CustomDissagregationService} from '../../shared/services/custom-dissagregation.service';
@@ -25,7 +25,7 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
     private submitted = false;
     formItem: FormGroup;
     formOptionItem: FormGroup;
-    private states: string[];
+    private states: SelectItem[];
 
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];

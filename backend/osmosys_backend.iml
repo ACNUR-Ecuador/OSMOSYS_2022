@@ -13,7 +13,7 @@
             <entry key="rebelXmlGenerationType" value="ide" />
           </map>
         </option>
-        <option name="version" value="31" />
+        <option name="version" value="35" />
       </configuration>
     </facet>
     <facet type="web" name="Web">

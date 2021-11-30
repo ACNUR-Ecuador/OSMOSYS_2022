@@ -1,6 +1,6 @@
 package org.unhcr.osmosys.model.enums;
 
-public enum MonthEnum {
+public enum MonthEnum  implements EnumInterface{
     ENERO("ENERO", 1, QuarterEnum.I),
     FEBRERO("FEBRERO", 2, QuarterEnum.I),
     MARZO("MARZO", 3, QuarterEnum.I),
@@ -22,6 +22,11 @@ public enum MonthEnum {
         this.label = label;
         this.order = order;
         this.quarterEnum = quarterEnum;
+    }
+
+    @Override
+    public String getStringValue() {
+        return this.name();
     }
 
     public String getLabel() {

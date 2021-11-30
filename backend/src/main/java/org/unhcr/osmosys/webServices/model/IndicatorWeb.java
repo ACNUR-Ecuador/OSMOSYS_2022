@@ -15,7 +15,6 @@ public class IndicatorWeb implements Serializable {
     private Long id;
     private String code;
     private String description;
-    private List<StatementWeb> statements = new ArrayList<>();
     private String guidePartners;
     private String guideDirectImplementation;
     private State state;
@@ -27,6 +26,8 @@ public class IndicatorWeb implements Serializable {
     private Boolean isMonitored;
     private Boolean isCalculated;
     private TotalIndicatorCalculationType totalIndicatorCalculationType;
+
+    private List<StatementWeb> statements = new ArrayList<>();
     private List<DissagregationAssignationToIndicatorWeb> dissagregationsAssignationToIndicator = new ArrayList<>();
     private List<CustomDissagregationAssignationToIndicatorWeb> customDissagregationAssignationToIndicators = new ArrayList<>();
 

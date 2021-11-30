@@ -28,9 +28,37 @@ export enum EnumsType {
     OfficeType = 'OfficeType',
     PopulationType = 'PopulationType',
     State = 'State',
+    TotalIndicatorCalculationType = 'TotalIndicatorCalculationType',
 }
 
 export enum EnumsState {
     ACTIVE = 'ACTIVO',
     INACTIVE = 'INACTIVO'
+}
+
+export enum EnumsIndicatorType {
+    CORE = 'Core',
+    BUENAS_PRACTICAS = 'Buenas Prácticas',
+    OPERACION = 'Operación',
+    GENERAL = 'General',
+}
+
+export enum MeasureType {
+    NUMERO = 'Número enteros',
+    PROPORCION = 'Proporción',
+    TEXTO = 'Texto',
+}
+
+export enum Frecuency {
+    MENSUAL = 'Mensual',
+    TRIMESTRAL = 'Trimestral',
+    SEMESTRAL = 'Semestral',
+    ANUAL = 'Anual',
+}
+
+export enum AreaType {
+    IMPACTO = 'Impacto',
+    RESULTADOS = 'Resultados',
+    PRODUCTO = 'Producto',
+    APOYO = 'Apoyo',
 }

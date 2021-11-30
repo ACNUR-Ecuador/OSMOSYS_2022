@@ -1,6 +1,6 @@
 package org.unhcr.osmosys.model.enums;
 
-public enum CountryOfOrigin {
+public enum CountryOfOrigin implements EnumInterface{
 	VENEZUELA("Venezuela",1),
 	COLOMBIA("Colombia",2),
 	ECUADOR("Ecuatoriana",3),
@@ -13,6 +13,11 @@ public enum CountryOfOrigin {
 	CountryOfOrigin(String label, int order) {
 		this.label = label;
 		this.order = order;
+	}
+
+	@Override
+	public String getStringValue() {
+		return this.name();
 	}
 
 	public String getLabel() {

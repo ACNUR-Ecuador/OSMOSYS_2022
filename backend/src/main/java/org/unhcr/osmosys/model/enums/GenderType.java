@@ -1,6 +1,6 @@
 package org.unhcr.osmosys.model.enums;
 
-public enum GenderType {
+public enum GenderType  implements EnumInterface{
 	MASCULINO("Masculino",1),
 	FEMENINO("Femenino",2),
 	OTRO("Otros",3);
@@ -13,6 +13,11 @@ public enum GenderType {
 	GenderType(String label, int order) {
 		this.label = label;
 		this.order = order;
+	}
+
+	@Override
+	public String getStringValue() {
+		return this.name();
 	}
 
 	public String getLabel() {

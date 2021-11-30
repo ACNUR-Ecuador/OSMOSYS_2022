@@ -1,19 +1,34 @@
 package com.sagatechs.generics.persistence.model;
-public enum State {
-	ACTIVO("ACTIVO"), INACTIVO("INACTIVO");
 
-	private String label;
+import org.unhcr.osmosys.model.enums.EnumInterface;
 
-	private State(String label) {
-		this.label = label;
-	}
+public enum State implements EnumInterface {
+    ACTIVO("ACTIVO",1), INACTIVO("INACTIVO",2);
 
-	public String getLabel() {
-		return label;
-	}
+    private String label;
+    private int order;
 
-	public void setLabel(String label) {
-		this.label = label;
-	}
+    private State(String label, int order) {
+        this.label = label;
+        this.order = order;
+    }
+
+    @Override
+    public String getStringValue() {
+        return this.name();
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    @Override
+    public int getOrder() {
+        return this.order;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
 }

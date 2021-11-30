@@ -1,6 +1,6 @@
 package org.unhcr.osmosys.model.enums;
 
-public enum QuarterEnum {
+public enum QuarterEnum  implements EnumInterface{
     I("I", 1),
     II("II", 2),
     III("III", 3),
@@ -14,6 +14,11 @@ public enum QuarterEnum {
         this.label = label;
         this.order = order;
         this.quarter = quarter;
+    }
+
+    @Override
+    public String getStringValue() {
+        return this.name();
     }
 
     public String getLabel() {

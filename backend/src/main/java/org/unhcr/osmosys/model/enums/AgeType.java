@@ -1,6 +1,6 @@
 package org.unhcr.osmosys.model.enums;
 
-public enum AgeType {
+public enum AgeType implements EnumInterface{
     INFANTES("Infantes(0-4)", 1),
     NINOS("Niña/os(5-11)", 2),
     ADOLESCENTES("Adolescentes(12-17)", 3),
@@ -18,6 +18,12 @@ public enum AgeType {
         this.label = label;
         this.order = order;
     }
+
+    @Override
+    public String getStringValue() {
+        return this.name();
+    }
+
 
     public String getLabel() {
         return label;

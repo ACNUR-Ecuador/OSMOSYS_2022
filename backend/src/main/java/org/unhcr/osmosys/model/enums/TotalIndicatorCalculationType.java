@@ -1,6 +1,6 @@
 package org.unhcr.osmosys.model.enums;
 
-public enum TotalIndicatorCalculationType {
+public enum TotalIndicatorCalculationType  implements EnumInterface{
     SUMA("Suma", 1),
     PROMEDIO("Promedio", 2),
     MAXIMO("Máximo", 3),
@@ -15,6 +15,11 @@ public enum TotalIndicatorCalculationType {
     TotalIndicatorCalculationType(String label, int order) {
         this.label = label;
         this.order = order;
+    }
+
+    @Override
+    public String getStringValue() {
+        return this.name();
     }
 
     public String getLabel() {

@@ -1,22 +1,34 @@
 package org.unhcr.osmosys.model.enums;
 
-public enum IndicatorType {
+public enum IndicatorType  implements EnumInterface{
 
-    CORE("Core"),
-    BUENAS_PRACTICAS("Buenas Prácticas"),
-    OPERACION("Operación"),
-    GENERAL("General"),
+    CORE("Core",1),
+    BUENAS_PRACTICAS("Buenas Prácticas",2),
+    OPERACION("Operación",3),
+    GENERAL("General",4),
 
     ;
 
     private String label;
+    private int order;
 
-    IndicatorType(String label) {
+    IndicatorType(String label, int order) {
         this.label = label;
+        this.order = order;
+    }
+
+    @Override
+    public String getStringValue() {
+        return this.name();
     }
 
     public String getLabel() {
         return label;
+    }
+
+    @Override
+    public int getOrder() {
+        return this.order;
     }
 
     public void setLabel(String label) {

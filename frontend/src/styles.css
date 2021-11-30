@@ -4680,7 +4680,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 200px;
+  height: 15px;
+  border: red;
 }
 
 /*# sourceMappingURL=styles.css.map */

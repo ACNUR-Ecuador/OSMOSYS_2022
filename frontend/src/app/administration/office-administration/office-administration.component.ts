@@ -19,8 +19,8 @@ export class OfficeAdministrationComponent implements OnInit {
     showDialog = false;
     private submitted = false;
     formItem: FormGroup;
-    private states: string[];
-    officeTypes: string[];
+    private states: SelectItem[];
+    officeTypes: SelectItem[];
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
     parenteOffices: SelectItem[] = [];

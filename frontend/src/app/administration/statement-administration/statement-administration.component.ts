@@ -24,7 +24,7 @@ export class StatementAdministrationComponent implements OnInit {
     showDialog = false;
     private submitted = false;
     formItem: FormGroup;
-    private states: string[];
+    private states: SelectItem[];
     private areasItems: SelectItem[];
     private pillarsItems: SelectItem[];
     private situationsItems: SelectItem[];

@@ -144,3 +144,83 @@ export class CustomDissagregationOption {
     public state: string;
     public markers: Marker[];
 }
+
+export class Indicator {
+    constructor() {
+        this.state = 'ACTIVO';
+        this.markers = [];
+        this.statements = [];
+        this.dissagregationsAssignationToIndicator = [];
+        this.customDissagregationAssignationToIndicators = [];
+        this.isCalculated = false;
+        this.isMonitored = false;
+    }
+
+    public id: number;
+    public code: string;
+    public description: string;
+    public guidePartners: string;
+    public guideDirectImplementation: string;
+    public state: string;
+    public indicatorType: string;
+    public measureType: string;
+    public frecuency: string;
+    public areaType: string;
+    public isMonitored: boolean;
+    public isCalculated: boolean;
+    public totalIndicatorCalculationType: string;
+    public markers: Marker[];
+    public statements: Statement[];
+    public dissagregationsAssignationToIndicator: DissagregationAssignationToIndicator[];
+    public customDissagregationAssignationToIndicators: CustomDissagregationAssignationToIndicator[];
+}
+
+export class DissagregationAssignationToIndicator {
+    constructor() {
+        this.state = 'ACTIVO';
+        this.dissagregationFilterIndicators = [];
+    }
+
+    public id: string;
+    public state: string;
+    public dissagregationType: string;
+    public dissagregationFilterIndicators: DissagregationFilterIndicator[];
+}
+
+export class DissagregationFilterIndicator {
+    constructor() {
+        this.state = 'ACTIVO';
+    }
+
+    public id: number;
+    public state: string;
+    public dissagregationType: string;
+    public populationType: string;
+    public countryOfOrigin: string;
+    public genderType: string;
+    public ageType: string;
+
+}
+
+export class CustomDissagregationAssignationToIndicator {
+    constructor() {
+        this.state = 'ACTIVO';
+        this.customDissagregationFilterIndicators = [];
+    }
+
+    public id: number;
+    public state: string;
+    public customDissagregation: CustomDissagregation;
+    public customDissagregationFilterIndicators: CustomDissagregationFilterIndicator[];
+}
+
+export class CustomDissagregationFilterIndicator {
+    constructor() {
+        this.state = 'ACTIVO';
+        this.customDissagregationOptions = [];
+    }
+
+    public id: number;
+    public state: string;
+    public customDissagregationOptions: CustomDissagregationOption[];
+}

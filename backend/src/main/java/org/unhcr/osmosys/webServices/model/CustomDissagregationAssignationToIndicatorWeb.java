@@ -1,23 +1,16 @@
 package org.unhcr.osmosys.webServices.model;
 
 import com.sagatechs.generics.persistence.model.State;
-import org.unhcr.osmosys.model.CustomDissagregation;
-import org.unhcr.osmosys.model.CustomDissagregationFilterIndicator;
-import org.unhcr.osmosys.model.Indicator;
-import org.unhcr.osmosys.model.enums.AreaType;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 public class CustomDissagregationAssignationToIndicatorWeb implements Serializable {
 
     private Long id;
-    private IndicatorWeb indicator;
+
     private State state;
     private CustomDissagregationWeb customDissagregation;
     private List<CustomDissagregationFilterIndicatorWeb> customDissagregationFilterIndicators = new ArrayList<>();
@@ -28,14 +21,6 @@ public class CustomDissagregationAssignationToIndicatorWeb implements Serializab
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public IndicatorWeb getIndicator() {
-        return indicator;
-    }
-
-    public void setIndicator(IndicatorWeb indicator) {
-        this.indicator = indicator;
     }
 
     public State getState() {

@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ConfirmationService, MessageService} from 'primeng/api';
+import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
 import {AreaService} from '../../shared/services/area.service';
 import {Area} from '../../shared/model/OsmosysModel';
 import {UtilsService} from '../../shared/services/utils.service';
@@ -18,8 +18,8 @@ export class AreasAdministrationComponent implements OnInit {
     showDialog = false;
     private submitted = false;
     formItem: FormGroup;
-    private areaTypes: string[];
-    private states: string[];
+    private areaTypes: SelectItem[];
+    private states: SelectItem[];
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
 

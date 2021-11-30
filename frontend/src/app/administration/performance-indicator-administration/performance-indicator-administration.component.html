@@ -92,7 +92,7 @@
             </p-table>
         </div>
         <form [formGroup]="formItem" (ngSubmit)="saveItem()">
-            <p-dialog [(visible)]="showDialog" [style]="{width: '450px'}" header="Situación" [modal]="true"
+            <p-dialog [(visible)]="showDialog" [style]="{width: '90%'}" header="Situación" [modal]="true"
                       styleClass="p-fluid" [closable]="false">
 
                 <ng-template pTemplate="content">
@@ -107,14 +107,6 @@
                     </div>
 
                     <div class="p-field">
-                        <label for="shortDescriptionI">Descripción Corta</label>
-                        <input type="text" pInputText id="shortDescriptionI"
-                               formControlName="shortDescription"/>
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('shortDescription',formItem)">Campo
-                            obligatorio.</small>
-                    </div>
-
-                    <div class="p-field">
                         <label for="descriptionI">Descripción Completa</label>
 
                         <textarea pInputTextarea id="descriptionI"
@@ -123,6 +115,76 @@
                         </textarea>
 
                         <small class="p-error" *ngIf="utilsService.showErrorForm('description',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+
+                    <div class="p-field">
+                        <label for="stateI">Tipo</label>
+
+                        <p-dropdown id="indicatorTypeI"
+                                    formControlName="indicatorType"
+                                    [options]="indicatorTypes"
+                                    placeholder="Selecciona..."
+                                    filter="true"
+                        >
+                        </p-dropdown>
+
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('indicatorType',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+                    <div class="p-field">
+                        <label for="measureTypeI">Tipo de medida</label>
+
+                        <p-dropdown id="measureTypeI"
+                                    formControlName="measureType"
+                                    [options]="measureTypes"
+                                    placeholder="Selecciona..."
+                                    filter="true"
+
+                        >
+                        </p-dropdown>
+
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('measureType',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+                    <div class="p-field">
+                        <label for="areaTypeI">Tipo de Área</label>
+
+                        <p-dropdown id="areaTypeI"
+                                    formControlName="areaType"
+                                    [options]="areaTypes"
+                                    placeholder="Selecciona..."
+                                    filter="true"
+                        >
+                        </p-dropdown>
+
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('areaType',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+                    <div class="p-field">
+                        <label for="isMonitoredI">Tipo de medida</label>
+
+                        <p-selectButton id="isMonitoredI"
+                                        formControlName="isMonitored"
+                                        [options]="isMonitoredOptions"
+                                        placeholder="Selecciona..."
+                        >
+                        </p-selectButton>
+
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('isMonitored',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+                    <div class="p-field">
+                        <label for="isCalculatedI">Tipo de medida</label>
+
+                        <p-selectButton id="isCalculatedI"
+                                        formControlName="isCalculated"
+                                        [options]="isMonitoredOptions"
+                                        placeholder="Selecciona..."
+                        >
+                        </p-selectButton>
+
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('isCalculated',formItem)">Campo
                             obligatorio.</small>
                     </div>
                     <div class="p-field">
@@ -136,6 +198,29 @@
                         </p-selectButton>
 
                         <small class="p-error" *ngIf="utilsService.showErrorForm('state',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+
+                    <div class="p-field">
+                        <label for="guidePartnersI">Guía para socios</label>
+
+                        <textarea pInputTextarea id="guidePartnersI"
+                                  formControlName="guidePartners"
+                                  autoResize="autoResize">
+                        </textarea>
+
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('guidePartners',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+                    <div class="p-field">
+                        <label for="guideDirectImplementationI">Guía para implementación directa</label>
+
+                        <textarea pInputTextarea id="guideDirectImplementationI"
+                                  formControlName="guideDirectImplementation"
+                                  autoResize="autoResize">
+                        </textarea>
+
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('guideDirectImplementation',formItem)">Campo
                             obligatorio.</small>
                     </div>
                 </ng-template>

@@ -3,13 +3,19 @@ package org.unhcr.osmosys.webServices.endpoints;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
+import org.apache.poi.ss.formula.functions.T;
 import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.webServices.model.EnumWeb;
 
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/enums")
 @RequestScoped
@@ -19,34 +25,54 @@ public class EnumsEndpoint {
     @Path("/{type}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Enum[] getTypes(@PathParam("type") String type) throws GeneralAppException {
+    public List<EnumWeb> getTypes(@PathParam("type") String type) throws GeneralAppException {
         switch (type) {
             case "AgeType":
-                return AgeType.values();
+                return this.EnumsToEnumsWeb(AgeType.values());
             case "AreaType":
-                return AreaType.values();
+                return this.EnumsToEnumsWeb(AreaType.values());
             case "CountyOfOrigin":
-                return CountryOfOrigin.values();
+                return this.EnumsToEnumsWeb(CountryOfOrigin.values());
             case "DissagregationType":
-                return DissagregationType.values();
+                return this.EnumsToEnumsWeb(DissagregationType.values());
             case "Frecuency":
-                return Frecuency.values();
+                return this.EnumsToEnumsWeb(Frecuency.values());
             case "GenderType":
-                return GenderType.values();
+                return this.EnumsToEnumsWeb(GenderType.values());
             case "IndicatorType":
-                return IndicatorType.values();
+                return this.EnumsToEnumsWeb(IndicatorType.values());
             case "MarkerType":
-                return MarkerType.values();
+                return this.EnumsToEnumsWeb(MarkerType.values());
             case "MeasureType":
-                return MeasureType.values();
+                return this.EnumsToEnumsWeb(MeasureType.values());
             case "OfficeType":
-                return OfficeType.values();
+                return this.EnumsToEnumsWeb(OfficeType.values());
             case "PopulationType":
-                return PopulationType.values();
+                return this.EnumsToEnumsWeb(PopulationType.values());
             case "State":
-                return State.values();
+                return this.EnumsToEnumsWeb(State.values());
+            case "TotalIndicatorCalculationType":
+                return this.EnumsToEnumsWeb(TotalIndicatorCalculationType.values());
         }
 
         throw new GeneralAppException("Enumerador no soportado", Response.Status.BAD_GATEWAY);
+    }
+
+    public List<EnumWeb> EnumsToEnumsWeb(EnumInterface[] enumerator) {
+        List<EnumWeb> r = new ArrayList<>();
+
+        for (EnumInterface enumInterface : enumerator) {
+            r.add(this.EnumToEnumWeb(enumInterface));
+        }
+        return r.stream().sorted(Comparator.comparingInt(value -> value.getOrder())).collect(Collectors.toList());
+    }
+
+    public EnumWeb EnumToEnumWeb(EnumInterface enumerator) {
+        EnumWeb ew = new EnumWeb();
+        ew.setValue(enumerator.getStringValue());
+        ew.setLabel(enumerator.getLabel());
+        ew.setOrder(enumerator.getOrder());
+
+        return ew;
     }
 }

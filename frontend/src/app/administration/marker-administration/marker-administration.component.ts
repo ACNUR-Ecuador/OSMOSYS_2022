@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Marker} from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsType} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ConfirmationService, MessageService} from 'primeng/api';
+import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
 import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {MarkerService} from '../../shared/services/marker.service';
@@ -18,8 +18,8 @@ export class MarkerAdministrationComponent implements OnInit {
     showDialog = false;
     private submitted = false;
     formItem: FormGroup;
-    private states: string[];
-    private types: string[];
+    private states: SelectItem[];
+    private types: SelectItem[];
     private subTypes: string[];
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
