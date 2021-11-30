@@ -10,7 +10,7 @@
                 margin-left: $sidebarWidth;
             }
         }
-        
+
         &.layout-static-inactive {
             .layout-topbar {
                 .menu-button {
@@ -40,7 +40,7 @@
                     i:before {
                         content: "\e901";
                     }
-                }    
+                }
             }
 
             .layout-topbar {
@@ -72,7 +72,7 @@
     .blocked-scroll {
         overflow: hidden;
     }
-    
+
     .layout-wrapper {
         .layout-topbar {
             height: 7.125rem;
@@ -108,10 +108,10 @@
                     content: "\e91d";
                 }
             }
-            
+
             .mobile-logo {
                 display: block;
-                width: 2rem;
+                // width: 2rem;
                 height: 2rem;
             }
 
@@ -191,7 +191,7 @@
             .topbar-menu {
                 > li {
                     position: static;
-                    
+
                     > ul {
                         position: fixed;
                         top: 7.125rem;

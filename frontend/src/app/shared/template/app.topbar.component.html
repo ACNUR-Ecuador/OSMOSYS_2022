@@ -10,20 +10,23 @@
 
             <span class="viewname" style="text-transform: uppercase">{{item.label}}</span>
         </ng-template>
-        <img id="logo-mobile" class="mobile-logo" [src]="'assets/layout/images/logo-'+ (app.colorScheme === 'light' ? 'dark' : 'white') + '.svg'" alt="diamond-layout" />
+        <img id="logo-mobile" class="mobile-logo" [src]="'assets/images/unhcr_logo.png'" alt="diamond-layout" />
     </div>
 
     <app-menu></app-menu>
 
     <div class="layout-mask modal-in"></div>
 
+    <div style="display: flex; align-items: center; flex-grow: 2">
+        <img style="margin: auto; max-height: 3rem; display: block;" src="../../../assets/images/logo_osmosys_blue.png" alt="diamond-layout"/>
+    </div>
     <div class="topbar-right">
         <ul class="topbar-menu">
-            <li class="search-item">
+<!--            <li class="search-item">
                 <a tabindex="0" (click)="appMain.onSearchClick($event)">
                     <i class="pi pi-search"></i>
                 </a>
-            </li>
+            </li>-->
             <li class='notifications-item' [ngClass]="{'active-menuitem ': appMain.topbarNotificationMenuActive}">
                 <a href="#" tabindex="0" (click)="appMain.onTopbarNotificationMenuButtonClick($event)">
                     <i class="pi pi-bell"></i>
