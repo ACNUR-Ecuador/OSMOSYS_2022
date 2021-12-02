@@ -100,6 +100,10 @@ import { OfficeOrganizationPipe } from './pipes/officeOrganization.pipe';
 import { CodeShortDescriptionPipe } from './pipes/code-short-description.pipe';
 import { MarkersListPipe } from './pipes/markers-list.pipe';
 import { CustomDissagregationOptionsListPipe } from './pipes/custom-dissagregation-options-list.pipe';
+import { EnumValuesToLabelPipe } from './pipes/enum-values-to-label.pipe';
+import { BooleanYesNoPipe } from './pipes/boolean-yes-no.pipe';
+import { DissagregationsAssignationToIndicatorPipe } from './pipes/dissagregations-assignation-to-indicator.pipe';
+import { CustomDissagregationsAssignationToIndicatorPipe } from './pipes/custom-dissagregations-assignation-to-indicator.pipe';
 
 
 @NgModule({
@@ -119,6 +123,10 @@ import { CustomDissagregationOptionsListPipe } from './pipes/custom-dissagregati
         CodeShortDescriptionPipe,
         MarkersListPipe,
         CustomDissagregationOptionsListPipe,
+        EnumValuesToLabelPipe,
+        BooleanYesNoPipe,
+        DissagregationsAssignationToIndicatorPipe,
+        CustomDissagregationsAssignationToIndicatorPipe,
     ],
     imports: [
         CommonModule,

@@ -124,7 +124,7 @@ export class CustomDissagregation {
         this.customDissagregationOptions = [];
     }
 
-    public id: string;
+    public id: number;
     public name: string;
     public description: string;
     public controlTotalValue: boolean;
@@ -153,7 +153,7 @@ export class Indicator {
         this.dissagregationsAssignationToIndicator = [];
         this.customDissagregationAssignationToIndicators = [];
         this.isCalculated = false;
-        this.isMonitored = false;
+        this.isMonitored = true;
     }
 
     public id: number;

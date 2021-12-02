@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.webServices.endpoints;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
 import org.unhcr.osmosys.services.CustomDissagregationService;
 import org.unhcr.osmosys.webServices.model.CustomDissagregationWeb;
@@ -40,5 +41,13 @@ public class CustomDissagregationEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public List<CustomDissagregationWeb> getAll() {
         return this.customDissagregationService.getAll();
+    }
+
+    @Path("/byState/{state}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<CustomDissagregationWeb> getByState(@PathParam("state") State state) {
+        return this.customDissagregationService.getByState(state);
     }
 }

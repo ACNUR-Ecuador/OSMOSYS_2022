@@ -42,10 +42,6 @@ public class SecurityUtils {
 
 			//
             double tt = (t2.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() - t1.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()) / 1000D;
-			System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-			System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-			System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-			System.out.println(tt);
 			return r;
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
 			System.err.println("Exception encountered in hashPassword()");

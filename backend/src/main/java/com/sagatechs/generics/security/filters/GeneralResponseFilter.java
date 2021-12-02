@@ -31,7 +31,7 @@ public class GeneralResponseFilter implements ContainerResponseFilter {
 
         // Get the Authorization header from the request
         String authorizationHeader = containerRequestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-        LOGGER.debug(containerRequestContext.getHeaders());
+        // LOGGER.debug(containerRequestContext.getHeaders());
         // Validate the Authorization header
         if (isTokenBasedAuthentication(authorizationHeader)) {
             int status = containerResponseContext.getStatus();

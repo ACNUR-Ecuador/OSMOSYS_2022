@@ -294,7 +294,9 @@ public class ModelWebTransformationService {
             indicator.addMarker(marker);
         }
         Set<Statement> statements = this.statementsWebToStatements(indicatorWeb.getStatements());
-        indicator.setStatements(statements);
+        for (Statement statement : statements) {
+            indicator.addStatement(statement);
+        }
         Set<DissagregationAssignationToIndicator> dissagregationAssignationToIndicators = this.dissagregationAssignationToIndicatorsWebToDissagregationAssignationToIndicators(indicatorWeb.getDissagregationsAssignationToIndicator());
         for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicators) {
             indicator.addDissagregationAssignationToIndicator(dissagregationAssignationToIndicator);

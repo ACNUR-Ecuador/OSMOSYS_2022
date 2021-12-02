@@ -6,6 +6,7 @@ export class ColumnTable {
     header: string;
     styleClass?: string;
     pipeRef?: PipeTransform;
+    arg1?: any;
 }
 
 export enum ColumnDataType {

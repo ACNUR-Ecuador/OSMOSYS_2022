@@ -32,7 +32,7 @@ public class DissagregationAssignationToIndicator extends BaseEntity<Long> {
     private State state;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "dissagregation_type", nullable = false, length = 12, unique = false)
+    @Column(name = "dissagregation_type", nullable = false, length = 50, unique = false)
     private DissagregationType dissagregationType;
 
 

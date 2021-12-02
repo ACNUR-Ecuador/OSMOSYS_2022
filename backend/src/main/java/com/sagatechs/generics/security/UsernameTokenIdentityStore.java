@@ -20,7 +20,6 @@ public class UsernameTokenIdentityStore implements IdentityStore {
 
 	@Override
 	public CredentialValidationResult validate(Credential credential) {
-		System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 		CredentialValidationResult credentialValidationResult;
 		if (credential instanceof UsernameJwtCredential) {
 			UsernameJwtCredential usernamePasswordCredential = (UsernameJwtCredential) credential;

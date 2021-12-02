@@ -61,11 +61,7 @@ public class Statement extends BaseEntity<Long> {
     @OneToMany(mappedBy = "statement", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<PeriodStatementAsignation> periodStatementAsignations = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(name = "statement_indicator_assignations", schema = "osmosys",
-            joinColumns = {@JoinColumn(name = "statement_id")},
-            inverseJoinColumns = {@JoinColumn(name = "indicator_id")}
-    )
+    @ManyToMany(mappedBy = "statements")
     private Set<Indicator> indicators = new HashSet<>();
 
     @Override

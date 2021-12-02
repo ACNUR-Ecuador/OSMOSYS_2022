@@ -283,7 +283,7 @@ public class UserService implements Serializable {
                     .claim("organization", userWeb.getOrganization())
                     .claim("office", userWeb.getOffice())
                     .signWith(getSecretKey()).compact();
-            LOGGER.debug(token);
+            // LOGGER.debug(token);
             return token;
         }
         throw new AccessDeniedException("usuario no encontrado");
@@ -352,7 +352,7 @@ public class UserService implements Serializable {
             user.setEmail((String) jws.getBody().get("email"));
             //noinspection unchecked
             List<HashMap> rolesMaps = (List<HashMap>) jws.getBody().get("roles");
-            LOGGER.info(rolesMaps);
+            // LOGGER.info(rolesMaps);
             List<RoleWeb> rolesWeb = new ArrayList<>();
             for (Map<String, Object> rolesS : rolesMaps) {
                 RoleWeb roleWeb = new RoleWeb();

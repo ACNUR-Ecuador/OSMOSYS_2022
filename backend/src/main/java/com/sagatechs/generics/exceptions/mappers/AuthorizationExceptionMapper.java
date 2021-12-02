@@ -19,7 +19,6 @@ public class AuthorizationExceptionMapper implements ExceptionMapper<Authorizati
 
         Status statusCode = Status.UNAUTHORIZED;
 
-        System.out.println(ExceptionUtils.getRootCauseMessage(exception));
         ExceptionModelWs errorResponse = new ExceptionModelWs(statusCode.getStatusCode(),
                 exception.getMessage());
 

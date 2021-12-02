@@ -35,6 +35,14 @@ import {CustomDissagregationAdministrationComponent} from './custom-dissagregati
 import {PickListModule} from 'primeng/picklist';
 import {MarkersListPipe} from '../shared/pipes/markers-list.pipe';
 import {CustomDissagregationOptionsListPipe} from '../shared/pipes/custom-dissagregation-options-list.pipe';
+import {ToggleButtonModule} from 'primeng/togglebutton';
+import {ScrollPanelModule} from 'primeng/scrollpanel';
+import {FieldsetModule} from 'primeng/fieldset';
+import {EnumValuesToLabelPipe} from '../shared/pipes/enum-values-to-label.pipe';
+import {BooleanYesNoPipe} from '../shared/pipes/boolean-yes-no.pipe';
+import {DissagregationsAssignationToIndicatorPipe} from '../shared/pipes/dissagregations-assignation-to-indicator.pipe';
+import {CustomDissagregationsAssignationToIndicatorPipe} from '../shared/pipes/custom-dissagregations-assignation-to-indicator.pipe';
+import {FilterUtilsService} from '../shared/services/filter-utils.service';
 
 
 @NgModule({
@@ -71,14 +79,22 @@ import {CustomDissagregationOptionsListPipe} from '../shared/pipes/custom-dissag
         TabViewModule,
         OrganizationChartModule,
         CheckboxModule,
-        PickListModule
+        PickListModule,
+        ToggleButtonModule,
+        ScrollPanelModule,
+        FieldsetModule
     ],
     providers: [
         ConfirmationService,
         OfficeOrganizationPipe,
         CodeShortDescriptionPipe,
         MarkersListPipe,
-        CustomDissagregationOptionsListPipe
+        CustomDissagregationOptionsListPipe,
+        EnumValuesToLabelPipe,
+        BooleanYesNoPipe,
+        DissagregationsAssignationToIndicatorPipe,
+        CustomDissagregationsAssignationToIndicatorPipe,
+        FilterUtilsService
     ]
 })
 export class AdministrationModule {

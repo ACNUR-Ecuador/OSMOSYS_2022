@@ -88,9 +88,9 @@ public class IndicatorService {
         if (StringUtils.isBlank(indicatorWeb.getDescription())) {
             throw new GeneralAppException("Descripción no válida", Response.Status.BAD_REQUEST);
         }
-        if (CollectionUtils.isEmpty(indicatorWeb.getStatements())) {
+       /* if (CollectionUtils.isEmpty(indicatorWeb.getStatements())) {
             throw new GeneralAppException("No se ha asignado a ningún statement", Response.Status.BAD_REQUEST);
-        }
+        }*/
 
         if (indicatorWeb.getState() == null) {
             throw new GeneralAppException("Estádo no válido", Response.Status.BAD_REQUEST);
@@ -117,7 +117,7 @@ public class IndicatorService {
             throw new GeneralAppException("Tipo de cálculo total no válido", Response.Status.BAD_REQUEST);
         }
         if (CollectionUtils.isEmpty(indicatorWeb.getDissagregationsAssignationToIndicator())) {
-            throw new GeneralAppException("No se ha asignado a ninguna desagregación", Response.Status.BAD_REQUEST);
+            throw new GeneralAppException("No se ha asignado ninguna desagregación", Response.Status.BAD_REQUEST);
         }
         Indicator itemRecovered = this.indicatorDao.getByCode(indicatorWeb.getCode());
         if (itemRecovered != null) {
@@ -129,7 +129,7 @@ public class IndicatorService {
         itemRecovered = this.indicatorDao.getByDescription(indicatorWeb.getDescription());
         if (itemRecovered != null) {
             if (indicatorWeb.getId() == null || !indicatorWeb.getId().equals(itemRecovered.getId())) {
-                throw new GeneralAppException("Ya existe un área con esta descripción", Response.Status.BAD_REQUEST);
+                throw new GeneralAppException("Ya existe un indicador con esta descripción", Response.Status.BAD_REQUEST);
             }
         }
 

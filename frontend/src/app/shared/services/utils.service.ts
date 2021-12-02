@@ -60,6 +60,23 @@ export class UtilsService {
         return formGroup.get(formControlName).invalid && formGroup.get(formControlName).dirty;
     }
 
+    getErrorMessageForm(formControlName: string, formGroup: FormGroup): string {
+        if (this.showErrorForm(formControlName, formGroup)) {
+            if (formGroup.get(formControlName).hasError('required')) {
+                return 'Dato obligatorio';
+            }
+            if (formGroup.get(formControlName).hasError('email')) {
+                return 'Correo no válido';
+            }
+            if (formGroup.get(formControlName).hasError('maxlength')) {
+                return `No debe tener más de ${formGroup.get(formControlName).getError('maxlength').requiredLength} caracteres (${formGroup.get(formControlName).getError('maxlength').actualLength} caracteres)`;
+            }
+
+            return 'Dato no válido';
+        }
+        return null;
+    }
+
     /**
      * cambia keys del objeto a nombre del header para exportar
      * @param objects lista e objetos

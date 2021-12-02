@@ -51,8 +51,7 @@
                                             [showMenu]="false"> matchMode="contains
                             </p-columnFilter>
                             <p-columnFilter *ngSwitchCase="'state'" type="equals" [field]="col.field"
-                                            [showMenu]="false"
-                            >
+                                            [showMenu]="false">
                                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                                     <p-dropdown [ngModel]="value" [options]="states"
                                                 (onChange)="filter($event.value)"
@@ -64,6 +63,15 @@
                                     </p-dropdown>
                                 </ng-template>
                             </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'customDissagregationAssignationToIndicators'" type="text"
+                                            [field]="col.field" [showMenu]="false"
+                                            [matchMode]="'customDissagregationsAssignationToIndicatorFilter'"></p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'dissagregationsAssignationToIndicator'" type="text"
+                                            [field]="col.field" [showMenu]="false"
+                                            [matchMode]="'dissagregationsAssignationToIndicatorFilter'"></p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'markers'" type="text"
+                                            [field]="col.field" [showMenu]="false"
+                                            [matchMode]="'markersFilter'"></p-columnFilter>
                         </th>
                         <th>
 
@@ -75,7 +83,7 @@
                         <td *ngFor="let col of columns"
                             [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
                         >
-                            {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
+                            {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field)}}
                         </td>
                         <td>
                             <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2"
@@ -92,136 +100,260 @@
             </p-table>
         </div>
         <form [formGroup]="formItem" (ngSubmit)="saveItem()">
-            <p-dialog [(visible)]="showDialog" [style]="{width: '90%'}" header="Situación" [modal]="true"
+            <p-dialog [(visible)]="showDialog" [style]="{width: '90%'}" header="Indicador" [modal]="true"
                       styleClass="p-fluid" [closable]="false">
 
                 <ng-template pTemplate="content">
-                    <p-messages></p-messages>
+                    <div class="p-fluid p-formgrid p-grid">
+                        <div class="p-field p-col-12 p-md-3">
+                            <label for="areaTypeI">Tipo de Área</label>
 
-                    <div class="p-field">
-                        <label for="codeI">Código</label>
-                        <input type="text" pInputText id="codeI"
-                               formControlName="code" autofocus/>
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('code',formItem)">Campo
-                            obligatorio.</small>
-                    </div>
+                            <p-dropdown id="areaTypeI"
+                                        formControlName="areaType"
+                                        [options]="areaTypes"
+                                        placeholder="Selecciona..."
+                                        filter="true"
+                            >
+                            </p-dropdown>
 
-                    <div class="p-field">
-                        <label for="descriptionI">Descripción Completa</label>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('areaType',formItem)">{{utilsService.getErrorMessageForm('areaType', formItem)}}</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-3">
+                            <label for="indicatorTypeI">Tipo</label>
 
-                        <textarea pInputTextarea id="descriptionI"
-                                  formControlName="description"
-                                  autoResize="autoResize">
+                            <p-dropdown id="indicatorTypeI"
+                                        formControlName="indicatorType"
+                                        [options]="indicatorTypes"
+                                        placeholder="Selecciona..."
+                                        filter="true"
+                            >
+                            </p-dropdown>
+
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('indicatorType',formItem)">{{utilsService.getErrorMessageForm('indicatorType', formItem)}}</small>
+                        </div>
+
+                        <div class="p-field p-col-12 p-md-6">
+                            <label for="statementsI">Statements</label>
+                            <p-multiSelect id="statementsI"
+                                           formControlName="statements" autofocus
+                                           [options]="statements"
+                                           display="chip"
+                            >
+
+                            </p-multiSelect>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('statements',formItem)">{{utilsService.getErrorMessageForm('statements', formItem)}}</small>
+                        </div>
+
+                        <div class="p-field p-col-12 p-md-3">
+                            <label for="codeI">Código</label>
+                            <input type="text" pInputText id="codeI"
+                                   formControlName="code" autofocus/>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('code',formItem)">{{utilsService.getErrorMessageForm('code', formItem)}}</small>
+                        </div>
+
+                        <div class="p-field p-col-12 p-md-9">
+                            <label for="descriptionI">Descripción Completa</label>
+
+                            <textarea pInputTextarea id="descriptionI"
+                                      formControlName="description"
+                                      autoResize="autoResize">
                         </textarea>
 
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('description',formItem)">Campo
-                            obligatorio.</small>
-                    </div>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('description',formItem)">{{utilsService.getErrorMessageForm('description', formItem)}}</small>
+                        </div>
 
-                    <div class="p-field">
-                        <label for="stateI">Tipo</label>
 
-                        <p-dropdown id="indicatorTypeI"
-                                    formControlName="indicatorType"
-                                    [options]="indicatorTypes"
-                                    placeholder="Selecciona..."
-                                    filter="true"
-                        >
-                        </p-dropdown>
+                        <div class="p-field p-col-12 p-md-2">
+                            <label for="measureTypeI">Tipo de medida</label>
 
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('indicatorType',formItem)">Campo
-                            obligatorio.</small>
-                    </div>
-                    <div class="p-field">
-                        <label for="measureTypeI">Tipo de medida</label>
-
-                        <p-dropdown id="measureTypeI"
-                                    formControlName="measureType"
-                                    [options]="measureTypes"
-                                    placeholder="Selecciona..."
-                                    filter="true"
-
-                        >
-                        </p-dropdown>
-
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('measureType',formItem)">Campo
-                            obligatorio.</small>
-                    </div>
-                    <div class="p-field">
-                        <label for="areaTypeI">Tipo de Área</label>
-
-                        <p-dropdown id="areaTypeI"
-                                    formControlName="areaType"
-                                    [options]="areaTypes"
-                                    placeholder="Selecciona..."
-                                    filter="true"
-                        >
-                        </p-dropdown>
-
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('areaType',formItem)">Campo
-                            obligatorio.</small>
-                    </div>
-                    <div class="p-field">
-                        <label for="isMonitoredI">Tipo de medida</label>
-
-                        <p-selectButton id="isMonitoredI"
-                                        formControlName="isMonitored"
-                                        [options]="isMonitoredOptions"
+                            <p-dropdown id="measureTypeI"
+                                        formControlName="measureType"
+                                        [options]="measureTypes"
                                         placeholder="Selecciona..."
-                        >
-                        </p-selectButton>
+                                        filter="true"
 
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('isMonitored',formItem)">Campo
-                            obligatorio.</small>
-                    </div>
-                    <div class="p-field">
-                        <label for="isCalculatedI">Tipo de medida</label>
+                            >
+                            </p-dropdown>
 
-                        <p-selectButton id="isCalculatedI"
-                                        formControlName="isCalculated"
-                                        [options]="isMonitoredOptions"
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('measureType',formItem)">{{utilsService.getErrorMessageForm('measureType', formItem)}}</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-2">
+                            <label for="totalIndicatorCalculationTypeI">Tipo de cálculo</label>
+
+                            <p-dropdown id="totalIndicatorCalculationTypeI"
+                                        formControlName="totalIndicatorCalculationType"
+                                        [options]="totalIndicatorCalculationTypes"
                                         placeholder="Selecciona..."
-                        >
-                        </p-selectButton>
+                                        filter="true"
+                            >
+                            </p-dropdown>
 
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('isCalculated',formItem)">Campo
-                            obligatorio.</small>
-                    </div>
-                    <div class="p-field">
-                        <label for="stateI">Estado</label>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('totalIndicatorCalculationType',formItem)">{{utilsService.getErrorMessageForm('totalIndicatorCalculationType', formItem)}}</small>
+                        </div>
 
-                        <p-selectButton id="stateI"
-                                        formControlName="state"
-                                        [options]="states"
+                        <div class="p-field p-col-12 p-md-2">
+                            <label for="frecuencyI">Frecuencia</label>
+
+                            <p-dropdown id="frecuencyI"
+                                        formControlName="frecuency"
+                                        [options]="frecuencies"
                                         placeholder="Selecciona..."
-                        >
-                        </p-selectButton>
+                                        filter="true"
+                            >
+                            </p-dropdown>
 
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('state',formItem)">Campo
-                            obligatorio.</small>
-                    </div>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('frecuency',formItem)">{{utilsService.getErrorMessageForm('frecuency', formItem)}}</small>
+                        </div>
 
-                    <div class="p-field">
-                        <label for="guidePartnersI">Guía para socios</label>
+                        <div class="p-field p-col-12 p-md-2">
+                            <label for="isMonitoredI">Monitoreo</label>
 
-                        <textarea pInputTextarea id="guidePartnersI"
-                                  formControlName="guidePartners"
-                                  autoResize="autoResize">
+                            <p-toggleButton id="isMonitoredI"
+                                            formControlName="isMonitored"
+                                            onLabel="Monitoreado" offLabel="No Monitoreado"
+                                            onIcon="pi pi-check" offIcon="pi pi-times"
+                            >
+                            </p-toggleButton>
+
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('isMonitored',formItem)">{{utilsService.getErrorMessageForm('isMonitored', formItem)}}</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-2">
+                            <label for="isCalculatedI">Calculado</label>
+
+                            <p-toggleButton id="isCalculatedI"
+                                            formControlName="isCalculated"
+                                            onLabel="Calculado" offLabel="No Calculado"
+                                            onIcon="pi pi-check" offIcon="pi pi-times"
+                            >
+                            </p-toggleButton>
+
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('isCalculated',formItem)">{{utilsService.getErrorMessageForm('isCalculated', formItem)}}</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-2">
+                            <label for="stateI">Estado</label>
+
+                            <p-toggleButton id="stateI"
+                                            formControlName="state"
+                                            onLabel="Activo" offLabel="Inactivo"
+                                            onIcon="pi pi-check" offIcon="pi pi-times"
+                            >
+                            </p-toggleButton>
+
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('state',formItem)">{{utilsService.getErrorMessageForm('state', formItem)}}</small>
+                        </div>
+
+                        <div class="p-field p-col-12 p-md-6">
+                            <label for="guidePartnersI">Guía para socios</label>
+
+                            <textarea pInputTextarea id="guidePartnersI"
+                                      formControlName="guidePartners"
+                                      autoResize="autoResize">
                         </textarea>
 
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('guidePartners',formItem)">Campo
-                            obligatorio.</small>
-                    </div>
-                    <div class="p-field">
-                        <label for="guideDirectImplementationI">Guía para implementación directa</label>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('guidePartners',formItem)">{{utilsService.getErrorMessageForm('guidePartners', formItem)}}</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-6">
+                            <label for="guideDirectImplementationI">Guía para implementación directa</label>
 
-                        <textarea pInputTextarea id="guideDirectImplementationI"
-                                  formControlName="guideDirectImplementation"
-                                  autoResize="autoResize">
+                            <textarea pInputTextarea id="guideDirectImplementationI"
+                                      formControlName="guideDirectImplementation"
+                                      autoResize="autoResize">
                         </textarea>
 
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('guideDirectImplementation',formItem)">Campo
-                            obligatorio.</small>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('guideDirectImplementation',formItem)">{{utilsService.getErrorMessageForm('guideDirectImplementation', formItem)}}</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-6">
+                            <label>Desagregaciones Globales</label>
+                            <div class="p-field p-col-12 p-md-12" style="border: 1px solid #ced4da;">
+                                <p-scrollPanel [style]="{width: '100%', height: '80px'}">
+                                    <div class="p-formgroup-inline p-pt-2">
+                                        <div class="p-field-checkbox p-col-12 p-md-3"
+                                             *ngFor="let category of dissagregationTypes">
+                                            <p-checkbox name="group1" [inputId]="category.value"
+                                                        [value]="category.value"
+                                                        [formControl]="formItem.controls['dissagregations']">
+                                            </p-checkbox>
+                                            <label [for]="category.value">{{category.label}}</label>
+                                        </div>
+
+                                    </div>
+                                </p-scrollPanel>
+                            </div>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('dissagregations',formItem)">{{utilsService.getErrorMessageForm('dissagregations', formItem)}}</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-6">
+                            {{formItem.controls['customDissagregations'].value|json}}
+                            <label>Desagregaciones Operación</label>
+                            <div class="p-field p-col-12 p-md-12" style="border: 1px solid #ced4da;">
+                                <p-scrollPanel [style]="{width: '100%', height: '80px'}">
+                                    <div class="p-formgroup-inline p-pt-2">
+
+                                        <div class="p-field-checkbox p-col-12 p-md-3"
+                                             *ngFor="let custd of customDissagregations">
+                                            <p-checkbox name="group2" [inputId]="custd.id"
+                                                        [value]="custd.id"
+                                                        [formControl]="formItem.controls['customDissagregations']"
+                                            >
+                                            </p-checkbox>
+                                            <label [for]="custd.id">{{custd.name}}</label>
+                                        </div>
+                                    </div>
+                                </p-scrollPanel>
+                            </div>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('customDissagregations',formItem)">{{utilsService.getErrorMessageForm('customDissagregations', formItem)}}</small>
+                        </div>
+                        <p-fieldset class="p-field p-col-12 p-md-12" legend="Marcadores" [toggleable]="true"
+                                    [collapsed]="true">
+
+                            <p-pickList [source]="markers" [target]="formItem.get('markers').value"
+                                        sourceHeader="Marcadores Disponibles" targetHeader="Marcadores Seleccionados"
+                                        [dragdrop]="true"
+                                        [responsive]="true" [sourceStyle]="{'height':'30rem'}"
+                                        [targetStyle]="{'height':'30rem'}"
+                                        filterBy="description,shortDescription,type,subType"
+                                        sourceFilterPlaceholder="Search by name"
+                                        targetFilterPlaceholder="Search by name">
+                                <ng-template let-marker pTemplate="item">
+                                    <div class="product-item">
+                                        <div class="image-container">
+                                            <h4 class="p-mb-2">{{marker.shortDescription}}</h4>
+                                        </div>
+                                        <div class="product-list-detail">
+                                            <i class="pi pi-tag product-category-icon"></i>
+                                            <span class="product-category"
+                                                  style="font-weight: bolder;">Tipo: </span>{{marker.type}}
+                                        </div>
+                                        <div class="product-list-detail">
+                                            <i class="pi pi-tag product-category-icon"></i>
+                                            <span class="product-category"
+                                                  style="font-weight: bolder;">Subtipo: </span>{{marker.subType}}
+                                        </div>
+                                        <div class="image-container">
+
+                                            <p class="p-mb-2"><span class="product-category"
+                                                                    style="font-weight: bolder;">Descripción: </span>{{marker.description}}
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                </ng-template>
+                            </p-pickList>
+                        </p-fieldset>
                     </div>
                 </ng-template>
 
@@ -232,7 +364,7 @@
                     ></button>
                     <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
                             (click)="cancelDialog()"></button>
-
+                    <p-messages></p-messages>
                 </ng-template>
             </p-dialog>
         </form>

@@ -1,5 +1,6 @@
 package org.unhcr.osmosys.webServices.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.Statement;
 import org.unhcr.osmosys.model.enums.*;
@@ -23,7 +24,9 @@ public class IndicatorWeb implements Serializable {
     private Frecuency frecuency;
     private AreaType areaType;
     private List<MarkerWeb> markers = new ArrayList<>();
+    @JsonProperty("isMonitored")
     private Boolean isMonitored;
+    @JsonProperty("isCalculated")
     private Boolean isCalculated;
     private TotalIndicatorCalculationType totalIndicatorCalculationType;
 

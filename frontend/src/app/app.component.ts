@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {PrimeNGConfig} from 'primeng/api';
+import {EnumsService} from './shared/services/enums.service';
 
 @Component({
     selector: 'app-root',
@@ -8,30 +9,33 @@ import {PrimeNGConfig} from 'primeng/api';
 })
 export class AppComponent implements OnInit {
 
-        menuMode = 'horizontal';
-        colorScheme = 'light';
-        menuTheme = 'layout-sidebar-white';
-
-    /*    menuMode = 'static';
-        colorScheme = 'light';
-        menuTheme = 'layout-sidebar-unhcr';*/
-
-    /*    menuMode = 'static';
-        colorScheme = 'light';
-        menuTheme = 'layout-sidebar-unhcr';*/
-/*    menuMode = 'slim';
+    menuMode = 'horizontal';
     colorScheme = 'light';
-    menuTheme = 'layout-sidebar-unhcr';*/
+    menuTheme = 'layout-sidebar-white';
+
+    /*    menuMode = 'static';
+        colorScheme = 'light';
+        menuTheme = 'layout-sidebar-unhcr';*/
+
+    /*    menuMode = 'static';
+        colorScheme = 'light';
+        menuTheme = 'layout-sidebar-unhcr';*/
+    /*    menuMode = 'slim';
+        colorScheme = 'light';
+        menuTheme = 'layout-sidebar-unhcr';*/
 
     inputStyle = 'outlined';
 
     ripple: boolean;
 
-    constructor(private primengConfig: PrimeNGConfig) {
+    constructor(private primengConfig: PrimeNGConfig,
+                private enumsService: EnumsService
+    ) {
     }
 
     ngOnInit() {
         this.primengConfig.ripple = true;
         this.ripple = true;
+        this.enumsService.loadcache();
     }
 }

@@ -25,7 +25,10 @@ public class Indicator extends BaseEntity<Long> {
     @Column(name = "description", nullable = false, unique = true)
     private String description;
 
-    @ManyToMany(mappedBy = "indicators")
+    @ManyToMany@JoinTable(name = "statement_indicator_assignations", schema = "osmosys",
+            joinColumns = {@JoinColumn(name = "indicator_id")},
+            inverseJoinColumns = {@JoinColumn(name = "statement_id")}
+    )
     private Set<Statement> statements = new HashSet<>();
 
 
@@ -55,7 +58,7 @@ public class Indicator extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private AreaType areaType;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(schema ="osmosys" ,name = "indicators_markers", joinColumns = @JoinColumn(name = "indicator_id"), inverseJoinColumns = @JoinColumn(name = "marker_id"))
     private Set<Marker> markers = new HashSet<>();
 
@@ -68,10 +71,10 @@ public class Indicator extends BaseEntity<Long> {
     @Column(name = "total_indicator_calculation_type", nullable = false)
     private TotalIndicatorCalculationType totalIndicatorCalculationType;
 
-    @OneToMany(mappedBy = "indicator", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "indicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<DissagregationAssignationToIndicator> dissagregationsAssignationToIndicator = new HashSet<>();
 
-    @OneToMany(mappedBy = "indicator", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "indicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicators = new HashSet<>();
 
     @Override
@@ -196,6 +199,16 @@ public class Indicator extends BaseEntity<Long> {
     public void setStatements(Set<Statement> statements) {
         this.statements = statements;
     }
+    
+    public void addStatement(Statement statement){
+        statement.getIndicators().add(this);
+        if (!this.statements.add(statement)) {
+            this.statements.remove(statement);
+            this.statements.add(statement);
+        }
+    }
+    
+    
 
     public Set<CustomDissagregationAssignationToIndicator> getCustomDissagregationAssignationToIndicators() {
         return customDissagregationAssignationToIndicators;
