@@ -43,6 +43,10 @@ import {BooleanYesNoPipe} from '../shared/pipes/boolean-yes-no.pipe';
 import {DissagregationsAssignationToIndicatorPipe} from '../shared/pipes/dissagregations-assignation-to-indicator.pipe';
 import {CustomDissagregationsAssignationToIndicatorPipe} from '../shared/pipes/custom-dissagregations-assignation-to-indicator.pipe';
 import {FilterUtilsService} from '../shared/services/filter-utils.service';
+import { PartnerProjectAdministrationComponent } from './partner-project-administration/partner-project-administration.component';
+import { PartnerProjectListAdministrationComponent } from './partner-project-list-administration/partner-project-list-administration.component';
+import { GeneralIndicatorConfigurationComponent } from './general-indicator-configuration/general-indicator-configuration.component';
+import {CardModule} from 'primeng/card';
 
 
 @NgModule({
@@ -56,7 +60,10 @@ import {FilterUtilsService} from '../shared/services/filter-utils.service';
         StatementAdministrationComponent,
         PerformanceIndicatorAdministrationComponent,
         MarkerAdministrationComponent,
-        CustomDissagregationAdministrationComponent
+        CustomDissagregationAdministrationComponent,
+        PartnerProjectAdministrationComponent,
+        PartnerProjectListAdministrationComponent,
+        GeneralIndicatorConfigurationComponent
     ],
     imports: [
         CommonModule,
@@ -82,7 +89,8 @@ import {FilterUtilsService} from '../shared/services/filter-utils.service';
         PickListModule,
         ToggleButtonModule,
         ScrollPanelModule,
-        FieldsetModule
+        FieldsetModule,
+        CardModule
     ],
     providers: [
         ConfirmationService,

@@ -8,6 +8,7 @@ import org.unhcr.osmosys.webServices.model.*;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Stateless
 public class ModelWebTransformationService {
@@ -367,7 +368,6 @@ public class ModelWebTransformationService {
     }
     //</editor-fold>
 
-
     //<editor-fold desc="DissagregationFilterIndicator">
     public DissagregationFilterIndicatorWeb dissagregationFilterIndicatorToDissagregationFilterIndicatorWeb(DissagregationFilterIndicator d) {
         DissagregationFilterIndicatorWeb w = new DissagregationFilterIndicatorWeb();
@@ -409,7 +409,6 @@ public class ModelWebTransformationService {
         return r;
     }
     //</editor-fold>
-
 
     //<editor-fold desc="Marker">
     public MarkerWeb markerToMarkerWeb(Marker marker) {
@@ -798,5 +797,178 @@ public class ModelWebTransformationService {
     }
     //</editor-fold>
 
+    //<editor-fold desc="Project">
+    public ProjectWeb projectToProjectWeb(Project project) {
+        ProjectWeb w = new ProjectWeb();
+        w.setId(project.getId());
+        w.setName(project.getName());
+        w.setPeriod(this.periodToPeriodWeb(project.getPeriod()));
+        w.setOrganization(this.organizationToOrganizationWeb(project.getOrganization()));
+        w.setStartDate(project.getStartDate());
+        w.setEndDate(project.getEndDate());
+        Set<Canton> cantones = project.getProjectLocationAssigments().stream().filter(projectLocationAssigment -> {
+            return projectLocationAssigment.getState().equals(State.ACTIVO);
+        }).map(projectLocationAssigment -> {
+            return projectLocationAssigment.getLocation();
+        }).collect(Collectors.toSet());
+
+        for (Canton canton : cantones) {
+            w.getLocations().add(this.cantonToCantonWeb(canton));
+        }
+        return w;
+    }
+
+
+    public List<ProjectWeb> projectsToProjectsWeb(List<Project> projects) {
+        List<ProjectWeb> r = new ArrayList<>();
+        for (Project project : projects) {
+            r.add(this.projectToProjectWeb(project));
+        }
+        return r;
+    }
+
+
+    //</editor-fold>
+
+
+    //<editor-fold desc="Canton">
+    public CantonWeb cantonToCantonWeb(Canton canton) {
+        if (canton == null) {
+            return null;
+        }
+        CantonWeb w = new CantonWeb();
+        w.setId(canton.getId());
+        w.setState(canton.getState());
+        w.setDescription(canton.getDescription());
+        w.setProvincia(this.provinciaToProvinciaWeb(canton.getProvincia()));
+        w.setOffice(this.officeToOfficeWeb(canton.getOffice(), false));
+        w.setCode(canton.getCode());
+        return w;
+    }
+
+    public List<CantonWeb> cantonsToCantonsWeb(List<Canton> cantones) {
+        List<CantonWeb> r = new ArrayList<>();
+        for (Canton canton : cantones) {
+            r.add(this.cantonToCantonWeb(canton));
+        }
+        return r;
+    }
+
+    public Canton cantonWebToCanton(CantonWeb cantonWeb) {
+        if (cantonWeb == null) {
+            return null;
+        }
+        Canton w = new Canton();
+        w.setId(cantonWeb.getId());
+        w.setState(cantonWeb.getState());
+        w.setDescription(cantonWeb.getDescription());
+        w.setCode(cantonWeb.getCode());
+        return w;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Provincia">
+    public ProvinciaWeb provinciaToProvinciaWeb(Provincia provincia) {
+        if (provincia == null) {
+            return null;
+        }
+        ProvinciaWeb w = new ProvinciaWeb();
+        w.setId(provincia.getId());
+        w.setState(provincia.getState());
+        w.setDescription(provincia.getDescription());
+        w.setCode(provincia.getCode());
+        return w;
+    }
+
+
+//</editor-fold>
+
+
+    //<editor-fold desc="DissagregationAssignationToGeneralIndicator">
+    public DissagregationAssignationToGeneralIndicatorWeb dissagregationAssignationToGeneralIndicatorToDissagregationAssignationToGeneralIndicatorWeb(DissagregationAssignationToGeneralIndicator d) {
+        DissagregationAssignationToGeneralIndicatorWeb w = new DissagregationAssignationToGeneralIndicatorWeb();
+        w.setId(d.getId());
+        w.setState(d.getState());
+        w.setDissagregationType(d.getDissagregationType());
+        return w;
+    }
+
+    public DissagregationAssignationToGeneralIndicator dissagregationAssignationToGeneralIndicatorWebToDissagregationAssignationToGeneralIndicator(DissagregationAssignationToGeneralIndicatorWeb w) {
+        DissagregationAssignationToGeneralIndicator d = new DissagregationAssignationToGeneralIndicator();
+        d.setId(w.getId());
+        d.setState(w.getState());
+        d.setDissagregationType(w.getDissagregationType());
+        return d;
+    }
+
+
+    public List<DissagregationAssignationToGeneralIndicatorWeb> dissagregationAssignationToGeneralIndicatorsToDissagregationAssignationToGeneralIndicatorsWeb(Set<DissagregationAssignationToGeneralIndicator> d) {
+        List<DissagregationAssignationToGeneralIndicatorWeb> r = new ArrayList<>();
+        for (DissagregationAssignationToGeneralIndicator dissagregationAssignationToGeneralIndicator : d) {
+            r.add(this.dissagregationAssignationToGeneralIndicatorToDissagregationAssignationToGeneralIndicatorWeb(dissagregationAssignationToGeneralIndicator));
+        }
+
+        return r;
+    }
+
+    public Set<DissagregationAssignationToGeneralIndicator> dissagregationAssignationToGeneralIndicatorsWebToDissagregationAssignationToGeneralIndicators(List<DissagregationAssignationToGeneralIndicatorWeb> d) {
+        Set<DissagregationAssignationToGeneralIndicator> r = new HashSet<>();
+        for (DissagregationAssignationToGeneralIndicatorWeb dissagregationAssignationToGeneralIndicator : d) {
+            r.add(this.dissagregationAssignationToGeneralIndicatorWebToDissagregationAssignationToGeneralIndicator(dissagregationAssignationToGeneralIndicator));
+        }
+
+        return r;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="GeneralIndicator">
+    public GeneralIndicatorWeb generalIndicatorToGeneralIndicatorWeb(GeneralIndicator indicator) {
+        if (indicator == null) {
+            return null;
+        }
+        GeneralIndicatorWeb indicatorWeb = new GeneralIndicatorWeb();
+        indicatorWeb.setId(indicator.getId());
+        indicatorWeb.setDescription(indicator.getDescription());
+        indicatorWeb.setState(indicator.getState());
+        indicatorWeb.setMeasureType(indicator.getMeasureType());
+        indicatorWeb.setPeriod(this.periodToPeriodWeb(indicator.getPeriod()));
+        indicatorWeb.setDissagregationAssignationsToGeneralIndicator(this.dissagregationAssignationToGeneralIndicatorsToDissagregationAssignationToGeneralIndicatorsWeb(indicator.getDissagregationAssignationsToGeneralIndicator()));
+        return indicatorWeb;
+    }
+
+    public GeneralIndicator generalIndicatorWebToGeneralIndicator(GeneralIndicatorWeb indicatorWeb) {
+        if (indicatorWeb == null) {
+            return null;
+        }
+        GeneralIndicator indicator = new GeneralIndicator();
+        indicator.setId(indicatorWeb.getId());
+        indicator.setDescription(indicatorWeb.getDescription());
+        indicator.setState(indicatorWeb.getState());
+        indicator.setMeasureType(indicatorWeb.getMeasureType());
+        indicator.setPeriod(this.periodWebToPeriod(indicatorWeb.getPeriod()));
+
+        Set<DissagregationAssignationToGeneralIndicator> dissagregationAssignationToIndicators = this.dissagregationAssignationToGeneralIndicatorsWebToDissagregationAssignationToGeneralIndicators(indicatorWeb.getDissagregationAssignationsToGeneralIndicator());
+        for (DissagregationAssignationToGeneralIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicators) {
+            indicator.addDissagregationAssignationsToGeneralIndicator(dissagregationAssignationToIndicator);
+        }
+        return indicator;
+    }
+
+    public List<GeneralIndicatorWeb> generalIndicatorsToGeneralIndicatorsWeb(List<GeneralIndicator> indicators) {
+        List<GeneralIndicatorWeb> r = new ArrayList<>();
+        for (GeneralIndicator indicator : indicators) {
+            r.add(this.generalIndicatorToGeneralIndicatorWeb(indicator));
+        }
+        return r;
+    }
+
+    public List<GeneralIndicator> generalIndicatorsWebToGeneralIndicators(List<GeneralIndicatorWeb> indicatorsWebs) {
+        List<GeneralIndicator> r = new ArrayList<>();
+        for (GeneralIndicatorWeb indicatorWeb : indicatorsWebs) {
+            r.add(this.generalIndicatorWebToGeneralIndicator(indicatorWeb));
+        }
+        return r;
+    }
+    //</editor-fold>
 
 }

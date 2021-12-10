@@ -6,6 +6,9 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(schema = "osmosys", name = "projects")
@@ -27,13 +30,22 @@ public class Project extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private State state;
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "organization_id",foreignKey = @ForeignKey(name = "fk_projet_organization"))
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
+
+    @Column(name = "end_date", nullable = false)
+    private LocalDate endDate;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "organization_id", foreignKey = @ForeignKey(name = "fk_projet_organization"))
     private Organization organization;
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "period_id",foreignKey = @ForeignKey(name = "fk_project_period"))
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "period_id", foreignKey = @ForeignKey(name = "fk_project_period"))
     private Period period;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
+    private Set<ProjectLocationAssigment> projectLocationAssigments = new HashSet<>();
 
     @Override
     public Long getId() {
@@ -82,6 +94,38 @@ public class Project extends BaseEntity<Long> {
 
     public void setPeriod(Period period) {
         this.period = period;
+    }
+
+    public Set<ProjectLocationAssigment> getProjectLocationAssigments() {
+        return projectLocationAssigments;
+    }
+
+    public void setProjectLocationAssigments(Set<ProjectLocationAssigment> projectLocationAssigments) {
+        this.projectLocationAssigments = projectLocationAssigments;
+    }
+
+    public void addProjectLocationAssigment(ProjectLocationAssigment projectLocationAssigment) {
+        projectLocationAssigment.setProject(this);
+        if(!this.projectLocationAssigments.add(projectLocationAssigment)){
+            this.projectLocationAssigments.remove(projectLocationAssigment);
+            this.projectLocationAssigments.add(projectLocationAssigment);
+        }
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     @Override

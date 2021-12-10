@@ -74,6 +74,14 @@ public class Canton extends BaseEntity<Long> {
         this.provincia = provincia;
     }
 
+    public Office getOffice() {
+        return office;
+    }
+
+    public void setOffice(Office office) {
+        this.office = office;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

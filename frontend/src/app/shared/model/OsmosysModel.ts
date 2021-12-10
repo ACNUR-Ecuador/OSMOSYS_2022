@@ -224,3 +224,55 @@ export class CustomDissagregationFilterIndicator {
     public state: string;
     public customDissagregationOptions: CustomDissagregationOption[];
 }
+
+export class Project {
+    public id: number;
+    public code: string;
+    public name: string;
+    public state: string;
+    public organization: Organization;
+    public period: Period;
+    public startDate: Date;
+    public endDate: Date;
+    public locations: Canton[];
+}
+
+export class Canton {
+    public id: number;
+    public code: string;
+    public description: string;
+    public state: string;
+    public provincia: Provincia;
+    public office: Office;
+}
+
+export class Provincia {
+    public id: number;
+    public code: string;
+    public description: string;
+    public state: string;
+}
+
+export class GeneralIndicator {
+    constructor() {
+        this.state = 'ACTIVO';
+        this.dissagregationAssignationsToGeneralIndicator = [];
+    }
+
+    public id: number;
+    public description: string;
+    public measureType: string;
+    public state: string;
+    public period: Period;
+    public dissagregationAssignationsToGeneralIndicator: DissagregationAssignationToGeneralIndicator[];
+}
+
+export class DissagregationAssignationToGeneralIndicator {
+    constructor() {
+        this.state = 'ACTIVO';
+    }
+
+    public id: number;
+    public state: string;
+    public dissagregationType: string;
+}

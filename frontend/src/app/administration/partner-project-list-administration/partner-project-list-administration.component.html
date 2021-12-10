@@ -1,0 +1,35 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <p-toast></p-toast>
+
+        <div class="card">
+            <h3 class="page-title">Administración de Proyectos</h3>
+
+
+            <p-toolbar styleClass="p-mb-4">
+                <div class="p-toolbar-group-left">
+                    <button pButton pRipple label="Crear Proyecto" icon="pi pi-plus"
+                            class="p-button-success p-mr-2 p-mb-2"
+                            (click)="createItem()"></button>
+                </div>
+                <form [formGroup]="periodForm">
+                    <div class="p-field p-grid">
+
+                        <label for="periodI" class="p-col-fixed" style="width:100px; color: white;">Periodo:</label>
+                        <div class="p-col">
+                            <p-dropdown id="periodI" [options]="periods" optionLabel="year"
+                                        (onChange)="onPeriodChange($event.value)"></p-dropdown>
+                        </div>
+
+                    </div>
+                </form>
+                <div class="p-toolbar-group-right">
+
+                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+                            class="p-button-success p-mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                </div>
+
+            </p-toolbar>
+        </div>
+    </div>
+</div>

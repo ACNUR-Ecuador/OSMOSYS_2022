@@ -3,7 +3,7 @@ package com.sagatechs.generics.persistence.model;
 import org.unhcr.osmosys.model.enums.EnumInterface;
 
 public enum State implements EnumInterface {
-    ACTIVO("ACTIVO",1), INACTIVO("INACTIVO",2);
+    ACTIVO("Activo",1), INACTIVO("Inactivo",2);
 
     private String label;
     private int order;

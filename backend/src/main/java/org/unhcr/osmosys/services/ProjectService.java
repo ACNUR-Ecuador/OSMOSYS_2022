@@ -1,0 +1,185 @@
+package org.unhcr.osmosys.services;
+
+import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.State;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jboss.logging.Logger;
+import org.unhcr.osmosys.daos.CantonDao;
+import org.unhcr.osmosys.daos.ProjectDao;
+import org.unhcr.osmosys.model.Canton;
+import org.unhcr.osmosys.model.Project;
+import org.unhcr.osmosys.model.ProjectLocationAssigment;
+import org.unhcr.osmosys.webServices.model.CantonWeb;
+import org.unhcr.osmosys.webServices.model.ProjectWeb;
+import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Stateless
+public class ProjectService {
+
+    @Inject
+    ProjectDao projectDao;
+    @Inject
+    CantonDao cantonDao;
+
+    @Inject
+    ModelWebTransformationService modelWebTransformationService;
+
+    @SuppressWarnings("unused")
+    private final static Logger LOGGER = Logger.getLogger(ProjectService.class);
+
+    public Project getById(Long id) {
+        return this.projectDao.find(id);
+    }
+
+    public Project saveOrUpdate(Project project) {
+        if (project.getId() == null) {
+            this.projectDao.save(project);
+        } else {
+            this.projectDao.update(project);
+        }
+        return project;
+    }
+
+    public Long save(ProjectWeb projectWeb) throws GeneralAppException {
+        if (projectWeb == null) {
+            throw new GeneralAppException("No se puede guardar un project null", Response.Status.BAD_REQUEST);
+        }
+        if (projectWeb.getId() != null) {
+            throw new GeneralAppException("No se puede crear un project con id", Response.Status.BAD_REQUEST);
+        }
+        this.validate(projectWeb);
+
+
+        Project project = new Project();
+        project.setName(projectWeb.getName());
+        project.setState(projectWeb.getState());
+        project.setCode(projectWeb.getCode());
+        project.setPeriod(this.modelWebTransformationService.periodWebToPeriod(projectWeb.getPeriod()));
+        project.setOrganization(this.modelWebTransformationService.organizationWebToOrganization(projectWeb.getOrganization()));
+        project.setStartDate(projectWeb.getStartDate());
+        project.setEndDate(projectWeb.getEndDate());
+        List<Long> idsCanton = projectWeb.getLocations().stream().map(cantonWeb -> cantonWeb.getId()).collect(Collectors.toList());
+        List<Canton> cantones = this.cantonDao.getByIds(idsCanton);
+        for (Canton canton : cantones) {
+            ProjectLocationAssigment projectLocationAssigment = new ProjectLocationAssigment();
+            projectLocationAssigment.setLocation(canton);
+            projectLocationAssigment.setState(State.ACTIVO);
+            project.addProjectLocationAssigment(projectLocationAssigment);
+        }
+        this.saveOrUpdate(project);
+        return project.getId();
+    }
+
+    public Long update(ProjectWeb projectWeb) throws GeneralAppException {
+        if (projectWeb == null) {
+            throw new GeneralAppException("No se puede actualizar un proyecto null", Response.Status.BAD_REQUEST);
+        }
+        if (projectWeb.getId() == null) {
+            throw new GeneralAppException("No se puede actualizar un proyecto sin id", Response.Status.BAD_REQUEST);
+        }
+        this.validate(projectWeb);
+        Project project = this.projectDao.find(projectWeb.getId());
+        if (project == null) {
+            throw new GeneralAppException("No se puede encontrar el proyecto con id " + projectWeb.getId(), Response.Status.NOT_FOUND);
+        }
+        project.setOrganization(this.modelWebTransformationService.organizationWebToOrganization(projectWeb.getOrganization()));
+        project.setCode(projectWeb.getCode());
+        project.setPeriod(this.modelWebTransformationService.periodWebToPeriod(projectWeb.getPeriod()));
+        project.setState(projectWeb.getState());
+        project.setName(projectWeb.getName());
+        // TODO Q HACER CUANDO SE CAMBIE ESTOS VALORES
+        project.setStartDate(projectWeb.getStartDate());
+        project.setEndDate(projectWeb.getEndDate());
+        // las localidades
+        updateProjectLocations(projectWeb, project);
+        this.saveOrUpdate(project);
+
+
+        return project.getId();
+    }
+
+    private void updateProjectLocations(ProjectWeb projectWeb, Project project) {
+        // veo las q ya no están y desactivo
+        project.getProjectLocationAssigments().forEach(projectLocationAssigment -> {
+            Optional<CantonWeb> cantonFound = projectWeb.getLocations().stream().filter(cantonWeb -> {
+                return projectLocationAssigment.getLocation().getId().equals(cantonWeb.getId());
+            }).findFirst();
+            if (!cantonFound.isPresent()) {
+                projectLocationAssigment.setState(State.INACTIVO);
+            }
+        });
+        // veo las nuevas y creo hago update si es el caso
+        projectWeb.getLocations().forEach(cantonWeb -> {
+            Optional<ProjectLocationAssigment> assignmentFound = project.getProjectLocationAssigments().stream().filter(projectLocationAssigment -> projectLocationAssigment.getLocation().getId().equals(cantonWeb.getId())).findFirst();
+            if (assignmentFound.isPresent()) {
+                assignmentFound.get().setState(State.ACTIVO);
+            } else {
+                ProjectLocationAssigment projectLocationAssigment = new ProjectLocationAssigment();
+                projectLocationAssigment.setLocation(this.cantonDao.find(cantonWeb.getId()));
+                projectLocationAssigment.setState(State.ACTIVO);
+                project.addProjectLocationAssigment(projectLocationAssigment);
+            }
+        });
+    }
+
+
+    public List<ProjectWeb> getAll() {
+        List<ProjectWeb> r = new ArrayList<>();
+        return this.modelWebTransformationService.projectsToProjectsWeb(this.projectDao.findAll());
+    }
+
+    public List<ProjectWeb> getByState(State state) {
+        List<ProjectWeb> r = new ArrayList<>();
+        return this.modelWebTransformationService.projectsToProjectsWeb(this.projectDao.getByState(state));
+    }
+
+
+    public void validate(ProjectWeb projectWeb) throws GeneralAppException {
+        if (projectWeb == null) {
+            throw new GeneralAppException("Proyecto es nulo", Response.Status.BAD_REQUEST);
+        }
+
+        if (StringUtils.isBlank(projectWeb.getCode())) {
+            throw new GeneralAppException("Código no válido", Response.Status.BAD_REQUEST);
+        }
+        if (StringUtils.isBlank(projectWeb.getName())) {
+            throw new GeneralAppException("Descripción no válida", Response.Status.BAD_REQUEST);
+        }
+        if (CollectionUtils.isEmpty(projectWeb.getLocations())) {
+            throw new GeneralAppException("No tiene asignado lugares de trabajo", Response.Status.BAD_REQUEST);
+        }
+        if (projectWeb.getOrganization() == null) {
+            throw new GeneralAppException("No tiene asignado una organización", Response.Status.BAD_REQUEST);
+        }
+        if (projectWeb.getState() == null) {
+            throw new GeneralAppException("Estádo no válido", Response.Status.BAD_REQUEST);
+        }
+        if (projectWeb.getPeriod() == null) {
+            throw new GeneralAppException("Periodo no válido", Response.Status.BAD_REQUEST);
+        }
+
+        Project itemRecovered = this.projectDao.getByCode(projectWeb.getCode());
+        if (itemRecovered != null) {
+            if (projectWeb.getId() == null || !projectWeb.getId().equals(itemRecovered.getId())) {
+                throw new GeneralAppException("Ya existe un proyecto con este código", Response.Status.BAD_REQUEST);
+            }
+        }
+
+        itemRecovered = this.projectDao.getByName(projectWeb.getName());
+        if (itemRecovered != null) {
+            if (projectWeb.getId() == null || !projectWeb.getId().equals(itemRecovered.getId())) {
+                throw new GeneralAppException("Ya existe un proyecto con esta descripción corta", Response.Status.BAD_REQUEST);
+            }
+        }
+
+    }
+}
