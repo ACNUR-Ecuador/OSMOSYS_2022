@@ -4,7 +4,206 @@
 
         <div class="card">
             <h3 class="page-title">Administración de Proyectos</h3>
-            {{this.period |json}}
+            <div class="card">
+                <form [formGroup]="formItem" (ngSubmit)="saveItem()">
+                    <div class="p-fluid p-formgrid p-grid">
+                        <div class="p-field p-col-12 p-md-4">
+                            <label for="codeI">Código</label>
+                            <input type="text" pInputText id="codeI"
+                                   formControlName="code" autofocus/>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('code',formItem)">{{utilsService.getErrorMessageForm('code', formItem)}}</small>
+
+                        </div>
+                        <div class="p-field p-col-12 p-md-8">
+                            <label for="nameI">Tìtulo</label>
+                            <input type="text" pInputText id="nameI"
+                                   formControlName="name" autofocus/>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('name',formItem)">{{utilsService.getErrorMessageForm('name', formItem)}}</small>
+
+                        </div>
+                        <div class="p-field p-col-12 p-md-4">
+                            <label for="stateI">Estado</label>
+                            <p-selectButton id="stateI"
+                                            formControlName="state"
+                                            [options]="states"
+                                            placeholder="Selecciona..."
+                            >
+                            </p-selectButton>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('state',formItem)">{{utilsService.getErrorMessageForm('state', formItem)}}</small>
+
+                        </div>
+                        <div class="p-field p-col-12 p-md-4">
+                            <label for="organizationI">Organización</label>
+
+                            <p-dropdown id="organizationI"
+                                        formControlName="organization"
+                                        [options]="organizations"
+                                        placeholder="Selecciona...">
+                            </p-dropdown>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('organization',formItem)">{{utilsService.getErrorMessageForm('organization', formItem)}}</small>
+
+                        </div>
+                        <div class="p-field p-col-12 p-md-4">
+                            <label for="periodI">Periodo</label>
+
+                            <p-dropdown id="periodI"
+                                        formControlName="period"
+                                        [options]="periods"
+                                        optionLabel="year"
+                                        placeholder="Selecciona...">
+                            </p-dropdown>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('period',formItem)">{{utilsService.getErrorMessageForm('period', formItem)}}</small>
+
+                        </div>
+                        <div class="p-field p-col-12 p-md-5">
+                            <label for="startDateI">Fecha de Inicio del Proyecto</label>
+                            <p-calendar id="startDateI"
+                                        formControlName="startDate" dateFormat="dd/MM/yy"
+                                        showIcon="true"
+                                        monthNavigator="true"
+                                        yearNavigator="true"
+                                        yearRange="2021:2050"
+                            ></p-calendar>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('startDate',formItem)">{{utilsService.getErrorMessageForm('startDate', formItem)}}</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-5">
+                            <label for="endDateI">Fecha de Fin del Proyecto</label>
+                            <p-calendar id="endDateI" formControlName="endDate" dateFormat="dd/MM/yy"
+                                        showIcon="true"
+                                        monthNavigator="true"
+                                        yearNavigator="true"
+                                        yearRange="2021:2050"></p-calendar>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('endDate',formItem)">{{utilsService.getErrorMessageForm('endDate', formItem)}}</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-12">
+                            <p-panel header="Lugares de ejecución" [toggleable]="true">
+                                <ng-template pTemplate="header">
+                                    <div class=" p-d-flex p-jc-end">
+                                        <button pButton type="button" pRipple label="Editar lugares de ejecución"
+                                                style="max-width: 20rem"
+                                                icon="pi pi-pencil"
+                                                class="p-button-success"
+                                                (click)="editLocations()"></button>
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="content">
+                                    <p-table #dt [value]="formItem.get('locations').value" [rows]="10"
+                                             [paginator]="true"
+                                             [rowHover]="true" dataKey="id"
+                                             styleClass="p-datatable-customers"
+                                             currentPageReportTemplate=" {first} a {last} de {totalRecords} "
+                                             [showCurrentPageReport]="true">
+                                        <ng-template pTemplate="header" let-columns>
+                                            <tr>
+                                                <th *ngFor="let col of cols" [pSortableColumn]="col.field">
+                                                    {{col.header}}
+                                                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                                                </th>
+                                            </tr>
+
+                                            <tr>
+                                                <th *ngFor="let col of cols" [ngSwitch]="col.field">
+                                                    <p-columnFilter *ngSwitchDefault [type]="col.type"
+                                                                    [field]="col.field"
+                                                                    [matchMode]="'contains'"
+                                                                    [showMenu]="false"> matchMode="contains
+                                                    </p-columnFilter>
+
+                                                </th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-rowData let-columns="columns">
+                                            <tr>
+                                                <td *ngFor="let col of cols"
+                                                    [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
+                                                >
+                                                    {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
+                                                </td>
+
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="summary">
+                                            <div class="p-d-flex p-ai-center p-jc-between">
+                                                Total {{formItem.get('locations').value ? formItem.get('locations').value.length : 0 }}
+                                                cantones.
+                                            </div>
+                                        </ng-template>
+                                    </p-table>
+                                </ng-template>
+
+                            </p-panel>
+                        </div>
+
+                    </div>
+                    <div class="p-field p-col-12 p-md-12">
+                        <p-messages ></p-messages>
+                    </div>
+                    <div class="p-d-flex p-jc-end">
+
+                        <button pButton type="submit" class="p-mr-2"
+                                [disabled]="!formItem.valid"
+                                pRipple label="Guardar" icon="pi pi-check"
+                        ></button>
+                        <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times"
+                                class="p-button-secondary"
+                                (click)="cancel()"></button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
+<form [formGroup]="formItem" (ngSubmit)="saveLocationsForm()">
+    <p-dialog [(visible)]="showLocationsDialog" [style]="{width: '90%'}" header="Lugares de ejecución" [modal]="true"
+              styleClass="p-fluid" [closable]="false">
+
+        <ng-template pTemplate="content">
+            <div class="p-field p-col-12 p-md-12">
+
+
+                <div class="p-field p-col-12 p-md-12" *ngIf="showLocationMenu">
+                    <p-pickList [source]="cantones" [target]="formLocations.get('locationsSelected').value"
+                                sourceHeader="Disponibles" targetHeader="Seleccionados"
+                                [dragdrop]="true"
+                                [responsive]="true"
+                                [sourceStyle]="{'height':'25rem'}" [targetStyle]="{'height':'25rem'}"
+                                filterBy="description,provinciaDescription"
+                                sourceFilterPlaceholder="Buscar por cantón o provincia"
+                                targetFilterPlaceholder="Buscar por cantón o provincia"
+                                [showSourceControls]="false"
+                                [showTargetControls]="false"
+                                [dragdrop]="true"
+                    >
+                        <ng-template let-product pTemplate="item">
+                            <div class="p-d-flex p-jc-between">
+                                        <span
+                                            style="font-size:14px;font-weight: 800;vertical-align: middle;">{{product.description}}</span>
+
+                                <span style="font-size:10px;font-weight: 600;vertical-align: middle;"><i
+                                    class="pi pi-tag product-category-icon"></i>{{product.provinciaDescription}}</span>
+                            </div>
+
+                        </ng-template>
+                    </p-pickList>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <button pButton type="submit"
+                    [disabled]="!formLocations.valid"
+                    pRipple label="Guardar" icon="pi pi-check"
+            ></button>
+            <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
+                    (click)="cancelDialogLocations()"></button>
+
+        </ng-template>
+
+    </p-dialog>
+</form>

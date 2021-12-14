@@ -31,4 +31,7 @@ export class PeriodService {
     public getByState(state: EnumsState): Observable<Period[]> {
         return this.http.get<Period[]>(`${mainServiceUrl}/byState/${state}`);
     }
+    public getById(id: number): Observable<Period> {
+        return this.http.get<Period>(`${mainServiceUrl}/${id}`);
+    }
 }

@@ -65,15 +65,15 @@ public class ProjectLocationAssigment extends BaseEntity<Long> {
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof ProjectLocationAssigment)) return false;
 
         ProjectLocationAssigment that = (ProjectLocationAssigment) o;
 
-        return new EqualsBuilder().append(project, that.project).append(location, that.location).isEquals();
+        return new EqualsBuilder().append(id, that.id).append(project, that.project).append(location, that.location).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(project).append(location).toHashCode();
+        return new HashCodeBuilder(17, 37).append(id).append(project).append(location).toHashCode();
     }
 }

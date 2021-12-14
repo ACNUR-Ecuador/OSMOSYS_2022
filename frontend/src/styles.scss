@@ -17,7 +17,7 @@ $gutter: 1rem; //for primeflex grid system
     text-align: center !important;
 }
 
-.page-title{
+.page-title {
     color: #0072BC;
 }
 
@@ -27,4 +27,16 @@ $gutter: 1rem; //for primeflex grid system
     align-items: center;
     height: 15px;
     border: red;
+}
+
+// calendario
+.p-datepicker .p-datepicker-header .p-datepicker-prev,
+.p-datepicker .p-datepicker-header .p-datepicker-next {
+    width: 2rem;
+    height: 2rem;
+    color:white;
+    border: 0 none;
+    background:  rgba(0, 114, 188, 1);
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
 }

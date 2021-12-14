@@ -93,4 +93,8 @@ public class PeriodService {
             }
         }
     }
+
+    public PeriodWeb getByid(Long id) {
+        return this.modelWebTransformationService.periodToPeriodWeb(this.periodDao.find(id));
+    }
 }

@@ -47,6 +47,10 @@ import { PartnerProjectAdministrationComponent } from './partner-project-adminis
 import { PartnerProjectListAdministrationComponent } from './partner-project-list-administration/partner-project-list-administration.component';
 import { GeneralIndicatorConfigurationComponent } from './general-indicator-configuration/general-indicator-configuration.component';
 import {CardModule} from 'primeng/card';
+import {CalendarModule} from 'primeng/calendar';
+import {ProjectService} from '../shared/services/project.service';
+import {PanelModule} from 'primeng/panel';
+import {MenuModule} from 'primeng/menu';
 
 
 @NgModule({
@@ -90,7 +94,10 @@ import {CardModule} from 'primeng/card';
         ToggleButtonModule,
         ScrollPanelModule,
         FieldsetModule,
-        CardModule
+        CardModule,
+        CalendarModule,
+        PanelModule,
+        MenuModule
     ],
     providers: [
         ConfirmationService,
@@ -102,7 +109,8 @@ import {CardModule} from 'primeng/card';
         BooleanYesNoPipe,
         DissagregationsAssignationToIndicatorPipe,
         CustomDissagregationsAssignationToIndicatorPipe,
-        FilterUtilsService
+        FilterUtilsService,
+        ProjectService
     ]
 })
 export class AdministrationModule {

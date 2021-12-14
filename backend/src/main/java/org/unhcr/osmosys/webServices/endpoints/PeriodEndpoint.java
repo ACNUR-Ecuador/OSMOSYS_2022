@@ -50,4 +50,12 @@ public class PeriodEndpoint {
     public List<PeriodWeb> getByState(@PathParam("state") State state) {
         return this.periodService.getByState(state);
     }
+
+    @Path("/{id}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public PeriodWeb getByid(@PathParam("id") Long id) {
+        return this.periodService.getByid(id);
+    }
 }

@@ -4,6 +4,8 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.Project;
+import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
+
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
@@ -17,6 +19,23 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
     public ProjectDao() {
         super(Project.class, Long.class);
     }
+
+    @SuppressWarnings("JpaQlInspection")
+    private String projectResumeWebQuery = "SELECT pr.id, " +
+            "pr.code, " +
+            "pr.name, " +
+            "pr.state, " +
+            "org.id as organizationId, " +
+            "org.description as organizationDescription, " +
+            "org.acronym as organizationAcronym, " +
+            "pe.id as periodId, " +
+            "pe.year as periodYear, " +
+            "pr.start_date as startDate, " +
+             "pr.end_date as endDate " +
+            "FROM  " +
+            "osmosys.projects pr " +
+            "LEFT JOIN osmosys.organizations org ON pr.organization_id=org.id " +
+            "LEFT JOIN osmosys.periods pe ON pr.period_id =pe.id ";
 
     public List<Project> getByState(State state) {
 
@@ -55,6 +74,14 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         } catch (NonUniqueResultException e) {
             throw new GeneralAppException("Se encontró más de un item con el mismo nombre " + name, Response.Status.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public List<ProjectResumeWeb> getProjectResumenWebByPeriodId(Long periodId) throws GeneralAppException {
+
+        String sql = this.projectResumeWebQuery + " WHERE pe.id =:periodId";
+        Query q = getEntityManager().createNativeQuery(sql, "ProjectResumeWebMapping");
+        q.setParameter("periodId", periodId);
+        return q.getResultList();
     }
 
 

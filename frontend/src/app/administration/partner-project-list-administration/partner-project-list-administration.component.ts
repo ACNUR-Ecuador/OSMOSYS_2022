@@ -1,12 +1,13 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
-import {Period} from '../../shared/model/OsmosysModel';
+import {Period, ProjectResume} from '../../shared/model/OsmosysModel';
 import {PeriodService} from '../../shared/services/period.service';
-import {MessageService} from 'primeng/api';
-import {ColumnTable} from '../../shared/model/UtilsModel';
+import {MessageService, SelectItem} from 'primeng/api';
+import {ColumnDataType, ColumnTable, EnumsType} from '../../shared/model/UtilsModel';
 import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {Router} from '@angular/router';
+import {ProjectService} from '../../shared/services/project.service';
 
 @Component({
     selector: 'app-partner-project-list-administration',
@@ -18,7 +19,10 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
     periodForm: FormGroup;
     periods: Period[];
     cols: ColumnTable[];
-    items: any[];
+    items: ProjectResume[];
+    // tslint:disable-next-line:variable-name
+    _selectedColumns: ColumnTable[];
+    private states: SelectItem[];
 
     constructor(
         private fb: FormBuilder,
@@ -26,12 +30,14 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
         private messageService: MessageService,
         public utilsService: UtilsService,
         private enumsService: EnumsService,
+        private projectService: ProjectService,
         private router: Router) {
     }
 
     ngOnInit(): void {
         this.createForms();
         this.loadPeriods();
+        this.loadOptions();
     }
 
     loadPeriods() {
@@ -68,13 +74,36 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
     }
 
     private loadProjects(periodId: number) {
-        console.log(periodId);
+        this.projectService.getProjectResumenWebByPeriodId(periodId).subscribe(value => {
+            this.items = value;
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al cargar los proyectos',
+                detail: error.error.message,
+                life: 3000
+            });
+        });
     }
 
     private createForms() {
         this.periodForm = this.fb.group({
             selectedPeriod: new FormControl('')
         });
+        this.cols = [
+            {field: 'id', header: 'id', type: ColumnDataType.numeric},
+            {field: 'code', header: 'Código', type: ColumnDataType.text},
+            {field: 'name', header: 'Nombre', type: ColumnDataType.text},
+            {field: 'state', header: 'Estado', type: ColumnDataType.text},
+            {field: 'organizationId', header: 'Id Organización', type: ColumnDataType.numeric},
+            {field: 'organizationDescription', header: 'Organización', type: ColumnDataType.text},
+            {field: 'organizationAcronym', header: 'Organización Acr.', type: ColumnDataType.text},
+            {field: 'periodId', header: 'Id Periodo', type: ColumnDataType.numeric},
+            {field: 'periodYear', header: 'Periodo', type: ColumnDataType.numeric},
+        ];
+
+        const hiddenColumns: string[] = ['id', 'organizationId', 'periodId'];
+        this._selectedColumns = this.cols.filter(value => !hiddenColumns.includes(value.field));
     }
 
 
@@ -98,9 +127,26 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
 
     createItem() {
         const period = this.periodForm.get('selectedPeriod').value;
-        // this.router.navigate(['/administration/partnerProjectAdministration', {periodId: period.id}]);
-        // this.router.navigateByUrl(['/administration/partnerProjectAdministration', {state: period}]);
-        this.router.navigateByUrl('/administration/partnerProjectAdministration', {state: {period, project: null}});
+        this.router.navigate(['/administration/partnerProjectAdministration', {periodId: period.id}]);
+    }
 
+    editItem(projectId: number) {
+        const period = this.periodForm.get('selectedPeriod').value;
+        this.router.navigate(['/administration/partnerProjectAdministration', {projectId}]);
+    }
+
+    @Input() get selectedColumns(): any[] {
+        return this._selectedColumns;
+    }
+
+    set selectedColumns(val: any[]) {
+        // restore original order
+        this._selectedColumns = this.cols.filter(col => val.includes(col));
+    }
+
+    private loadOptions() {
+        this.enumsService.getByType(EnumsType.State).subscribe(value => {
+            this.states = value;
+        });
     }
 }

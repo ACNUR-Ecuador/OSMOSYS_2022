@@ -11,6 +11,7 @@ import org.unhcr.osmosys.model.Canton;
 import org.unhcr.osmosys.model.Project;
 import org.unhcr.osmosys.model.ProjectLocationAssigment;
 import org.unhcr.osmosys.webServices.model.CantonWeb;
+import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
 import org.unhcr.osmosys.webServices.model.ProjectWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
@@ -29,6 +30,9 @@ public class ProjectService {
     ProjectDao projectDao;
     @Inject
     CantonDao cantonDao;
+
+    @Inject
+    ProjectLocationAssigmentService projectLocationAssigmentService;
 
     @Inject
     ModelWebTransformationService modelWebTransformationService;
@@ -50,6 +54,7 @@ public class ProjectService {
     }
 
     public Long save(ProjectWeb projectWeb) throws GeneralAppException {
+
         if (projectWeb == null) {
             throw new GeneralAppException("No se puede guardar un project null", Response.Status.BAD_REQUEST);
         }
@@ -76,6 +81,7 @@ public class ProjectService {
             project.addProjectLocationAssigment(projectLocationAssigment);
         }
         this.saveOrUpdate(project);
+
         return project.getId();
     }
 
@@ -101,9 +107,8 @@ public class ProjectService {
         project.setEndDate(projectWeb.getEndDate());
         // las localidades
         updateProjectLocations(projectWeb, project);
+        // TODO Q HACER CUANDO SE CAMBIE ESTOS VALORES
         this.saveOrUpdate(project);
-
-
         return project.getId();
     }
 
@@ -137,6 +142,8 @@ public class ProjectService {
         return this.modelWebTransformationService.projectsToProjectsWeb(this.projectDao.findAll());
     }
 
+
+
     public List<ProjectWeb> getByState(State state) {
         List<ProjectWeb> r = new ArrayList<>();
         return this.modelWebTransformationService.projectsToProjectsWeb(this.projectDao.getByState(state));
@@ -166,6 +173,13 @@ public class ProjectService {
         if (projectWeb.getPeriod() == null) {
             throw new GeneralAppException("Periodo no válido", Response.Status.BAD_REQUEST);
         }
+        if(projectWeb.getState()==null || projectWeb.getEndDate()==null){
+            throw new GeneralAppException("Las fechas de inicio y fin del proyecto son datos obligatorios", Response.Status.BAD_REQUEST);
+        }else {
+            if(projectWeb.getEndDate().isBefore(projectWeb.getStartDate())){
+                throw new GeneralAppException("La fecha de fin del proyecto debe ser posterior a la fecha de inicio", Response.Status.BAD_REQUEST);
+            }
+        }
 
         Project itemRecovered = this.projectDao.getByCode(projectWeb.getCode());
         if (itemRecovered != null) {
@@ -181,5 +195,14 @@ public class ProjectService {
             }
         }
 
+    }
+
+
+    public List<ProjectResumeWeb> getProjectResumenWebByPeriodId(Long periodId) throws GeneralAppException {
+        return this.projectDao.getProjectResumenWebByPeriodId(periodId);
+    }
+
+    public ProjectWeb getWebById(Long id) {
+        return this.modelWebTransformationService.projectToProjectWeb(this.projectDao.find(id));
     }
 }

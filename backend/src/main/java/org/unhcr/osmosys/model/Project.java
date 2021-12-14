@@ -4,14 +4,39 @@ import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.type.LocalDateType;
+import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(schema = "osmosys", name = "projects")
+@SqlResultSetMapping(
+        name = "ProjectResumeWebMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = ProjectResumeWeb.class,
+                        columns = {
+                                @ColumnResult(name="id", type=Long.class),
+                                @ColumnResult(name="code", type=String.class),
+                                @ColumnResult(name="name", type=String.class),
+                                @ColumnResult(name="state", type=String.class),
+                                @ColumnResult(name="organizationId", type=Long.class),
+                                @ColumnResult(name="organizationDescription", type=String.class),
+                                @ColumnResult(name="organizationAcronym", type=String.class),
+                                @ColumnResult(name="periodId", type=Long.class),
+                                @ColumnResult(name="periodYear", type=Integer.class),
+                                @ColumnResult(name="startDate", type= LocalDateType.class),
+                                @ColumnResult(name="endDate", type=LocalDateType.class),
+                        }
+                )
+        }
+)
 public class Project extends BaseEntity<Long> {
 
     @Id
@@ -44,7 +69,7 @@ public class Project extends BaseEntity<Long> {
     @JoinColumn(name = "period_id", foreignKey = @ForeignKey(name = "fk_project_period"))
     private Period period;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project",cascade = CascadeType.ALL)
     private Set<ProjectLocationAssigment> projectLocationAssigments = new HashSet<>();
 
     @Override

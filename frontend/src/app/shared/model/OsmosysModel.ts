@@ -1,3 +1,5 @@
+import {EnumsState} from './UtilsModel';
+
 export class Organization {
     constructor() {
         this.state = 'ACTIVO';
@@ -226,6 +228,11 @@ export class CustomDissagregationFilterIndicator {
 }
 
 export class Project {
+
+    constructor() {
+        this.state = EnumsState.ACTIVE;
+        this.locations = [];
+    }
     public id: number;
     public code: string;
     public name: string;
@@ -235,6 +242,18 @@ export class Project {
     public startDate: Date;
     public endDate: Date;
     public locations: Canton[];
+}
+
+export class ProjectResume {
+    public id: number;
+    public code: string;
+    public name: string;
+    public state: string;
+    public organizationId: number;
+    public organizationDescription: string;
+    public organizationAcronym: string;
+    public periodId: number;
+    public periodYear: number;
 }
 
 export class Canton {
@@ -276,3 +295,4 @@ export class DissagregationAssignationToGeneralIndicator {
     public state: string;
     public dissagregationType: string;
 }
+

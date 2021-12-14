@@ -4684,4 +4684,15 @@
   border: red;
 }
 
+.p-datepicker .p-datepicker-header .p-datepicker-prev,
+.p-datepicker .p-datepicker-header .p-datepicker-next {
+  width: 2rem;
+  height: 2rem;
+  color: white;
+  border: 0 none;
+  background: #0072bc;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
 /*# sourceMappingURL=styles.css.map */

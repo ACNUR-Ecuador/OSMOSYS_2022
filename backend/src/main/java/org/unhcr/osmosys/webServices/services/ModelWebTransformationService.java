@@ -802,10 +802,12 @@ public class ModelWebTransformationService {
         ProjectWeb w = new ProjectWeb();
         w.setId(project.getId());
         w.setName(project.getName());
+        w.setCode(project.getCode());
         w.setPeriod(this.periodToPeriodWeb(project.getPeriod()));
         w.setOrganization(this.organizationToOrganizationWeb(project.getOrganization()));
         w.setStartDate(project.getStartDate());
         w.setEndDate(project.getEndDate());
+        w.setState(project.getState());
         Set<Canton> cantones = project.getProjectLocationAssigments().stream().filter(projectLocationAssigment -> {
             return projectLocationAssigment.getState().equals(State.ACTIVO);
         }).map(projectLocationAssigment -> {
