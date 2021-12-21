@@ -40,7 +40,7 @@ export class MenuService {
                 // tslint:disable-next-line:max-line-length
                 {label: 'Indicadores de Rendimiento', icon: 'pi pi-fw pi-home', routerLink: ['/administration/performanceIndicator'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
                 // tslint:disable-next-line:max-line-length
-                {label: 'Indicador General Configuración', icon: 'pi pi-fw pi-home', routerLink: ['/administration/generalIndicatorConfiguration'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
+               //  {label: 'Indicador General Configuración', icon: 'pi pi-fw pi-home', routerLink: ['/administration/generalIndicatorConfiguration'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
                 // tslint:disable-next-line:max-line-length
                 {label: 'Proyectos', icon: 'pi pi-fw pi-home', routerLink: ['/administration/partnerProjectListAdministration'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
 

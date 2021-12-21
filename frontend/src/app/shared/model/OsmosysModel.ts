@@ -50,6 +50,7 @@ export class Period {
     public id: number;
     public year: number;
     public state: string;
+    public generalIndicator?: GeneralIndicator;
 }
 
 export class Pillar {
@@ -233,6 +234,7 @@ export class Project {
         this.state = EnumsState.ACTIVE;
         this.locations = [];
     }
+
     public id: number;
     public code: string;
     public name: string;

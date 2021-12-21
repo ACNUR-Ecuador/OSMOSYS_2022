@@ -91,6 +91,7 @@ public class IndicatorValueService {
             iv.setState(State.ACTIVO);
             iv.setDissagregationType(dt);
             iv.setAgeType(ageType);
+            iv.setShowValue(true);
             r.add(iv);
         }
         return r;
@@ -104,6 +105,7 @@ public class IndicatorValueService {
             iv.setState(State.ACTIVO);
             iv.setDissagregationType(dt);
             iv.setDiversityType(diversityType);
+            iv.setShowValue(true);
             r.add(iv);
         }
         return r;
@@ -117,6 +119,7 @@ public class IndicatorValueService {
             iv.setState(State.ACTIVO);
             iv.setDissagregationType(dt);
             iv.setGenderType(genderType);
+            iv.setShowValue(true);
             r.add(iv);
         }
         return r;
@@ -130,6 +133,7 @@ public class IndicatorValueService {
             iv.setState(State.ACTIVO);
             iv.setDissagregationType(dt);
             iv.setCountryOfOrigin(countryOfOrigin);
+            iv.setShowValue(true);
             r.add(iv);
         }
         return r;
@@ -143,6 +147,7 @@ public class IndicatorValueService {
             iv.setState(State.ACTIVO);
             iv.setDissagregationType(dt);
             iv.setPopulationType(populationType);
+            iv.setShowValue(true);
             r.add(iv);
         }
         return r;
@@ -156,6 +161,7 @@ public class IndicatorValueService {
             iv.setState(State.ACTIVO);
             iv.setDissagregationType(dt);
             iv.setLocation(canton);
+            iv.setShowValue(true);
             r.add(iv);
         }
         return r;
@@ -171,6 +177,7 @@ public class IndicatorValueService {
                 iv.setDissagregationType(dt);
                 iv.setPopulationType(populationType);
                 iv.setDiversityType(diversityType);
+                iv.setShowValue(true);
                 r.add(iv);
             }
 
@@ -188,6 +195,7 @@ public class IndicatorValueService {
                 iv.setDissagregationType(dt);
                 iv.setPopulationType(populationType);
                 iv.setCountryOfOrigin(countryOfOrigin);
+                iv.setShowValue(true);
                 r.add(iv);
             }
         }
@@ -204,6 +212,7 @@ public class IndicatorValueService {
                 iv.setDissagregationType(dt);
                 iv.setPopulationType(populationType);
                 iv.setAgeType(ageType);
+                iv.setShowValue(true);
                 r.add(iv);
             }
         }
@@ -220,6 +229,7 @@ public class IndicatorValueService {
                 iv.setDissagregationType(dt);
                 iv.setPopulationType(populationType);
                 iv.setGenderType(genderType);
+                iv.setShowValue(true);
                 r.add(iv);
             }
         }

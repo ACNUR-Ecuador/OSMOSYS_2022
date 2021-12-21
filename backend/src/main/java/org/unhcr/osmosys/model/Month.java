@@ -16,10 +16,15 @@ import java.util.Set;
 @Table(schema = "osmosys", name = "months",
         uniqueConstraints = {
                 @UniqueConstraint(name = "uk_month_quarter_year", columnNames = {"quarter_id", "month", "year"}),
-                @UniqueConstraint(name = "uk_month_quarter_order", columnNames = {"quarter_id", "order"}),
+                @UniqueConstraint(name = "uk_month_quarter_order", columnNames = {"quarter_id", "order_"}),
         }
 )
 public class Month extends BaseEntity<Long> {
+
+    public Month() {
+        this.state = State.ACTIVO;
+        this.totalExecution = BigDecimal.ZERO;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +38,7 @@ public class Month extends BaseEntity<Long> {
     @Column(name = "year", nullable = false)
     private Integer year;
 
-    @Column(name = "order", nullable = false)
+    @Column(name = "order_", nullable = false)
     private int order;
 
     @Enumerated(EnumType.STRING)
@@ -47,7 +52,10 @@ public class Month extends BaseEntity<Long> {
     @JoinColumn(name = "quarter_id", foreignKey = @ForeignKey(name = "fk_month_quarter"))
     private Quarter quarter;
 
-    @OneToMany(mappedBy = "month", fetch = FetchType.LAZY)
+    @Column(name = "total_execution", nullable = false)
+    private BigDecimal totalExecution;
+
+    @OneToMany(mappedBy = "month", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<IndicatorValue> indicatorValues = new HashSet<>();
 
     @OneToMany(mappedBy = "month", fetch = FetchType.LAZY)
@@ -111,10 +119,10 @@ public class Month extends BaseEntity<Long> {
         this.indicatorValues = indicatorValues;
     }
 
-    public void addIndicatorValue(IndicatorValue indicatorValue){
+    public void addIndicatorValue(IndicatorValue indicatorValue) {
         indicatorValue.setMonth(this);
         indicatorValue.setMonthEnum(this.getMonth());
-        if(!this.indicatorValues.add(indicatorValue)){
+        if (!this.indicatorValues.add(indicatorValue)) {
             this.indicatorValues.add(indicatorValue);
             this.indicatorValues.add(indicatorValue);
         }
@@ -135,6 +143,7 @@ public class Month extends BaseEntity<Long> {
     public void setState(State state) {
         this.state = state;
     }
+
 
     @Override
     public boolean equals(Object o) {

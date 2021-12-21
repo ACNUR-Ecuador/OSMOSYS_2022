@@ -128,7 +128,7 @@ public class PeriodService {
         return this.modelWebTransformationService.periodToPeriodWeb(this.periodDao.find(id));
     }
 
-    public PeriodWeb getWithGeneralIndicatorById(Long id) {
+    public PeriodWeb getWebWithGeneralIndicatorById(Long id) {
 
         Period period = this.periodDao.getWithGeneralIndicatorById(id);
         PeriodWeb periodWeb = this.modelWebTransformationService.periodToPeriodWeb(period);
@@ -137,6 +137,12 @@ public class PeriodService {
             periodWeb.setGeneralIndicator(this.modelWebTransformationService.generalIndicatorToGeneralIndicatorWeb(period.getGeneralIndicator()));
         }
         return periodWeb;
+    }
+
+    public Period getWithGeneralIndicatorById(Long id) {
+
+        return this.periodDao.getWithGeneralIndicatorById(id);
+
     }
 
 

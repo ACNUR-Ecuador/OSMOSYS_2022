@@ -69,14 +69,14 @@ public class QuarterService {
         return yqs;
     }
 
-    public Quarter createQuarter(YearQuarter yearQuarter, BigDecimal target,
+    public Quarter createQuarter(YearQuarter yearQuarter,
                                  LocalDate startDate, LocalDate endDate,
                                  List<DissagregationType> dissagregationTypes,
                                  List<Canton> cantones
     ) throws GeneralAppException {
         Quarter q = new Quarter();
         q.setYear(yearQuarter.getYear());
-        q.setTarget(target);
+        q.setTarget(null);
         q.setOrder(0);
         q.setQuarter(QuarterEnum.getByQuarterNumber(yearQuarter.getQuarterValue()));
         q.setState(State.ACTIVO);
@@ -99,7 +99,7 @@ public class QuarterService {
 
 
         for (YearQuarter yearQuarter : yearQuarters) {
-            Quarter q = this.createQuarter(yearQuarter, BigDecimal.ZERO, startDate, endDate, dissagregationTypes, cantones);
+            Quarter q = this.createQuarter(yearQuarter, startDate, endDate, dissagregationTypes, cantones);
             qs.add(q);
         }
         return qs;

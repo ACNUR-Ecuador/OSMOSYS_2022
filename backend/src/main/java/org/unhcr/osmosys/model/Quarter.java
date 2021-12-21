@@ -17,10 +17,16 @@ import java.util.Set;
 @Table(schema = "osmosys", name = "quarters",
         uniqueConstraints = {
                 @UniqueConstraint(name = "uk_ie_quarter_year", columnNames = {"indicator_execution_id", "quarter", "year"}),
-                @UniqueConstraint(name = "uk_ie_order", columnNames = {"indicator_execution_id", "order"})
+                @UniqueConstraint(name = "uk_ie_order", columnNames = {"indicator_execution_id", "order_"})
         }
 )
 public class Quarter extends BaseEntity<Long> {
+
+    public Quarter() {
+        this.state=State.ACTIVO;
+        this.totalExecution=BigDecimal.ZERO;
+        this.target=null;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +47,7 @@ public class Quarter extends BaseEntity<Long> {
     @OneToMany(mappedBy = "quarter", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Month> months = new HashSet<>();
 
-    @Column(name = "order", nullable = false)
+    @Column(name = "order_", nullable = false)
     private Integer order;
 
     @Column(name = "year", nullable = false)
@@ -49,6 +55,9 @@ public class Quarter extends BaseEntity<Long> {
 
     @Column(name = "target", nullable = true)
     private BigDecimal target;
+
+    @Column(name = "total_execution", nullable = false)
+    private BigDecimal totalExecution;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", nullable = false, length = 12, unique = false)
@@ -133,6 +142,14 @@ public class Quarter extends BaseEntity<Long> {
             this.months.remove(month);
             this.months.add(month);
         }
+    }
+
+    public BigDecimal getTotalExecution() {
+        return totalExecution;
+    }
+
+    public void setTotalExecution(BigDecimal totalExecution) {
+        this.totalExecution = totalExecution;
     }
 
     @Override

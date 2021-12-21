@@ -20,6 +20,10 @@ export class PeriodService {
         return this.http.get<Period[]>(`${mainServiceUrl}`);
     }
 
+    public getwithGeneralIndicatorAll(): Observable<Period[]> {
+        return this.http.get<Period[]>(`${mainServiceUrl}/withGeneralIndicatorAll`);
+    }
+
     public save(period: Period): Observable<number> {
         return this.http.post<number>(`${mainServiceUrl}`, period);
     }
@@ -31,6 +35,7 @@ export class PeriodService {
     public getByState(state: EnumsState): Observable<Period[]> {
         return this.http.get<Period[]>(`${mainServiceUrl}/byState/${state}`);
     }
+
     public getById(id: number): Observable<Period> {
         return this.http.get<Period>(`${mainServiceUrl}/${id}`);
     }

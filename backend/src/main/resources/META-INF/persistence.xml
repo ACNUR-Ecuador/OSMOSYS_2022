@@ -25,7 +25,7 @@
             javax.persistence.GenerationType.SEQUENCE. Default to false to keep backward compatibility.-->
             <property name="hibernate.id.new_generator_mappings" value="true"/>
             <!--Qualifies unqualified table names with the given catalog in generated SQL. e.g. CATALOG_NAME-->
-            <property name="hibernate.default_schema" value="program_monitoring"/>
+            <property name="hibernate.default_schema" value="osmosys"/>
             <!--Automatically validates or exports schema DDL to the database when the SessionFactory is created.
             With create-drop, the database schema will be dropped when the SessionFactory is closed explicitly.
             e.g. validate | update | create | create-drop-->

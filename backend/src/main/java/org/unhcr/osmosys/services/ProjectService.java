@@ -7,9 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.CantonDao;
 import org.unhcr.osmosys.daos.ProjectDao;
-import org.unhcr.osmosys.model.Canton;
-import org.unhcr.osmosys.model.Project;
-import org.unhcr.osmosys.model.ProjectLocationAssigment;
+import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.webServices.model.CantonWeb;
 import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
 import org.unhcr.osmosys.webServices.model.ProjectWeb;
@@ -32,7 +30,14 @@ public class ProjectService {
     CantonDao cantonDao;
 
     @Inject
+    PeriodService periodService;
+
+    @Inject
     ProjectLocationAssigmentService projectLocationAssigmentService;
+
+    @Inject
+    IndicatorExecutionService indicatorExecutionService;
+
 
     @Inject
     ModelWebTransformationService modelWebTransformationService;
@@ -68,7 +73,8 @@ public class ProjectService {
         project.setName(projectWeb.getName());
         project.setState(projectWeb.getState());
         project.setCode(projectWeb.getCode());
-        project.setPeriod(this.modelWebTransformationService.periodWebToPeriod(projectWeb.getPeriod()));
+        Period period = this.periodService.getWithGeneralIndicatorById(projectWeb.getPeriod().getId());
+        project.setPeriod(period);
         project.setOrganization(this.modelWebTransformationService.organizationWebToOrganization(projectWeb.getOrganization()));
         project.setStartDate(projectWeb.getStartDate());
         project.setEndDate(projectWeb.getEndDate());
@@ -80,8 +86,11 @@ public class ProjectService {
             projectLocationAssigment.setState(State.ACTIVO);
             project.addProjectLocationAssigment(projectLocationAssigment);
         }
-        this.saveOrUpdate(project);
 
+        // veo si hay q crear general indicator
+        IndicatorExecution generalIndicatorIE = this.indicatorExecutionService.createGeneralIndicatorForProject(project);
+        project.addIndicatorExecution(generalIndicatorIE);
+        this.saveOrUpdate(project);
         return project.getId();
     }
 
@@ -143,7 +152,6 @@ public class ProjectService {
     }
 
 
-
     public List<ProjectWeb> getByState(State state) {
         List<ProjectWeb> r = new ArrayList<>();
         return this.modelWebTransformationService.projectsToProjectsWeb(this.projectDao.getByState(state));
@@ -173,10 +181,10 @@ public class ProjectService {
         if (projectWeb.getPeriod() == null) {
             throw new GeneralAppException("Periodo no válido", Response.Status.BAD_REQUEST);
         }
-        if(projectWeb.getState()==null || projectWeb.getEndDate()==null){
+        if (projectWeb.getState() == null || projectWeb.getEndDate() == null) {
             throw new GeneralAppException("Las fechas de inicio y fin del proyecto son datos obligatorios", Response.Status.BAD_REQUEST);
-        }else {
-            if(projectWeb.getEndDate().isBefore(projectWeb.getStartDate())){
+        } else {
+            if (projectWeb.getEndDate().isBefore(projectWeb.getStartDate())) {
                 throw new GeneralAppException("La fecha de fin del proyecto debe ser posterior a la fecha de inicio", Response.Status.BAD_REQUEST);
             }
         }

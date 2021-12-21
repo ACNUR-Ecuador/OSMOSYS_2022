@@ -2,6 +2,7 @@ package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.model.User;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.type.LocalDateType;
@@ -65,12 +66,20 @@ public class Project extends BaseEntity<Long> {
     @JoinColumn(name = "organization_id", foreignKey = @ForeignKey(name = "fk_projet_organization"))
     private Organization organization;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "focal_point_id",foreignKey = @ForeignKey(name = "fk_project_focal_point"))
+    public User focalPoint;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "period_id", foreignKey = @ForeignKey(name = "fk_project_period"))
     private Period period;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project",cascade = CascadeType.ALL)
     private Set<ProjectLocationAssigment> projectLocationAssigments = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project",cascade = CascadeType.ALL)
+    private Set<IndicatorExecution> indicatorExecutions = new HashSet<>();
+
 
     @Override
     public Long getId() {
@@ -153,6 +162,30 @@ public class Project extends BaseEntity<Long> {
         this.endDate = endDate;
     }
 
+    public Set<IndicatorExecution> getIndicatorExecutions() {
+        return indicatorExecutions;
+    }
+
+    public void setIndicatorExecutions(Set<IndicatorExecution> indicatorExecutions) {
+        this.indicatorExecutions = indicatorExecutions;
+    }
+
+    public void addIndicatorExecution(IndicatorExecution indicatorExecution) {
+        indicatorExecution.setProject(this);
+        if(!this.indicatorExecutions.add(indicatorExecution)){
+            this.indicatorExecutions.remove(indicatorExecution);
+            this.indicatorExecutions.add(indicatorExecution);
+        }
+    }
+
+    public User getFocalPoint() {
+        return focalPoint;
+    }
+
+    public void setFocalPoint(User focalPoint) {
+        this.focalPoint = focalPoint;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -180,4 +213,6 @@ public class Project extends BaseEntity<Long> {
                 ", period=" + period +
                 '}';
     }
+
+
 }

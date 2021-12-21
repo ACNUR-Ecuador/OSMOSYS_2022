@@ -38,23 +38,23 @@ public class IndicatorValue extends BaseEntity<Long> {
     private DissagregationType dissagregationType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "population_type", nullable = false, length = 12, unique = false)
+    @Column(name = "population_type", nullable = true, length = 50, unique = false)
     private PopulationType populationType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "country_of_origin", nullable = false, length = 12, unique = false)
+    @Column(name = "country_of_origin", nullable = true, length = 50, unique = false)
     private CountryOfOrigin countryOfOrigin;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender_type", nullable = false, length = 12, unique = false)
+    @Column(name = "gender_type", nullable = true, length = 50, unique = false)
     private GenderType genderType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "age_type", nullable = false, length = 12, unique = false)
+    @Column(name = "age_type", nullable = true, length = 50, unique = false)
     private AgeType ageType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "diversity_type", nullable = false, length = 12, unique = false)
+    @Column(name = "diversity_type", nullable = true, length = 50, unique = false)
     private DiversityType diversityType;
 
     @ManyToOne(optional = true, fetch = FetchType.LAZY)

@@ -17,6 +17,13 @@ import java.util.Set;
 
 public class IndicatorExecution extends BaseEntity<Long> {
 
+
+    public IndicatorExecution() {
+        this.state=State.ACTIVO;
+        this.totalExecution=BigDecimal.ZERO;
+        this.target=null;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
@@ -48,7 +55,10 @@ public class IndicatorExecution extends BaseEntity<Long> {
     @JoinColumn(name = "period_id", foreignKey = @ForeignKey(name = "fk_indicator_execution_period_id"))
     private Period period;
 
-    @OneToMany(mappedBy = "indicatorExecution")
+    @Column(name = "total_execution", nullable = false)
+    private BigDecimal totalExecution;
+
+    @OneToMany(mappedBy = "indicatorExecution", cascade = CascadeType.ALL)
     private Set<Quarter> quarters = new HashSet<>();
 
     @OneToMany(mappedBy = "indicatorExecution", fetch = FetchType.LAZY)
@@ -238,6 +248,13 @@ public class IndicatorExecution extends BaseEntity<Long> {
         this.compassIndicator = compassIndicator;
     }
 
+    public BigDecimal getTotalExecution() {
+        return totalExecution;
+    }
+
+    public void setTotalExecution(BigDecimal totalExecution) {
+        this.totalExecution = totalExecution;
+    }
 
     @Override
     public String toString() {

@@ -48,17 +48,15 @@ public class IndicatorExecutionService {
     }
 
 
-    public void createGeneralIndicatorForProject(Project project) throws GeneralAppException {
+    public IndicatorExecution createGeneralIndicatorForProject(Project project) throws GeneralAppException {
         IndicatorExecution ie = new IndicatorExecution();
         ie.setCompassIndicator(false);
         //target
         ie.setProject(project);
         ie.setIndicatorType(IndicatorType.GENERAL);
-        ie.setTarget(BigDecimal.ZERO);
+        ie.setTarget(null);
         ie.setPeriod(project.getPeriod());
         ie.setState(State.ACTIVO);
-        // ie.setDissagregationsAssignationsToIndicatorExecutions();
-        // ie.setQuarters();
 
 
         List<Canton> cantones = project.getProjectLocationAssigments().stream().filter(projectLocationAssigment -> {
@@ -111,7 +109,7 @@ public class IndicatorExecutionService {
             }
         }
 
-        throw new GeneralAppException("testing");
+        return ie;
 
     }
 

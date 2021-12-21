@@ -64,8 +64,9 @@ public class MonthService {
         for (MonthEnum monthEnum : monthsEnums) {
             Period period = Period.between(startDate, endDate.plusDays(1));
             LocalDate firstDay = LocalDate.of(quarter.getYear(), monthEnum.getOrder(), 1);
+            LocalDate lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
             if (
-                    firstDay.isBefore(endDate.plusDays(1)) && firstDay.isAfter(startDate.minusDays(1))
+                    firstDay.isBefore(endDate.plusDays(1)) && lastDay.isAfter(startDate.minusDays(1))
             ) {
 
 
