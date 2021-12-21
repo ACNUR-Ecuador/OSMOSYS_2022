@@ -1,15 +1,24 @@
 package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.State;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(schema = "osmosys", name = "months")
+@Table(schema = "osmosys", name = "months",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_month_quarter_year", columnNames = {"quarter_id", "month", "year"}),
+                @UniqueConstraint(name = "uk_month_quarter_order", columnNames = {"quarter_id", "order"}),
+        }
+)
 public class Month extends BaseEntity<Long> {
 
     @Id
@@ -21,6 +30,16 @@ public class Month extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private MonthEnum month;
 
+    @Column(name = "year", nullable = false)
+    private Integer year;
+
+    @Column(name = "order", nullable = false)
+    private int order;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "state", nullable = false, length = 12, unique = false)
+    private State state;
+
     @Column(name = "commentary", columnDefinition = "text")
     private String commentary;
 
@@ -28,11 +47,11 @@ public class Month extends BaseEntity<Long> {
     @JoinColumn(name = "quarter_id", foreignKey = @ForeignKey(name = "fk_month_quarter"))
     private Quarter quarter;
 
-    @OneToMany(mappedBy = "month",fetch = FetchType.LAZY)
-    private Set<IndicatorValue> indicatorValues= new HashSet<>();
+    @OneToMany(mappedBy = "month", fetch = FetchType.LAZY)
+    private Set<IndicatorValue> indicatorValues = new HashSet<>();
 
-    @OneToMany(mappedBy = "month",fetch = FetchType.LAZY)
-    private Set<IndicatorValueCustomDissagregation> indicatorValuesIndicatorValueCustomDissagregations= new HashSet<>();
+    @OneToMany(mappedBy = "month", fetch = FetchType.LAZY)
+    private Set<IndicatorValueCustomDissagregation> indicatorValuesIndicatorValueCustomDissagregations = new HashSet<>();
 
 
     @Override
@@ -66,5 +85,79 @@ public class Month extends BaseEntity<Long> {
 
     public void setQuarter(Quarter quarter) {
         this.quarter = quarter;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    public Set<IndicatorValue> getIndicatorValues() {
+        return indicatorValues;
+    }
+
+    public void setIndicatorValues(Set<IndicatorValue> indicatorValues) {
+        this.indicatorValues = indicatorValues;
+    }
+
+    public void addIndicatorValue(IndicatorValue indicatorValue){
+        indicatorValue.setMonth(this);
+        indicatorValue.setMonthEnum(this.getMonth());
+        if(!this.indicatorValues.add(indicatorValue)){
+            this.indicatorValues.add(indicatorValue);
+            this.indicatorValues.add(indicatorValue);
+        }
+    }
+
+    public Set<IndicatorValueCustomDissagregation> getIndicatorValuesIndicatorValueCustomDissagregations() {
+        return indicatorValuesIndicatorValueCustomDissagregations;
+    }
+
+    public void setIndicatorValuesIndicatorValueCustomDissagregations(Set<IndicatorValueCustomDissagregation> indicatorValuesIndicatorValueCustomDissagregations) {
+        this.indicatorValuesIndicatorValueCustomDissagregations = indicatorValuesIndicatorValueCustomDissagregations;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof Month)) return false;
+
+        Month month1 = (Month) o;
+
+        return new EqualsBuilder().append(id, month1.id).append(month, month1.month).append(year, month1.year).append(order, month1.order).append(quarter, month1.quarter).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(id).append(month).append(year).append(order).append(quarter).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Month{" +
+                "month=" + month +
+                ", year=" + year +
+                ", order=" + order +
+                '}';
     }
 }

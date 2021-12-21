@@ -4,11 +4,11 @@ import com.sagatechs.generics.persistence.model.State;
 
 import java.io.Serializable;
 
-
 public class PeriodWeb implements Serializable {
     private Long id;
     private Integer year;
     private State state;
+    private GeneralIndicatorWeb generalIndicator;
 
     public Long getId() {
         return id;
@@ -32,5 +32,13 @@ public class PeriodWeb implements Serializable {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public GeneralIndicatorWeb getGeneralIndicator() {
+        return generalIndicator;
+    }
+
+    public void setGeneralIndicator(GeneralIndicatorWeb generalIndicator) {
+        this.generalIndicator = generalIndicator;
     }
 }

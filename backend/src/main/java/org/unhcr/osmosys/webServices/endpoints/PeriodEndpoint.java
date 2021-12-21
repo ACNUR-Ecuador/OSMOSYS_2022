@@ -35,6 +35,14 @@ public class PeriodEndpoint {
         return this.periodService.update(periodWeb);
     }
 
+    @Path("/withGeneralIndicatorAll")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PeriodWeb> getWithGeneralIndicatorAll() {
+        return this.periodService.getWithGeneralIndicatorAll();
+    }
+
     @Path("/")
     @GET
     @Secured
@@ -57,5 +65,13 @@ public class PeriodEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public PeriodWeb getByid(@PathParam("id") Long id) {
         return this.periodService.getByid(id);
+    }
+
+    @Path("/withGeneralIndicator/{id}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public PeriodWeb getWithGeneralIndicatorByid(@PathParam("id") Long id) throws GeneralAppException {
+        return this.periodService.getWithGeneralIndicatorById(id);
     }
 }

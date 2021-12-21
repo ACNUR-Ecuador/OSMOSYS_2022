@@ -19,7 +19,7 @@ public class GeneralIndicator extends BaseEntity<Long> {
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
-    @Column(name = "description", nullable = false, unique = true)
+    @Column(name = "description", nullable = false)
     private String description;
 
     @Column(name = "measure_type", nullable = true)

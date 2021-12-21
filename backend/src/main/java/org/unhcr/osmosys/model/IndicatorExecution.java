@@ -8,11 +8,13 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.IndicatorType;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(schema = "osmosys", name = "indicator_executions")
+
 public class IndicatorExecution extends BaseEntity<Long> {
 
     @Id
@@ -24,9 +26,15 @@ public class IndicatorExecution extends BaseEntity<Long> {
     @Column(name = "commentary", columnDefinition = "text")
     private String commentary;
 
+    @Column(name = "target")
+    private BigDecimal target;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "performance_indicator_id", foreignKey = @ForeignKey(name = "fk_indicator_executions_performance_indicators"))
     private Indicator indicator;
+
+    @Column(name = "compassIndicator", nullable = false)
+    private Boolean compassIndicator;
 
     @Column(name = "indicator_type", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -190,6 +198,14 @@ public class IndicatorExecution extends BaseEntity<Long> {
         this.quarters = quarters;
     }
 
+    public void addQuarter(Quarter quarter){
+        quarter.setIndicatorExecution(this);
+        if(!this.quarters.add(quarter)){
+            this.quarters.remove(quarter);
+            this.quarters.add(quarter);
+        }
+    }
+
     public Set<CustomDissagregationAssignationToIndicatorExecution> getCustomDissagregationAssignationToIndicatorExecutions() {
         return customDissagregationAssignationToIndicatorExecutions;
     }
@@ -205,4 +221,36 @@ public class IndicatorExecution extends BaseEntity<Long> {
     public void setMarkers(Set<Marker> markers) {
         this.markers = markers;
     }
+
+    public BigDecimal getTarget() {
+        return target;
+    }
+
+    public void setTarget(BigDecimal target) {
+        this.target = target;
+    }
+
+    public Boolean getCompassIndicator() {
+        return compassIndicator;
+    }
+
+    public void setCompassIndicator(Boolean compassIndicator) {
+        this.compassIndicator = compassIndicator;
+    }
+
+
+    @Override
+    public String toString() {
+        return "IndicatorExecution{" +
+                "id=" + id +
+                ", commentary='" + commentary + '\'' +
+                ", target=" + target +
+                ", indicator=" + indicator +
+                ", compassIndicator=" + compassIndicator +
+                ", indicatorType=" + indicatorType +
+                ", state=" + state +
+                '}';
+    }
+
+
 }

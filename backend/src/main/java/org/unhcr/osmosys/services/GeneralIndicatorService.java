@@ -2,6 +2,7 @@ package org.unhcr.osmosys.services;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.GeneralIndicatorDao;
@@ -17,7 +18,6 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Stateless
 public class GeneralIndicatorService {
@@ -68,10 +68,10 @@ public class GeneralIndicatorService {
 
 
     public GeneralIndicatorWeb getByPeriodId(Long periodId) throws GeneralAppException {
-        return this.modelWebTransformationService.generalIndicatorToGeneralIndicatorWeb(this.generalIndicatorDao.getByPeriodId( periodId));
+        return this.modelWebTransformationService.generalIndicatorToGeneralIndicatorWeb(this.generalIndicatorDao.getByPeriodId(periodId));
     }
 
-    public Long update(GeneralIndicatorWeb generalIndicatorWeb) throws GeneralAppException {
+    public GeneralIndicator update(GeneralIndicatorWeb generalIndicatorWeb) throws GeneralAppException {
         if (generalIndicatorWeb == null) {
             throw new GeneralAppException("No se puede actualizar un generalIndicator null", Response.Status.BAD_REQUEST);
         }
@@ -80,28 +80,28 @@ public class GeneralIndicatorService {
         }
         this.validate(generalIndicatorWeb);
         GeneralIndicator generalfound = this.generalIndicatorDao.getByPeriodId(generalIndicatorWeb.getPeriod().getId());
-        if(generalfound.getId().equals(generalIndicatorWeb.getId())){
+        if (generalfound.getId().equals(generalIndicatorWeb.getId())) {
             generalfound.setDescription(generalIndicatorWeb.getDescription());
-            generalfound.setState( generalIndicatorWeb.getState());
+            generalfound.setState(generalIndicatorWeb.getState());
             generalfound.setMeasureType(generalIndicatorWeb.getMeasureType());
             for (DissagregationAssignationToGeneralIndicatorWeb dissagregationAssignationToGeneralIndicatorWeb : generalIndicatorWeb.getDissagregationAssignationsToGeneralIndicator()) {
-                if(dissagregationAssignationToGeneralIndicatorWeb.getState().equals(State.ACTIVO)){
+                if (dissagregationAssignationToGeneralIndicatorWeb.getState().equals(State.ACTIVO)) {
                     Optional<DissagregationAssignationToGeneralIndicator> dissaFound = generalfound.getDissagregationAssignationsToGeneralIndicator().stream().filter(dissagregationAssignationToGeneralIndicator -> {
                         return dissagregationAssignationToGeneralIndicator.getDissagregationType().equals(dissagregationAssignationToGeneralIndicatorWeb.getDissagregationType());
                     }).findFirst();
-                    if(dissaFound.isPresent()){
+                    if (dissaFound.isPresent()) {
                         dissaFound.get().setState(State.ACTIVO);
-                    }else {
+                    } else {
                         DissagregationAssignationToGeneralIndicator dissanew = new DissagregationAssignationToGeneralIndicator();
                         dissanew.setState(State.ACTIVO);
                         dissanew.setDissagregationType(dissagregationAssignationToGeneralIndicatorWeb.getDissagregationType());
                         generalfound.addDissagregationAssignationsToGeneralIndicator(dissanew);
                     }
-                }else{
+                } else {
                     Optional<DissagregationAssignationToGeneralIndicator> dissaFound = generalfound.getDissagregationAssignationsToGeneralIndicator().stream().filter(dissagregationAssignationToGeneralIndicator -> {
                         return dissagregationAssignationToGeneralIndicator.getDissagregationType().equals(dissagregationAssignationToGeneralIndicatorWeb.getDissagregationType());
                     }).findFirst();
-                    if(dissaFound.isPresent()){
+                    if (dissaFound.isPresent()) {
                         dissaFound.get().setState(State.INACTIVO);
                     }
                 }
@@ -111,13 +111,13 @@ public class GeneralIndicatorService {
                 Optional<DissagregationAssignationToGeneralIndicatorWeb> dissafound = generalIndicatorWeb.getDissagregationAssignationsToGeneralIndicator().stream().filter(dissagregationAssignationToGeneralIndicatorWeb -> {
                     return dissagregationAssignationToGeneralIndicator.getDissagregationType().equals(dissagregationAssignationToGeneralIndicatorWeb.getDissagregationType());
                 }).findFirst();
-                if(!dissafound.isPresent()){
+                if (!dissafound.isPresent()) {
                     dissafound.get().setState(State.INACTIVO);
                 }
             });
         }
         this.saveOrUpdate(generalfound);
-        return generalfound.getId();
+        return generalfound;
     }
 
 
@@ -136,10 +136,17 @@ public class GeneralIndicatorService {
         if (generalIndicatorWeb.getMeasureType() == null) {
             throw new GeneralAppException("Tipo medida no válida", Response.Status.BAD_REQUEST);
         }
-
-        if (generalIndicatorWeb.getPeriod() == null) {
-            throw new GeneralAppException("Periodo no válido", Response.Status.BAD_REQUEST);
+        if (CollectionUtils.isEmpty(generalIndicatorWeb.getDissagregationAssignationsToGeneralIndicator())) {
+            throw new GeneralAppException("El indicador debe tener al menos una segregación", Response.Status.BAD_REQUEST);
         }
 
+        /*if (generalIndicatorWeb.getPeriod() == null) {
+            throw new GeneralAppException("Periodo no válido", Response.Status.BAD_REQUEST);
+        }*/
+
+    }
+
+    public GeneralIndicator getByPeriodIdAndState(Long periodId, State state) {
+        return this.generalIndicatorDao.getByIdAndState(periodId, state);
     }
 }

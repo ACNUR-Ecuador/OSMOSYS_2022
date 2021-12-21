@@ -1,6 +1,14 @@
 package org.unhcr.osmosys.model.enums;
 
-public enum MonthEnum  implements EnumInterface{
+import com.sagatechs.generics.exceptions.GeneralAppException;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public enum MonthEnum implements EnumInterface {
     ENERO("ENERO", 1, QuarterEnum.I),
     FEBRERO("FEBRERO", 2, QuarterEnum.I),
     MARZO("MARZO", 3, QuarterEnum.I),
@@ -43,5 +51,51 @@ public enum MonthEnum  implements EnumInterface{
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public QuarterEnum getQuarterEnum() {
+        return quarterEnum;
+    }
+
+    public void setQuarterEnum(QuarterEnum quarterEnum) {
+        this.quarterEnum = quarterEnum;
+    }
+
+    public static MonthEnum getMonthByNumber(int monthNumber) throws GeneralAppException {
+        switch (monthNumber) {
+            case 1:
+                return MonthEnum.ENERO;
+            case 2:
+                return MonthEnum.FEBRERO;
+            case 3:
+                return MonthEnum.MARZO;
+            case 4:
+                return MonthEnum.ABRIL;
+            case 5:
+                return MonthEnum.MAYO;
+            case 6:
+                return MonthEnum.JUNIO;
+            case 7:
+                return MonthEnum.JULIO;
+            case 8:
+                return MonthEnum.AGOSTO;
+            case 9:
+                return MonthEnum.SEPTIEMBRE;
+            case 10:
+                return MonthEnum.OCTUBRE;
+            case 11:
+                return MonthEnum.NOVIEMBRE;
+            case 12:
+                return MonthEnum.DICIEMBRE;
+            default: {
+                throw new GeneralAppException("Month enum no válido " + monthNumber);
+            }
+        }
+    }
+
+    public static List<MonthEnum> getMonthsByQuarter(QuarterEnum quarterEnum) {
+        return Arrays.stream(MonthEnum.values()).filter(monthEnum -> {
+            return monthEnum.getQuarterEnum().equals(quarterEnum);
+        }).sorted(Comparator.comparingInt(MonthEnum::getOrder)).collect(Collectors.toList());
     }
 }

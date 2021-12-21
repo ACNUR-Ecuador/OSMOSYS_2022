@@ -23,6 +23,9 @@ public class Period extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private State state;
 
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "period")
+    private GeneralIndicator generalIndicator;
+
     @Override
     public Long getId() {
         return id;
@@ -46,6 +49,14 @@ public class Period extends BaseEntity<Long> {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public GeneralIndicator getGeneralIndicator() {
+        return generalIndicator;
+    }
+
+    public void setGeneralIndicator(GeneralIndicator generalIndicator) {
+        this.generalIndicator = generalIndicator;
     }
 
     @Override

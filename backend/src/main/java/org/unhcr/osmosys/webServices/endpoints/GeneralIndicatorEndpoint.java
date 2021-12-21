@@ -3,6 +3,7 @@ package org.unhcr.osmosys.webServices.endpoints;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
+import org.unhcr.osmosys.model.GeneralIndicator;
 import org.unhcr.osmosys.services.GeneralIndicatorService;
 import org.unhcr.osmosys.webServices.model.GeneralIndicatorWeb;
 
@@ -32,7 +33,8 @@ public class GeneralIndicatorEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public Long update(GeneralIndicatorWeb generalIndicatorWeb) throws GeneralAppException {
-        return this.generalIndicatorService.update(generalIndicatorWeb);
+        GeneralIndicator generalIndicator = this.generalIndicatorService.update(generalIndicatorWeb);
+        return generalIndicator.getId();
     }
 
     @Path("/")

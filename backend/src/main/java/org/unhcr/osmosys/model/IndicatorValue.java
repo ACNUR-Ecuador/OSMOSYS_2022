@@ -32,6 +32,7 @@ public class IndicatorValue extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private MonthEnum monthEnum;
 
+
     @Enumerated(EnumType.STRING)
     @Column(name = "dissagregation_type", nullable = false, length = 50, unique = false)
     private DissagregationType dissagregationType;
@@ -51,6 +52,17 @@ public class IndicatorValue extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     @Column(name = "age_type", nullable = false, length = 12, unique = false)
     private AgeType ageType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "diversity_type", nullable = false, length = 12, unique = false)
+    private DiversityType diversityType;
+
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "canton_id", foreignKey = @ForeignKey(name = "fk_indicator_values_cantones"))
+    private Canton location;
+
+    @Column(name = "show_value", nullable = false)
+    private Boolean showValue;
 
     @Column(name = "value")
     private BigDecimal value;
@@ -157,5 +169,46 @@ public class IndicatorValue extends BaseEntity<Long> {
 
     public void setNumeratorValue(BigDecimal numeratorValue) {
         this.numeratorValue = numeratorValue;
+    }
+
+    public Boolean getShowValue() {
+        return showValue;
+    }
+
+    public void setShowValue(Boolean showValue) {
+        this.showValue = showValue;
+    }
+
+    public DiversityType getDiversityType() {
+        return diversityType;
+    }
+
+    public void setDiversityType(DiversityType diversityType) {
+        this.diversityType = diversityType;
+    }
+
+    public Canton getLocation() {
+        return location;
+    }
+
+    public void setLocation(Canton location) {
+        this.location = location;
+    }
+
+    @Override
+    public String toString() {
+        return "IndicatorValue{" +
+                "state=" + state +
+                ", monthEnum=" + monthEnum +
+                ", dissagregationType=" + dissagregationType +
+                ", populationType=" + populationType +
+                ", countryOfOrigin=" + countryOfOrigin +
+                ", genderType=" + genderType +
+                ", ageType=" + ageType +
+                ", diversityType=" + diversityType +
+                ", location=" + location +
+                ", showValue=" + showValue +
+                ", value=" + value +
+                '}';
     }
 }

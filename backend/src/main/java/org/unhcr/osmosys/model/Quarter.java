@@ -9,11 +9,17 @@ import org.unhcr.osmosys.model.enums.IndicatorType;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(schema = "osmosys", name = "quarters")
+@Table(schema = "osmosys", name = "quarters",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_ie_quarter_year", columnNames = {"indicator_execution_id", "quarter", "year"}),
+                @UniqueConstraint(name = "uk_ie_order", columnNames = {"indicator_execution_id", "order"})
+        }
+)
 public class Quarter extends BaseEntity<Long> {
 
     @Id
@@ -32,9 +38,21 @@ public class Quarter extends BaseEntity<Long> {
     @JoinColumn(name = "indicator_execution_id", foreignKey = @ForeignKey(name = "fk_quarter_indicator_execution"))
     private IndicatorExecution indicatorExecution;
 
-    @OneToMany(mappedBy = "quarter",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private Set<Month> months;
+    @OneToMany(mappedBy = "quarter", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Month> months = new HashSet<>();
 
+    @Column(name = "order", nullable = false)
+    private Integer order;
+
+    @Column(name = "year", nullable = false)
+    private Integer year;
+
+    @Column(name = "target", nullable = true)
+    private BigDecimal target;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "state", nullable = false, length = 12, unique = false)
+    private State state;
 
     @Override
     public Long getId() {
@@ -75,5 +93,70 @@ public class Quarter extends BaseEntity<Long> {
 
     public void setMonths(Set<Month> months) {
         this.months = months;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public BigDecimal getTarget() {
+        return target;
+    }
+
+    public void setTarget(BigDecimal target) {
+        this.target = target;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    public void addMonth(Month month){
+        month.setQuarter(this);
+        if(!this.months.add(month)){
+            this.months.remove(month);
+            this.months.add(month);
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof Quarter)) return false;
+
+        Quarter quarter1 = (Quarter) o;
+
+        return new EqualsBuilder().append(id, quarter1.id).append(quarter, quarter1.quarter).append(indicatorExecution, quarter1.indicatorExecution).append(order, quarter1.order).append(year, quarter1.year).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(id).append(quarter).append(indicatorExecution).append(order).append(year).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Quarter{" +
+                "quarter=" + quarter +
+                ", order=" + order +
+                ", year=" + year +
+                '}';
     }
 }

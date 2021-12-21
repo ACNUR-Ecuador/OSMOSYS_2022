@@ -42,4 +42,25 @@ public class PeriodDao extends GenericDaoJpa<Period, Long> {
             throw new GeneralAppException("Se encontró más de un item con el año " + year, Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
+
+    public Period getWithGeneralIndicatorById(Long id)  {
+
+        String jpql = "SELECT DISTINCT o FROM Period o left join fetch o.generalIndicator gi " +
+                " WHERE o.id = :id";
+        Query q = getEntityManager().createQuery(jpql, Period.class);
+        q.setParameter("id", id);
+        try {
+            return (Period) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    public List<Period> getWithGeneralIndicatorAll()  {
+
+        String jpql = "SELECT DISTINCT o FROM Period o left join fetch o.generalIndicator gi order by o.year " ;
+        Query q = getEntityManager().createQuery(jpql, Period.class);
+            return  q.getResultList();
+
+    }
 }

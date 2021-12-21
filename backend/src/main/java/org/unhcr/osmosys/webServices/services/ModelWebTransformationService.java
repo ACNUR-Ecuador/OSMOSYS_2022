@@ -947,7 +947,10 @@ public class ModelWebTransformationService {
         indicator.setDescription(indicatorWeb.getDescription());
         indicator.setState(indicatorWeb.getState());
         indicator.setMeasureType(indicatorWeb.getMeasureType());
-        indicator.setPeriod(this.periodWebToPeriod(indicatorWeb.getPeriod()));
+        Period period = this.periodWebToPeriod(indicatorWeb.getPeriod());
+        if (period != null)
+            period.setGeneralIndicator(indicator);
+        indicator.setPeriod(period);
 
         Set<DissagregationAssignationToGeneralIndicator> dissagregationAssignationToIndicators = this.dissagregationAssignationToGeneralIndicatorsWebToDissagregationAssignationToGeneralIndicators(indicatorWeb.getDissagregationAssignationsToGeneralIndicator());
         for (DissagregationAssignationToGeneralIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicators) {

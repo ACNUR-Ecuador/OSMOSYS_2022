@@ -28,7 +28,22 @@ public class GeneralIndicatorDao extends GenericDaoJpa<GeneralIndicator, Long> {
         return q.getResultList();
     }
 
-    public GeneralIndicator getByPeriodId( Long periodId) throws GeneralAppException {
+    public GeneralIndicator getByIdAndState(Long periodId, State state) {
+
+        String jpql = "SELECT DISTINCT o FROM GeneralIndicator o left join fetch o.dissagregationAssignationsToGeneralIndicator dissa " +
+                "WHERE o.period.id =:periodId and o.state = :state";
+        Query q = getEntityManager().createQuery(jpql, GeneralIndicator.class);
+        q.setParameter("state", state);
+        q.setParameter("periodId", periodId);
+        try {
+            return (GeneralIndicator) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+
+    }
+
+    public GeneralIndicator getByPeriodId(Long periodId) throws GeneralAppException {
 
         String jpql = "SELECT DISTINCT o FROM GeneralIndicator o " +
                 "WHERE o.period.id =: periodId";
@@ -38,8 +53,8 @@ public class GeneralIndicatorDao extends GenericDaoJpa<GeneralIndicator, Long> {
             return (GeneralIndicator) q.getSingleResult();
         } catch (NoResultException e) {
             return null;
-        }catch (NonUniqueResultException e) {
-            throw new GeneralAppException("Inconsistencia en base de datos, se encontro màs de un indicador general para el periodo "+ periodId);
+        } catch (NonUniqueResultException e) {
+            throw new GeneralAppException("Inconsistencia en base de datos, se encontro màs de un indicador general para el periodo " + periodId);
         }
     }
 

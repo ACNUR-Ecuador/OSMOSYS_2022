@@ -1,19 +1,17 @@
 package org.unhcr.osmosys.model.enums;
 
-public enum AgeType implements EnumInterface {
-    INFANTES("Infantes(0-4)", 1),
-    NINOS("Niña/os(5-11)", 2),
-    ADOLESCENTES("Adolescentes(12-17)", 3),
-    JOVENES_ADULTOS("Jóvenes Adultos(18-29)", 4),
-    ADULTOS("Adultos(30-59)", 5),
-    ADULTOS_MAYORES("Tercera Edad(60+)", 6);
+public enum DiversityType implements EnumInterface {
+    LGBTI("LGBTIQ+", 1),
+    DISCAPACITADOS("Discapacitados", 2),
+    ADOLESCENTES("Indígenas", 3),
+    JOVENES_ADULTOS("Afrodescendientes", 4);
 
     private String label;
 
     private int order;
 
 
-    AgeType(String label, int order) {
+    DiversityType(String label, int order) {
         this.label = label;
         this.order = order;
     }

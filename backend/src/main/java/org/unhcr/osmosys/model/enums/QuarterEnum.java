@@ -1,5 +1,7 @@
 package org.unhcr.osmosys.model.enums;
 
+import com.sagatechs.generics.exceptions.GeneralAppException;
+
 public enum QuarterEnum  implements EnumInterface{
     I("I", 1),
     II("II", 2),
@@ -13,7 +15,6 @@ public enum QuarterEnum  implements EnumInterface{
     QuarterEnum(String label, int order) {
         this.label = label;
         this.order = order;
-        this.quarter = quarter;
     }
 
     @Override
@@ -35,5 +36,17 @@ public enum QuarterEnum  implements EnumInterface{
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public static  QuarterEnum getByQuarterNumber(int quarterNumber) throws GeneralAppException {
+        switch (quarterNumber){
+            case 1: return QuarterEnum.I;
+            case 2: return QuarterEnum.II;
+            case 3: return QuarterEnum.III;
+            case 4: return QuarterEnum.IV;
+            default:{
+                throw new GeneralAppException("Quarter enum no válido "+quarterNumber);
+            }
+        }
     }
 }

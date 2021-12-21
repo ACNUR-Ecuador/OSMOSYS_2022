@@ -23,6 +23,9 @@ public class PeriodService {
     @Inject
     ModelWebTransformationService modelWebTransformationService;
 
+    @Inject
+    GeneralIndicatorService generalIndicatorService;
+
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(PeriodService.class);
 
@@ -47,7 +50,16 @@ public class PeriodService {
             throw new GeneralAppException("No se puede crear un period con id", Response.Status.BAD_REQUEST);
         }
         this.validate(periodWeb);
-        Period period = this.saveOrUpdate(this.modelWebTransformationService.periodWebToPeriod(periodWeb));
+        Period period=this.modelWebTransformationService.periodWebToPeriod(periodWeb);
+        this.saveOrUpdate(period);
+        if(periodWeb.getGeneralIndicator() !=null){
+            this.generalIndicatorService.validate(periodWeb.getGeneralIndicator());
+            period.setGeneralIndicator(this.modelWebTransformationService.generalIndicatorWebToGeneralIndicator(periodWeb.getGeneralIndicator()));
+            period.getGeneralIndicator().setPeriod(period);
+            this.generalIndicatorService.saveOrUpdate(period.getGeneralIndicator());
+        }
+
+
         return period.getId();
     }
 
@@ -66,12 +78,30 @@ public class PeriodService {
         if (periodWeb.getId() == null) {
             throw new GeneralAppException("No se puede crear un period sin id", Response.Status.BAD_REQUEST);
         }
+
+        Period period=this.modelWebTransformationService.periodWebToPeriod(periodWeb);
         this.validate(periodWeb);
-        Period period = this.saveOrUpdate(this.modelWebTransformationService.periodWebToPeriod(periodWeb));
+        this.saveOrUpdate(period);
+        if(periodWeb.getGeneralIndicator() !=null){
+            this.generalIndicatorService.validate(periodWeb.getGeneralIndicator());
+            if(periodWeb.getGeneralIndicator().getId()!=null){
+                periodWeb.getGeneralIndicator().setPeriod(new PeriodWeb());
+                periodWeb.getGeneralIndicator().getPeriod().setId(period.getId());
+                this.generalIndicatorService.update(periodWeb.getGeneralIndicator());
+            }else {
+                period.setGeneralIndicator(this.modelWebTransformationService.generalIndicatorWebToGeneralIndicator(periodWeb.getGeneralIndicator()));
+                period.getGeneralIndicator().setPeriod(period);
+                periodWeb.getGeneralIndicator().setPeriod(new PeriodWeb());
+                periodWeb.getGeneralIndicator().getPeriod().setId(period.getId());
+                this.generalIndicatorService.saveOrUpdate(this.modelWebTransformationService.generalIndicatorWebToGeneralIndicator(periodWeb.getGeneralIndicator()));
+            }
+
+
+
+
+        }
         return period.getId();
     }
-
-
 
 
     public void validate(PeriodWeb periodWeb) throws GeneralAppException {
@@ -88,7 +118,7 @@ public class PeriodService {
 
         Period itemRecovered = this.periodDao.getByYear(periodWeb.getYear());
         if (itemRecovered != null) {
-            if (periodWeb.getId() == null || !periodWeb.getId().equals(itemRecovered.getId())){
+            if (periodWeb.getId() == null || !periodWeb.getId().equals(itemRecovered.getId())) {
                 throw new GeneralAppException("Ya existe un ítem con este año", Response.Status.BAD_REQUEST);
             }
         }
@@ -96,5 +126,32 @@ public class PeriodService {
 
     public PeriodWeb getByid(Long id) {
         return this.modelWebTransformationService.periodToPeriodWeb(this.periodDao.find(id));
+    }
+
+    public PeriodWeb getWithGeneralIndicatorById(Long id) {
+
+        Period period = this.periodDao.getWithGeneralIndicatorById(id);
+        PeriodWeb periodWeb = this.modelWebTransformationService.periodToPeriodWeb(period);
+
+        if (period.getGeneralIndicator() != null) {
+            periodWeb.setGeneralIndicator(this.modelWebTransformationService.generalIndicatorToGeneralIndicatorWeb(period.getGeneralIndicator()));
+        }
+        return periodWeb;
+    }
+
+
+    public List<PeriodWeb> getWithGeneralIndicatorAll() {
+        List<Period> periods =this.periodDao.getWithGeneralIndicatorAll();
+
+        List<PeriodWeb> r = new ArrayList<>();
+
+        for (Period period : periods) {
+            PeriodWeb periodWeb = this.modelWebTransformationService.periodToPeriodWeb(period);
+            if (period.getGeneralIndicator() != null) {
+                periodWeb.setGeneralIndicator(this.modelWebTransformationService.generalIndicatorToGeneralIndicatorWeb(period.getGeneralIndicator()));
+            }
+            r.add(periodWeb);
+        }
+        return r;
     }
 }

@@ -1,0 +1,62 @@
+package org.unhcr.osmosys.daos;
+
+import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.GenericDaoJpa;
+import com.sagatechs.generics.persistence.model.State;
+import org.unhcr.osmosys.model.IndicatorValue;
+
+import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.Query;
+import javax.ws.rs.core.Response;
+import java.util.List;
+
+@SuppressWarnings("unchecked")
+@Stateless
+public class IndicatorValueDao extends GenericDaoJpa<IndicatorValue, Long> {
+    public IndicatorValueDao() {
+        super(IndicatorValue.class, Long.class);
+    }
+
+    public List<IndicatorValue> getByState(State state) {
+
+        String jpql = "SELECT DISTINCT o FROM IndicatorValue o " +
+                "WHERE o.state = :state";
+        Query q = getEntityManager().createQuery(jpql, IndicatorValue.class);
+        q.setParameter("state", state);
+        return q.getResultList();
+    }
+
+    public IndicatorValue getByCode(String code) throws GeneralAppException {
+
+        String jpql = "SELECT DISTINCT o FROM IndicatorValue o " +
+                "WHERE lower(o.code) = lower(:code)";
+        Query q = getEntityManager().createQuery(jpql, IndicatorValue.class);
+        q.setParameter("code", code);
+        try {
+            return (IndicatorValue) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (NonUniqueResultException e) {
+            throw new GeneralAppException("Se encontró más de un item con el código " + code, Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public IndicatorValue getByShortDescription(String shortDescription) throws GeneralAppException {
+
+        String jpql = "SELECT DISTINCT o FROM IndicatorValue o " +
+                "WHERE lower(o.shortDescription) = lower(:shortDescription)";
+        Query q = getEntityManager().createQuery(jpql, IndicatorValue.class);
+        q.setParameter("shortDescription", shortDescription);
+        try {
+            return (IndicatorValue) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (NonUniqueResultException e) {
+            throw new GeneralAppException("Se encontró más de un item con la descripción corta " + shortDescription, Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+}
