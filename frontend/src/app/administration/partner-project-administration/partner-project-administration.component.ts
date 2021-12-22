@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {FilterService, MessageService, SelectItem} from 'primeng/api';
+import {ConfirmationService, ConfirmEventType, FilterService, MessageService, SelectItem} from 'primeng/api';
 import {UtilsService} from '../../shared/services/utils.service';
 import {UserService} from '../../shared/services/user.service';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
@@ -9,7 +9,7 @@ import {Location} from '@angular/common';
 import {
     Canton,
     GeneralIndicator,
-    IndicatorExecutionGeneralIndicatorAdministrationResumeWeb,
+    IndicatorExecutionGeneralIndicatorAdministrationResumeWeb, IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb,
     Period,
     Project, QuarterResumeWeb, TargetUpdateDTOWeb
 } from '../../shared/model/OsmosysModel';
@@ -32,7 +32,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     public periods: Period[];
     public cantones: Canton[];
 
-    public generalIndicators;
+    public generalIndicators: IndicatorExecutionGeneralIndicatorAdministrationResumeWeb[] = [];
+    public performanceIndicators: IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb[] = [];
     public organizations: SelectItem[];
     public states: SelectItem[];
     public formItem: FormGroup;
@@ -67,6 +68,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         private cantonService: CantonService,
         private periodService: PeriodService,
         private projectService: ProjectService,
+        private confirmationService: ConfirmationService,
         public officeOrganizationPipe: OfficeOrganizationPipe,
         private indicatorExecutionService: IndicatorExecutionService
     ) {
@@ -165,6 +167,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     loadGeneralIndicators(projectId: number) {
         this.indicatorExecutionService.getGeneralIndicatorAdministrationResume(projectId).subscribe(value => {
             this.generalIndicators = value;
+            this.loadPerformanceIndicators(projectId);
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -173,6 +176,62 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 life: 3000
             });
         });
+    }
+
+    loadPerformanceIndicators(projectId: number) {
+        this.indicatorExecutionService.getPerformanceIndicatorAdministrationResume(projectId).subscribe(value => {
+            this.performanceIndicators = value;
+            this.showTargetAlerts();
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al cargar el proyecto',
+                detail: error.error.message,
+                life: 3000
+            });
+        });
+    }
+
+    showTargetAlerts() {
+        let message = '';
+        let showAlert = false;
+
+        if (this.performanceIndicators.filter(value => {
+            return value.state === EnumsState.ACTIVE && value.target === null;
+        }).length < 1) {
+            message += 'El proyecto no tiene indicadores de rendimiento asignados. </br>';
+            showAlert = true;
+        }
+        const generalIndicatorsTargetsToAlert = this.generalIndicators.filter(value => {
+            return value.state === EnumsState.ACTIVE && value.target === null;
+        });
+        const performanceIndicatorsTargetsToAlert = this.performanceIndicators.filter(value => {
+            return value.state === EnumsState.ACTIVE && value.target === null;
+        });
+
+        if (generalIndicatorsTargetsToAlert.length > 0 || performanceIndicatorsTargetsToAlert.length > 0) {
+            showAlert = true;
+            message += 'Las metas de los siguientes indicadores están pendientes de actualización. </br>';
+            generalIndicatorsTargetsToAlert.forEach(value => {
+                message = message + 'Indicador General: ' + value.indicatorDescription;
+            });
+            performanceIndicatorsTargetsToAlert.forEach(value => {
+                message = message + 'Indicador de Rendimiento: ' + value.indicatorDescription;
+            });
+
+
+        }
+        if (showAlert) {
+            this.confirmationService.confirm({
+                message,
+                header: 'Proyecto pendiente de actualización',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                    this.messageService.add({severity: 'warn', summary: 'Confirmado', detail: 'No olvides actualizar el proyecto'});
+                }
+            });
+        }
+
     }
 
     loadOptions() {
@@ -477,7 +536,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             });
             const idProject = Number(this.idProjectParam);
             this.loadProject(idProject);
-            this.showTargetDialog=false;
+            this.showTargetDialog = false;
         }, error => {
             this.messageService.add({
                 severity: 'error',

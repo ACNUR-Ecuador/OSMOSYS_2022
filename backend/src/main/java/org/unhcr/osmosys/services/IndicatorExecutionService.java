@@ -253,4 +253,9 @@ public class IndicatorExecutionService {
             }
         }
     }
+
+    public List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> getPerformanceIndicatorExecutionsByProjectId(Long projectId) {
+        List<IndicatorExecution> ies = this.indicatorExecutionDao.getPerformanceIndicatorExecutionsByProjectId(projectId);
+        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionGeneralIndicatorAdministrationResumesWeb(ies);
+    }
 }

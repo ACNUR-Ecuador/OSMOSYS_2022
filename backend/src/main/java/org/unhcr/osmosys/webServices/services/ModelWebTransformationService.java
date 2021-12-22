@@ -995,11 +995,32 @@ public class ModelWebTransformationService {
         return i;
 
     }
+    public IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb indicatorExecutionToIndicatorExecutionPerformanceIndicatorAdministrationResumeWeb(IndicatorExecution indicatorExecution) {
+        IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb i=new IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb();
+        i.setId(indicatorExecution.getId());
+        i.setIndicatorDescription(indicatorExecution.getPeriod().getGeneralIndicator().getDescription());
+        i.setIndicatorType(indicatorExecution.getIndicatorType());
+        i.setTotalExecution(indicatorExecution.getTotalExecution());
+        i.setTarget(indicatorExecution.getTarget());
+        i.setState(indicatorExecution.getState());
+        i.setQuarters(this.quartersToQuarterResumesWeb(indicatorExecution.getQuarters()));
+        i.setExecutionPercentage(indicatorExecution.getExecutionPercentage());
+        return i;
+
+    }
 
     public List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> indicatorExecutionsToIndicatorExecutionGeneralIndicatorAdministrationResumesWeb(List<IndicatorExecution> indicatorExecutions) {
         List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> r = new ArrayList<>();
         for (IndicatorExecution indicatorExecution : indicatorExecutions) {
             r.add(this.indicatorExecutionToIndicatorExecutionGeneralIndicatorAdministrationResumeWeb(indicatorExecution));
+        }
+        return r;
+    }
+
+    public List<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb> indicatorExecutionsToIndicatorExecutionPerformanceIndicatorAdministrationResumesWeb(List<IndicatorExecution> indicatorExecutions) {
+        List<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb> r = new ArrayList<>();
+        for (IndicatorExecution indicatorExecution : indicatorExecutions) {
+            r.add(this.indicatorExecutionToIndicatorExecutionPerformanceIndicatorAdministrationResumeWeb(indicatorExecution));
         }
         return r;
     }

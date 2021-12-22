@@ -52,6 +52,7 @@ import {ProjectService} from '../shared/services/project.service';
 import {PanelModule} from 'primeng/panel';
 import {MenuModule} from 'primeng/menu';
 import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
 
 
 @NgModule({
@@ -99,7 +100,8 @@ import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
         CalendarModule,
         PanelModule,
         MenuModule,
-        TriStateCheckboxModule
+        TriStateCheckboxModule,
+        ConfirmDialogModule
     ],
     providers: [
         ConfirmationService,

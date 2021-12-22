@@ -313,6 +313,19 @@ export class IndicatorExecutionGeneralIndicatorAdministrationResumeWeb {
 
 }
 
+export class IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb {
+    public id: number;
+    public commentary: string;
+    public target: number;
+    public indicatorDescription: string;
+    public indicatorType: string;
+    public state: string;
+    public totalExecution: number;
+    public executionPercentage: number;
+    public quarters: QuarterResumeWeb[];
+
+}
+
 export class QuarterResumeWeb {
     public id: number;
     public quarter: string;

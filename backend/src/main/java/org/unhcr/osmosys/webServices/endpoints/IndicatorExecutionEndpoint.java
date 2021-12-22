@@ -29,6 +29,13 @@ public class IndicatorExecutionEndpoint {
     public List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> getGeneralIndicatorExecutionsByProjectId(@PathParam("projectId") Long projectId) {
         return this.indicatorExecutionService.getGeneralIndicatorExecutionsByProjectId(projectId);
     }
+    @Path("/performanceByProject/{projectId}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> getPerformanceIndicatorExecutionsByProjectId(@PathParam("projectId") Long projectId) {
+        return this.indicatorExecutionService.getPerformanceIndicatorExecutionsByProjectId(projectId);
+    }
 
     @Path("/targetsUpdate")
     @PUT
