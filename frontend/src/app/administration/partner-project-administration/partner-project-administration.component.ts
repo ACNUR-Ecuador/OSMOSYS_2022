@@ -404,6 +404,10 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     updateTargets(indicator: IndicatorExecutionGeneralIndicatorAdministrationResumeWeb) {
+        this.formTargets = this.fb.group({
+            indicatorExecutionId: new FormControl(''),
+            quarterGroups: this.fb.array([])
+        });
         this.utilsService.resetForm(this.formTargets);
         this.formTargets.get('indicatorExecutionId').patchValue(indicator.id);
         const quarters = indicator.quarters
