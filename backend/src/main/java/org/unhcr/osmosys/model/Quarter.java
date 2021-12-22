@@ -23,9 +23,10 @@ import java.util.Set;
 public class Quarter extends BaseEntity<Long> {
 
     public Quarter() {
-        this.state=State.ACTIVO;
-        this.totalExecution=BigDecimal.ZERO;
-        this.target=null;
+        this.state = State.ACTIVO;
+        // this.totalExecution = BigDecimal.ZERO;
+        this.executionPercentage = BigDecimal.ZERO;
+        this.target = null;
     }
 
     @Id
@@ -53,11 +54,14 @@ public class Quarter extends BaseEntity<Long> {
     @Column(name = "year", nullable = false)
     private Integer year;
 
-    @Column(name = "target", nullable = true)
+    @Column(name = "target")
     private BigDecimal target;
 
-    @Column(name = "total_execution", nullable = false)
+    @Column(name = "total_execution")
     private BigDecimal totalExecution;
+
+    @Column(name = "execution_percentage")
+    private BigDecimal executionPercentage;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", nullable = false, length = 12, unique = false)
@@ -136,9 +140,9 @@ public class Quarter extends BaseEntity<Long> {
         this.state = state;
     }
 
-    public void addMonth(Month month){
+    public void addMonth(Month month) {
         month.setQuarter(this);
-        if(!this.months.add(month)){
+        if (!this.months.add(month)) {
             this.months.remove(month);
             this.months.add(month);
         }
@@ -150,6 +154,14 @@ public class Quarter extends BaseEntity<Long> {
 
     public void setTotalExecution(BigDecimal totalExecution) {
         this.totalExecution = totalExecution;
+    }
+
+    public BigDecimal getExecutionPercentage() {
+        return executionPercentage;
+    }
+
+    public void setExecutionPercentage(BigDecimal executionPercentage) {
+        this.executionPercentage = executionPercentage;
     }
 
     @Override

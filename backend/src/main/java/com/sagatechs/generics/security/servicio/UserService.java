@@ -236,6 +236,15 @@ public class UserService implements Serializable {
 
     }
 
+    private List<UserWeb> usersToUsersWeb(List<User> users) {
+        List<UserWeb> userWebs = new ArrayList<>();
+        for (User user : users) {
+            userWebs.add(this.userToUserWeb(user));
+        }
+        return userWebs;
+    }
+
+
     public UserWeb userToUserWeb(User user) {
         if (user == null) {
             return null;
@@ -392,5 +401,13 @@ public class UserService implements Serializable {
             e.printStackTrace();
             throw new AccessDeniedException("token invalido");
         }
+    }
+
+    public List<UserWeb> getUNHCRUsersWebByState(State state) {
+        return this.usersToUsersWeb(this.userDao.getUNHCRUsersByState(state));
+    }
+
+    public User getById(Long id){
+        return this.userDao.find(id);
     }
 }

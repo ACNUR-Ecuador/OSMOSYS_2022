@@ -60,4 +60,11 @@ public class UserRestEndpoint {
 
     }
 
+    @Path("/users/active/UNHCR")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<UserWeb> getActiveUNHCRUsers() {
+        return this.userService.getUNHCRUsersWebByState(State.ACTIVO);
+    }
+
 }

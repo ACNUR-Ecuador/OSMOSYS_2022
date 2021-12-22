@@ -20,7 +20,8 @@ public class IndicatorExecution extends BaseEntity<Long> {
 
     public IndicatorExecution() {
         this.state=State.ACTIVO;
-        this.totalExecution=BigDecimal.ZERO;
+        // this.totalExecution=BigDecimal.ZERO;
+        this.executionPercentage=BigDecimal.ZERO;
         this.target=null;
     }
 
@@ -55,8 +56,11 @@ public class IndicatorExecution extends BaseEntity<Long> {
     @JoinColumn(name = "period_id", foreignKey = @ForeignKey(name = "fk_indicator_execution_period_id"))
     private Period period;
 
-    @Column(name = "total_execution", nullable = false)
+    @Column(name = "total_execution", nullable = true)
     private BigDecimal totalExecution;
+
+    @Column(name = "execution_percentage")
+    private BigDecimal executionPercentage;
 
     @OneToMany(mappedBy = "indicatorExecution", cascade = CascadeType.ALL)
     private Set<Quarter> quarters = new HashSet<>();
@@ -254,6 +258,14 @@ public class IndicatorExecution extends BaseEntity<Long> {
 
     public void setTotalExecution(BigDecimal totalExecution) {
         this.totalExecution = totalExecution;
+    }
+
+    public BigDecimal getExecutionPercentage() {
+        return executionPercentage;
+    }
+
+    public void setExecutionPercentage(BigDecimal executionPercentage) {
+        this.executionPercentage = executionPercentage;
     }
 
     @Override

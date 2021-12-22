@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.webServices.services;
 
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.servicio.UserService;
 import org.unhcr.osmosys.daos.StatementDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.webServices.model.*;
@@ -15,6 +16,9 @@ public class ModelWebTransformationService {
 
     @Inject
     StatementDao statementDao;
+
+    @Inject
+    UserService userService;
 
     //<editor-fold desc="Areas">
     public List<AreaWeb> areasToAreasWeb(List<Area> areas) {
@@ -808,6 +812,7 @@ public class ModelWebTransformationService {
         w.setStartDate(project.getStartDate());
         w.setEndDate(project.getEndDate());
         w.setState(project.getState());
+        w.setFocalPoint(this.userService.userToUserWeb(project.getFocalPoint()));
         Set<Canton> cantones = project.getProjectLocationAssigments().stream().filter(projectLocationAssigment -> {
             return projectLocationAssigment.getState().equals(State.ACTIVO);
         }).map(projectLocationAssigment -> {
@@ -975,5 +980,54 @@ public class ModelWebTransformationService {
         return r;
     }
     //</editor-fold>
+
+    //<editor-fold desc="IndicatorExecution">
+    public IndicatorExecutionGeneralIndicatorAdministrationResumeWeb indicatorExecutionToIndicatorExecutionGeneralIndicatorAdministrationResumeWeb(IndicatorExecution indicatorExecution) {
+        IndicatorExecutionGeneralIndicatorAdministrationResumeWeb i=new IndicatorExecutionGeneralIndicatorAdministrationResumeWeb();
+        i.setId(indicatorExecution.getId());
+        i.setIndicatorDescription(indicatorExecution.getPeriod().getGeneralIndicator().getDescription());
+        i.setIndicatorType(indicatorExecution.getIndicatorType());
+        i.setTotalExecution(indicatorExecution.getTotalExecution());
+        i.setTarget(indicatorExecution.getTarget());
+        i.setState(indicatorExecution.getState());
+        i.setQuarters(this.quartersToQuarterResumesWeb(indicatorExecution.getQuarters()));
+        i.setExecutionPercentage(indicatorExecution.getExecutionPercentage());
+        return i;
+
+    }
+
+    public List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> indicatorExecutionsToIndicatorExecutionGeneralIndicatorAdministrationResumesWeb(List<IndicatorExecution> indicatorExecutions) {
+        List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> r = new ArrayList<>();
+        for (IndicatorExecution indicatorExecution : indicatorExecutions) {
+            r.add(this.indicatorExecutionToIndicatorExecutionGeneralIndicatorAdministrationResumeWeb(indicatorExecution));
+        }
+        return r;
+    }
+        //</editor-fold>
+
+    //<editor-fold desc="Quarter">
+    public QuarterResumeWeb quarterToQuarterResumeWeb(Quarter quarter) {
+        QuarterResumeWeb q=new QuarterResumeWeb();
+        q.setId(quarter.getId());
+        q.setQuarter(quarter.getQuarter());
+        q.setCommentary(quarter.getCommentary());
+        q.setOrder(quarter.getOrder());
+        q.setYear(quarter.getYear());
+        q.setTarget(quarter.getTarget());
+        q.setTotalExecution(quarter.getTotalExecution());
+        q.setState(quarter.getState());
+        q.setExecutionPercentage(quarter.getExecutionPercentage());
+        return q;
+    }
+
+    public Set<QuarterResumeWeb> quartersToQuarterResumesWeb(Set<Quarter> quarters) {
+        Set<QuarterResumeWeb> r = new HashSet<>();
+        for (Quarter quarter : quarters) {
+            r.add(this.quarterToQuarterResumeWeb(quarter));
+        }
+        return r;
+    }
+    //</editor-fold>
+
 
 }

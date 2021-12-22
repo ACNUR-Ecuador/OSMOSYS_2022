@@ -3,8 +3,10 @@ package org.unhcr.osmosys.webServices.model;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.webservice.jsonSerializers.LocalDateDeserializer;
 import com.sagatechs.generics.webservice.jsonSerializers.LocalDateSerializer;
+import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -30,6 +32,7 @@ public class ProjectWeb implements Serializable {
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate endDate;
+    public UserWeb focalPoint;
 
     public Long getId() {
         return id;
@@ -101,6 +104,14 @@ public class ProjectWeb implements Serializable {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public UserWeb getFocalPoint() {
+        return focalPoint;
+    }
+
+    public void setFocalPoint(UserWeb focalPoint) {
+        this.focalPoint = focalPoint;
     }
 
     @Override

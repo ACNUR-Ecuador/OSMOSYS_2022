@@ -2,6 +2,7 @@ package org.unhcr.osmosys.services;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.MonthDao;
 import org.unhcr.osmosys.model.Canton;
@@ -11,18 +12,21 @@ import org.unhcr.osmosys.model.Quarter;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
+import org.unhcr.osmosys.model.enums.TotalIndicatorCalculationType;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Stateless
 public class MonthService {
@@ -94,6 +98,108 @@ public class MonthService {
 
         }
         return m;
+    }
+
+    public void updateMonthTotals(Month month, TotalIndicatorCalculationType totalIndicatorCalculationType) throws GeneralAppException {
+        List<IndicatorValue> ivs = month.getIndicatorValues().stream().filter(indicatorValue -> {
+            return indicatorValue.getState().equals(State.ACTIVO);
+        }).collect(Collectors.toList());
+
+        Set<DissagregationType> dissagregationsTypes = ivs.stream().map(indicatorValue -> {
+            return indicatorValue.getDissagregationType();
+        }).collect(Collectors.toSet());
+        if (CollectionUtils.isEmpty(dissagregationsTypes)) {
+            throw new GeneralAppException("Mes sin desaggregaciones " + month.toString(), Response.Status.CONFLICT);
+        }
+        // veo cualquiera menos diversidad
+        DissagregationType dissagregationTypeToCalculate = null;
+        Optional<DissagregationType> dissagregationTypeOptional =
+                dissagregationsTypes.stream().filter(dissagregationType1 -> {
+                    return !dissagregationType1.equals(DissagregationType.DIVERSIDAD);
+                }).findFirst();
+        if (dissagregationTypeOptional.isPresent()) {
+            dissagregationTypeToCalculate = dissagregationTypeOptional.get();
+        } else {
+            dissagregationTypeToCalculate = dissagregationsTypes.iterator().next();
+        }
+        DissagregationType finalDissagregationTypeToCalculate = dissagregationTypeToCalculate;
+        ivs = ivs.stream().filter(indicatorValue -> {
+            return indicatorValue.getDissagregationType().equals(finalDissagregationTypeToCalculate);
+        }).collect(Collectors.toList());
+
+        List<BigDecimal> valuesList = ivs.stream().map(IndicatorValue::getValue).filter(Objects::nonNull).collect(Collectors.toList());
+        List<BigDecimal> numeratorsList = ivs.stream().map(IndicatorValue::getNumeratorValue).filter(Objects::nonNull).collect(Collectors.toList());
+        List<BigDecimal> denominatorsList = ivs.stream().map(IndicatorValue::getDenominatorValue).filter(Objects::nonNull).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(valuesList) && CollectionUtils.isEmpty(numeratorsList) && CollectionUtils.isEmpty(denominatorsList)) {
+            BigDecimal totalExecution = null;
+            switch (totalIndicatorCalculationType) {
+                case SUMA:
+                    totalExecution = valuesList.stream().reduce(BigDecimal::add).get();
+                    break;
+                case PROMEDIO:
+                    BigDecimal total = valuesList.stream().reduce(BigDecimal::add).get();
+                    totalExecution = total.divide(new BigDecimal(valuesList.size()), RoundingMode.HALF_UP);
+                    break;
+                case MAXIMO:
+                    totalExecution = valuesList.stream().reduce(BigDecimal::max).get();
+                    break;
+                case MINIMO:
+                    totalExecution = valuesList.stream().reduce(BigDecimal::min).get();
+                    break;
+                default:
+                    throw new GeneralAppException("Tipo de calculo no soportado, por favor comuniquese con el administrador del sistema", Response.Status.INTERNAL_SERVER_ERROR);
+            }
+            month.setTotalExecution(totalExecution);
+        } else if (CollectionUtils.isNotEmpty(numeratorsList) && CollectionUtils.isNotEmpty(denominatorsList)) {
+
+            BigDecimal totalExecution = null;
+            BigDecimal totalNumeratorExecution = null;
+            BigDecimal totalDenominatorExecution = null;
+            switch (totalIndicatorCalculationType) {
+                case SUMA:
+                    totalExecution = ivs.stream().filter(indicatorValue -> {
+                        return indicatorValue.getDenominatorValue() != null
+                                && indicatorValue.getDenominatorValue().compareTo(BigDecimal.ZERO) != 0
+                                && indicatorValue.getNumeratorValue() != null;
+                    }).map(indicatorValue -> {
+                        return indicatorValue.getNumeratorValue().divide(indicatorValue.getDenominatorValue(), RoundingMode.HALF_UP);
+                    }).reduce(BigDecimal::add).get();
+                    break;
+                case PROMEDIO:
+                    totalNumeratorExecution = numeratorsList.stream().reduce(BigDecimal::add).get();
+                    totalDenominatorExecution = numeratorsList.stream().reduce(BigDecimal::add).get();
+                    if (totalDenominatorExecution.compareTo(BigDecimal.ZERO) != 0) {
+                        totalExecution = null;
+                    } else {
+                        totalExecution = totalNumeratorExecution.divide(totalDenominatorExecution, RoundingMode.HALF_UP);
+                    }
+                    break;
+                case MAXIMO:
+                    totalExecution = ivs.stream().filter(indicatorValue -> {
+                        return indicatorValue.getDenominatorValue() != null
+                                && indicatorValue.getDenominatorValue().compareTo(BigDecimal.ZERO) != 0
+                                && indicatorValue.getNumeratorValue() != null;
+                    }).map(indicatorValue -> {
+                        return indicatorValue.getNumeratorValue().divide(indicatorValue.getDenominatorValue(), RoundingMode.HALF_UP);
+                    }).reduce(BigDecimal::max).get();
+                    break;
+                case MINIMO:
+                    totalExecution = ivs.stream().filter(indicatorValue -> {
+                        return indicatorValue.getDenominatorValue() != null
+                                && indicatorValue.getDenominatorValue().compareTo(BigDecimal.ZERO) != 0
+                                && indicatorValue.getNumeratorValue() != null;
+                    }).map(indicatorValue -> {
+                        return indicatorValue.getNumeratorValue().divide(indicatorValue.getDenominatorValue(), RoundingMode.HALF_UP);
+                    }).reduce(BigDecimal::min).get();
+                    break;
+                default:
+                    throw new GeneralAppException("Tipo de calculo no soportado, por favor comuniquese con el administrador del sistema", Response.Status.INTERNAL_SERVER_ERROR);
+            }
+            month.setTotalExecution(totalExecution);
+        } else {
+            month.setTotalExecution(null);
+        }
+
     }
 
 }

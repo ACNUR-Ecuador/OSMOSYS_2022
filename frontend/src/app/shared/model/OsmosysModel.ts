@@ -1,4 +1,5 @@
 import {EnumsState} from './UtilsModel';
+import {User} from './User';
 
 export class Organization {
     constructor() {
@@ -244,6 +245,7 @@ export class Project {
     public startDate: Date;
     public endDate: Date;
     public locations: Canton[];
+    public focalPoint?: User;
 }
 
 export class ProjectResume {
@@ -296,5 +298,35 @@ export class DissagregationAssignationToGeneralIndicator {
     public id: number;
     public state: string;
     public dissagregationType: string;
+}
+
+export class IndicatorExecutionGeneralIndicatorAdministrationResumeWeb {
+    public id: number;
+    public commentary: string;
+    public target: number;
+    public indicatorDescription: string;
+    public indicatorType: string;
+    public state: string;
+    public totalExecution: number;
+    public executionPercentage: number;
+    public quarters: QuarterResumeWeb[];
+
+}
+
+export class QuarterResumeWeb {
+    public id: number;
+    public quarter: string;
+    public commentary: string;
+    public order: number;
+    public year: number;
+    public target: number;
+    public totalExecution: number;
+    public executionPercentage: number;
+    public state: string;
+}
+
+export class TargetUpdateDTOWeb {
+    public indicatorExecutionId: number;
+    public quarters: QuarterResumeWeb[];
 }
 

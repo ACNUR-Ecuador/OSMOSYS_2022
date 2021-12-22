@@ -23,7 +23,6 @@ public class Month extends BaseEntity<Long> {
 
     public Month() {
         this.state = State.ACTIVO;
-        this.totalExecution = BigDecimal.ZERO;
     }
 
     @Id
@@ -52,7 +51,7 @@ public class Month extends BaseEntity<Long> {
     @JoinColumn(name = "quarter_id", foreignKey = @ForeignKey(name = "fk_month_quarter"))
     private Quarter quarter;
 
-    @Column(name = "total_execution", nullable = false)
+    @Column(name = "total_execution")
     private BigDecimal totalExecution;
 
     @OneToMany(mappedBy = "month", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -144,6 +143,13 @@ public class Month extends BaseEntity<Long> {
         this.state = state;
     }
 
+    public BigDecimal getTotalExecution() {
+        return totalExecution;
+    }
+
+    public void setTotalExecution(BigDecimal totalExecution) {
+        this.totalExecution = totalExecution;
+    }
 
     @Override
     public boolean equals(Object o) {

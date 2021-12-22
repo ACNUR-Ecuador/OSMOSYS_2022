@@ -2,6 +2,8 @@ package org.unhcr.osmosys.services;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.model.User;
+import com.sagatechs.generics.security.servicio.UserService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
@@ -38,6 +40,8 @@ public class ProjectService {
     @Inject
     IndicatorExecutionService indicatorExecutionService;
 
+    @Inject
+    UserService userService;
 
     @Inject
     ModelWebTransformationService modelWebTransformationService;
@@ -78,6 +82,12 @@ public class ProjectService {
         project.setOrganization(this.modelWebTransformationService.organizationWebToOrganization(projectWeb.getOrganization()));
         project.setStartDate(projectWeb.getStartDate());
         project.setEndDate(projectWeb.getEndDate());
+        User focalPoint=null;
+        if (projectWeb.getFocalPoint() != null) {
+            focalPoint = this.userService.getById(projectWeb.getFocalPoint().getId());
+        }
+
+        project.setFocalPoint(focalPoint);
         List<Long> idsCanton = projectWeb.getLocations().stream().map(cantonWeb -> cantonWeb.getId()).collect(Collectors.toList());
         List<Canton> cantones = this.cantonDao.getByIds(idsCanton);
         for (Canton canton : cantones) {
@@ -111,6 +121,12 @@ public class ProjectService {
         project.setPeriod(this.modelWebTransformationService.periodWebToPeriod(projectWeb.getPeriod()));
         project.setState(projectWeb.getState());
         project.setName(projectWeb.getName());
+        User focalPoint=null;
+        if (projectWeb.getFocalPoint() != null) {
+            focalPoint = this.userService.getById(projectWeb.getFocalPoint().getId());
+        }
+
+        project.setFocalPoint(focalPoint);
         // TODO Q HACER CUANDO SE CAMBIE ESTOS VALORES
         project.setStartDate(projectWeb.getStartDate());
         project.setEndDate(projectWeb.getEndDate());

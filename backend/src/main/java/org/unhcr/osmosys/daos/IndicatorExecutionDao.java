@@ -1,15 +1,11 @@
 package org.unhcr.osmosys.daos;
 
-import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.IndicatorExecution;
 
 import javax.ejb.Stateless;
-import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
-import javax.ws.rs.core.Response;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
@@ -28,35 +24,28 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         return q.getResultList();
     }
 
-    public IndicatorExecution getByCode(String code) throws GeneralAppException {
 
+    public List<IndicatorExecution> getGeneralIndicatorExecutionsByProjectId(Long projectId) {
         String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
-                "WHERE lower(o.code) = lower(:code)";
+                " left join fetch o.quarters " +
+                " left join fetch o.period p " +
+                " left join fetch p.generalIndicator " +
+                " WHERE o.project.id = :projectId";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
-        q.setParameter("code", code);
-        try {
-            return (IndicatorExecution) q.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        } catch (NonUniqueResultException e) {
-            throw new GeneralAppException("Se encontró más de un item con el código " + code, Response.Status.INTERNAL_SERVER_ERROR);
-        }
+        q.setParameter("projectId",projectId);
+        return q.getResultList();
     }
 
-    public IndicatorExecution getByShortDescription(String shortDescription) throws GeneralAppException {
-
+    public IndicatorExecution getByIdWithValues(Long id) {
         String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
-                "WHERE lower(o.shortDescription) = lower(:shortDescription)";
+                " left join fetch o.indicator ind " +
+                " left join fetch o.quarters q " +
+                " left join fetch q.months m " +
+                " left join fetch  m.indicatorValues " +
+                " left join fetch  m.indicatorValuesIndicatorValueCustomDissagregations " +
+                " WHERE o.id = :id";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
-        q.setParameter("shortDescription", shortDescription);
-        try {
-            return (IndicatorExecution) q.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        } catch (NonUniqueResultException e) {
-            throw new GeneralAppException("Se encontró más de un item con la descripción corta " + shortDescription, Response.Status.INTERNAL_SERVER_ERROR);
-        }
+        q.setParameter("id",id);
+        return (IndicatorExecution) q.getSingleResult();
     }
-
-
 }

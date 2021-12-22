@@ -68,7 +68,7 @@ public class Project extends BaseEntity<Long> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "focal_point_id",foreignKey = @ForeignKey(name = "fk_project_focal_point"))
-    public User focalPoint;
+    private User focalPoint;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "period_id", foreignKey = @ForeignKey(name = "fk_project_period"))

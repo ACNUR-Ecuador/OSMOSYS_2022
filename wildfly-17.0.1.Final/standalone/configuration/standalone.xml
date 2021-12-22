@@ -96,7 +96,7 @@
     <profile>
         <subsystem xmlns="urn:jboss:domain:logging:7.0">
             <console-handler name="CONSOLE">
-                <level name="TRACE"/>
+                <level name="DEBUG"/>
                 <formatter>
                     <named-formatter name="COLOR-PATTERN"/>
                 </formatter>
@@ -128,13 +128,13 @@
                 <level name="DEBUG"/>
             </logger>
             <logger category="org.hibernate.SQL">
-                <level name="DEBUG"/>
+                <level name="ERROR"/>
             </logger>
             <logger category="org.hibernate.type.descriptor.sql">
-                <level name="TRACE"/>
+                <level name="ERROR"/>
             </logger>
             <logger category="net.sf.jasperreports.engine.query.JRJdbcQueryExecuter">
-                <level name="DEBUG"/>
+                <level name="ERROR"/>
             </logger>
             <logger category="sun.rmi">
                 <level name="WARN"/>

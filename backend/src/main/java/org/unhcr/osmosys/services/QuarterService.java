@@ -2,25 +2,27 @@ package org.unhcr.osmosys.services;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.threeten.extra.YearQuarter;
 import org.unhcr.osmosys.daos.QuarterDao;
 import org.unhcr.osmosys.model.Canton;
+import org.unhcr.osmosys.model.IndicatorValue;
 import org.unhcr.osmosys.model.Month;
 import org.unhcr.osmosys.model.Quarter;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
+import org.unhcr.osmosys.model.enums.TotalIndicatorCalculationType;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Stateless
 public class QuarterService {
@@ -106,4 +108,53 @@ public class QuarterService {
 
     }
 
+
+    public void updateQuarterTotals(Quarter quarter, TotalIndicatorCalculationType totalIndicatorCalculationType) throws GeneralAppException {
+        for (Month month1 : quarter.getMonths()) {
+            this.monthService.updateMonthTotals(month1, totalIndicatorCalculationType);
+        }
+
+        List<Month> months = quarter.getMonths().stream().filter(month -> {
+            return month.getState().equals(State.ACTIVO);
+        }).collect(Collectors.toList());
+
+        List<BigDecimal> totalMonthValues = months.stream().filter(month -> {
+            return month.getState().equals(State.ACTIVO);
+        }).map(Month::getTotalExecution).filter(Objects::nonNull).collect(Collectors.toList());
+
+        if (CollectionUtils.isEmpty(totalMonthValues)) {
+            quarter.setTotalExecution(null);
+            quarter.setExecutionPercentage(null);
+        } else {
+            BigDecimal totalExecution = null;
+            switch (totalIndicatorCalculationType) {
+                case SUMA:
+                    totalExecution = totalMonthValues.stream().reduce(BigDecimal::add).get();
+                    break;
+                case PROMEDIO:
+                    BigDecimal total = totalMonthValues.stream().reduce(BigDecimal::add).get();
+                    totalExecution = total.divide(new BigDecimal(totalMonthValues.size()), RoundingMode.HALF_UP);
+                    break;
+                case MAXIMO:
+                    totalExecution = totalMonthValues.stream().reduce(BigDecimal::max).get();
+                    break;
+                case MINIMO:
+                    totalExecution = totalMonthValues.stream().reduce(BigDecimal::min).get();
+                    break;
+                default:
+                    throw new GeneralAppException("Tipo de calculo no soportado, por favor comuniquese con el administrador del sistema", Response.Status.INTERNAL_SERVER_ERROR);
+            }
+            quarter.setTotalExecution(totalExecution);
+
+            if (quarter.getTotalExecution() != null && quarter.getTarget() != null) {
+                if (quarter.getTarget().equals(BigDecimal.ZERO)) {
+                    quarter.setTarget(BigDecimal.ZERO);
+                } else {
+                    quarter.setExecutionPercentage(quarter.getTotalExecution().divide(totalExecution, RoundingMode.HALF_UP));
+                }
+            } else {
+                quarter.setExecutionPercentage(null);
+            }
+        }
+    }
 }

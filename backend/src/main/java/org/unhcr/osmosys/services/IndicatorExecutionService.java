@@ -8,11 +8,17 @@ import org.unhcr.osmosys.daos.IndicatorExecutionDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.enums.IndicatorType;
+import org.unhcr.osmosys.model.enums.TotalIndicatorCalculationType;
+import org.unhcr.osmosys.webServices.model.IndicatorExecutionGeneralIndicatorAdministrationResumeWeb;
+import org.unhcr.osmosys.webServices.model.QuarterResumeWeb;
+import org.unhcr.osmosys.webServices.model.TargetUpdateDTOWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -160,4 +166,91 @@ public class IndicatorExecutionService {
     }
 
 
+    public List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> getGeneralIndicatorExecutionsByProjectId(Long projectId) {
+        List<IndicatorExecution> ies = this.indicatorExecutionDao.getGeneralIndicatorExecutionsByProjectId(projectId);
+        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionGeneralIndicatorAdministrationResumesWeb(ies);
+    }
+
+    public void updateTargets(TargetUpdateDTOWeb targetUpdateDTOWeb) throws GeneralAppException {
+        IndicatorExecution ie = this.indicatorExecutionDao.getByIdWithValues(targetUpdateDTOWeb.getIndicatorExecutionId());
+        for (QuarterResumeWeb quarterResumeWeb : targetUpdateDTOWeb.getQuarters()) {
+            Optional<Quarter> quarterOptional = ie.getQuarters().stream().filter(quarter -> {
+                return quarter.getId().equals(quarterResumeWeb.getId());
+            }).findFirst();
+            if (!quarterOptional.isPresent()) {
+                throw new GeneralAppException("No se pudo encontrar el trimestre con id " + quarterResumeWeb.getId(), Response.Status.NOT_FOUND);
+            } else {
+                quarterOptional.get().setTarget(quarterResumeWeb.getTarget());
+            }
+        }
+
+
+        this.updateIndicatorExecutionTotals(ie);
+
+        this.saveOrUpdate(ie);
+    }
+
+    public void updateIndicatorExecutionTotals(IndicatorExecution indicatorExecution) throws GeneralAppException {
+        TotalIndicatorCalculationType totalIndicatorCalculationType = null;
+        if (indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)) {
+            totalIndicatorCalculationType = TotalIndicatorCalculationType.SUMA;
+        } else if (indicatorExecution.getIndicator() != null && indicatorExecution.getIndicator().getTotalIndicatorCalculationType() != null) {
+            totalIndicatorCalculationType = indicatorExecution.getIndicator().getTotalIndicatorCalculationType();
+        } else {
+            throw new GeneralAppException("Tipo de calculo inválido para el indicador ");
+        }
+        for (Quarter quarter : indicatorExecution.getQuarters()) {
+            this.quarterService.updateQuarterTotals(quarter, totalIndicatorCalculationType);
+        }
+
+        List<Quarter> quarters = indicatorExecution.getQuarters().stream().filter(quarter -> {
+            return quarter.getState().equals(State.ACTIVO);
+        }).collect(Collectors.toList());
+// target total
+        Optional<BigDecimal> totalTarget = quarters.stream().map(Quarter::getTarget).filter(Objects::nonNull).reduce(BigDecimal::add);
+        if(totalTarget.isPresent()){
+            indicatorExecution.setTarget(totalTarget.get());
+        }else{
+            indicatorExecution.setTarget(null);
+        }
+        // total execution and total percentage
+        List<BigDecimal> totalQuarterValues = quarters.stream()
+                .map(Quarter::getTotalExecution).filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        if (CollectionUtils.isEmpty(totalQuarterValues)) {
+            indicatorExecution.setTotalExecution(null);
+            indicatorExecution.setExecutionPercentage(null);
+        } else {
+            BigDecimal totalExecution = null;
+            switch (totalIndicatorCalculationType) {
+                case SUMA:
+                    totalExecution = totalQuarterValues.stream().reduce(BigDecimal::add).get();
+                    break;
+                case PROMEDIO:
+                    BigDecimal total = totalQuarterValues.stream().reduce(BigDecimal::add).get();
+                    totalExecution = total.divide(new BigDecimal(totalQuarterValues.size()), RoundingMode.HALF_UP);
+                    break;
+                case MAXIMO:
+                    totalExecution = totalQuarterValues.stream().reduce(BigDecimal::max).get();
+                    break;
+                case MINIMO:
+                    totalExecution = totalQuarterValues.stream().reduce(BigDecimal::min).get();
+                    break;
+                default:
+                    throw new GeneralAppException("Tipo de calculo no soportado, por favor comuniquese con el administrador del sistema", Response.Status.INTERNAL_SERVER_ERROR);
+            }
+            indicatorExecution.setTotalExecution(totalExecution);
+
+            if (indicatorExecution.getTotalExecution() != null && indicatorExecution.getTarget() != null) {
+                if (indicatorExecution.getTarget().equals(BigDecimal.ZERO)) {
+                    indicatorExecution.setTarget(BigDecimal.ZERO);
+                } else {
+                    indicatorExecution.setExecutionPercentage(indicatorExecution.getTotalExecution().divide(totalExecution, RoundingMode.HALF_UP));
+                }
+            } else {
+                indicatorExecution.setExecutionPercentage(null);
+            }
+        }
+    }
 }

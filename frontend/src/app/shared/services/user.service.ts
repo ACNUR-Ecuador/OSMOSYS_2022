@@ -113,4 +113,9 @@ export class UserService {
         }
 
     }
+
+    public getActiveUNHCRUsers() {
+        return this.http.get<User[]>(`${mainServiceUrl}/users/active/UNHCR`);
+    }
+
 }

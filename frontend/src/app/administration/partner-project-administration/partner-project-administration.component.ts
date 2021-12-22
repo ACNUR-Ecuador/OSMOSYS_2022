@@ -1,12 +1,18 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {FilterService, MessageService, SelectItem} from 'primeng/api';
 import {UtilsService} from '../../shared/services/utils.service';
 import {UserService} from '../../shared/services/user.service';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {Location} from '@angular/common';
-import {Canton, Period, Project} from '../../shared/model/OsmosysModel';
+import {
+    Canton,
+    GeneralIndicator,
+    IndicatorExecutionGeneralIndicatorAdministrationResumeWeb,
+    Period,
+    Project, QuarterResumeWeb, TargetUpdateDTOWeb
+} from '../../shared/model/OsmosysModel';
 import {OrganizationService} from '../../shared/services/organization.service';
 import {CantonService} from '../../shared/services/canton.service';
 import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
@@ -14,6 +20,8 @@ import {EnumsService} from '../../shared/services/enums.service';
 import {OfficeOrganizationPipe} from '../../shared/pipes/officeOrganization.pipe';
 import {PeriodService} from '../../shared/services/period.service';
 import {ProjectService} from '../../shared/services/project.service';
+import {User} from '../../shared/model/User';
+import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
 
 @Component({
     selector: 'app-partner-project-administration',
@@ -24,15 +32,25 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     public periods: Period[];
     public cantones: Canton[];
 
+    public generalIndicators;
     public organizations: SelectItem[];
     public states: SelectItem[];
     public formItem: FormGroup;
+    public formTargets: FormGroup;
     public formLocations: FormGroup;
     public idProjectParam;
     public idPeriodParam;
+    public focalPoints: User[];
     public showLocationMenu = false;
     cols: ColumnTable[];
     showLocationsDialog = false;
+    colsGeneralIndicators: ColumnTable[];
+    // tslint:disable-next-line:variable-name
+    _selectedColumnsGeneralIndicators: ColumnTable[];
+    // tslint:disable-next-line:variable-name
+    _selectedColumnsPerformanceIndicators: ColumnTable[];
+    public showTargetDialog = false;
+
 
     constructor(
         private route: ActivatedRoute,
@@ -49,7 +67,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         private cantonService: CantonService,
         private periodService: PeriodService,
         private projectService: ProjectService,
-        public officeOrganizationPipe: OfficeOrganizationPipe
+        public officeOrganizationPipe: OfficeOrganizationPipe,
+        private indicatorExecutionService: IndicatorExecutionService
     ) {
 
         this.idProjectParam = this.route.snapshot.paramMap.get('projectId');
@@ -71,6 +90,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             {field: 'description', header: 'Cantón', type: ColumnDataType.text}
         ];
         this.createForms();
+        this.createTables();
         this.loadOptions();
         if (this.idProjectParam) {
             const idProject = Number(this.idProjectParam);
@@ -113,7 +133,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 period,
                 startDate,
                 endDate,
-                locations
+                locations,
+                focalPoint
             } = value;
             this.sortCantones(locations);
             this.formItem.patchValue({
@@ -125,11 +146,25 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 period,
                 startDate,
                 endDate,
-                locations
+                locations,
+                focalPoint
             });
             this.periods = [];
             this.periods.push(period);
-            console.log(this.formItem);
+            this.loadGeneralIndicators(id);
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al cargar el proyecto',
+                detail: error.error.message,
+                life: 3000
+            });
+        });
+    }
+
+    loadGeneralIndicators(projectId: number) {
+        this.indicatorExecutionService.getGeneralIndicatorAdministrationResume(projectId).subscribe(value => {
+            this.generalIndicators = value;
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -183,6 +218,17 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             });
         });
 
+        this.userService.getActiveUNHCRUsers().subscribe(value => {
+            this.focalPoints = value;
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al cargar los puntos focales',
+                detail: error.error.message,
+                life: 3000
+            });
+        });
+
     }
 
 
@@ -196,6 +242,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             period: new FormControl('', Validators.required),
             startDate: new FormControl('', Validators.required),
             endDate: new FormControl('', Validators.required),
+            focalPoint: new FormControl('', Validators.required),
             locations: new FormControl('')
         });
 
@@ -203,13 +250,15 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             locationsSelected: new FormControl('')
         });
 
+        this.formTargets = this.fb.group({
+            indicatorExecutionId: new FormControl(''),
+            quarterGroups: this.fb.array([])
+        });
+
 
     }
 
     saveItem() {
-
-        console.log(this.formItem);
-
         this.messageService.clear();
         const {
             id,
@@ -220,7 +269,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             period,
             startDate,
             endDate,
-            locations
+            locations,
+            focalPoint
         } = this.formItem.value;
         const project: Project = {
             id,
@@ -231,6 +281,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             period,
             startDate,
             endDate,
+            focalPoint,
             locations: []
         };
         if (!locations || locations.length < 1) {
@@ -245,8 +296,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             delete value1.provinciaDescription;
             return value1 as Canton;
         });
-
-        console.log(project);
 
         if (project.id) {
             // tslint:disable-next-line:no-shadowed-variable
@@ -296,28 +345,19 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             const cantonesG = this.sortCantones(this.formLocations.get('locationsSelected').value);
             this.formItem.get('locations').patchValue(cantonesG);
         }
-
-
-        console.log(this.formLocations.get('locationsSelected').value);
-        console.log(this.formLocations.value);
     }
 
     cancelDialogLocations() {
         this.showLocationsDialog = false;
-
-        console.log(this.formLocations.value);
-        console.log(this.formLocations);
     }
 
     editLocations() {
         this.showLocationsDialog = true;
         if (!this.formItem.get('locations').value) {
-            console.log('funca');
             this.formLocations.get('locationsSelected').patchValue([]);
         } else {
             this.formLocations.get('locationsSelected').patchValue(this.formItem.get('locations').value);
         }
-        console.log(this.formLocations.get('locationsSelected').value);
     }
 
     private sortCantones(cantones: Canton[]): Canton[] {
@@ -329,5 +369,123 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 return x;
             }
         });
+    }
+
+    @Input() get selectedColumnsGeneralIndicators(): any[] {
+        return this._selectedColumnsGeneralIndicators;
+    }
+
+    set selectedColumnsGeneralIndicators(val: any[]) {
+        // restore original order
+        this._selectedColumnsGeneralIndicators = this.colsGeneralIndicators.filter(col => val.includes(col));
+    }
+
+    @Input() get selectedColumnsPerformanceIndicators(): any[] {
+        return this._selectedColumnsPerformanceIndicators;
+    }
+
+    set selectedColumnsPerformanceIndicators(val: any[]) {
+        // restore original order
+        this._selectedColumnsPerformanceIndicators = this.cols.filter(col => val.includes(col));
+    }
+
+    private createTables() {
+        this.colsGeneralIndicators = [
+            {field: 'id', header: 'Id', type: ColumnDataType.numeric},
+            // {field: 'commentary', header: 'Código', type: ColumnDataType.numeric},
+            {field: 'indicatorDescription', header: 'Descripción', type: ColumnDataType.text},
+            {field: 'target', header: 'Meta', type: ColumnDataType.text},
+            {field: 'totalExecution', header: 'Ejecución actual', type: ColumnDataType.text},
+            {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric},
+            // {field: 'indicatorType', header: 'Estado', type: ColumnDataType.text},
+            {field: 'state', header: 'Estado', type: ColumnDataType.text},
+        ];
+        this._selectedColumnsGeneralIndicators = this.colsGeneralIndicators.filter(value => value.field !== 'id');
+    }
+
+    updateTargets(indicator: IndicatorExecutionGeneralIndicatorAdministrationResumeWeb) {
+        this.utilsService.resetForm(this.formTargets);
+        this.formTargets.get('indicatorExecutionId').patchValue(indicator.id);
+        const quarters = indicator.quarters
+            .filter(value => value.state === EnumsState.ACTIVE)
+            .sort((a, b) => a.order - b.order);
+        const quarterGroup = this.fb.array([]);
+        this.quarterGroups.patchValue([]);
+        quarters.forEach(quarter => {
+            const control = this.fb.group({
+                id: new FormControl(quarter.id),
+                quarter: new FormControl(quarter.quarter),
+                commentary: new FormControl(quarter.commentary),
+                order: new FormControl(quarter.order),
+                year: new FormControl(quarter.year),
+                target: new FormControl(quarter.target, Validators.required),
+                totalExecution: new FormControl(quarter.totalExecution),
+                executionPercentage: new FormControl(quarter.executionPercentage),
+                state: new FormControl(quarter.state),
+            });
+            this.quarterGroups.push(control);
+        });
+        this.showTargetDialog = true;
+    }
+
+    get quarterGroups(): FormArray {
+        return this.formTargets.controls.quarterGroups as FormArray;
+    }
+
+    saveTargets() {
+        this.messageService.clear();
+        console.log(this.formTargets);
+        console.log(this.formTargets.controls.quarterGroups.value);
+        const targetForms = this.formTargets.controls.quarterGroups.value as Array<any>;
+        const targetUpdateDTOWeb: TargetUpdateDTOWeb = new TargetUpdateDTOWeb();
+        targetUpdateDTOWeb.indicatorExecutionId = this.formTargets.get('indicatorExecutionId').value;
+        targetUpdateDTOWeb.quarters = targetForms.map(value => {
+            const {
+                id,
+                quarter,
+                commentary,
+                order,
+                year,
+                target,
+                totalExecution,
+                executionPercentage,
+                state
+            } = value;
+            const q: QuarterResumeWeb = {
+                id,
+                quarter,
+                commentary,
+                order,
+                year,
+                target,
+                totalExecution,
+                executionPercentage,
+                state
+            };
+            return q;
+        });
+
+        this.indicatorExecutionService.updateTargets(targetUpdateDTOWeb).subscribe(value => {
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Metas actualizadas correctamente',
+                life: 3000
+            });
+            const idProject = Number(this.idProjectParam);
+            this.loadProject(idProject);
+            this.showTargetDialog=false;
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al actualizar las metas',
+                detail: error.error.message,
+                life: 3000
+            });
+        });
+    }
+
+    cancelTargets() {
+        this.quarterGroups.patchValue([]);
+        this.showTargetDialog = false;
     }
 }
