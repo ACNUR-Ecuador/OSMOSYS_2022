@@ -134,7 +134,14 @@ public class Month extends BaseEntity<Long> {
     public void setIndicatorValuesIndicatorValueCustomDissagregations(Set<IndicatorValueCustomDissagregation> indicatorValuesIndicatorValueCustomDissagregations) {
         this.indicatorValuesIndicatorValueCustomDissagregations = indicatorValuesIndicatorValueCustomDissagregations;
     }
-
+    public void addIndicatorValueCustomDissagregation(IndicatorValueCustomDissagregation indicatorValue) {
+        indicatorValue.setMonth(this);
+        indicatorValue.setMonthEnum(this.getMonth());
+        if (!this.indicatorValuesIndicatorValueCustomDissagregations.add(indicatorValue)) {
+            this.indicatorValuesIndicatorValueCustomDissagregations.add(indicatorValue);
+            this.indicatorValuesIndicatorValueCustomDissagregations.add(indicatorValue);
+        }
+    }
     public State getState() {
         return state;
     }

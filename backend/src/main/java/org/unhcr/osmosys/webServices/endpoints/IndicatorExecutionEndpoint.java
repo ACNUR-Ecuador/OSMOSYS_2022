@@ -5,8 +5,7 @@ import com.sagatechs.generics.security.annotations.Secured;
 import com.sagatechs.generics.service.EmailService;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
-import org.unhcr.osmosys.webServices.model.IndicatorExecutionGeneralIndicatorAdministrationResumeWeb;
-import org.unhcr.osmosys.webServices.model.TargetUpdateDTOWeb;
+import org.unhcr.osmosys.webServices.model.*;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -29,11 +28,12 @@ public class IndicatorExecutionEndpoint {
     public List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> getGeneralIndicatorExecutionsByProjectId(@PathParam("projectId") Long projectId) {
         return this.indicatorExecutionService.getGeneralIndicatorExecutionsByProjectId(projectId);
     }
+
     @Path("/performanceByProject/{projectId}")
     @GET
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
-    public List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> getPerformanceIndicatorExecutionsByProjectId(@PathParam("projectId") Long projectId) {
+    public List<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb> getPerformanceIndicatorExecutionsByProjectId(@PathParam("projectId") Long projectId) {
         return this.indicatorExecutionService.getPerformanceIndicatorExecutionsByProjectId(projectId);
     }
 
@@ -44,6 +44,26 @@ public class IndicatorExecutionEndpoint {
     public void updateTargets(TargetUpdateDTOWeb targetUpdateDTOWeb) throws GeneralAppException {
         LOGGER.debug(targetUpdateDTOWeb);
         this.indicatorExecutionService.updateTargets(targetUpdateDTOWeb);
+
+    }
+
+    @Path("/assignPerformanceIndicatoToProject")
+    @POST
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public Long assignPerformanceIndicatoToProject(IndicatorExecutionAssigmentWeb indicatorExecutionAssigmentWeb) throws GeneralAppException {
+
+        return this.indicatorExecutionService.assignPerformanceIndicatoToProject(indicatorExecutionAssigmentWeb).getId();
+
+    }
+
+    @Path("/getResumeAdministrationPerformanceIndicatorById")
+    @POST
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb getResumeAdministrationPerformanceIndicatorById(Long id) throws GeneralAppException {
+
+        return this.indicatorExecutionService.getResumeAdministrationPerformanceIndicatorById(id);
 
     }
 }

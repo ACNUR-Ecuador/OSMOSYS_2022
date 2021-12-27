@@ -1,0 +1,6 @@
+:host ::ng-deep .row-noTarget {
+  background-color: red !important;
+  color: yellow !important;
+}
+
+/*# sourceMappingURL=partner-project-administration.component.css.map */

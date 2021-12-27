@@ -41,4 +41,35 @@ public class CustomDissagregationAssignationToIndicatorExecution extends BaseEnt
         this.id = id;
     }
 
+    public IndicatorExecution getIndicatorExecution() {
+        return indicatorExecution;
+    }
+
+    public void setIndicatorExecution(IndicatorExecution indicatorExecution) {
+        this.indicatorExecution = indicatorExecution;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    public CustomDissagregation getCustomDissagregation() {
+        return customDissagregation;
+    }
+
+    public void setCustomDissagregation(CustomDissagregation customDissagregation) {
+        this.customDissagregation = customDissagregation;
+    }
+
+    public Set<CustomDissagregationFilterIndicatorExecution> getCustomDissagregationFilterIndicatorsExecutions() {
+        return customDissagregationFilterIndicatorsExecutions;
+    }
+
+    public void setCustomDissagregationFilterIndicatorsExecutions(Set<CustomDissagregationFilterIndicatorExecution> customDissagregationFilterIndicatorsExecutions) {
+        this.customDissagregationFilterIndicatorsExecutions = customDissagregationFilterIndicatorsExecutions;
+    }
 }

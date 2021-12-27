@@ -5,8 +5,7 @@ import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.collections.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.IndicatorValueDao;
-import org.unhcr.osmosys.model.Canton;
-import org.unhcr.osmosys.model.IndicatorValue;
+import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
@@ -15,6 +14,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 public class IndicatorValueService {
@@ -81,6 +81,24 @@ public class IndicatorValueService {
                 throw new GeneralAppException(" Desagregación no implementada " + dissagregationType, Response.Status.INTERNAL_SERVER_ERROR);
             }
         }
+    }
+
+    public List<IndicatorValueCustomDissagregation> createIndicatorValuesCustomDissagregationForMonth(
+            CustomDissagregation customDissagregation
+    ) throws GeneralAppException {
+
+        List<CustomDissagregationOption> options = customDissagregation.getCustomDissagregationOptions().stream().filter(customDissagregationOption -> {
+            return customDissagregationOption.getState().equals(State.ACTIVO);
+        }).collect(Collectors.toList());
+
+        List<IndicatorValueCustomDissagregation> r = new ArrayList<>();
+        for (CustomDissagregationOption option : options) {
+            IndicatorValueCustomDissagregation iv = new IndicatorValueCustomDissagregation();
+            iv.setCustomDissagregationOption(option);
+            iv.setState(State.ACTIVO);
+            r.add(iv);
+        }
+        return r;
     }
 
     private List<IndicatorValue> createIndicatorValueDissagregationStandardAge() {

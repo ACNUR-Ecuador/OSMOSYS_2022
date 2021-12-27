@@ -70,4 +70,17 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
             throw new GeneralAppException("Se encontró más de un item con el código  " + code, Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
+
+    public List<Indicator> getByPeriodAssignmentAndState(Long periodId, State state) throws GeneralAppException {
+        String jpql = "SELECT DISTINCT o FROM Indicator o " +
+                " left join o.statements sta " +
+                " left join sta.periodStatementAsignations psa " +
+                " left join psa.period p " +
+                " WHERE p.id = :periodId and psa.state =:state and o.state =:state";
+        Query q = getEntityManager().createQuery(jpql, Indicator.class);
+        q.setParameter("periodId", periodId);
+        q.setParameter("state", state);
+        return q.getResultList();
+
+    }
 }

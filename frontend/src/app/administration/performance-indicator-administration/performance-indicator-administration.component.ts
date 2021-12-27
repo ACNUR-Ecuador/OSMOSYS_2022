@@ -108,6 +108,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                 pipeRef: this.enumValuesToLabelPipe,
                 arg1: EnumsType.AreaType
             },
+            {field: 'compassIndicator', header: 'Indicador Compass', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
             {field: 'isMonitored', header: 'Monitoreado', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
             {field: 'isCalculated', header: 'Calculado', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
             {
@@ -150,6 +151,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             isMonitored: new FormControl('', Validators.required),
             isCalculated: new FormControl('', Validators.required),
             totalIndicatorCalculationType: new FormControl('', Validators.required),
+            compassIndicator: new FormControl('', Validators.required),
             markers: new FormControl(''),
             statements: new FormControl(''),
             dissagregations: new FormControl('', Validators.required),
@@ -290,6 +292,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             isMonitored,
             isCalculated,
             totalIndicatorCalculationType,
+            compassIndicator,
             markers,
             statements,
             dissagregations,
@@ -313,6 +316,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             isMonitored,
             isCalculated,
             totalIndicatorCalculationType,
+            compassIndicator,
             markers,
             statements,
             dissagregationsAssignationToIndicator,

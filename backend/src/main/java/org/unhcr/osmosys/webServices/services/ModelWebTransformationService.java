@@ -266,7 +266,7 @@ public class ModelWebTransformationService {
         indicatorWeb.setMonitored(indicator.getMonitored());
         indicatorWeb.setCalculated(indicator.getCalculated());
         indicatorWeb.setTotalIndicatorCalculationType(indicator.getTotalIndicatorCalculationType());
-
+        indicatorWeb.setCompassIndicator(indicator.getCompassIndicator());
         List<MarkerWeb> markers = this.markersToMarkersWeb(indicator.getMarkers());
         indicatorWeb.setMarkers(markers);
         List<StatementWeb> statements = this.statementsToStatementsWeb(new ArrayList<>(indicator.getStatements()));
@@ -294,6 +294,7 @@ public class ModelWebTransformationService {
         indicator.setMonitored(indicatorWeb.getMonitored());
         indicator.setCalculated(indicatorWeb.getCalculated());
         indicator.setTotalIndicatorCalculationType(indicatorWeb.getTotalIndicatorCalculationType());
+        indicator.setCompassIndicator(indicatorWeb.getCompassIndicator());
         Set<Marker> markers = this.markersWebToMarkers(indicatorWeb.getMarkers());
         for (Marker marker : markers) {
             indicator.addMarker(marker);
@@ -860,6 +861,13 @@ public class ModelWebTransformationService {
         }
         return r;
     }
+    public List<Canton> cantonsWebToCantons(List<CantonWeb> cantones) {
+        List<Canton> r = new ArrayList<>();
+        for (CantonWeb canton : cantones) {
+            r.add(this.cantonWebToCanton(canton));
+        }
+        return r;
+    }
 
     public Canton cantonWebToCanton(CantonWeb cantonWeb) {
         if (cantonWeb == null) {
@@ -983,7 +991,7 @@ public class ModelWebTransformationService {
 
     //<editor-fold desc="IndicatorExecution">
     public IndicatorExecutionGeneralIndicatorAdministrationResumeWeb indicatorExecutionToIndicatorExecutionGeneralIndicatorAdministrationResumeWeb(IndicatorExecution indicatorExecution) {
-        IndicatorExecutionGeneralIndicatorAdministrationResumeWeb i=new IndicatorExecutionGeneralIndicatorAdministrationResumeWeb();
+        IndicatorExecutionGeneralIndicatorAdministrationResumeWeb i = new IndicatorExecutionGeneralIndicatorAdministrationResumeWeb();
         i.setId(indicatorExecution.getId());
         i.setIndicatorDescription(indicatorExecution.getPeriod().getGeneralIndicator().getDescription());
         i.setIndicatorType(indicatorExecution.getIndicatorType());
@@ -995,16 +1003,20 @@ public class ModelWebTransformationService {
         return i;
 
     }
-    public IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb indicatorExecutionToIndicatorExecutionPerformanceIndicatorAdministrationResumeWeb(IndicatorExecution indicatorExecution) {
-        IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb i=new IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb();
+
+    public IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb indicatorExecutionToIndicatorExecutionPerformanceIndicatorAdministrationResumeWeb(
+            IndicatorExecution indicatorExecution) {
+        IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb i = new IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb();
         i.setId(indicatorExecution.getId());
-        i.setIndicatorDescription(indicatorExecution.getPeriod().getGeneralIndicator().getDescription());
+        i.setIndicatorCode(indicatorExecution.getIndicator().getCode());
+        i.setIndicatorDescription(indicatorExecution.getIndicator().getDescription());
         i.setIndicatorType(indicatorExecution.getIndicatorType());
         i.setTotalExecution(indicatorExecution.getTotalExecution());
         i.setTarget(indicatorExecution.getTarget());
         i.setState(indicatorExecution.getState());
         i.setQuarters(this.quartersToQuarterResumesWeb(indicatorExecution.getQuarters()));
         i.setExecutionPercentage(indicatorExecution.getExecutionPercentage());
+        i.setQuarters(this.quartersToQuarterResumesWeb(indicatorExecution.getQuarters()));
         return i;
 
     }
@@ -1024,11 +1036,11 @@ public class ModelWebTransformationService {
         }
         return r;
     }
-        //</editor-fold>
+    //</editor-fold>
 
     //<editor-fold desc="Quarter">
     public QuarterResumeWeb quarterToQuarterResumeWeb(Quarter quarter) {
-        QuarterResumeWeb q=new QuarterResumeWeb();
+        QuarterResumeWeb q = new QuarterResumeWeb();
         q.setId(quarter.getId());
         q.setQuarter(quarter.getQuarter());
         q.setCommentary(quarter.getCommentary());
@@ -1045,6 +1057,28 @@ public class ModelWebTransformationService {
         Set<QuarterResumeWeb> r = new HashSet<>();
         for (Quarter quarter : quarters) {
             r.add(this.quarterToQuarterResumeWeb(quarter));
+        }
+        return r;
+    }
+
+    public QuarterWeb quarterToQuarterWeb(Quarter quarter) {
+        QuarterWeb q = new QuarterWeb();
+        q.setId(quarter.getId());
+        q.setQuarter(quarter.getQuarter());
+        q.setCommentary(quarter.getCommentary());
+        q.setOrder(quarter.getOrder());
+        q.setYear(quarter.getYear());
+        q.setTarget(quarter.getTarget());
+        q.setTotalExecution(quarter.getTotalExecution());
+        q.setState(quarter.getState());
+        q.setExecutionPercentage(quarter.getExecutionPercentage());
+        return q;
+    }
+
+    public Set<QuarterWeb> quartersToQuarterWeb(Set<Quarter> quarters) {
+        Set<QuarterWeb> r = new HashSet<>();
+        for (Quarter quarter : quarters) {
+            r.add(this.quarterToQuarterWeb(quarter));
         }
         return r;
     }

@@ -28,4 +28,8 @@ export class IndicatorService {
     public getByState(state: EnumsState): Observable<Indicator[]> {
         return this.http.get<Indicator[]>(`${mainServiceUrl}/byState/${state}`);
     }
+
+    public getByPeriodAssignment(periodId: number): Observable<Indicator[]> {
+        return this.http.get<Indicator[]>(`${mainServiceUrl}/getByPeriodAssignmentAndState/${periodId}`);
+    }
 }

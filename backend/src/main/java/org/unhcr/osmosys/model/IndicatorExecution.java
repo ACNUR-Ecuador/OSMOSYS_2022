@@ -20,9 +20,6 @@ public class IndicatorExecution extends BaseEntity<Long> {
 
     public IndicatorExecution() {
         this.state=State.ACTIVO;
-        // this.totalExecution=BigDecimal.ZERO;
-        this.executionPercentage=BigDecimal.ZERO;
-        this.target=null;
     }
 
     @Id
@@ -155,6 +152,7 @@ public class IndicatorExecution extends BaseEntity<Long> {
         }
     }
 
+
     public Set<DissagregationAssignationToIndicatorExecution> getDissagregationsAssignationsToIndicatorExecutions() {
         return dissagregationsAssignationsToIndicatorExecutions;
     }
@@ -226,6 +224,14 @@ public class IndicatorExecution extends BaseEntity<Long> {
 
     public void setCustomDissagregationAssignationToIndicatorExecutions(Set<CustomDissagregationAssignationToIndicatorExecution> customDissagregationAssignationToIndicatorExecutions) {
         this.customDissagregationAssignationToIndicatorExecutions = customDissagregationAssignationToIndicatorExecutions;
+    }
+    public void addCustomDissagregationAssignationToIndicatorExecution(CustomDissagregationAssignationToIndicatorExecution dissagregationAssignationToIndicatorExecution) {
+        dissagregationAssignationToIndicatorExecution.setIndicatorExecution(this);
+        dissagregationAssignationToIndicatorExecution.setState(State.ACTIVO);
+        if (!this.customDissagregationAssignationToIndicatorExecutions.add(dissagregationAssignationToIndicatorExecution)) {
+            this.customDissagregationAssignationToIndicatorExecutions.remove(dissagregationAssignationToIndicatorExecution);
+            this.customDissagregationAssignationToIndicatorExecutions.add(dissagregationAssignationToIndicatorExecution);
+        }
     }
 
     public Set<Marker> getMarkers() {

@@ -28,6 +28,7 @@ public class IndicatorWeb implements Serializable {
     private Boolean isMonitored;
     @JsonProperty("isCalculated")
     private Boolean isCalculated;
+    private Boolean compassIndicator;
     private TotalIndicatorCalculationType totalIndicatorCalculationType;
 
     private List<StatementWeb> statements = new ArrayList<>();
@@ -168,5 +169,13 @@ public class IndicatorWeb implements Serializable {
 
     public void setCustomDissagregationAssignationToIndicators(List<CustomDissagregationAssignationToIndicatorWeb> customDissagregationAssignationToIndicators) {
         this.customDissagregationAssignationToIndicators = customDissagregationAssignationToIndicators;
+    }
+
+    public Boolean getCompassIndicator() {
+        return compassIndicator;
+    }
+
+    public void setCompassIndicator(Boolean compassIndicator) {
+        this.compassIndicator = compassIndicator;
     }
 }

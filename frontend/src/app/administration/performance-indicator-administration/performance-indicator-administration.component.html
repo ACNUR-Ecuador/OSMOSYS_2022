@@ -5,6 +5,7 @@
         <div class="card">
             <h3 class="page-title">Administración de Indicadores de Rendimiento</h3>
             <p-toolbar styleClass="p-mb-4">
+
                 <ng-template pTemplate="left">
                     <button pButton pRipple label="Crear" icon="pi pi-plus" class="p-button-success p-mr-2 p-mb-2"
                             (click)="createItem()"></button>
@@ -211,6 +212,20 @@
 
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('frecuency',formItem)">{{utilsService.getErrorMessageForm('frecuency', formItem)}}</small>
+                        </div>
+
+                        <div class="p-field p-col-12 p-md-2">
+                            <label for="compassIndicatorI">Es indicador Compass</label>
+
+                            <p-toggleButton id="compassIndicatorI"
+                                            formControlName="compassIndicator"
+                                            onLabel="Compass" offLabel="No Compass"
+                                            onIcon="pi pi-check" offIcon="pi pi-times"
+                            >
+                            </p-toggleButton>
+
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('compassIndicator',formItem)">{{utilsService.getErrorMessageForm('compassIndicator', formItem)}}</small>
                         </div>
 
                         <div class="p-field p-col-12 p-md-2">

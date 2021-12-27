@@ -53,6 +53,9 @@ import {PanelModule} from 'primeng/panel';
 import {MenuModule} from 'primeng/menu';
 import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {CodeDescriptionPipe} from '../shared/pipes/code-description.pipe';
+import {QuarterService} from '../shared/services/quarter.service';
+import {SharedModule} from '../shared/shared.module';
 
 
 @NgModule({
@@ -101,12 +104,15 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
         PanelModule,
         MenuModule,
         TriStateCheckboxModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        SharedModule,
+        CheckboxModule
     ],
     providers: [
         ConfirmationService,
         OfficeOrganizationPipe,
         CodeShortDescriptionPipe,
+        CodeDescriptionPipe,
         MarkersListPipe,
         CustomDissagregationOptionsListPipe,
         EnumValuesToLabelPipe,
@@ -114,7 +120,8 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
         DissagregationsAssignationToIndicatorPipe,
         CustomDissagregationsAssignationToIndicatorPipe,
         FilterUtilsService,
-        ProjectService
+        ProjectService,
+        QuarterService
     ]
 })
 export class AdministrationModule {

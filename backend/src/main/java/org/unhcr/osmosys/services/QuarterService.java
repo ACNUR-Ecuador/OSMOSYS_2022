@@ -6,13 +6,12 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.threeten.extra.YearQuarter;
 import org.unhcr.osmosys.daos.QuarterDao;
-import org.unhcr.osmosys.model.Canton;
-import org.unhcr.osmosys.model.IndicatorValue;
-import org.unhcr.osmosys.model.Month;
-import org.unhcr.osmosys.model.Quarter;
+import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
 import org.unhcr.osmosys.model.enums.TotalIndicatorCalculationType;
+import org.unhcr.osmosys.webServices.model.QuarterResumeWeb;
+import org.unhcr.osmosys.webServices.model.QuarterWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
@@ -74,6 +73,7 @@ public class QuarterService {
     public Quarter createQuarter(YearQuarter yearQuarter,
                                  LocalDate startDate, LocalDate endDate,
                                  List<DissagregationType> dissagregationTypes,
+                                 List<CustomDissagregation> customDissagregations,
                                  List<Canton> cantones
     ) throws GeneralAppException {
         Quarter q = new Quarter();
@@ -83,7 +83,7 @@ public class QuarterService {
         q.setQuarter(QuarterEnum.getByQuarterNumber(yearQuarter.getQuarterValue()));
         q.setState(State.ACTIVO);
         List<Month> ms = this.monthService.createMonthsForQuarter(q, startDate, endDate,
-                dissagregationTypes
+                dissagregationTypes, customDissagregations
                 , cantones);
         for (Month month : ms) {
             q.addMonth(month);
@@ -91,7 +91,8 @@ public class QuarterService {
         return q;
     }
 
-    public Set<Quarter> createQuarters(LocalDate startDate, LocalDate endDate, List<DissagregationType> dissagregationTypes,
+
+    public Set<Quarter> createQuarters(LocalDate startDate, LocalDate endDate, List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations,
                                        List<Canton> cantones) throws GeneralAppException {
         Set<Quarter> qs = new HashSet<>();
         List<YearQuarter> yearQuarters = this.calculateQuarter(startDate, endDate);
@@ -101,10 +102,44 @@ public class QuarterService {
 
 
         for (YearQuarter yearQuarter : yearQuarters) {
-            Quarter q = this.createQuarter(yearQuarter, startDate, endDate, dissagregationTypes, cantones);
+            Quarter q = this.createQuarter(yearQuarter, startDate, endDate, dissagregationTypes, customDissagregations, cantones);
             qs.add(q);
         }
         return qs;
+
+    }
+
+    public List<QuarterResumeWeb> createEmptyQuarters(LocalDate startDate, LocalDate endDate) throws GeneralAppException {
+        List<QuarterResumeWeb> qs = new ArrayList<>();
+        List<YearQuarter> yearQuarters = this.calculateQuarter(startDate, endDate);
+        if (yearQuarters.size() < 1) {
+            throw new GeneralAppException("Error al crear los trimestres ", Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
+
+        for (YearQuarter yearQuarter : yearQuarters) {
+            QuarterResumeWeb q = new QuarterResumeWeb();
+            q.setYear(yearQuarter.getYear());
+            q.setTarget(null);
+            q.setOrder(0);
+            q.setQuarter(QuarterEnum.getByQuarterNumber(yearQuarter.getQuarterValue()));
+            q.setState(State.ACTIVO);
+            qs.add(q);
+        }
+        List<QuarterResumeWeb> qsl = qs.stream().sorted((o1, o2) -> {
+            if (o1.getYear() < o2.getYear()) {
+                return -1;
+            } else if (o1.getYear() > o2.getYear()) {
+                return 1;
+            } else if (o1.getQuarter().getOrder() < o2.getQuarter().getOrder()) {
+                return -1;
+            } else if (o1.getQuarter().getOrder() > o2.getQuarter().getOrder()) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }).collect(Collectors.toList());
+        return qsl;
 
     }
 

@@ -14,6 +14,8 @@ public class IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb imple
     private Long id;
     private String commentary;
     private BigDecimal target;
+
+    private String indicatorCode;
     private String indicatorDescription;
     private IndicatorType indicatorType;
     private State state;
@@ -94,5 +96,13 @@ public class IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb imple
 
     public void setExecutionPercentage(BigDecimal executionPercentage) {
         this.executionPercentage = executionPercentage;
+    }
+
+    public String getIndicatorCode() {
+        return indicatorCode;
+    }
+
+    public void setIndicatorCode(String indicatorCode) {
+        this.indicatorCode = indicatorCode;
     }
 }

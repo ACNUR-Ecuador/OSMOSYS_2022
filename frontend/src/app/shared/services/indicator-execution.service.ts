@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {Observable} from 'rxjs';
 import {
-    Indicator,
+    Indicator, IndicatorExecutionAssigment,
     IndicatorExecutionGeneralIndicatorAdministrationResumeWeb,
     IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb,
     TargetUpdateDTOWeb
@@ -31,5 +31,14 @@ export class IndicatorExecutionService {
 
     public updateTargets(targetUpdateDTOWeb: TargetUpdateDTOWeb): Observable<void> {
         return this.http.put<void>(`${mainServiceUrl}/targetsUpdate`, targetUpdateDTOWeb);
+    }
+
+    public assignPerformanceIndicatoToProject(indicatorExecutionAssigment: IndicatorExecutionAssigment): Observable<number> {
+        return this.http.post<number>(`${mainServiceUrl}/assignPerformanceIndicatoToProject`, indicatorExecutionAssigment);
+    }
+
+    public getResumeAdministrationPerformanceIndicatorById(
+        indicatorExecutionId: number): Observable<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb> {
+        return this.http.post<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb>(`${mainServiceUrl}/getResumeAdministrationPerformanceIndicatorById`, indicatorExecutionId);
     }
 }

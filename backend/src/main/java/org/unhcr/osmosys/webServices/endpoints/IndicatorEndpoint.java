@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.webServices.endpoints;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
 import org.unhcr.osmosys.services.IndicatorService;
 import org.unhcr.osmosys.webServices.model.IndicatorWeb;
@@ -40,5 +41,13 @@ public class IndicatorEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public List<IndicatorWeb> getAll() {
         return this.indicatorService.getAll();
+    }
+
+    @Path("/getByPeriodAssignmentAndState/{periodId}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<IndicatorWeb> getByPeriodAssignmentAndState(@PathParam("periodId") Long periodId) throws GeneralAppException {
+        return this.indicatorService.getByPeriodAssignmentAndState(periodId, State.ACTIVO);
     }
 }

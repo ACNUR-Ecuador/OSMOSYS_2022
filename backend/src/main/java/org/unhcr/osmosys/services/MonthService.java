@@ -5,10 +5,7 @@ import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.MonthDao;
-import org.unhcr.osmosys.model.Canton;
-import org.unhcr.osmosys.model.IndicatorValue;
-import org.unhcr.osmosys.model.Month;
-import org.unhcr.osmosys.model.Quarter;
+import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
@@ -57,7 +54,7 @@ public class MonthService {
     }
 
     public List<Month> createMonthsForQuarter(Quarter quarter, LocalDate startDate, LocalDate endDate,
-                                              List<DissagregationType> dissagregationTypes,
+                                              List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations,
                                               List<Canton> cantones) throws GeneralAppException {
         QuarterEnum quarterEnum = quarter.getQuarter();
         List<MonthEnum> monthsEnums = MonthEnum.getMonthsByQuarter(quarterEnum);
@@ -74,7 +71,7 @@ public class MonthService {
             ) {
 
 
-                Month month = this.createMonth(quarter.getYear(), monthEnum, dissagregationTypes, cantones);
+                Month month = this.createMonth(quarter.getYear(), monthEnum, dissagregationTypes, customDissagregations, cantones);
                 months.add(month);
             }
         }
@@ -82,7 +79,9 @@ public class MonthService {
 
     }
 
-    public Month createMonth(Integer year, MonthEnum monthEnum, List<DissagregationType> dissagregationTypes, List<Canton> cantones) throws GeneralAppException {
+    public Month createMonth(Integer year, MonthEnum monthEnum,
+                             List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations,
+                             List<Canton> cantones) throws GeneralAppException {
         Month m = new Month();
         m.setState(State.ACTIVO);
         m.setYear(year);
@@ -96,6 +95,13 @@ public class MonthService {
         for (IndicatorValue indicatorValue : indicatorValues) {
             m.addIndicatorValue(indicatorValue);
 
+        }
+        Set<IndicatorValueCustomDissagregation> indicatorValuesCustomDissagregations = new HashSet<>();
+        for (CustomDissagregation customDissagregation : customDissagregations) {
+            indicatorValuesCustomDissagregations.addAll(this.indicatorValueService.createIndicatorValuesCustomDissagregationForMonth(customDissagregation));
+        }
+        for (IndicatorValueCustomDissagregation indicatorValuesCustomDissagregation : indicatorValuesCustomDissagregations) {
+            m.addIndicatorValueCustomDissagregation(indicatorValuesCustomDissagregation);
         }
         return m;
     }

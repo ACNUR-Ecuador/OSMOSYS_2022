@@ -9,9 +9,7 @@ import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.enums.IndicatorType;
 import org.unhcr.osmosys.model.enums.TotalIndicatorCalculationType;
-import org.unhcr.osmosys.webServices.model.IndicatorExecutionGeneralIndicatorAdministrationResumeWeb;
-import org.unhcr.osmosys.webServices.model.QuarterResumeWeb;
-import org.unhcr.osmosys.webServices.model.TargetUpdateDTOWeb;
+import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
@@ -33,6 +31,12 @@ public class IndicatorExecutionService {
 
     @Inject
     QuarterService quarterService;
+
+    @Inject
+    IndicatorService indicatorService;
+
+    @Inject
+    ProjectService projectService;
 
     @Inject
     ModelWebTransformationService modelWebTransformationService;
@@ -89,13 +93,103 @@ public class IndicatorExecutionService {
         }
 
 
-        Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, cantones);
+        List<CustomDissagregation> customDissagregations = new ArrayList<>();
+        Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, customDissagregations, cantones);
         List<Quarter> qsl = setOrderInQuartersAndMonths(qs);
         for (Quarter quarter : qsl) {
             ie.addQuarter(quarter);
         }
 
 
+        for (Quarter q : qsl) {
+            LOGGER.error("---->" + q.toString());
+            for (Month month : q.getMonths().stream().sorted(Comparator.comparingInt(Month::getOrder)).collect(Collectors.toList())) {
+                LOGGER.error(month.toString());
+                LOGGER.error("indicatorValues " + month.getIndicatorValues().size());
+                List<IndicatorValue> iv = month.getIndicatorValues().stream().sorted(Comparator.comparing(IndicatorValue::getDissagregationType)).collect(Collectors.toList());
+                for (IndicatorValue indicatorValue : iv) {
+                    LOGGER.error(indicatorValue.getDissagregationType() + "-"
+                            + indicatorValue.getDiversityType() + "-"
+                            + indicatorValue.getLocation() + "-"
+                            + indicatorValue.getAgeType() + "-"
+                            + indicatorValue.getCountryOfOrigin() + "-"
+                            + indicatorValue.getGenderType() + "-"
+                            + indicatorValue.getPopulationType() + "-"
+                    );
+                }
+            }
+        }
+
+        return ie;
+
+    }
+
+    public IndicatorExecution assignPerformanceIndicatoToProject(IndicatorExecutionAssigmentWeb indicatorExecutionWeb) throws GeneralAppException {
+        this.validatePerformanceIndicatorAssignationToProject(indicatorExecutionWeb);
+        IndicatorExecution ie = new IndicatorExecution();
+        Indicator indicator = this.indicatorService.getById(indicatorExecutionWeb.getIndicator().getId());
+        if (indicator == null) {
+            throw new GeneralAppException("Indicador no encontrado " + indicatorExecutionWeb.getIndicator().getId(), Response.Status.BAD_REQUEST);
+        }
+        ie.setIndicator(indicator);
+        ie.setCompassIndicator(indicator.getCompassIndicator());
+        ie.setIndicatorType(indicator.getIndicatorType());
+        ie.setState(indicatorExecutionWeb.getState());
+        Project project = this.projectService.getById(indicatorExecutionWeb.getProject().getId());
+        if (project == null) {
+            throw new GeneralAppException("Proyecto no encontrado " + indicatorExecutionWeb.getProject().getId(), Response.Status.BAD_REQUEST);
+        }
+        ie.setPeriod(project.getPeriod());
+        List<DissagregationAssignationToIndicatorExecution> dissagregationAssignations = indicator.getDissagregationsAssignationToIndicator().stream().filter(dissagregationAssignationToIndicator -> {
+            return dissagregationAssignationToIndicator.getState().equals(State.ACTIVO);
+        }).map(dissagregationAssignationToIndicator -> {
+            DissagregationAssignationToIndicatorExecution da = new DissagregationAssignationToIndicatorExecution();
+            da.setState(State.ACTIVO);
+            da.setDissagregationType(dissagregationAssignationToIndicator.getDissagregationType());
+            return da;
+        }).collect(Collectors.toList());
+        dissagregationAssignations.forEach(dissagregationAssignationToIndicatorExecution -> {
+            ie.addDissagregationAssignationToIndicatorExecution(dissagregationAssignationToIndicatorExecution);
+        });
+
+        List<CustomDissagregationAssignationToIndicatorExecution> customDissagregationsAssignations = indicator.getCustomDissagregationAssignationToIndicators().stream().filter(customDissagregationAssignationToIndicator -> {
+            return customDissagregationAssignationToIndicator.getState().equals(State.ACTIVO);
+        }).map(customDissagregationAssignationToIndicator -> {
+            CustomDissagregationAssignationToIndicatorExecution da = new CustomDissagregationAssignationToIndicatorExecution();
+            da.setCustomDissagregation(customDissagregationAssignationToIndicator.getCustomDissagregation());
+            da.setState(State.ACTIVO);
+            return da;
+        }).collect(Collectors.toList());
+        customDissagregationsAssignations.forEach(customDissagregationAssignationToIndicatorExecution -> {
+            ie.addCustomDissagregationAssignationToIndicatorExecution(customDissagregationAssignationToIndicatorExecution);
+        });
+        //TODO FILTERS
+
+        ie.setProject(project);
+        // TODO MARKERS
+        List<Canton> cantones = new ArrayList<>();
+        if (indicatorExecutionWeb.getLocations().size() > 0) {
+            cantones = this.modelWebTransformationService.cantonsWebToCantons(indicatorExecutionWeb.getLocations());
+
+        }
+        List<DissagregationType> dissagregationTypes;
+
+        dissagregationTypes = dissagregationAssignations.stream().map(dissagregationAssignationToIndicatorExecution -> {
+            return dissagregationAssignationToIndicatorExecution.getDissagregationType();
+        }).collect(Collectors.toList());
+
+
+        List<CustomDissagregation> customDissagregations = customDissagregationsAssignations.stream().map(customDissagregationAssignationToIndicatorExecution -> {
+            return customDissagregationAssignationToIndicatorExecution.getCustomDissagregation();
+        }).collect(Collectors.toList());
+        Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, customDissagregations, cantones);
+        List<Quarter> qsl = setOrderInQuartersAndMonths(qs);
+        for (Quarter quarter : qsl) {
+            ie.addQuarter(quarter);
+        }
+
+
+        this.saveOrUpdate(ie);
         for (Quarter q : qsl) {
             LOGGER.error("---->" + q.toString());
             for (Month month : q.getMonths().stream().sorted(Comparator.comparingInt(Month::getOrder)).collect(Collectors.toList())) {
@@ -208,9 +302,9 @@ public class IndicatorExecutionService {
         }).collect(Collectors.toList());
 // target total
         Optional<BigDecimal> totalTarget = quarters.stream().map(Quarter::getTarget).filter(Objects::nonNull).reduce(BigDecimal::add);
-        if(totalTarget.isPresent()){
+        if (totalTarget.isPresent()) {
             indicatorExecution.setTarget(totalTarget.get());
-        }else{
+        } else {
             indicatorExecution.setTarget(null);
         }
         // total execution and total percentage
@@ -254,8 +348,37 @@ public class IndicatorExecutionService {
         }
     }
 
-    public List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> getPerformanceIndicatorExecutionsByProjectId(Long projectId) {
+    public List<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb> getPerformanceIndicatorExecutionsByProjectId(Long projectId) {
         List<IndicatorExecution> ies = this.indicatorExecutionDao.getPerformanceIndicatorExecutionsByProjectId(projectId);
-        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionGeneralIndicatorAdministrationResumesWeb(ies);
+        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionPerformanceIndicatorAdministrationResumesWeb(ies);
+    }
+
+    public void validatePerformanceIndicatorAssignationToProject(IndicatorExecutionAssigmentWeb indicatorExecutionWeb) throws GeneralAppException {
+        if (indicatorExecutionWeb == null) {
+            throw new GeneralAppException("La asignación es obligatorio", Response.Status.BAD_REQUEST);
+        }
+
+        if (indicatorExecutionWeb.getIndicator() == null || indicatorExecutionWeb.getIndicator().getId() == null) {
+            throw new GeneralAppException("Indicador asignado es obligatorio.", Response.Status.BAD_REQUEST);
+        }
+
+        if (indicatorExecutionWeb.getState() == null) {
+            throw new GeneralAppException("El estado es obligatorio.", Response.Status.BAD_REQUEST);
+        }
+
+        if (indicatorExecutionWeb.getProject() == null || indicatorExecutionWeb.getProject().getId() == null) {
+            throw new GeneralAppException("El proyecto asignado es nulo.", Response.Status.BAD_REQUEST);
+        }
+    }
+
+    public IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb getResumeAdministrationPerformanceIndicatorById(Long id) {
+        return this.modelWebTransformationService.
+                indicatorExecutionToIndicatorExecutionPerformanceIndicatorAdministrationResumeWeb(this.indicatorExecutionDao.getPerformanceIndicatorExecutionById(id));
     }
 }
+
+
+
+
+
+

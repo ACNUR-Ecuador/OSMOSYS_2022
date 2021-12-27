@@ -78,7 +78,7 @@ public class IndicatorService {
 
     public void validate(IndicatorWeb indicatorWeb) throws GeneralAppException {
         if (indicatorWeb == null) {
-            throw new GeneralAppException("Oficina es nulo", Response.Status.BAD_REQUEST);
+            throw new GeneralAppException("Indicador es nulo", Response.Status.BAD_REQUEST);
         }
 
 
@@ -113,6 +113,10 @@ public class IndicatorService {
         if (indicatorWeb.getCalculated() == null) {
             throw new GeneralAppException("Calculado no válido", Response.Status.BAD_REQUEST);
         }
+
+        if (indicatorWeb.getCompassIndicator() == null) {
+            throw new GeneralAppException("Indicador compass no válidos", Response.Status.BAD_REQUEST);
+        }
         if (indicatorWeb.getTotalIndicatorCalculationType() == null) {
             throw new GeneralAppException("Tipo de cálculo total no válido", Response.Status.BAD_REQUEST);
         }
@@ -134,5 +138,9 @@ public class IndicatorService {
         }
 
 
+    }
+
+    public List<IndicatorWeb> getByPeriodAssignmentAndState(Long periodId, State state) throws GeneralAppException {
+        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getByPeriodAssignmentAndState(periodId,state));
     }
 }

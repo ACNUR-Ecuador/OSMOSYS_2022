@@ -131,7 +131,6 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
     }
 
     editItem(projectId: number) {
-        const period = this.periodForm.get('selectedPeriod').value;
         this.router.navigate(['/administration/partnerProjectAdministration', {projectId}]);
     }
 

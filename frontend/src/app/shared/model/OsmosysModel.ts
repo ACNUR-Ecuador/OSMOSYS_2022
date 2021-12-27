@@ -158,6 +158,7 @@ export class Indicator {
         this.customDissagregationAssignationToIndicators = [];
         this.isCalculated = false;
         this.isMonitored = true;
+        this.compassIndicator = false;
     }
 
     public id: number;
@@ -174,6 +175,7 @@ export class Indicator {
     public isCalculated: boolean;
     public totalIndicatorCalculationType: string;
     public markers: Marker[];
+    public compassIndicator: boolean;
     public statements: Statement[];
     public dissagregationsAssignationToIndicator: DissagregationAssignationToIndicator[];
     public customDissagregationAssignationToIndicators: CustomDissagregationAssignationToIndicator[];
@@ -269,6 +271,11 @@ export class Canton {
     public office: Office;
 }
 
+export class CantonForList extends Canton {
+
+    public enabled: boolean;
+}
+
 export class Provincia {
     public id: number;
     public code: string;
@@ -300,7 +307,7 @@ export class DissagregationAssignationToGeneralIndicator {
     public dissagregationType: string;
 }
 
-export class IndicatorExecutionGeneralIndicatorAdministrationResumeWeb {
+export class IndicatorExecutionAdministrationResumeWeb {
     public id: number;
     public commentary: string;
     public target: number;
@@ -310,20 +317,13 @@ export class IndicatorExecutionGeneralIndicatorAdministrationResumeWeb {
     public totalExecution: number;
     public executionPercentage: number;
     public quarters: QuarterResumeWeb[];
-
 }
 
-export class IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb {
-    public id: number;
-    public commentary: string;
-    public target: number;
-    public indicatorDescription: string;
-    public indicatorType: string;
-    public state: string;
-    public totalExecution: number;
-    public executionPercentage: number;
-    public quarters: QuarterResumeWeb[];
+export class IndicatorExecutionGeneralIndicatorAdministrationResumeWeb extends IndicatorExecutionAdministrationResumeWeb {
+}
 
+export class IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb extends IndicatorExecutionAdministrationResumeWeb {
+    public indicatorCode: string;
 }
 
 export class QuarterResumeWeb {
@@ -343,3 +343,27 @@ export class TargetUpdateDTOWeb {
     public quarters: QuarterResumeWeb[];
 }
 
+export class IndicatorExecutionAssigment {
+    constructor() {
+        this.state = 'ACTIVO';
+        this.locations = [];
+    }
+
+    public id: number;
+    public commentary: string;
+    public indicator: Indicator;
+    public state: string;
+    public period: Period;
+    // socios
+    public project: Project;
+    // direct implementation
+    public reportingOffice: Office;
+    public assignedUser: User;
+    public assignedUserBackup: User;
+    public locations: Canton[];
+}
+
+export class StartEndDatesWeb {
+    public startDate: Date;
+    public endDate: Date;
+}

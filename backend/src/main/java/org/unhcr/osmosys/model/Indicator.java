@@ -71,6 +71,9 @@ public class Indicator extends BaseEntity<Long> {
     @Column(name = "total_indicator_calculation_type", nullable = false)
     private TotalIndicatorCalculationType totalIndicatorCalculationType;
 
+    @Column(name = "compassIndicator", nullable = true)
+    private Boolean compassIndicator;
+
     @OneToMany(mappedBy = "indicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<DissagregationAssignationToIndicator> dissagregationsAssignationToIndicator = new HashSet<>();
 
@@ -257,6 +260,14 @@ public class Indicator extends BaseEntity<Long> {
 
     public void setTotalIndicatorCalculationType(TotalIndicatorCalculationType totalIndicatorCalculationType) {
         this.totalIndicatorCalculationType = totalIndicatorCalculationType;
+    }
+
+    public Boolean getCompassIndicator() {
+        return compassIndicator;
+    }
+
+    public void setCompassIndicator(Boolean compassIndicator) {
+        this.compassIndicator = compassIndicator;
     }
 
     @Override
