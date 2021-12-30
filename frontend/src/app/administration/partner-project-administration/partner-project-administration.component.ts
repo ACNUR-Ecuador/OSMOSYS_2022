@@ -179,7 +179,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             this.periods = [];
             this.periods.push(period);
             this.loadGeneralIndicators(id);
-            this.assignNewPerformanceIndicator();
         }, error => {
             this.messageService.add({
                 severity: 'error',

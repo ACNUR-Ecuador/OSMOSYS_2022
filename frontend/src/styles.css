@@ -4695,4 +4695,36 @@
   transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
 }
 
+/***title***/
+.blue-title {
+  color: #0072BC;
+}
+
+/***values badge***/
+.values-badge {
+  border-radius: 2px;
+  padding: 0.25em 0.5rem;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+}
+.values-badge.status-correct {
+  background: #C8E6C9;
+  color: #256029;
+}
+.values-badge.status-error {
+  background: #FFCDD2;
+  color: #C63737;
+}
+.values-badge.status-alert {
+  background: #FEEDAF;
+  color: #8A5340;
+}
+.values-badge.status-white {
+  background: white;
+  color: #256029;
+  border: #0d3c61 solid;
+  border-width: 1px;
+}
+
 /*# sourceMappingURL=styles.css.map */

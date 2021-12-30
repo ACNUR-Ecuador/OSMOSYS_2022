@@ -260,9 +260,14 @@ public class IndicatorExecutionService {
     }
 
 
-    public List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> getGeneralIndicatorExecutionsByProjectId(Long projectId) {
+    public List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> getGeneralIndicatorExecutionsAdministrationByProjectId(Long projectId) {
         List<IndicatorExecution> ies = this.indicatorExecutionDao.getGeneralIndicatorExecutionsByProjectId(projectId);
         return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionGeneralIndicatorAdministrationResumesWeb(ies);
+    }
+
+    public List<IndicatorExecutionGeneralIndicatorResumeWeb> getGeneralIndicatorExecutionsByProjectId(Long projectId, State state) {
+        List<IndicatorExecution> ies = this.indicatorExecutionDao.getGeneralIndicatorExecutionsByProjectIdAndState(projectId, state);
+        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionGeneralIndicatorResumesWeb(ies);
     }
 
     public void updateTargets(TargetUpdateDTOWeb targetUpdateDTOWeb) throws GeneralAppException {
@@ -348,7 +353,7 @@ public class IndicatorExecutionService {
         }
     }
 
-    public List<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb> getPerformanceIndicatorExecutionsByProjectId(Long projectId) {
+    public List<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb> getPerformanceIndicatorExecutionsAdministrationByProjectId(Long projectId) {
         List<IndicatorExecution> ies = this.indicatorExecutionDao.getPerformanceIndicatorExecutionsByProjectId(projectId);
         return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionPerformanceIndicatorAdministrationResumesWeb(ies);
     }

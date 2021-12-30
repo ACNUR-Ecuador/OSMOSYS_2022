@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {LOCALE_ID, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
@@ -100,7 +100,10 @@ import {TokenResponseInterceptor} from './shared/interceptors/token-response.int
 import {TokenRequestInterceptor} from './shared/interceptors/token-request.interceptor';
 import {NgxPermissionsModule} from 'ngx-permissions';
 import {AdministrationModule} from './administration/administration.module';
+import es from '@angular/common/locales/es';
+import { registerLocaleData } from '@angular/common';
 
+registerLocaleData(es);
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
     timeGridPlugin,
@@ -211,6 +214,7 @@ FullCalendarModule.registerPlugins([
 
     ],
     providers: [
+        { provide: LOCALE_ID, useValue: 'es-ES' },
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         {
             provide: HTTP_INTERCEPTORS,

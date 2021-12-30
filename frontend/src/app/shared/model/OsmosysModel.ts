@@ -326,6 +326,64 @@ export class IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb exten
     public indicatorCode: string;
 }
 
+export class IndicatorExecutionResumeWeb {
+    public id: number;
+    public commentary: string;
+    public target: number;
+    public indicator: Indicator;
+    public indicatorType: string;
+    public state: string;
+    public totalExecution: number;
+    public executionPercentage: number;
+    public quarters: Quarter[];
+}
+
+export class Quarter {
+    public id: number;
+    public quarter: string;
+    public commentary: string;
+    public order: number;
+    public year: number;
+    public target: number;
+    public totalExecution: number;
+    public executionPercentage: number;
+    public state: string;
+    public months: Month[];
+}
+
+export class Month {
+    public id: number;
+    public month: string;
+    public order: number;
+    public year: number;
+    public state: string;
+    public totalExecution: number;
+    public commentary: string;
+}
+
+export class QuarterMonthResume {
+    public quarterId: number;
+    public quarterMonthCount: number;
+    public quarterQuarter: string;
+    public quarterOrder: number;
+    public quarterYear: number;
+    public quarterTarget: number;
+    public quarterTotalExecution: number;
+    public quarterExecutionPercentage: number;
+    public quarterSpan: boolean;
+    public quarterSpanCount: number;
+
+    public monthId: number;
+    public monthMonth: string;
+    public monthOrder: number;
+    public monthYear: number;
+    public monthTotalExecution: number;
+
+    public yearSpan: boolean;
+    public yearSpanCount: number;
+}
+
+
 export class QuarterResumeWeb {
     public id: number;
     public quarter: string;
@@ -366,4 +424,27 @@ export class IndicatorExecutionAssigment {
 export class StartEndDatesWeb {
     public startDate: Date;
     public endDate: Date;
+}
+
+export class MonthValues {
+    public month: Month;
+    public indicatorValuesMap: Map<string, IndicatorValue[]>;
+
+}
+
+export class IndicatorValue {
+    public id: string;
+    public state: string;
+    public monthEnum: string;
+    public dissagregationType: string;
+    public populationType: string;
+    public countryOfOrigin: string;
+    public genderType: string;
+    public ageType: string;
+    public diversityType: string;
+    public location: Canton;
+    public showValue: boolean;
+    public value: number;
+    public denominatorValue: number;
+    public numeratorValue: number;
 }

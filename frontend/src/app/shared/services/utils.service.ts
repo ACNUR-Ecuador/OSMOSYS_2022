@@ -1,14 +1,19 @@
 import {Injectable} from '@angular/core';
 import * as FileSaver from 'file-saver';
 import {FormGroup} from '@angular/forms';
-import {ColumnTable} from '../model/UtilsModel';
+import {ColumnTable, MonthType} from '../model/UtilsModel';
+import {EnumsService} from './enums.service';
+import {Quarter} from '../model/OsmosysModel';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UtilsService {
+    static daysToReport = 30;
 
-    constructor() {
+    constructor(
+        private enumsService: EnumsService
+    ) {
     }
 
     saveAsExcelFile(buffer: any, fileName: string): void {
@@ -92,5 +97,72 @@ export class UtilsService {
             result.push(on);
         });
         return result;
+    }
+
+    valueToBadgeStatusAlert(value: number, month: MonthType, year: number): string {
+        const now: Date = new Date();
+        now.setHours(0, 0, 0, 0);
+        const monthNow = now.getMonth();
+        const yearNow = now.getFullYear();
+        const monthValue = this.enumsService.monthTypeToNumber(month);
+
+        const dateValueFirstDay = this.addMonths(new Date(year, monthValue - 1, 1), 1);
+        const dateValueDayExpiration = this.addMonths(new Date(year, monthValue - 1, UtilsService.daysToReport), 1);
+        let result: string;
+        if (value) {
+            // fecha ya expiró es correcto
+            if (dateValueDayExpiration.getTime() < now.getTime()) {
+                result = 'correct';
+            } else {
+                result = 'white';
+            }
+        } else {
+            // si ya esat pasado el mes
+            if (now.getTime() > dateValueFirstDay.getTime() && now.getTime() <= dateValueDayExpiration.getTime()) {
+                result = 'alert';
+            } else if (now.getTime() > dateValueDayExpiration.getTime()) {
+                result = 'error';
+            } else {
+                result = 'white';
+            }
+        }
+        console.log('' + year + '-' + month + '-' + value + '-' + result);
+        return result;
+    }
+
+    valueToBadgeValue(value: number, month: MonthType, year: number): string {
+        const now: Date = new Date();
+        const monthNow = now.getMonth();
+        const yearNow = now.getFullYear();
+        const monthValue = this.enumsService.monthTypeToNumber(month);
+
+        const dateValueFirstDay = this.addMonths(new Date(year, monthValue - 1, 1), 1);
+        const dateValueDayExpiration = this.addMonths(new Date(year, monthValue - 1, UtilsService.daysToReport), 1);
+
+        if (value) {
+            return value.toString();
+        } else {
+            // si ya esat pasado el mes
+            if (now.getTime() > dateValueFirstDay.getTime() && now.getTime() <= dateValueDayExpiration.getTime()) {
+                return 'Sin datos- requiere actualización';
+            } else if (now.getTime() > dateValueDayExpiration.getTime()) {
+                return 'Sin datos- requiere actualización urgente';
+            } else {
+                return 'Sin datos';
+            }
+        }
+    }
+
+    addMonths(date, months) {
+        const d = date.getDate();
+        date.setMonth(date.getMonth() + +months);
+        if (date.getDate() !== d) {
+            date.setDate(0);
+        }
+        return date;
+    }
+
+    getQuarterLastMonth(quarter: Quarter){
+
     }
 }

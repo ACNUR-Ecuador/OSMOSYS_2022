@@ -105,6 +105,7 @@ import { BooleanYesNoPipe } from './pipes/boolean-yes-no.pipe';
 import { DissagregationsAssignationToIndicatorPipe } from './pipes/dissagregations-assignation-to-indicator.pipe';
 import { CustomDissagregationsAssignationToIndicatorPipe } from './pipes/custom-dissagregations-assignation-to-indicator.pipe';
 import { CodeDescriptionPipe } from './pipes/code-description.pipe';
+import { ValuesStatePipe } from './pipes/values-state.pipe';
 
 
 @NgModule({
@@ -129,6 +130,7 @@ import { CodeDescriptionPipe } from './pipes/code-description.pipe';
         DissagregationsAssignationToIndicatorPipe,
         CustomDissagregationsAssignationToIndicatorPipe,
         CodeDescriptionPipe,
+        ValuesStatePipe,
     ],
     imports: [
         CommonModule,
@@ -235,6 +237,9 @@ import { CodeDescriptionPipe } from './pipes/code-description.pipe';
         AppErrorComponent,
         AppAccessdeniedComponent,
         BooleanYesNoPipe,
+        EnumValuesToLabelPipe,
+        CodeDescriptionPipe,
+        ValuesStatePipe,
     ]
 })
 export class SharedModule {

@@ -34,9 +34,46 @@ $gutter: 1rem; //for primeflex grid system
 .p-datepicker .p-datepicker-header .p-datepicker-next {
     width: 2rem;
     height: 2rem;
-    color:white;
+    color: white;
     border: 0 none;
-    background:  rgba(0, 114, 188, 1);
+    background: rgba(0, 114, 188, 1);
     border-radius: 50%;
     transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+/***title***/
+$blue_unhcr: #0072BC;
+.blue-title {
+    color: $blue_unhcr;
+}
+
+/***values badge***/
+.values-badge {
+    border-radius: 2px;
+    padding: .25em .5rem;
+    // text-transform: uppercase;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .3px;
+
+    &.status-correct {
+        background: #C8E6C9;
+        color: #256029;
+    }
+
+    &.status-error {
+        background: #FFCDD2;
+        color: #C63737;
+    }
+
+    &.status-alert {
+        background: #FEEDAF;
+        color: #8A5340;
+    }
+    &.status-white {
+        background: white;
+        color: #256029;
+        border: #0d3c61 solid;
+        border-width: 1px;
+    }
 }

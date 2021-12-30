@@ -1,0 +1,80 @@
+<p-card class="p-grid">
+    <p-card class="p-col-12" *ngIf="project">
+        <p-toast></p-toast>
+
+        <p-card>
+            <ng-template pTemplate="header">
+                <h6>Proyecto:</h6>
+                <h1 class="blue-title">{{project.name}}</h1>
+            </ng-template>
+            <div class="card">
+
+                <div class="p-fluid p-formgrid p-grid">
+                    <div class="p-field p-col-12 p-md-3">
+                        <label for="periodI">Periodo</label>
+
+                        <input type="text" pInputText id="periodI" disabled="true" style="opacity: 1"
+                               value="{{project.period.year}}"
+                        />
+                    </div>
+                    <div class="p-field p-col-12 p-md-2">
+                        <label for="codeI">Código</label>
+                        <input type="text" pInputText id="codeI" disabled="true" style="opacity: 1"
+                               value="{{project.code}}" autofocus/>
+                    </div>
+                    <div class="p-field p-col-12 p-md-7">
+                        <label for="organizationI">Organización</label>
+
+                        <input type="text" pInputText id="organizationI" disabled="true" style="opacity: 1"
+                               value="{{project.organization | codeDescription}}"
+                        />
+                    </div>
+                    <div class="p-field p-col-12 p-md-3">
+                        <label for="stateI">Estado</label>
+                        <input type="text" pInputText id="stateI" disabled="true" style="opacity: 1"
+                               value="{{project.state | enumValuesToLabel:'State'}}"
+                        />
+                    </div>
+                    <div class="p-field p-col-12 p-md-3">
+                        <label for="focalPointI">Punto focal</label>
+                        <input type="text" id="focalPointI" pInputText value="{{project.focalPoint.name}}"
+                               style="opacity: 1" disabled="true"/>
+                    </div>
+
+                    <div class="p-field p-col-12 p-md-3">
+                        <label for="startDateI">Fecha de inicio</label>
+                        <input type="text" pInputText id="startDateI" disabled="true" style="opacity: 1"
+                               value="{{project.startDate | date:'longDate'  }}"
+                        />
+                    </div>
+                    <div class="p-field p-col-12 p-md-3">
+                        <label for="startDateI">Fecha de finalización</label>
+                        <input type="text" pInputText id="endDateI" disabled="true" style="opacity: 1"
+                               value="{{project.endDate | date:'longDate'  }}"
+                        />
+                    </div>
+                </div>
+                <div class="p-field p-col-12 p-md-12">
+                    <p-messages></p-messages>
+                </div>
+
+            </div>
+            <p-card>
+                <p-tabView>
+                    <p-tabPanel header="Indicador General">
+                        <app-partners-project-general-indicator-list
+                            (callMonthParent)="viewDesagregationGeneralIndicator($event)"
+                            [project]="project"
+                        >
+
+                        </app-partners-project-general-indicator-list>
+                    </p-tabPanel>
+                    <p-tabPanel header="Indicadores de Rendimiento">
+                        Content 2
+                    </p-tabPanel>
+                </p-tabView>
+            </p-card>
+        </p-card>
+
+    </p-card>
+</p-card>

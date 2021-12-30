@@ -12,6 +12,7 @@ public enum DissagregationType  implements EnumInterface{
 	TIPO_POBLACION_Y_EDAD("Tipo de población y edad",9),
 	TIPO_POBLACION_Y_DIVERSIDAD("Tipo de población y diversidad",10),
 	TIPO_POBLACION_Y_PAIS_ORIGEN("Tipo de población y país de origen",11),
+	TIPO_POBLACION_Y_LUGAR("Tipo de población y país de origen",11),
 	;
 
 

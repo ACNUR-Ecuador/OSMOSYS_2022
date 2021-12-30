@@ -17,6 +17,6 @@ export class QuarterService {
 
     public getEmptyQuarters(startEndDatesWeb: StartEndDatesWeb): Observable<QuarterResumeWeb[]> {
 
-        return this.http.post<QuarterResumeWeb[]>(`${mainServiceUrl}/getEmptyQuarters`,startEndDatesWeb);
+        return this.http.post<QuarterResumeWeb[]>(`${mainServiceUrl}/getEmptyQuarters`, startEndDatesWeb);
     }
 }

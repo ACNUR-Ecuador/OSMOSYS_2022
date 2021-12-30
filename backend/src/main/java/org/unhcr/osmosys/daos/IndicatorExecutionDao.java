@@ -29,7 +29,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
     public List<IndicatorExecution> getGeneralIndicatorExecutionsByProjectId(Long projectId) {
         IndicatorType indicatorType = IndicatorType.GENERAL;
         String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
-                " left join fetch o.quarters " +
+                " left join fetch o.quarters q " +
                 " left join fetch o.period p " +
                 " left join fetch p.generalIndicator " +
                 " WHERE o.project.id = :projectId" +
@@ -37,6 +37,23 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("projectId",projectId);
         q.setParameter("generalType",indicatorType);
+        return q.getResultList();
+    }
+
+    public List<IndicatorExecution> getGeneralIndicatorExecutionsByProjectIdAndState(Long projectId, State state) {
+        IndicatorType indicatorType = IndicatorType.GENERAL;
+        String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
+                " left join fetch o.quarters q " +
+                " left join fetch q.months " +
+                " left join fetch o.period p " +
+                " left join fetch p.generalIndicator " +
+                " WHERE o.project.id = :projectId" +
+                " and o.indicatorType =: generalType "+
+                " and o.state =: state ";
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("projectId",projectId);
+        q.setParameter("generalType",indicatorType);
+        q.setParameter("state",state);
         return q.getResultList();
     }
 
@@ -52,6 +69,20 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         q.setParameter("projectId",projectId);
         q.setParameter("generalType",indicatorType);
         return q.getResultList();
+    }
+
+    public IndicatorExecution getPerformanceIndicatorExecutionById(Long id) {
+        IndicatorType indicatorType = IndicatorType.GENERAL;
+        String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
+                " left join fetch o.quarters " +
+                " left join fetch o.period p " +
+                " left join fetch o.indicator " +
+                " WHERE o.id = :id"+
+                " and o.indicatorType <>: generalType ";
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("id",id);
+        q.setParameter("generalType",indicatorType);
+        return (IndicatorExecution) q.getSingleResult();
     }
 
     public IndicatorExecution getByIdWithValues(Long id) {

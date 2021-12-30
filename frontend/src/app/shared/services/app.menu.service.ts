@@ -23,27 +23,88 @@ export class MenuService {
 
     MENUITEMS: Menu[] = [
         {
-            label: 'Administration', icon: 'pi pi-home',  roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR'],
+            label: 'Administration', icon: 'pi pi-home', roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR'],
             items: [
                 {label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
-                {label: 'Areas', icon: 'pi pi-fw pi-home', routerLink: ['/administration/areas'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
-                {label: 'Periodos', icon: 'pi pi-fw pi-home', routerLink: ['/administration/periods'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
-                {label: 'Pilares', icon: 'pi pi-fw pi-home', routerLink: ['/administration/pillars'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
-                {label: 'Situaciones', icon: 'pi pi-fw pi-home', routerLink: ['/administration/situations'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
-                {label: 'Organizaciones', icon: 'pi pi-fw pi-home', routerLink: ['/administration/organizations'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
-                {label: 'Oficinas', icon: 'pi pi-fw pi-home', routerLink: ['/administration/offices'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
-                {label: 'Statements', icon: 'pi pi-fw pi-home', routerLink: ['/administration/statements'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
+                {
+                    label: 'Areas',
+                    icon: 'pi pi-fw pi-home',
+                    routerLink: ['/administration/areas'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
+                },
+                {
+                    label: 'Periodos',
+                    icon: 'pi pi-fw pi-home',
+                    routerLink: ['/administration/periods'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
+                },
+                {
+                    label: 'Pilares',
+                    icon: 'pi pi-fw pi-home',
+                    routerLink: ['/administration/pillars'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
+                },
+                {
+                    label: 'Situaciones',
+                    icon: 'pi pi-fw pi-home',
+                    routerLink: ['/administration/situations'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
+                },
+                {
+                    label: 'Organizaciones',
+                    icon: 'pi pi-fw pi-home',
+                    routerLink: ['/administration/organizations'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
+                },
+                {
+                    label: 'Oficinas',
+                    icon: 'pi pi-fw pi-home',
+                    routerLink: ['/administration/offices'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
+                },
+                {
+                    label: 'Statements',
+                    icon: 'pi pi-fw pi-home',
+                    routerLink: ['/administration/statements'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
+                },
 
-                {label: 'Marcadores', icon: 'pi pi-fw pi-home', routerLink: ['/administration/marker'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
+                {
+                    label: 'Marcadores',
+                    icon: 'pi pi-fw pi-home',
+                    routerLink: ['/administration/marker'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
+                },
                 // tslint:disable-next-line:max-line-length
-                {label: 'Desagregaciones Personalizadas', icon: 'pi pi-fw pi-home', routerLink: ['/administration/customDissagregation'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
+                {
+                    label: 'Desagregaciones Personalizadas',
+                    icon: 'pi pi-fw pi-home',
+                    routerLink: ['/administration/customDissagregation'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
+                },
                 // tslint:disable-next-line:max-line-length
-                {label: 'Indicadores de Rendimiento', icon: 'pi pi-fw pi-home', routerLink: ['/administration/performanceIndicator'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
+                {
+                    label: 'Indicadores de Rendimiento',
+                    icon: 'pi pi-fw pi-home',
+                    routerLink: ['/administration/performanceIndicator'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
+                },
                 // tslint:disable-next-line:max-line-length
-               //  {label: 'Indicador General Configuración', icon: 'pi pi-fw pi-home', routerLink: ['/administration/generalIndicatorConfiguration'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
+                //  {label: 'Indicador General Configuración', icon: 'pi pi-fw pi-home', routerLink: ['/administration/generalIndicatorConfiguration'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
                 // tslint:disable-next-line:max-line-length
-                {label: 'Proyectos', icon: 'pi pi-fw pi-home', routerLink: ['/administration/partnerProjectListAdministration'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
+                {
+                    label: 'Proyectos',
+                    icon: 'pi pi-fw pi-home',
+                    routerLink: ['/administration/partnerProjectListAdministration'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
+                },
 
+            ]
+        },
+        {
+            label: 'Socios', icon: 'pi pi-home', roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR', 'SOCIO_EJECUTOR', 'SOCIO_ADMINISTRADOR'],
+            items: [
+                {label: 'Proyectos', icon: 'pi pi-fw pi-home', routerLink: ['/partners/partnersProjectList'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
             ]
         },
         {separator: true},

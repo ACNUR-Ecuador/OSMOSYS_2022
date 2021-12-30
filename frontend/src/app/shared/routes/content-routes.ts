@@ -9,4 +9,8 @@ export const content: Routes = [
         path: 'administration',
         loadChildren: () => import('../../administration/administration.module').then(m => m.AdministrationModule)
     },
+    {
+        path: 'partners',
+        loadChildren: () => import('../../partners/partners.module').then(m => m.PartnersModule)
+    },
 ];

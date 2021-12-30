@@ -4,7 +4,7 @@ import {Observable} from 'rxjs';
 import {
     Indicator, IndicatorExecutionAssigment,
     IndicatorExecutionGeneralIndicatorAdministrationResumeWeb,
-    IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb,
+    IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb, IndicatorExecutionResumeWeb,
     TargetUpdateDTOWeb
 } from '../model/OsmosysModel';
 import {HttpClient} from '@angular/common/http';
@@ -21,12 +21,16 @@ export class IndicatorExecutionService {
 
     public getGeneralIndicatorAdministrationResume(projectId: number):
         Observable<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb[]> {
-        return this.http.get<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb[]>(`${mainServiceUrl}/general/${projectId}`);
+        return this.http.get<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb[]>(`${mainServiceUrl}/generalAdmin/${projectId}`);
+    }
+    public getGeneralIndicatorResume(projectId: number):
+        Observable<IndicatorExecutionResumeWeb[]> {
+        return this.http.get<IndicatorExecutionResumeWeb[]>(`${mainServiceUrl}/general/${projectId}`);
     }
 
     public getPerformanceIndicatorAdministrationResume(projectId: number):
         Observable<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb[]> {
-        return this.http.get<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb[]>(`${mainServiceUrl}/performanceByProject/${projectId}`);
+        return this.http.get<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb[]>(`${mainServiceUrl}/performanceAdminByProject/${projectId}`);
     }
 
     public updateTargets(targetUpdateDTOWeb: TargetUpdateDTOWeb): Observable<void> {

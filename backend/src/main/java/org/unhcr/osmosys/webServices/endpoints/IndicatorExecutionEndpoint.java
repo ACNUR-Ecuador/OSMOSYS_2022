@@ -1,8 +1,8 @@
 package org.unhcr.osmosys.webServices.endpoints;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
-import com.sagatechs.generics.service.EmailService;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
 import org.unhcr.osmosys.webServices.model.*;
@@ -21,21 +21,31 @@ public class IndicatorExecutionEndpoint {
     @Inject
     IndicatorExecutionService indicatorExecutionService;
 
+    @Path("/generalAdmin/{projectId}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> getGeneralIndicatorExecutionsAdminByProjectId(@PathParam("projectId") Long projectId) {
+        return this.indicatorExecutionService.getGeneralIndicatorExecutionsAdministrationByProjectId(projectId);
+    }
+
     @Path("/general/{projectId}")
     @GET
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
-    public List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> getGeneralIndicatorExecutionsByProjectId(@PathParam("projectId") Long projectId) {
-        return this.indicatorExecutionService.getGeneralIndicatorExecutionsByProjectId(projectId);
+    public List<IndicatorExecutionGeneralIndicatorResumeWeb> getGeneralIndicatorExecutionsByProjectId(@PathParam("projectId") Long projectId) {
+        return this.indicatorExecutionService.getGeneralIndicatorExecutionsByProjectId(projectId, State.ACTIVO);
     }
 
-    @Path("/performanceByProject/{projectId}")
+    @Path("/performanceAdminByProject/{projectId}")
     @GET
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
-    public List<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb> getPerformanceIndicatorExecutionsByProjectId(@PathParam("projectId") Long projectId) {
-        return this.indicatorExecutionService.getPerformanceIndicatorExecutionsByProjectId(projectId);
+    public List<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb> getPerformanceIndicatorExecutionsAdminByProjectId(@PathParam("projectId") Long projectId) {
+        return this.indicatorExecutionService.getPerformanceIndicatorExecutionsAdministrationByProjectId(projectId);
     }
+
+
 
     @Path("/targetsUpdate")
     @PUT

@@ -10,6 +10,8 @@ import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
 import org.unhcr.osmosys.model.enums.TotalIndicatorCalculationType;
+import org.unhcr.osmosys.webServices.model.IndicatorValueWeb;
+import org.unhcr.osmosys.webServices.model.MonthValuesWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
@@ -205,6 +207,39 @@ public class MonthService {
         } else {
             month.setTotalExecution(null);
         }
+
+    }
+
+    public MonthValuesWeb getMonthValuesWeb(Long monthId) {
+        // TODO Q PASA SI NO HAY VALUES
+
+        List<IndicatorValue> indicatorValues = this.indicatorValueService.getIndicatorValuesByMonthId(monthId);
+        if (CollectionUtils.isEmpty(indicatorValues)) {
+            return null;
+        }
+
+        List<IndicatorValueWeb> indicatorValuesWeb = this.modelWebTransformationService.indicatorsToIndicatorValuesWeb(new HashSet<>(indicatorValues));
+        // clasifico por tipo desagreggacions
+
+
+        Map<DissagregationType, List<IndicatorValueWeb>> map = new HashMap<>();
+        for (DissagregationType dissagregationType : DissagregationType.values()) {
+            map.put(dissagregationType, new ArrayList<>());
+            // los filtros
+            List<IndicatorValueWeb> values = indicatorValuesWeb.stream().filter(indicatorValue -> {
+                return indicatorValue.getDissagregationType().equals(dissagregationType);
+            }).collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(values)) {
+                map.put(dissagregationType, null);
+            } else {
+                map.put(dissagregationType, values);
+            }
+        }
+
+        MonthValuesWeb r = new MonthValuesWeb();
+        r.setMonth(this.modelWebTransformationService.monthToMonthWeb(indicatorValues.get(0).getMonth()));
+        r.setIndicatorValuesMap(map);
+        return r;
 
     }
 

@@ -15,9 +15,8 @@ public class MonthWeb implements Serializable {
     private Integer order;
     private State state;
     private String commentary;
-    private BigDecimal target;
     private BigDecimal totalExecution;
-    private BigDecimal executionPercentage;
+
 
     public Long getId() {
         return id;
@@ -67,13 +66,6 @@ public class MonthWeb implements Serializable {
         this.commentary = commentary;
     }
 
-    public BigDecimal getTarget() {
-        return target;
-    }
-
-    public void setTarget(BigDecimal target) {
-        this.target = target;
-    }
 
     public BigDecimal getTotalExecution() {
         return totalExecution;
@@ -83,11 +75,4 @@ public class MonthWeb implements Serializable {
         this.totalExecution = totalExecution;
     }
 
-    public BigDecimal getExecutionPercentage() {
-        return executionPercentage;
-    }
-
-    public void setExecutionPercentage(BigDecimal executionPercentage) {
-        this.executionPercentage = executionPercentage;
-    }
 }

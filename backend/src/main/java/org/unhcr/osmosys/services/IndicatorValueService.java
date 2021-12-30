@@ -253,4 +253,8 @@ public class IndicatorValueService {
         }
         return r;
     }
+
+    public List<IndicatorValue> getIndicatorValuesByMonthId(Long monthId) {
+        return this.indicatorValueDao.getIndicatorValuesByMonthId(monthId);
+    }
 }

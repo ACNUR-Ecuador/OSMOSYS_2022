@@ -241,9 +241,9 @@
                                     {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
                                 </td>
                                 <td>
-                                    <button pButton pRipple icon="pi pi-pencil" label="actualizar meta"
+                                    <button pButton pRipple icon="pi pi-pencil" label="actualizar metas"
                                             class="p-button-rounded p-button-success p-mr-2"
-                                            (click)="updateTargets(rowData.quarters)"></button>
+                                            (click)="updateTargets(rowData)"></button>
 
                                 </td>
                             </tr>

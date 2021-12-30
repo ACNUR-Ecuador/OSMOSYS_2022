@@ -28,35 +28,12 @@ public class IndicatorValueDao extends GenericDaoJpa<IndicatorValue, Long> {
         return q.getResultList();
     }
 
-    public IndicatorValue getByCode(String code) throws GeneralAppException {
+    public List<IndicatorValue> getIndicatorValuesByMonthId(Long monthId) {
 
-        String jpql = "SELECT DISTINCT o FROM IndicatorValue o " +
-                "WHERE lower(o.code) = lower(:code)";
+        String jpql = "SELECT DISTINCT o FROM IndicatorValue o left join fetch o.month m " +
+                "WHERE m.id  = :monthId";
         Query q = getEntityManager().createQuery(jpql, IndicatorValue.class);
-        q.setParameter("code", code);
-        try {
-            return (IndicatorValue) q.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        } catch (NonUniqueResultException e) {
-            throw new GeneralAppException("Se encontró más de un item con el código " + code, Response.Status.INTERNAL_SERVER_ERROR);
-        }
+        q.setParameter("monthId",monthId);
+        return q.getResultList();
     }
-
-    public IndicatorValue getByShortDescription(String shortDescription) throws GeneralAppException {
-
-        String jpql = "SELECT DISTINCT o FROM IndicatorValue o " +
-                "WHERE lower(o.shortDescription) = lower(:shortDescription)";
-        Query q = getEntityManager().createQuery(jpql, IndicatorValue.class);
-        q.setParameter("shortDescription", shortDescription);
-        try {
-            return (IndicatorValue) q.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        } catch (NonUniqueResultException e) {
-            throw new GeneralAppException("Se encontró más de un item con la descripción corta " + shortDescription, Response.Status.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
 }
