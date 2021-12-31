@@ -8,9 +8,9 @@ import {EnumsService} from '../../shared/services/enums.service';
 import {SituationService} from '../../shared/services/situation.service';
 
 @Component({
-  selector: 'app-situation-administration',
-  templateUrl: './situation-administration.component.html',
-  styleUrls: ['./situation-administration.component.scss']
+    selector: 'app-situation-administration',
+    templateUrl: './situation-administration.component.html',
+    styleUrls: ['./situation-administration.component.scss']
 })
 export class SituationAdministrationComponent implements OnInit {
     items: Situation[];
@@ -51,9 +51,8 @@ export class SituationAdministrationComponent implements OnInit {
             state: new FormControl('', Validators.required)
         });
 
-        this.enumsService.getByType(EnumsType.State).subscribe(value => {
-            this.states = value;
-        });
+
+        this.states = this.enumsService.getByType(EnumsType.State);
 
     }
 

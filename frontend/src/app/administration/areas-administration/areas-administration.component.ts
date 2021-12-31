@@ -54,14 +54,8 @@ export class AreasAdministrationComponent implements OnInit {
             state: new FormControl('', Validators.required),
             definition: new FormControl('')
         });
-
-        this.enumsService.getByType(EnumsType.AreaType).subscribe(value => {
-            this.areaTypes = value;
-        });
-        this.enumsService.getByType(EnumsType.State).subscribe(value => {
-            this.states = value;
-        });
-
+        this.areaTypes = this.enumsService.getByType(EnumsType.AreaType);
+        this.states = this.enumsService.getByType(EnumsType.State);
     }
 
     private loadItems() {

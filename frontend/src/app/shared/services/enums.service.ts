@@ -19,20 +19,19 @@ export class EnumsService {
     constructor(private http: HttpClient) {
     }
 
-    public getByType(type: EnumsType): Observable<SelectItem[]> {
-        const fromCache = this.cacheMap.get(type);
-        if (fromCache) {
-            return of(fromCache);
-        } else {
-            return this.http.get<SelectItem[]>(`${mainServiceUrl}/${type}`);
-        }
+    public getByType(type: EnumsType): SelectItem[] {
+        return this.cacheMap.get(type);
+    }
+
+    public getByTypeFromServer(type: EnumsType): Observable< SelectItem[]> {
+        return this.http.get<SelectItem[]>(`${mainServiceUrl}/${type}`);
     }
 
     public loadcache() {
         console.log('loading cache');
         Object.keys(EnumsType).map(key => {
             const enumname: EnumsType = EnumsType[key];
-            this.getByType(enumname).subscribe(value => {
+            this.getByTypeFromServer(enumname).subscribe(value => {
                 this.cacheMap.set(enumname, value);
             });
         });

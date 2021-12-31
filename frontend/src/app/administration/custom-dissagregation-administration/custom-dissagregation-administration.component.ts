@@ -95,10 +95,7 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
             state: new FormControl('', Validators.required),
             markers: this.fb.array([])
         });
-
-        this.enumsService.getByType(EnumsType.State).subscribe(value => {
-            this.states = value;
-        });
+        this.states = this.enumsService.getByType(EnumsType.State);
     }
 
     private loadItems() {

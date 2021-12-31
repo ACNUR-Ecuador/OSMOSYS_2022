@@ -52,17 +52,16 @@ export class PeriodAdministrationComponent implements OnInit {
             state: new FormControl('', Validators.required),
             hasGeneralIndicator: new FormControl('', Validators.required),
             generalIndicatorId: new FormControl(''),
-            generalIndicatorDescription: new FormControl('', [ Validators.maxLength(255)]),
-            generalIndicatorMeasureType: new FormControl('', ),
+            generalIndicatorDescription: new FormControl('', [Validators.maxLength(255)]),
+            generalIndicatorMeasureType: new FormControl(''),
             generalIndicatorState: new FormControl(''),
             generalIndicatorPeriod: new FormControl({value: '', disabled: true}),
             generalIndicatorDissagregations: new FormControl(''),
             generalIndicatorDissagregationAssignationsToGeneralIndicator: new FormControl('')
         });
 
-        this.enumsService.getByType(EnumsType.State).subscribe(value => {
-            this.states = value;
-        });
+
+        this.states = this.enumsService.getByType(EnumsType.State);
 
     }
 
@@ -80,16 +79,9 @@ export class PeriodAdministrationComponent implements OnInit {
     }
 
     private loadOptions() {
-        this.enumsService.getByType(EnumsType.MeasureType).subscribe(value => {
-            this.measureTypes = value;
-        });
-        this.enumsService.getByType(EnumsType.State).subscribe(value => {
-            this.states = value;
-        });
-
-        this.enumsService.getByType(EnumsType.DissagregationType).subscribe(value => {
-            this.dissagregationTypes = value;
-        });
+        this.measureTypes = this.enumsService.getByType(EnumsType.MeasureType);
+        this.states = this.enumsService.getByType(EnumsType.State);
+        this.dissagregationTypes = this.enumsService.getByType(EnumsType.DissagregationType);
     }
 
     exportExcel() {
@@ -129,7 +121,7 @@ export class PeriodAdministrationComponent implements OnInit {
             generalIndicatorMeasureType,
             generalIndicatorDissagregationAssignationsToGeneralIndicator
         });
-        this.formItem.get('generalIndicatorDissagregations').patchValue([])
+        this.formItem.get('generalIndicatorDissagregations').patchValue([]);
     }
 
     editItem(period: Period) {

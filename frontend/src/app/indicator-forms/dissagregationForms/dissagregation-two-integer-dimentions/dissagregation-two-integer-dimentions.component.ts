@@ -32,32 +32,15 @@ export class DissagregationTwoIntegerDimentionsComponent implements OnInit {
         const dissagregations: EnumsType[] = this.utilsService.getDissagregationsByDissagregationTypes(this.dissagregationType);
         dissagregations.forEach((value, index) => {
             if (index === 0) {
-
-                this.enumsService.getByType(value).subscribe(value => {
-                    this.dissagregationOptionsRows = value;
-                }, error => {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error al cargar las opciones ',
-                        detail: error.error.message,
-                        life: 3000
-                    });
-                });
+                this.dissagregationOptionsRows = this.enumsService.getByType(value);
             }
             if (index === 1) {
-
-                this.enumsService.getByType(value).subscribe(value => {
-                    this.dissagregationOptionsColumns = value;
-                }, error => {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error al cargar las opciones ',
-                        detail: error.error.message,
-                        life: 3000
-                    });
-                });
+                this.dissagregationOptionsColumns = this.enumsService.getByType(value);
             }
         });
+
+        console.log(this.dissagregationOptionsRows);
+        console.log(this.dissagregationOptionsColumns);
     }
 
 }

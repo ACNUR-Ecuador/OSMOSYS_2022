@@ -80,9 +80,8 @@ export class StatementAdministrationComponent implements OnInit {
             periodStatementAsignations: new FormControl('')
         });
 
-        this.enumsService.getByType(EnumsType.State).subscribe(value => {
-            this.states = value;
-        });
+
+            this.states = this.enumsService.getByType(EnumsType.State);
 
     }
 

@@ -60,13 +60,8 @@ export class OfficeAdministrationComponent implements OnInit {
             type: new FormControl('', Validators.required),
             parentOffice: new FormControl(''),
         });
-
-        this.enumsService.getByType(EnumsType.State).subscribe(value => {
-            this.states = value;
-        });
-        this.enumsService.getByType(EnumsType.OfficeType).subscribe(value => {
-            this.officeTypes = value;
-        });
+        this.states = this.enumsService.getByType(EnumsType.State);
+        this.officeTypes = this.enumsService.getByType(EnumsType.OfficeType);
         this.officeService.getActive().subscribe(value => {
             this.parenteOffices = value.map(value1 => {
                 const selectItem: SelectItem = {

@@ -142,8 +142,7 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
     }
 
     private loadOptions() {
-        this.enumsService.getByType(EnumsType.State).subscribe(value => {
-            this.states = value;
-        });
+
+            this.states = this.enumsService.getByType(EnumsType.State);
     }
 }

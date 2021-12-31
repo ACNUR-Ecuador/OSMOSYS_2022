@@ -291,17 +291,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 life: 3000
             });
         });
-        this.enumsService.getByType(EnumsType.State).subscribe(value => {
-            this.states = value;
-        }, error => {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error al cargar los estados',
-                detail: error.error.message,
-                life: 3000
-            });
-        });
 
+        this.states = this.enumsService.getByType(EnumsType.State);
         this.userService.getActiveUNHCRUsers().subscribe(value => {
             this.focalPoints = value;
         }, error => {

@@ -54,14 +54,8 @@ export class MarkerAdministrationComponent implements OnInit {
             description: new FormControl('', Validators.required),
             shortDescription: new FormControl('', Validators.required)
         });
-
-        this.enumsService.getByType(EnumsType.State).subscribe(value => {
-            this.states = value;
-        });
-        this.enumsService.getByType(EnumsType.MarkerType).subscribe(value => {
-            this.types = value;
-        });
-
+        this.states = this.enumsService.getByType(EnumsType.State);
+        this.types = this.enumsService.getByType(EnumsType.MarkerType);
     }
 
     private loadItems() {
