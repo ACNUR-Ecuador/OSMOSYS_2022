@@ -82,7 +82,6 @@ export class StatementAdministrationComponent implements OnInit {
 
         this.enumsService.getByType(EnumsType.State).subscribe(value => {
             this.states = value;
-            console.log(this.states);
         });
 
     }
@@ -214,7 +213,6 @@ export class StatementAdministrationComponent implements OnInit {
         this.showDialog = true;
         const newItem = new Statement();
         this.formItem.patchValue(newItem);
-        console.log(this.formItem.value);
     }
 
     editItem(statement: Statement) {
@@ -243,7 +241,6 @@ export class StatementAdministrationComponent implements OnInit {
 
     saveItem() {
         this.messageService.clear();
-        console.log(this.formItem);
         const {
             id,
             code,
@@ -290,7 +287,6 @@ export class StatementAdministrationComponent implements OnInit {
             }
         }
         statement.periodStatementAsignations = periodStatementAsignationsCasted;
-        console.log(statement);
         if (statement.id) {
             // tslint:disable-next-line:no-shadowed-variable
             this.statementService.update(statement).subscribe(id => {

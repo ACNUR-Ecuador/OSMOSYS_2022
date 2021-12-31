@@ -87,7 +87,6 @@ export class OrganizationAdministrationComponent implements OnInit {
         this.showDialog = true;
         const newItem = new Organization();
         this.formItem.patchValue(newItem);
-        console.log(this.formItem.value);
     }
 
     editItem(organization: Organization) {

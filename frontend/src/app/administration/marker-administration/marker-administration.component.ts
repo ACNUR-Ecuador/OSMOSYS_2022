@@ -99,7 +99,6 @@ export class MarkerAdministrationComponent implements OnInit {
         this.showDialog = true;
         const newItem = new Marker();
         this.formItem.patchValue(newItem);
-        console.log(this.formItem.value);
     }
 
     editItem(marker: Marker) {

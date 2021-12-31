@@ -25,5 +25,7 @@ public class MonthEndpoint {
         return this.monthService.getMonthValuesWeb(monthId);
     }
 
+    
+
 
 }

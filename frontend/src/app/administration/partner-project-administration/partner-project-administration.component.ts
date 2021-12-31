@@ -548,8 +548,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
     saveTargets() {
         this.messageService.clear();
-        console.log(this.formTargets);
-        console.log(this.formTargets.controls.quarterGroups.value);
         const targetForms = this.formTargets.controls.quarterGroups.value as Array<any>;
         const targetUpdateDTOWeb: TargetUpdateDTOWeb = new TargetUpdateDTOWeb();
         targetUpdateDTOWeb.indicatorExecutionId = this.formTargets.get('indicatorExecutionId').value;
@@ -604,7 +602,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     assignNewPerformanceIndicator() {
-        console.log('assignNewPerformanceIndicator');
         const period: Period = this.formItem.get('period').value as Period;
 
         this.indicatorService.getByPeriodAssignment(period.id).subscribe(value => {
@@ -653,13 +650,11 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     cancelPerformanceIndicatorDialog() {
-        console.log(this.formPerformanceIndicator);
         this.messageService.clear();
         this.showPerformanceIndicatorDialog = false;
     }
 
     savePerformanceIndicator() {
-        console.log(this.formPerformanceIndicator.value);
         this.messageService.clear();
 
         const indicatorExecution: IndicatorExecutionAssigment = new IndicatorExecutionAssigment();
@@ -682,7 +677,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         indicatorExecution.project = new Project();
         indicatorExecution.project.id = this.formItem.get('id').value;
         indicatorExecution.locations = locations;
-        console.log(indicatorExecution);
         this.indicatorExecutionService.assignPerformanceIndicatoToProject(indicatorExecution)
             .subscribe(value => {
                 this.messageService.add({

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import * as FileSaver from 'file-saver';
 import {FormGroup} from '@angular/forms';
-import {ColumnTable, MonthType} from '../model/UtilsModel';
+import {ColumnTable, DissagregationType, EnumsType, MonthType} from '../model/UtilsModel';
 import {EnumsService} from './enums.service';
 import {Quarter} from '../model/OsmosysModel';
 
@@ -126,7 +126,6 @@ export class UtilsService {
                 result = 'white';
             }
         }
-        console.log('' + year + '-' + month + '-' + value + '-' + result);
         return result;
     }
 
@@ -162,7 +161,65 @@ export class UtilsService {
         return date;
     }
 
-    getQuarterLastMonth(quarter: Quarter){
+    getQuarterLastMonth(quarter: Quarter) {
 
+    }
+
+    getDissagregationsByDissagregationTypes(dissagregationType: DissagregationType): EnumsType[] {
+        const dissagregationTypeE = DissagregationType[dissagregationType];
+        const result: EnumsType[] = [];
+        switch (dissagregationTypeE) {
+            case DissagregationType.TIPO_POBLACION: {
+                result.push(EnumsType.PopulationType);
+                return result;
+            }
+            case DissagregationType.EDAD: {
+                result.push(EnumsType.AgeType);
+                return result;
+            }
+            case DissagregationType.GENERO: {
+                result.push(EnumsType.GenderType);
+                return result;
+            }
+            case DissagregationType.LUGAR: {
+                return result;
+            }
+            case DissagregationType.PAIS_ORIGEN: {
+                result.push(EnumsType.CountryOfOrigin);
+                return result;
+            }
+            case DissagregationType.DIVERSIDAD: {
+                result.push(EnumsType.DiversityType);
+                return result;
+            }
+            case DissagregationType.SIN_DESSAGREGACION: {
+                return result;
+            }
+            case DissagregationType.TIPO_POBLACION_Y_GENERO: {
+                result.push(EnumsType.PopulationType);
+                result.push(EnumsType.GenderType);
+                return result;
+            }
+            case DissagregationType.TIPO_POBLACION_Y_EDAD: {
+                result.push(EnumsType.PopulationType);
+                result.push(EnumsType.AgeType);
+                return result;
+            }
+            case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD: {
+                result.push(EnumsType.PopulationType);
+                result.push(EnumsType.DiversityType);
+                return result;
+            }
+            case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN: {
+                result.push(EnumsType.PopulationType);
+                result.push(EnumsType.CountryOfOrigin);
+                return result;
+            }
+            case DissagregationType.TIPO_POBLACION_Y_LUGAR: {
+                result.push(null);
+                result.push(EnumsType.PopulationType);
+                return result;
+            }
+        }
     }
 }

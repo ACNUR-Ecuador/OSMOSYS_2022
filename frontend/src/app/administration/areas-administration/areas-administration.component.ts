@@ -80,9 +80,7 @@ export class AreasAdministrationComponent implements OnInit {
     exportExcel() {
         import('xlsx').then(xlsx => {
             const headers = this.cols.map(value => value.header);
-            console.log(this.items);
             const itemsRenamed = this.utilsService.renameKeys(this.items, this.cols);
-            console.log(itemsRenamed);
             const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
             const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
 
@@ -104,7 +102,6 @@ export class AreasAdministrationComponent implements OnInit {
         this.showDialog = true;
         const newItem = new Area();
         this.formItem.patchValue(newItem);
-        console.log(this.formItem.value);
     }
 
     editItem(area: Area) {
@@ -112,13 +109,10 @@ export class AreasAdministrationComponent implements OnInit {
         this.submitted = false;
         this.showDialog = true;
         this.formItem.patchValue(area);
-        console.log(this.formItem.value);
     }
 
 
     saveItem() {
-        console.log('saving');
-        console.log(this.formItem.value);
         this.messageService.clear();
         const {
             id,

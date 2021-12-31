@@ -44,7 +44,6 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit {
         this.indicatorExecutionService.getGeneralIndicatorResume(idProject)
             .subscribe(value => {
                 this.generalIndicators = value;
-                console.log(this.generalIndicators);
                 this.createGeneralIndicatorColumns();
             }, error => {
                 this.messageService.add({
@@ -115,7 +114,6 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit {
     }
 
     callMonth(monthId: number) {
-        console.log('test: ' + monthId);
         const parametersMap = new Map<string, number | IndicatorExecutionResumeWeb>();
         parametersMap.set('monthId', monthId);
         parametersMap.set('indicator', this.selectedIndicator);

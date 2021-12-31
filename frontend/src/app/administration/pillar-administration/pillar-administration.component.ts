@@ -88,7 +88,6 @@ export class PillarAdministrationComponent implements OnInit {
         this.showDialog = true;
         const newItem = new Pillar();
         this.formItem.patchValue(newItem);
-        console.log(this.formItem.value);
     }
 
     editItem(pillar: Pillar) {

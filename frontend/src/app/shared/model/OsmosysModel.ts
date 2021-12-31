@@ -428,7 +428,7 @@ export class StartEndDatesWeb {
 
 export class MonthValues {
     public month: Month;
-    public indicatorValuesMap: Map<string, IndicatorValue[]>;
+    public indicatorValuesMap: any;
 
 }
 

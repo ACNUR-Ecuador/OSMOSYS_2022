@@ -20,7 +20,6 @@ export class PartnersIndicatorQuarterListComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        console.log('quarters--S');
         this.quarters = this.quarters.filter(value => {
             return value.state === EnumsState.ACTIVE;
         })
@@ -82,8 +81,6 @@ export class PartnersIndicatorQuarterListComponent implements OnInit {
                 this.quarterMonthResumes.push(qmr);
             });
         });
-        console.log('this.quarterMonthResumes');
-        console.log(this.quarterMonthResumes);
     }
 
 

@@ -88,7 +88,6 @@ export class SituationAdministrationComponent implements OnInit {
         this.showDialog = true;
         const newItem = new Situation();
         this.formItem.patchValue(newItem);
-        console.log(this.formItem.value);
     }
 
     editItem(situation: Situation) {

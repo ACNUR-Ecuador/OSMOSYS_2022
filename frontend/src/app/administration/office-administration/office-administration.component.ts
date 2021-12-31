@@ -89,8 +89,6 @@ export class OfficeAdministrationComponent implements OnInit {
 
     private loadTree() {
         this.officeService.getTree().subscribe(value => {
-            console.log(value);
-            this.officeTree = this.officeTreeToNodeTree(value);
 
             /*
             this.officeTree = [{
@@ -222,8 +220,6 @@ export class OfficeAdministrationComponent implements OnInit {
         this.showDialog = true;
         const newItem = new Office();
         this.formItem.patchValue(newItem);
-        console.log(this.formItem.value);
-        console.log(this.parenteOffices);
     }
 
     editItem(office: Office) {

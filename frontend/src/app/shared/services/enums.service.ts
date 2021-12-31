@@ -20,7 +20,12 @@ export class EnumsService {
     }
 
     public getByType(type: EnumsType): Observable<SelectItem[]> {
-        return this.http.get<SelectItem[]>(`${mainServiceUrl}/${type}`);
+        const fromCache = this.cacheMap.get(type);
+        if (fromCache) {
+            return of(fromCache);
+        } else {
+            return this.http.get<SelectItem[]>(`${mainServiceUrl}/${type}`);
+        }
     }
 
     public loadcache() {

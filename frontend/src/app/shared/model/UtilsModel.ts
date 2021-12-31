@@ -21,7 +21,7 @@ export enum ColumnDataType {
 export enum EnumsType {
     AgeType = 'AgeType',
     AreaType = 'AreaType',
-    CountyOfOrigin = 'CountyOfOrigin',
+    CountryOfOrigin = 'CountryOfOrigin',
     DissagregationType = 'DissagregationType',
     Frecuency = 'Frecuency',
     GenderType = 'GenderType',
@@ -32,6 +32,7 @@ export enum EnumsType {
     PopulationType = 'PopulationType',
     State = 'State',
     TotalIndicatorCalculationType = 'TotalIndicatorCalculationType',
+    DiversityType = 'DiversityType',
 }
 
 export enum EnumsState {
@@ -82,18 +83,25 @@ export enum MonthType {
 }
 
 export enum QuarterType {
-    ENERO = 'Enero',
-    FEBRERO = 'Febrero',
-    MARZO = 'Marzo',
-    ABRIL = 'Abril',
-    MAYO = 'Mayo',
-    JUNIO = 'Junio',
-    JULIO = 'Julio',
-    AGOSTO = 'Agosto',
-    SEPTIEMBRE = 'Septiembre',
-    OCTUBRE = 'Octubre',
-    NOVIEMBRE = 'Noviembre',
-    DICIEMBRE = 'Diciembre',
+    I = 'I',
+    II = 'II',
+    III = 'III',
+    IV = 'IV'
+}
+
+export enum DissagregationType {
+    TIPO_POBLACION = 'TIPO_POBLACION',
+    EDAD = 'EDAD',
+    GENERO = 'GENERO',
+    LUGAR = 'LUGAR',
+    PAIS_ORIGEN = 'PAIS_ORIGEN',
+    DIVERSIDAD = 'DIVERSIDAD',
+    SIN_DESSAGREGACION = 'SIN_DESSAGREGACION',
+    TIPO_POBLACION_Y_GENERO = 'TIPO_POBLACION_Y_GENERO',
+    TIPO_POBLACION_Y_EDAD = 'TIPO_POBLACION_Y_EDAD',
+    TIPO_POBLACION_Y_DIVERSIDAD = 'TIPO_POBLACION_Y_DIVERSIDAD',
+    TIPO_POBLACION_Y_PAIS_ORIGEN = 'TIPO_POBLACION_Y_PAIS_ORIGEN',
+    TIPO_POBLACION_Y_LUGAR = 'TIPO_POBLACION_Y_LUGAR',
 }
 
 

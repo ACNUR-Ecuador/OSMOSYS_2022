@@ -31,7 +31,7 @@ public class EnumsEndpoint {
                 return this.EnumsToEnumsWeb(AgeType.values());
             case "AreaType":
                 return this.EnumsToEnumsWeb(AreaType.values());
-            case "CountyOfOrigin":
+            case "CountryOfOrigin":
                 return this.EnumsToEnumsWeb(CountryOfOrigin.values());
             case "DissagregationType":
                 return this.EnumsToEnumsWeb(DissagregationType.values());
@@ -51,11 +51,13 @@ public class EnumsEndpoint {
                 return this.EnumsToEnumsWeb(PopulationType.values());
             case "State":
                 return this.EnumsToEnumsWeb(State.values());
+            case "DiversityType":
+                return this.EnumsToEnumsWeb(DiversityType.values());
             case "TotalIndicatorCalculationType":
                 return this.EnumsToEnumsWeb(TotalIndicatorCalculationType.values());
         }
 
-        throw new GeneralAppException("Enumerador no soportado", Response.Status.BAD_GATEWAY);
+        throw new GeneralAppException("Enumerador no soportado " + type, Response.Status.BAD_GATEWAY);
     }
 
     public List<EnumWeb> EnumsToEnumsWeb(EnumInterface[] enumerator) {

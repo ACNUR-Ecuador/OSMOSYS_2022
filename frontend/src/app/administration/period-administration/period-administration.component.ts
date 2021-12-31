@@ -129,8 +129,7 @@ export class PeriodAdministrationComponent implements OnInit {
             generalIndicatorMeasureType,
             generalIndicatorDissagregationAssignationsToGeneralIndicator
         });
-        this.formItem.get('generalIndicatorDissagregations').patchValue([]);
-        console.log(this.formItem.value);
+        this.formItem.get('generalIndicatorDissagregations').patchValue([])
     }
 
     editItem(period: Period) {
@@ -286,7 +285,6 @@ export class PeriodAdministrationComponent implements OnInit {
     }
 
     hasGeneralIndicatorValueChange(value: boolean) {
-        console.log(value);
         this.ref.detectChanges();
         if (value && !this.formItem.get('generalIndicatorId').value) {
             const indicator = new GeneralIndicator();

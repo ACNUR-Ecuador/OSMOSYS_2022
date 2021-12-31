@@ -193,7 +193,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     private loadItems() {
         this.indicatorService.getAll().subscribe(value => {
             this.items = value;
-            console.log(value);
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -244,7 +243,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.formItem.get('dissagregations').patchValue([]);
         this.formItem.get('customDissagregations').patchValue([]);
         this.loadMarkers([]);
-        console.log(this.formItem.value);
     }
 
     editItem(indicator: Indicator) {
@@ -258,9 +256,8 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             }).map(value => {
                 return value.dissagregationType;
             });
-        console.log(dissagregations);
         this.formItem.get('dissagregations').patchValue(dissagregations);
-        console.log(this.formItem);
+
 
         const customDissagregations: number[] = indicator.customDissagregationAssignationToIndicators
             .filter(value => {
@@ -276,7 +273,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
 
     saveItem() {
-        console.log(this.formItem.value);
         this.messageService.clear();
         const {
             id,
@@ -380,8 +376,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
             }
         }
-        // valido q tengan
-        console.log(indicator);
 
         if (indicator.id) {
             // tslint:disable-next-line:no-shadowed-variable
@@ -415,7 +409,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     cancelDialog() {
         this.showDialog = false;
         this.submitted = false;
-        console.log(this.formItem);
     }
 
     @Input() get selectedColumns(): any[] {

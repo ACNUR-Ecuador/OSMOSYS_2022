@@ -113,9 +113,7 @@ export class PartnersProjectListComponent implements OnInit {
     exportExcel() {
         import('xlsx').then(xlsx => {
             const headers = this.cols.map(value => value.header);
-            console.log(this.items);
             const itemsRenamed = this.utilsService.renameKeys(this.items, this.cols);
-            console.log(itemsRenamed);
             const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
             const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
 

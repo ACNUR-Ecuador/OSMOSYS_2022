@@ -116,10 +116,6 @@ export class GeneralIndicatorConfigurationComponent implements OnInit {
                         dissagregationAssignationsToGeneralIndicator,
                         dissagregations: dissa
                     });
-
-
-                    console.log(period);
-                    console.log(this.indicatorForm.value);
                 } else {
                     const indicator = new GeneralIndicator();
                     indicator.period = period;
