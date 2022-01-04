@@ -1,17 +1,69 @@
-<div class="p-grid" *ngIf="render">
-    <div class="p-col-4" *ngFor="let dissagregation of this.utilsService.getOneDimentionsDissagregationTypes() ">
-        <app-dissagregation-one-integer-dimentions
-            *ngIf="monthValuesMap.get(dissagregation)"
-            [dissagregationType]="dissagregation"
-            [values]="monthValuesMap.get(dissagregation)"
-        ></app-dissagregation-one-integer-dimentions>
-    </div>
-    <div class="p-col-6" *ngFor="let dissagregation of this.utilsService.getTwoDimentionsDissagregationTypes()">
-        {{dissagregation}}
-        <app-dissagregation-two-integer-dimentions
-            *ngIf="monthValuesMap.get(dissagregation)"
-            [dissagregationType]="dissagregation"
-            [values]="monthValuesMap.get(dissagregation)"
-        ></app-dissagregation-two-integer-dimentions>
-    </div>
+<div>
+    <p-toast key="dialogToast" position="top-right"></p-toast>
+    <p-messages></p-messages>
+    <form #myForm="ngForm" (ngSubmit)="saveMonth()">
+        <div class="p-grid" *ngIf="render">
+            <div class="p-col-4"
+                 *ngFor="let dissagregation of this.utilsService.getOneDimentionsDissagregationTypes() ">
+                <app-dissagregation-one-integer-dimentions
+                    *ngIf="monthValuesMap.get(dissagregation)"
+                    [dissagregationType]="dissagregation"
+                    [values]="monthValuesMap.get(dissagregation)"
+                ></app-dissagregation-one-integer-dimentions>
+            </div>
+            <div class="p-col-6" *ngFor="let dissagregation of this.utilsService.getTwoDimentionsDissagregationTypes()">
+                <app-dissagregation-two-integer-dimentions
+                    *ngIf="monthValuesMap.get(dissagregation)"
+                    [dissagregationType]="dissagregation"
+                    [values]="monthValuesMap.get(dissagregation)"
+                ></app-dissagregation-two-integer-dimentions>
+            </div>
+        </div>
+        <div class="p-col-12 p-md-12">
+            <p-messages></p-messages>
+        </div>
+        <div class="p-d-flex p-jc-end">
+
+            <button pButton type="submit" class="p-mr-2"
+                    pRipple label="Guardar" icon="pi pi-check"
+            ></button>
+            <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times"
+                    class="p-button-secondary"
+                    (click)="cancel()"></button>
+        </div>
+    </form>
 </div>
+<p-dialog [(visible)]="showErrorResume" [closable]="false" [closeOnEscape]="false">
+    <ng-template pTemplate="header">
+        Existen Errores en lo Valores
+    </ng-template>
+    <div *ngIf="showErrorResume">
+        <div class="p-d-flex p-flex-column">
+            <div class="p-mb-2">
+                Existen errores en los valores. Los valores totales de cada segregación en la tabla deberían ser iguales.
+            </div>
+            <div class="p-mb-2">
+                <p-table [value]="totalsValidation.keys()" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Desagregación</th>
+                            <th>Total</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-dissagregation>
+                        <tr>
+                            <td>{{dissagregation | enumValuesToLabel:'DissagregationType'}}</td>
+                            <td>{{totalsValidation.get(dissagregation)}}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="p-d-flex p-jc-end">
+            <button pButton type="button" pRipple label="Cerrar" icon="pi pi-times"
+                    (click)="closeErrorDialog()"></button>
+        </div>
+    </ng-template>
+</p-dialog>

@@ -6,6 +6,11 @@ import {TableModule} from 'primeng/table';
 import {FormsModule} from '@angular/forms';
 import {InputNumberModule} from 'primeng/inputnumber';
 import { DissagregationOneIntegerDimentionsComponent } from './dissagregationForms/dissagregation-one-integer-dimentions/dissagregation-one-integer-dimentions.component';
+import {ToastModule} from 'primeng/toast';
+import {MessagesModule} from 'primeng/messages';
+import {ButtonModule} from 'primeng/button';
+import {DialogModule} from 'primeng/dialog';
+import {SharedModule} from '../shared/shared.module';
 
 
 
@@ -19,7 +24,12 @@ import { DissagregationOneIntegerDimentionsComponent } from './dissagregationFor
         CommonModule,
         TableModule,
         FormsModule,
-        InputNumberModule
+        InputNumberModule,
+        ToastModule,
+        MessagesModule,
+        ButtonModule,
+        DialogModule,
+        SharedModule
     ]
 })
 export class IndicatorFormsModule { }

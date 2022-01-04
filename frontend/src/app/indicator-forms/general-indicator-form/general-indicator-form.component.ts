@@ -20,6 +20,8 @@ export class GeneralIndicatorFormComponent implements OnInit {
 
 
     render = false;
+    showErrorResume = false;
+    totalsValidation: Map<string, number> = null;
 
     constructor(public ref: DynamicDialogRef,
                 public config: DynamicDialogConfig,
@@ -52,4 +54,28 @@ export class GeneralIndicatorFormComponent implements OnInit {
         });
     }
 
+    saveMonth() {
+        // console.log(this.monthValues);
+        this.utilsService.setZerosMonthValues(this.monthValuesMap);
+        const totalsValidation = this.utilsService.validateMonth(this.monthValuesMap);
+        if (totalsValidation) {
+            this.showErrorResume = true;
+            this.totalsValidation = totalsValidation;
+        } else {
+            this.totalsValidation = null;
+            this.sendMonthValue();
+        }
+    }
+
+    cancel() {
+        console.log(this.monthValues);
+    }
+
+    private sendMonthValue() {
+        console.log(this.monthValuesMap);
+    }
+
+    closeErrorDialog() {
+        this.showErrorResume = false;
+    }
 }

@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import * as FileSaver from 'file-saver';
 import {FormGroup} from '@angular/forms';
-import {ColumnTable, DissagregationType, EnumsType, MonthType, SelectItemWithOrder} from '../model/UtilsModel';
+import {ColumnTable, DissagregationType, EnumsState, EnumsType, MonthType, SelectItemWithOrder} from '../model/UtilsModel';
 import {EnumsService} from './enums.service';
-import {IndicatorValue, Quarter} from '../model/OsmosysModel';
+import {IndicatorValue, MonthValues, Quarter} from '../model/OsmosysModel';
 import {SelectItem} from 'primeng/api';
 
 @Injectable({
@@ -362,4 +362,63 @@ export class UtilsService {
             .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
     }
 
+    validateMonth(monthValuesMap: Map<string, IndicatorValue[]>): Map<string, number> {
+        const monthValuesTotals: Map<string, number> = new Map<string, number>();
+        monthValuesMap.forEach((value, key) => {
+            const dissagregationTypeE = DissagregationType[key];
+            if (value && value.length > 0 && this.shouldvalidate(dissagregationTypeE)) {
+                const totalDissagregation = value.reduce((previousValue, currentValue) => previousValue + currentValue.value, 0);
+                monthValuesTotals.set(dissagregationTypeE, totalDissagregation);
+            }
+        });
+        const totalMonth = Math.max(...monthValuesTotals.values());
+        console.log('totalMonth: ' + totalMonth);
+        let errorExists = false;
+        monthValuesTotals.forEach(value => {
+            if (totalMonth !== value) {
+                errorExists = true;
+            }
+        });
+        if (!errorExists) {
+            // no error
+            return null;
+        } else {
+            // error exits
+            return monthValuesTotals;
+        }
+    }
+
+    setZerosMonthValues(monthValuesMap: Map<string, IndicatorValue[]>) {
+        monthValuesMap.forEach((value, key) => {
+            if (value && value.length > 0) {
+                value.forEach(value1 => {
+                    if (value1.state === EnumsState.ACTIVE && value1.value === null) {
+                        value1.value = 0;
+                    }
+                });
+            }
+        });
+    }
+
+    shouldvalidate(dissagregationType: DissagregationType): boolean {
+        const dissagregationTypeE = DissagregationType[dissagregationType];
+        switch (dissagregationTypeE) {
+            case DissagregationType.TIPO_POBLACION:
+            case DissagregationType.EDAD:
+            case DissagregationType.GENERO:
+            case DissagregationType.LUGAR:
+            case DissagregationType.PAIS_ORIGEN:
+            case DissagregationType.TIPO_POBLACION_Y_GENERO:
+            case DissagregationType.TIPO_POBLACION_Y_EDAD:
+            case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN:
+            case DissagregationType.TIPO_POBLACION_Y_LUGAR:
+            case DissagregationType.SIN_DESAGREGACION:
+                return true;
+            case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD:
+            case DissagregationType.DIVERSIDAD:
+                return false;
+        }
+    }
 }
+
+
