@@ -26,12 +26,17 @@ export class IndicatorExecutionService {
 
     public getGeneralIndicatorResume(projectId: number):
         Observable<IndicatorExecutionResumeWeb[]> {
-        return this.http.get<IndicatorExecutionResumeWeb[]>(`${mainServiceUrl}/general/${projectId}`);
+        return this.http.get<IndicatorExecutionResumeWeb[]>(`${mainServiceUrl}/generalByProjectId/${projectId}`);
     }
 
     public getPerformanceIndicatorAdministrationResume(projectId: number):
         Observable<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb[]> {
         return this.http.get<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb[]>(`${mainServiceUrl}/performanceAdminByProject/${projectId}`);
+    }
+
+    public getPerformanceIndicatorResume(projectId: number):
+        Observable<IndicatorExecutionResumeWeb[]> {
+        return this.http.get<IndicatorExecutionResumeWeb[]>(`${mainServiceUrl}/performanceByProjectId/${projectId}`);
     }
 
     public updateTargets(targetUpdateDTOWeb: TargetUpdateDTOWeb): Observable<void> {

@@ -185,7 +185,7 @@ public class QuarterService {
                 if (quarter.getTarget().equals(BigDecimal.ZERO)) {
                     quarter.setTarget(BigDecimal.ZERO);
                 } else {
-                    quarter.setExecutionPercentage(quarter.getTotalExecution().divide(totalExecution, RoundingMode.HALF_UP));
+                    quarter.setExecutionPercentage(quarter.getTotalExecution().divide(quarter.getTarget(), 4, RoundingMode.HALF_UP));
                 }
             } else {
                 quarter.setExecutionPercentage(null);

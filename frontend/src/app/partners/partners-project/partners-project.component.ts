@@ -13,6 +13,7 @@ import {EnumValuesToLabelPipe} from '../../shared/pipes/enum-values-to-label.pip
 import {trigger, state, style, transition, animate} from '@angular/animations';
 import {DialogService} from 'primeng/dynamicdialog';
 import {GeneralIndicatorFormComponent} from '../../indicator-forms/general-indicator-form/general-indicator-form.component';
+import {PerformanceIndicatorFormComponent} from '../../indicator-forms/performance-indicator-form/performance-indicator-form.component';
 
 @Component({
     selector: 'app-partners-project',
@@ -142,6 +143,30 @@ export class PartnersProjectComponent implements OnInit {
         const indicatorExecution = parameters.get('indicator') as IndicatorExecutionResumeWeb;
         const ref = this.dialogService.open(GeneralIndicatorFormComponent, {
                 header: 'Indicador General: ' + indicatorExecution.indicator.description,
+                width: '90%',
+                height: '90%',
+                closeOnEscape: false,
+                autoZIndex: true,
+                closable: true,
+
+                data: {
+                    indicatorExecution,
+                    monthId
+                }
+            }
+        );
+        ref.onClose.subscribe(value => {
+            this.loadProject(this.idProjectParam);
+        }, error => {
+            this.loadProject(this.idProjectParam);
+        });
+    }
+
+    viewDesagregationPerformanceIndicator(parameters: Map<string, number | IndicatorExecutionResumeWeb>) {
+        const monthId = parameters.get('monthId') as number;
+        const indicatorExecution = parameters.get('indicator') as IndicatorExecutionResumeWeb;
+        const ref = this.dialogService.open(PerformanceIndicatorFormComponent, {
+                header: 'Indicador: ' + indicatorExecution.indicator.code + ' - ' + indicatorExecution.indicator.description,
                 width: '90%',
                 height: '90%',
                 closeOnEscape: false,

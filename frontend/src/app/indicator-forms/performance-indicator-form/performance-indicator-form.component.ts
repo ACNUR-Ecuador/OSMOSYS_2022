@@ -1,33 +1,31 @@
 import {Component, OnInit} from '@angular/core';
 import {IndicatorExecutionResumeWeb, IndicatorValue, Month, MonthValues} from '../../shared/model/OsmosysModel';
 import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {MonthService} from '../../shared/services/month.service';
-import {MessageService} from 'primeng/api';
-import {UtilsService} from '../../shared/services/utils.service';
-import {EnumsService} from '../../shared/services/enums.service';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
+import {MonthService} from '../../shared/services/month.service';
+import {EnumsService} from '../../shared/services/enums.service';
+import {UtilsService} from '../../shared/services/utils.service';
+import {MessageService} from 'primeng/api';
 import {DissagregationType} from '../../shared/model/UtilsModel';
 
 @Component({
-    selector: 'app-general-indicator-form',
-    templateUrl: './general-indicator-form.component.html',
-    styleUrls: ['./general-indicator-form.component.scss']
+    selector: 'app-performance-indicator-form',
+    templateUrl: './performance-indicator-form.component.html',
+    styleUrls: ['./performance-indicator-form.component.scss']
 })
-export class GeneralIndicatorFormComponent implements OnInit {
+export class PerformanceIndicatorFormComponent implements OnInit {
     indicatorExecution: IndicatorExecutionResumeWeb;
     monthId: number;
     monthValues: MonthValues;
     month: Month;
     monthValuesMap: Map<string, IndicatorValue[]>;
-
+    oneDimentionDissagregations: DissagregationType[] = [];
+    twoDimentionDissagregations: DissagregationType[] = [];
+    noDimentionDissagregations: DissagregationType[] = [];
 
     render = false;
     showErrorResume = false;
     totalsValidation: Map<string, number> = null;
-
-    oneDimentionDissagregations: DissagregationType[] = [];
-    twoDimentionDissagregations: DissagregationType[] = [];
-    noDimentionDissagregations: DissagregationType[] = [];
 
     constructor(public ref: DynamicDialogRef,
                 public config: DynamicDialogConfig,
@@ -90,6 +88,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
     closeErrorDialog() {
         this.showErrorResume = false;
     }
+
     setDimentionsDissagregations(): void {
         const totalOneDimentions = this.utilsService.getOneDimentionsDissagregationTypes();
         const totalTwoDimentions = this.utilsService.getTwoDimentionsDissagregationTypes();

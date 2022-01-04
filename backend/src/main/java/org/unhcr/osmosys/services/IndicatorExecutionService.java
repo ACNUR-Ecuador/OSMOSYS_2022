@@ -269,6 +269,10 @@ public class IndicatorExecutionService {
         List<IndicatorExecution> ies = this.indicatorExecutionDao.getGeneralIndicatorExecutionsByProjectIdAndState(projectId, state);
         return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionGeneralIndicatorResumesWeb(ies);
     }
+    public List<IndicatorExecutionPerformanceIndicatorResumeWeb> getPerformanceIndicatorExecutionsByProjectId(Long projectId, State state) {
+        List<IndicatorExecution> ies = this.indicatorExecutionDao.getPerformanceIndicatorExecutionsByProjectIdAndState(projectId, state);
+        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionPerformanceIndicatorResumesWeb(ies);
+    }
 
     public void updateTargets(TargetUpdateDTOWeb targetUpdateDTOWeb) throws GeneralAppException {
         IndicatorExecution ie = this.indicatorExecutionDao.getByIdWithValues(targetUpdateDTOWeb.getIndicatorExecutionId());

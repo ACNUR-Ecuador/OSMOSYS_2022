@@ -70,7 +70,10 @@
                         </app-partners-project-general-indicator-list>
                     </p-tabPanel>
                     <p-tabPanel header="Indicadores de Rendimiento">
-                        Content 2
+                        <app-partners-project-performance-indicator-list
+                            (callMonthParent)="viewDesagregationPerformanceIndicator($event)"
+                            [project]="project"
+                        ></app-partners-project-performance-indicator-list>
                     </p-tabPanel>
                 </p-tabView>
             </p-card>

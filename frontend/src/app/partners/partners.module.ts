@@ -25,6 +25,7 @@ import {OverlayPanelModule} from 'primeng/overlaypanel';
 import {DialogService} from 'primeng/dynamicdialog';
 import {ValuesStatePipe} from '../shared/pipes/values-state.pipe';
 import {IndicatorFormsModule} from '../indicator-forms/indicator-forms.module';
+import { PartnersProjectPerformanceIndicatorListComponent } from './partners-project-performance-indicator-list/partners-project-performance-indicator-list.component';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import {IndicatorFormsModule} from '../indicator-forms/indicator-forms.module';
         PartnersProjectListComponent,
         PartnersProjectComponent,
         PartnersProjectGeneralIndicatorListComponent,
-        PartnersIndicatorQuarterListComponent
+        PartnersIndicatorQuarterListComponent,
+        PartnersProjectPerformanceIndicatorListComponent
     ],
     imports: [
         CommonModule,

@@ -12,6 +12,7 @@ import {ButtonModule} from 'primeng/button';
 import {DialogModule} from 'primeng/dialog';
 import {SharedModule} from '../shared/shared.module';
 import {DissagregationNoDissagregationIntegerComponent} from './dissagregationForms/dissagregation-no-dissagregation-integer/dissagregation-no-dissagregation-integer.component';
+import { PerformanceIndicatorFormComponent } from './performance-indicator-form/performance-indicator-form.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import {DissagregationNoDissagregationIntegerComponent} from './dissagregationFo
         GeneralIndicatorFormComponent,
         DissagregationTwoIntegerDimentionsComponent,
         DissagregationOneIntegerDimentionsComponent,
-        DissagregationNoDissagregationIntegerComponent
+        DissagregationNoDissagregationIntegerComponent,
+        PerformanceIndicatorFormComponent
     ],
     imports: [
         CommonModule,

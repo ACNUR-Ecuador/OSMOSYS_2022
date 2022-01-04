@@ -29,7 +29,7 @@ public class IndicatorExecutionEndpoint {
         return this.indicatorExecutionService.getGeneralIndicatorExecutionsAdministrationByProjectId(projectId);
     }
 
-    @Path("/general/{projectId}")
+    @Path("/generalByProjectId/{projectId}")
     @GET
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
@@ -43,6 +43,14 @@ public class IndicatorExecutionEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public List<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb> getPerformanceIndicatorExecutionsAdminByProjectId(@PathParam("projectId") Long projectId) {
         return this.indicatorExecutionService.getPerformanceIndicatorExecutionsAdministrationByProjectId(projectId);
+    }
+
+    @Path("/performanceByProjectId/{projectId}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<IndicatorExecutionPerformanceIndicatorResumeWeb> getPerformanceIndicatorExecutionsByProjectId(@PathParam("projectId") Long projectId) {
+        return this.indicatorExecutionService.getPerformanceIndicatorExecutionsByProjectId(projectId, State.ACTIVO);
     }
 
 
