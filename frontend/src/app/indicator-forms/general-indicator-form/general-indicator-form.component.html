@@ -1,9 +1,11 @@
 <p>general-indicator-form works swsertwert!</p>
 
-{{indicatorExecution.id}}
-
-{{monthId }}
 <div *ngIf="dissagregationTypeValues">
+    <app-dissagregation-one-integer-dimentions
+        [dissagregationType]="dissagregationTypeOneD"
+        [values]="dissagregationTypeOneDValues"
+    >
+    </app-dissagregation-one-integer-dimentions>
     <app-dissagregation-two-integer-dimentions
         [dissagregationType]="dissagregationType"
         [values]="dissagregationTypeValues"

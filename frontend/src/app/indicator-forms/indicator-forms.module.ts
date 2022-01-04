@@ -5,13 +5,15 @@ import { DissagregationTwoIntegerDimentionsComponent } from './dissagregationFor
 import {TableModule} from 'primeng/table';
 import {FormsModule} from '@angular/forms';
 import {InputNumberModule} from 'primeng/inputnumber';
+import { DissagregationOneIntegerDimentionsComponent } from './dissagregationForms/dissagregation-one-integer-dimentions/dissagregation-one-integer-dimentions.component';
 
 
 
 @NgModule({
   declarations: [
     GeneralIndicatorFormComponent,
-    DissagregationTwoIntegerDimentionsComponent
+    DissagregationTwoIntegerDimentionsComponent,
+    DissagregationOneIntegerDimentionsComponent
   ],
     imports: [
         CommonModule,

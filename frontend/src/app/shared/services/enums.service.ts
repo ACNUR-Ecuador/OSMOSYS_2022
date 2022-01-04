@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environment';
-import {EMPTY, Observable,} from 'rxjs';
+import {EMPTY, Observable} from 'rxjs';
 import {EnumsType, MonthType, SelectItemWithOrder} from '../model/UtilsModel';
 import {HttpClient} from '@angular/common/http';
 import {catchError, shareReplay} from 'rxjs/operators';
@@ -43,7 +43,6 @@ export class EnumsService {
         Object.keys(EnumsType).map(key => {
             const enumname: EnumsType = EnumsType[key];
             this.getByTypeFromServer(enumname).subscribe(value => {
-                console.log(enumname + ' ' + value);
                 this.cacheMap.set(enumname, value);
             });
         });

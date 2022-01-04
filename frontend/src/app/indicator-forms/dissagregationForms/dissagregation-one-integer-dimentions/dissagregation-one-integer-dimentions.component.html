@@ -2,29 +2,27 @@
     <ng-template pTemplate="header">
         <tr>
             <th></th>
-            <th *ngFor="let col of dissagregationOptionsColumns">{{col.label}}</th>
-            <th>Totales</th>
+            <th>Valores</th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
         <tr>
             <td class="table-title">{{dissagregationOptionsRows[rowIndex].label}}</td>
-            <td pEditableColumn *ngFor="let rowOp of dissagregationOptionsColumns; index as indexColumn" class="text-right">
+            <td pEditableColumn
+                class="text-right">
                 <p-cellEditor>
                     <ng-template pTemplate="input">
                         <p-inputNumber
-                            name="{{row[indexColumn].id}}"
+                            name="{{row[0].id}}"
                             [min]="0"
-                            [(ngModel)]="row[indexColumn].value"
+                            [(ngModel)]="row[0].value"
                         ></p-inputNumber>
                     </ng-template>
-                    <ng-template pTemplate="output" >
-                        {{row[indexColumn].value}}
+                    <ng-template pTemplate="output">
+                        {{row[0].value}}
                     </ng-template>
                 </p-cellEditor>
             </td>
-
-            <td class="subtotal_value">{{this.utilsService.getTotalIndicatorValuesArray(row)}}</td>
         </tr>
 
 
@@ -32,9 +30,6 @@
     <ng-template pTemplate="footer">
         <tr>
             <td class="table-title">Totales</td>
-            <td class="subtotal_value" *ngFor="let colOp of dissagregationOptionsColumns; index as indexColumn">
-                {{this.utilsService.getTotalIndicatorValuesColumnArrayArray(rows, indexColumn)}}
-            </td>
             <td class="total_value">{{this.utilsService.getTotalIndicatorValuesArrayArray(rows)}}</td>
         </tr>
     </ng-template>

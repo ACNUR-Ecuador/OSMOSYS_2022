@@ -77,6 +77,11 @@ public class IndicatorValueService {
             case TIPO_POBLACION_Y_PAIS_ORIGEN:
                 return this.createIndicatorValueDissagregationStandardForPopulationTypeAndCountryOfOrigin();
 
+            case TIPO_POBLACION_Y_LUGAR:
+                return this.createIndicatorValueDissagregationStandardForPopulationTypeAndLocation(cantones);
+            case SIN_DESAGREGACION:
+                return this.createIndicatorValueDissagregationStandardForNoDissagregation();
+
             default: {
                 throw new GeneralAppException(" Desagregación no implementada " + dissagregationType, Response.Status.INTERNAL_SERVER_ERROR);
             }
@@ -205,7 +210,7 @@ public class IndicatorValueService {
 
     private List<IndicatorValue> createIndicatorValueDissagregationStandardForPopulationTypeAndCountryOfOrigin() {
         List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD;
+        DissagregationType dt = DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN;
         for (PopulationType populationType : PopulationType.values()) {
             for (CountryOfOrigin countryOfOrigin : CountryOfOrigin.values()) {
                 IndicatorValue iv = new IndicatorValue();
@@ -217,6 +222,33 @@ public class IndicatorValueService {
                 r.add(iv);
             }
         }
+        return r;
+    }
+
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForPopulationTypeAndLocation(List<Canton> cantones) {
+        List<IndicatorValue> r = new ArrayList<>();
+        DissagregationType dt = DissagregationType.TIPO_POBLACION_Y_LUGAR;
+        for (PopulationType populationType : PopulationType.values()) {
+            for (Canton canton : cantones){
+                IndicatorValue iv = new IndicatorValue();
+                iv.setState(State.ACTIVO);
+                iv.setDissagregationType(dt);
+                iv.setPopulationType(populationType);
+                iv.setLocation(canton);
+                iv.setShowValue(true);
+                r.add(iv);
+            }
+        }
+        return r;
+    }
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForNoDissagregation() {
+        List<IndicatorValue> r = new ArrayList<>();
+        DissagregationType dt = DissagregationType.SIN_DESAGREGACION;
+        IndicatorValue iv = new IndicatorValue();
+        iv.setState(State.ACTIVO);
+        iv.setDissagregationType(dt);
+        iv.setShowValue(true);
+        r.add(iv);
         return r;
     }
 

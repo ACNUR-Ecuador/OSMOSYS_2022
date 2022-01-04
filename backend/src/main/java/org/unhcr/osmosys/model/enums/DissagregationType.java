@@ -7,7 +7,7 @@ public enum DissagregationType  implements EnumInterface{
 	LUGAR("Lugar",4),
 	PAIS_ORIGEN("País de Origen",5),
 	DIVERSIDAD("Diversidad",6),
-	SIN_DESSAGREGACION("Sin Desagregación",7),
+	SIN_DESAGREGACION("Sin Desagregación",7),
 	TIPO_POBLACION_Y_GENERO("Tipo de población	y género",8),
 	TIPO_POBLACION_Y_EDAD("Tipo de población y edad",9),
 	TIPO_POBLACION_Y_DIVERSIDAD("Tipo de población y diversidad",10),
