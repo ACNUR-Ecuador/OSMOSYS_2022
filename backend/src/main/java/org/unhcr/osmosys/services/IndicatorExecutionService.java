@@ -345,7 +345,7 @@ public class IndicatorExecutionService {
                 if (indicatorExecution.getTarget().equals(BigDecimal.ZERO)) {
                     indicatorExecution.setTarget(BigDecimal.ZERO);
                 } else {
-                    indicatorExecution.setExecutionPercentage(indicatorExecution.getTotalExecution().divide(totalExecution, RoundingMode.HALF_UP));
+                    indicatorExecution.setExecutionPercentage(indicatorExecution.getTotalExecution().divide(indicatorExecution.getTarget(), 4,RoundingMode.HALF_UP));
                 }
             } else {
                 indicatorExecution.setExecutionPercentage(null);

@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, PercentPipe} from '@angular/common';
 
 import {PartnersRoutingModule} from './partners-routing.module';
 import {PartnersProjectListComponent} from './partners-project-list/partners-project-list.component';
@@ -58,7 +58,8 @@ import {IndicatorFormsModule} from '../indicator-forms/indicator-forms.module';
     providers: [
         EnumValuesToLabelPipe,
         DialogService,
-        ValuesStatePipe
+        ValuesStatePipe,
+        PercentPipe
     ]
 })
 export class PartnersModule {

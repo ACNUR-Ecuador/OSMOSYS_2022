@@ -29,7 +29,7 @@
                     <span class="p-text-bold p-ml-2">{{rowdata.quarterTotalExecution}}</span>
                 </td>
                 <td *ngIf="rowdata.quarterSpan" [attr.rowspan]="rowdata.quarterSpanCount">
-                    <span class="p-text-bold p-ml-2">{{rowdata.quarterExecutionPercentage}}</span>
+                    <span class="p-text-bold p-ml-2">{{rowdata.quarterExecutionPercentage | percent}}</span>
                 </td>
                 <td>
                     <span class="p-text-bold p-ml-2"

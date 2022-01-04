@@ -6,6 +6,7 @@ import {MessageService, SelectItem} from 'primeng/api';
 import {EnumsService} from '../../shared/services/enums.service';
 import {UtilsService} from '../../shared/services/utils.service';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
+import {PercentPipe} from '@angular/common';
 
 @Component({
     selector: 'app-partners-project-general-indicator-list',
@@ -31,6 +32,7 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit {
         private enumsService: EnumsService,
         private utilsService: UtilsService,
         private codeDescriptionPipe: CodeDescriptionPipe,
+        private percentPipe: PercentPipe,
         private indicatorExecutionService: IndicatorExecutionService,
     ) {
     }
@@ -63,7 +65,7 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit {
             {field: 'indicator', header: 'Indicador', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
             {field: 'target', header: 'Meta', type: ColumnDataType.numeric},
             {field: 'totalExecution', header: 'Ejecución Actual', type: ColumnDataType.numeric},
-            {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric},
+            {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric, pipeRef: this.percentPipe},
 
         ];
 
