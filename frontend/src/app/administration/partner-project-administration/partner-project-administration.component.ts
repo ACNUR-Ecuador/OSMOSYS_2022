@@ -1,14 +1,14 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ConfirmationService, ConfirmEventType, FilterService, MessageService, SelectItem} from 'primeng/api';
+import {ConfirmationService, FilterService, MessageService, SelectItem} from 'primeng/api';
 import {UtilsService} from '../../shared/services/utils.service';
 import {UserService} from '../../shared/services/user.service';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {Location} from '@angular/common';
 import {
     Canton, CantonForList,
-    GeneralIndicator, Indicator, IndicatorExecutionAdministrationResumeWeb, IndicatorExecutionAssigment,
+    IndicatorExecutionAdministrationResumeWeb, IndicatorExecutionAssigment,
     IndicatorExecutionGeneralIndicatorAdministrationResumeWeb, IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb,
     Period,
     Project, QuarterResumeWeb, TargetUpdateDTOWeb
@@ -22,7 +22,6 @@ import {PeriodService} from '../../shared/services/period.service';
 import {ProjectService} from '../../shared/services/project.service';
 import {User} from '../../shared/model/User';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
-import {validate} from 'codelyzer/walkerFactory/walkerFn';
 import {IndicatorService} from '../../shared/services/indicator.service';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
 import {QuarterService} from '../../shared/services/quarter.service';
@@ -291,8 +290,9 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 life: 3000
             });
         });
-
-        this.states = this.enumsService.getByType(EnumsType.State);
+        this.enumsService.getByType(EnumsType.State).subscribe(value => {
+            this.states = value;
+        });
         this.userService.getActiveUNHCRUsers().subscribe(value => {
             this.focalPoints = value;
         }, error => {

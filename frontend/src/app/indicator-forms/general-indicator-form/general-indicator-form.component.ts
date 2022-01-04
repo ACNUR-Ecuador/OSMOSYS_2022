@@ -18,6 +18,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
     monthValuesMap: Map<string, IndicatorValue[]>;
     dissagregationType: DissagregationType = DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD;
     dissagregationTypeValues: IndicatorValue[];
+    render: boolean = false;
 
     constructor(public ref: DynamicDialogRef,
                 public config: DynamicDialogConfig,
@@ -35,15 +36,11 @@ export class GeneralIndicatorFormComponent implements OnInit {
     loadMonthValues(monthId: number) {
         this.monthService.getMonthIndicatorValueByMonthId(monthId).subscribe(value => {
             this.monthValues = value as MonthValues;
-            console.log(value.month);
-            console.log(value.indicatorValuesMap);
             this.month = value.month;
             this.monthValuesMap = value.indicatorValuesMap;
-            console.log(this.monthValuesMap);
-            console.log(this.dissagregationType);
             this.dissagregationTypeValues = this.monthValuesMap.get(this.dissagregationType);
 
-
+            this.render = true;
         }, error => {
             this.messageService.add({
                 severity: 'error',

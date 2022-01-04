@@ -142,9 +142,15 @@ export class GeneralIndicatorConfigurationComponent implements OnInit {
     }
 
     private loadOptions() {
-        this.measureTypes = this.enumsService.getByType(EnumsType.MeasureType);
-        this.states = this.enumsService.getByType(EnumsType.State);
-        this.dissagregationTypes = this.enumsService.getByType(EnumsType.DissagregationType);
+        this.enumsService.getByType(EnumsType.MeasureType).subscribe(value => {
+            this.measureTypes = value;
+        });
+        this.enumsService.getByType(EnumsType.State).subscribe(value => {
+            this.states = value;
+        });
+        this.enumsService.getByType(EnumsType.DissagregationType).subscribe(value => {
+            this.dissagregationTypes = value;
+        });
     }
 
     saveItem() {

@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environment';
-import {EMPTY, Observable, of} from 'rxjs';
-import {EnumsType, MonthType} from '../model/UtilsModel';
+import {EMPTY, Observable,} from 'rxjs';
+import {EnumsType, MonthType, SelectItemWithOrder} from '../model/UtilsModel';
 import {HttpClient} from '@angular/common/http';
-import {SelectItem} from 'primeng/api';
 import {catchError, shareReplay} from 'rxjs/operators';
 
 const mainServiceUrl = environment.base_url + '/enums';
@@ -14,17 +13,29 @@ const mainServiceUrl = environment.base_url + '/enums';
 })
 export class EnumsService {
 
-    public cacheMap = new Map<EnumsType, SelectItem[]>();
+    public cacheMap = new Map<EnumsType, SelectItemWithOrder<any>[]>();
 
     constructor(private http: HttpClient) {
     }
 
-    public getByType(type: EnumsType): SelectItem[] {
-        return this.cacheMap.get(type);
+    public getByType(type: EnumsType): Observable<SelectItemWithOrder<any>[]> {
+        if (this.cacheMap[type]) {
+            console.log('Returning cached value!');
+            return this.cacheMap[type];
+        } else {
+
+            console.log('Do the request again');
+            return this.cacheMap[type] = this.getByTypeFromServer(type).pipe(
+                shareReplay(1),
+                catchError(err => {
+                    delete this.cacheMap[type];
+                    return EMPTY;
+                }));
+        }
     }
 
-    public getByTypeFromServer(type: EnumsType): Observable< SelectItem[]> {
-        return this.http.get<SelectItem[]>(`${mainServiceUrl}/${type}`);
+    public getByTypeFromServer(type: EnumsType): Observable<SelectItemWithOrder<any>[]> {
+        return this.http.get<SelectItemWithOrder<any>[]>(`${mainServiceUrl}/${type}`);
     }
 
     public loadcache() {
@@ -32,6 +43,7 @@ export class EnumsService {
         Object.keys(EnumsType).map(key => {
             const enumname: EnumsType = EnumsType[key];
             this.getByTypeFromServer(enumname).subscribe(value => {
+                console.log(enumname + ' ' + value);
                 this.cacheMap.set(enumname, value);
             });
         });

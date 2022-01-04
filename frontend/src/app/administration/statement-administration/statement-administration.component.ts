@@ -81,7 +81,9 @@ export class StatementAdministrationComponent implements OnInit {
         });
 
 
-            this.states = this.enumsService.getByType(EnumsType.State);
+        this.enumsService.getByType(EnumsType.State).subscribe(value => {
+            this.states = value;
+        });
 
     }
 

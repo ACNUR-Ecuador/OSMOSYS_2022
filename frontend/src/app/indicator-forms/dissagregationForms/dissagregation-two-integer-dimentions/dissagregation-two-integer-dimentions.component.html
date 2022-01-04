@@ -1,19 +1,41 @@
-<p-table [value]="valuesRows" responsiveLayout="scroll">
+<p-table *ngIf="values" [value]="rows">
     <ng-template pTemplate="header">
         <tr>
-            <th>Code</th>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Quantity</th>
+            <th></th>
+            <th *ngFor="let col of dissagregationOptionsColumns">{{col.label}}</th>
+            <th>Totales</th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-row>
+    <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
         <tr>
-            <td>{{row.code}}</td>
-            <td>{{row.name}}</td>
-            <td>{{row.category}}</td>
-            <td>{{row.quantity}}</td>
+            <td class="table-title">{{dissagregationOptionsRows[rowIndex].label}}</td>
+            <td pEditableColumn *ngFor="let rowOp of dissagregationOptionsRows; index as indexColumn" class="text-right">
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <p-inputNumber
+                            name="{{row[indexColumn].id}}"
+                            [min]="0"
+                            [(ngModel)]="row[indexColumn].value"
+                        ></p-inputNumber>
+                    </ng-template>
+                    <ng-template pTemplate="output" >
+                        {{row[indexColumn].value}}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+
+            <td class="subtotal_value">{{this.utilsService.getTotalIndicatorValuesArray(row)}}</td>
+        </tr>
+
+
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <tr>
+            <td class="table-title">Totales</td>
+            <td class="subtotal_value" *ngFor="let colOp of dissagregationOptionsColumns; index as indexColumn">
+                {{this.utilsService.getTotalIndicatorValuesColumnArrayArray(rows, indexColumn)}}
+            </td>
+            <td class="total_value">{{this.utilsService.getTotalIndicatorValuesArrayArray(rows)}}</td>
         </tr>
     </ng-template>
 </p-table>
-{{values|json}}

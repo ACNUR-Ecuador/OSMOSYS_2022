@@ -77,3 +77,23 @@ $blue_unhcr: #0072BC;
         border-width: 1px;
     }
 }
+/** totals**/
+.subtotal_value{
+    background-color: #CCE3F2 !important;
+    color: #000000 !important;
+    text-align: right !important;
+}
+.total_value {
+    background-color: #66AAD7 !important;
+    color: #000000 !important;
+    text-align: right !important;
+}
+.table-title{
+    text-align: left;
+    padding: 1rem 1rem;
+    border: 1px solid #e9ecef;
+    border-width: 0 0 1px 0;
+    font-weight: 600;
+    color: #fdfeff !important;
+    background: #0072BC;
+}

@@ -1,4 +1,5 @@
 import {PipeTransform} from '@angular/core';
+import {SelectItem} from 'primeng/api';
 
 export class ColumnTable {
     field: string;
@@ -20,19 +21,34 @@ export enum ColumnDataType {
 
 export enum EnumsType {
     AgeType = 'AgeType',
-    AreaType = 'AreaType',
     CountryOfOrigin = 'CountryOfOrigin',
+    GenderType = 'GenderType',
+    DiversityType = 'DiversityType',
+    PopulationType = 'PopulationType',
+    AreaType = 'AreaType',
     DissagregationType = 'DissagregationType',
     Frecuency = 'Frecuency',
-    GenderType = 'GenderType',
     IndicatorType = 'IndicatorType',
     MarkerType = 'MarkerType',
     MeasureType = 'MeasureType',
     OfficeType = 'OfficeType',
-    PopulationType = 'PopulationType',
     State = 'State',
     TotalIndicatorCalculationType = 'TotalIndicatorCalculationType',
-    DiversityType = 'DiversityType',
+}
+
+export enum DissagregationType {
+    TIPO_POBLACION = 'TIPO_POBLACION',
+    EDAD = 'EDAD',
+    GENERO = 'GENERO',
+    LUGAR = 'LUGAR',
+    PAIS_ORIGEN = 'PAIS_ORIGEN',
+    DIVERSIDAD = 'DIVERSIDAD',
+    SIN_DESAGREGACION = 'SIN_DESAGREGACION',
+    TIPO_POBLACION_Y_GENERO = 'TIPO_POBLACION_Y_GENERO',
+    TIPO_POBLACION_Y_EDAD = 'TIPO_POBLACION_Y_EDAD',
+    TIPO_POBLACION_Y_DIVERSIDAD = 'TIPO_POBLACION_Y_DIVERSIDAD',
+    TIPO_POBLACION_Y_PAIS_ORIGEN = 'TIPO_POBLACION_Y_PAIS_ORIGEN',
+    TIPO_POBLACION_Y_LUGAR = 'TIPO_POBLACION_Y_LUGAR',
 }
 
 export enum EnumsState {
@@ -89,19 +105,15 @@ export enum QuarterType {
     IV = 'IV'
 }
 
-export enum DissagregationType {
-    TIPO_POBLACION = 'TIPO_POBLACION',
-    EDAD = 'EDAD',
-    GENERO = 'GENERO',
-    LUGAR = 'LUGAR',
-    PAIS_ORIGEN = 'PAIS_ORIGEN',
-    DIVERSIDAD = 'DIVERSIDAD',
-    SIN_DESSAGREGACION = 'SIN_DESSAGREGACION',
-    TIPO_POBLACION_Y_GENERO = 'TIPO_POBLACION_Y_GENERO',
-    TIPO_POBLACION_Y_EDAD = 'TIPO_POBLACION_Y_EDAD',
-    TIPO_POBLACION_Y_DIVERSIDAD = 'TIPO_POBLACION_Y_DIVERSIDAD',
-    TIPO_POBLACION_Y_PAIS_ORIGEN = 'TIPO_POBLACION_Y_PAIS_ORIGEN',
-    TIPO_POBLACION_Y_LUGAR = 'TIPO_POBLACION_Y_LUGAR',
+export class SelectItemWithOrder<T> implements SelectItem<T> {
+    disabled: boolean;
+    icon: string;
+    label: string;
+    styleClass: string;
+    title: string;
+    value: T;
+    order: number;
 }
+
 
 

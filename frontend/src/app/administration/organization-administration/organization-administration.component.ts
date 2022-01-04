@@ -8,9 +8,9 @@ import {EnumsService} from '../../shared/services/enums.service';
 import {OrganizationService} from '../../shared/services/organization.service';
 
 @Component({
-  selector: 'app-organization-administration',
-  templateUrl: './organization-administration.component.html',
-  styleUrls: ['./organization-administration.component.scss']
+    selector: 'app-organization-administration',
+    templateUrl: './organization-administration.component.html',
+    styleUrls: ['./organization-administration.component.scss']
 })
 export class OrganizationAdministrationComponent implements OnInit {
     items: Organization[];
@@ -50,9 +50,9 @@ export class OrganizationAdministrationComponent implements OnInit {
             description: new FormControl('', Validators.required),
             acronym: new FormControl('', Validators.required),
         });
-
-
-            this.states = this.enumsService.getByType(EnumsType.State);
+        this.enumsService.getByType(EnumsType.State).subscribe(value => {
+            this.states = value;
+        });
 
     }
 

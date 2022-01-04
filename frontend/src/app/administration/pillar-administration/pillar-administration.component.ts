@@ -50,9 +50,9 @@ export class PillarAdministrationComponent implements OnInit {
             description: new FormControl(''),
             state: new FormControl('', Validators.required)
         });
-
-
-            this.states = this.enumsService.getByType(EnumsType.State);
+        this.enumsService.getByType(EnumsType.State).subscribe(value => {
+            this.states = value;
+        });
 
     }
 

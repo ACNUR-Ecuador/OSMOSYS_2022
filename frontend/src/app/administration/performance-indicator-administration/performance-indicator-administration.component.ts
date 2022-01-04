@@ -161,13 +161,27 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         });
 
 
-        this.states = this.enumsService.getByType(EnumsType.State);
-        this.indicatorTypes = this.enumsService.getByType(EnumsType.IndicatorType);
-        this.measureTypes = this.enumsService.getByType(EnumsType.MeasureType);
-        this.frecuencies = this.enumsService.getByType(EnumsType.Frecuency);
-        this.areaTypes = this.enumsService.getByType(EnumsType.AreaType);
-        this.totalIndicatorCalculationTypes = this.enumsService.getByType(EnumsType.TotalIndicatorCalculationType);
-        this.dissagregationTypes = this.enumsService.getByType(EnumsType.DissagregationType);
+        this.enumsService.getByType(EnumsType.State).subscribe(value => {
+            this.states = value;
+        });
+        this.enumsService.getByType(EnumsType.IndicatorType).subscribe(value => {
+            this.indicatorTypes = value;
+        });
+        this.enumsService.getByType(EnumsType.MeasureType).subscribe(value => {
+            this.measureTypes = value;
+        });
+        this.enumsService.getByType(EnumsType.Frecuency).subscribe(value => {
+            this.frecuencies = value;
+        });
+        this.enumsService.getByType(EnumsType.AreaType).subscribe(value => {
+            this.areaTypes = value;
+        });
+        this.enumsService.getByType(EnumsType.TotalIndicatorCalculationType).subscribe(value => {
+            this.totalIndicatorCalculationTypes = value;
+        });
+        this.enumsService.getByType(EnumsType.DissagregationType).subscribe(value => {
+            this.dissagregationTypes = value;
+        });
         this.customDissagregationService.getByState(EnumsState.ACTIVE).subscribe(value => {
             this.customDissagregations = value;
         }, error => {

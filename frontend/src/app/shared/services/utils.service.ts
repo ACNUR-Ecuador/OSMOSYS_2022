@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import * as FileSaver from 'file-saver';
 import {FormGroup} from '@angular/forms';
-import {ColumnTable, DissagregationType, EnumsType, MonthType} from '../model/UtilsModel';
+import {ColumnTable, DissagregationType, EnumsType, MonthType, SelectItemWithOrder} from '../model/UtilsModel';
 import {EnumsService} from './enums.service';
-import {Quarter} from '../model/OsmosysModel';
+import {IndicatorValue, Quarter} from '../model/OsmosysModel';
+import {SelectItem} from 'primeng/api';
 
 @Injectable({
     providedIn: 'root'
@@ -165,7 +166,7 @@ export class UtilsService {
 
     }
 
-    getDissagregationsByDissagregationTypes(dissagregationType: DissagregationType): EnumsType[] {
+    getEnymTypesByDissagregationTypes(dissagregationType: DissagregationType): EnumsType[] {
         const dissagregationTypeE = DissagregationType[dissagregationType];
         const result: EnumsType[] = [];
         switch (dissagregationTypeE) {
@@ -192,7 +193,7 @@ export class UtilsService {
                 result.push(EnumsType.DiversityType);
                 return result;
             }
-            case DissagregationType.SIN_DESSAGREGACION: {
+            case DissagregationType.SIN_DESAGREGACION: {
                 return result;
             }
             case DissagregationType.TIPO_POBLACION_Y_GENERO: {
@@ -222,4 +223,94 @@ export class UtilsService {
             }
         }
     }
+
+    getDissagregationTypesByDissagregationType(dissagregationType: DissagregationType): DissagregationType[] {
+        const dissagregationTypeE = DissagregationType[dissagregationType];
+        const result: DissagregationType[] = [];
+        switch (dissagregationTypeE) {
+            case DissagregationType.TIPO_POBLACION:
+            case DissagregationType.EDAD:
+            case DissagregationType.GENERO:
+            case DissagregationType.LUGAR:
+            case DissagregationType.PAIS_ORIGEN:
+            case DissagregationType.DIVERSIDAD:
+            case DissagregationType.SIN_DESAGREGACION: {
+                result.push(dissagregationTypeE);
+                return result;
+            }
+            case DissagregationType.TIPO_POBLACION_Y_GENERO: {
+                result.push(DissagregationType.TIPO_POBLACION);
+                result.push(DissagregationType.GENERO);
+                return result;
+            }
+            case DissagregationType.TIPO_POBLACION_Y_EDAD: {
+                result.push(DissagregationType.TIPO_POBLACION);
+                result.push(DissagregationType.EDAD);
+                return result;
+            }
+            case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD: {
+                result.push(DissagregationType.TIPO_POBLACION);
+                result.push(DissagregationType.DIVERSIDAD);
+                return result;
+            }
+            case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN: {
+                result.push(DissagregationType.TIPO_POBLACION);
+                result.push(DissagregationType.PAIS_ORIGEN);
+                return result;
+            }
+            case DissagregationType.TIPO_POBLACION_Y_LUGAR: {
+                result.push(DissagregationType.TIPO_POBLACION);
+                result.push(DissagregationType.LUGAR);
+                return result;
+            }
+        }
+    }
+
+
+    getOptionValueByDissagregationType(dissagregationType: DissagregationType, value: IndicatorValue) {
+        const dissagregationTypeE = DissagregationType[dissagregationType];
+        switch (dissagregationTypeE) {
+            case DissagregationType.TIPO_POBLACION:
+                return value.populationType;
+            case DissagregationType.EDAD:
+                return value.ageType;
+            case DissagregationType.GENERO:
+                return value.genderType;
+            case DissagregationType.LUGAR:
+                return value.location;
+            case DissagregationType.PAIS_ORIGEN:
+                return value.countryOfOrigin;
+            case DissagregationType.DIVERSIDAD:
+                return value.diversityType;
+            default:
+                return null;
+        }
+    }
+
+    getOrderByDissagregationOption(dissagregationOption: string, dissagregationOptionsRows: SelectItemWithOrder<any>[]): number {
+        const dissagregationOptionFound = dissagregationOptionsRows
+            .filter(value => {
+                return value.value === dissagregationOption;
+            })[0];
+        return dissagregationOptionFound.order;
+
+    }
+
+    getTotalIndicatorValuesArray(indicatorValues: IndicatorValue[]) {
+        return indicatorValues.map(value => value.value).reduce((previousValue, currentValue) => previousValue + currentValue, 0);
+    }
+
+    getTotalIndicatorValuesColumnArrayArray(indicatorValues: IndicatorValue[][], indexColumn: number) {
+        return indicatorValues
+            .map((value, index) => value[indexColumn])
+            .map(value => value.value)
+            .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
+    }
+
+    getTotalIndicatorValuesArrayArray(indicatorValues: IndicatorValue[][]) {
+        return indicatorValues.reduce((previousValue, currentValue) => previousValue.concat(currentValue), [])
+            .map(value => value.value)
+            .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
+    }
+
 }

@@ -3,7 +3,9 @@
 {{indicatorExecution.id}}
 
 {{monthId }}
-<app-dissagregation-two-integer-dimentions
-    [dissagregationType]="dissagregationType"
-    [values]="dissagregationTypeValues"
-></app-dissagregation-two-integer-dimentions>
+<div *ngIf="dissagregationTypeValues">
+    <app-dissagregation-two-integer-dimentions
+        [dissagregationType]="dissagregationType"
+        [values]="dissagregationTypeValues"
+    ></app-dissagregation-two-integer-dimentions>
+</div>
