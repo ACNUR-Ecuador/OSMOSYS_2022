@@ -24,7 +24,6 @@ import {PartnersIndicatorQuarterListComponent} from './partners-indicator-quarte
 import {OverlayPanelModule} from 'primeng/overlaypanel';
 import {DialogService} from 'primeng/dynamicdialog';
 import {ValuesStatePipe} from '../shared/pipes/values-state.pipe';
-import {Indicator} from '../shared/model/OsmosysModel';
 import {IndicatorFormsModule} from '../indicator-forms/indicator-forms.module';
 
 

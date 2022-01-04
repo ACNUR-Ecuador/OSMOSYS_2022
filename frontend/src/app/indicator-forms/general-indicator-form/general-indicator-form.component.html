@@ -3,6 +3,16 @@
     <p-messages></p-messages>
     <form #myForm="ngForm" (ngSubmit)="saveMonth()">
         <div class="p-grid" *ngIf="render">
+            <div class="p-col-12" *ngFor="let dissagregation of this.utilsService.getNoDimentionsDissagregationTypes()">
+                <app-dissagregation-no-dissagregation-integer
+                    *ngIf="monthValuesMap.get(dissagregation)"
+                    [month]="month"
+                    [dissagregationType]="dissagregation"
+                    [values]="monthValuesMap.get(dissagregation)"
+                ></app-dissagregation-no-dissagregation-integer>
+            </div>
+        </div>
+        <div class="p-grid" *ngIf="render">
             <div class="p-col-4"
                  *ngFor="let dissagregation of this.utilsService.getOneDimentionsDissagregationTypes() ">
                 <app-dissagregation-one-integer-dimentions
@@ -11,6 +21,8 @@
                     [values]="monthValuesMap.get(dissagregation)"
                 ></app-dissagregation-one-integer-dimentions>
             </div>
+        </div>
+        <div class="p-grid" *ngIf="render">
             <div class="p-col-6" *ngFor="let dissagregation of this.utilsService.getTwoDimentionsDissagregationTypes()">
                 <app-dissagregation-two-integer-dimentions
                     *ngIf="monthValuesMap.get(dissagregation)"
@@ -19,6 +31,7 @@
                 ></app-dissagregation-two-integer-dimentions>
             </div>
         </div>
+
         <div class="p-col-12 p-md-12">
             <p-messages></p-messages>
         </div>

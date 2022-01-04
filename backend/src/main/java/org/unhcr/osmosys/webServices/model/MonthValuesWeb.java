@@ -1,11 +1,8 @@
 package org.unhcr.osmosys.webServices.model;
 
-import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.enums.DissagregationType;
-import org.unhcr.osmosys.model.enums.MonthEnum;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

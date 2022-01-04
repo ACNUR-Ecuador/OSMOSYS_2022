@@ -76,4 +76,12 @@ public class IndicatorExecutionEndpoint {
         return this.indicatorExecutionService.getResumeAdministrationPerformanceIndicatorById(id);
 
     }
+
+    @Path("/updateMonthValues/{indicatorExecutionId}")
+    @PUT
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public Long updateMonthValues(@PathParam("indicatorExecutionId") Long indicatorExecutionId, MonthValuesWeb monthValuesWeb) throws GeneralAppException {
+        return this.indicatorExecutionService.updateMonthValues(indicatorExecutionId, monthValuesWeb);
+    }
 }

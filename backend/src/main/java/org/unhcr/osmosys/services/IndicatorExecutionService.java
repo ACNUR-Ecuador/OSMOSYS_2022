@@ -380,6 +380,56 @@ public class IndicatorExecutionService {
         return this.modelWebTransformationService.
                 indicatorExecutionToIndicatorExecutionPerformanceIndicatorAdministrationResumeWeb(this.indicatorExecutionDao.getPerformanceIndicatorExecutionById(id));
     }
+
+    public Long updateMonthValues(Long indicatorExecutionId, MonthValuesWeb monthValuesWeb) throws GeneralAppException {
+        // get indicator execution id
+        IndicatorExecution indicatorExecution = this.indicatorExecutionDao.getByIdWithValues(indicatorExecutionId);
+        if (monthValuesWeb.getMonth() == null || monthValuesWeb.getMonth().getId() == null) {
+            throw new GeneralAppException("Llamada mal estructurada (month es nulo)", Response.Status.BAD_REQUEST);
+        }
+        if (monthValuesWeb.getIndicatorValuesMap() == null || monthValuesWeb.getIndicatorValuesMap().size() < 1) {
+            throw new GeneralAppException("Llamada mal estructurada (no valores )", Response.Status.BAD_REQUEST);
+        }
+        if (indicatorExecution == null) {
+            throw new GeneralAppException("No se pudo encontrar el indicador (indicatorExecutionId:" + indicatorExecutionId + ")", Response.Status.BAD_REQUEST);
+        }
+        // update values
+        Month monthToUpdate = null;
+        Quarter quarterToUpdate = null;
+        for (Quarter quarter : indicatorExecution.getQuarters()) {
+            Optional<Month> monthToUpdateOp = quarter.getMonths().stream()
+                    .filter(month -> monthValuesWeb.getMonth().getId().equals(month.getId()))
+                    .findFirst();
+            if (monthToUpdateOp.isPresent()) {
+                monthToUpdate = monthToUpdateOp.get();
+                quarterToUpdate = quarter;
+                break;
+            }
+        }
+        if (monthToUpdate == null) {
+            throw new GeneralAppException("No se pudo encontrar el mes (monthId:" + monthValuesWeb.getMonth().getId() + ")", Response.Status.BAD_REQUEST);
+        }
+        List<IndicatorValueWeb> totalIndicatorValueWebs = new ArrayList<>();
+        monthValuesWeb.getIndicatorValuesMap().forEach((dissagregationType, indicatorValueWebs) -> {
+            totalIndicatorValueWebs.addAll(indicatorValueWebs);
+        });
+        for (IndicatorValueWeb indicatorValueWeb : totalIndicatorValueWebs) {
+            Optional<IndicatorValue> valueToUpdateOp = monthToUpdate.getIndicatorValues().stream().filter(indicatorValue -> {
+                return indicatorValue.getId().equals(indicatorValueWeb.getId());
+            }).findFirst();
+            if (valueToUpdateOp.isPresent()) {
+                IndicatorValue valueToUpdate = valueToUpdateOp.get();
+                valueToUpdate.setValue(indicatorValueWeb.getValue());
+                valueToUpdate.setNumeratorValue(indicatorValueWeb.getNumeratorValue());
+                valueToUpdate.setDenominatorValue(indicatorValueWeb.getDenominatorValue());
+            } else {
+                throw new GeneralAppException("No se pudo encontrar el valor (valueId:" + indicatorValueWeb.getId() + ")", Response.Status.BAD_REQUEST);
+            }
+        }
+        this.updateIndicatorExecutionTotals(indicatorExecution);
+        this.saveOrUpdate(indicatorExecution);
+        return indicatorExecution.getId();
+    }
 }
 
 

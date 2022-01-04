@@ -4,7 +4,7 @@ import {Observable} from 'rxjs';
 import {
     Indicator, IndicatorExecutionAssigment,
     IndicatorExecutionGeneralIndicatorAdministrationResumeWeb,
-    IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb, IndicatorExecutionResumeWeb,
+    IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb, IndicatorExecutionResumeWeb, IndicatorValue, MonthValues,
     TargetUpdateDTOWeb
 } from '../model/OsmosysModel';
 import {HttpClient} from '@angular/common/http';
@@ -23,6 +23,7 @@ export class IndicatorExecutionService {
         Observable<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb[]> {
         return this.http.get<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb[]>(`${mainServiceUrl}/generalAdmin/${projectId}`);
     }
+
     public getGeneralIndicatorResume(projectId: number):
         Observable<IndicatorExecutionResumeWeb[]> {
         return this.http.get<IndicatorExecutionResumeWeb[]>(`${mainServiceUrl}/general/${projectId}`);
@@ -44,5 +45,21 @@ export class IndicatorExecutionService {
     public getResumeAdministrationPerformanceIndicatorById(
         indicatorExecutionId: number): Observable<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb> {
         return this.http.post<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb>(`${mainServiceUrl}/getResumeAdministrationPerformanceIndicatorById`, indicatorExecutionId);
+    }
+
+    public updateMonthValues(indicatorExecutionId: number, monthValues: MonthValues): Observable<number> {
+        const monthValuesP = {
+            month: undefined,
+            indicatorValuesMap: undefined
+        };
+        monthValuesP.month = monthValues.month;
+        const convMap = {};
+        const monthValuesMapP: Map<string, IndicatorValue[]> = monthValues.indicatorValuesMap;
+        monthValuesMapP.forEach((value, key) => {
+            convMap[key] = value;
+        });
+        monthValuesP.indicatorValuesMap = convMap;
+
+        return this.http.put<number>(`${mainServiceUrl}/updateMonthValues/${indicatorExecutionId}`, monthValuesP);
     }
 }

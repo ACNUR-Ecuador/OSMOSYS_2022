@@ -1,0 +1,29 @@
+<p-table *ngIf="values" [value]="rows">
+    <ng-template pTemplate="caption">
+        <div class="text-center">
+            Valot Total Mensual
+        </div>
+    </ng-template>
+    <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
+        <tr>
+            <td class="table-title">{{month.month}}</td>
+            <td pEditableColumn
+                class="text-right">
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <p-inputNumber
+                            name="{{row[0].id}}"
+                            [min]="0"
+                            [(ngModel)]="row[0].value"
+                        ></p-inputNumber>
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{row[0].value}}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+        </tr>
+
+
+    </ng-template>
+</p-table>

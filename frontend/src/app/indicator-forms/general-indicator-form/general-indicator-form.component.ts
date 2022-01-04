@@ -5,6 +5,7 @@ import {MonthService} from '../../shared/services/month.service';
 import {MessageService} from 'primeng/api';
 import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
+import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
 
 @Component({
     selector: 'app-general-indicator-form',
@@ -25,6 +26,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
 
     constructor(public ref: DynamicDialogRef,
                 public config: DynamicDialogConfig,
+                public indicatorExecutionService: IndicatorExecutionService,
                 public monthService: MonthService,
                 public enumsService: EnumsService,
                 public utilsService: UtilsService,
@@ -72,7 +74,12 @@ export class GeneralIndicatorFormComponent implements OnInit {
     }
 
     private sendMonthValue() {
-        console.log(this.monthValuesMap);
+        this.indicatorExecutionService.updateMonthValues(this.indicatorExecution.id, this.monthValues).subscribe(value => {
+            this.messageService.add({severity: 'success', summary: 'Guardado con éxito', detail: ''});
+            this.ref.close({test: 1});
+        }, error => {
+            this.messageService.add({severity: 'error', summary: 'Error al guardar los valores:', detail: error.error.message});
+        });
     }
 
     closeErrorDialog() {
