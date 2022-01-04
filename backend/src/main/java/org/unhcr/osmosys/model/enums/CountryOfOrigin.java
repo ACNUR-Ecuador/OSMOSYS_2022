@@ -3,7 +3,7 @@ package org.unhcr.osmosys.model.enums;
 public enum CountryOfOrigin implements EnumInterface{
 	VENEZUELA("Venezuela",1),
 	COLOMBIA("Colombia",2),
-	ECUADOR("Ecuatoriana",3),
+	ECUADOR("Ecuador",3),
 	OTRO("Otros países",4);
 
 

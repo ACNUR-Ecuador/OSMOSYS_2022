@@ -197,23 +197,23 @@ export class UtilsService {
                 return result;
             }
             case DissagregationType.TIPO_POBLACION_Y_GENERO: {
-                result.push(EnumsType.PopulationType);
                 result.push(EnumsType.GenderType);
+                result.push(EnumsType.PopulationType);
                 return result;
             }
             case DissagregationType.TIPO_POBLACION_Y_EDAD: {
-                result.push(EnumsType.PopulationType);
                 result.push(EnumsType.AgeType);
+                result.push(EnumsType.PopulationType);
                 return result;
             }
             case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD: {
-                result.push(EnumsType.PopulationType);
                 result.push(EnumsType.DiversityType);
+                result.push(EnumsType.PopulationType);
                 return result;
             }
             case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN: {
-                result.push(EnumsType.PopulationType);
                 result.push(EnumsType.CountryOfOrigin);
+                result.push(EnumsType.PopulationType);
                 return result;
             }
             case DissagregationType.TIPO_POBLACION_Y_LUGAR: {
@@ -288,28 +288,28 @@ export class UtilsService {
                 return result;
             }
             case DissagregationType.TIPO_POBLACION_Y_GENERO: {
-                result.push(DissagregationType.TIPO_POBLACION);
                 result.push(DissagregationType.GENERO);
+                result.push(DissagregationType.TIPO_POBLACION);
                 return result;
             }
             case DissagregationType.TIPO_POBLACION_Y_EDAD: {
-                result.push(DissagregationType.TIPO_POBLACION);
                 result.push(DissagregationType.EDAD);
+                result.push(DissagregationType.TIPO_POBLACION);
                 return result;
             }
             case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD: {
-                result.push(DissagregationType.TIPO_POBLACION);
                 result.push(DissagregationType.DIVERSIDAD);
+                result.push(DissagregationType.TIPO_POBLACION);
                 return result;
             }
             case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN: {
-                result.push(DissagregationType.TIPO_POBLACION);
                 result.push(DissagregationType.PAIS_ORIGEN);
+                result.push(DissagregationType.TIPO_POBLACION);
                 return result;
             }
             case DissagregationType.TIPO_POBLACION_Y_LUGAR: {
-                result.push(DissagregationType.TIPO_POBLACION);
                 result.push(DissagregationType.LUGAR);
+                result.push(DissagregationType.TIPO_POBLACION);
                 return result;
             }
         }

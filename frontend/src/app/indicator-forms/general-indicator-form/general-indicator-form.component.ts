@@ -3,7 +3,6 @@ import {IndicatorExecutionResumeWeb, IndicatorValue, Month, MonthValues} from '.
 import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {MonthService} from '../../shared/services/month.service';
 import {MessageService} from 'primeng/api';
-import {DissagregationType} from '../../shared/model/UtilsModel';
 import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 
@@ -19,12 +18,6 @@ export class GeneralIndicatorFormComponent implements OnInit {
     month: Month;
     monthValuesMap: Map<string, IndicatorValue[]>;
 
-
-    dissagregationType: DissagregationType = DissagregationType.TIPO_POBLACION_Y_GENERO;
-    dissagregationTypeValues: IndicatorValue[];
-
-    dissagregationTypeOneD: DissagregationType = DissagregationType.TIPO_POBLACION;
-    dissagregationTypeOneDValues: IndicatorValue[];
 
     render = false;
 
@@ -48,9 +41,6 @@ export class GeneralIndicatorFormComponent implements OnInit {
             this.monthValues = value as MonthValues;
             this.month = value.month;
             this.monthValuesMap = value.indicatorValuesMap;
-            this.dissagregationTypeValues = this.monthValuesMap.get(this.dissagregationType);
-            this.dissagregationTypeOneDValues = this.monthValuesMap.get(this.dissagregationTypeOneD);
-
             this.render = true;
         }, error => {
             this.messageService.add({

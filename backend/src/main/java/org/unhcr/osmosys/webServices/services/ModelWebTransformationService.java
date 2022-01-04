@@ -1152,6 +1152,7 @@ public class ModelWebTransformationService {
         q.setCountryOfOrigin(indicatorValue.getCountryOfOrigin());
         q.setGenderType(indicatorValue.getGenderType());
         q.setDiversityType(indicatorValue.getDiversityType());
+        q.setAgeType(indicatorValue.getAgeType());
         q.setLocation(this.cantonToCantonWeb(indicatorValue.getLocation()));
         q.setShowValue(indicatorValue.getShowValue());
         q.setValue(indicatorValue.getValue());
