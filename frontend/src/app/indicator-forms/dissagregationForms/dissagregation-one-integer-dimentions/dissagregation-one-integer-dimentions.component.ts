@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {DissagregationType, EnumsType, SelectItemWithOrder} from '../../../shared/model/UtilsModel';
-import {IndicatorValue} from '../../../shared/model/OsmosysModel';
+import {Canton, IndicatorValue} from '../../../shared/model/OsmosysModel';
 import {EnumsService} from '../../../shared/services/enums.service';
 import {MessageService} from 'primeng/api';
 import {UtilsService} from '../../../shared/services/utils.service';
@@ -41,24 +41,37 @@ export class DissagregationOneIntegerDimentionsComponent implements OnInit {
         const dissagregationsTypesRyC: DissagregationType[] =
             this.utilsService.getDissagregationTypesByDissagregationType(this.dissagregationType);
         this.dissagregationTypeRows = dissagregationsTypesRyC[0];
-        this.enumsService.getByType(this.enumTypeRows)
-            .subscribe(value => {
-                this.dissagregationOptionsRows = value;
-                // ordeno los rows
-                this.dissagregationOptionsRows = this.dissagregationOptionsRows
-                    .sort((a, b) => {
-                        return a.order - b.order;
+        if (this.dissagregationTypeRows !== DissagregationType.LUGAR) {
+            this.enumsService.getByType(this.enumTypeRows)
+                .subscribe(value => {
+                    this.dissagregationOptionsRows = value;
+                    // ordeno los rows
+                    this.dissagregationOptionsRows = this.dissagregationOptionsRows
+                        .sort((a, b) => {
+                            return a.order - b.order;
+                        });
+                    this.createTwoDimentionsGrid();
+                }, error => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al cargar las opciones',
+                        detail: error.error.message,
+                        life: 3000
                     });
-                this.createTwoDimentionsGrid();
-            }, error => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error al cargar las opciones',
-                    detail: error.error.message,
-                    life: 3000
                 });
-            });
-
+        } else {
+            this.dissagregationOptionsRows = this.values
+                .map(value => {
+                    return value.location;
+                }).map(value => {
+                    const selectITem = new SelectItemWithOrder();
+                    selectITem.label = value.provincia.description + ' - ' + value.description;
+                    selectITem.value = value;
+                    return selectITem;
+                }).sort((a, b) => a.label.localeCompare(b.label));
+            this.dissagregationOptionsRows.forEach((value, index) => value.order = index);
+            this.createTwoDimentionsGrid();
+        }
     }
 
     createTwoDimentionsGrid() {
@@ -66,14 +79,26 @@ export class DissagregationOneIntegerDimentionsComponent implements OnInit {
         // clasifico por cada uno de las opciones
 
         this.rows = new Array<Array<IndicatorValue>>();
-        this.dissagregationOptionsRows.forEach(dissagregationOption => {
-            const row = this.values.filter(value => {
-                const valueOption = this.utilsService.getOptionValueByDissagregationType(this.dissagregationTypeRows, value);
-                return valueOption === dissagregationOption.value;
+        if (this.dissagregationTypeRows !== DissagregationType.LUGAR) {
+            this.dissagregationOptionsRows.forEach(dissagregationOption => {
+                const row = this.values.filter(value => {
+                    const valueOption = this.utilsService.getOptionValueByDissagregationType(this.dissagregationTypeRows, value);
+                    return valueOption === dissagregationOption.value;
 
+                });
+                this.rows.push(row);
             });
-            this.rows.push(row);
-        });
+        } else {
+            this.dissagregationOptionsRows.forEach(dissagregationOption => {
+                const row = this.values.filter(value => {
+                    const valueOption =
+                        (this.utilsService.getOptionValueByDissagregationType(this.dissagregationTypeRows, value)) as Canton;
+                    return valueOption.id === dissagregationOption.value.id;
+
+                });
+                this.rows.push(row);
+            });
+        }
     }
 
 }

@@ -224,6 +224,55 @@ export class UtilsService {
         }
     }
 
+    getDimentionsByDissagregationTypes(dissagregationType: DissagregationType): number {
+        const dissagregationTypeE = DissagregationType[dissagregationType];
+        const result: EnumsType[] = [];
+        switch (dissagregationTypeE) {
+            case DissagregationType.TIPO_POBLACION:
+            case DissagregationType.EDAD:
+            case DissagregationType.GENERO:
+            case DissagregationType.LUGAR:
+            case DissagregationType.PAIS_ORIGEN:
+            case DissagregationType.DIVERSIDAD:
+                return 1;
+            case DissagregationType.SIN_DESAGREGACION:
+                return 0;
+            case DissagregationType.TIPO_POBLACION_Y_GENERO:
+            case DissagregationType.TIPO_POBLACION_Y_EDAD:
+            case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD:
+            case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN:
+            case DissagregationType.TIPO_POBLACION_Y_LUGAR:
+                return 2;
+        }
+    }
+
+    getNoDimentionsDissagregationTypes(): DissagregationType[] {
+        const result: DissagregationType[] = [];
+        result.push(DissagregationType.SIN_DESAGREGACION);
+        return result;
+    }
+
+    getOneDimentionsDissagregationTypes(): DissagregationType[] {
+        const result: DissagregationType[] = [];
+        result.push(DissagregationType.TIPO_POBLACION);
+        result.push(DissagregationType.EDAD);
+        result.push(DissagregationType.GENERO);
+        result.push(DissagregationType.LUGAR);
+        result.push(DissagregationType.PAIS_ORIGEN);
+        result.push(DissagregationType.DIVERSIDAD);
+        return result;
+    }
+
+    getTwoDimentionsDissagregationTypes(): DissagregationType[] {
+        const result: DissagregationType[] = [];
+        result.push(DissagregationType.TIPO_POBLACION_Y_EDAD);
+        result.push(DissagregationType.TIPO_POBLACION_Y_GENERO);
+        result.push(DissagregationType.TIPO_POBLACION_Y_LUGAR);
+        result.push(DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN);
+        result.push(DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD);
+        return result;
+    }
+
     getDissagregationTypesByDissagregationType(dissagregationType: DissagregationType): DissagregationType[] {
         const dissagregationTypeE = DissagregationType[dissagregationType];
         const result: DissagregationType[] = [];

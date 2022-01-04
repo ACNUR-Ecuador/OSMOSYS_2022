@@ -1,13 +1,15 @@
-<p>general-indicator-form works swsertwert!</p>
+<div class="p-grid" *ngIf="dissagregationTypeValues">
+    <div class="p-col-4" *ngFor="let dissagregation of this.utilsService.getOneDimentionsDissagregationTypes() ">
 
-<div *ngIf="dissagregationTypeValues">
-    <app-dissagregation-one-integer-dimentions
-        [dissagregationType]="dissagregationTypeOneD"
-        [values]="dissagregationTypeOneDValues"
-    >
-    </app-dissagregation-one-integer-dimentions>
-    <app-dissagregation-two-integer-dimentions
-        [dissagregationType]="dissagregationType"
-        [values]="dissagregationTypeValues"
-    ></app-dissagregation-two-integer-dimentions>
+        <app-dissagregation-one-integer-dimentions
+            *ngIf="monthValuesMap.get(dissagregation)"
+            [dissagregationType]="dissagregation"
+            [values]="monthValuesMap.get(dissagregation)"
+        ></app-dissagregation-one-integer-dimentions>
+    </div>
+    <!-- <app-dissagregation-two-integer-dimentions
+         [dissagregationType]="dissagregationType"
+         [values]="dissagregationTypeValues"
+     ></app-dissagregation-two-integer-dimentions>-->
+
 </div>

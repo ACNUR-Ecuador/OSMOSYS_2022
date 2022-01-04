@@ -1,9 +1,8 @@
 <p-table *ngIf="values" [value]="rows">
-    <ng-template pTemplate="header">
-        <tr>
-            <th></th>
-            <th>Valores</th>
-        </tr>
+    <ng-template pTemplate="caption">
+        <div class="text-center">
+            Desagregación por {{this.enumsService.resolveLabel('DissagregationType', dissagregationTypeRows)}}
+        </div>
     </ng-template>
     <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
         <tr>

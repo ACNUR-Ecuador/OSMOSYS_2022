@@ -4,6 +4,8 @@ import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {MonthService} from '../../shared/services/month.service';
 import {MessageService} from 'primeng/api';
 import {DissagregationType} from '../../shared/model/UtilsModel';
+import {UtilsService} from '../../shared/services/utils.service';
+import {EnumsService} from '../../shared/services/enums.service';
 
 @Component({
     selector: 'app-general-indicator-form',
@@ -16,16 +18,21 @@ export class GeneralIndicatorFormComponent implements OnInit {
     monthValues: MonthValues;
     month: Month;
     monthValuesMap: Map<string, IndicatorValue[]>;
+
+
     dissagregationType: DissagregationType = DissagregationType.TIPO_POBLACION_Y_GENERO;
     dissagregationTypeValues: IndicatorValue[];
 
     dissagregationTypeOneD: DissagregationType = DissagregationType.TIPO_POBLACION;
     dissagregationTypeOneDValues: IndicatorValue[];
+
     render = false;
 
     constructor(public ref: DynamicDialogRef,
                 public config: DynamicDialogConfig,
                 public monthService: MonthService,
+                public enumsService: EnumsService,
+                public utilsService: UtilsService,
                 private messageService: MessageService
     ) {
     }
