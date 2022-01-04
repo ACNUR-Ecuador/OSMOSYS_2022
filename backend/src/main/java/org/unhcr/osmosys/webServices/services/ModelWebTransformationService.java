@@ -1027,6 +1027,27 @@ public class ModelWebTransformationService {
 
     }
 
+    public IndicatorExecutionPerformanceIndicatorResumeWeb indicatorExecutionToIndicatorExecutionPerformanceIndicatorResumeWeb(IndicatorExecution indicatorExecution) {
+        IndicatorExecutionPerformanceIndicatorResumeWeb i = new IndicatorExecutionPerformanceIndicatorResumeWeb();
+        i.setId(indicatorExecution.getId());
+
+        IndicatorWeb indicatorWeb = new IndicatorWeb();
+        indicatorWeb.setIndicatorType(indicatorExecution.getIndicator().getIndicatorType());
+        indicatorWeb.setMonitored(indicatorExecution.getIndicator().getMonitored());
+        indicatorWeb.setCompassIndicator(indicatorExecution.getIndicator().getCompassIndicator());
+        indicatorWeb.setCode(indicatorExecution.getIndicator().getCode());
+        indicatorWeb.setDescription(indicatorExecution.getIndicator().getDescription());
+        i.setIndicator(indicatorWeb);
+        i.setIndicatorType(indicatorExecution.getIndicatorType());
+        i.setTotalExecution(indicatorExecution.getTotalExecution());
+        i.setTarget(indicatorExecution.getTarget());
+        i.setState(indicatorExecution.getState());
+        i.setQuarters(this.quartersToQuarterWeb(indicatorExecution.getQuarters()));
+        i.setExecutionPercentage(indicatorExecution.getExecutionPercentage());
+        return i;
+
+    }
+
     public IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb indicatorExecutionToIndicatorExecutionPerformanceIndicatorAdministrationResumeWeb(
             IndicatorExecution indicatorExecution) {
         IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb i = new IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb();
@@ -1056,6 +1077,14 @@ public class ModelWebTransformationService {
         List<IndicatorExecutionGeneralIndicatorResumeWeb> r = new ArrayList<>();
         for (IndicatorExecution indicatorExecution : indicatorExecutions) {
             r.add(this.indicatorExecutionToIndicatorExecutionGeneralIndicatorResumeWeb(indicatorExecution));
+        }
+        return r;
+    }
+
+    public List<IndicatorExecutionPerformanceIndicatorResumeWeb> indicatorExecutionsToIndicatorExecutionPerformanceIndicatorResumesWeb(List<IndicatorExecution> indicatorExecutions) {
+        List<IndicatorExecutionPerformanceIndicatorResumeWeb> r = new ArrayList<>();
+        for (IndicatorExecution indicatorExecution : indicatorExecutions) {
+            r.add(this.indicatorExecutionToIndicatorExecutionPerformanceIndicatorResumeWeb(indicatorExecution));
         }
         return r;
     }

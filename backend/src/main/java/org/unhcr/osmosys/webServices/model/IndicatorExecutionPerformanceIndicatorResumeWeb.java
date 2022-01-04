@@ -14,7 +14,7 @@ public class IndicatorExecutionPerformanceIndicatorResumeWeb implements Serializ
     private Long id;
     private String commentary;
     private BigDecimal target;
-
+    private IndicatorWeb indicator;
     private String indicatorCode;
     private String indicatorDescription;
     private IndicatorType indicatorType;
@@ -22,7 +22,8 @@ public class IndicatorExecutionPerformanceIndicatorResumeWeb implements Serializ
     private BigDecimal totalExecution;
     private BigDecimal executionPercentage;
 
-    private Set<QuarterResumeWeb> quarters = new HashSet<>();
+
+    private Set<QuarterWeb> quarters = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -80,15 +81,13 @@ public class IndicatorExecutionPerformanceIndicatorResumeWeb implements Serializ
         this.totalExecution = totalExecution;
     }
 
-    public Set<QuarterResumeWeb> getQuarters() {
+    public Set<QuarterWeb> getQuarters() {
         return quarters;
     }
 
-    public void setQuarters(Set<QuarterResumeWeb> quarters) {
+    public void setQuarters(Set<QuarterWeb> quarters) {
         this.quarters = quarters;
     }
-
-
 
     public BigDecimal getExecutionPercentage() {
         return executionPercentage;
@@ -104,5 +103,13 @@ public class IndicatorExecutionPerformanceIndicatorResumeWeb implements Serializ
 
     public void setIndicatorCode(String indicatorCode) {
         this.indicatorCode = indicatorCode;
+    }
+
+    public IndicatorWeb getIndicator() {
+        return indicator;
+    }
+
+    public void setIndicator(IndicatorWeb indicator) {
+        this.indicator = indicator;
     }
 }

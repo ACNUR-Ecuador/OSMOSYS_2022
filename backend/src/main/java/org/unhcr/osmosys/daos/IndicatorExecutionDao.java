@@ -35,8 +35,8 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " WHERE o.project.id = :projectId" +
                 " and o.indicatorType =: generalType ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
-        q.setParameter("projectId",projectId);
-        q.setParameter("generalType",indicatorType);
+        q.setParameter("projectId", projectId);
+        q.setParameter("generalType", indicatorType);
         return q.getResultList();
     }
 
@@ -48,12 +48,28 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " left join fetch o.period p " +
                 " left join fetch p.generalIndicator " +
                 " WHERE o.project.id = :projectId" +
-                " and o.indicatorType =: generalType "+
+                " and o.indicatorType =: generalType " +
                 " and o.state =: state ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
-        q.setParameter("projectId",projectId);
-        q.setParameter("generalType",indicatorType);
-        q.setParameter("state",state);
+        q.setParameter("projectId", projectId);
+        q.setParameter("generalType", indicatorType);
+        q.setParameter("state", state);
+        return q.getResultList();
+    }
+
+    public List<IndicatorExecution> getPerformanceIndicatorExecutionsByProjectIdAndState(Long projectId, State state) {
+        IndicatorType indicatorType = IndicatorType.GENERAL;
+        String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
+                " left join fetch o.quarters q " +
+                " left join fetch q.months " +
+                " left join fetch o.period p " +
+                " WHERE o.project.id = :projectId" +
+                " and o.indicatorType <> :generalType " +
+                " and o.state =: state ";
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("projectId", projectId);
+        q.setParameter("generalType", indicatorType);
+        q.setParameter("state", state);
         return q.getResultList();
     }
 
@@ -63,11 +79,11 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " left join fetch o.quarters " +
                 " left join fetch o.period p " +
                 " left join fetch o.indicator " +
-                " WHERE o.project.id = :projectId"+
+                " WHERE o.project.id = :projectId" +
                 " and o.indicatorType <>: generalType ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
-        q.setParameter("projectId",projectId);
-        q.setParameter("generalType",indicatorType);
+        q.setParameter("projectId", projectId);
+        q.setParameter("generalType", indicatorType);
         return q.getResultList();
     }
 
@@ -77,11 +93,11 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " left join fetch o.quarters " +
                 " left join fetch o.period p " +
                 " left join fetch o.indicator " +
-                " WHERE o.id = :id"+
+                " WHERE o.id = :id" +
                 " and o.indicatorType <>: generalType ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
-        q.setParameter("id",id);
-        q.setParameter("generalType",indicatorType);
+        q.setParameter("id", id);
+        q.setParameter("generalType", indicatorType);
         return (IndicatorExecution) q.getSingleResult();
     }
 
@@ -94,7 +110,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " left join fetch  m.indicatorValuesIndicatorValueCustomDissagregations " +
                 " WHERE o.id = :id";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
-        q.setParameter("id",id);
+        q.setParameter("id", id);
         return (IndicatorExecution) q.getSingleResult();
     }
 }
