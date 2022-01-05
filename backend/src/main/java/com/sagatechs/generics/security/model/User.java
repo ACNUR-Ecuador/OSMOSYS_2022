@@ -55,7 +55,7 @@ public class User extends BaseEntity<Long> {
     @JoinColumn(name = "organization_id", foreignKey = @ForeignKey(name = "fk_user_organization"))
     private Organization organization;
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
     @JoinColumn(name = "office_id", foreignKey = @ForeignKey(name = "fk_user_office"))
     private Office office;
 

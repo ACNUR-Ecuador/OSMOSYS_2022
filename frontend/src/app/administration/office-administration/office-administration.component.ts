@@ -44,10 +44,10 @@ export class OfficeAdministrationComponent implements OnInit {
         this.loadItems();
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
-            {field: 'state', header: 'Código', type: ColumnDataType.text},
             {field: 'description', header: 'Descripción ', type: ColumnDataType.text},
             {field: 'acronym', header: 'Acrónimo', type: ColumnDataType.text},
             {field: 'type', header: 'Tipo', type: ColumnDataType.text},
+            {field: 'state', header: 'Estado', type: ColumnDataType.text},
             {field: 'parentOffice', header: 'Oficina Padre', type: ColumnDataType.text, pipeRef: this.officeOrganizationPipe}
         ];
         this._selectedColumns = this.cols.filter(value => value.field !== 'id');
@@ -88,7 +88,7 @@ export class OfficeAdministrationComponent implements OnInit {
 
     private loadTree() {
         this.officeService.getTree().subscribe(value => {
-
+            this.officeTree = this.officeTreeToNodeTree(value);
             /*
             this.officeTree = [{
                 label: 'CEO',
@@ -168,9 +168,11 @@ export class OfficeAdministrationComponent implements OnInit {
 
             if (value && value.childOffices.length > 0) {
                 node.children = [];
-                value.childOffices.forEach(value1 => {
+                /*value.childOffices.forEach(value1 => {
                     node.children.push(this.officeToNodeTree(value1));
-                });
+                });*/
+                const childNodes = this.officeTreeToNodeTree(value.childOffices);
+                node.children = childNodes;
             }
             treeNode.push(node);
         });

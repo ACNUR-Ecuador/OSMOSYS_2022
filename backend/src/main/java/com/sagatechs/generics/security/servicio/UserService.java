@@ -337,6 +337,7 @@ public class UserService implements Serializable {
         return buildToken(user);
 
     }
+
     public UserWeb validateTokenGetUserWeb(String token) {
         // obtengo el usuario
         try {
@@ -377,9 +378,9 @@ public class UserService implements Serializable {
             user.setName((String) jws.getBody().get("name"));
 
             LinkedHashMap organizationMap = (LinkedHashMap) jws.getBody().get("organization");
-            if (organizationMap!=null && organizationMap.size() > 0) {
+            if (organizationMap != null && organizationMap.size() > 0) {
                 OrganizationWeb organizationWeb = new OrganizationWeb();
-                organizationWeb.setId( Long.valueOf((Integer)organizationMap.get("id")));
+                organizationWeb.setId(Long.valueOf((Integer) organizationMap.get("id")));
                 organizationWeb.setState(State.valueOf((String) organizationMap.get("state")));
                 organizationWeb.setCode((String) organizationMap.get("code"));
                 organizationWeb.setDescription((String) organizationMap.get("description"));
@@ -387,9 +388,9 @@ public class UserService implements Serializable {
                 user.setOrganization(organizationWeb);
             }
             LinkedHashMap officeMap = (LinkedHashMap) jws.getBody().get("office");
-            if (officeMap!=null && officeMap.size() > 0) {
+            if (officeMap != null && officeMap.size() > 0) {
                 OfficeWeb officeWeb = new OfficeWeb();
-                officeWeb.setId( Long.valueOf((Integer)officeMap.get("id")));
+                officeWeb.setId(Long.valueOf((Integer) officeMap.get("id")));
                 officeWeb.setState(State.valueOf((String) officeMap.get("state")));
                 officeWeb.setType(OfficeType.valueOf((String) officeMap.get("type")));
                 officeWeb.setDescription((String) officeMap.get("description"));
@@ -407,7 +408,7 @@ public class UserService implements Serializable {
         return this.usersToUsersWeb(this.userDao.getUNHCRUsersByState(state));
     }
 
-    public User getById(Long id){
+    public User getById(Long id) {
         return this.userDao.find(id);
     }
 }

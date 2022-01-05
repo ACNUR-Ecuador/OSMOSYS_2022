@@ -38,10 +38,10 @@ public class SecurityUtils {
 
 			byte[] r= fac.generateSecret(spec).getEncoded();
 
-			LocalDateTime t2= LocalDateTime.now();
+			// LocalDateTime t2= LocalDateTime.now();
 
 			//
-            double tt = (t2.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() - t1.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()) / 1000D;
+            // double tt = (t2.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() - t1.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()) / 1000D;
 			return r;
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
 			System.err.println("Exception encountered in hashPassword()");

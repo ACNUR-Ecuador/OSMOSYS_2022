@@ -29,8 +29,11 @@ public class UserDao extends GenericDaoJpa<User, Long> {
      */
     public User findByUserNameAndPasswordWithRoles(String username, byte[] password, State state) {
 
-        String jpql = "SELECT DISTINCT o FROM User o left outer join fetch o.roleAssigments ra " +
-                "join fetch ra.role  WHERE o.username = :username AND o.password = :password AND o.state = :state and ra.state = :state and ra.role.state = :state";
+        String jpql = "SELECT DISTINCT o FROM User o " +
+                " left outer join fetch o.roleAssigments ra " +
+                " left outer join fetch ra.role " +
+                " WHERE o.username = :username AND o.password = :password AND o.state = :state"
+                + " and ra.state = :state and ra.role.state = :state";
         Query q = getEntityManager().createQuery(jpql, User.class);
         q.setParameter("username", username);
         q.setParameter("password", password);
