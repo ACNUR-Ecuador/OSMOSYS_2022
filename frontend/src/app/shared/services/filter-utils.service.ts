@@ -1,15 +1,26 @@
 import {Injectable} from '@angular/core';
 import {UtilsService} from './utils.service';
-import {CustomDissagregationAssignationToIndicator, DissagregationAssignationToIndicator, Marker} from '../model/OsmosysModel';
+import {
+    CustomDissagregationAssignationToIndicator,
+    DissagregationAssignationToIndicator,
+    Marker,
+    Office,
+    Organization
+} from '../model/OsmosysModel';
 import {EnumsService} from './enums.service';
 import {EnumsType} from '../model/UtilsModel';
+import {OfficeOrganizationPipe} from '../pipes/officeOrganization.pipe';
 
 @Injectable({
     providedIn: 'root'
 })
 export class FilterUtilsService {
 
-    constructor(private utilsService: UtilsService, private enumsService: EnumsService) {
+    constructor(
+        private utilsService: UtilsService,
+        private enumsService: EnumsService,
+        private officeOrganizationPipe: OfficeOrganizationPipe
+    ) {
 
     }
 
@@ -89,6 +100,83 @@ export class FilterUtilsService {
                 result = false;
             }
         }
+        return result;
+    }
+
+    officeOrganizationAcronymDescriptionFilter(value: Office | Organization, filter): boolean {
+
+        if (filter === undefined || filter === null || filter.trim() === '') {
+            return true;
+        }
+
+        if (value === undefined || value === null) {
+            return false;
+        }
+        let result = false;
+
+        const valueS = this.officeOrganizationPipe.transform(value);
+        if (valueS.toLowerCase().includes(filter.toString().toLowerCase())) {
+            result = true;
+        }
+        return result;
+    }
+
+    objectFilterId(value: any, filter): boolean {
+
+        if (filter === undefined || filter === null) {
+            return true;
+        }
+
+        if (value === undefined || value === null) {
+            return false;
+        }
+        let result = false;
+
+        const valueId = value.id;
+        if (valueId === filter.id) {
+            result = true;
+        }
+        return result;
+    }
+
+    // todo sin uso ni prueba
+    objectListFilterId(value: any[], filter: any[]): boolean {
+
+        if (filter === undefined || filter === null || filter.length < 1) {
+            return true;
+        }
+
+        if (value === undefined || value === null || filter.length < 1) {
+            return false;
+        }
+        let result = false;
+        const filterIds: number[] = filter.map(value1 => value1.id as number);
+        const valuesIds: number[] = value.map(value1 => value1.id as number);
+        valuesIds.forEach(value1 => {
+            if (filterIds.includes(value1)) {
+                result = true;
+            }
+        });
+
+        return result;
+    }
+    roleListFilterId(value: any[], filter: string[]): boolean {
+
+        if (filter === undefined || filter === null || filter.length < 1) {
+            return true;
+        }
+
+        if (value === undefined || value === null || filter.length < 1) {
+            return false;
+        }
+        let result = false;
+        const valuesNames: string[] = value.map(value1 => value1.name);
+        valuesNames.forEach(value1 => {
+            if (filter.includes(value1)) {
+                result = true;
+            }
+        });
+
         return result;
     }
 }

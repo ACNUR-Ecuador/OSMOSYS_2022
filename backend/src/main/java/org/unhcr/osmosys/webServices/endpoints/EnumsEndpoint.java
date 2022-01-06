@@ -3,6 +3,8 @@ package org.unhcr.osmosys.webServices.endpoints;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
+import com.sagatechs.generics.security.model.Role;
+import com.sagatechs.generics.security.model.RoleType;
 import org.apache.poi.ss.formula.functions.T;
 import org.unhcr.osmosys.model.enums.*;
 import org.unhcr.osmosys.webServices.model.EnumWeb;
@@ -55,6 +57,8 @@ public class EnumsEndpoint {
                 return this.EnumsToEnumsWeb(DiversityType.values());
             case "TotalIndicatorCalculationType":
                 return this.EnumsToEnumsWeb(TotalIndicatorCalculationType.values());
+            case "RoleType":
+                return this.EnumsToEnumsWeb(RoleType.values());
         }
 
         throw new GeneralAppException("Enumerador no soportado " + type, Response.Status.BAD_GATEWAY);

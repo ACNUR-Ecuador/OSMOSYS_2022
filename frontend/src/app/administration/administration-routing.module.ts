@@ -13,11 +13,13 @@ import {CustomDissagregationAdministrationComponent} from './custom-dissagregati
 import {PartnerProjectAdministrationComponent} from './partner-project-administration/partner-project-administration.component';
 import {PartnerProjectListAdministrationComponent} from './partner-project-list-administration/partner-project-list-administration.component';
 import {GeneralIndicatorConfigurationComponent} from './general-indicator-configuration/general-indicator-configuration.component';
+import {UserAdministrationComponent} from './user-administration/user-administration.component';
 
 const routes: Routes = [
     {
         path: '',
         children: [
+            {path: 'users', component: UserAdministrationComponent},
             {path: 'areas', component: AreasAdministrationComponent},
             {path: 'periods', component: PeriodAdministrationComponent},
             {path: 'pillars', component: PillarAdministrationComponent},

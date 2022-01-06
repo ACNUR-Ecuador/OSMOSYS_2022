@@ -56,6 +56,8 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {CodeDescriptionPipe} from '../shared/pipes/code-description.pipe';
 import {QuarterService} from '../shared/services/quarter.service';
 import {SharedModule} from '../shared/shared.module';
+import { UserAdministrationComponent } from './user-administration/user-administration.component';
+import {RolesListPipe} from '../shared/pipes/roles-list.pipe';
 
 
 @NgModule({
@@ -72,7 +74,8 @@ import {SharedModule} from '../shared/shared.module';
         CustomDissagregationAdministrationComponent,
         PartnerProjectAdministrationComponent,
         PartnerProjectListAdministrationComponent,
-        GeneralIndicatorConfigurationComponent
+        GeneralIndicatorConfigurationComponent,
+        UserAdministrationComponent
     ],
     imports: [
         CommonModule,
@@ -121,7 +124,8 @@ import {SharedModule} from '../shared/shared.module';
         CustomDissagregationsAssignationToIndicatorPipe,
         FilterUtilsService,
         ProjectService,
-        QuarterService
+        QuarterService,
+        RolesListPipe
     ]
 })
 export class AdministrationModule {

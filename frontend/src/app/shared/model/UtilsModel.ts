@@ -34,6 +34,7 @@ export enum EnumsType {
     OfficeType = 'OfficeType',
     State = 'State',
     TotalIndicatorCalculationType = 'TotalIndicatorCalculationType',
+    RoleType = 'RoleType',
 }
 
 export enum DissagregationType {

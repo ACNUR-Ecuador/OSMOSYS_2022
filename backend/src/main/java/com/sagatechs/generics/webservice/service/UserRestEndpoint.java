@@ -6,18 +6,14 @@ import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
 import com.sagatechs.generics.security.servicio.RoleService;
 import com.sagatechs.generics.security.servicio.UserService;
-import com.sagatechs.generics.webservice.webModel.ChangePasswordSimple;
 import com.sagatechs.generics.webservice.webModel.CredentialsWeb;
-import com.sagatechs.generics.webservice.webModel.RoleWeb;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 @Path("/authentication")
@@ -33,12 +29,37 @@ public class UserRestEndpoint {
     @Inject
     RoleService roleService;
 
-
+    /**
+     * creates new user
+     * @param appCode
+     * @param user
+     * @throws GeneralAppException
+     */
     @Path("/users")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public void createUser(@HeaderParam("appCode") String appCode, UserWeb user) throws GeneralAppException {
-        this.userService.creaUser(user);
+        this.userService.createUser(user);
+    }
+
+    /**
+     * update CurrentUser
+     * @param user
+     * @throws GeneralAppException
+     */
+    @Secured
+    @Path("/users")
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    public Long updateUser(UserWeb user) throws GeneralAppException {
+        return this.userService.updateUser(user);
+    }
+
+    @Path("/users")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<UserWeb> getAllUsers(@HeaderParam("appCode") String appCode) throws GeneralAppException {
+        return this.userService.getAllUsers();
     }
 
 
@@ -66,5 +87,6 @@ public class UserRestEndpoint {
     public List<UserWeb> getActiveUNHCRUsers() {
         return this.userService.getUNHCRUsersWebByState(State.ACTIVO);
     }
+
 
 }

@@ -8,6 +8,7 @@ import com.sagatechs.generics.security.dao.RoleAssigmentDao;
 import com.sagatechs.generics.security.dao.UserDao;
 import com.sagatechs.generics.security.model.Role;
 import com.sagatechs.generics.security.model.RoleAssigment;
+import com.sagatechs.generics.security.model.RoleType;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.service.EmailService;
 import com.sagatechs.generics.utils.SecurityUtils;
@@ -80,7 +81,7 @@ public class UserService implements Serializable {
 
     public static final String salt = "NwhZ2MFDH0JDXmUSM8q5JydFiVg";
 
-    public User creaUser(UserWeb userWeb) throws GeneralAppException {
+    public User createUser(UserWeb userWeb) throws GeneralAppException {
         // primero busco si existe el usuario
 
         this.validateUserWeb(userWeb);
@@ -109,16 +110,20 @@ public class UserService implements Serializable {
             user.setOffice(office);
         }
 
-        Set<RoleAssigment> userRoleAssigments = new HashSet<>();
         for (RoleWeb roleWeb : userWeb.getRoles()) {
-            Role role = this.roleService.findById(roleWeb.getId());
-            if (role == null) {
-                throw new GeneralAppException("El role " + roleWeb.getName() + " no es válido", Response.Status.CONFLICT.getStatusCode());
+            if (roleWeb.getState().equals(State.ACTIVO)) {
+                try {
+                    RoleType roleType = RoleType.valueOf(roleWeb.getName());
+                    Role role = this.roleService.findByRoleType(roleType);
+                    if (role == null) {
+                        throw new GeneralAppException("El role " + roleWeb.getName() + " no es válido", Response.Status.CONFLICT.getStatusCode());
+                    }
+                    user.addRole(role);
+                } catch (IllegalArgumentException e) {
+                    throw new GeneralAppException("Permiso no válido", Response.Status.BAD_REQUEST);
+                }
             }
-            RoleAssigment userRoleAssigment = new RoleAssigment(user, role);
-            userRoleAssigments.add(userRoleAssigment);
         }
-        user.setRoleAssigments(userRoleAssigments);
         String password = this.securityUtils.generateRamdomPassword();
         byte[] pass = this.securityUtils.hashPasswordByte(password, UserService.salt);
         user.setPassword(pass);
@@ -142,7 +147,10 @@ public class UserService implements Serializable {
                 "<p>&nbsp;</p>" +
                 "<p>Si necesitas ayuda por favor cont&aacute;ctate con la Unidad de Gesti&oacute;n de la Informaci&oacute;n con <a href=\"\\&quot;mailto:salazart@unhcr.org\\&quot;\">salazart@unhcr.org.</a></p>";
 
-        this.emailService.sendEmailMessage(user.getEmail()
+        // todo quitar email
+        this.emailService.sendEmailMessage(
+                //user.getEmail()
+                "salazart@unhcr.org"
                 , "Bienvenid@ a OSMOSYS ACNUR",
                 message
         );
@@ -411,4 +419,46 @@ public class UserService implements Serializable {
     public User getById(Long id) {
         return this.userDao.find(id);
     }
+
+    public List<UserWeb> getAllUsers() {
+        return this.usersToUsersWeb(this.userDao.getAllUsers());
+    }
+
+    public Long updateUser(UserWeb userWeb) throws GeneralAppException {
+        User user = this.userDao.findWithRoles(userWeb.getId());
+        if (user == null) {
+            throw new GeneralAppException("El usuario " + userWeb.getUsername() + " no existe.(" + userWeb.getId() + ")", Response.Status.BAD_REQUEST.getStatusCode());
+        }
+        // user.setUsername(userWeb.getUsername());
+        user.setEmail(userWeb.getEmail());
+        user.setName(userWeb.getName());
+        user.setState(userWeb.getState());
+        user.setOffice(this.modelWebTransformationService.officeWebToOffice(userWeb.getOffice()));
+        user.setOrganization(this.modelWebTransformationService.organizationWebToOrganization(userWeb.getOrganization()));
+        // roles
+
+        this.userDao.update(user);
+
+        for (RoleWeb roleWeb : userWeb.getRoles()) {
+            try {
+                RoleType roleType = RoleType.valueOf(roleWeb.getName());
+                Role role = this.roleService.findByRoleType(roleType);
+                if (roleWeb.getState().equals(State.ACTIVO)) {
+                    user.addRole(role);
+                } else {
+                    user.removeRole(role);
+                }
+            } catch (IllegalArgumentException e) {
+                throw new GeneralAppException("El usuario " + userWeb.getUsername() + " tiene un permiso no válido.(" + roleWeb.getName() + ")", Response.Status.BAD_REQUEST.getStatusCode());
+            }
+
+        }
+        user.getRoleAssigments().forEach(roleAssigment -> {
+            this.roleAssigmentDao.saveOrUpdate(roleAssigment);
+        });
+        return user.getId();
+    }
+
+
 }
+

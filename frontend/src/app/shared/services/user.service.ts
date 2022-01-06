@@ -3,7 +3,7 @@ import {environment} from '../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {MessageService} from 'primeng/api';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {User} from '../model/User';
 import jwtDecode from 'jwt-decode';
 import {tap} from 'rxjs/operators';
@@ -118,4 +118,15 @@ export class UserService {
         return this.http.get<User[]>(`${mainServiceUrl}/users/active/UNHCR`);
     }
 
+    public getAllUser() {
+        return this.http.get<User[]>(`${mainServiceUrl}/users`);
+    }
+
+    public createUser(user: User): Observable<number> {
+        return this.http.post<number>(`${mainServiceUrl}/users`, user);
+    }
+
+    public updateUser(user: User): Observable<number> {
+        return this.http.put<number>(`${mainServiceUrl}/users`, user);
+    }
 }

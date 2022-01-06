@@ -177,4 +177,31 @@ public class UserDao extends GenericDaoJpa<User, Long> {
         query.setParameter("state", state);
         return query.getResultList();
     }
+
+    public List<User> getAllUsers() {
+        String jpql = "SELECT DISTINCT o FROM User o " +
+                " left outer join fetch o.roleAssigments ra " +
+                " left outer join fetch ra.role ro " +
+                " left outer join fetch o.organization org " +
+                " left outer join fetch o.office offf " +
+                " order by org.code, o.name ";
+        Query query = getEntityManager().createQuery(jpql, User.class);
+        return query.getResultList();
+    }
+
+    public User findWithRoles(Long id) {
+        String jpql = "SELECT DISTINCT o FROM User o " +
+                " left outer join fetch o.roleAssigments ra " +
+                " left outer join fetch ra.role ro " +
+                " left outer join fetch o.organization org " +
+                " left outer join fetch o.office offf " +
+                " where o.id =:id ";
+        Query query = getEntityManager().createQuery(jpql, User.class);
+        query.setParameter("id", id);
+        try {
+            return (User) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 }

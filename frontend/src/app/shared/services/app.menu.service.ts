@@ -27,6 +27,12 @@ export class MenuService {
             items: [
                 {label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
                 {
+                    label: 'Usuarios',
+                    icon: 'pi pi-fw pi-home',
+                    routerLink: ['/administration/users'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
+                },
+                {
                     label: 'Areas',
                     icon: 'pi pi-fw pi-home',
                     routerLink: ['/administration/areas'],
@@ -104,7 +110,12 @@ export class MenuService {
         {
             label: 'Socios', icon: 'pi pi-home', roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR', 'SOCIO_EJECUTOR', 'SOCIO_ADMINISTRADOR'],
             items: [
-                {label: 'Proyectos', icon: 'pi pi-fw pi-home', routerLink: ['/partners/partnersProjectList'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
+                {
+                    label: 'Proyectos',
+                    icon: 'pi pi-fw pi-home',
+                    routerLink: ['/partners/partnersProjectList'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
+                },
             ]
         },
         {separator: true},

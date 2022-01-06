@@ -66,6 +66,7 @@ export class UtilsService {
         return formGroup.get(formControlName).invalid && formGroup.get(formControlName).dirty;
     }
 
+    // todo implementar en todos los forms
     getErrorMessageForm(formControlName: string, formGroup: FormGroup): string {
         if (this.showErrorForm(formControlName, formGroup)) {
             if (formGroup.get(formControlName).hasError('required')) {
