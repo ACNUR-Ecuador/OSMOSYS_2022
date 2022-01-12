@@ -59,10 +59,15 @@
                                                 placeholder="Selecciona..." [showClear]="true">
                                         <ng-template let-option pTemplate="item">
                                             <span
-                                                [class]="'customer-badge status-' + option">{{option}}</span>
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
                                         </ng-template>
                                     </p-dropdown>
-                                </ng-template>
+                                </ng-template
+                                >
+                            </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'customDissagregationOptions'" type="text" [field]="col.field"
+                                            [showMenu]="false" [matchMode]="'dissagegationsFilters'"
+                            >
                             </p-columnFilter>
 
                         </th>
@@ -295,8 +300,12 @@
                     </div>
                     <div class="card">
                         <h5>Marcadores</h5>
-                        <p-pickList [source]="markers" [target]="formOptionItem.get('markers').value" sourceHeader="Marcadores Disponibles" targetHeader="Marcadores Seleccionados" [dragdrop]="true"
-                                    [responsive]="true" [sourceStyle]="{'height':'30rem'}" [targetStyle]="{'height':'30rem'}" filterBy="description,shortDescription,type,subType"
+                        <p-pickList [source]="markers" [target]="formOptionItem.get('markers').value"
+                                    sourceHeader="Marcadores Disponibles" targetHeader="Marcadores Seleccionados"
+                                    [dragdrop]="true"
+                                    [responsive]="true" [sourceStyle]="{'height':'30rem'}"
+                                    [targetStyle]="{'height':'30rem'}"
+                                    filterBy="description,shortDescription,type,subType"
                                     sourceFilterPlaceholder="Search by name" targetFilterPlaceholder="Search by name">
                             <ng-template let-marker pTemplate="item">
                                 <div class="product-item">
@@ -305,15 +314,18 @@
                                     </div>
                                     <div class="product-list-detail">
                                         <i class="pi pi-tag product-category-icon"></i>
-                                        <span class="product-category" style="font-weight: bolder;">Tipo: </span>{{marker.type}}
+                                        <span class="product-category"
+                                              style="font-weight: bolder;">Tipo: </span>{{marker.type}}
                                     </div>
                                     <div class="product-list-detail">
                                         <i class="pi pi-tag product-category-icon"></i>
-                                        <span class="product-category" style="font-weight: bolder;">Subtipo: </span>{{marker.subType}}
+                                        <span class="product-category"
+                                              style="font-weight: bolder;">Subtipo: </span>{{marker.subType}}
                                     </div>
                                     <div class="image-container">
 
-                                        <p class="p-mb-2"><span class="product-category" style="font-weight: bolder;">Descripción: </span>{{marker.description}}</p>
+                                        <p class="p-mb-2"><span class="product-category" style="font-weight: bolder;">Descripción: </span>{{marker.description}}
+                                        </p>
                                     </div>
 
                                 </div>

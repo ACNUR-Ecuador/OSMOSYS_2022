@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {UtilsService} from './utils.service';
 import {
-    CustomDissagregationAssignationToIndicator,
+    CustomDissagregationAssignationToIndicator, CustomDissagregationOption,
     DissagregationAssignationToIndicator,
     Marker,
     Office,
@@ -160,6 +160,27 @@ export class FilterUtilsService {
 
         return result;
     }
+
+    customDissagregationName(value: CustomDissagregationOption[], filter: string): boolean {
+
+        if (filter === undefined || filter === null || filter.length < 1) {
+            return true;
+        }
+
+        if (value === undefined || value === null || value.length < 1) {
+            return false;
+        }
+        let result = false;
+        value.map(value1 => {
+            return value1.name;
+        }).forEach(value1 => {
+            if (value1.toLowerCase().includes(filter)) {
+                result = true;
+            }
+        });
+        return result;
+    }
+
     roleListFilterId(value: any[], filter: string[]): boolean {
 
         if (filter === undefined || filter === null || filter.length < 1) {

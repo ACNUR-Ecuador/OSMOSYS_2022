@@ -2,13 +2,14 @@ import {Component, Input, OnInit} from '@angular/core';
 import {CustomDissagregation, CustomDissagregationOption, Marker} from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
+import {ConfirmationService, FilterService, MessageService, SelectItem} from 'primeng/api';
 import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {CustomDissagregationService} from '../../shared/services/custom-dissagregation.service';
 import {MarkerService} from '../../shared/services/marker.service';
 import {MarkersListPipe} from '../../shared/pipes/markers-list.pipe';
 import {CustomDissagregationOptionsListPipe} from '../../shared/pipes/custom-dissagregation-options-list.pipe';
+import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 
 @Component({
     selector: 'app-custom-dissagregation-administration',
@@ -43,6 +44,8 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
         private confirmationService: ConfirmationService,
         private fb: FormBuilder,
         public utilsService: UtilsService,
+        private filterService: FilterService,
+        private filterUtilsService: FilterUtilsService,
         private enumsService: EnumsService,
         private customDissagregationService: CustomDissagregationService,
         private markersListPipe: MarkersListPipe,
@@ -68,6 +71,7 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
                 pipeRef: this.customDissagregationOptionsListPipe
             }
         ];
+        this.registerFilters();
 
         this.colOptions = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
@@ -97,6 +101,11 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
         });
         this.enumsService.getByType(EnumsType.State).subscribe(value => {
             this.states = value;
+        });
+    }
+    private registerFilters() {
+        this.filterService.register('dissagegationsFilters', (value, filter): boolean => {
+            return this.filterUtilsService.customDissagregationName(value, filter);
         });
     }
 
@@ -301,6 +310,7 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
         // restore original order
         this._selectedColumnsOptions = this.cols.filter(col => val.includes(col));
     }
+
 
 
 }
