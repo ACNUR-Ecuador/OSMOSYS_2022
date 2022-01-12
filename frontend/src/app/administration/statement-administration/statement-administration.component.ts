@@ -90,9 +90,9 @@ export class StatementAdministrationComponent implements OnInit {
     private loadItems() {
         this.statementService.getAll().subscribe(value => {
             this.items = value;
-            this.parentStatementsItems = this.items.map(value => {
+            this.parentStatementsItems = this.items.map(value1 => {
                 return {
-                    label: this.codeShortDescriptionPipe.transform(value),
+                    label: value1.code + ' - ' + value1.description,
                     value
                 };
             });
@@ -204,7 +204,7 @@ export class StatementAdministrationComponent implements OnInit {
     createItem() {
         this.parentStatementsItems = this.items.map(value => {
             return {
-                label: this.codeShortDescriptionPipe.transform(value),
+                label: value.code + ' - ' + value.description,
                 value
             };
         });
@@ -221,7 +221,7 @@ export class StatementAdministrationComponent implements OnInit {
             return value.id !== statement.id;
         }).map(value => {
             return {
-                label: this.codeShortDescriptionPipe.transform(value),
+                label: value.code + ' - ' + value.description,
                 value
             };
         });
@@ -260,7 +260,6 @@ export class StatementAdministrationComponent implements OnInit {
         const statement: Statement = {
             id,
             code,
-            shortDescription,
             description,
             areaType,
             state,
@@ -321,7 +320,7 @@ export class StatementAdministrationComponent implements OnInit {
     cancelDialog() {
         this.parentStatementsItems = this.items.map(value => {
             return {
-                label: this.codeShortDescriptionPipe.transform(value),
+                label: value.code + ' - ' + value.description,
                 value
             };
         });

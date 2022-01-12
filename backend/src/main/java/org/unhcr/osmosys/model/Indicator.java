@@ -22,6 +22,9 @@ public class Indicator extends BaseEntity<Long> {
     @Column(name = "code", nullable = false, unique = true)
     private String code;
 
+    @Column(name = "product_code")
+    private String productCode;
+
     @Column(name = "description", nullable = false, unique = true)
     private String description;
 
@@ -69,9 +72,10 @@ public class Indicator extends BaseEntity<Long> {
     private Boolean isCalculated;
 
     @Column(name = "total_indicator_calculation_type", nullable = false)
+    @Enumerated(EnumType.STRING)
     private TotalIndicatorCalculationType totalIndicatorCalculationType;
 
-    @Column(name = "compassIndicator", nullable = true)
+    @Column(name = "compass_indicator", nullable = true)
     private Boolean compassIndicator;
 
     @OneToMany(mappedBy = "indicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -268,6 +272,15 @@ public class Indicator extends BaseEntity<Long> {
 
     public void setCompassIndicator(Boolean compassIndicator) {
         this.compassIndicator = compassIndicator;
+    }
+
+
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
     }
 
     @Override

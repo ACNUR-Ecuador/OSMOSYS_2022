@@ -94,9 +94,7 @@ public class StatementService {
         if (StringUtils.isBlank(statementWeb.getCode())) {
             throw new GeneralAppException("Código no válido", Response.Status.BAD_REQUEST);
         }
-        if (StringUtils.isBlank(statementWeb.getShortDescription())) {
-            throw new GeneralAppException("Descripción no válida", Response.Status.BAD_REQUEST);
-        }
+
         if (StringUtils.isBlank(statementWeb.getDescription())) {
             throw new GeneralAppException("Descripción no válida", Response.Status.BAD_REQUEST);
         }
@@ -111,12 +109,6 @@ public class StatementService {
             }
         }
 
-        itemRecovered = this.statementDao.getByShortDescription(statementWeb.getShortDescription());
-        if (itemRecovered != null) {
-            if (statementWeb.getId() == null || !statementWeb.getId().equals(itemRecovered.getId())) {
-                throw new GeneralAppException("Ya existe un ítem con esta descripción corta", Response.Status.BAD_REQUEST);
-            }
-        }
         itemRecovered = this.statementDao.getByDescription(statementWeb.getDescription());
         if (itemRecovered != null) {
             if (statementWeb.getId() == null || !statementWeb.getId().equals(itemRecovered.getId())) {

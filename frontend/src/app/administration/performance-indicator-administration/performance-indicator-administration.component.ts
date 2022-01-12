@@ -208,7 +208,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.statementService.getByState(EnumsState.ACTIVE).subscribe(statements => {
             this.statements = statements.map(value => {
                 return {
-                    label: this.codeShortDescriptionPipe.transform(value),
+                    label: value.code + ' - ' + value.description,
                     value
                 };
             });
@@ -299,9 +299,11 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         }
             = this.formItem.value;
 
+        const productCode = null;
         const indicator: Indicator = {
             id,
             code,
+            productCode,
             description,
             guidePartners,
             guideDirectImplementation,

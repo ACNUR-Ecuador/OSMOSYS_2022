@@ -32,11 +32,6 @@ public class Statement extends BaseEntity<Long> {
     @Column(name = "code", unique = true)
     private String code;
 
-
-    @Column(name = "short_description", unique = true)
-    private String shortDescription;
-
-
     @Column(name = "description", columnDefinition = "text", unique = true)
     private String description;
 
@@ -46,7 +41,7 @@ public class Statement extends BaseEntity<Long> {
     @JoinColumn(name = "parent_statement_id", foreignKey = @ForeignKey(name = "fk_statemet_statement_parent"))
     private Statement parentStatement;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "area_id", foreignKey = @ForeignKey(name = "fk_statement_area"))
     private Area area;
 
@@ -87,14 +82,6 @@ public class Statement extends BaseEntity<Long> {
 
     public void setAreaType(AreaType areaType) {
         this.areaType = areaType;
-    }
-
-    public String getShortDescription() {
-        return shortDescription;
-    }
-
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
     }
 
     public String getDescription() {
@@ -175,31 +162,15 @@ public class Statement extends BaseEntity<Long> {
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Statement)) return false;
 
         Statement statement = (Statement) o;
 
-        return new EqualsBuilder().append(id, statement.id).append(areaType, statement.areaType).append(shortDescription, statement.shortDescription).append(description, statement.description).append(parentStatement, statement.parentStatement).append(area, statement.area).append(situation, statement.situation).isEquals();
+        return new EqualsBuilder().append(id, statement.id).append(areaType, statement.areaType).append(code, statement.code).append(description, statement.description).isEquals();
     }
-
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(areaType).append(shortDescription).append(description).append(parentStatement).append(area).append(situation).toHashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Statement{" +
-                "id=" + id +
-                ", state=" + state +
-                ", areaType=" + areaType +
-                ", shortDescription='" + shortDescription + '\'' +
-                ", description='" + description + '\'' +
-                ", parentStatement=" + parentStatement +
-                ", area=" + area +
-                ", pilar=" + pillar +
-                ", situation=" + situation +
-                '}';
+        return new HashCodeBuilder(17, 37).append(id).append(areaType).append(code).append(description).toHashCode();
     }
 }

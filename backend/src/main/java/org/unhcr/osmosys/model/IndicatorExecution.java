@@ -28,6 +28,9 @@ public class IndicatorExecution extends BaseEntity<Long> {
     private Long id;
 
 
+    @Column(name = "activity_description", columnDefinition = "text")
+    private String activityDescription;
+
     @Column(name = "commentary", columnDefinition = "text")
     private String commentary;
 
@@ -122,6 +125,14 @@ public class IndicatorExecution extends BaseEntity<Long> {
     public void setIndicator(Indicator indicator) {
         this.indicator = indicator;
         this.indicatorType = indicator.getIndicatorType();
+    }
+
+    public String getActivityDescription() {
+        return activityDescription;
+    }
+
+    public void setActivityDescription(String activityDescription) {
+        this.activityDescription = activityDescription;
     }
 
     public Period getPeriod() {

@@ -38,8 +38,8 @@ export class AreasAdministrationComponent implements OnInit {
         this.cols = [
             {field: 'id', header: 'id', type: ColumnDataType.numeric},
             {field: 'code', header: 'Código', type: ColumnDataType.text},
-            {field: 'shortDescription', header: 'Nombre', type: ColumnDataType.text},
-            {field: 'description', header: 'Descripción', type: ColumnDataType.text},
+            {field: 'shortDescription', header: 'Nombre corte', type: ColumnDataType.text},
+            {field: 'description', header: 'Nombre completo', type: ColumnDataType.text},
             {field: 'areaType', header: 'Tipo', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
         ];

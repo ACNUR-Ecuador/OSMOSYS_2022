@@ -705,7 +705,6 @@ public class ModelWebTransformationService {
         statementWeb.setId(statement.getId());
         statementWeb.setCode(statement.getCode());
         statementWeb.setDescription(statement.getDescription());
-        statementWeb.setShortDescription(statement.getShortDescription());
         statementWeb.setState(statement.getState());
         statementWeb.setParentStatement(this.statementWebToStatement(statement.getParentStatement()));
         statementWeb.setArea(this.areaToAreaWeb(statement.getArea()));
@@ -729,7 +728,6 @@ public class ModelWebTransformationService {
             statement.setState(statementWeb.getState());
             statement.setDescription(statementWeb.getDescription());
             statement.setCode(statementWeb.getCode());
-            statement.setShortDescription(statementWeb.getShortDescription());
             statement.setAreaType(statementWeb.getArea().getAreaType());
             statement.setParentStatement(this.statementWebToStatement(statementWeb.getParentStatement()));
             statement.setArea(this.areaToAreaWeb(statementWeb.getArea()));
@@ -742,7 +740,6 @@ public class ModelWebTransformationService {
             statement.setState(statementWeb.getState());
             statement.setDescription(statementWeb.getDescription());
             statement.setCode(statementWeb.getCode());
-            statement.setShortDescription(statementWeb.getShortDescription());
             statement.setAreaType(statementWeb.getArea().getAreaType());
             statement.setParentStatement(this.statementWebToStatement(statementWeb.getParentStatement()));
             statement.setArea(this.areaToAreaWeb(statementWeb.getArea()));
@@ -1038,6 +1035,7 @@ public class ModelWebTransformationService {
         indicatorWeb.setCode(indicatorExecution.getIndicator().getCode());
         indicatorWeb.setDescription(indicatorExecution.getIndicator().getDescription());
         i.setIndicator(indicatorWeb);
+        i.setActivityDescription(indicatorExecution.getActivityDescription());
         i.setIndicatorType(indicatorExecution.getIndicatorType());
         i.setTotalExecution(indicatorExecution.getTotalExecution());
         i.setTarget(indicatorExecution.getTarget());
@@ -1052,6 +1050,7 @@ public class ModelWebTransformationService {
             IndicatorExecution indicatorExecution) {
         IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb i = new IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb();
         i.setId(indicatorExecution.getId());
+        i.setActivityDescription(indicatorExecution.getActivityDescription());
         i.setIndicatorCode(indicatorExecution.getIndicator().getCode());
         i.setIndicatorDescription(indicatorExecution.getIndicator().getDescription());
         i.setIndicatorType(indicatorExecution.getIndicatorType());

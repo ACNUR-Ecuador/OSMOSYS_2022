@@ -14,7 +14,6 @@ public class StatementWeb implements Serializable {
     private State state;
     private AreaType areaType;
     private String code;
-    private String shortDescription;
     private String description;
     private StatementWeb parentStatement;
     private AreaWeb area;
@@ -47,13 +46,6 @@ public class StatementWeb implements Serializable {
         this.areaType = areaType;
     }
 
-    public String getShortDescription() {
-        return shortDescription;
-    }
-
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
-    }
 
     public String getDescription() {
         return description;

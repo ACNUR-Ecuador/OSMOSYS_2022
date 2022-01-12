@@ -4750,4 +4750,9 @@
   background: #338EC9 !important;
 }
 
+.p-datatable .p-sortable-column.p-highlight {
+  background: rgba(0, 114, 188, 0.4);
+  color: #0072bc;
+}
+
 /*# sourceMappingURL=styles.css.map */

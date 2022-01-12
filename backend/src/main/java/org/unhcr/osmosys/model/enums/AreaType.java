@@ -3,9 +3,9 @@ package org.unhcr.osmosys.model.enums;
 public enum AreaType  implements EnumInterface{
 
     IMPACTO("Impacto",1),
-    RESULTADOS("Resultados",2),
+    RESULTADO("Resultados",2),
     PRODUCTO("Producto",3),
-    APOYO("Apoyo",4),
+    APOYO("Apoyo",4)// todo ?
     ;
 
     private String label;

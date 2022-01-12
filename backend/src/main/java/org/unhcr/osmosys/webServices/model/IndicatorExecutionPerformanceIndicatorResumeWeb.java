@@ -17,6 +17,7 @@ public class IndicatorExecutionPerformanceIndicatorResumeWeb implements Serializ
     private IndicatorWeb indicator;
     private String indicatorCode;
     private String indicatorDescription;
+    private String activityDescription;
     private IndicatorType indicatorType;
     private State state;
     private BigDecimal totalExecution;
@@ -111,5 +112,13 @@ public class IndicatorExecutionPerformanceIndicatorResumeWeb implements Serializ
 
     public void setIndicator(IndicatorWeb indicator) {
         this.indicator = indicator;
+    }
+
+    public String getActivityDescription() {
+        return activityDescription;
+    }
+
+    public void setActivityDescription(String activityDescription) {
+        this.activityDescription = activityDescription;
     }
 }

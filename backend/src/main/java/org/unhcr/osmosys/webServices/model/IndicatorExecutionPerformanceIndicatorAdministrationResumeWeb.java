@@ -17,6 +17,7 @@ public class IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb imple
 
     private String indicatorCode;
     private String indicatorDescription;
+    private String activityDescription;
     private IndicatorType indicatorType;
     private State state;
     private BigDecimal totalExecution;
@@ -104,5 +105,13 @@ public class IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb imple
 
     public void setIndicatorCode(String indicatorCode) {
         this.indicatorCode = indicatorCode;
+    }
+
+    public String getActivityDescription() {
+        return activityDescription;
+    }
+
+    public void setActivityDescription(String activityDescription) {
+        this.activityDescription = activityDescription;
     }
 }
