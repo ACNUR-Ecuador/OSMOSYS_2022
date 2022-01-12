@@ -36,7 +36,7 @@ export class SituationAdministrationComponent implements OnInit {
         this.loadItems();
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
-            {field: 'code', header: 'Código', type: ColumnDataType.numeric},
+            {field: 'code', header: 'Código', type: ColumnDataType.text},
             {field: 'shortDescription', header: 'Descripción Corta', type: ColumnDataType.text},
             {field: 'description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
