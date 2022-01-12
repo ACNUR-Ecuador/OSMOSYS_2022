@@ -68,7 +68,7 @@ export class MenuService {
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
                         },
                         {
-                            label: 'Statements',
+                            label: 'Declaraciones',
                             icon: 'pi pi-fw pi-cog',
                             routerLink: ['/administration/statements'],
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
