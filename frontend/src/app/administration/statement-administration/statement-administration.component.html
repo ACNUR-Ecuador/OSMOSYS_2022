@@ -59,15 +59,15 @@
                                                 placeholder="Selecciona..." [showClear]="true">
                                         <ng-template let-option pTemplate="item">
                                             <span
-                                                [class]="'customer-badge status-' + option">{{option}}</span>
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
                                         </ng-template>
                                     </p-dropdown>
                                 </ng-template>
                             </p-columnFilter>
                             <p-columnFilter *ngSwitchCase="'area'" type="equals" [field]="col.field"
-                                            [showMenu]="false"
+                                            [showMenu]="false" [matchMode]="'objectIdFilter'"
                             >
-                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback" >
                                     <p-dropdown [ngModel]="value" [options]="areasItems"
                                                 (onChange)="filter($event.value)"
                                                 filter="true"
@@ -80,7 +80,7 @@
                                 </ng-template>
                             </p-columnFilter>
                             <p-columnFilter *ngSwitchCase="'pillar'" type="equals" [field]="col.field"
-                                            [showMenu]="false"
+                                            [showMenu]="false" [matchMode]="'objectIdFilter'"
                             >
                                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                                     <p-dropdown [ngModel]="value" [options]="pillarsItems"
@@ -95,7 +95,7 @@
                                 </ng-template>
                             </p-columnFilter>
                             <p-columnFilter *ngSwitchCase="'situation'" type="equals" [field]="col.field"
-                                            [showMenu]="false"
+                                            [showMenu]="false" [matchMode]="'objectIdFilter'"
                             >
                                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                                     <p-dropdown [ngModel]="value" [options]="situationsItems"
@@ -110,7 +110,7 @@
                                 </ng-template>
                             </p-columnFilter>
                             <p-columnFilter *ngSwitchCase="'parentStatement'" type="equals" [field]="col.field"
-                                            [showMenu]="false"
+                                            [showMenu]="false" [matchMode]="'objectIdFilter'"
                             >
                                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                                     <p-dropdown [ngModel]="value" [options]="parentStatementsItems"

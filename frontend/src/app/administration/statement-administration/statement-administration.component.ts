@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Period, PeriodStatementAsignation, Pillar, Statement} from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
+import {ConfirmationService, FilterService, MessageService, SelectItem} from 'primeng/api';
 import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {StatementService} from '../../shared/services/statement.service';
@@ -11,6 +11,7 @@ import {PillarService} from '../../shared/services/pillar.service';
 import {SituationService} from '../../shared/services/situation.service';
 import {CodeShortDescriptionPipe} from '../../shared/pipes/code-short-description.pipe';
 import {PeriodService} from '../../shared/services/period.service';
+import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 
 
 @Component({
@@ -39,6 +40,8 @@ export class StatementAdministrationComponent implements OnInit {
     constructor(
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
+        private filterService: FilterService,
+        private filterUtilsService: FilterUtilsService,
         private fb: FormBuilder,
         public utilsService: UtilsService,
         private enumsService: EnumsService,
@@ -55,8 +58,7 @@ export class StatementAdministrationComponent implements OnInit {
         this.loadItems();
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
-            {field: 'code', header: 'Código', type: ColumnDataType.numeric},
-            {field: 'shortDescription', header: 'Descripción Corta', type: ColumnDataType.text},
+            {field: 'code', header: 'Código', type: ColumnDataType.text},
             {field: 'description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
             {field: 'parentStatement', header: 'Declaración Padre', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},
@@ -66,6 +68,7 @@ export class StatementAdministrationComponent implements OnInit {
         ];
         this._selectedColumns = this.cols.filter(value => value.field !== 'id');
 
+        this.registerFilters();
         this.formItem = this.fb.group({
             id: new FormControl(''),
             code: new FormControl('', Validators.required),
@@ -85,6 +88,11 @@ export class StatementAdministrationComponent implements OnInit {
             this.states = value;
         });
 
+    }
+    private registerFilters() {
+        this.filterService.register('objectIdFilter', (value, filter): boolean => {
+            return this.filterUtilsService.objectFilterId(value, filter);
+        });
     }
 
     private loadItems() {
