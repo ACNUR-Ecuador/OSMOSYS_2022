@@ -48,9 +48,9 @@
 
                     <tr>
                         <th *ngFor="let col of columns" [ngSwitch]="col.field">
-                            <p-columnFilter *ngSwitchDefault [type]="col.type" [field]="col.field"
+                            <p-columnFilter *ngSwitchDefault [field]="col.field"
                                             [matchMode]="'contains'"
-                                            [showMenu]="false"> matchMode="contains
+                                            [showMenu]="false">
                             </p-columnFilter>
                             <p-columnFilter *ngSwitchCase="'state'" type="equals" [field]="col.field"
                                             [showMenu]="false"
@@ -61,7 +61,7 @@
                                                 placeholder="Selecciona..." [showClear]="true">
                                         <ng-template let-option pTemplate="item">
                                             <span
-                                                [class]="'customer-badge status-' + option">{{option}}</span>
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
                                         </ng-template>
                                     </p-dropdown>
                                 </ng-template>
@@ -131,8 +131,9 @@
                         <small class="p-error"
                                *ngIf="utilsService.showErrorForm('hasGeneralIndicator',formItem)">{{utilsService.getErrorMessageForm('hasGeneralIndicator', formItem)}}</small>
                     </div>
-                    <p-panel header="Indicador General" [toggleable]="true" *ngIf="formItem.get('hasGeneralIndicator').value">
-                        <div class="p-card p-fluid p-formgrid p-grid" >
+                    <p-panel header="Indicador General" [toggleable]="true"
+                             *ngIf="formItem.get('hasGeneralIndicator').value">
+                        <div class="p-card p-fluid p-formgrid p-grid">
                             <div class="p-fluid p-formgrid p-grid">
                                 <div class="p-field p-col-12 p-md-12">
                                     <label for="descriptionI">Descripción</label>
