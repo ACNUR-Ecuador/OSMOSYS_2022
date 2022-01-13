@@ -256,9 +256,9 @@ public class ModelWebTransformationService {
         IndicatorWeb indicatorWeb = new IndicatorWeb();
         indicatorWeb.setId(indicator.getId());
         indicatorWeb.setCode(indicator.getCode());
+        indicatorWeb.setProductCode(indicator.getProductCode());
         indicatorWeb.setDescription(indicator.getDescription());
-        indicatorWeb.setGuidePartners(indicator.getGuidePartners());
-        indicatorWeb.setGuideDirectImplementation(indicator.getGuideDirectImplementation());
+        indicatorWeb.setCategory(indicator.getCategory());
         indicatorWeb.setState(indicator.getState());
         indicatorWeb.setIndicatorType(indicator.getIndicatorType());
         indicatorWeb.setMeasureType(indicator.getMeasureType());
@@ -284,9 +284,9 @@ public class ModelWebTransformationService {
         Indicator indicator = new Indicator();
         indicator.setId(indicatorWeb.getId());
         indicator.setCode(indicatorWeb.getCode());
+        indicator.setProductCode(indicatorWeb.getProductCode());
         indicator.setDescription(indicatorWeb.getDescription());
-        indicator.setGuidePartners(indicatorWeb.getGuidePartners());
-        indicator.setGuideDirectImplementation(indicatorWeb.getGuideDirectImplementation());
+        indicator.setCategory(indicatorWeb.getCategory());
         indicator.setState(indicatorWeb.getState());
         indicator.setIndicatorType(indicatorWeb.getIndicatorType());
         indicator.setMeasureType(indicatorWeb.getMeasureType());
@@ -740,7 +740,9 @@ public class ModelWebTransformationService {
             statement.setState(statementWeb.getState());
             statement.setDescription(statementWeb.getDescription());
             statement.setCode(statementWeb.getCode());
-            statement.setAreaType(statementWeb.getArea().getAreaType());
+            if (statementWeb.getArea() != null) { // todo controlar
+                statement.setAreaType(statementWeb.getArea().getAreaType());
+            }
             statement.setParentStatement(this.statementWebToStatement(statementWeb.getParentStatement()));
             statement.setArea(this.areaToAreaWeb(statementWeb.getArea()));
             statement.setPillar(this.pillarWebToPillar(statementWeb.getPillar()));
@@ -1168,6 +1170,7 @@ public class ModelWebTransformationService {
         }
         return r;
     }
+
     //</editor-fold>
     //<editor-fold desc="IndicatorValue">
     public IndicatorValueWeb indicatorToIndicatorValueWeb(IndicatorValue indicatorValue) {

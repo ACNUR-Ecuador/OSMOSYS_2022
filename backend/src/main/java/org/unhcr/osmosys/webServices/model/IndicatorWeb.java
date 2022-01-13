@@ -15,9 +15,9 @@ import java.util.Set;
 public class IndicatorWeb implements Serializable {
     private Long id;
     private String code;
+    private String productCode;
     private String description;
-    private String guidePartners;
-    private String guideDirectImplementation;
+    private String category;
     private State state;
     private IndicatorType indicatorType;
     private MeasureType measureType;
@@ -67,20 +67,12 @@ public class IndicatorWeb implements Serializable {
         this.statements = statements;
     }
 
-    public String getGuidePartners() {
-        return guidePartners;
+    public String getCategory() {
+        return category;
     }
 
-    public void setGuidePartners(String guidePartners) {
-        this.guidePartners = guidePartners;
-    }
-
-    public String getGuideDirectImplementation() {
-        return guideDirectImplementation;
-    }
-
-    public void setGuideDirectImplementation(String guideDirectImplementation) {
-        this.guideDirectImplementation = guideDirectImplementation;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public State getState() {
@@ -177,5 +169,13 @@ public class IndicatorWeb implements Serializable {
 
     public void setCompassIndicator(Boolean compassIndicator) {
         this.compassIndicator = compassIndicator;
+    }
+
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
     }
 }
