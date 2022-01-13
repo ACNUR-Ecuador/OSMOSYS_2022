@@ -28,18 +28,15 @@ public class Indicator extends BaseEntity<Long> {
     @Column(name = "description", nullable = false, unique = true)
     private String description;
 
-    @ManyToMany@JoinTable(name = "statement_indicator_assignations", schema = "osmosys",
+    @Column(name = "category")
+    private String category;
+
+    @ManyToMany
+    @JoinTable(name = "statement_indicator_assignations", schema = "osmosys",
             joinColumns = {@JoinColumn(name = "indicator_id")},
             inverseJoinColumns = {@JoinColumn(name = "statement_id")}
     )
     private Set<Statement> statements = new HashSet<>();
-
-
-    @Column(name = "guide_partners", columnDefinition = "text")
-    private String guidePartners;
-
-    @Column(name = "guide_direct_implementation", columnDefinition = "text")
-    private String guideDirectImplementation;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", nullable = false, length = 12)
@@ -62,7 +59,7 @@ public class Indicator extends BaseEntity<Long> {
     private AreaType areaType;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(schema ="osmosys" ,name = "indicators_markers", joinColumns = @JoinColumn(name = "indicator_id"), inverseJoinColumns = @JoinColumn(name = "marker_id"))
+    @JoinTable(schema = "osmosys", name = "indicators_markers", joinColumns = @JoinColumn(name = "indicator_id"), inverseJoinColumns = @JoinColumn(name = "marker_id"))
     private Set<Marker> markers = new HashSet<>();
 
     @Column(name = "is_monitored", nullable = false)
@@ -109,21 +106,6 @@ public class Indicator extends BaseEntity<Long> {
         this.description = description;
     }
 
-    public String getGuidePartners() {
-        return guidePartners;
-    }
-
-    public void setGuidePartners(String guidePartners) {
-        this.guidePartners = guidePartners;
-    }
-
-    public String getGuideDirectImplementation() {
-        return guideDirectImplementation;
-    }
-
-    public void setGuideDirectImplementation(String guideDirectImplementation) {
-        this.guideDirectImplementation = guideDirectImplementation;
-    }
 
     public State getState() {
         return state;
@@ -165,13 +147,12 @@ public class Indicator extends BaseEntity<Long> {
         this.areaType = areaType;
     }
 
-    public void addMarker(Marker marker){
-        if(!this.markers.add(marker)){
+    public void addMarker(Marker marker) {
+        if (!this.markers.add(marker)) {
             this.markers.remove(marker);
             this.markers.add(marker);
         }
     }
-
 
 
     public Set<Marker> getMarkers() {
@@ -206,16 +187,15 @@ public class Indicator extends BaseEntity<Long> {
     public void setStatements(Set<Statement> statements) {
         this.statements = statements;
     }
-    
-    public void addStatement(Statement statement){
+
+    public void addStatement(Statement statement) {
         statement.getIndicators().add(this);
         if (!this.statements.add(statement)) {
             this.statements.remove(statement);
             this.statements.add(statement);
         }
     }
-    
-    
+
 
     public Set<CustomDissagregationAssignationToIndicator> getCustomDissagregationAssignationToIndicators() {
         return customDissagregationAssignationToIndicators;
@@ -232,6 +212,7 @@ public class Indicator extends BaseEntity<Long> {
             this.customDissagregationAssignationToIndicators.add(customDissagregationAssignationToIndicator);
         }
     }
+
     public void addDissagregationAssignationToIndicator(DissagregationAssignationToIndicator dissagregationAssignationToIndicator) {
         dissagregationAssignationToIndicator.setIndicator(this);
         if (!this.dissagregationsAssignationToIndicator.add(dissagregationAssignationToIndicator)) {
@@ -283,6 +264,14 @@ public class Indicator extends BaseEntity<Long> {
         this.productCode = productCode;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -305,8 +294,7 @@ public class Indicator extends BaseEntity<Long> {
                 "code='" + code + '\'' +
                 ", description='" + description + '\'' +
                 ", statements=" + statements +
-                ", guidePartners='" + guidePartners + '\'' +
-                ", guideDirectImplementation='" + guideDirectImplementation + '\'' +
+                ", category='" + category + '\'' +
                 ", state=" + state +
                 ", indicatorType=" + indicatorType +
                 ", measureType=" + measureType +

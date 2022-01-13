@@ -77,10 +77,10 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.registerFilters();
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
+            {field: 'productCode', header: 'Código de Producto', type: ColumnDataType.text},
             {field: 'code', header: 'Código', type: ColumnDataType.text},
             {field: 'description', header: 'Descripción', type: ColumnDataType.text},
-            /*{field: 'guidePartners', header: 'Guía para socios', type: ColumnDataType.text},
-            {field: 'guideDirectImplementation', header: 'Guía para Implementación Directa', type: ColumnDataType.text},*/
+            {field: 'category', header: 'Categoría', type: ColumnDataType.text},
             {
                 field: 'state', header: 'Estado', type: ColumnDataType.text,
                 pipeRef: this.enumValuesToLabelPipe,
@@ -134,15 +134,15 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             }
         ];
 
-        const hiddenColumns: string[] = ['id', 'guidePartners', 'guideDirectImplementation', 'markers', 'customDissagregationAssignationToIndicators', 'dissagregationsAssignationToIndicator'];
+        const hiddenColumns: string[] = ['id', 'guideDirectImplementation', 'markers', 'customDissagregationAssignationToIndicators', 'dissagregationsAssignationToIndicator'];
         this._selectedColumns = this.cols.filter(value => !hiddenColumns.includes(value.field));
 
         this.formItem = this.fb.group({
             id: new FormControl(''),
             code: new FormControl('', [Validators.required, Validators.maxLength(10)]),
+            productCode: new FormControl('', [Validators.maxLength(20)]),
             description: new FormControl('', [Validators.required, Validators.maxLength(255)]),
-            guidePartners: new FormControl(''),
-            guideDirectImplementation: new FormControl('', Validators.required),
+            category: new FormControl('', [Validators.maxLength(255)]),
             state: new FormControl('', Validators.required),
             indicatorType: new FormControl('', Validators.required),
             measureType: new FormControl('', Validators.required),
@@ -194,6 +194,10 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     private loadItems() {
         this.indicatorService.getAll().subscribe(value => {
             this.items = value;
+            const test = this.items.filter(value1 => {
+                return value1.productCode !== null;
+            });
+            console.log(test);
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -279,8 +283,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             id,
             code,
             description,
-            guidePartners,
-            guideDirectImplementation,
+            category,
             state,
             indicatorType,
             measureType,
@@ -305,8 +308,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             code,
             productCode,
             description,
-            guidePartners,
-            guideDirectImplementation,
+            category,
             state,
             indicatorType,
             measureType,

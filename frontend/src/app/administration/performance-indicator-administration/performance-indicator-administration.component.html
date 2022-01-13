@@ -149,6 +149,13 @@
                         </div>
 
                         <div class="p-field p-col-12 p-md-3">
+                            <label for="codeI">Código de producto</label>
+                            <input type="text" pInputText id="productCodeI"
+                                   formControlName="productCode" autofocus/>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('productCode',formItem)">{{utilsService.getErrorMessageForm('productCode', formItem)}}</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-3">
                             <label for="codeI">Código</label>
                             <input type="text" pInputText id="codeI"
                                    formControlName="code" autofocus/>
@@ -167,7 +174,13 @@
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('description',formItem)">{{utilsService.getErrorMessageForm('description', formItem)}}</small>
                         </div>
-
+                        <div class="p-field p-col-12 p-md-3">
+                            <label for="codeI">Categoría</label>
+                            <input type="text" pInputText id="categoryI"
+                                   formControlName="category" autofocus/>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('category',formItem)">{{utilsService.getErrorMessageForm('category', formItem)}}</small>
+                        </div>
 
                         <div class="p-field p-col-12 p-md-2">
                             <label for="measureTypeI">Tipo de medida</label>
@@ -268,28 +281,6 @@
                                    *ngIf="utilsService.showErrorForm('state',formItem)">{{utilsService.getErrorMessageForm('state', formItem)}}</small>
                         </div>
 
-                        <div class="p-field p-col-12 p-md-6">
-                            <label for="guidePartnersI">Guía para socios</label>
-
-                            <textarea pInputTextarea id="guidePartnersI"
-                                      formControlName="guidePartners"
-                                      autoResize="autoResize">
-                        </textarea>
-
-                            <small class="p-error"
-                                   *ngIf="utilsService.showErrorForm('guidePartners',formItem)">{{utilsService.getErrorMessageForm('guidePartners', formItem)}}</small>
-                        </div>
-                        <div class="p-field p-col-12 p-md-6">
-                            <label for="guideDirectImplementationI">Guía para implementación directa</label>
-
-                            <textarea pInputTextarea id="guideDirectImplementationI"
-                                      formControlName="guideDirectImplementation"
-                                      autoResize="autoResize">
-                        </textarea>
-
-                            <small class="p-error"
-                                   *ngIf="utilsService.showErrorForm('guideDirectImplementation',formItem)">{{utilsService.getErrorMessageForm('guideDirectImplementation', formItem)}}</small>
-                        </div>
                         <div class="p-field p-col-12 p-md-6">
                             <label>Desagregaciones Globales</label>
                             <div class="p-field p-col-12 p-md-12" style="border: 1px solid #ced4da;">

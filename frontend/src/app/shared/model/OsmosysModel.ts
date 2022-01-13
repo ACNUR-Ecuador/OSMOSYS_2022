@@ -164,8 +164,7 @@ export class Indicator {
     public code: string;
     public productCode: string;
     public description: string;
-    public guidePartners: string;
-    public guideDirectImplementation: string;
+    public category: string;
     public state: string;
     public indicatorType: string;
     public measureType: string;
