@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Month, Quarter, QuarterMonthResume} from '../../shared/model/OsmosysModel';
+import { Quarter, QuarterMonthResume} from '../../shared/model/OsmosysModel';
 import {EnumsState} from '../../shared/model/UtilsModel';
 import {UtilsService} from '../../shared/services/utils.service';
 

@@ -329,6 +329,7 @@ export class IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb exten
 export class IndicatorExecutionResumeWeb {
     public id: number;
     public commentary: string;
+    public activityDescription: string;
     public target: number;
     public indicator: Indicator;
     public indicatorType: string;

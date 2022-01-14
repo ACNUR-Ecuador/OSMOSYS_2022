@@ -95,12 +95,13 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         const totalNoDimentions = this.utilsService.getNoDimentionsDissagregationTypes();
         this.monthValuesMap.forEach((value, key) => {
             if (value && value.length > 0) {
-                if (totalOneDimentions.indexOf(DissagregationType[key])) {
-                    this.oneDimentionDissagregations.push(DissagregationType[key]);
-                }else if (totalTwoDimentions.indexOf(DissagregationType[key])) {
-                    this.twoDimentionDissagregations.push(DissagregationType[key]);
-                }else if (totalNoDimentions.indexOf(DissagregationType[key])) {
-                    this.noDimentionDissagregations.push(DissagregationType[key]);
+                const dissagregationType: DissagregationType = DissagregationType[key];
+                if (totalOneDimentions.indexOf(dissagregationType) >= 0) {
+                    this.oneDimentionDissagregations.push(dissagregationType);
+                } else if (totalTwoDimentions.indexOf(dissagregationType) >= 0) {
+                    this.twoDimentionDissagregations.push(dissagregationType);
+                } else if (totalNoDimentions.indexOf(dissagregationType) >= 0) {
+                    this.noDimentionDissagregations.push(dissagregationType);
                 }
             }
         });

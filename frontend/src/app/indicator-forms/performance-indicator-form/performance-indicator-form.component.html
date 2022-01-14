@@ -1,6 +1,14 @@
-<div>
-    <p-toast key="dialogToast" position="top-right"></p-toast>
-    <p-messages></p-messages>
+<p-card>
+    <ng-template pTemplate="header">
+        <p-toast key="dialogToast" position="top-right"></p-toast>
+        <p-messages></p-messages>
+        <div class="p-fluid" *ngIf="render">
+            <div class="p-field">
+                <label>Descripción de la actividad:</label>
+                {{indicatorExecution.activityDescription}}
+            </div>
+        </div>
+    </ng-template>
     <form #myForm="ngForm" (ngSubmit)="saveMonth()">
         <div class="p-grid" *ngIf="render">
             <div class="p-col-12" *ngFor="let dissagregation of noDimentionDissagregations">
@@ -45,7 +53,7 @@
                     (click)="cancel()"></button>
         </div>
     </form>
-</div>
+</p-card>
 <p-dialog [(visible)]="showErrorResume" [closable]="false" [closeOnEscape]="false">
     <ng-template pTemplate="header">
         Existen Errores en lo Valores
@@ -53,7 +61,8 @@
     <div *ngIf="showErrorResume">
         <div class="p-d-flex p-flex-column">
             <div class="p-mb-2">
-                Existen errores en los valores. Los valores totales de cada segregación en la tabla deberían ser iguales.
+                Existen errores en los valores. Los valores totales de cada segregación en la tabla deberían ser
+                iguales.
             </div>
             <div class="p-mb-2">
                 <p-table [value]="totalsValidation.keys()" responsiveLayout="scroll">

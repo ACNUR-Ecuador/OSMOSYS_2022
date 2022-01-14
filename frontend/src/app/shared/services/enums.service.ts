@@ -20,7 +20,7 @@ export class EnumsService {
 
     public getByType(type: EnumsType): Observable<SelectItemWithOrder<any>[]> {
         if (this.cacheMap[type]) {
-            console.log('Returning cached value!');
+            console.log('Returning cached value!' + type);
             return this.cacheMap[type];
         } else {
 

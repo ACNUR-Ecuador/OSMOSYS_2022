@@ -13,6 +13,7 @@ import {DialogModule} from 'primeng/dialog';
 import {SharedModule} from '../shared/shared.module';
 import {DissagregationNoDissagregationIntegerComponent} from './dissagregationForms/dissagregation-no-dissagregation-integer/dissagregation-no-dissagregation-integer.component';
 import { PerformanceIndicatorFormComponent } from './performance-indicator-form/performance-indicator-form.component';
+import {CardModule} from 'primeng/card';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { PerformanceIndicatorFormComponent } from './performance-indicator-form/
         MessagesModule,
         ButtonModule,
         DialogModule,
-        SharedModule
+        SharedModule,
+        CardModule
     ]
 })
 export class IndicatorFormsModule {

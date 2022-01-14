@@ -90,17 +90,18 @@ export class GeneralIndicatorFormComponent implements OnInit {
     closeErrorDialog() {
         this.showErrorResume = false;
     }
+
     setDimentionsDissagregations(): void {
         const totalOneDimentions = this.utilsService.getOneDimentionsDissagregationTypes();
         const totalTwoDimentions = this.utilsService.getTwoDimentionsDissagregationTypes();
         const totalNoDimentions = this.utilsService.getNoDimentionsDissagregationTypes();
         this.monthValuesMap.forEach((value, key) => {
             if (value && value.length > 0) {
-                if (totalOneDimentions.indexOf(DissagregationType[key])) {
+                if (totalOneDimentions.indexOf(DissagregationType[key]) >= 0) {
                     this.oneDimentionDissagregations.push(DissagregationType[key]);
-                }else if (totalTwoDimentions.indexOf(DissagregationType[key])) {
+                } else if (totalTwoDimentions.indexOf(DissagregationType[key]) >= 0) {
                     this.twoDimentionDissagregations.push(DissagregationType[key]);
-                }else if (totalNoDimentions.indexOf(DissagregationType[key])) {
+                } else if (totalNoDimentions.indexOf(DissagregationType[key]) >= 0) {
                     this.noDimentionDissagregations.push(DissagregationType[key]);
                 }
             }

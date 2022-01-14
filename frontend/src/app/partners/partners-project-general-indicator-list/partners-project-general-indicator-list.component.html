@@ -76,7 +76,7 @@
             </td>
 
             <td>
-                <button type="text" pButton label="Basic" (click)="op.toggle($event)"  ></button>
+                <button type="text" pButton label="ver valores" (click)="op.toggle($event)"  ></button>
                 <p-overlayPanel #op (onShow)="selectedIndicatorSet(rowData)" (onHide)="clearIndicator()">
                     <ng-template pTemplate >
                         <app-partners-indicator-quarter-list
