@@ -25,6 +25,16 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         return q.getResultList();
     }
 
+    public List<IndicatorExecution> getGeneralAndPerformanceIndicatorExecutionsByProjectId(Long projectId) {
+
+        String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
+                " left join fetch o.quarters q " +
+                " left join fetch o.period p " +
+                " WHERE o.project.id = :projectId" ;
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("projectId", projectId);
+        return q.getResultList();
+    }
 
     public List<IndicatorExecution> getGeneralIndicatorExecutionsByProjectId(Long projectId) {
         IndicatorType indicatorType = IndicatorType.GENERAL;

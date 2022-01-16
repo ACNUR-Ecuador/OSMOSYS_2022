@@ -2,6 +2,7 @@ package org.unhcr.osmosys.services;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.utils.DateUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.threeten.extra.YearQuarter;
@@ -35,6 +36,8 @@ public class QuarterService {
     @Inject
     MonthService monthService;
 
+    @Inject
+    DateUtils dateUtils;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(QuarterService.class);
@@ -52,23 +55,7 @@ public class QuarterService {
         return quarter;
     }
 
-    public List<YearQuarter> calculateQuarter(LocalDate startDate, LocalDate endDate) {
-        List<YearQuarter> yqs = new ArrayList<>();
-        YearQuarter yqStart = YearQuarter.from(startDate);
-        YearQuarter yqStop = YearQuarter.from(endDate);
-        YearQuarter yq = yqStart;
-        while (yq.isBefore(yqStop.plusQuarters(1))) {  // Using Half-Open approach where the beginning is *inclusive* while the ending is *exclusive*.
-            yqs.add(yq);  // Collect this quarter.
-            // Set up next loop.
-            yq = yq.plusQuarters(1);  // Move to next quarter.
-        }
 
-        for (YearQuarter yearQuarter : yqs) {
-            LOGGER.error(yearQuarter.getQuarter().toString() + '-' + yearQuarter.getYear());
-        }
-
-        return yqs;
-    }
 
     public Quarter createQuarter(YearQuarter yearQuarter,
                                  LocalDate startDate, LocalDate endDate,
@@ -95,7 +82,7 @@ public class QuarterService {
     public Set<Quarter> createQuarters(LocalDate startDate, LocalDate endDate, List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations,
                                        List<Canton> cantones) throws GeneralAppException {
         Set<Quarter> qs = new HashSet<>();
-        List<YearQuarter> yearQuarters = this.calculateQuarter(startDate, endDate);
+        List<YearQuarter> yearQuarters = this.dateUtils.calculateQuarter(startDate, endDate);
         if (yearQuarters.size() < 1) {
             throw new GeneralAppException("Error al crear los trimestres ", Response.Status.INTERNAL_SERVER_ERROR);
         }
@@ -108,41 +95,6 @@ public class QuarterService {
         return qs;
 
     }
-
-    public List<QuarterResumeWeb> createEmptyQuarters(LocalDate startDate, LocalDate endDate) throws GeneralAppException {
-        List<QuarterResumeWeb> qs = new ArrayList<>();
-        List<YearQuarter> yearQuarters = this.calculateQuarter(startDate, endDate);
-        if (yearQuarters.size() < 1) {
-            throw new GeneralAppException("Error al crear los trimestres ", Response.Status.INTERNAL_SERVER_ERROR);
-        }
-
-
-        for (YearQuarter yearQuarter : yearQuarters) {
-            QuarterResumeWeb q = new QuarterResumeWeb();
-            q.setYear(yearQuarter.getYear());
-            q.setTarget(null);
-            q.setOrder(0);
-            q.setQuarter(QuarterEnum.getByQuarterNumber(yearQuarter.getQuarterValue()));
-            q.setState(State.ACTIVO);
-            qs.add(q);
-        }
-        List<QuarterResumeWeb> qsl = qs.stream().sorted((o1, o2) -> {
-            if (o1.getYear() < o2.getYear()) {
-                return -1;
-            } else if (o1.getYear() > o2.getYear()) {
-                return 1;
-            } else if (o1.getQuarter().getOrder() < o2.getQuarter().getOrder()) {
-                return -1;
-            } else if (o1.getQuarter().getOrder() > o2.getQuarter().getOrder()) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }).collect(Collectors.toList());
-        return qsl;
-
-    }
-
 
     public void updateQuarterTotals(Quarter quarter, TotalIndicatorCalculationType totalIndicatorCalculationType) throws GeneralAppException {
         for (Month month1 : quarter.getMonths()) {

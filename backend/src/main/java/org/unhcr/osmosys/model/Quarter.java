@@ -17,7 +17,7 @@ import java.util.Set;
 @Table(schema = "osmosys", name = "quarters",
         uniqueConstraints = {
                 @UniqueConstraint(name = "uk_ie_quarter_year", columnNames = {"indicator_execution_id", "quarter", "year"}),
-                @UniqueConstraint(name = "uk_ie_order", columnNames = {"indicator_execution_id", "order_"})
+                //@UniqueConstraint(name = "uk_ie_order", columnNames = {"indicator_execution_id", "order_"})
         }
 )
 public class Quarter extends BaseEntity<Long> {

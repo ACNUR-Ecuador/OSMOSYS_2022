@@ -1,24 +1,25 @@
 package com.sagatechs.generics.utils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jboss.logging.Logger;
+import org.threeten.extra.YearQuarter;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("unused")
 @Named
 @ApplicationScoped
 public class DateUtils {
-
+    private static final Logger LOGGER = Logger.getLogger(DateUtils.class);
     private static final String TIME_FORMATTER = "HH:mm";
     private static final String DATE_TIME_FORMATTER = "dd/MM/yyyy HH:mm";
     private static final String DATE_FORMATTER = "dd/MM/yyyy";
@@ -105,7 +106,7 @@ public class DateUtils {
 
     public String getSpanishDayNameFromDayOfWeek(DayOfWeek day) {
 
-        if(day==null) return null;
+        if (day == null) return null;
         switch (day) {
             case SUNDAY:
                 return "Domingo";
@@ -125,6 +126,32 @@ public class DateUtils {
                 return null;
         }
 
+    }
+
+    public List<YearQuarter> calculateQuarter(LocalDate startDate, LocalDate endDate) {
+        List<YearQuarter> yqs = new ArrayList<>();
+        YearQuarter yqStart = YearQuarter.from(startDate);
+        YearQuarter yqStop = YearQuarter.from(endDate);
+        YearQuarter yq = yqStart;
+        while (yq.isBefore(yqStop.plusQuarters(1))) {  // Using Half-Open approach where the beginning is *inclusive* while the ending is *exclusive*.
+            yqs.add(yq);  // Collect this quarter.
+            // Set up next loop.
+            yq = yq.plusQuarters(1);  // Move to next quarter.
+        }
+        return yqs;
+    }
+
+    public List<YearMonth> calculateYearMonthsBetweenDates(LocalDate startDate, LocalDate endDate) {
+        List<YearMonth> yearMonths = new ArrayList<>();
+        YearMonth ymStart = YearMonth.from(startDate);
+        YearMonth ymStop = YearMonth.from(endDate);
+        YearMonth ym = ymStart;
+        while (ym.isBefore(ymStop.plusMonths(1))) {  // Using Half-Open approach where the beginning is *inclusive* while the ending is *exclusive*.
+            yearMonths.add(ym);  // Collect this quarter.
+            // Set up next loop.
+            ym = ym.plusMonths(1);  // Move to next quarter.
+        }
+        return yearMonths;
     }
 
 }

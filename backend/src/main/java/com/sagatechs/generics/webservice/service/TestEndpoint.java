@@ -4,6 +4,7 @@ package com.sagatechs.generics.webservice.service;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.servicio.UserService;
+import com.sagatechs.generics.utils.DateUtils;
 import com.sagatechs.generics.webservice.jsonSerializers.LocalDateDeserializer;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.Period;
@@ -11,6 +12,7 @@ import org.unhcr.osmosys.model.Project;
 import org.unhcr.osmosys.model.enums.AreaType;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
 import org.unhcr.osmosys.services.PeriodService;
+import org.unhcr.osmosys.services.ProjectService;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -20,6 +22,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.YearMonth;
+import java.util.List;
 
 
 @SuppressWarnings("ALL")
@@ -36,11 +40,25 @@ public class TestEndpoint {
     @Inject
     PeriodService periodService;
 
+    @Inject
+    ProjectService projectService;
+
+
+    @Inject
+    DateUtils dateUtils;
+
+
     @Path("test")
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
     public String test2() throws GeneralAppException {
-        return "ya - !!";
+        LocalDate startOld = LocalDate.of(2022, Month.JANUARY, 1);
+        LocalDate endOld = LocalDate.of(2022, Month.DECEMBER, 31);
+        LocalDate startNew = LocalDate.of(2021, Month.DECEMBER, 1);
+        LocalDate endNew = LocalDate.of(2022, Month.AUGUST, 21);
+        // this.projectService.updateProjectDates(startOld, endOld,startNew, endNew);
+        //List<YearMonth> r = this.dateUtils.calculateYearMonthsBetweenDates(startOld, endOld);
+        return "ya";
     }
 
     @Path("testenum")
@@ -74,8 +92,6 @@ public class TestEndpoint {
         p.setState(State.ACTIVO);
         p.setPeriod(this.periodService.getById(1L));
         this.indicatorExecutionService.createGeneralIndicatorForProject(p);
-
-
 
 
     }

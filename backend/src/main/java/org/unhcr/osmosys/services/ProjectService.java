@@ -4,9 +4,11 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.security.servicio.UserService;
+import com.sagatechs.generics.utils.DateUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
+import org.threeten.extra.YearQuarter;
 import org.unhcr.osmosys.daos.CantonDao;
 import org.unhcr.osmosys.daos.ProjectDao;
 import org.unhcr.osmosys.model.*;
@@ -18,6 +20,8 @@ import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +49,9 @@ public class ProjectService {
 
     @Inject
     ModelWebTransformationService modelWebTransformationService;
+
+    @Inject
+    DateUtils dateUtils;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(ProjectService.class);
@@ -82,7 +89,7 @@ public class ProjectService {
         project.setOrganization(this.modelWebTransformationService.organizationWebToOrganization(projectWeb.getOrganization()));
         project.setStartDate(projectWeb.getStartDate());
         project.setEndDate(projectWeb.getEndDate());
-        User focalPoint=null;
+        User focalPoint = null;
         if (projectWeb.getFocalPoint() != null) {
             focalPoint = this.userService.getById(projectWeb.getFocalPoint().getId());
         }
@@ -121,21 +128,33 @@ public class ProjectService {
         project.setPeriod(this.modelWebTransformationService.periodWebToPeriod(projectWeb.getPeriod()));
         project.setState(projectWeb.getState());
         project.setName(projectWeb.getName());
-        User focalPoint=null;
+        User focalPoint = null;
         if (projectWeb.getFocalPoint() != null) {
             focalPoint = this.userService.getById(projectWeb.getFocalPoint().getId());
         }
 
         project.setFocalPoint(focalPoint);
-        // TODO Q HACER CUANDO SE CAMBIE ESTOS VALORES
-        project.setStartDate(projectWeb.getStartDate());
-        project.setEndDate(projectWeb.getEndDate());
+        Boolean projectDatesChanged = Boolean.FALSE;
+        LocalDate oldStartDate = project.getStartDate();
+        LocalDate oldEndDate = project.getEndDate();
+        if (project.getStartDate().compareTo(projectWeb.getStartDate()) != 0 || project.getEndDate().compareTo(projectWeb.getEndDate()) != 0) {
+            projectDatesChanged = Boolean.TRUE;
+            project.setStartDate(projectWeb.getStartDate());
+            project.setEndDate(projectWeb.getEndDate());
+        }
+
+
         // las localidades
         updateProjectLocations(projectWeb, project);
         // TODO Q HACER CUANDO SE CAMBIE ESTOS VALORES
         this.saveOrUpdate(project);
+        if (projectDatesChanged) {
+            this.indicatorExecutionService.updateIndicatorExecutionProjectDates(project, oldStartDate, oldEndDate, project.getStartDate(), project.getEndDate());
+        }
         return project.getId();
     }
+
+
 
     private void updateProjectLocations(ProjectWeb projectWeb, Project project) {
         // veo las q ya no están y desactivo
