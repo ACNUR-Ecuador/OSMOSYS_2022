@@ -3,7 +3,7 @@ import * as FileSaver from 'file-saver';
 import {FormGroup} from '@angular/forms';
 import {ColumnTable, DissagregationType, EnumsState, EnumsType, MonthType, SelectItemWithOrder} from '../model/UtilsModel';
 import {EnumsService} from './enums.service';
-import {IndicatorValue, MonthValues, Quarter} from '../model/OsmosysModel';
+import {IndicatorExecutionAdministrationResumeWeb, IndicatorValue, MonthValues, Quarter} from '../model/OsmosysModel';
 import {SelectItem} from 'primeng/api';
 
 @Injectable({
@@ -419,6 +419,20 @@ export class UtilsService {
             case DissagregationType.DIVERSIDAD:
                 return false;
         }
+    }
+
+    getTargetNeedUpdate(indicatorExecution: IndicatorExecutionAdministrationResumeWeb) {
+        let result = false;
+        if (indicatorExecution.quarters && indicatorExecution.quarters.length > 0) {
+            indicatorExecution.quarters.filter(value => {
+                return value.state === EnumsState.ACTIVE;
+            }).forEach(value => {
+                if (value.target === null) {
+                    result = true;
+                }
+            });
+        }
+        return result;
     }
 }
 

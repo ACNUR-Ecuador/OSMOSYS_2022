@@ -62,6 +62,9 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     _selectedColumnsPerformanceIndicators: ColumnTable[];
     public showTargetDialog = false;
 
+    messageAlert = '';
+    messageAlertArray = [];
+    showAlert = false;
 
     constructor(
         private route: ActivatedRoute,
@@ -217,43 +220,45 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     showTargetAlerts() {
-        let message = '';
-        let showAlert = false;
 
         if (this.performanceIndicators.filter(value => {
-            return value.state === EnumsState.ACTIVE && value.target === null;
+            return value.state === EnumsState.ACTIVE;
         }).length < 1) {
-            message += 'El proyecto no tiene indicadores de rendimiento asignados. </br>';
-            showAlert = true;
+            this.messageAlert += 'El proyecto no tiene indicadores de rendimiento asignados./n </br>';
+            this.showAlert = true;
         }
-        const generalIndicatorsTargetsToAlert = this.generalIndicators.filter(value => {
-            return value.state === EnumsState.ACTIVE && value.target === null;
-        });
-        const performanceIndicatorsTargetsToAlert = this.performanceIndicators.filter(value => {
-            return value.state === EnumsState.ACTIVE && value.target === null;
-        });
+        const generalIndicatorsTargetsToAlert = this.generalIndicators
+            .filter(value => value.state === EnumsState.ACTIVE).filter(value => {
+                return this.utilsService.getTargetNeedUpdate(value);
+            });
+        const performanceIndicatorsTargetsToAlert = this.performanceIndicators
+            .filter(value => value.state === EnumsState.ACTIVE).filter(value => {
+                return this.utilsService.getTargetNeedUpdate(value);
+            });
 
         if (generalIndicatorsTargetsToAlert.length > 0 || performanceIndicatorsTargetsToAlert.length > 0) {
-            showAlert = true;
-            message += 'Las metas de los siguientes indicadores están pendientes de actualización. </br>';
+            this.showAlert = true;
+            this.messageAlert += 'Las metas de los siguientes indicadores están pendientes de actualización. </br>';
             generalIndicatorsTargetsToAlert.forEach(value => {
-                message = message + 'Indicador General: ' + value.indicatorDescription;
+                this.messageAlert = this.messageAlert + 'Indicador General: ' + value.indicatorDescription + '</br>';
             });
             performanceIndicatorsTargetsToAlert.forEach(value => {
-                message = message + 'Indicador de Rendimiento: ' + value.indicatorDescription;
+                this.messageAlert = this.messageAlert + 'Indicador de Rendimiento: ' + value.indicatorDescription + '</br>';
             });
 
 
         }
-        if (showAlert) {
+        if (this.showAlert) {
             this.confirmationService.confirm({
-                message,
+                message: this.messageAlert,
                 header: 'Proyecto pendiente de actualización',
                 icon: 'pi pi-exclamation-triangle',
                 accept: () => {
                     this.messageService.add({severity: 'warn', summary: 'Confirmado', detail: 'No olvides actualizar el proyecto'});
+                    this.messageAlertArray = this.messageAlert.split('</br>');
                 }
             });
+
         }
 
     }
@@ -697,4 +702,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             });
 
     }
+
+
 }

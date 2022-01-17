@@ -5,6 +5,16 @@
         <div class="card">
             <h3 class="page-title">Administración de Proyectos</h3>
             <div class="card">
+                <div class="p-col-12">
+
+                    <p-messages severity="warn" *ngIf="showAlert">
+                        <ng-template pTemplate>
+                            <div class="p-d-flex p-flex-column">
+                                <div class="p-mb-12" *ngFor="let alert of messageAlertArray" class="p-ml-2">{{alert}}</div>
+                            </div>
+                        </ng-template>
+                    </p-messages>
+                </div>
                 <form [formGroup]="formItem" (ngSubmit)="saveItem()">
                     <div class="p-fluid p-formgrid p-grid">
                         <div class="p-field p-col-12 p-md-4">
@@ -174,7 +184,7 @@
 
             <p-panel>
                 <ng-template pTemplate="header">
-                    Indicadores General
+                    Indicador General
                 </ng-template>
                 <ng-template pTemplate="footer">
                     <p-table #dt [value]="generalIndicators" [columns]="selectedColumnsGeneralIndicators"
@@ -234,7 +244,7 @@
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-rowData let-columns="columns">
-                            <tr [ngClass]="{'row-noTarget': rowData.target === null}">
+                            <tr [ngClass]="{'row-noTarget': utilsService.getTargetNeedUpdate(rowData)}">
                                 <td *ngFor="let col of columns"
                                     [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
                                 >
@@ -336,7 +346,7 @@
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-rowData let-columns="columns">
-                        <tr>
+                        <tr [ngClass]="{'row-noTarget': utilsService.getTargetNeedUpdate(rowData)}">
                             <td *ngFor="let col of columns"
                                 [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
                             >
@@ -557,11 +567,13 @@
                                     <td pEditableColumn>
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                                <p-checkbox [(ngModel)]="rowData.enabled" binary="true" [ngModelOptions]="{standalone: true}"
+                                                <p-checkbox [(ngModel)]="rowData.enabled" binary="true"
+                                                            [ngModelOptions]="{standalone: true}"
                                                             inputId="binary"></p-checkbox>
                                             </ng-template>
                                             <ng-template pTemplate="output">
-                                                <p-checkbox [(ngModel)]="rowData.enabled" binary="true" [ngModelOptions]="{standalone: true}"
+                                                <p-checkbox [(ngModel)]="rowData.enabled" binary="true"
+                                                            [ngModelOptions]="{standalone: true}"
                                                             inputId="binary"></p-checkbox>
                                             </ng-template>
                                         </p-cellEditor>
