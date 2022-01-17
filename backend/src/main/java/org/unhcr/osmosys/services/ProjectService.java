@@ -135,8 +135,6 @@ public class ProjectService {
 
         project.setFocalPoint(focalPoint);
         Boolean projectDatesChanged = Boolean.FALSE;
-        LocalDate oldStartDate = project.getStartDate();
-        LocalDate oldEndDate = project.getEndDate();
         if (project.getStartDate().compareTo(projectWeb.getStartDate()) != 0 || project.getEndDate().compareTo(projectWeb.getEndDate()) != 0) {
             projectDatesChanged = Boolean.TRUE;
             project.setStartDate(projectWeb.getStartDate());
@@ -149,7 +147,7 @@ public class ProjectService {
         // TODO Q HACER CUANDO SE CAMBIE ESTOS VALORES
         this.saveOrUpdate(project);
         if (projectDatesChanged) {
-            this.indicatorExecutionService.updateIndicatorExecutionProjectDates(project, oldStartDate, oldEndDate, project.getStartDate(), project.getEndDate());
+            this.indicatorExecutionService.updateIndicatorExecutionProjectDatesV2(project, project.getStartDate(), project.getEndDate());
         }
         return project.getId();
     }

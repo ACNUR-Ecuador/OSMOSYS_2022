@@ -8,10 +8,7 @@ import org.jboss.logging.Logger;
 import org.threeten.extra.YearQuarter;
 import org.unhcr.osmosys.daos.IndicatorExecutionDao;
 import org.unhcr.osmosys.model.*;
-import org.unhcr.osmosys.model.enums.DissagregationType;
-import org.unhcr.osmosys.model.enums.IndicatorType;
-import org.unhcr.osmosys.model.enums.QuarterEnum;
-import org.unhcr.osmosys.model.enums.TotalIndicatorCalculationType;
+import org.unhcr.osmosys.model.enums.*;
 import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
@@ -36,6 +33,9 @@ public class IndicatorExecutionService {
 
     @Inject
     QuarterService quarterService;
+
+    @Inject
+    MonthService monthService;
 
     @Inject
     IndicatorService indicatorService;
@@ -444,74 +444,12 @@ public class IndicatorExecutionService {
         return indicatorExecution.getId();
     }
 
-    public void updateIndicatorExecutionProjectDates(Project project, LocalDate oldStartDate, LocalDate oldEndDate, LocalDate newStartDate, LocalDate newEndDate) throws GeneralAppException {
-// start date
-        List<YearQuarter> oldQuarters = this.dateUtils.calculateQuarter(oldStartDate, oldEndDate);
-        List<YearQuarter> newQuarters = this.dateUtils.calculateQuarter(newStartDate, newEndDate);
-        List<YearQuarter> quartersToCreate = new ArrayList<>();
-        List<YearQuarter> quartersToDissable = new ArrayList<>();
 
-        newQuarters.forEach(yearQuarterNew -> {
-            Optional<YearQuarter> foundQuarter = oldQuarters.stream().filter(yearQuarterOld -> {
-                return yearQuarterNew.equals(yearQuarterOld);
-            }).findFirst();
-            if (!foundQuarter.isPresent()) {
-                quartersToCreate.add(yearQuarterNew);
-            }
-        });
-        oldQuarters.forEach(yearQuarterOld -> {
-            Optional<YearQuarter> foundQuarter = newQuarters.stream().filter(yearQuarterNew -> {
-                return yearQuarterOld.equals(yearQuarterNew);
-            }).findFirst();
-            if (!foundQuarter.isPresent()) {
-                quartersToDissable.add(yearQuarterOld);
-            }
-        });
-        LOGGER.error("QUARTERS");
-        LOGGER.error("to create");
-        quartersToCreate.forEach(yearQuarter -> {
-            LOGGER.error(yearQuarter);
-        });
-        LOGGER.error("to dissable");
-        quartersToDissable.forEach(yearQuarter -> {
-            LOGGER.error(yearQuarter);
-        });
-
-        List<YearMonth> oldMonths = this.dateUtils.calculateYearMonthsBetweenDates(oldStartDate, oldEndDate);
-        List<YearMonth> newMonths = this.dateUtils.calculateYearMonthsBetweenDates(newStartDate, newEndDate);
-        List<YearMonth> monthsToCreate = new ArrayList<>();
-        List<YearMonth> monthsToDissable = new ArrayList<>();
-        newMonths.forEach(yearMonthNew -> {
-            Optional<YearMonth> foundMonth = oldMonths.stream().filter(yearMonthOld -> {
-                return yearMonthNew.equals(yearMonthOld);
-            }).findFirst();
-            if (!foundMonth.isPresent()) {
-                monthsToCreate.add(yearMonthNew);
-            }
-        });
-        oldMonths.forEach(yearMonthOld -> {
-            Optional<YearMonth> foundMonth = newMonths.stream().filter(yearMonthNew -> {
-                return yearMonthNew.equals(yearMonthOld);
-            }).findFirst();
-            if (!foundMonth.isPresent()) {
-                monthsToDissable.add(yearMonthOld);
-            }
-        });
-        LOGGER.error("Months");
-        LOGGER.error("to create");
-        monthsToCreate.forEach(yearQuarter -> {
-            LOGGER.error(yearQuarter);
-        });
-        LOGGER.error("to dissable");
-        monthsToDissable.forEach(yearQuarter -> {
-            LOGGER.error(yearQuarter);
-        });
-
+    public void updateIndicatorExecutionProjectDatesV2(Project project, LocalDate newStartDate, LocalDate newEndDate) throws GeneralAppException {
+        List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getGeneralAndPerformanceIndicatorExecutionsByProjectId(project.getId());
         List<Canton> cantones = project.getProjectLocationAssigments().stream().filter(projectLocationAssigment -> {
             return projectLocationAssigment.getState().equals(State.ACTIVO);
         }).map(ProjectLocationAssigment::getLocation).collect(Collectors.toList());
-        // find al indicator executions
-        List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getGeneralAndPerformanceIndicatorExecutionsByProjectId(project.getId());
 
         for (IndicatorExecution indicatorExecution : indicatorExecutions) {
             List<DissagregationType> dissagregationTypes;
@@ -546,69 +484,98 @@ public class IndicatorExecutionService {
                             return customDissagregationAssignationToIndicatorExecution.getCustomDissagregation();
                         }).collect(Collectors.toList());
             }
-
-
-            for (YearQuarter yearQuarter : quartersToCreate) {
-                // verify if quarter already exists
-                Optional<Quarter> foundQuarter = indicatorExecution.getQuarters().stream().filter(quarter -> {
+            Set<Quarter> quartersOrg = indicatorExecution.getQuarters();
+            List<YearQuarter> newQuarters = this.dateUtils.calculateQuarter(newStartDate, newEndDate);
+            // veo los quarters nuevos
+            for (YearQuarter newQuarter : newQuarters) {
+                Optional<Quarter> foundQuarterOp = quartersOrg.stream().filter(quarter -> {
                     try {
-                        return quarter.getYear().equals(yearQuarter.getYear()) && quarter.getQuarter().equals(QuarterEnum.getByQuarterNumber(yearQuarter.getQuarterValue()));
+                        return quarter.getYear().equals(newQuarter.getYear())
+                                && quarter.getQuarter().equals(QuarterEnum.getByQuarterNumber(newQuarter.getQuarterValue()));
                     } catch (GeneralAppException e) {
                         return false;
                     }
                 }).findFirst();
-                if(foundQuarter.isPresent()){
-                    foundQuarter.get().setState(State.ACTIVO);
-                }else {
-                    Quarter createrQuarter = this.quarterService.createQuarter(yearQuarter, newStartDate, newEndDate,
-                            dissagregationTypes, customDissagregations, cantones);
-                    indicatorExecution.addQuarter(createrQuarter);
-                }
+                if (foundQuarterOp.isPresent()) {
+                    Quarter foundQuarter = foundQuarterOp.get();
+                    foundQuarter.setState(State.ACTIVO);
+                    List<MonthEnum> monthsEnums = MonthEnum.getMonthsByQuarter(foundQuarter.getQuarter());
+                    monthsEnums = monthsEnums.stream().filter(monthEnum -> {
+                        LocalDate firstDay = LocalDate.of(foundQuarter.getYear(), monthEnum.getOrder(), 1);
+                        LocalDate lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
+                        return
+                                firstDay.isBefore(newEndDate.plusDays(1))
+                                        && lastDay.isAfter(newStartDate.minusDays(1));
 
-            }
-
-
-            // dissable months and quarters
-            for (YearQuarter yearQuarter : quartersToDissable) {
-                for (Quarter quarter : indicatorExecution.getQuarters()) {
-                    if (
-                            quarter.getYear().equals(yearQuarter.getYear()) &&
-                                    quarter.getQuarter().equals(QuarterEnum.getByQuarterNumber(yearQuarter.getQuarterValue()))
-
-                    ) {
-                        quarter.setState(State.INACTIVO);
-                    }
-                    for (Month month : quarter.getMonths()) {
-                        Optional<YearMonth> foundYearMonth = monthsToDissable.stream().filter(yearMonth -> {
-                            return month.getYear().equals(yearMonth.getYear())
-                                    && month.getMonth().equals(yearMonth.getMonthValue());
+                    }).collect(Collectors.toList());
+                    // meses presentes
+                    for (Month month : foundQuarter.getMonths()) {
+                        Optional<MonthEnum> presentMonth = monthsEnums.stream().filter(monthEnum -> {
+                            return monthEnum.equals(month.getMonth());
                         }).findFirst();
-                        if (foundYearMonth.isPresent()) {
+                        if (presentMonth.isPresent()) {
+                            month.setState(State.ACTIVO);
+                            for (IndicatorValue indicatorValue : month.getIndicatorValues()) {
+                                indicatorValue.setState(State.ACTIVO);
+                            }
+                            for (IndicatorValueCustomDissagregation indicatorValuesIndicatorValueCustomDissagregation : month.getIndicatorValuesIndicatorValueCustomDissagregations()) {
+                                indicatorValuesIndicatorValueCustomDissagregation.setState(State.ACTIVO);
+                            }
+                        } else {
                             month.setState(State.INACTIVO);
-                            month.getIndicatorValues().forEach(indicatorValue -> {
+                            for (IndicatorValue indicatorValue : month.getIndicatorValues()) {
                                 indicatorValue.setState(State.INACTIVO);
-                            });
-                            month.getIndicatorValuesIndicatorValueCustomDissagregations()
-                                    .forEach(indicatorValueCustomDissagregation -> {
-                                        indicatorValueCustomDissagregation.setState(State.INACTIVO);
-                                    });
+                            }
+                            for (IndicatorValueCustomDissagregation indicatorValuesIndicatorValueCustomDissagregation : month.getIndicatorValuesIndicatorValueCustomDissagregations()) {
+                                indicatorValuesIndicatorValueCustomDissagregation.setState(State.INACTIVO);
+                            }
+                        }
+                    }
+                    // meses ausentes
+                    for (MonthEnum monthEnum : monthsEnums) {
+                        Optional<Month> foundMonth = foundQuarter.getMonths().stream().filter(month -> {
+                            return month.getMonth().equals(monthEnum);
+                        }).findFirst();
+                        if (!foundMonth.isPresent()) {
+                            // creo mes
+                            Month newmonth = this.monthService
+                                    .createMonth(foundQuarter.getYear(), monthEnum, dissagregationTypes, customDissagregations, cantones);
+                            foundQuarter.addMonth(newmonth);
+                        }
+                    }
+
+
+                } else {
+                    Quarter newCreatedQuarter = this.quarterService.createQuarter(newQuarter, newStartDate, newEndDate, dissagregationTypes, customDissagregations, cantones);
+                    indicatorExecution.addQuarter(newCreatedQuarter);
+                }
+            }
+            // veo lo que tengo que desactivar
+            for (Quarter quarterOrg : quartersOrg) {
+                Optional<YearQuarter> foundOrgQuarter = newQuarters.stream().filter(yearQuarter -> {
+                    try {
+                        return yearQuarter.getYear() == quarterOrg.getYear()
+                                && QuarterEnum.getByQuarterNumber(yearQuarter.getQuarterValue()).equals(quarterOrg.getQuarter());
+                    } catch (GeneralAppException e) {
+                        return false;
+                    }
+                }).findFirst();
+                if (!foundOrgQuarter.isPresent()) {
+                    quarterOrg.setState(State.INACTIVO);
+                    for (Month month : quarterOrg.getMonths()) {
+                        month.setState(State.INACTIVO);
+                        for (IndicatorValue indicatorValue : month.getIndicatorValues()) {
+                            indicatorValue.setState(State.INACTIVO);
+                        }
+                        for (IndicatorValueCustomDissagregation indicatorValuesIndicatorValueCustomDissagregation : month.getIndicatorValuesIndicatorValueCustomDissagregations()) {
+                            indicatorValuesIndicatorValueCustomDissagregation.setState(State.INACTIVO);
                         }
                     }
                 }
             }
-
-
             //order recalculate
             this.setOrderInQuartersAndMonths(indicatorExecution.getQuarters());
-            indicatorExecution.getQuarters().forEach(quarter -> {
-                LOGGER.error("q-->"+quarter.getYear()+"-"+quarter.getQuarter()+":"+quarter.getOrder());
-                quarter.getMonths().forEach(month -> {
-                    LOGGER.error("m-->"+month.getYear()+"-"+month.getMonth()+":"+month.getOrder());
-                });
-
-
-            });
-
+            this.updateIndicatorExecutionTotals(indicatorExecution);
             this.saveOrUpdate(indicatorExecution);
         }
 

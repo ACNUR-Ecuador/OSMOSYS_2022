@@ -65,7 +65,6 @@ public class MonthService {
 
         List<Month> months = new ArrayList<>();
         for (MonthEnum monthEnum : monthsEnums) {
-            Period period = Period.between(startDate, endDate.plusDays(1));
             LocalDate firstDay = LocalDate.of(quarter.getYear(), monthEnum.getOrder(), 1);
             LocalDate lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
             if (
@@ -117,7 +116,8 @@ public class MonthService {
             return indicatorValue.getDissagregationType();
         }).collect(Collectors.toSet());
         if (CollectionUtils.isEmpty(dissagregationsTypes)) {
-            throw new GeneralAppException("Mes sin desaggregaciones " + month.toString(), Response.Status.CONFLICT);
+            month.setTotalExecution(BigDecimal.ZERO);
+            return;
         }
         // veo cualquiera menos diversidad
         DissagregationType dissagregationTypeToCalculate = null;
