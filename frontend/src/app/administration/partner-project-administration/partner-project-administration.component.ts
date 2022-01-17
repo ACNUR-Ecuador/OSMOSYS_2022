@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ConfirmationService, FilterService, MessageService, SelectItem} from 'primeng/api';
+import {ConfirmationService, ConfirmEventType, FilterService, MessageService, SelectItem} from 'primeng/api';
 import {UtilsService} from '../../shared/services/utils.service';
 import {UserService} from '../../shared/services/user.service';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
@@ -35,6 +35,7 @@ import {BooleanYesNoPipe} from '../../shared/pipes/boolean-yes-no.pipe';
 export class PartnerProjectAdministrationComponent implements OnInit {
     public periods: Period[];
     public cantones: Canton[];
+    public cantonesAvailable: Canton[];
 
     public generalIndicators: IndicatorExecutionGeneralIndicatorAdministrationResumeWeb[] = [];
     public performanceIndicators: IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb[] = [];
@@ -166,6 +167,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 focalPoint
             } = value;
             this.sortCantones(locations);
+            const originalLocations = [];
+            locations.forEach(val => originalLocations.push(Object.assign({}, val)));
             this.formItem.patchValue({
                 id,
                 code,
@@ -176,7 +179,9 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 startDate,
                 endDate,
                 locations,
-                focalPoint
+                focalPoint,
+                originalLocations,
+                updateAllLocationsIndicators: false
             });
             this.periods = [];
             this.periods.push(period);
@@ -249,13 +254,14 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
         }
         if (this.showAlert) {
+            this.messageAlertArray = this.messageAlert.split('</br>');
             this.confirmationService.confirm({
                 message: this.messageAlert,
                 header: 'Proyecto pendiente de actualización',
                 icon: 'pi pi-exclamation-triangle',
+                key: 'cda',
                 accept: () => {
-                    this.messageService.add({severity: 'warn', summary: 'Confirmado', detail: 'No olvides actualizar el proyecto'});
-                    this.messageAlertArray = this.messageAlert.split('</br>');
+                    this.confirmationService.close();
                 }
             });
 
@@ -266,12 +272,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     loadOptions() {
         this.cantonService.getByState(EnumsState.ACTIVE).subscribe(value => {
             this.cantones = this.sortCantones(value);
-            this.cantones = this.cantones.map(value1 => {
-                const can: any = value1;
-                can.provinciaDescription = value1.provincia.description;
-                return can;
-            });
-
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -324,7 +324,9 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             startDate: new FormControl('', Validators.required),
             endDate: new FormControl('', Validators.required),
             focalPoint: new FormControl('', Validators.required),
-            locations: new FormControl('')
+            locations: new FormControl(''),
+            originalLocations: new FormControl(''),
+            updateAllLocationsIndicators: new FormControl('')
         });
 
         this.formLocations = this.fb.group({
@@ -434,9 +436,42 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     saveLocationsForm() {
-        this.showLocationsDialog = false;
+
         if (this.formLocations.get('locationsSelected').value) {
+            const locationsBefore = this.formItem.get('originalLocations').value as Canton[];
             const cantonesG = this.sortCantones(this.formLocations.get('locationsSelected').value);
+            const agregatedLocation = cantonesG.filter((canton1) => !locationsBefore.find(canton2 => canton1.id === canton2.id));
+            const deletedLocations = locationsBefore.filter((canton1) => !cantonesG.find(canton2 => canton1.id === canton2.id));
+            console.log(agregatedLocation);
+            if (agregatedLocation.length > 0) {
+                const cantonesList = agregatedLocation.map(value => {
+                    return value.description + '-' + value.provincia.description ;
+                }).join('<br>');
+                this.confirmationService.confirm({
+                    message: 'Quieres agregar los cantones nuevos a todos los indicadores de rendimiento?<br>' + cantonesList,
+                    header: 'Actualización de indicadores',
+                    closeOnEscape: false,
+                    icon: 'pi pi-exclamation-triangle',
+                    key: 'cdl',
+                    accept: () => {
+                        this.formItem.get('updateAllLocationsIndicators').patchValue(true);
+                        this.showLocationsDialog = false;
+                    },
+                    reject: (type) => {
+                        switch (type) {
+                            case ConfirmEventType.REJECT:
+                                this.formItem.get('updateAllLocationsIndicators').patchValue(false);
+                                this.showLocationsDialog = false;
+                                break;
+                            case ConfirmEventType.CANCEL:
+                                this.formItem.get('updateAllLocationsIndicators').patchValue(false);
+                                this.showLocationsDialog = false;
+                                break;
+                        }
+                    }
+                });
+            }
+            console.log(deletedLocations);
             this.formItem.get('locations').patchValue(cantonesG);
         }
     }
@@ -447,10 +482,15 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
     editLocations() {
         this.showLocationsDialog = true;
+
         if (!this.formItem.get('locations').value) {
             this.formLocations.get('locationsSelected').patchValue([]);
+            this.cantonesAvailable = this.cantones;
         } else {
+            const currentCantones = this.formItem.get('locations').value as Canton[];
             this.formLocations.get('locationsSelected').patchValue(this.formItem.get('locations').value);
+            this.cantonesAvailable =
+                this.cantones.filter((canton1) => !currentCantones.find(canton2 => canton1.id === canton2.id));
         }
     }
 

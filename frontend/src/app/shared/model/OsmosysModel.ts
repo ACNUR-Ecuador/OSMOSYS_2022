@@ -247,6 +247,7 @@ export class Project {
     public endDate: Date;
     public locations: Canton[];
     public focalPoint?: User;
+    public updateAllLocationsIndicators?: boolean;
 }
 
 export class ProjectResume {

@@ -107,7 +107,7 @@
                                    *ngIf="utilsService.showErrorForm('endDate',formItem)">{{utilsService.getErrorMessageForm('endDate', formItem)}}</small>
                         </div>
                         <div class="p-field p-col-12 p-md-12">
-                            <p-panel header="Lugares de ejecución" [toggleable]="true">
+                            <p-panel header="Lugares de ejecución" [toggleable]="true" >
                                 <ng-template pTemplate="header">
                                     <div class=" p-d-flex p-jc-end">
                                         <button pButton type="button" pRipple label="Editar lugares de ejecución"
@@ -118,12 +118,14 @@
                                     </div>
                                 </ng-template>
                                 <ng-template pTemplate="content">
-                                    <p-table #dt [value]="formItem.get('locations').value" [rows]="10"
+                                    <p-table #dt [value]="formItem.get('locations').value" [rows]="5"
                                              [paginator]="true"
                                              [rowHover]="true" dataKey="id"
                                              styleClass="p-datatable-customers"
                                              currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                                             [showCurrentPageReport]="true">
+                                             [showCurrentPageReport]="true"
+                                             [rowsPerPageOptions]="[5,10,25,50]"
+                                    >
                                         <ng-template pTemplate="header" let-columns>
                                             <tr>
                                                 <th *ngFor="let col of cols" [pSortableColumn]="col.field">
@@ -391,12 +393,12 @@
 
 
                 <div class="p-field p-col-12 p-md-12" *ngIf="showLocationMenu">
-                    <p-pickList [source]="cantones" [target]="formLocations.get('locationsSelected').value"
+                    <p-pickList [source]="cantonesAvailable" [target]="formLocations.get('locationsSelected').value"
                                 sourceHeader="Disponibles" targetHeader="Seleccionados"
                                 [dragdrop]="true"
                                 [responsive]="true"
                                 [sourceStyle]="{'height':'25rem'}" [targetStyle]="{'height':'25rem'}"
-                                filterBy="description,provinciaDescription"
+                                filterBy="description,provincia.description"
                                 sourceFilterPlaceholder="Buscar por cantón o provincia"
                                 targetFilterPlaceholder="Buscar por cantón o provincia"
                                 [showSourceControls]="false"
@@ -409,7 +411,7 @@
                                             style="font-size:14px;font-weight: 800;vertical-align: middle;">{{product.description}}</span>
 
                                 <span style="font-size:10px;font-weight: 600;vertical-align: middle;"><i
-                                    class="pi pi-tag product-category-icon"></i>{{product.provinciaDescription}}</span>
+                                    class="pi pi-map-marker product-category-icon"></i>{{product.provincia.description}}</span>
                             </div>
 
                         </ng-template>
@@ -426,7 +428,15 @@
                     (click)="cancelDialogLocations()"></button>
 
         </ng-template>
-
+        <p-confirmDialog #cdl key="cdl" [style]="{width: '50vw'}">
+            <ng-template pTemplate="header">
+                <h3>Altualización de lugares</h3>
+            </ng-template>
+            <ng-template pTemplate="footer">
+                <button type="button" pButton icon="pi pi-check" label="Sí" (click)="cdl.accept()"></button>
+                <button type="button" pButton icon="pi pi-times" label="No" (click)="cdl.reject()"></button>
+            </ng-template>
+        </p-confirmDialog>
     </p-dialog>
 </form>
 <form [formGroup]="formTargets" (ngSubmit)="saveTargets()">
@@ -464,9 +474,9 @@
 
     </p-dialog>
 </form>
-<p-confirmDialog [style]="{width: '50vw'}" #cd [baseZIndex]="10000" rejectButtonStyleClass="p-button-text">
+<p-confirmDialog #cda key="cda" [style]="{width: '50vw'}" #cd [baseZIndex]="10000" rejectButtonStyleClass="p-button-text">
     <ng-template pTemplate="footer">
-        <button type="button" pButton icon="pi pi-check" label="OK" (click)="cd.accept()"></button>
+        <button type="button" pButton icon="pi pi-check" label="OK" (click)="cda.accept()"></button>
     </ng-template>
 </p-confirmDialog>
 
