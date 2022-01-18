@@ -225,7 +225,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     showTargetAlerts() {
-
+        this.messageAlert = '';
         if (this.performanceIndicators.filter(value => {
             return value.state === EnumsState.ACTIVE;
         }).length < 1) {
@@ -362,7 +362,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             startDate,
             endDate,
             locations,
-            focalPoint
+            focalPoint,
+            updateAllLocationsIndicators
         } = this.formItem.value;
         const project: Project = {
             id,
@@ -374,7 +375,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             startDate,
             endDate,
             focalPoint,
-            locations: []
+            locations: [],
+            updateAllLocationsIndicators
         };
         if (!locations || locations.length < 1) {
             this.messageService.add({
@@ -445,7 +447,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             console.log(agregatedLocation);
             if (agregatedLocation.length > 0) {
                 const cantonesList = agregatedLocation.map(value => {
-                    return value.description + '-' + value.provincia.description ;
+                    return value.description + '-' + value.provincia.description;
                 }).join('<br>');
                 this.confirmationService.confirm({
                     message: 'Quieres agregar los cantones nuevos a todos los indicadores de rendimiento?<br>' + cantonesList,
