@@ -1,5 +1,8 @@
 package org.unhcr.osmosys.model.enums;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum DissagregationType  implements EnumInterface{
 	TIPO_POBLACION("Tipo de población",1),
 	EDAD("Edad",2),
@@ -15,6 +18,12 @@ public enum DissagregationType  implements EnumInterface{
 	TIPO_POBLACION_Y_LUGAR("Tipo de población y lugar",11),
 	;
 
+	public static List<DissagregationType> getLocationDissagregationTypes(){
+		List<DissagregationType> r = new ArrayList<>();
+		r.add(TIPO_POBLACION_Y_LUGAR);
+		r.add(LUGAR);
+		return r;
+	}
 
 	private String label;
 	private int order;

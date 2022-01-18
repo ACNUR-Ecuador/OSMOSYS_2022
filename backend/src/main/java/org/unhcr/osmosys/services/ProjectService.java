@@ -12,6 +12,8 @@ import org.threeten.extra.YearQuarter;
 import org.unhcr.osmosys.daos.CantonDao;
 import org.unhcr.osmosys.daos.ProjectDao;
 import org.unhcr.osmosys.model.*;
+import org.unhcr.osmosys.model.enums.DissagregationType;
+import org.unhcr.osmosys.model.enums.IndicatorType;
 import org.unhcr.osmosys.webServices.model.CantonWeb;
 import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
 import org.unhcr.osmosys.webServices.model.ProjectWeb;
@@ -143,39 +145,91 @@ public class ProjectService {
 
 
         // las localidades
-        updateProjectLocations(projectWeb, project);
-        // TODO Q HACER CUANDO SE CAMBIE ESTOS VALORES
+        updateProjectLocations(projectWeb, project, projectWeb.getUpdateAllLocationsIndicators());
+
         this.saveOrUpdate(project);
         if (projectDatesChanged) {
-            this.indicatorExecutionService.updateIndicatorExecutionProjectDatesV2(project, project.getStartDate(), project.getEndDate());
+            this.indicatorExecutionService.updateIndicatorExecutionProjectDates(project, project.getStartDate(), project.getEndDate());
         }
         return project.getId();
     }
 
 
-
-    private void updateProjectLocations(ProjectWeb projectWeb, Project project) {
+    private void updateProjectLocations(ProjectWeb projectWeb, Project project, Boolean updateAllLocationsIndicators) throws GeneralAppException {
         // veo las q ya no están y desactivo
+        List<Long> locationsToActive = new ArrayList<>();
+        List<Long> locationsToDissable = new ArrayList<>();
+
         project.getProjectLocationAssigments().forEach(projectLocationAssigment -> {
             Optional<CantonWeb> cantonFound = projectWeb.getLocations().stream().filter(cantonWeb -> {
                 return projectLocationAssigment.getLocation().getId().equals(cantonWeb.getId());
             }).findFirst();
             if (!cantonFound.isPresent()) {
                 projectLocationAssigment.setState(State.INACTIVO);
+                locationsToDissable.add(projectLocationAssigment.getLocation().getId());
             }
         });
         // veo las nuevas y creo hago update si es el caso
+        List<Canton> cantonesToCreate = new ArrayList<>();
         projectWeb.getLocations().forEach(cantonWeb -> {
             Optional<ProjectLocationAssigment> assignmentFound = project.getProjectLocationAssigments().stream().filter(projectLocationAssigment -> projectLocationAssigment.getLocation().getId().equals(cantonWeb.getId())).findFirst();
             if (assignmentFound.isPresent()) {
                 assignmentFound.get().setState(State.ACTIVO);
+                locationsToActive.add(assignmentFound.get().getLocation().getId());
             } else {
+                Canton canton = this.cantonDao.find(cantonWeb.getId());
                 ProjectLocationAssigment projectLocationAssigment = new ProjectLocationAssigment();
-                projectLocationAssigment.setLocation(this.cantonDao.find(cantonWeb.getId()));
+                projectLocationAssigment.setLocation(canton);
                 projectLocationAssigment.setState(State.ACTIVO);
                 project.addProjectLocationAssigment(projectLocationAssigment);
+                cantonesToCreate.add(canton);
+                locationsToActive.add(canton.getId());
             }
         });
+
+
+        for (IndicatorExecution indicatorExecution : project.getIndicatorExecutions()) {
+
+            this.indicatorExecutionService.updateIndicatorExecutionLocationsByAssignation(indicatorExecution, cantonesToCreate);
+            // tengo q activar y desactivar
+            // si es general siempre activo y desactivo
+            if (indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)) {
+                indicatorExecution.getQuarters()
+                        .forEach(quarter -> {
+                            quarter.getMonths().forEach(month -> {
+                                month.getIndicatorValues().forEach(indicatorValue -> {
+                                    if (DissagregationType.getLocationDissagregationTypes().contains(indicatorValue.getDissagregationType())) {
+                                        // busco para activar
+                                        if (locationsToActive.contains(indicatorValue.getLocation().getId())) {
+                                            indicatorValue.setState(State.ACTIVO);
+                                        } else if (locationsToDissable.contains(indicatorValue.getLocation().getId())) {
+                                            indicatorValue.setState(State.INACTIVO);
+                                        }
+                                    }
+                                });
+                            });
+                        });
+            } else {
+                // si es rendimiento siempre desactivo desactivo y activo solo si updateAllLocationsIndicators
+                indicatorExecution.getQuarters()
+                        .forEach(quarter -> {
+                            quarter.getMonths().forEach(month -> {
+                                month.getIndicatorValues().forEach(indicatorValue -> {
+                                    if (DissagregationType.getLocationDissagregationTypes().contains(indicatorValue.getDissagregationType())) {
+                                        // busco para activar
+                                        if (locationsToActive.contains(indicatorValue.getLocation().getId()) && updateAllLocationsIndicators) {
+                                            indicatorValue.setState(State.ACTIVO);
+                                        } else if (locationsToActive.contains(indicatorValue.getLocation().getId()) && !updateAllLocationsIndicators) {
+                                            indicatorValue.setState(State.INACTIVO);
+                                        } else if (locationsToDissable.contains(indicatorValue.getLocation().getId())) {
+                                            indicatorValue.setState(State.INACTIVO);
+                                        }
+                                    }
+                                });
+                            });
+                        });
+            }
+        }
     }
 
 

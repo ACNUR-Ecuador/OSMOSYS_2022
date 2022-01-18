@@ -1,5 +1,6 @@
 package org.unhcr.osmosys.webServices.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.sagatechs.generics.persistence.model.State;
@@ -33,6 +34,8 @@ public class ProjectWeb implements Serializable {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate endDate;
     public UserWeb focalPoint;
+
+    private Boolean updateAllLocationsIndicators;
 
     public Long getId() {
         return id;
@@ -112,6 +115,14 @@ public class ProjectWeb implements Serializable {
 
     public void setFocalPoint(UserWeb focalPoint) {
         this.focalPoint = focalPoint;
+    }
+
+    public Boolean getUpdateAllLocationsIndicators() {
+        return updateAllLocationsIndicators;
+    }
+
+    public void setUpdateAllLocationsIndicators(Boolean updateAllLocationsIndicators) {
+        this.updateAllLocationsIndicators = updateAllLocationsIndicators;
     }
 
     @Override

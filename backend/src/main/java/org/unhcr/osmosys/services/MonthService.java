@@ -243,4 +243,13 @@ public class MonthService {
 
     }
 
+    public void updateMonthLocationsByAssignation(Month month, List<Canton> cantones, List<DissagregationType> locationDissagregationTypes) throws GeneralAppException {
+        List<IndicatorValue> newValues= new ArrayList<>();
+        for (DissagregationType locationDissagregationType : locationDissagregationTypes) {
+             newValues.addAll(this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(locationDissagregationType, cantones));
+        }
+        newValues.forEach(indicatorValue -> {
+            month.addIndicatorValue(indicatorValue);
+        });
+    }
 }

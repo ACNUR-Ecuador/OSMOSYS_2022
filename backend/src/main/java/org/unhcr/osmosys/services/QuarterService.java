@@ -144,4 +144,10 @@ public class QuarterService {
             }
         }
     }
+
+    public void updateQuarterLocationsByAssignation(Quarter quarter, List<Canton> cantonesToCreate,List<DissagregationType> locationDissagregationTypes) throws GeneralAppException {
+        for (Month month : quarter.getMonths()) {
+            this.monthService.updateMonthLocationsByAssignation(month,cantonesToCreate, locationDissagregationTypes);
+        }
+    }
 }

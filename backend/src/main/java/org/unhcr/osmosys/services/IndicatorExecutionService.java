@@ -445,7 +445,7 @@ public class IndicatorExecutionService {
     }
 
 
-    public void updateIndicatorExecutionProjectDatesV2(Project project, LocalDate newStartDate, LocalDate newEndDate) throws GeneralAppException {
+    public void updateIndicatorExecutionProjectDates(Project project, LocalDate newStartDate, LocalDate newEndDate) throws GeneralAppException {
         List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getGeneralAndPerformanceIndicatorExecutionsByProjectId(project.getId());
         List<Canton> cantones = project.getProjectLocationAssigments().stream().filter(projectLocationAssigment -> {
             return projectLocationAssigment.getState().equals(State.ACTIVO);
@@ -580,6 +580,35 @@ public class IndicatorExecutionService {
         }
 
 
+    }
+
+    public void updateIndicatorExecutionLocationsByAssignation(IndicatorExecution indicatorExecution, List<Canton> cantonesToCreate) throws GeneralAppException {
+        List<DissagregationType> locationDissagregationTypes;
+        if (indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)) {
+            locationDissagregationTypes = indicatorExecution
+                    .getPeriod()
+                    .getGeneralIndicator()
+                    .getDissagregationAssignationsToGeneralIndicator()
+                    .stream().map(dissagregationAssignationToGeneralIndicator -> {
+                        return dissagregationAssignationToGeneralIndicator.getDissagregationType();
+                    }).filter(dissagregationType -> {
+                        return DissagregationType.getLocationDissagregationTypes().contains(dissagregationType);
+                    }).collect(Collectors.toList());
+        } else {
+            locationDissagregationTypes = indicatorExecution
+                    .getIndicator()
+                    .getDissagregationsAssignationToIndicator()
+                    .stream().map(dissagregationAssignationToIndicator -> {
+                        return dissagregationAssignationToIndicator.getDissagregationType();
+                    })
+                    .filter(dissagregationType -> {
+                        return DissagregationType.getLocationDissagregationTypes().contains(dissagregationType);
+                    })
+                    .collect(Collectors.toList());
+        }
+        for (Quarter quarter : indicatorExecution.getQuarters()) {
+            this.quarterService.updateQuarterLocationsByAssignation(quarter, cantonesToCreate, locationDissagregationTypes);
+        }
     }
 }
 

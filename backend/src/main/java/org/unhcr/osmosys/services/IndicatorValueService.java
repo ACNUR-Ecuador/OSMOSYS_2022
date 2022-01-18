@@ -88,6 +88,25 @@ public class IndicatorValueService {
         }
     }
 
+    public List<IndicatorValue> updateIndicatorValueDissagregationLocationStandardForMonth(
+            Month month, DissagregationType dissagregationType, List<Canton> cantones
+    ) throws GeneralAppException {
+
+        switch (dissagregationType) {
+            case LUGAR:
+                if (CollectionUtils.isEmpty(cantones)) {
+                    throw new GeneralAppException("No se puede crear una segregaciones de canton sin cantones ", Response.Status.BAD_REQUEST);
+                }
+                return this.createIndicatorValueDissagregationStandardForMonthLocation(cantones);
+            case TIPO_POBLACION_Y_LUGAR:
+                return this.createIndicatorValueDissagregationStandardForPopulationTypeAndLocation(cantones);
+
+            default: {
+                throw new GeneralAppException(" Desagregación no implementada para actualizacion de lugares" + dissagregationType, Response.Status.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+
     public List<IndicatorValueCustomDissagregation> createIndicatorValuesCustomDissagregationForMonth(
             CustomDissagregation customDissagregation
     ) throws GeneralAppException {
