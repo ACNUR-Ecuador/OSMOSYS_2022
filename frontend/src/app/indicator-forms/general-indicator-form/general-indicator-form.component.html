@@ -1,30 +1,14 @@
 <div class="p-grid">
     <p-toast key="dialogToast" position="top-right"></p-toast>
     <p-messages></p-messages>
-    <form #myForm="ngForm" [formGroup]="formItem" formControlName (ngSubmit)="saveMonth()">
+    <form #myForm="ngForm" [formGroup]="formItem"  (ngSubmit)="saveMonth()">
         <p-card>
             <ng-template pTemplate="header">
 
-                <div class="p-grid" *ngIf="render">
-                    <div class="p-col-4">
-                        <div class="card">
-                            <h5>Trimestre</h5>
-                            <p-chart type="bar" width="400" [data]="chartDataQuarter" [options]="chartDataOptions" [plugins]="plugin" ></p-chart>
-                        </div>
-                    </div>
-                    <div class="p-col-4">
-                        <div class="card">
-                            <h5>Ejecución Trimestral</h5>
-                            <p-chart type="bar" width="400" [data]="chartDataTrimestal" [options]="chartDataOptions" [plugins]="plugin" ></p-chart>
-                        </div>
-                    </div>
-                    <div class="p-col-4">
-                        <div class="card">
-                            <h5>Ejecución Anual</h5>
-                            <p-chart type="bar" width="400" [data]="chartDataTotal" [options]="chartDataOptions"></p-chart>
-                        </div>
-                    </div>
-                </div>
+                <app-chart-indicator-execution *ngIf="render"
+                                               [month]="month"
+                                               [indicatorExecution]="indicatorExecution"
+                ></app-chart-indicator-execution>
 
             </ng-template>
             <div class="p-grid" *ngIf="render">

@@ -16,6 +16,7 @@ import { PerformanceIndicatorFormComponent } from './performance-indicator-form/
 import {CardModule} from 'primeng/card';
 import {InputTextareaModule} from 'primeng/inputtextarea';
 import {ChartModule} from 'primeng/chart';
+import { ChartIndicatorExecutionComponent } from './chart-indicator-execution/chart-indicator-execution.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import {ChartModule} from 'primeng/chart';
         DissagregationTwoIntegerDimentionsComponent,
         DissagregationOneIntegerDimentionsComponent,
         DissagregationNoDissagregationIntegerComponent,
-        PerformanceIndicatorFormComponent
+        PerformanceIndicatorFormComponent,
+        ChartIndicatorExecutionComponent
     ],
     imports: [
         CommonModule,
