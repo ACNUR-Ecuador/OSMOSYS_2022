@@ -8,6 +8,7 @@ import {EnumsService} from '../../shared/services/enums.service';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
 import {DissagregationType, EnumsState} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import * as ChartDataLabels from 'chartjs-plugin-datalabels';
 
 @Component({
     selector: 'app-general-indicator-form',
@@ -31,9 +32,11 @@ export class GeneralIndicatorFormComponent implements OnInit {
     twoDimentionDissagregations: DissagregationType[] = [];
     noDimentionDissagregations: DissagregationType[] = [];
 
+    chartDataQuarter: any;
     chartDataTrimestal: any;
     chartDataTotal: any;
     chartDataOptions: any;
+    plugin = ChartDataLabels;
 
     constructor(public ref: DynamicDialogRef,
                 public config: DynamicDialogConfig,
@@ -124,7 +127,10 @@ export class GeneralIndicatorFormComponent implements OnInit {
     }
 
     private prepareChartData() {
+
         const labels: string[] = [];
+        const labelsTrimestre: string[] = [];
+        const dataExecutionsTrimestre: number[] = [];
         const dataTargetsTrimestral: number[] = [];
         const dataExecutionsTrimestral: number[] = [];
         const dataTargetsTotal: number[] = [];
@@ -139,9 +145,34 @@ export class GeneralIndicatorFormComponent implements OnInit {
                 labels.push(quarter.quarter + '-' + quarter.year);
                 dataTargetsTrimestral.push(quarter.target);
                 dataExecutionsTrimestral.push(quarter.totalExecution);
+                const months = quarter.months.filter(value => {
+                    return value.state === EnumsState.ACTIVE;
+                });
+                if (
+                    months
+                        .map(value => {
+                            return value.id;
+                        }).includes(this.month.id)
+                ) {
+
+                    months.forEach(value => {
+                        labelsTrimestre.push(value.month);
+                        dataExecutionsTrimestre.push(value.totalExecution);
+                    });
+                }
             });
         this.chartDataOptions = {
             plugins: {
+                datalabels: {
+                    align: 'end',
+                    anchor: 'end',
+                    borderRadius: 4,
+                    backgroundColor: 'teal',
+                    color: 'white',
+                    font: {
+                        weight: 'bold'
+                    }
+                },
                 responsive: false,
                 legend: {
                     labels: {
@@ -176,6 +207,17 @@ export class GeneralIndicatorFormComponent implements OnInit {
                     }
                 }
             }
+        };
+        this.chartDataQuarter = {
+            labels: labelsTrimestre,
+            datasets: [
+                {
+                    type: 'bar',
+                    label: 'Ejecución Mensual',
+                    backgroundColor: '#66BB6A',
+                    data: dataExecutionsTrimestre
+                }
+            ]
         };
         this.chartDataTrimestal = {
             labels,

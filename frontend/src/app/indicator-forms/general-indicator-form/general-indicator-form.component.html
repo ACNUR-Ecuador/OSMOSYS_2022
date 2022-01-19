@@ -4,11 +4,18 @@
     <form #myForm="ngForm" [formGroup]="formItem" formControlName (ngSubmit)="saveMonth()">
         <p-card>
             <ng-template pTemplate="header">
+
                 <div class="p-grid" *ngIf="render">
-                    <div class="p-col-8">
+                    <div class="p-col-4">
+                        <div class="card">
+                            <h5>Trimestre</h5>
+                            <p-chart type="bar" width="400" [data]="chartDataQuarter" [options]="chartDataOptions" [plugins]="plugin" ></p-chart>
+                        </div>
+                    </div>
+                    <div class="p-col-4">
                         <div class="card">
                             <h5>Ejecución Trimestral</h5>
-                            <p-chart type="bar" width="400" [data]="chartDataTrimestal" [options]="chartDataOptions"></p-chart>
+                            <p-chart type="bar" width="400" [data]="chartDataTrimestal" [options]="chartDataOptions" [plugins]="plugin" ></p-chart>
                         </div>
                     </div>
                     <div class="p-col-4">
@@ -58,6 +65,7 @@
                     <textarea id="commentaryI"
                               pInputTextarea
                               autoResize="true"
+                              [rows]="5"
                               style="width: 100%"
                               formControlName="commentary"
                     ></textarea>
