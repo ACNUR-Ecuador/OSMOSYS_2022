@@ -215,6 +215,7 @@ public class ModelWebTransformationService {
         CustomDissagregationAssignationToIndicatorWeb w = new CustomDissagregationAssignationToIndicatorWeb();
         w.setId(c.getId());
         w.setState(c.getState());
+        w.setPeriod(this.periodToPeriodWeb(c.getPeriod()));
         w.setCustomDissagregation(this.customDissagregationWebToCustomDissagregation(c.getCustomDissagregation()));
         w.setCustomDissagregationFilterIndicators(this.customDissagregationFilterIndicatorsToCustomDissagregationFilterIndicatorsWeb(c.getCustomDissagregationFilterIndicators()));
         return w;
@@ -224,6 +225,7 @@ public class ModelWebTransformationService {
         CustomDissagregationAssignationToIndicator c = new CustomDissagregationAssignationToIndicator();
         c.setId(w.getId());
         c.setState(w.getState());
+        c.setPeriod(this.periodWebToPeriod(w.getPeriod()));
         c.setCustomDissagregation(this.customDissagregationWebToCustomDissagregation(w.getCustomDissagregation()));
         c.setCustomDissagregationFilterIndicators(this.customDissagregationFilterIndicatorsWebToCustomDissagregationFilterIndicators(w.getCustomDissagregationFilterIndicators()));
 
@@ -337,6 +339,7 @@ public class ModelWebTransformationService {
         DissagregationAssignationToIndicatorWeb w = new DissagregationAssignationToIndicatorWeb();
         w.setId(d.getId());
         w.setState(d.getState());
+        w.setPeriod(this.periodToPeriodWeb(d.getPeriod()));
         w.setDissagregationType(d.getDissagregationType());
         w.setDissagregationFilterIndicators(this.dissagregationFilterIndicatorsToDissagregationFilterIndicatorsWeb(d.getDissagregationFilterIndicators()));
         return w;
@@ -347,6 +350,7 @@ public class ModelWebTransformationService {
         d.setId(w.getId());
         d.setState(w.getState());
         d.setDissagregationType(w.getDissagregationType());
+        d.setPeriod(this.periodWebToPeriod(w.getPeriod()));
         Set<DissagregationFilterIndicator> dissagregationFilterIndicators = this.dissagregationFilterIndicatorsWebToDissagregationFilterIndicators(w.getDissagregationFilterIndicators());
         for (DissagregationFilterIndicator dissagregationFilterIndicator : dissagregationFilterIndicators) {
             d.addDissagregationFilterIndicator(dissagregationFilterIndicator);

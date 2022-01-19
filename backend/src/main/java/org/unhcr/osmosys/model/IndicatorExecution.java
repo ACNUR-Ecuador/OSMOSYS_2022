@@ -19,7 +19,7 @@ public class IndicatorExecution extends BaseEntity<Long> {
 
 
     public IndicatorExecution() {
-        this.state=State.ACTIVO;
+        this.state = State.ACTIVO;
     }
 
     @Id
@@ -65,10 +65,10 @@ public class IndicatorExecution extends BaseEntity<Long> {
     @OneToMany(mappedBy = "indicatorExecution", cascade = CascadeType.ALL)
     private Set<Quarter> quarters = new HashSet<>();
 
-    @OneToMany(mappedBy = "indicatorExecution", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "indicatorExecution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<DissagregationAssignationToIndicatorExecution> dissagregationsAssignationsToIndicatorExecutions = new HashSet<>();
 
-    @OneToMany(mappedBy = "indicatorExecution", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "indicatorExecution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<CustomDissagregationAssignationToIndicatorExecution> customDissagregationAssignationToIndicatorExecutions = new HashSet<>();
 
     /*socios ii*/
@@ -90,7 +90,7 @@ public class IndicatorExecution extends BaseEntity<Long> {
     private User assignedUserBackup;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(schema ="osmosys" ,name = "indicator_executions_markers", joinColumns = @JoinColumn(name = "indicator_execution_id"), inverseJoinColumns = @JoinColumn(name = "marker_id"))
+    @JoinTable(schema = "osmosys", name = "indicator_executions_markers", joinColumns = @JoinColumn(name = "indicator_execution_id"), inverseJoinColumns = @JoinColumn(name = "marker_id"))
     private Set<Marker> markers = new HashSet<>();
 
     @Override
@@ -221,9 +221,9 @@ public class IndicatorExecution extends BaseEntity<Long> {
         this.quarters = quarters;
     }
 
-    public void addQuarter(Quarter quarter){
+    public void addQuarter(Quarter quarter) {
         quarter.setIndicatorExecution(this);
-        if(!this.quarters.add(quarter)){
+        if (!this.quarters.add(quarter)) {
             this.quarters.remove(quarter);
             this.quarters.add(quarter);
         }
@@ -236,6 +236,7 @@ public class IndicatorExecution extends BaseEntity<Long> {
     public void setCustomDissagregationAssignationToIndicatorExecutions(Set<CustomDissagregationAssignationToIndicatorExecution> customDissagregationAssignationToIndicatorExecutions) {
         this.customDissagregationAssignationToIndicatorExecutions = customDissagregationAssignationToIndicatorExecutions;
     }
+
     public void addCustomDissagregationAssignationToIndicatorExecution(CustomDissagregationAssignationToIndicatorExecution dissagregationAssignationToIndicatorExecution) {
         dissagregationAssignationToIndicatorExecution.setIndicatorExecution(this);
         dissagregationAssignationToIndicatorExecution.setState(State.ACTIVO);

@@ -100,8 +100,18 @@ public class IndicatorExecutionService {
             dissagregationTypes = new ArrayList<>();
         }
 
+        // guardos las segregaciones asignadas
+        dissagregationTypes.stream().map(dissagregationType -> {
+                    DissagregationAssignationToIndicatorExecution da = new DissagregationAssignationToIndicatorExecution();
+                    da.setDissagregationType(dissagregationType);
+                    da.setState(State.ACTIVO);
+                    ie.addDissagregationAssignationToIndicatorExecution(da);
+                    return da;
+                })
+                .collect(Collectors.toList());
 
         List<CustomDissagregation> customDissagregations = new ArrayList<>();
+        // todo custom dissagregation
         Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, customDissagregations, cantones);
         List<Quarter> qsl = setOrderInQuartersAndMonths(qs);
         for (Quarter quarter : qsl) {
@@ -149,7 +159,7 @@ public class IndicatorExecutionService {
         }
         ie.setPeriod(project.getPeriod());
         List<DissagregationAssignationToIndicatorExecution> dissagregationAssignations = indicator.getDissagregationsAssignationToIndicator().stream().filter(dissagregationAssignationToIndicator -> {
-            return dissagregationAssignationToIndicator.getState().equals(State.ACTIVO);
+            return dissagregationAssignationToIndicator.getState().equals(State.ACTIVO) && dissagregationAssignationToIndicator.getPeriod().getId().equals(ie.getPeriod().getId());
         }).map(dissagregationAssignationToIndicator -> {
             DissagregationAssignationToIndicatorExecution da = new DissagregationAssignationToIndicatorExecution();
             da.setState(State.ACTIVO);
@@ -161,7 +171,7 @@ public class IndicatorExecutionService {
         });
 
         List<CustomDissagregationAssignationToIndicatorExecution> customDissagregationsAssignations = indicator.getCustomDissagregationAssignationToIndicators().stream().filter(customDissagregationAssignationToIndicator -> {
-            return customDissagregationAssignationToIndicator.getState().equals(State.ACTIVO);
+            return customDissagregationAssignationToIndicator.getState().equals(State.ACTIVO) && customDissagregationAssignationToIndicator.getPeriod().getId().equals(ie.getPeriod().getId());
         }).map(customDissagregationAssignationToIndicator -> {
             CustomDissagregationAssignationToIndicatorExecution da = new CustomDissagregationAssignationToIndicatorExecution();
             da.setCustomDissagregation(customDissagregationAssignationToIndicator.getCustomDissagregation());
@@ -595,9 +605,7 @@ public class IndicatorExecutionService {
                         return DissagregationType.getLocationDissagregationTypes().contains(dissagregationType);
                     }).collect(Collectors.toList());
         } else {
-            locationDissagregationTypes = indicatorExecution
-                    .getIndicator()
-                    .getDissagregationsAssignationToIndicator()
+            locationDissagregationTypes = indicatorExecution.getDissagregationsAssignationsToIndicatorExecutions()
                     .stream().map(dissagregationAssignationToIndicator -> {
                         return dissagregationAssignationToIndicator.getDissagregationType();
                     })

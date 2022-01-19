@@ -12,6 +12,7 @@ public class DissagregationAssignationToIndicatorWeb implements Serializable {
     private Long id;
     private State state;
     private DissagregationType dissagregationType;
+    private PeriodWeb period;
     private List<DissagregationFilterIndicatorWeb> dissagregationFilterIndicators = new ArrayList<>();
 
     public Long getId() {
@@ -44,5 +45,13 @@ public class DissagregationAssignationToIndicatorWeb implements Serializable {
 
     public void setDissagregationFilterIndicators(List<DissagregationFilterIndicatorWeb> dissagregationFilterIndicators) {
         this.dissagregationFilterIndicators = dissagregationFilterIndicators;
+    }
+
+    public PeriodWeb getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(PeriodWeb period) {
+        this.period = period;
     }
 }
