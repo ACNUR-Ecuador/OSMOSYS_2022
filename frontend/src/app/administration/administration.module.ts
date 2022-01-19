@@ -58,6 +58,7 @@ import {QuarterService} from '../shared/services/quarter.service';
 import {SharedModule} from '../shared/shared.module';
 import { UserAdministrationComponent } from './user-administration/user-administration.component';
 import {RolesListPipe} from '../shared/pipes/roles-list.pipe';
+import {AccordionModule} from 'primeng/accordion';
 
 
 @NgModule({
@@ -109,7 +110,8 @@ import {RolesListPipe} from '../shared/pipes/roles-list.pipe';
         TriStateCheckboxModule,
         ConfirmDialogModule,
         SharedModule,
-        CheckboxModule
+        CheckboxModule,
+        AccordionModule
     ],
     providers: [
         ConfirmationService,

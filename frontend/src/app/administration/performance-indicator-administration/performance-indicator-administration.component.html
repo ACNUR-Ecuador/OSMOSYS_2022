@@ -280,48 +280,67 @@
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('state',formItem)">{{utilsService.getErrorMessageForm('state', formItem)}}</small>
                         </div>
+                        <div class="p-field p-col-12 p-md-12">
+                            <ng-template pTemplate="header">
+                                <label for="stateI">Segregaciones</label>
+                            </ng-template>
+                            <p-card header="Segregaciones">
+                                <p-accordion>
+                                    <p-accordionTab header="{{period.year}}" *ngFor="let period of periods">
+                                        <div class="p-d-flex" >
 
-                        <div class="p-field p-col-12 p-md-6">
-                            <label>Desagregaciones Globales</label>
-                            <div class="p-field p-col-12 p-md-12" style="border: 1px solid #ced4da;">
-                                <p-scrollPanel [style]="{width: '100%', height: '80px'}">
-                                    <div class="p-formgroup-inline p-pt-2">
-                                        <div class="p-field-checkbox p-col-12 p-md-3"
-                                             *ngFor="let category of dissagregationTypes">
-                                            <p-checkbox name="group1" [inputId]="category.value"
-                                                        [value]="category.value"
-                                                        [formControl]="formItem.controls['dissagregations']">
-                                            </p-checkbox>
-                                            <label [for]="category.value">{{category.label}}</label>
+                                            <div class="p-field p-col-6 p-md-6 p-p-2">
+                                                <label>Desagregaciones Estándar</label>
+                                                <div class="p-field p-col-12 p-md-12"
+                                                     style="border: 1px solid #ced4da;">
+                                                    <p-scrollPanel [style]="{width: '100%', height: '80px'}">
+                                                        <div class="p-formgroup-inline p-pt-2">
+                                                            <div class="p-field-checkbox p-col-12 p-md-3"
+                                                                 *ngFor="let dissagregationTypePeriod of getDissagregationTypeByPeriod(period)">
+                                                                <p-checkbox name="group1"
+                                                                            [inputId]="dissagregationTypePeriod.value"
+                                                                            [value]="dissagregationTypePeriod.value"
+                                                                            [formControl]="formItem.controls['dissagregations']"
+
+                                                                >
+                                                                </p-checkbox>
+                                                                <label
+                                                                    [for]="dissagregationTypePeriod.value">{{dissagregationTypePeriod.label}}
+                                                                </label>
+                                                            </div>
+
+                                                        </div>
+                                                    </p-scrollPanel>
+                                                </div>
+                                                <small class="p-error"
+                                                       *ngIf="utilsService.showErrorForm('dissagregations',formItem)">{{utilsService.getErrorMessageForm('dissagregations', formItem)}}</small>
+                                            </div>
+                                            <div class="p-field p-col-6 p-md-6 p-p-2" >
+                                                <label>Desagregaciones Personalizadas</label>
+                                                <div class="p-field p-col-12 p-md-12"
+                                                     style="border: 1px solid #ced4da;">
+                                                    <p-scrollPanel [style]="{width: '100%', height: '80px'}">
+                                                        <div class="p-formgroup-inline p-pt-2">
+
+                                                            <div class="p-field-checkbox p-col-12 p-md-3"
+                                                                 *ngFor="let custd of customDissagregations">
+                                                                <p-checkbox name="group2" [inputId]="custd.id"
+                                                                            [value]="custd.id"
+                                                                            [formControl]="formItem.controls['customDissagregations']"
+                                                                >
+                                                                </p-checkbox>
+                                                                <label [for]="custd.id">{{custd.name}}</label>
+                                                            </div>
+                                                        </div>
+                                                    </p-scrollPanel>
+                                                </div>
+                                                <small class="p-error"
+                                                       *ngIf="utilsService.showErrorForm('customDissagregations',formItem)">{{utilsService.getErrorMessageForm('customDissagregations', formItem)}}</small>
+                                            </div>
                                         </div>
-
-                                    </div>
-                                </p-scrollPanel>
-                            </div>
-                            <small class="p-error"
-                                   *ngIf="utilsService.showErrorForm('dissagregations',formItem)">{{utilsService.getErrorMessageForm('dissagregations', formItem)}}</small>
-                        </div>
-                        <div class="p-field p-col-12 p-md-6">
-                            {{formItem.controls['customDissagregations'].value|json}}
-                            <label>Desagregaciones Operación</label>
-                            <div class="p-field p-col-12 p-md-12" style="border: 1px solid #ced4da;">
-                                <p-scrollPanel [style]="{width: '100%', height: '80px'}">
-                                    <div class="p-formgroup-inline p-pt-2">
-
-                                        <div class="p-field-checkbox p-col-12 p-md-3"
-                                             *ngFor="let custd of customDissagregations">
-                                            <p-checkbox name="group2" [inputId]="custd.id"
-                                                        [value]="custd.id"
-                                                        [formControl]="formItem.controls['customDissagregations']"
-                                            >
-                                            </p-checkbox>
-                                            <label [for]="custd.id">{{custd.name}}</label>
-                                        </div>
-                                    </div>
-                                </p-scrollPanel>
-                            </div>
-                            <small class="p-error"
-                                   *ngIf="utilsService.showErrorForm('customDissagregations',formItem)">{{utilsService.getErrorMessageForm('customDissagregations', formItem)}}</small>
+                                    </p-accordionTab>
+                                </p-accordion>
+                            </p-card>
                         </div>
                         <p-fieldset class="p-field p-col-12 p-md-12" legend="Marcadores" [toggleable]="true"
                                     [collapsed]="true">

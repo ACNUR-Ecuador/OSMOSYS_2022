@@ -4,7 +4,7 @@ import {
     CustomDissagregationAssignationToIndicator,
     DissagregationAssignationToIndicator,
     Indicator,
-    Marker
+    Marker, Period
 } from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
@@ -22,6 +22,7 @@ import {MarkersListPipe} from '../../shared/pipes/markers-list.pipe';
 import {DissagregationsAssignationToIndicatorPipe} from '../../shared/pipes/dissagregations-assignation-to-indicator.pipe';
 import {CustomDissagregationsAssignationToIndicatorPipe} from '../../shared/pipes/custom-dissagregations-assignation-to-indicator.pipe';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
+import {PeriodService} from '../../shared/services/period.service';
 
 @Component({
     selector: 'app-performance-indicator-administration',
@@ -46,6 +47,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     markers: Marker[];
     private isMonitoredOptions: any[];
     private isCalculatedOptions: any[];
+    private periods: Period[];
 
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
@@ -67,7 +69,8 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         private customDissagregationsAssignationToIndicatorPipe: CustomDissagregationsAssignationToIndicatorPipe,
         private markerService: MarkerService,
         private filterService: FilterService,
-        private filterUtilsService: FilterUtilsService
+        private filterUtilsService: FilterUtilsService,
+        private periodService: PeriodService
     ) {
     }
 
@@ -189,6 +192,21 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         });
         this.isCalculatedOptions = [{label: 'Calculado', value: true}, {label: 'No Calculado', value: false}];
         this.isMonitoredOptions = [{label: 'Monitoreado', value: true}, {label: 'No Monitoreado', value: false}];
+        this.periodService.getAll().subscribe(value => {
+            this.periods = value.sort((a, b) => a.year - b.year);
+        });
+    }
+
+    public getDissagregationTypeByPeriod(period: Period): SelectItem[] {
+        const r: SelectItem[] = [];
+        this.dissagregationTypes.forEach(value => {
+            const selectItem: SelectItem = {
+                label: value.label,
+                value: value.value + '-' + period.id
+            };
+            r.push(selectItem);
+        });
+        return r;
     }
 
     private loadItems() {
@@ -197,7 +215,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             const test = this.items.filter(value1 => {
                 return value1.productCode !== null;
             });
-            console.log(test);
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -255,13 +272,13 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.submitted = false;
         this.showDialog = true;
         this.formItem.patchValue(indicator);
-        const dissagregations: string[] = indicator.dissagregationsAssignationToIndicator
+        const dissagregationsSelectItems = indicator.dissagregationsAssignationToIndicator
             .filter(value => {
                 return value.state === EnumsState.ACTIVE;
             }).map(value => {
-                return value.dissagregationType;
+                return value.dissagregationType + '-' + value.period.id;
             });
-        this.formItem.get('dissagregations').patchValue(dissagregations);
+        this.formItem.get('dissagregations').patchValue(dissagregationsSelectItems);
 
 
         const customDissagregations: number[] = indicator.customDissagregationAssignationToIndicators
@@ -301,7 +318,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             customDissagregationAssignationToIndicators
         }
             = this.formItem.value;
-
+        console.log(dissagregations);
         const productCode = null;
         const indicator: Indicator = {
             id,
@@ -324,27 +341,34 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             customDissagregationAssignationToIndicators
         };
         // process assignation dissagregations
+// desagregaciones
+        const dissagregationsObjs = (dissagregations as Array<string>).map(value => {
+            return this.dissagregationsItemsValuesToObject(value);
+        });
         if (indicator.id) {
-            // desagregaciones
             // veo lo q ya no estan
             for (const dissagregationsAssignationToIndicatorElement of indicator.dissagregationsAssignationToIndicator) {
-                if ((dissagregations as string[]).filter(value => {
-                    return value === dissagregationsAssignationToIndicatorElement.dissagregationType;
+                if ((dissagregationsObjs as any[]).filter(value => {
+                    return value.dissagregationType === dissagregationsAssignationToIndicatorElement.dissagregationType
+                        && value.period.id === dissagregationsAssignationToIndicatorElement.period.id;
                 }).length < 1) {
                     dissagregationsAssignationToIndicatorElement.state = EnumsState.INACTIVE;
                 } else {
                     dissagregationsAssignationToIndicatorElement.state = EnumsState.ACTIVE;
                 }
             }
-            for (const dissagregation of dissagregations) {
+            for (const dissagregation of dissagregationsObjs) {
                 if (indicator.dissagregationsAssignationToIndicator.filter(value => {
-                    return value.dissagregationType === dissagregation;
+                    return value.dissagregationType === dissagregation.dissagregationType
+                        && value.period.id === dissagregation.period.id;
                 }).length < 1) {
                     const a = new DissagregationAssignationToIndicator();
-                    a.dissagregationType = dissagregation;
+                    a.dissagregationType = dissagregation.dissagregationType;
+                    a.period = dissagregation.period;
                     indicator.dissagregationsAssignationToIndicator.push(a);
                 }
             }
+            // todo agregar por periodo
             for (const customDissagregationAssignationToIndicator of indicator.customDissagregationAssignationToIndicators) {
                 if ((customDissagregations as number[]).filter(value => {
                     return value === customDissagregationAssignationToIndicator.customDissagregation.id;
@@ -367,12 +391,14 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
         } else {
             indicator.dissagregationsAssignationToIndicator = [];
-            for (const dissagregation of dissagregations) {
+            for (const dissagregation of dissagregationsObjs) {
                 const da = new DissagregationAssignationToIndicator();
-                da.dissagregationType = dissagregation;
+                da.dissagregationType = dissagregation.dissagregationType;
+                da.period = dissagregation.period;
                 indicator.dissagregationsAssignationToIndicator.push(da);
 
             }
+            // todo agregar periodo
             indicator.customDissagregationAssignationToIndicators = [];
             for (const customDissagregation of customDissagregations) {
                 const da = new CustomDissagregationAssignationToIndicator();
@@ -381,6 +407,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
             }
         }
+
 
         if (indicator.id) {
             // tslint:disable-next-line:no-shadowed-variable
@@ -409,6 +436,19 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                 });
             });
         }
+
+        // todo check al cerrar actualizacion pantalla
+    }
+
+    dissagregationsItemsValuesToObject(valueS: string) {
+        const valuesSeparated: string[] = valueS.split('-');
+        const dissagregationType = valuesSeparated[0];
+        const periodId: number = Number(valuesSeparated[1]);
+        const period = this.periods.filter(value => {
+            return value.id === periodId;
+        }).pop();
+        const obj = {dissagregationType, period};
+        return obj;
     }
 
     cancelDialog() {

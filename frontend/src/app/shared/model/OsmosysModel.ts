@@ -188,6 +188,7 @@ export class DissagregationAssignationToIndicator {
 
     public id: string;
     public state: string;
+    public period: Period;
     public dissagregationType: string;
     public dissagregationFilterIndicators: DissagregationFilterIndicator[];
 }
@@ -215,6 +216,7 @@ export class CustomDissagregationAssignationToIndicator {
 
     public id: number;
     public state: string;
+    public period: Period;
     public customDissagregation: CustomDissagregation;
     public customDissagregationFilterIndicators: CustomDissagregationFilterIndicator[];
 }

@@ -13,7 +13,7 @@ import java.util.Set;
 @Entity
 @Table(schema = "osmosys", name = "dissagregation_assignation_indicator",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_dissagregation_assignation_indicator", columnNames = {"indicator_id","dissagregation_type"})
+                @UniqueConstraint(name = "uk_dissagregation_assignation_indicator", columnNames = {"indicator_id","dissagregation_type", "period_id"})
         }
 )
 public class DissagregationAssignationToIndicator extends BaseEntity<Long> {
@@ -22,6 +22,10 @@ public class DissagregationAssignationToIndicator extends BaseEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "period_id", foreignKey = @ForeignKey(name = "fk_dissagregation_asignation_period"))
+    private Period period;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "indicator_id", foreignKey = @ForeignKey(name = "fk_dissagregation_asignation_indicator"))
@@ -104,20 +108,12 @@ public class DissagregationAssignationToIndicator extends BaseEntity<Long> {
         this.dissagregationFilterIndicators = dissagregationFilterIndicators;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-
-        if (o == null || getClass() != o.getClass()) return false;
-
-        DissagregationAssignationToIndicator that = (DissagregationAssignationToIndicator) o;
-
-        return new EqualsBuilder().append(id, that.id).append(indicator, that.indicator).append(dissagregationType, that.dissagregationType).isEquals();
+    public Period getPeriod() {
+        return period;
     }
 
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(indicator).append(dissagregationType).toHashCode();
+    public void setPeriod(Period period) {
+        this.period = period;
     }
 
     @Override
@@ -128,5 +124,21 @@ public class DissagregationAssignationToIndicator extends BaseEntity<Long> {
                 ", state=" + state +
                 ", dissagregationType=" + dissagregationType +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof DissagregationAssignationToIndicator)) return false;
+
+        DissagregationAssignationToIndicator that = (DissagregationAssignationToIndicator) o;
+
+        return new EqualsBuilder().append(id, that.id).append(period, that.period).append(indicator, that.indicator).append(dissagregationType, that.dissagregationType).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(id).append(period).append(indicator).append(dissagregationType).toHashCode();
     }
 }
