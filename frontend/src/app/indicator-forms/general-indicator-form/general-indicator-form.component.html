@@ -1,49 +1,73 @@
-<div>
+<div class="p-grid">
     <p-toast key="dialogToast" position="top-right"></p-toast>
     <p-messages></p-messages>
-    <form #myForm="ngForm" (ngSubmit)="saveMonth()">
-        <div class="p-grid" *ngIf="render">
-            <div class="p-col-12" *ngFor="let dissagregation of this.utilsService.getNoDimentionsDissagregationTypes()">
-                <app-dissagregation-no-dissagregation-integer
-                    *ngIf="monthValuesMap.get(dissagregation)"
-                    [month]="month"
-                    [dissagregationType]="dissagregation"
-                    [values]="monthValuesMap.get(dissagregation)"
-                ></app-dissagregation-no-dissagregation-integer>
+    <form #myForm="ngForm"  [formGroup]="formItem"formControlName (ngSubmit)="saveMonth()">
+        <p-card>
+            <ng-template pTemplate="header">
+                Header content here
+            </ng-template>
+            <div class="p-grid" *ngIf="render">
+                <div class="p-col-12" *ngFor="let dissagregation of noDimentionDissagregations">
+                    <app-dissagregation-no-dissagregation-integer
+                        *ngIf="monthValuesMap.get(dissagregation)"
+                        [month]="month"
+                        [dissagregationType]="dissagregation"
+                        [values]="monthValuesMap.get(dissagregation)"
+                    ></app-dissagregation-no-dissagregation-integer>
+                </div>
             </div>
-        </div>
-        <div class="p-grid" *ngIf="render">
-            <div class="p-col-4"
-                 *ngFor="let dissagregation of this.utilsService.getOneDimentionsDissagregationTypes() ">
-                <app-dissagregation-one-integer-dimentions
-                    *ngIf="monthValuesMap.get(dissagregation)"
-                    [dissagregationType]="dissagregation"
-                    [values]="monthValuesMap.get(dissagregation)"
-                ></app-dissagregation-one-integer-dimentions>
+            <div class="p-grid" *ngIf="render">
+                <div class="p-col-4"
+                     *ngFor="let dissagregation of oneDimentionDissagregations ">
+                    <app-dissagregation-one-integer-dimentions
+                        *ngIf="monthValuesMap.get(dissagregation)"
+                        [dissagregationType]="dissagregation"
+                        [values]="monthValuesMap.get(dissagregation)"
+                    ></app-dissagregation-one-integer-dimentions>
+                </div>
             </div>
-        </div>
-        <div class="p-grid" *ngIf="render">
-            <div class="p-col-6" *ngFor="let dissagregation of this.utilsService.getTwoDimentionsDissagregationTypes()">
-                <app-dissagregation-two-integer-dimentions
-                    *ngIf="monthValuesMap.get(dissagregation)"
-                    [dissagregationType]="dissagregation"
-                    [values]="monthValuesMap.get(dissagregation)"
-                ></app-dissagregation-two-integer-dimentions>
+            <div class="p-grid" *ngIf="render">
+                <div class="p-col-6"
+                     *ngFor="let dissagregation of twoDimentionDissagregations">
+                    <div *ngIf="monthValuesMap.get(dissagregation)">
+                        <app-dissagregation-two-integer-dimentions
+                            *ngIf="monthValuesMap.get(dissagregation)"
+                            [dissagregationType]="dissagregation"
+                            [values]="monthValuesMap.get(dissagregation)"
+                        ></app-dissagregation-two-integer-dimentions>
+                    </div>
+                </div>
             </div>
-        </div>
+            <div class="p-fluid p-col-12">
+                <div class="p-field">
+                    <label for="commentaryI">Aspectos Cualitativos</label>
+                    <textarea id="commentaryI"
+                              pInputTextarea
+                              autoResize="true"
+                              style="width: 100%"
+                              formControlName="commentary"
+                    ></textarea>
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('commentary',formItem)">Campo
+                        obligatorio.</small>
+                </div>
+            </div>
 
-        <div class="p-col-12 p-md-12">
-            <p-messages></p-messages>
-        </div>
-        <div class="p-d-flex p-jc-end">
+            <ng-template pTemplate="footer">
+                <div class="p-col-12 p-md-12">
+                    <p-messages></p-messages>
+                </div>
+                <div class="p-d-flex p-jc-end">
 
-            <button pButton type="submit" class="p-mr-2"
-                    pRipple label="Guardar" icon="pi pi-check"
-            ></button>
-            <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times"
-                    class="p-button-secondary"
-                    (click)="cancel()"></button>
-        </div>
+                    <button pButton type="submit" class="p-mr-2"
+                            pRipple label="Guardar" icon="pi pi-check"
+                            [disabled]="!formItem.valid"
+                    ></button>
+                    <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times"
+                            class="p-button-secondary"
+                            (click)="cancel()"></button>
+                </div>
+            </ng-template>
+        </p-card>
     </form>
 </div>
 <p-dialog [(visible)]="showErrorResume" [closable]="false" [closeOnEscape]="false">
@@ -53,7 +77,8 @@
     <div *ngIf="showErrorResume">
         <div class="p-d-flex p-flex-column">
             <div class="p-mb-2">
-                Existen errores en los valores. Los valores totales de cada segregación en la tabla deberían ser iguales.
+                Existen errores en los valores. Los valores totales de cada segregación en la tabla deberían ser
+                iguales.
             </div>
             <div class="p-mb-2">
                 <p-table [value]="totalsValidation.keys()" responsiveLayout="scroll">

@@ -418,23 +418,24 @@ public class IndicatorExecutionService {
         }
         // update values
         Month monthToUpdate = null;
-        Quarter quarterToUpdate = null;
         for (Quarter quarter : indicatorExecution.getQuarters()) {
             Optional<Month> monthToUpdateOp = quarter.getMonths().stream()
                     .filter(month -> monthValuesWeb.getMonth().getId().equals(month.getId()))
                     .findFirst();
             if (monthToUpdateOp.isPresent()) {
                 monthToUpdate = monthToUpdateOp.get();
-                quarterToUpdate = quarter;
                 break;
             }
         }
         if (monthToUpdate == null) {
             throw new GeneralAppException("No se pudo encontrar el mes (monthId:" + monthValuesWeb.getMonth().getId() + ")", Response.Status.BAD_REQUEST);
         }
+        monthToUpdate.setCommentary(monthValuesWeb.getMonth().getCommentary());
         List<IndicatorValueWeb> totalIndicatorValueWebs = new ArrayList<>();
         monthValuesWeb.getIndicatorValuesMap().forEach((dissagregationType, indicatorValueWebs) -> {
-            totalIndicatorValueWebs.addAll(indicatorValueWebs);
+            if (indicatorValueWebs != null) {
+                totalIndicatorValueWebs.addAll(indicatorValueWebs);
+            }
         });
         for (IndicatorValueWeb indicatorValueWeb : totalIndicatorValueWebs) {
             Optional<IndicatorValue> valueToUpdateOp = monthToUpdate.getIndicatorValues().stream().filter(indicatorValue -> {

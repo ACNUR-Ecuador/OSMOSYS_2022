@@ -7,6 +7,7 @@ import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
 import {DissagregationType} from '../../shared/model/UtilsModel';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
     selector: 'app-general-indicator-form',
@@ -19,6 +20,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
     monthValues: MonthValues;
     month: Month;
     monthValuesMap: Map<string, IndicatorValue[]>;
+    formItem: FormGroup;
 
 
     render = false;
@@ -35,13 +37,17 @@ export class GeneralIndicatorFormComponent implements OnInit {
                 public monthService: MonthService,
                 public enumsService: EnumsService,
                 public utilsService: UtilsService,
-                private messageService: MessageService
+                private messageService: MessageService,
+                private fb: FormBuilder
     ) {
     }
 
     ngOnInit(): void {
         this.indicatorExecution = this.config.data.indicatorExecution; //
         this.monthId = this.config.data.monthId; //
+        this.formItem = this.fb.group({
+            commentary: new FormControl('', Validators.required)
+        });
         this.loadMonthValues(this.monthId);
     }
 
@@ -50,6 +56,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
             this.monthValues = value as MonthValues;
             this.month = value.month;
             this.monthValuesMap = value.indicatorValuesMap;
+            this.formItem.get('commentary').patchValue(this.month.commentary);
             this.setDimentionsDissagregations();
         }, error => {
             this.messageService.add({
@@ -65,6 +72,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
         // console.log(this.monthValues);
         this.utilsService.setZerosMonthValues(this.monthValuesMap);
         const totalsValidation = this.utilsService.validateMonth(this.monthValuesMap);
+        this.monthValues.month.commentary = this.formItem.get('commentary').value;
         if (totalsValidation) {
             this.showErrorResume = true;
             this.totalsValidation = totalsValidation;
@@ -76,6 +84,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
 
     cancel() {
         console.log(this.monthValues);
+        this.ref.close({test: 2});
     }
 
     private sendMonthValue() {

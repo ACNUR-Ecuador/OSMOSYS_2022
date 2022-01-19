@@ -440,8 +440,14 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     saveLocationsForm() {
 
         if (this.formLocations.get('locationsSelected').value) {
-            const locationsBefore = this.formItem.get('originalLocations').value as Canton[];
-            const cantonesG = this.sortCantones(this.formLocations.get('locationsSelected').value);
+            let locationsBefore: Canton[] = [];
+            let cantonesG: Canton[] = [];
+            if (this.formItem.get('originalLocations').value) {
+                locationsBefore = this.formItem.get('originalLocations').value as Canton[];
+            }
+            if (this.formLocations.get('locationsSelected').value) {
+                cantonesG = this.sortCantones(this.formLocations.get('locationsSelected').value);
+            }
             const agregatedLocation = cantonesG.filter((canton1) => !locationsBefore.find(canton2 => canton1.id === canton2.id));
             const deletedLocations = locationsBefore.filter((canton1) => !cantonesG.find(canton2 => canton1.id === canton2.id));
             console.log(agregatedLocation);
@@ -449,29 +455,34 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 const cantonesList = agregatedLocation.map(value => {
                     return value.description + '-' + value.provincia.description;
                 }).join('<br>');
-                this.confirmationService.confirm({
-                    message: 'Quieres agregar los cantones nuevos a todos los indicadores de rendimiento?<br>' + cantonesList,
-                    header: 'Actualización de indicadores',
-                    closeOnEscape: false,
-                    icon: 'pi pi-exclamation-triangle',
-                    key: 'cdl',
-                    accept: () => {
-                        this.formItem.get('updateAllLocationsIndicators').patchValue(true);
-                        this.showLocationsDialog = false;
-                    },
-                    reject: (type) => {
-                        switch (type) {
-                            case ConfirmEventType.REJECT:
-                                this.formItem.get('updateAllLocationsIndicators').patchValue(false);
-                                this.showLocationsDialog = false;
-                                break;
-                            case ConfirmEventType.CANCEL:
-                                this.formItem.get('updateAllLocationsIndicators').patchValue(false);
-                                this.showLocationsDialog = false;
-                                break;
+                if (this.idProjectParam) {
+                    this.confirmationService.confirm({
+                        message: 'Quieres agregar los cantones nuevos a todos los indicadores de rendimiento?<br>' + cantonesList,
+                        header: 'Actualización de indicadores',
+                        closeOnEscape: false,
+                        icon: 'pi pi-exclamation-triangle',
+                        key: 'cdl',
+                        accept: () => {
+                            this.formItem.get('updateAllLocationsIndicators').patchValue(true);
+                            this.showLocationsDialog = false;
+                        },
+                        reject: (type) => {
+                            switch (type) {
+                                case ConfirmEventType.REJECT:
+                                    this.formItem.get('updateAllLocationsIndicators').patchValue(false);
+                                    this.showLocationsDialog = false;
+                                    break;
+                                case ConfirmEventType.CANCEL:
+                                    this.formItem.get('updateAllLocationsIndicators').patchValue(false);
+                                    this.showLocationsDialog = false;
+                                    break;
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    this.formItem.get('updateAllLocationsIndicators').patchValue(false);
+                    this.showLocationsDialog = false;
+                }
             }
             console.log(deletedLocations);
             this.formItem.get('locations').patchValue(cantonesG);

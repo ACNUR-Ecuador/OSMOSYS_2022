@@ -74,6 +74,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
 
     cancel() {
         console.log(this.monthValues);
+        this.ref.close({test: 2});
     }
 
     private sendMonthValue() {
