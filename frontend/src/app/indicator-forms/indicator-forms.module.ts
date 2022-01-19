@@ -15,6 +15,7 @@ import {DissagregationNoDissagregationIntegerComponent} from './dissagregationFo
 import { PerformanceIndicatorFormComponent } from './performance-indicator-form/performance-indicator-form.component';
 import {CardModule} from 'primeng/card';
 import {InputTextareaModule} from 'primeng/inputtextarea';
+import {ChartModule} from 'primeng/chart';
 
 
 @NgModule({
@@ -37,7 +38,8 @@ import {InputTextareaModule} from 'primeng/inputtextarea';
         SharedModule,
         CardModule,
         ReactiveFormsModule,
-        InputTextareaModule
+        InputTextareaModule,
+        ChartModule
     ]
 })
 export class IndicatorFormsModule {

@@ -1,10 +1,24 @@
 <div class="p-grid">
     <p-toast key="dialogToast" position="top-right"></p-toast>
     <p-messages></p-messages>
-    <form #myForm="ngForm"  [formGroup]="formItem"formControlName (ngSubmit)="saveMonth()">
+    <form #myForm="ngForm" [formGroup]="formItem" formControlName (ngSubmit)="saveMonth()">
         <p-card>
             <ng-template pTemplate="header">
-                Header content here
+                <div class="p-grid" *ngIf="render">
+                    <div class="p-col-8">
+                        <div class="card">
+                            <h5>Ejecución Trimestral</h5>
+                            <p-chart type="bar" width="400" [data]="chartDataTrimestal" [options]="chartDataOptions"></p-chart>
+                        </div>
+                    </div>
+                    <div class="p-col-4">
+                        <div class="card">
+                            <h5>Ejecución Anual</h5>
+                            <p-chart type="bar" width="400" [data]="chartDataTotal" [options]="chartDataOptions"></p-chart>
+                        </div>
+                    </div>
+                </div>
+
             </ng-template>
             <div class="p-grid" *ngIf="render">
                 <div class="p-col-12" *ngFor="let dissagregation of noDimentionDissagregations">
