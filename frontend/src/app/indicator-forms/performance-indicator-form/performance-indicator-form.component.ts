@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, ViewChildren} from '@angular/core';
 import {IndicatorExecutionResumeWeb, IndicatorValue, Month, MonthValues} from '../../shared/model/OsmosysModel';
 import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
@@ -7,6 +7,7 @@ import {EnumsService} from '../../shared/services/enums.service';
 import {UtilsService} from '../../shared/services/utils.service';
 import {MessageService} from 'primeng/api';
 import {DissagregationType} from '../../shared/model/UtilsModel';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
     selector: 'app-performance-indicator-form',
@@ -19,6 +20,8 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     monthValues: MonthValues;
     month: Month;
     monthValuesMap: Map<string, IndicatorValue[]>;
+    formItem: FormGroup;
+
     oneDimentionDissagregations: DissagregationType[] = [];
     twoDimentionDissagregations: DissagregationType[] = [];
     noDimentionDissagregations: DissagregationType[] = [];
@@ -33,13 +36,17 @@ export class PerformanceIndicatorFormComponent implements OnInit {
                 public monthService: MonthService,
                 public enumsService: EnumsService,
                 public utilsService: UtilsService,
-                private messageService: MessageService
+                private messageService: MessageService,
+                private fb: FormBuilder
     ) {
     }
 
     ngOnInit(): void {
         this.indicatorExecution = this.config.data.indicatorExecution; //
         this.monthId = this.config.data.monthId; //
+        this.formItem = this.fb.group({
+            commentary: new FormControl('', Validators.required)
+        });
         this.loadMonthValues(this.monthId);
     }
 
@@ -48,6 +55,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
             this.monthValues = value as MonthValues;
             this.month = value.month;
             this.monthValuesMap = value.indicatorValuesMap;
+            this.formItem.get('commentary').patchValue(this.month.commentary);
             this.setDimentionsDissagregations();
         }, error => {
             this.messageService.add({
@@ -63,6 +71,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         // console.log(this.monthValues);
         this.utilsService.setZerosMonthValues(this.monthValuesMap);
         const totalsValidation = this.utilsService.validateMonth(this.monthValuesMap);
+        this.monthValues.month.commentary = this.formItem.get('commentary').value;
         if (totalsValidation) {
             this.showErrorResume = true;
             this.totalsValidation = totalsValidation;
