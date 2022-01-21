@@ -83,4 +83,27 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
         return q.getResultList();
 
     }
+
+    public Indicator findWithData(Long id) throws GeneralAppException {
+
+        String jpql = "SELECT DISTINCT o" +
+                " FROM Indicator o " +
+                " left outer join o.statements sts "+
+                " left outer join o.customDissagregationAssignationToIndicators cda "+
+                " left outer join cda.customDissagregation "+
+                " left outer join cda.customDissagregationFilterIndicators "+
+                " left outer join o.dissagregationsAssignationToIndicator da "+
+                " left outer join da.dissagregationFilterIndicators "+
+                " left outer join o.markers "+
+                " WHERE o.id=:id";
+        Query q = getEntityManager().createQuery(jpql, Indicator.class);
+        q.setParameter("id", id);
+        try {
+            return (Indicator) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (NonUniqueResultException e) {
+            throw new GeneralAppException("Se encontró más de un item con el id  " + id, Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
