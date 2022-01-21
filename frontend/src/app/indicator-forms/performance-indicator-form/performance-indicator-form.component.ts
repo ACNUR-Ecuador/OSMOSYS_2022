@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild, ViewChildren} from '@angular/core';
-import {IndicatorExecutionResumeWeb, IndicatorValue, Month, MonthValues} from '../../shared/model/OsmosysModel';
+import {CustomDissagregationValues, IndicatorExecutionResumeWeb, IndicatorValue, Month, MonthValues} from '../../shared/model/OsmosysModel';
 import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
 import {MonthService} from '../../shared/services/month.service';
@@ -20,6 +20,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     monthValues: MonthValues;
     month: Month;
     monthValuesMap: Map<string, IndicatorValue[]>;
+    monthCustomDissagregatoinValues: CustomDissagregationValues[];
     formItem: FormGroup;
 
     oneDimentionDissagregations: DissagregationType[] = [];
@@ -55,6 +56,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
             this.monthValues = value as MonthValues;
             this.month = value.month;
             this.monthValuesMap = value.indicatorValuesMap;
+            this.monthCustomDissagregatoinValues = value.customDissagregationValues;
             this.formItem.get('commentary').patchValue(this.month.commentary);
             this.setDimentionsDissagregations();
         }, error => {
@@ -70,7 +72,8 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     saveMonth() {
         // console.log(this.monthValues);
         this.utilsService.setZerosMonthValues(this.monthValuesMap);
-        const totalsValidation = this.utilsService.validateMonth(this.monthValuesMap);
+        this.utilsService.setZerosCustomMonthValues(this.monthCustomDissagregatoinValues);
+        const totalsValidation = this.utilsService.validateMonth(this.monthValuesMap, this.monthCustomDissagregatoinValues);
         this.monthValues.month.commentary = this.formItem.get('commentary').value;
         if (totalsValidation) {
             this.showErrorResume = true;

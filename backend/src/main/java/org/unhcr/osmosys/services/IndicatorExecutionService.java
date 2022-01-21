@@ -18,7 +18,6 @@ import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -448,6 +447,25 @@ public class IndicatorExecutionService {
                 valueToUpdate.setDenominatorValue(indicatorValueWeb.getDenominatorValue());
             } else {
                 throw new GeneralAppException("No se pudo encontrar el valor (valueId:" + indicatorValueWeb.getId() + ")", Response.Status.BAD_REQUEST);
+            }
+        }
+        if (CollectionUtils.isNotEmpty(monthValuesWeb.getCustomDissagregationValues())) {
+            List<IndicatorValueCustomDissagregationWeb> totalIndicatorValueCustomDissagregationWebs = new ArrayList<>();
+            monthValuesWeb.getCustomDissagregationValues().forEach(customDissagregationValuesWeb -> {
+                totalIndicatorValueCustomDissagregationWebs.addAll(customDissagregationValuesWeb.getIndicatorValuesCustomDissagregation());
+            });
+            for (IndicatorValueCustomDissagregationWeb totalIndicatorValueCustomDissagregationWeb : totalIndicatorValueCustomDissagregationWebs) {
+                Optional<IndicatorValueCustomDissagregation> indicatorValueCustomDissagregationOp = monthToUpdate.getIndicatorValuesIndicatorValueCustomDissagregations().stream().filter(indicatorValueCustomDissagregation -> {
+                    return totalIndicatorValueCustomDissagregationWeb.getId().equals(indicatorValueCustomDissagregation.getId());
+                }).findFirst();
+                if (indicatorValueCustomDissagregationOp.isPresent()) {
+                    IndicatorValueCustomDissagregation valueToUpdate = indicatorValueCustomDissagregationOp.get();
+                    valueToUpdate.setValue(totalIndicatorValueCustomDissagregationWeb.getValue());
+                    valueToUpdate.setNumeratorValue(totalIndicatorValueCustomDissagregationWeb.getNumeratorValue());
+                    valueToUpdate.setDenominatorValue(totalIndicatorValueCustomDissagregationWeb.getDenominatorValue());
+                } else {
+                    throw new GeneralAppException("No se pudo encontrar el valor (valueId:" + totalIndicatorValueCustomDissagregationWeb.getId() + ")", Response.Status.BAD_REQUEST);
+                }
             }
         }
         this.updateIndicatorExecutionTotals(indicatorExecution);

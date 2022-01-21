@@ -433,7 +433,24 @@ export class StartEndDatesWeb {
 export class MonthValues {
     public month: Month;
     public indicatorValuesMap: any;
+    public customDissagregationValues: CustomDissagregationValues[];
 
+}
+
+export class CustomDissagregationValues {
+    public customDissagregation: CustomDissagregation;
+    public indicatorValuesCustomDissagregation: IndicatorValueCustomDissagregationWeb[];
+}
+
+export class IndicatorValueCustomDissagregationWeb {
+    id: number;
+    state: string;
+    monthEnum: string;
+    customDissagregationOption: CustomDissagregationOption;
+    showValue: boolean;
+    value: number;
+    denominatorValue: number;
+    numeratorValue: number;
 }
 
 export class IndicatorValue {

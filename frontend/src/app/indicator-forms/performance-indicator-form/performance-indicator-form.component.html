@@ -2,56 +2,91 @@
     <ng-template pTemplate="header">
         <p-toast key="dialogToast" position="top-right"></p-toast>
         <p-messages></p-messages>
-        <div class="p-fluid" *ngIf="render">
+        <div class="p-fluid card" *ngIf="render">
             <div class="p-field">
                 <label>Descripción de la actividad:</label>
                 {{indicatorExecution.activityDescription}}
             </div>
         </div>
     </ng-template>
-    <form #myForm="ngForm" (ngSubmit)="saveMonth()">
-        <div class="p-grid" *ngIf="render">
-            <div class="p-col-12" *ngFor="let dissagregation of noDimentionDissagregations">
-                <app-dissagregation-no-dissagregation-integer
-                    *ngIf="monthValuesMap.get(dissagregation)"
-                    [month]="month"
-                    [dissagregationType]="dissagregation"
-                    [values]="monthValuesMap.get(dissagregation)"
-                ></app-dissagregation-no-dissagregation-integer>
-            </div>
-        </div>
-        <div class="p-grid" *ngIf="render">
-            <div class="p-col-4"
-                 *ngFor="let dissagregation of oneDimentionDissagregations ">
-                <app-dissagregation-one-integer-dimentions
-                    *ngIf="monthValuesMap.get(dissagregation)"
-                    [dissagregationType]="dissagregation"
-                    [values]="monthValuesMap.get(dissagregation)"
-                ></app-dissagregation-one-integer-dimentions>
-            </div>
-        </div>
-        <div class="p-grid" *ngIf="render">
-            <div class="p-col-6" *ngFor="let dissagregation of twoDimentionDissagregations">
-                <app-dissagregation-two-integer-dimentions
-                    *ngIf="monthValuesMap.get(dissagregation)"
-                    [dissagregationType]="dissagregation"
-                    [values]="monthValuesMap.get(dissagregation)"
-                ></app-dissagregation-two-integer-dimentions>
-            </div>
-        </div>
+    <form #myForm="ngForm" [formGroup]="formItem" (ngSubmit)="saveMonth()">
+        <p-card>
+            <ng-template pTemplate="header">
 
-        <div class="p-col-12 p-md-12">
-            <p-messages></p-messages>
-        </div>
-        <div class="p-d-flex p-jc-end">
+                <app-chart-indicator-execution *ngIf="render"
+                                               [month]="month"
+                                               [indicatorExecution]="indicatorExecution"
+                ></app-chart-indicator-execution>
 
-            <button pButton type="submit" class="p-mr-2"
-                    pRipple label="Guardar" icon="pi pi-check"
-            ></button>
-            <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times"
-                    class="p-button-secondary"
-                    (click)="cancel()"></button>
-        </div>
+            </ng-template>
+            <div class="p-grid p-m-2" *ngIf="render">
+                <div class="p-col-12" *ngFor="let dissagregation of noDimentionDissagregations">
+                    <app-dissagregation-no-dissagregation-integer
+                        *ngIf="monthValuesMap.get(dissagregation)"
+                        [month]="month"
+                        [dissagregationType]="dissagregation"
+                        [values]="monthValuesMap.get(dissagregation)"
+                    ></app-dissagregation-no-dissagregation-integer>
+                </div>
+            </div>
+            <div class="p-grid p-m-2" *ngIf="render">
+                <div class="p-col-4"
+                     *ngFor="let dissagregation of oneDimentionDissagregations ">
+                    <app-dissagregation-one-integer-dimentions
+                        *ngIf="monthValuesMap.get(dissagregation)"
+                        [dissagregationType]="dissagregation"
+                        [values]="monthValuesMap.get(dissagregation)"
+                    ></app-dissagregation-one-integer-dimentions>
+                </div>
+            </div>
+            <div class="p-grid p-m-2" *ngIf="render">
+                <div class="p-col-6" *ngFor="let dissagregation of twoDimentionDissagregations">
+                    <app-dissagregation-two-integer-dimentions
+                        *ngIf="monthValuesMap.get(dissagregation)"
+                        [dissagregationType]="dissagregation"
+                        [values]="monthValuesMap.get(dissagregation)"
+                    ></app-dissagregation-two-integer-dimentions>
+                </div>
+            </div>
+            <div class="p-grid p-m-2"
+                 *ngIf="render && monthCustomDissagregatoinValues!== null && monthCustomDissagregatoinValues.length>0">
+                <div class="p-col-6" *ngFor="let monthCustomDissagregatoinValue of monthCustomDissagregatoinValues">
+                    <app-custom-dissagregation-integer
+                        [values]="monthCustomDissagregatoinValue.indicatorValuesCustomDissagregation"
+                        [customDissagregation]="monthCustomDissagregatoinValue.customDissagregation"
+                    ></app-custom-dissagregation-integer>
+                </div>
+            </div>
+            <div class="p-fluid p-col-12">
+                <div class="p-field">
+                    <label for="commentaryI">Aspectos Cualitativos</label>
+                    <textarea id="commentaryI"
+                              pInputTextarea
+                              autoResize="true"
+                              [rows]="5"
+                              style="width: 100%"
+                              formControlName="commentary"
+                    ></textarea>
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('commentary',formItem)">Campo
+                        obligatorio.</small>
+                </div>
+            </div>
+
+            <ng-template pTemplate="footer">
+                <div class="p-col-12 p-md-12">
+                    <p-messages></p-messages>
+                </div>
+                <div class="p-d-flex p-jc-end">
+
+                    <button pButton type="submit" class="p-mr-2"
+                            pRipple label="Guardar" icon="pi pi-check"
+                    ></button>
+                    <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times"
+                            class="p-button-secondary"
+                            (click)="cancel()"></button>
+                </div>
+            </ng-template>
+        </p-card>
     </form>
 </p-card>
 <p-dialog [(visible)]="showErrorResume" [closable]="false" [closeOnEscape]="false">

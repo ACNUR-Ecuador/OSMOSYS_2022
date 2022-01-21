@@ -10,8 +10,7 @@ import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
 import org.unhcr.osmosys.model.enums.TotalIndicatorCalculationType;
-import org.unhcr.osmosys.webServices.model.IndicatorValueWeb;
-import org.unhcr.osmosys.webServices.model.MonthValuesWeb;
+import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
@@ -38,6 +37,8 @@ public class MonthService {
 
     @Inject
     IndicatorValueService indicatorValueService;
+    @Inject
+    IndicatorValueCustomDissagregationService indicatorValueCustomDissagregationService;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(MonthService.class);
@@ -99,7 +100,7 @@ public class MonthService {
         }
         Set<IndicatorValueCustomDissagregation> indicatorValuesCustomDissagregations = new HashSet<>();
         for (CustomDissagregation customDissagregation : customDissagregations) {
-            indicatorValuesCustomDissagregations.addAll(this.indicatorValueService.createIndicatorValuesCustomDissagregationForMonth(customDissagregation));
+            indicatorValuesCustomDissagregations.addAll(this.indicatorValueCustomDissagregationService.createIndicatorValuesCustomDissagregationForMonth(customDissagregation));
         }
         for (IndicatorValueCustomDissagregation indicatorValuesCustomDissagregation : indicatorValuesCustomDissagregations) {
             m.addIndicatorValueCustomDissagregation(indicatorValuesCustomDissagregation);
@@ -214,9 +215,8 @@ public class MonthService {
         // TODO Q PASA SI NO HAY VALUES
 
         List<IndicatorValue> indicatorValues = this.indicatorValueService.getIndicatorValuesByMonthId(monthId);
-        if (CollectionUtils.isEmpty(indicatorValues)) {
-            return null;
-        }
+        List<IndicatorValueCustomDissagregation> indicatorValuesCustomDissagregation =
+                this.indicatorValueCustomDissagregationService.getIndicatorValuesByMonthId(monthId);
 
         List<IndicatorValueWeb> indicatorValuesWeb = this.modelWebTransformationService.indicatorsToIndicatorValuesWeb(new HashSet<>(indicatorValues));
         // clasifico por tipo desagreggacions
@@ -239,14 +239,39 @@ public class MonthService {
         MonthValuesWeb r = new MonthValuesWeb();
         r.setMonth(this.modelWebTransformationService.monthToMonthWeb(indicatorValues.get(0).getMonth()));
         r.setIndicatorValuesMap(map);
+        // clasifico por desagregaciones
+        if (CollectionUtils.isNotEmpty(indicatorValuesCustomDissagregation)) {
+            r.setCustomDissagregationValues(new ArrayList<>());
+            Map<CustomDissagregation, Set<IndicatorValueCustomDissagregation>> mapCustom = new HashMap<>();
+            // saco un set de disegraciones
+            Set<CustomDissagregation> setCustomDissagegations = indicatorValuesCustomDissagregation.stream()
+                    .map(indicatorValueCustomDissagregation -> {
+                        return indicatorValueCustomDissagregation.getCustomDissagregationOption().getCustomDissagregation();
+                    }).collect(Collectors.toSet());
+            setCustomDissagegations.stream().forEach(customDissagregation -> {
+                Set<IndicatorValueCustomDissagregation> values = indicatorValuesCustomDissagregation.stream().filter(indicatorValueCustomDissagregation -> {
+                    return indicatorValueCustomDissagregation.getCustomDissagregationOption().getCustomDissagregation().getId().equals(customDissagregation.getId());
+                }).collect(Collectors.toSet());
+                mapCustom.put(customDissagregation, values);
+            });
+            mapCustom.forEach((customDissagregation, indicatorValueCustomDissagregations) -> {
+                CustomDissagregationValuesWeb customDissagregationValuesWeb = new CustomDissagregationValuesWeb();
+                customDissagregationValuesWeb.setCustomDissagregation(this.modelWebTransformationService.customDissagregationWebToCustomDissagregation(customDissagregation));
+
+                List<IndicatorValueCustomDissagregationWeb> values = this.modelWebTransformationService.indicatorValueCustomDissagregationsToIndicatorValueCustomDissagregationWebs(indicatorValueCustomDissagregations);
+                customDissagregationValuesWeb.setIndicatorValuesCustomDissagregation(values);
+                r.getCustomDissagregationValues().add(customDissagregationValuesWeb);
+            });
+        }
+
         return r;
 
     }
 
     public void updateMonthLocationsByAssignation(Month month, List<Canton> cantones, List<DissagregationType> locationDissagregationTypes) throws GeneralAppException {
-        List<IndicatorValue> newValues= new ArrayList<>();
+        List<IndicatorValue> newValues = new ArrayList<>();
         for (DissagregationType locationDissagregationType : locationDissagregationTypes) {
-             newValues.addAll(this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(locationDissagregationType, cantones));
+            newValues.addAll(this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(locationDissagregationType, cantones));
         }
         newValues.forEach(indicatorValue -> {
             month.addIndicatorValue(indicatorValue);

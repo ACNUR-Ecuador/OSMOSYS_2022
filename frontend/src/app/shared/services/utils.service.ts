@@ -3,7 +3,13 @@ import * as FileSaver from 'file-saver';
 import {FormGroup} from '@angular/forms';
 import {ColumnTable, DissagregationType, EnumsState, EnumsType, MonthType, SelectItemWithOrder} from '../model/UtilsModel';
 import {EnumsService} from './enums.service';
-import {IndicatorExecutionAdministrationResumeWeb, IndicatorValue, MonthValues, Quarter} from '../model/OsmosysModel';
+import {
+    CustomDissagregationValues,
+    IndicatorExecutionAdministrationResumeWeb,
+    IndicatorValue,
+    MonthValues,
+    Quarter
+} from '../model/OsmosysModel';
 import {SelectItem} from 'primeng/api';
 
 @Injectable({
@@ -363,7 +369,8 @@ export class UtilsService {
             .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
     }
 
-    validateMonth(monthValuesMap: Map<string, IndicatorValue[]>): Map<string, number> {
+    validateMonth(monthValuesMap: Map<string, IndicatorValue[]>,
+                  customDissagregationValues: CustomDissagregationValues[]): Map<string, number> {
         const monthValuesTotals: Map<string, number> = new Map<string, number>();
         monthValuesMap.forEach((value, key) => {
             const dissagregationTypeE = DissagregationType[key];
@@ -374,12 +381,28 @@ export class UtilsService {
         });
         const totalMonth = Math.max(...monthValuesTotals.values());
         console.log('totalMonth: ' + totalMonth);
+
         let errorExists = false;
         monthValuesTotals.forEach(value => {
             if (totalMonth !== value) {
                 errorExists = true;
             }
         });
+        if (customDissagregationValues !== null && customDissagregationValues.length > 0) {
+            customDissagregationValues.forEach(value => {
+                if (value.customDissagregation.controlTotalValue) {
+                    const total =
+                        value.indicatorValuesCustomDissagregation.reduce(
+                            (previousValue, currentValue) => previousValue + currentValue.value,
+                            0);
+
+                    if (totalMonth !== total) {
+                        errorExists = true;
+                        monthValuesTotals.set(value.customDissagregation.name, total);
+                    }
+                }
+            });
+        }
         if (!errorExists) {
             // no error
             return null;
@@ -399,6 +422,19 @@ export class UtilsService {
                 });
             }
         });
+    }
+
+    setZerosCustomMonthValues(monthCustomDissagregatoinValues: CustomDissagregationValues[]) {
+        if (monthCustomDissagregatoinValues !== null && monthCustomDissagregatoinValues.length
+            > 0) {
+            monthCustomDissagregatoinValues.forEach(value => {
+                value.indicatorValuesCustomDissagregation.forEach(value1 => {
+                    if (value1.state === EnumsState.ACTIVE && value1.value === null) {
+                        value1.value = 0;
+                    }
+                });
+            });
+        }
     }
 
     shouldvalidate(dissagregationType: DissagregationType): boolean {
@@ -434,6 +470,8 @@ export class UtilsService {
         }
         return result;
     }
+
+
 }
 
 

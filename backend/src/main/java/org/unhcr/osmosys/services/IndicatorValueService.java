@@ -107,24 +107,6 @@ public class IndicatorValueService {
         }
     }
 
-    public List<IndicatorValueCustomDissagregation> createIndicatorValuesCustomDissagregationForMonth(
-            CustomDissagregation customDissagregation
-    ) throws GeneralAppException {
-
-        List<CustomDissagregationOption> options = customDissagregation.getCustomDissagregationOptions().stream().filter(customDissagregationOption -> {
-            return customDissagregationOption.getState().equals(State.ACTIVO);
-        }).collect(Collectors.toList());
-
-        List<IndicatorValueCustomDissagregation> r = new ArrayList<>();
-        for (CustomDissagregationOption option : options) {
-            IndicatorValueCustomDissagregation iv = new IndicatorValueCustomDissagregation();
-            iv.setCustomDissagregationOption(option);
-            iv.setState(State.ACTIVO);
-            r.add(iv);
-        }
-        return r;
-    }
-
     private List<IndicatorValue> createIndicatorValueDissagregationStandardAge() {
         List<IndicatorValue> r = new ArrayList<>();
         DissagregationType dt = DissagregationType.EDAD;

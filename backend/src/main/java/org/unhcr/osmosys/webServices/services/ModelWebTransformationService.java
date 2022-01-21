@@ -1205,4 +1205,27 @@ public class ModelWebTransformationService {
         return r;
     }
     //</editor-fold>
+
+    //<editor-fold desc="IndicatorValueCustomDissagregation">
+    public IndicatorValueCustomDissagregationWeb indicatorValueCustomDissagregationToIndicatorValueCustomDissagregationWeb(IndicatorValueCustomDissagregation indicatorValueCustomDissagregation) {
+        IndicatorValueCustomDissagregationWeb q = new IndicatorValueCustomDissagregationWeb();
+        q.setId(indicatorValueCustomDissagregation.getId());
+        q.setState(indicatorValueCustomDissagregation.getState());
+        q.setCustomDissagregationOption(this.customDissagregationOptionToCustomDissagregationOptionWeb(indicatorValueCustomDissagregation.getCustomDissagregationOption()));
+        q.setMonthEnum(indicatorValueCustomDissagregation.getMonthEnum());
+        q.setValue(indicatorValueCustomDissagregation.getValue());
+        q.setNumeratorValue(indicatorValueCustomDissagregation.getNumeratorValue());
+        q.setDenominatorValue(indicatorValueCustomDissagregation.getDenominatorValue());
+        return q;
+    }
+
+
+    public List<IndicatorValueCustomDissagregationWeb> indicatorValueCustomDissagregationsToIndicatorValueCustomDissagregationWebs(Set<IndicatorValueCustomDissagregation> indicatorValueCustomDissagregation) {
+        List<IndicatorValueCustomDissagregationWeb> r = new ArrayList<>();
+        for (IndicatorValueCustomDissagregation indicatorValue : indicatorValueCustomDissagregation) {
+            r.add(this.indicatorValueCustomDissagregationToIndicatorValueCustomDissagregationWeb(indicatorValue));
+        }
+        return r;
+    }
+    //</editor-fold>
 }

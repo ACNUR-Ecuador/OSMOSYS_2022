@@ -13,6 +13,7 @@ public class MonthValuesWeb implements Serializable {
     public MonthWeb month;
 
     Map<DissagregationType, List<IndicatorValueWeb>> indicatorValuesMap = new HashMap<>();
+    List<CustomDissagregationValuesWeb> customDissagregationValues;
 
     public MonthWeb getMonth() {
         return month;
@@ -28,5 +29,13 @@ public class MonthValuesWeb implements Serializable {
 
     public void setIndicatorValuesMap(Map<DissagregationType, List<IndicatorValueWeb>> indicatorValuesMap) {
         this.indicatorValuesMap = indicatorValuesMap;
+    }
+
+    public List<CustomDissagregationValuesWeb> getCustomDissagregationValues() {
+        return customDissagregationValues;
+    }
+
+    public void setCustomDissagregationValues(List<CustomDissagregationValuesWeb> customDissagregationValues) {
+        this.customDissagregationValues = customDissagregationValues;
     }
 }

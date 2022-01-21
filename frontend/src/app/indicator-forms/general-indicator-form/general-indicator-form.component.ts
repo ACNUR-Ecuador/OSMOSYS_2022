@@ -72,7 +72,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
     saveMonth() {
         // console.log(this.monthValues);
         this.utilsService.setZerosMonthValues(this.monthValuesMap);
-        const totalsValidation = this.utilsService.validateMonth(this.monthValuesMap);
+        const totalsValidation = this.utilsService.validateMonth(this.monthValuesMap, null);
         this.monthValues.month.commentary = this.formItem.get('commentary').value;
         if (totalsValidation) {
             this.showErrorResume = true;

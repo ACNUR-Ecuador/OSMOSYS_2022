@@ -55,7 +55,8 @@ export class IndicatorExecutionService {
     public updateMonthValues(indicatorExecutionId: number, monthValues: MonthValues): Observable<number> {
         const monthValuesP = {
             month: undefined,
-            indicatorValuesMap: undefined
+            indicatorValuesMap: undefined,
+            customDissagregationValues: undefined
         };
         monthValuesP.month = monthValues.month;
         const convMap = {};
@@ -64,7 +65,7 @@ export class IndicatorExecutionService {
             convMap[key] = value;
         });
         monthValuesP.indicatorValuesMap = convMap;
-
+        monthValuesP.customDissagregationValues = monthValues.customDissagregationValues;
         return this.http.put<number>(`${mainServiceUrl}/updateMonthValues/${indicatorExecutionId}`, monthValuesP);
     }
 }

@@ -57,7 +57,7 @@ public class Month extends BaseEntity<Long> {
     @OneToMany(mappedBy = "month", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<IndicatorValue> indicatorValues = new HashSet<>();
 
-    @OneToMany(mappedBy = "month", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "month", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<IndicatorValueCustomDissagregation> indicatorValuesIndicatorValueCustomDissagregations = new HashSet<>();
 
 

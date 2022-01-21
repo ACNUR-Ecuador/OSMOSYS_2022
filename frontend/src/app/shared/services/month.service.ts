@@ -22,6 +22,7 @@ export class MonthService {
                 monthValue.month = value.month;
                 const valuesmap = value.indicatorValuesMap;
                 monthValue.indicatorValuesMap = new Map(Object.entries(valuesmap));
+                monthValue.customDissagregationValues = value.customDissagregationValues;
                 return monthValue;
             }));
     }
