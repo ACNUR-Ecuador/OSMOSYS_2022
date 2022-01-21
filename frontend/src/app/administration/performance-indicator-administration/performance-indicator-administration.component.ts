@@ -1,12 +1,13 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {
+    Area,
     CustomDissagregation,
     CustomDissagregationAssignationToIndicator,
     DissagregationAssignationToIndicator,
     Indicator,
-    Marker, Period
+    Marker, Period, Statement
 } from '../../shared/model/OsmosysModel';
-import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
+import {AreaType, ColumnDataType, ColumnTable, EnumsState, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ConfirmationService, FilterService, MessageService, SelectItem} from 'primeng/api';
 import {UtilsService} from '../../shared/services/utils.service';
@@ -23,6 +24,8 @@ import {DissagregationsAssignationToIndicatorPipe} from '../../shared/pipes/diss
 import {CustomDissagregationsAssignationToIndicatorPipe} from '../../shared/pipes/custom-dissagregations-assignation-to-indicator.pipe';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {PeriodService} from '../../shared/services/period.service';
+import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
+import {CodeDescriptionListPipe} from '../../shared/pipes/code-description-list.pipe';
 
 @Component({
     selector: 'app-performance-indicator-administration',
@@ -41,7 +44,8 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     private frecuencies: SelectItem[];
     private areaTypes: SelectItem[];
     private totalIndicatorCalculationTypes: SelectItem[];
-    private statements: SelectItem[];
+    private statements: Statement[];
+    private filteredStatements: { labelItem: string, valueItem: Statement }[];
     private customDissagregations: CustomDissagregation[];
     private dissagregationTypes: SelectItem[];
     markers: Marker[];
@@ -65,6 +69,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         private customDissagregationService: CustomDissagregationService,
         private booleanYesNoPipe: BooleanYesNoPipe,
         private markersListPipe: MarkersListPipe,
+        private codeDescriptionListPipe: CodeDescriptionListPipe,
         private dissagregationsAssignationToIndicatorPipe: DissagregationsAssignationToIndicatorPipe,
         private customDissagregationsAssignationToIndicatorPipe: CustomDissagregationsAssignationToIndicatorPipe,
         private markerService: MarkerService,
@@ -122,7 +127,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                 arg1: EnumsType.TotalIndicatorCalculationType
             },
             {field: 'markers', header: 'Marcadores', type: ColumnDataType.text, pipeRef: this.markersListPipe},
-            {field: 'statements', header: 'Staments', type: ColumnDataType.text, pipeRef: this.markersListPipe},
+            {field: 'statements', header: 'Declaraciones', type: ColumnDataType.text, pipeRef: this.codeDescriptionListPipe},
             {
                 field: 'dissagregationsAssignationToIndicator',
                 header: 'Desagregaciones',
@@ -209,6 +214,18 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         return r;
     }
 
+    public getCustomDissagregationTypeByPeriod(period: Period): SelectItem[] {
+        const r: SelectItem[] = [];
+        this.customDissagregations.forEach(value => {
+            const selectItem: SelectItem = {
+                label: value.description,
+                value: value.id + '-' + period.id
+            };
+            r.push(selectItem);
+        });
+        return r;
+    }
+
     private loadItems() {
         this.indicatorService.getAll().subscribe(value => {
             this.items = value;
@@ -227,12 +244,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
     private loadStatements() {
         this.statementService.getByState(EnumsState.ACTIVE).subscribe(statements => {
-            this.statements = statements.map(value => {
-                return {
-                    label: value.code + ' - ' + value.description,
-                    value
-                };
-            });
+            this.statements = statements;
 
         }, error => {
             this.messageService.add({
@@ -260,8 +272,10 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.utilsService.resetForm(this.formItem);
         this.submitted = false;
         this.showDialog = true;
+        this.filteredStatements = [];
         const newItem = new Indicator();
         this.formItem.patchValue(newItem);
+        this.formItem.get('statements').disable();
         this.formItem.get('dissagregations').patchValue([]);
         this.formItem.get('customDissagregations').patchValue([]);
         this.loadMarkers([]);
@@ -272,6 +286,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.submitted = false;
         this.showDialog = true;
         this.formItem.patchValue(indicator);
+        this.filterStatementsByAreaType(indicator.areaType as AreaType, false);
         const dissagregationsSelectItems = indicator.dissagregationsAssignationToIndicator
             .filter(value => {
                 return value.state === EnumsState.ACTIVE;
@@ -281,13 +296,12 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.formItem.get('dissagregations').patchValue(dissagregationsSelectItems);
 
 
-        const customDissagregations: number[] = indicator.customDissagregationAssignationToIndicators
+        const customDissagregations: string[] = indicator.customDissagregationAssignationToIndicators
             .filter(value => {
                 return value.state === EnumsState.ACTIVE;
             }).map(value => {
-                return value.customDissagregation;
-            }).map(value => {
-                return value.id;
+                return value.customDissagregation.id +
+                    '-' + value.period.id;
             });
         this.formItem.get('customDissagregations').patchValue(customDissagregations);
         this.loadMarkers(indicator.markers);
@@ -299,6 +313,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         const {
             id,
             code,
+            productCode,
             description,
             category,
             state,
@@ -319,7 +334,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         }
             = this.formItem.value;
         console.log(dissagregations);
-        const productCode = null;
         const indicator: Indicator = {
             id,
             code,
@@ -345,6 +359,9 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         const dissagregationsObjs = (dissagregations as Array<string>).map(value => {
             return this.dissagregationsItemsValuesToObject(value);
         });
+        const customDissagregationsObjs = (customDissagregations as Array<string>).map(value => {
+            return this.customDissagregationsItemsValuesToObject(value);
+        });
         if (indicator.id) {
             // veo lo q ya no estan
             for (const dissagregationsAssignationToIndicatorElement of indicator.dissagregationsAssignationToIndicator) {
@@ -368,22 +385,25 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                     indicator.dissagregationsAssignationToIndicator.push(a);
                 }
             }
-            // todo agregar por periodo
-            for (const customDissagregationAssignationToIndicator of indicator.customDissagregationAssignationToIndicators) {
-                if ((customDissagregations as number[]).filter(value => {
-                    return value === customDissagregationAssignationToIndicator.customDissagregation.id;
+            // veo los que ya no están y desactivo
+            for (const customDissagregationAssignationToIndicatorElement of indicator.customDissagregationAssignationToIndicators) {
+                if ((customDissagregationsObjs as any[]).filter(value => {
+                    return value.customDissagregationType.id === customDissagregationAssignationToIndicatorElement.customDissagregation.id
+                        && customDissagregationAssignationToIndicatorElement.period.id === value.period.id;
                 }).length < 1) {
-                    customDissagregationAssignationToIndicator.state = EnumsState.INACTIVE;
+                    customDissagregationAssignationToIndicatorElement.state = EnumsState.INACTIVE;
                 } else {
-                    customDissagregationAssignationToIndicator.state = EnumsState.ACTIVE;
+                    customDissagregationAssignationToIndicatorElement.state = EnumsState.ACTIVE;
                 }
             }
-            for (const customDissagregation of (customDissagregations as number[])) {
+            for (const customDissagregation of (customDissagregationsObjs as any[])) {
                 if (indicator.customDissagregationAssignationToIndicators.filter(value => {
-                    return value.customDissagregation.id === customDissagregation;
+                    return value.customDissagregation.id === customDissagregation.customDissagregationType.id
+                        && value.period.id === customDissagregation.period.id;
                 }).length < 1) {
                     const a = new CustomDissagregationAssignationToIndicator();
-                    a.customDissagregation = this.customDissagregations.filter(value => value.id === customDissagregation).pop();
+                    a.customDissagregation = customDissagregation.customDissagregationType as CustomDissagregation;
+                    a.period = customDissagregation.period;
                     indicator.customDissagregationAssignationToIndicators.push(a);
                 }
             }
@@ -395,19 +415,22 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                 const da = new DissagregationAssignationToIndicator();
                 da.dissagregationType = dissagregation.dissagregationType;
                 da.period = dissagregation.period;
+                da.state = EnumsState.ACTIVE;
                 indicator.dissagregationsAssignationToIndicator.push(da);
 
             }
             // todo agregar periodo
             indicator.customDissagregationAssignationToIndicators = [];
-            for (const customDissagregation of customDissagregations) {
+            for (const customDissagregation of customDissagregationsObjs) {
                 const da = new CustomDissagregationAssignationToIndicator();
-                da.customDissagregation = customDissagregation;
+                da.customDissagregation = customDissagregation.customDissagregationType;
+                da.period = customDissagregation.period;
+                da.state = EnumsState.ACTIVE;
                 indicator.customDissagregationAssignationToIndicators.push(da);
 
             }
         }
-
+        console.log(indicator);
 
         if (indicator.id) {
             // tslint:disable-next-line:no-shadowed-variable
@@ -440,7 +463,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         // todo check al cerrar actualizacion pantalla
     }
 
-    dissagregationsItemsValuesToObject(valueS: string) {
+    dissagregationsItemsValuesToObject(valueS: string): { dissagregationType: string, period: Period } {
         const valuesSeparated: string[] = valueS.split('-');
         const dissagregationType = valuesSeparated[0];
         const periodId: number = Number(valuesSeparated[1]);
@@ -448,6 +471,21 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             return value.id === periodId;
         }).pop();
         const obj = {dissagregationType, period};
+        return obj;
+    }
+
+    customDissagregationsItemsValuesToObject(valueS: string): { customDissagregationType: CustomDissagregation, period: Period } {
+        const valuesSeparated: string[] = valueS.split('-');
+        const customDissagregationTypeId = Number(valuesSeparated[0]);
+        const customDissagregationType =
+            this.customDissagregations.filter(value => {
+                return value.id === customDissagregationTypeId;
+            })[0];
+        const periodId: number = Number(valuesSeparated[1]);
+        const period = this.periods.filter(value => {
+            return value.id === periodId;
+        }).pop();
+        const obj = {customDissagregationType, period};
         return obj;
     }
 
@@ -500,5 +538,29 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.filterService.register('markersFilter', (value, filter): boolean => {
             return this.filterUtilsService.markersFilter(value, filter);
         });
+    }
+
+    onChangeArea($event: any) {
+        console.log($event.value);
+        const areaType = $event.value as AreaType;
+        this.filterStatementsByAreaType(areaType, true);
+    }
+
+    filterStatementsByAreaType(areaType: AreaType, clearStatements: boolean) {
+        this.filteredStatements = this.statements.filter(value => {
+            return value.areaType === areaType;
+        }).sort((a, b) => a.code.localeCompare(b.code))
+            .map(value => {
+                const item = {
+                    labelItem: value.code + '-' + value.description,
+                    valueItem: value
+                };
+                return item;
+            });
+        console.log(this.filteredStatements);
+        this.formItem.get('statements').enable();
+        if (clearStatements) {
+            this.formItem.get('statements').patchValue([]);
+        }
     }
 }

@@ -114,6 +114,8 @@
                                         [options]="areaTypes"
                                         placeholder="Selecciona..."
                                         filter="true"
+                                        appendTo="body"
+                                        (onChange)="onChangeArea($event)"
                             >
                             </p-dropdown>
 
@@ -135,12 +137,15 @@
                                    *ngIf="utilsService.showErrorForm('indicatorType',formItem)">{{utilsService.getErrorMessageForm('indicatorType', formItem)}}</small>
                         </div>
 
-                        <div class="p-field p-col-12 p-md-6">
-                            <label for="statementsI">Statements</label>
+                        <div class="p-field p-col-12 p-md-5">
+                            <label for="statementsI">Declaraciones</label>
                             <p-multiSelect id="statementsI"
-                                           formControlName="statements" autofocus
-                                           [options]="statements"
-                                           display="chip"
+                                           formControlName="statements"
+                                           [options]="filteredStatements"
+                                           appendTo="body"
+                                           optionLabel="labelItem"
+                                           optionValue="valueItem"
+
                             >
 
                             </p-multiSelect>
@@ -151,14 +156,14 @@
                         <div class="p-field p-col-12 p-md-3">
                             <label for="codeI">Código de producto</label>
                             <input type="text" pInputText id="productCodeI"
-                                   formControlName="productCode" autofocus/>
+                                   formControlName="productCode"/>
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('productCode',formItem)">{{utilsService.getErrorMessageForm('productCode', formItem)}}</small>
                         </div>
                         <div class="p-field p-col-12 p-md-3">
                             <label for="codeI">Código</label>
                             <input type="text" pInputText id="codeI"
-                                   formControlName="code" autofocus/>
+                                   formControlName="code"/>
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('code',formItem)">{{utilsService.getErrorMessageForm('code', formItem)}}</small>
                         </div>
@@ -177,7 +182,7 @@
                         <div class="p-field p-col-12 p-md-3">
                             <label for="codeI">Categoría</label>
                             <input type="text" pInputText id="categoryI"
-                                   formControlName="category" autofocus/>
+                                   formControlName="category"/>
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('category',formItem)">{{utilsService.getErrorMessageForm('category', formItem)}}</small>
                         </div>
@@ -287,8 +292,7 @@
                             <p-card header="Segregaciones">
                                 <p-accordion>
                                     <p-accordionTab header="{{period.year}}" *ngFor="let period of periods">
-                                        <div class="p-d-flex" >
-
+                                        <div class="p-d-flex">
                                             <div class="p-field p-col-6 p-md-6 p-p-2">
                                                 <label>Desagregaciones Estándar</label>
                                                 <div class="p-field p-col-12 p-md-12"
@@ -315,7 +319,7 @@
                                                 <small class="p-error"
                                                        *ngIf="utilsService.showErrorForm('dissagregations',formItem)">{{utilsService.getErrorMessageForm('dissagregations', formItem)}}</small>
                                             </div>
-                                            <div class="p-field p-col-6 p-md-6 p-p-2" >
+                                            <div class="p-field p-col-6 p-md-6 p-p-2">
                                                 <label>Desagregaciones Personalizadas</label>
                                                 <div class="p-field p-col-12 p-md-12"
                                                      style="border: 1px solid #ced4da;">
@@ -323,13 +327,13 @@
                                                         <div class="p-formgroup-inline p-pt-2">
 
                                                             <div class="p-field-checkbox p-col-12 p-md-3"
-                                                                 *ngFor="let custd of customDissagregations">
+                                                                 *ngFor="let custd of getCustomDissagregationTypeByPeriod(period)">
                                                                 <p-checkbox name="group2" [inputId]="custd.id"
-                                                                            [value]="custd.id"
+                                                                            [value]="custd.value"
                                                                             [formControl]="formItem.controls['customDissagregations']"
                                                                 >
                                                                 </p-checkbox>
-                                                                <label [for]="custd.id">{{custd.name}}</label>
+                                                                <label [for]="custd.value">{{custd.label}}</label>
                                                             </div>
                                                         </div>
                                                     </p-scrollPanel>

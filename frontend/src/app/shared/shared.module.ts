@@ -107,6 +107,7 @@ import { CustomDissagregationsAssignationToIndicatorPipe } from './pipes/custom-
 import { CodeDescriptionPipe } from './pipes/code-description.pipe';
 import { ValuesStatePipe } from './pipes/values-state.pipe';
 import { RolesListPipe } from './pipes/roles-list.pipe';
+import { CodeDescriptionListPipe } from './pipes/code-description-list.pipe';
 
 
 @NgModule({
@@ -133,6 +134,7 @@ import { RolesListPipe } from './pipes/roles-list.pipe';
         CodeDescriptionPipe,
         ValuesStatePipe,
         RolesListPipe,
+        CodeDescriptionListPipe,
     ],
     imports: [
         CommonModule,

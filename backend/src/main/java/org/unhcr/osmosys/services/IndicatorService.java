@@ -6,15 +6,17 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.IndicatorDao;
-import org.unhcr.osmosys.model.Indicator;
+import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.webServices.model.IndicatorWeb;
+import org.unhcr.osmosys.webServices.model.MarkerWeb;
+import org.unhcr.osmosys.webServices.model.StatementWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class IndicatorService {
@@ -55,12 +57,10 @@ public class IndicatorService {
     }
 
     public List<IndicatorWeb> getAll() {
-        List<IndicatorWeb> r = new ArrayList<>();
         return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.findAll());
     }
 
     public List<IndicatorWeb> getByState(State state) {
-        List<IndicatorWeb> r = new ArrayList<>();
         return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getByState(state));
     }
 
@@ -72,7 +72,83 @@ public class IndicatorService {
             throw new GeneralAppException("No se puede crear un indicator sin id", Response.Status.BAD_REQUEST);
         }
         this.validate(indicatorWeb);
-        Indicator indicator = this.saveOrUpdate(this.modelWebTransformationService.indicatorWebToIndicator(indicatorWeb));
+        Indicator indicator = this.indicatorDao.findWithData(indicatorWeb.getId());
+        indicator.setCode(indicatorWeb.getCode());
+        indicator.setProductCode(indicatorWeb.getProductCode());
+        indicator.setDescription(indicatorWeb.getDescription());
+        indicator.setCategory(indicatorWeb.getCategory());
+        indicator.setState(indicatorWeb.getState());
+        indicator.setIndicatorType(indicatorWeb.getIndicatorType());
+        indicator.setMeasureType(indicatorWeb.getMeasureType());
+        indicator.setFrecuency(indicatorWeb.getFrecuency());
+        indicator.setAreaType(indicatorWeb.getAreaType());
+        indicator.setMonitored(indicatorWeb.getMonitored());
+        indicator.setCalculated(indicatorWeb.getCalculated());
+        indicator.setTotalIndicatorCalculationType(indicatorWeb.getTotalIndicatorCalculationType());
+        indicator.setCompassIndicator(indicatorWeb.getCompassIndicator());
+        // marcadores
+        // veo los nuevos
+        indicatorWeb.getMarkers().forEach(markerWeb -> {
+            Optional<Marker> markerOp = indicator.getMarkers().stream().filter(marker -> marker.getId().equals(markerWeb.getId())).findFirst();
+            if (!markerOp.isPresent()) {
+                indicator.addMarker(this.modelWebTransformationService.markerWebToMarker(markerWeb));
+            }
+        });
+        // nuevo borro ausentes
+        indicator.getMarkers().forEach(marker -> {
+            Optional<MarkerWeb> markerWebOp = indicatorWeb.getMarkers().stream().filter(markerWeb -> markerWeb.getId().equals(marker.getId())).findFirst();
+            if (!markerWebOp.isPresent()) {
+                indicator.removeMarker(marker);
+            }
+        });
+        // statements
+        // nuevos
+        indicatorWeb.getStatements().forEach(statementWeb -> {
+            Optional<Statement> statementOpt = indicator.getStatements().stream().filter(statement -> statementWeb.getId().equals(statement.getId())).findFirst();
+            if (!statementOpt.isPresent()) {
+                indicator.addStatement(this.modelWebTransformationService.statementWebToStatement(statementWeb));
+            }
+        });
+        // a borrar
+        indicator.getStatements().forEach(statement -> {
+            Optional<StatementWeb> statementWebOp = indicatorWeb.getStatements().stream().filter(statementWeb -> statement.getId().equals(statementWeb.getId())).findFirst();
+            if (!statementWebOp.isPresent()) {
+                indicator.removeStatement(statement);
+            }
+        });
+        // todo actualizacion en valores y demás
+        // dissagregationAssiment
+        //
+        indicatorWeb.getDissagregationsAssignationToIndicator().forEach(dissagregationAssignationToIndicatorWeb -> {
+            if (dissagregationAssignationToIndicatorWeb.getId() != null) {
+                Optional<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorOp = indicator.getDissagregationsAssignationToIndicator().stream().filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicatorWeb.getId().equals(dissagregationAssignationToIndicator.getId())).findFirst();
+                dissagregationAssignationToIndicatorOp.ifPresent(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.setState(dissagregationAssignationToIndicatorWeb.getState()));
+            }else{
+                // es nuevo
+                DissagregationAssignationToIndicator da = new DissagregationAssignationToIndicator();
+                da.setState(State.ACTIVO);
+                da.setPeriod(this.modelWebTransformationService.periodWebToPeriod(dissagregationAssignationToIndicatorWeb.getPeriod()));
+                da.setDissagregationType(dissagregationAssignationToIndicatorWeb.getDissagregationType());
+                indicator.addDissagregationAssignationToIndicator(da);
+            }
+        });
+        // customdissagregationAssiment
+        //
+        indicatorWeb.getCustomDissagregationAssignationToIndicators().forEach(dissagregationAssignationToIndicatorWeb -> {
+            if (dissagregationAssignationToIndicatorWeb.getId() != null) {
+                Optional<CustomDissagregationAssignationToIndicator> dissagregationAssignationToIndicatorOp = indicator.getCustomDissagregationAssignationToIndicators().stream().filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicatorWeb.getId().equals(dissagregationAssignationToIndicator.getId())).findFirst();
+                dissagregationAssignationToIndicatorOp.ifPresent(customDissagregationAssignationToIndicator -> customDissagregationAssignationToIndicator.setState(dissagregationAssignationToIndicatorWeb.getState()));
+            }else{
+                // es nuevo
+                CustomDissagregationAssignationToIndicator da = new CustomDissagregationAssignationToIndicator();
+                da.setState(State.ACTIVO);
+                da.setPeriod(this.modelWebTransformationService.periodWebToPeriod(dissagregationAssignationToIndicatorWeb.getPeriod()));
+                da.setCustomDissagregation(this.modelWebTransformationService.customDissagregationWebToCustomDissagregation(dissagregationAssignationToIndicatorWeb.getCustomDissagregation()));
+                indicator.addCustomDissagregationAssignationToIndicator(da);
+            }
+        });
+
+        this.saveOrUpdate(this.modelWebTransformationService.indicatorWebToIndicator(indicatorWeb));
         return indicator.getId();
     }
 
@@ -130,17 +206,18 @@ public class IndicatorService {
             }
         }
 
-        itemRecovered = this.indicatorDao.getByDescription(indicatorWeb.getDescription());
+        // no valido por descripción
+        /*itemRecovered = this.indicatorDao.getByDescription(indicatorWeb.getDescription());
         if (itemRecovered != null) {
             if (indicatorWeb.getId() == null || !indicatorWeb.getId().equals(itemRecovered.getId())) {
                 throw new GeneralAppException("Ya existe un indicador con esta descripción", Response.Status.BAD_REQUEST);
             }
-        }
+        }*/
 
 
     }
 
     public List<IndicatorWeb> getByPeriodAssignmentAndState(Long periodId, State state) throws GeneralAppException {
-        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getByPeriodAssignmentAndState(periodId,state));
+        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getByPeriodAssignmentAndState(periodId, state));
     }
 }

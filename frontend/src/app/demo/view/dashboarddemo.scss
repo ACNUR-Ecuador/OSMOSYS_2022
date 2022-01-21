@@ -66,17 +66,17 @@
 		font-size: 12px;
 		letter-spacing: .3px;
 
-		&.status-instock {
+		&.status-a_tiempo {
 			background: #C8E6C9;
 			color: #256029;
 		}
 
-		&.status-outofstock {
+		&.status-retrasado {
 			background: #FFCDD2;
 			color: #C63737;
 		}
 
-		&.status-lowstock {
+		&.status-pendiente_revision {
 			background: #FEEDAF;
 			color: #8A5340;
 		}

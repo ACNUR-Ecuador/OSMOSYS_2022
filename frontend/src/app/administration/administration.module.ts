@@ -59,6 +59,7 @@ import {SharedModule} from '../shared/shared.module';
 import { UserAdministrationComponent } from './user-administration/user-administration.component';
 import {RolesListPipe} from '../shared/pipes/roles-list.pipe';
 import {AccordionModule} from 'primeng/accordion';
+import {CodeDescriptionListPipe} from '../shared/pipes/code-description-list.pipe';
 
 
 @NgModule({
@@ -127,7 +128,8 @@ import {AccordionModule} from 'primeng/accordion';
         FilterUtilsService,
         ProjectService,
         QuarterService,
-        RolesListPipe
+        RolesListPipe,
+        CodeDescriptionListPipe
     ]
 })
 export class AdministrationModule {
