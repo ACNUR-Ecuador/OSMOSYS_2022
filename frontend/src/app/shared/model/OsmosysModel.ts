@@ -363,6 +363,9 @@ export class Month {
     public state: string;
     public totalExecution: number;
     public commentary: string;
+    public sources: string[];
+    public sourceOther: string;
+    public checked: boolean;
 }
 
 export class QuarterMonthResume {

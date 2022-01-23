@@ -2,7 +2,7 @@
     <ng-template pTemplate="header">
         <p-toast key="dialogToast" position="top-right"></p-toast>
         <p-messages></p-messages>
-        <div class="p-fluid card" *ngIf="render">
+        <div class="p-fluid card" *ngIf="render && indicatorExecution.activityDescription">
             <div class="p-field">
                 <label>Descripción de la actividad:</label>
                 {{indicatorExecution.activityDescription}}
@@ -57,18 +57,50 @@
                     ></app-custom-dissagregation-integer>
                 </div>
             </div>
-            <div class="p-fluid p-col-12">
-                <div class="p-field">
-                    <label for="commentaryI">Aspectos Cualitativos</label>
-                    <textarea id="commentaryI"
-                              pInputTextarea
-                              autoResize="true"
-                              [rows]="5"
-                              style="width: 100%"
-                              formControlName="commentary"
-                    ></textarea>
-                    <small class="p-error" *ngIf="utilsService.showErrorForm('commentary',formItem)">Campo
-                        obligatorio.</small>
+            <div class="card p-col-12">
+                <div class="p-fluid p-formgrid p-grid">
+                    <div class="p-field p-col-12 p-md-8">
+                        <label for="sourcesI">Fuentes del dato</label>
+                        <p-multiSelect id="sourcesI"
+                                       [options]="sourceTypes"
+                                       [filter]="true"
+                                       formControlName="sources"
+                                       (onChange)="setOtherSource($event.value)"
+                        ></p-multiSelect>
+                        <small class="p-error"
+                               *ngIf="utilsService.showErrorForm('sources',formItem)">
+                            {{utilsService.getErrorMessageForm('sources', formItem)}}
+                        </small>
+                    </div>
+                    <div class="p-field p-col-12 p-md-4" *ngIf="showOtherSource">
+                        <label for="sourceOtherI">Otro</label>
+                        <input id="sourceOtherI" type="text" pInputText formControlName="sourceOther">
+                        <small class="p-error"
+                               *ngIf="utilsService.showErrorForm('sourceOther',formItem)">
+                            {{utilsService.getErrorMessageForm('sourceOther', formItem)}}
+                        </small>
+                    </div>
+                    <div class="p-field p-col-12 p-md-12">
+                        <label for="commentaryI">Aspectos Cualitativos</label>
+                        <textarea id="commentaryI"
+                                  pInputTextarea
+                                  autoResize="true"
+                                  style="width: 100%"
+                                  formControlName="commentary"
+                        ></textarea>
+                        <small class="p-error"
+                               *ngIf="utilsService.showErrorForm('commentary',formItem)">
+                            {{utilsService.getErrorMessageForm('commentary', formItem)}}
+                        </small>
+                    </div>
+                    <div class="p-field p-col-12 p-md-12">
+                        <label for="checkedI">Revisión Punto Focal</label>
+                        <p-dropdown id="checkedI" [options]="chekedOptions" formControlName="checked"></p-dropdown>
+                        <small class="p-error"
+                               *ngIf="utilsService.showErrorForm('checked',formItem)">
+                            {{utilsService.getErrorMessageForm('checked', formItem)}}
+                        </small>
+                    </div>
                 </div>
             </div>
 

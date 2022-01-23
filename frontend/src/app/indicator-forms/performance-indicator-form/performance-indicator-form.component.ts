@@ -5,8 +5,8 @@ import {IndicatorExecutionService} from '../../shared/services/indicator-executi
 import {MonthService} from '../../shared/services/month.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {UtilsService} from '../../shared/services/utils.service';
-import {MessageService} from 'primeng/api';
-import {DissagregationType} from '../../shared/model/UtilsModel';
+import {MessageService, SelectItem} from 'primeng/api';
+import {DissagregationType, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
@@ -27,9 +27,13 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     twoDimentionDissagregations: DissagregationType[] = [];
     noDimentionDissagregations: DissagregationType[] = [];
 
+    sourceTypes: SelectItemWithOrder<any>[];
+
     render = false;
     showErrorResume = false;
+    showOtherSource: boolean;
     totalsValidation: Map<string, number> = null;
+    chekedOptions: SelectItem[];
 
     constructor(public ref: DynamicDialogRef,
                 public config: DynamicDialogConfig,
@@ -46,9 +50,25 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         this.indicatorExecution = this.config.data.indicatorExecution; //
         this.monthId = this.config.data.monthId; //
         this.formItem = this.fb.group({
-            commentary: new FormControl('', Validators.required)
+            commentary: new FormControl('', Validators.required),
+            sources: new FormControl('', Validators.required),
+            sourceOther: new FormControl(''),
+            checked: new FormControl(''),
         });
         this.loadMonthValues(this.monthId);
+        this.chekedOptions = [];
+        this.chekedOptions.push({
+            label: 'Valores No Revisados',
+            value: null
+        });
+        this.chekedOptions.push({
+            label: 'Valores Aprobados',
+            value: true
+        });
+        this.chekedOptions.push({
+            label: 'Valores No Aprobados',
+            value: false
+        });
     }
 
     loadMonthValues(monthId: number) {
@@ -58,6 +78,11 @@ export class PerformanceIndicatorFormComponent implements OnInit {
             this.monthValuesMap = value.indicatorValuesMap;
             this.monthCustomDissagregatoinValues = value.customDissagregationValues;
             this.formItem.get('commentary').patchValue(this.month.commentary);
+            this.formItem.get('sources').patchValue(this.month.sources);
+            this.setOtherSource(this.formItem.get('sources').value);
+            this.enumsService.getByType(EnumsType.SourceType).subscribe(value1 => {
+                this.sourceTypes = value1;
+            });
             this.setDimentionsDissagregations();
         }, error => {
             this.messageService.add({
@@ -75,6 +100,14 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         this.utilsService.setZerosCustomMonthValues(this.monthCustomDissagregatoinValues);
         const totalsValidation = this.utilsService.validateMonth(this.monthValuesMap, this.monthCustomDissagregatoinValues);
         this.monthValues.month.commentary = this.formItem.get('commentary').value;
+        this.monthValues.month.sources = this.formItem.get('sources').value;
+        this.monthValues.month.sourceOther = this.formItem.get('sourceOther').value;
+        if (!this.formItem.get('checked').value || this.formItem.get('checked').value === '') {
+            this.monthValues.month.checked = null;
+        } else {
+            this.monthValues.month.checked = this.formItem.get('checked').value;
+        }
+        console.log(this.monthValues.month);
         if (totalsValidation) {
             this.showErrorResume = true;
             this.totalsValidation = totalsValidation;
@@ -119,5 +152,19 @@ export class PerformanceIndicatorFormComponent implements OnInit {
             }
         });
         this.render = true;
+    }
+
+    setOtherSource(sources: string[]) {
+        if (sources && sources.includes('OTROS')) {
+            this.showOtherSource = true;
+            this.formItem.get('sourceOther').patchValue(this.month.sourceOther);
+            this.formItem.get('sourceOther').setValidators([Validators.required]);
+            this.formItem.get('sourceOther').updateValueAndValidity();
+        } else {
+            this.showOtherSource = false;
+            this.formItem.get('sourceOther').patchValue(null);
+            this.formItem.get('sourceOther').clearValidators();
+            this.formItem.get('sourceOther').updateValueAndValidity();
+        }
     }
 }

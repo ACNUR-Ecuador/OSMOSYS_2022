@@ -6,10 +6,12 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
+import org.unhcr.osmosys.model.enums.SourceType;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -39,6 +41,19 @@ public class Month extends BaseEntity<Long> {
 
     @Column(name = "order_", nullable = false)
     private int order;
+
+    @ElementCollection(targetClass = SourceType.class,fetch = FetchType.EAGER)
+    @CollectionTable(name = "month_source", schema = "osmosys",
+            joinColumns = @JoinColumn(name = "month_id"))
+    @Column(name = "source_type")
+    @Enumerated(EnumType.STRING)
+    private Set<SourceType> sources;
+
+    @Column(name = "source_other")
+    private String sourceOther;
+
+    @Column(name = "checked")
+    private Boolean checked;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", nullable = false, length = 12, unique = false)
@@ -156,6 +171,36 @@ public class Month extends BaseEntity<Long> {
 
     public void setTotalExecution(BigDecimal totalExecution) {
         this.totalExecution = totalExecution;
+    }
+
+    public Set<SourceType> getSources() {
+        return sources;
+    }
+
+    public void setSources(Set<SourceType> sources) {
+        this.sources = sources;
+    }
+    public void addSource(SourceType sourceType){
+        this.sources.add(sourceType);
+    }
+    public void removeSource(SourceType sourceType){
+        this.sources.remove(sourceType);
+    }
+
+    public String getSourceOther() {
+        return sourceOther;
+    }
+
+    public void setSourceOther(String sourceOther) {
+        this.sourceOther = sourceOther;
+    }
+
+    public Boolean getChecked() {
+        return checked;
+    }
+
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
     }
 
     @Override

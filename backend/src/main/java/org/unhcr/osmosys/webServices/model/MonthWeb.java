@@ -3,9 +3,11 @@ package org.unhcr.osmosys.webServices.model;
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
+import org.unhcr.osmosys.model.enums.SourceType;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Set;
 
 
 public class MonthWeb implements Serializable {
@@ -16,6 +18,9 @@ public class MonthWeb implements Serializable {
     private State state;
     private String commentary;
     private BigDecimal totalExecution;
+    private Set<SourceType> sources;
+    private String sourceOther;
+    private Boolean checked;
 
 
     public Long getId() {
@@ -75,4 +80,27 @@ public class MonthWeb implements Serializable {
         this.totalExecution = totalExecution;
     }
 
+    public Set<SourceType> getSources() {
+        return sources;
+    }
+
+    public void setSources(Set<SourceType> sources) {
+        this.sources = sources;
+    }
+
+    public String getSourceOther() {
+        return sourceOther;
+    }
+
+    public void setSourceOther(String sourceOther) {
+        this.sourceOther = sourceOther;
+    }
+
+    public Boolean getChecked() {
+        return checked;
+    }
+
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
+    }
 }

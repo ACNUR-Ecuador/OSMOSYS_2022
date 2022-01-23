@@ -18,6 +18,10 @@ import {InputTextareaModule} from 'primeng/inputtextarea';
 import {ChartModule} from 'primeng/chart';
 import { ChartIndicatorExecutionComponent } from './chart-indicator-execution/chart-indicator-execution.component';
 import { CustomDissagregationIntegerComponent } from './dissagregationForms/custom-dissagregation-integer/custom-dissagregation-integer.component';
+import {MultiSelectModule} from 'primeng/multiselect';
+import {InputTextModule} from 'primeng/inputtext';
+import {ToggleButtonModule} from 'primeng/togglebutton';
+import {DropdownModule} from 'primeng/dropdown';
 
 
 @NgModule({
@@ -43,7 +47,11 @@ import { CustomDissagregationIntegerComponent } from './dissagregationForms/cust
         CardModule,
         ReactiveFormsModule,
         InputTextareaModule,
-        ChartModule
+        ChartModule,
+        MultiSelectModule,
+        InputTextModule,
+        ToggleButtonModule,
+        DropdownModule
     ]
 })
 export class IndicatorFormsModule {
