@@ -477,6 +477,36 @@ public class UserService implements Serializable {
         return user.getId();
     }
 
+    public void recoverPassword(String email, String appcode) throws GeneralAppException {
+        User user = this.userDao.getByEmail(email);
+        if (user == null) {
+            throw new GeneralAppException("Usuario no encontrado", Response.Status.NOT_FOUND.getStatusCode());
+        } else {
+            if(user.getState().equals(State.INACTIVO)){
+                throw new GeneralAppException("Usuario desactivado, comuníquese con el administrador del sistema", Response.Status.NOT_FOUND.getStatusCode());
+            }
+
+            String password = this.securityUtils.generateRamdomPassword();
+            byte[] pass = this.securityUtils.hashPasswordByte(password, UserService.salt);
+            user.setPassword(pass);
+
+            userDao.save(user);
+            String message = "<p>Bienvenid@:</p>" +
+                    "<p>Se ha generado una nueva contraseña para el acceso al Osmosys.</p>" +
+                    "<p>Puede acceder al sistema utilizando los siguientes datos:</p>" +
+                    "<p>Direcci&oacute;n: <a href=\"https://imecuador.unhcr.org/osmosys\">" + "https://imecuador.unhcr.org/osmosys" + "</a> (Se recomienda el uso de Google Chrome)</p>" +
+                    "<p>Nombre de usuario: " + user.getUsername() + "</p>" +
+                    "<p>Contraseña: " + password + "</p>" +
+                    "<p>&nbsp;</p>" +
+                    "<p>&nbsp;</p>";
+
+            this.emailService.sendEmailMessage(user.getEmail()
+                    , "Bienvenid@ al Sistema de Monitoreo de Programas.",
+                    message
+            );
+        }
+    }
+
 
 }
 
