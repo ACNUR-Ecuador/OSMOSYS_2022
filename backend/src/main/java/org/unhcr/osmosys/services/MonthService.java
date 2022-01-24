@@ -277,4 +277,9 @@ public class MonthService {
             month.addIndicatorValue(indicatorValue);
         });
     }
+
+    public List<MonthWeb> getMonthsIndicatorExecutionId(Long indicatorExecutionId, State state) {
+        List<Month> months=this.monthDao.getMonthsIndicatorExecutionId(indicatorExecutionId, state);
+        return this.modelWebTransformationService.monthsToMonthsWeb(new HashSet<>(months));
+    }
 }

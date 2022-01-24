@@ -14,7 +14,7 @@ import {AppNotfoundComponent} from './shared/template/errorPages/app.notfound.co
         RouterModule.forRoot([
             {
                 path: '',
-                redirectTo: 'demo/dashboard',
+                redirectTo: 'home/home',
                 pathMatch: 'full'
             },
             {

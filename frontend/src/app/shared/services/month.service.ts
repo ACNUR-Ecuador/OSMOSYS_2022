@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
-import {MonthValues, QuarterResumeWeb, StartEndDatesWeb} from '../model/OsmosysModel';
+import {Month, MonthValues, QuarterResumeWeb, StartEndDatesWeb} from '../model/OsmosysModel';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
@@ -25,5 +25,9 @@ export class MonthService {
                 monthValue.customDissagregationValues = value.customDissagregationValues;
                 return monthValue;
             }));
+    }
+
+    public getMonthsByIndicatorExecutionId(indicatorExecutinId: number): Observable<Month[]> {
+        return this.http.get<Month[]>(`${mainServiceUrl}/getMonthsByIndicatorExecutionId/${indicatorExecutinId}`);
     }
 }

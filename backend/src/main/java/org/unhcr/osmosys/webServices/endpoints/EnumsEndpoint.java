@@ -59,6 +59,8 @@ public class EnumsEndpoint {
                 return this.EnumsToEnumsWeb(TotalIndicatorCalculationType.values());
             case "RoleType":
                 return this.EnumsToEnumsWeb(RoleType.values());
+            case "SourceType":
+                return this.EnumsToEnumsWeb(SourceType.values());
         }
 
         throw new GeneralAppException("Enumerador no soportado " + type, Response.Status.BAD_GATEWAY);

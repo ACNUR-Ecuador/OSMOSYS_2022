@@ -27,4 +27,14 @@ public class MonthDao extends GenericDaoJpa<Month, Long> {
         q.setParameter("state", state);
         return q.getResultList();
     }
+
+    public List<Month> getMonthsIndicatorExecutionId(Long indicatorExecutionId, State state) {
+        String jpql = "SELECT DISTINCT o FROM Month o " +
+                "WHERE o.state = :state" +
+                " and o.quarter.indicatorExecution.id =: indicatorExecutionId";
+        Query q = getEntityManager().createQuery(jpql, Month.class);
+        q.setParameter("state", state);
+        q.setParameter("indicatorExecutionId", indicatorExecutionId);
+        return q.getResultList();
+    }
 }

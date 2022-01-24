@@ -204,4 +204,13 @@ public class UserDao extends GenericDaoJpa<User, Long> {
             return null;
         }
     }
+
+    public List<Long> findProjectsFocalPoints(Long id) {
+        String jpql = "SELECT DISTINCT pr.id FROM " +
+                "  Project pr inner join pr.focalPoint fp  " +
+                " where fp.id=:id ";
+        Query query = getEntityManager().createQuery(jpql, Long.class);
+        query.setParameter("id", id);
+        return query.getResultList();
+    }
 }

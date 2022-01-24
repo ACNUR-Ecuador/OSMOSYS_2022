@@ -2,6 +2,7 @@ package org.unhcr.osmosys.webServices.services;
 
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.servicio.UserService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.unhcr.osmosys.daos.StatementDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.IndicatorType;
@@ -11,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Stateless
 public class ModelWebTransformationService {
@@ -1024,7 +1026,22 @@ public class ModelWebTransformationService {
         i.setTotalExecution(indicatorExecution.getTotalExecution());
         i.setTarget(indicatorExecution.getTarget());
         i.setState(indicatorExecution.getState());
-        i.setQuarters(this.quartersToQuarterWeb(indicatorExecution.getQuarters()));
+        List<QuarterWeb> quarters = this.quartersToQuarterWeb(indicatorExecution.getQuarters());
+        quarters.sort(Comparator.comparing(QuarterWeb::getOrder));
+        List<QuarterWeb> reportedQuarters = quarters.stream().filter(quarterWeb -> {
+            return quarterWeb.getTotalExecution() != null;
+        }).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(reportedQuarters)) {
+            i.setLastReportedQuarter(reportedQuarters.get(reportedQuarters.size() - 1));
+            i.getLastReportedQuarter().getMonths().sort(Comparator.comparing(MonthWeb::getOrder));
+            List<MonthWeb> reportedMonths = i.getLastReportedQuarter().getMonths().stream().filter(monthWeb -> {
+                return monthWeb.getTotalExecution() != null;
+            }).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(reportedMonths)) {
+                i.setLastReportedMonth(reportedMonths.get(reportedMonths.size() - 1));
+            }
+        }
+        i.setQuarters(quarters);
         i.setExecutionPercentage(indicatorExecution.getExecutionPercentage());
         return i;
 
@@ -1046,8 +1063,25 @@ public class ModelWebTransformationService {
         i.setTotalExecution(indicatorExecution.getTotalExecution());
         i.setTarget(indicatorExecution.getTarget());
         i.setState(indicatorExecution.getState());
-        i.setQuarters(this.quartersToQuarterWeb(indicatorExecution.getQuarters()));
+        List<QuarterWeb> quarters = this.quartersToQuarterWeb(indicatorExecution.getQuarters());
+        quarters.sort(Comparator.comparing(QuarterWeb::getOrder));
+        List<QuarterWeb> reportedQuarters = quarters.stream().filter(quarterWeb -> {
+            return quarterWeb.getTotalExecution() != null;
+        }).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(reportedQuarters)) {
+            i.setLastReportedQuarter(reportedQuarters.get(reportedQuarters.size() - 1));
+            i.getLastReportedQuarter().getMonths().sort(Comparator.comparing(MonthWeb::getOrder));
+            List<MonthWeb> reportedMonths = i.getLastReportedQuarter().getMonths().stream().filter(monthWeb -> {
+                return monthWeb.getTotalExecution() != null;
+            }).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(reportedMonths)) {
+                i.setLastReportedMonth(reportedMonths.get(reportedMonths.size() - 1));
+            }
+        }
+        i.setQuarters(quarters);
+
         i.setExecutionPercentage(indicatorExecution.getExecutionPercentage());
+
         return i;
 
     }
@@ -1143,8 +1177,8 @@ public class ModelWebTransformationService {
         return q;
     }
 
-    public Set<QuarterWeb> quartersToQuarterWeb(Set<Quarter> quarters) {
-        Set<QuarterWeb> r = new HashSet<>();
+    public List<QuarterWeb> quartersToQuarterWeb(Set<Quarter> quarters) {
+        List<QuarterWeb> r = new ArrayList<>();
         for (Quarter quarter : quarters) {
             r.add(this.quarterToQuarterWeb(quarter));
         }
@@ -1163,6 +1197,9 @@ public class ModelWebTransformationService {
         q.setState(mo.getState());
         q.setCommentary(mo.getCommentary());
         q.setTotalExecution(mo.getTotalExecution());
+        q.setSources(mo.getSources());
+        q.setSourceOther(mo.getSourceOther());
+        q.setChecked(mo.getChecked());
         return q;
     }
 

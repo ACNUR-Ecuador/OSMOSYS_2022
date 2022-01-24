@@ -1,16 +1,9 @@
 import {Injectable} from '@angular/core';
 import * as FileSaver from 'file-saver';
 import {FormGroup} from '@angular/forms';
-import {ColumnTable, DissagregationType, EnumsState, EnumsType, MonthType, SelectItemWithOrder} from '../model/UtilsModel';
+import {ColumnTable, DissagregationType, EnumsState, EnumsType, MonthType, QuarterType, SelectItemWithOrder} from '../model/UtilsModel';
 import {EnumsService} from './enums.service';
-import {
-    CustomDissagregationValues,
-    IndicatorExecutionAdministrationResumeWeb,
-    IndicatorValue,
-    MonthValues,
-    Quarter
-} from '../model/OsmosysModel';
-import {SelectItem} from 'primeng/api';
+import {CustomDissagregationValues, IndicatorExecutionAdministrationResumeWeb, IndicatorValue, Quarter} from '../model/OsmosysModel';
 
 @Injectable({
     providedIn: 'root'
@@ -469,6 +462,38 @@ export class UtilsService {
             });
         }
         return result;
+    }
+
+    getCurrentMonth(): MonthType {
+        const today = new Date();
+        const mm = today.getMonth() + 1; //January is 0!
+        return this.enumsService.numberToMonthType(mm);
+    }
+    getCurrentMonthNumber(): number {
+        const today = new Date();
+        const mm = today.getMonth() + 1; //January is 0!
+        return mm;
+    }
+
+    getCurrentYear(): number {
+        const today = new Date();
+        return today.getFullYear();
+    }
+
+    getCurrentQuarter(): QuarterType {
+        const today = new Date();
+        const mm = today.getMonth() + 1;
+        if (mm > 0 && mm < 4) {
+            return QuarterType.I;
+        }else if (mm > 3 && mm < 7) {
+            return QuarterType.II;
+        }else if (mm > 6 && mm < 10) {
+            return QuarterType.III;
+        }else if (mm > 9 && mm < 13) {
+            return QuarterType.III;
+        }else {
+            return null;
+        }
     }
 
 

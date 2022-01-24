@@ -20,6 +20,8 @@ public class UserWeb implements Serializable {
 	private List<RoleWeb> roles = new ArrayList<>();
 	private OrganizationWeb organization;
 	private OfficeWeb office;
+	private List<Long> focalPointProjects;
+
 	public Long getId() {
 		return id;
 	}
@@ -82,6 +84,14 @@ public class UserWeb implements Serializable {
 
 	public void setOffice(OfficeWeb office) {
 		this.office = office;
+	}
+
+	public List<Long> getFocalPointProjects() {
+		return focalPointProjects;
+	}
+
+	public void setFocalPointProjects(List<Long> focalPointProjects) {
+		this.focalPointProjects = focalPointProjects;
 	}
 
 	@Override

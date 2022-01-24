@@ -52,6 +52,14 @@ public class ProjectEndpoint {
         return this.projectService.getWebById(id);
     }
 
+    @Path("/{ids}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ProjectWeb> getById(@PathParam("ids") List<Long> ids) {
+        return this.projectService.getWebByIds(ids);
+    }
+
     @Path("/byState/{state}")
     @GET
     @Secured

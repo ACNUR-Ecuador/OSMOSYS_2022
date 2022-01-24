@@ -3,7 +3,6 @@ import {MenuItem} from 'primeng/api';
 import {Product} from '../domain/product';
 import {ProductService} from '../service/productservice';
 import {Chart} from 'chart.js';
-import {BreadcrumbService} from '../../shared/services/app.breadcrumb.service';
 
 @Component({
     templateUrl: './dashboard.component.html',
@@ -31,10 +30,7 @@ export class DashboardDemoComponent implements OnInit {
 
     revenueChart: any;
 
-    constructor(private productService: ProductService, private breadcrumbService: BreadcrumbService) {
-        this.breadcrumbService.setItems([
-            {label: 'Dashboard', routerLink: ['/']}
-        ]);
+    constructor(private productService: ProductService) {
     }
 
     ngOnInit() {
@@ -117,6 +113,7 @@ export class DashboardDemoComponent implements OnInit {
             [2, 2, 20, 4, 17, 16, 20]
         ];
 
+        // tslint:disable-next-line:radix
         this.ordersChart.datasets[0].data = dataSet[parseInt(event.currentTarget.getAttribute('data-index'))];
         this.ordersChart.datasets[0].label = event.currentTarget.getAttribute('data-label');
         this.ordersChart.datasets[0].borderColor = event.currentTarget.getAttribute('data-stroke');

@@ -8,7 +8,6 @@ import com.sagatechs.generics.utils.DateUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
-import org.threeten.extra.YearQuarter;
 import org.unhcr.osmosys.daos.CantonDao;
 import org.unhcr.osmosys.daos.ProjectDao;
 import org.unhcr.osmosys.model.*;
@@ -22,8 +21,6 @@ import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -299,5 +296,9 @@ public class ProjectService {
 
     public ProjectWeb getWebById(Long id) {
         return this.modelWebTransformationService.projectToProjectWeb(this.projectDao.find(id));
+    }
+
+    public List<ProjectWeb> getWebByIds(List<Long> ids) {
+        return this.modelWebTransformationService.projectsToProjectsWeb(this.projectDao.getByIds(ids));
     }
 }

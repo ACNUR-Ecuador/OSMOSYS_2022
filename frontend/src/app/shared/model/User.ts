@@ -10,6 +10,7 @@ export class User {
     public office?: Office;
     public roles?: Role[];
     public state: string;
+    public focalPointProjects?: number[];
 
 }
 

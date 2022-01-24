@@ -103,5 +103,47 @@ export class EnumsService {
         }
     }
 
+    numberToMonthType(monthNumber: number): MonthType {
+        switch (monthNumber) {
+            case 1: {
+                return MonthType.ENERO;
+            }
+            case 2: {
+                return MonthType.FEBRERO;
+            }
+            case 3: {
+                return MonthType.MARZO;
+            }
+            case 4: {
+                return MonthType.ABRIL;
+            }
+            case 5: {
+                return MonthType.MAYO;
+            }
+            case 6: {
+                return MonthType.JUNIO;
+            }
+            case 7: {
+                return MonthType.JULIO;
+            }
+            case 8: {
+                return MonthType.AGOSTO;
+            }
+            case 9: {
+                return MonthType.SEPTIEMBRE;
+            }
+            case 10: {
+                return MonthType.OCTUBRE;
+            }
+            case 11: {
+                return MonthType.NOVIEMBRE;
+            }
+            case 12: {
+                return MonthType.DICIEMBRE;
+            }
+            default:
+                return null;
+        }
+    }
 
 }

@@ -18,6 +18,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import io.jsonwebtoken.security.WeakKeyException;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.jboss.logging.Logger;
@@ -272,6 +273,16 @@ public class UserService implements Serializable {
             }
         }
         userWeb.setRoles(roles);
+        // find focal points ()
+        List<Long> projectsIds = this.userDao.findProjectsFocalPoints(user.getId());
+        if (CollectionUtils.isNotEmpty(projectsIds)) {
+            RoleWeb fpr = new RoleWeb();
+            fpr.setId(0l);
+            fpr.setName(RoleType.PUNTO_FOCAL.name());
+            fpr.setState(State.ACTIVO);
+            userWeb.getRoles().add(fpr);
+            userWeb.setFocalPointProjects(projectsIds);
+        }
 
         return userWeb;
     }
@@ -299,6 +310,7 @@ public class UserService implements Serializable {
                     .claim("email", userWeb.getEmail())
                     .claim("organization", userWeb.getOrganization())
                     .claim("office", userWeb.getOffice())
+                    .claim("focalPointProjects", userWeb.getFocalPointProjects())
                     .signWith(getSecretKey()).compact();
             // LOGGER.debug(token);
             return token;
@@ -404,6 +416,12 @@ public class UserService implements Serializable {
                 officeWeb.setDescription((String) officeMap.get("description"));
                 officeWeb.setAcronym((String) officeMap.get("acronym"));
                 user.setOffice(officeWeb);
+            }
+            List<Long> focalPointProjectsMap = (List<Long>) jws.getBody().get("focalPointProjects");
+            if (focalPointProjectsMap != null && focalPointProjectsMap.size() > 0) {
+                user.setFocalPointProjects(focalPointProjectsMap);
+            } else {
+                user.setFocalPointProjects(null);
             }
             return user;
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {

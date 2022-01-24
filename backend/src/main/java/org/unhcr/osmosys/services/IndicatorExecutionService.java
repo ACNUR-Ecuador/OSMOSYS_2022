@@ -430,6 +430,16 @@ public class IndicatorExecutionService {
             throw new GeneralAppException("No se pudo encontrar el mes (monthId:" + monthValuesWeb.getMonth().getId() + ")", Response.Status.BAD_REQUEST);
         }
         monthToUpdate.setCommentary(monthValuesWeb.getMonth().getCommentary());
+        monthToUpdate.setChecked(monthValuesWeb.getMonth().getChecked());
+        monthToUpdate.setSourceOther(monthValuesWeb.getMonth().getSourceOther());
+        monthToUpdate.setSources(new HashSet<>());
+        if(CollectionUtils.isNotEmpty(monthValuesWeb.getMonth().getSources())){
+
+            for (SourceType source : monthValuesWeb.getMonth().getSources()) {
+                monthToUpdate.addSource(source);
+            }
+        }
+
         List<IndicatorValueWeb> totalIndicatorValueWebs = new ArrayList<>();
         monthValuesWeb.getIndicatorValuesMap().forEach((dissagregationType, indicatorValueWebs) -> {
             if (indicatorValueWebs != null) {

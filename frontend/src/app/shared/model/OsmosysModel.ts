@@ -340,6 +340,8 @@ export class IndicatorExecutionResumeWeb {
     public totalExecution: number;
     public executionPercentage: number;
     public quarters: Quarter[];
+    public lastReportedQuarter: Quarter;
+    public lastReportedMonth: Month;
 }
 
 export class Quarter {

@@ -85,4 +85,10 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
     }
 
 
+    public List<Project> getByIds(List<Long> ids) {
+        String sql = this.projectResumeWebQuery + " WHERE pe.id in (:ids)";
+        Query q = getEntityManager().createNativeQuery(sql, "ProjectResumeWebMapping");
+        q.setParameter("ids", ids);
+        return q.getResultList();
+    }
 }

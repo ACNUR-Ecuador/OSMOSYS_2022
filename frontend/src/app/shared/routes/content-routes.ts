@@ -1,9 +1,10 @@
 import {Routes} from '@angular/router';
 
 export const content: Routes = [
+
     {
-        path: 'demo',
-        loadChildren: () => import('../../demo/demo.module').then(m => m.DemoModule)
+        path: 'home',
+        loadChildren: () => import('../../home/home.module').then(m => m.HomeModule)
     },
     {
         path: 'administration',
@@ -12,5 +13,9 @@ export const content: Routes = [
     {
         path: 'partners',
         loadChildren: () => import('../../partners/partners.module').then(m => m.PartnersModule)
+    },
+    {
+        path: 'demo',
+        loadChildren: () => import('../../demo/demo.module').then(m => m.DemoModule)
     },
 ];
