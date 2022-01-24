@@ -5,7 +5,9 @@ import org.unhcr.osmosys.model.enums.IndicatorType;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -22,9 +24,11 @@ public class IndicatorExecutionPerformanceIndicatorResumeWeb implements Serializ
     private State state;
     private BigDecimal totalExecution;
     private BigDecimal executionPercentage;
+    private QuarterWeb lastReportedQuarter;
+    private MonthWeb lastReportedMonth;
 
 
-    private Set<QuarterWeb> quarters = new HashSet<>();
+    private List<QuarterWeb> quarters = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -82,11 +86,11 @@ public class IndicatorExecutionPerformanceIndicatorResumeWeb implements Serializ
         this.totalExecution = totalExecution;
     }
 
-    public Set<QuarterWeb> getQuarters() {
+    public List<QuarterWeb> getQuarters() {
         return quarters;
     }
 
-    public void setQuarters(Set<QuarterWeb> quarters) {
+    public void setQuarters(List<QuarterWeb> quarters) {
         this.quarters = quarters;
     }
 
@@ -120,5 +124,21 @@ public class IndicatorExecutionPerformanceIndicatorResumeWeb implements Serializ
 
     public void setActivityDescription(String activityDescription) {
         this.activityDescription = activityDescription;
+    }
+
+    public QuarterWeb getLastReportedQuarter() {
+        return lastReportedQuarter;
+    }
+
+    public void setLastReportedQuarter(QuarterWeb lastReportedQuarter) {
+        this.lastReportedQuarter = lastReportedQuarter;
+    }
+
+    public MonthWeb getLastReportedMonth() {
+        return lastReportedMonth;
+    }
+
+    public void setLastReportedMonth(MonthWeb lastReportedMonth) {
+        this.lastReportedMonth = lastReportedMonth;
     }
 }

@@ -3,10 +3,13 @@ package org.unhcr.osmosys.webServices.model;
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.Indicator;
 import org.unhcr.osmosys.model.enums.IndicatorType;
+import org.unhcr.osmosys.model.enums.QuarterEnum;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -20,8 +23,10 @@ public class IndicatorExecutionGeneralIndicatorResumeWeb implements Serializable
     private State state;
     private BigDecimal totalExecution;
     private BigDecimal executionPercentage;
+    private QuarterWeb lastReportedQuarter;
+    private MonthWeb lastReportedMonth;
 
-    private Set<QuarterWeb> quarters = new HashSet<>();
+    private List<QuarterWeb> quarters = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -79,14 +84,13 @@ public class IndicatorExecutionGeneralIndicatorResumeWeb implements Serializable
         this.totalExecution = totalExecution;
     }
 
-    public Set<QuarterWeb> getQuarters() {
+    public List<QuarterWeb> getQuarters() {
         return quarters;
     }
 
-    public void setQuarters(Set<QuarterWeb> quarters) {
+    public void setQuarters(List<QuarterWeb> quarters) {
         this.quarters = quarters;
     }
-
 
     public BigDecimal getExecutionPercentage() {
         return executionPercentage;
@@ -94,5 +98,21 @@ public class IndicatorExecutionGeneralIndicatorResumeWeb implements Serializable
 
     public void setExecutionPercentage(BigDecimal executionPercentage) {
         this.executionPercentage = executionPercentage;
+    }
+
+    public QuarterWeb getLastReportedQuarter() {
+        return lastReportedQuarter;
+    }
+
+    public void setLastReportedQuarter(QuarterWeb lastReportedQuarter) {
+        this.lastReportedQuarter = lastReportedQuarter;
+    }
+
+    public MonthWeb getLastReportedMonth() {
+        return lastReportedMonth;
+    }
+
+    public void setLastReportedMonth(MonthWeb lastReportedMonth) {
+        this.lastReportedMonth = lastReportedMonth;
     }
 }
