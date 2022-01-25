@@ -79,10 +79,10 @@ export enum Frecuency {
 }
 
 export enum AreaType {
-    IMPACTO = 'Impacto',
-    RESULTADOS = 'Resultados',
-    PRODUCTO = 'Producto',
-    APOYO = 'Apoyo',
+    IMPACTO = 'IMPACTO',
+    RESULTADOS = 'RESULTADOS',
+    PRODUCTO = 'PRODUCTO',
+    APOYO = 'APOYO',
 }
 
 export enum MonthType {

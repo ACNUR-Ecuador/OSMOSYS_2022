@@ -10,7 +10,8 @@
                     <p-messages severity="warn" *ngIf="showAlert">
                         <ng-template pTemplate>
                             <div class="p-d-flex p-flex-column">
-                                <div class="p-mb-12" *ngFor="let alert of messageAlertArray" class="p-ml-2">{{alert}}</div>
+                                <div class="p-mb-12" *ngFor="let alert of messageAlertArray"
+                                     class="p-ml-2">{{alert}}</div>
                             </div>
                         </ng-template>
                     </p-messages>
@@ -107,7 +108,7 @@
                                    *ngIf="utilsService.showErrorForm('endDate',formItem)">{{utilsService.getErrorMessageForm('endDate', formItem)}}</small>
                         </div>
                         <div class="p-field p-col-12 p-md-12">
-                            <p-panel header="Lugares de ejecución" [toggleable]="true" >
+                            <p-panel header="Lugares de ejecución" [toggleable]="true">
                                 <ng-template pTemplate="header">
                                     <div class=" p-d-flex p-jc-end">
                                         <button pButton type="button" pRipple label="Editar lugares de ejecución"
@@ -253,7 +254,7 @@
                                     {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
                                 </td>
                                 <td>
-                                    <button pButton pRipple icon="pi pi-pencil" label="actualizar metas"
+                                    <button pButton pRipple icon="pi pi-pencil" label="actualizar meta"
                                             class="p-button-rounded p-button-success p-mr-2"
                                             (click)="updateTargets(rowData)"></button>
 
@@ -316,7 +317,8 @@
                                 <p-sortIcon [field]="col.field"></p-sortIcon>
                             </th>
                             <th>
-
+                            </th>
+                            <th>
                             </th>
                         </tr>
 
@@ -343,7 +345,8 @@
 
                             </th>
                             <th>
-
+                            </th>
+                            <th>
                             </th>
                         </tr>
                     </ng-template>
@@ -355,9 +358,14 @@
                                 {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
                             </td>
                             <td>
-                                <button pButton pRipple icon="pi pi-pencil" label="actualizar meta"
+                                <button pButton pRipple icon="pi pi-pencil" label="actualizar metas"
                                         class="p-button-rounded p-button-success p-mr-2"
                                         (click)="updateTargets(rowData)"></button>
+                            </td>
+                            <td>
+                                <button pButton pRipple icon="pi pi-pencil" label="editar indicador"
+                                        class="p-button-rounded p-button-success p-mr-2"
+                                        (click)="updatePerformanceIndicator(rowData)"></button>
 
                             </td>
                         </tr>
@@ -474,7 +482,8 @@
 
     </p-dialog>
 </form>
-<p-confirmDialog #cda key="cda" [style]="{width: '50vw'}" #cd [baseZIndex]="10000" rejectButtonStyleClass="p-button-text">
+<p-confirmDialog #cda key="cda" [style]="{width: '50vw'}" #cd [baseZIndex]="10000"
+                 rejectButtonStyleClass="p-button-text">
     <ng-template pTemplate="footer">
         <button type="button" pButton icon="pi pi-check" label="OK" (click)="cda.accept()"></button>
     </ng-template>
@@ -486,21 +495,58 @@
               styleClass="p-fluid" [closable]="false">
 
         <ng-template pTemplate="content">
+
             <div class="p-fluid p-formgrid p-grid">
                 <div class="p-field p-col-12 p-md-12">
                     <label for="indicatorI">Indicador</label>
-
                     <p-dropdown id="indicatorI"
                                 formControlName="indicator"
                                 [options]="indicatorOptions"
                                 placeholder="Selecciona..."
                                 filter="true"
+                                (onChange)="onChangePerformanceIndicator($event.value)"
                     >
                     </p-dropdown>
 
                     <small class="p-error"
                            *ngIf="utilsService.showErrorForm('indicator',formPerformanceIndicator)">
                         {{utilsService.getErrorMessageForm('indicator', formPerformanceIndicator)}}
+                    </small>
+                </div>
+                <div class="p-field p-col-4 p-md-4">
+                    <label for="isBorrowedStatementI">Indicador prestado</label>
+                    <div class="field-checkbox">
+                        <p-checkbox id="isBorrowedStatementI"
+                                    inputId="ibs"
+                                    [formControl]="formPerformanceIndicator.controls['isBorrowedStatement']"
+                                    [binary]="true"
+                                    (onChange)="onChangeIsBorrowed($event.checked)"
+                        ></p-checkbox>
+                        <label for="isBorrowedStatementI">
+                            {{formPerformanceIndicator.get('isBorrowedStatement').value ? 'Indicador Prestado' : 'Indicador No Prestado'}}
+                        </label>
+
+                    </div>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('indicator',formPerformanceIndicator)">
+                        {{utilsService.getErrorMessageForm('indicator', formPerformanceIndicator)}}
+                    </small>
+
+                </div>
+                <div class="p-field p-col-12 p-md-12"
+                >
+                    <label for="statementI">Declaración para el proyecto</label>
+                    <p-dropdown id="statementI"
+                                formControlName="borrowedStatement"
+                                [options]="statementsOptions"
+                                appendTo="body"
+                                [filter]="true"
+                    >
+                    </p-dropdown>
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('borrowedStatement',formPerformanceIndicator)">
+                        {{utilsService.getErrorMessageForm('borrowedStatement', formPerformanceIndicator)}}
                     </small>
                 </div>
                 <div class="p-field p-col-12 p-md-12">
@@ -529,7 +575,7 @@
                 </div>
 
             </div>
-            <div class="p-field p-col-12 p-md-12">
+            <div class="p-field p-col-12 p-md-12" *ngIf="formPerformanceIndicator.get('id').value ===null">
                 <p-panel header="Lugares de ejecución" [toggleable]="true">
                     <ng-template pTemplate="header">
                         <div class=" p-d-flex p-jc-end">

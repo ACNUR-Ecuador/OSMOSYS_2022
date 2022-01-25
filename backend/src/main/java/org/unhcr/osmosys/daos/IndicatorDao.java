@@ -73,7 +73,7 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
 
     public List<Indicator> getByPeriodAssignmentAndState(Long periodId, State state) throws GeneralAppException {
         String jpql = "SELECT DISTINCT o FROM Indicator o " +
-                " left join o.statements sta " +
+                " left join o.statement sta " +
                 " left join sta.periodStatementAsignations psa " +
                 " left join psa.period p " +
                 " WHERE p.id = :periodId and psa.state =:state and o.state =:state";
@@ -88,7 +88,7 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
 
         String jpql = "SELECT DISTINCT o" +
                 " FROM Indicator o " +
-                " left outer join o.statements sts "+
+                " left outer join o.statement sts "+
                 " left outer join o.customDissagregationAssignationToIndicators cda "+
                 " left outer join cda.customDissagregation "+
                 " left outer join cda.customDissagregationFilterIndicators "+

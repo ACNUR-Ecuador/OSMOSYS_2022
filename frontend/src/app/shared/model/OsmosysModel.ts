@@ -152,7 +152,6 @@ export class Indicator {
     constructor() {
         this.state = 'ACTIVO';
         this.markers = [];
-        this.statements = [];
         this.dissagregationsAssignationToIndicator = [];
         this.customDissagregationAssignationToIndicators = [];
         this.isCalculated = false;
@@ -175,7 +174,7 @@ export class Indicator {
     public totalIndicatorCalculationType: string;
     public markers: Marker[];
     public compassIndicator: boolean;
-    public statements: Statement[];
+    public statement: Statement;
     public dissagregationsAssignationToIndicator: DissagregationAssignationToIndicator[];
     public customDissagregationAssignationToIndicators: CustomDissagregationAssignationToIndicator[];
 }
@@ -313,9 +312,8 @@ export class IndicatorExecutionAdministrationResumeWeb {
     public id: number;
     public commentary: string;
     public target: number;
-    public indicatorDescription: string;
-    public activityDescription: string;
     public indicatorType: string;
+    public indicator: Indicator;
     public state: string;
     public totalExecution: number;
     public executionPercentage: number;
@@ -326,7 +324,8 @@ export class IndicatorExecutionGeneralIndicatorAdministrationResumeWeb extends I
 }
 
 export class IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb extends IndicatorExecutionAdministrationResumeWeb {
-    public indicatorCode: string;
+    public projectStatement: Statement;
+    public activityDescription: string;
 }
 
 export class IndicatorExecutionResumeWeb {
@@ -423,6 +422,7 @@ export class IndicatorExecutionAssigment {
     public period: Period;
     // socios
     public project: Project;
+    public projectStatement: Statement;
     // direct implementation
     public reportingOffice: Office;
     public assignedUser: User;

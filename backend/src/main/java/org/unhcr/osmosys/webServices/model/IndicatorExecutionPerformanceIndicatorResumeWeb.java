@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.webServices.model;
 
 import com.sagatechs.generics.persistence.model.State;
+import org.unhcr.osmosys.model.Statement;
 import org.unhcr.osmosys.model.enums.IndicatorType;
 
 import java.io.Serializable;
@@ -26,6 +27,7 @@ public class IndicatorExecutionPerformanceIndicatorResumeWeb implements Serializ
     private BigDecimal executionPercentage;
     private QuarterWeb lastReportedQuarter;
     private MonthWeb lastReportedMonth;
+    private StatementWeb projectStatement;
 
 
     private List<QuarterWeb> quarters = new ArrayList<>();
@@ -140,5 +142,13 @@ public class IndicatorExecutionPerformanceIndicatorResumeWeb implements Serializ
 
     public void setLastReportedMonth(MonthWeb lastReportedMonth) {
         this.lastReportedMonth = lastReportedMonth;
+    }
+
+    public StatementWeb getProjectStatement() {
+        return projectStatement;
+    }
+
+    public void setProjectStatement(StatementWeb projectStatement) {
+        this.projectStatement = projectStatement;
     }
 }

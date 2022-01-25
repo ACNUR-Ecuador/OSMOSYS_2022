@@ -46,6 +46,9 @@ export class IndicatorExecutionService {
     public assignPerformanceIndicatoToProject(indicatorExecutionAssigment: IndicatorExecutionAssigment): Observable<number> {
         return this.http.post<number>(`${mainServiceUrl}/assignPerformanceIndicatoToProject`, indicatorExecutionAssigment);
     }
+    public updateAssignPerformanceIndicatoToProject(indicatorExecutionAssigment: IndicatorExecutionAssigment): Observable<number> {
+        return this.http.put<number>(`${mainServiceUrl}/updateAssignPerformanceIndicatoToProject`, indicatorExecutionAssigment);
+    }
 
     public getResumeAdministrationPerformanceIndicatorById(
         indicatorExecutionId: number): Observable<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb> {

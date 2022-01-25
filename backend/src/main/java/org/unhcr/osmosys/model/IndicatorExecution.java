@@ -38,6 +38,10 @@ public class IndicatorExecution extends BaseEntity<Long> {
     private BigDecimal target;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "project_statement_id", foreignKey = @ForeignKey(name = "fk_indicator_executions_statement"))
+    private Statement projectStatement;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "performance_indicator_id", foreignKey = @ForeignKey(name = "fk_indicator_executions_performance_indicators"))
     private Indicator indicator;
 
@@ -284,6 +288,14 @@ public class IndicatorExecution extends BaseEntity<Long> {
 
     public void setExecutionPercentage(BigDecimal executionPercentage) {
         this.executionPercentage = executionPercentage;
+    }
+
+    public Statement getProjectStatement() {
+        return projectStatement;
+    }
+
+    public void setProjectStatement(Statement projectStatement) {
+        this.projectStatement = projectStatement;
     }
 
     @Override

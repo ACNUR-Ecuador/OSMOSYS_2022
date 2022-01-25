@@ -138,19 +138,19 @@
                         </div>
 
                         <div class="p-field p-col-12 p-md-5">
-                            <label for="statementsI">Declaraciones</label>
-                            <p-multiSelect id="statementsI"
-                                           formControlName="statements"
+                            <label for="statementI">Declaración</label>
+                            <p-dropdown id="statementI"
+                                           formControlName="statement"
                                            [options]="filteredStatements"
                                            appendTo="body"
                                            optionLabel="labelItem"
                                            optionValue="valueItem"
+                                        emptyMessage="Selecciona un tipo de área"
 
                             >
-
-                            </p-multiSelect>
+                            </p-dropdown>
                             <small class="p-error"
-                                   *ngIf="utilsService.showErrorForm('statements',formItem)">{{utilsService.getErrorMessageForm('statements', formItem)}}</small>
+                                   *ngIf="utilsService.showErrorForm('statement',formItem)">{{utilsService.getErrorMessageForm('statement', formItem)}}</small>
                         </div>
 
                         <div class="p-field p-col-12 p-md-3">
@@ -328,7 +328,7 @@
 
                                                             <div class="p-field-checkbox p-col-12 p-md-3"
                                                                  *ngFor="let custd of getCustomDissagregationTypeByPeriod(period)">
-                                                                <p-checkbox name="group2" [inputId]="custd.id"
+                                                                <p-checkbox name="group2" [inputId]="custd.value"
                                                                             [value]="custd.value"
                                                                             [formControl]="formItem.controls['customDissagregations']"
                                                                 >

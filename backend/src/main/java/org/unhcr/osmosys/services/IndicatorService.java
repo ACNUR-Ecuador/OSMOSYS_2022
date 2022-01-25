@@ -102,20 +102,7 @@ public class IndicatorService {
             }
         });
         // statements
-        // nuevos
-        indicatorWeb.getStatements().forEach(statementWeb -> {
-            Optional<Statement> statementOpt = indicator.getStatements().stream().filter(statement -> statementWeb.getId().equals(statement.getId())).findFirst();
-            if (!statementOpt.isPresent()) {
-                indicator.addStatement(this.modelWebTransformationService.statementWebToStatement(statementWeb));
-            }
-        });
-        // a borrar
-        indicator.getStatements().forEach(statement -> {
-            Optional<StatementWeb> statementWebOp = indicatorWeb.getStatements().stream().filter(statementWeb -> statement.getId().equals(statementWeb.getId())).findFirst();
-            if (!statementWebOp.isPresent()) {
-                indicator.removeStatement(statement);
-            }
-        });
+        indicator.setStatement(this.modelWebTransformationService.statementWebToStatement(indicatorWeb.getStatement()));
         // todo actualizacion en valores y demás
         // dissagregationAssiment
         //

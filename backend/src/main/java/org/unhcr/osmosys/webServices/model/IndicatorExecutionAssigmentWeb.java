@@ -2,6 +2,7 @@ package org.unhcr.osmosys.webServices.model;
 
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
+import org.unhcr.osmosys.model.Statement;
 import org.unhcr.osmosys.model.enums.IndicatorType;
 
 import java.io.Serializable;
@@ -21,6 +22,7 @@ public class IndicatorExecutionAssigmentWeb implements Serializable {
 
     /*socios ii*/
     private ProjectWeb project;
+    private StatementWeb projectStatement;
     /* implementación directa*/
     private OfficeWeb reportingOffice;
     private UserWeb assignedUser;
@@ -105,5 +107,13 @@ public class IndicatorExecutionAssigmentWeb implements Serializable {
 
     public void setLocations(List<CantonWeb> locations) {
         this.locations = locations;
+    }
+
+    public StatementWeb getProjectStatement() {
+        return projectStatement;
+    }
+
+    public void setProjectStatement(StatementWeb projectStatement) {
+        this.projectStatement = projectStatement;
     }
 }

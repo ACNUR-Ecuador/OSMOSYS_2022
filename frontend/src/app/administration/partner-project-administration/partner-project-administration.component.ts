@@ -7,15 +7,15 @@ import {UserService} from '../../shared/services/user.service';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {Location} from '@angular/common';
 import {
-    Canton, CantonForList,
+    Canton, CantonForList, Indicator,
     IndicatorExecutionAdministrationResumeWeb, IndicatorExecutionAssigment,
     IndicatorExecutionGeneralIndicatorAdministrationResumeWeb, IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb,
     Period,
-    Project, QuarterResumeWeb, TargetUpdateDTOWeb
+    Project, QuarterResumeWeb, Statement, TargetUpdateDTOWeb
 } from '../../shared/model/OsmosysModel';
 import {OrganizationService} from '../../shared/services/organization.service';
 import {CantonService} from '../../shared/services/canton.service';
-import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
+import {AreaType, ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
 import {EnumsService} from '../../shared/services/enums.service';
 import {OfficeOrganizationPipe} from '../../shared/pipes/officeOrganization.pipe';
 import {PeriodService} from '../../shared/services/period.service';
@@ -26,6 +26,7 @@ import {IndicatorService} from '../../shared/services/indicator.service';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
 import {QuarterService} from '../../shared/services/quarter.service';
 import {BooleanYesNoPipe} from '../../shared/pipes/boolean-yes-no.pipe';
+import {StatementService} from '../../shared/services/statement.service';
 
 @Component({
     selector: 'app-partner-project-administration',
@@ -62,7 +63,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     // tslint:disable-next-line:variable-name
     _selectedColumnsPerformanceIndicators: ColumnTable[];
     public showTargetDialog = false;
-
+    private statements: Statement[];
+    private statementsOptions: SelectItem[];
     messageAlert = '';
     messageAlertArray = [];
     showAlert = false;
@@ -89,7 +91,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         private indicatorExecutionService: IndicatorExecutionService,
         private codeDescriptionPipe: CodeDescriptionPipe,
         private booleanYesNoPipe: BooleanYesNoPipe,
-        private router: Router
+        private router: Router,
+        private statementService: StatementService,
     ) {
 
         this.idProjectParam = this.route.snapshot.paramMap.get('projectId');
@@ -185,6 +188,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             });
             this.periods = [];
             this.periods.push(period);
+            this.loadPerformanceIndicatorsOptions(period.id);
             this.loadGeneralIndicators(id);
         }, error => {
             this.messageService.add({
@@ -245,10 +249,10 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             this.showAlert = true;
             this.messageAlert += 'Las metas de los siguientes indicadores están pendientes de actualización. </br>';
             generalIndicatorsTargetsToAlert.forEach(value => {
-                this.messageAlert = this.messageAlert + 'Indicador General: ' + value.indicatorDescription + '</br>';
+                this.messageAlert = this.messageAlert + 'Indicador General: ' + value.indicator.description + '</br>';
             });
             performanceIndicatorsTargetsToAlert.forEach(value => {
-                this.messageAlert = this.messageAlert + 'Indicador de Rendimiento: ' + value.indicatorDescription + '</br>';
+                this.messageAlert = this.messageAlert + 'Indicador de Rendimiento: ' + value.indicator.description + '</br>';
             });
 
 
@@ -308,8 +312,49 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 life: 3000
             });
         });
+        this.statementService.getByState(EnumsState.ACTIVE).subscribe(statements => {
+            this.statements = statements
+                .sort((a, b) => a.code.localeCompare(b.code));
+            this.statementsOptions = this.statements
+                .filter(value2 => {
+                    return value2.areaType === AreaType.PRODUCTO.toString();
+                })
+                .map(value1 => {
+                    return {label: value1.code + '-' + value1.description, value: value1};
+                }).sort((a, b) => a.label.localeCompare(b.label));
+
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al cargar los statements',
+                detail: error.error.message,
+                life: 3000
+            });
+        });
 
 
+    }
+
+    loadPerformanceIndicatorsOptions(periodId: number) {
+        this.indicatorService.getByPeriodAssignment(periodId).subscribe(value => {
+            this.indicatorOptions = value
+                .map(value1 => {
+                    const selectItem: SelectItem = {
+                        value: value1,
+                        label: this.codeDescriptionPipe.transform(value1)
+                    };
+                    return selectItem;
+                });
+            console.log(periodId);
+            console.log(this.indicatorOptions);
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al cargar los indicadores del periodo',
+                detail: error.error.message,
+                life: 3000
+            });
+        });
     }
 
 
@@ -342,6 +387,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             id: new FormControl(''),
             commentary: new FormControl(''),
             indicator: new FormControl('', Validators.required),
+            isBorrowedStatement: new FormControl(''),
+            borrowedStatement: new FormControl('', Validators.required),
             state: new FormControl('', Validators.required),
             project: new FormControl(''),
             locations: new FormControl('')
@@ -540,7 +587,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         this.colsGeneralIndicators = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
             // {field: 'commentary', header: 'Código', type: ColumnDataType.numeric},
-            {field: 'indicatorDescription', header: 'Descripción', type: ColumnDataType.text},
+            {field: 'indicator.description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'target', header: 'Meta', type: ColumnDataType.text},
             {field: 'totalExecution', header: 'Ejecución actual', type: ColumnDataType.text},
             {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric},
@@ -550,14 +597,24 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         this._selectedColumnsGeneralIndicators = this.colsGeneralIndicators.filter(value => value.field !== 'id');
         this.colsPerformancelIndicators = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
-            {field: 'indicatorCode', header: 'Código', type: ColumnDataType.text},
-            {field: 'indicatorDescription', header: 'Descripción', type: ColumnDataType.text},
+            {field: 'indicator.statement', header: 'Declaración Indicador', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
+            {
+                field: 'projectStatement',
+                header: 'Declaración Indicador Proyecto',
+                type: ColumnDataType.text,
+                pipeRef: this.codeDescriptionPipe
+            },
+            {field: 'indicator.code', header: 'Código Indicador', type: ColumnDataType.text},
+            {field: 'indicator.productCode', header: 'Código Producto', type: ColumnDataType.text},
+            {field: 'indicator.description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'target', header: 'Meta', type: ColumnDataType.text},
             {field: 'totalExecution', header: 'Ejecución actual', type: ColumnDataType.text},
             {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
         ];
-        this._selectedColumnsPerformanceIndicators = this.colsPerformancelIndicators.filter(value => value.field !== 'id');
+        const hiddenColumns: string[] = ['id', 'indicator.statement'];
+        this._selectedColumnsPerformanceIndicators = this.colsPerformancelIndicators
+            .filter(value => !hiddenColumns.includes(value.field));
     }
 
     updateTargets(
@@ -653,39 +710,26 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     assignNewPerformanceIndicator() {
         const period: Period = this.formItem.get('period').value as Period;
 
-        this.indicatorService.getByPeriodAssignment(period.id).subscribe(value => {
-            this.indicatorOptions = value.map(value1 => {
-                const selectItem: SelectItem = {
-                    value: value1,
-                    label: this.codeDescriptionPipe.transform(value1)
-                };
-                return selectItem;
-            });
-            this.messageService.clear();
-            this.utilsService.resetForm(this.formPerformanceIndicator);
-            const newItem = new IndicatorExecutionAssigment();
-            this.formPerformanceIndicator.patchValue(newItem);
-            this.showPerformanceIndicatorDialog = true;
-            const {
-                startDate,
-                endDate
-            } = this.formItem.value;
-            const locations: CantonForList [] = this.formItem.get('locations').value;
-            locations.map(value1 => {
-                const canton = value1 as CantonForList;
-                canton.enabled = true;
-            });
-            this.formPerformanceIndicator.get('locations').patchValue(locations);
-        }, error => {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error al cargar los indicadores del periodo',
-                detail: error.error.message,
-                life: 3000
-            });
+
+        this.messageService.clear();
+        this.utilsService.resetForm(this.formPerformanceIndicator);
+        const newItem = new IndicatorExecutionAssigment();
+        this.formPerformanceIndicator.patchValue(newItem);
+        this.formPerformanceIndicator.get('isBorrowedStatement').patchValue(false);
+        this.formPerformanceIndicator.get('isBorrowedStatement').disable();
+        this.formPerformanceIndicator.get('borrowedStatement').disable();
+        this.formPerformanceIndicator.get('indicator').enable();
+        this.showPerformanceIndicatorDialog = true;
+        const {
+            startDate,
+            endDate
+        } = this.formItem.value;
+        const locations: CantonForList [] = this.formItem.get('locations').value;
+        locations.map(value1 => {
+            const canton = value1 as CantonForList;
+            canton.enabled = true;
         });
-
-
+        this.formPerformanceIndicator.get('locations').patchValue(locations);
     }
 
     exportExcelPerformancceIndicators() {
@@ -705,56 +749,149 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
     savePerformanceIndicator() {
         this.messageService.clear();
-
-        const indicatorExecution: IndicatorExecutionAssigment = new IndicatorExecutionAssigment();
         const {
+            id,
+            commentary,
+            isBorrowedStatement,
             state,
-            indicator
         } = this.formPerformanceIndicator.value;
-        const locationstotal: CantonForList[] = [];
-        (this.formPerformanceIndicator.get('locations').value as CantonForList[])
-            .forEach(value => locationstotal.push(Object.assign({}, value)));
-        const locations: Canton[] = locationstotal.filter(value => {
-            return value.enabled;
-        }).map(value => {
-            delete value.enabled;
-            return value as Canton;
-        });
-
-        indicatorExecution.indicator = indicator;
-        indicatorExecution.state = state;
+        const indicatorExecution: IndicatorExecutionAssigment = new IndicatorExecutionAssigment();
+        const indicator = this.formPerformanceIndicator.get('indicator').value;
+        const borrowedStatement = this.formPerformanceIndicator.get('borrowedStatement').value;
+        indicatorExecution.id = id;
         indicatorExecution.project = new Project();
         indicatorExecution.project.id = this.formItem.get('id').value;
-        indicatorExecution.locations = locations;
-        this.indicatorExecutionService.assignPerformanceIndicatoToProject(indicatorExecution)
-            .subscribe(value => {
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Indicador agregado correctamente',
-                    life: 3000
+        indicatorExecution.indicator = indicator;
+        indicatorExecution.state = state;
+        if (isBorrowedStatement) {
+            indicatorExecution.projectStatement = borrowedStatement;
+        } else {
+            indicatorExecution.projectStatement = indicator.statement;
+        }
+        if (indicatorExecution.id) {
+            // update
+            this.indicatorExecutionService
+                .updateAssignPerformanceIndicatoToProject(indicatorExecution)
+                .subscribe(value => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Indicador actualizado correctamente',
+                        life: 3000
+                    });
+                    this.loadProject(indicatorExecution.project.id);
+                    this.showPerformanceIndicatorDialog = false;
+                }, error => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al agregar el indicador',
+                        detail: error.error.message,
+                        life: 3000
+                    });
                 });
 
-                this.indicatorExecutionService.getResumeAdministrationPerformanceIndicatorById(value)
-                    .subscribe(value1 => {
-                        this.updateTargets(value1);
-                    }, error => {
-                        this.messageService.add({
-                            severity: 'error',
-                            summary: 'Error al recuperar los trimestres',
-                            detail: error.error.message,
-                            life: 3000
-                        });
-                    });
-            }, error => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error al agregar el indicador',
-                    detail: error.error.message,
-                    life: 3000
-                });
+        } else {
+            // create
+            const locationstotal: CantonForList[] = [];
+            (this.formPerformanceIndicator.get('locations').value as CantonForList[])
+                .forEach(value => locationstotal.push(Object.assign({}, value)));
+            const locations: Canton[] = locationstotal.filter(value => {
+                return value.enabled;
+            }).map(value => {
+                delete value.enabled;
+                return value as Canton;
             });
+            indicatorExecution.locations = locations;
+
+            this.indicatorExecutionService.assignPerformanceIndicatoToProject(indicatorExecution)
+                .subscribe(value => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Indicador agregado correctamente',
+                        life: 3000
+                    });
+                    this.indicatorExecutionService.getResumeAdministrationPerformanceIndicatorById(value)
+                        .subscribe(value1 => {
+                            this.updateTargets(value1);
+                        }, error => {
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error al recuperar los trimestres',
+                                detail: error.error.message,
+                                life: 3000
+                            });
+                        });
+                }, error => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al agregar el indicador',
+                        detail: error.error.message,
+                        life: 3000
+                    });
+                });
+        }
+
 
     }
 
 
+    onChangeIsBorrowed(value: boolean) {
+        if (value) {
+            this.formPerformanceIndicator.get('borrowedStatement').setValidators([Validators.required]);
+            this.formPerformanceIndicator.get('borrowedStatement').enable();
+        } else {
+            this.formPerformanceIndicator.get('borrowedStatement').patchValue(
+                this.formPerformanceIndicator.get('indicator').value.statement
+            );
+            this.formPerformanceIndicator.get('borrowedStatement').clearValidators();
+            this.formPerformanceIndicator.get('borrowedStatement').disable();
+        }
+        this.formPerformanceIndicator.get('borrowedStatement').updateValueAndValidity();
+    }
+
+    onChangePerformanceIndicator(indicator: Indicator) {
+        console.log(indicator);
+        this.formPerformanceIndicator.get('borrowedStatement').patchValue(indicator.statement);
+
+        if (indicator) {
+            this.formPerformanceIndicator.get('isBorrowedStatement').enable();
+            this.formPerformanceIndicator.get('borrowedStatement').disable();
+        } else {
+            this.formPerformanceIndicator.get('isBorrowedStatement').disable();
+            this.formPerformanceIndicator.get('borrowedStatement').disable();
+        }
+    }
+
+    updatePerformanceIndicator(indicatorExecution: IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb) {
+        const period: Period = this.formItem.get('period').value as Period;
+        this.messageService.clear();
+        this.utilsService.resetForm(this.formPerformanceIndicator);
+
+        const editinItem = new IndicatorExecutionAssigment();
+        editinItem.id = indicatorExecution.id;
+        editinItem.project = new Project();
+        editinItem.project.id = this.formItem.get('id').value;
+        editinItem.locations = null;
+        editinItem.projectStatement = indicatorExecution.projectStatement;
+        editinItem.indicator = indicatorExecution.indicator;
+        this.formPerformanceIndicator.get('indicator').disable();
+        this.formPerformanceIndicator.patchValue(editinItem);
+        if (indicatorExecution.projectStatement !== null
+            && indicatorExecution.projectStatement.id !== indicatorExecution.indicator.statement.id) {
+            this.formPerformanceIndicator.get('isBorrowedStatement').patchValue(true);
+            this.formPerformanceIndicator.get('isBorrowedStatement').enable();
+            this.formPerformanceIndicator.get('borrowedStatement').enable();
+        } else {
+            this.formPerformanceIndicator.get('isBorrowedStatement').patchValue(false);
+            this.formPerformanceIndicator.get('isBorrowedStatement').enable();
+            this.formPerformanceIndicator.get('borrowedStatement').disable();
+        }
+        if (indicatorExecution.projectStatement) {
+            this.formPerformanceIndicator.get('borrowedStatement').patchValue(indicatorExecution.projectStatement);
+        } else {
+            this.formPerformanceIndicator.get('borrowedStatement').patchValue(indicatorExecution.indicator.statement);
+        }
+        console.log(this.formPerformanceIndicator.value);
+        this.showPerformanceIndicatorDialog = true;
+
+    }
 }

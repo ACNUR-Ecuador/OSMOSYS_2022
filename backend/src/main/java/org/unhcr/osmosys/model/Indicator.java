@@ -31,12 +31,9 @@ public class Indicator extends BaseEntity<Long> {
     @Column(name = "category")
     private String category;
 
-    @ManyToMany
-    @JoinTable(name = "statement_indicator_assignations", schema = "osmosys",
-            joinColumns = {@JoinColumn(name = "indicator_id")},
-            inverseJoinColumns = {@JoinColumn(name = "statement_id")}
-    )
-    private Set<Statement> statements = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "statement_id", foreignKey = @ForeignKey(name = "fk_indicator_statement"))
+    private Statement statement;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", nullable = false, length = 12)
@@ -184,28 +181,13 @@ public class Indicator extends BaseEntity<Long> {
         isCalculated = calculated;
     }
 
-
-    public Set<Statement> getStatements() {
-        return statements;
+    public Statement getStatement() {
+        return statement;
     }
 
-    public void setStatements(Set<Statement> statements) {
-        this.statements = statements;
+    public void setStatement(Statement statement) {
+        this.statement = statement;
     }
-
-    public void addStatement(Statement statement) {
-        statement.getIndicators().add(this);
-        if (!this.statements.add(statement)) {
-            this.statements.remove(statement);
-            this.statements.add(statement);
-        }
-    }
-
-    public void removeStatement(Statement statement) {
-        statement.getIndicators().add(null);
-        this.statements.remove(statement);
-    }
-
 
     public Set<CustomDissagregationAssignationToIndicator> getCustomDissagregationAssignationToIndicators() {
         return customDissagregationAssignationToIndicators;
@@ -303,7 +285,7 @@ public class Indicator extends BaseEntity<Long> {
         return "Indicator{" +
                 "code='" + code + '\'' +
                 ", description='" + description + '\'' +
-                ", statements=" + statements +
+                ", statement=" + statement +
                 ", category='" + category + '\'' +
                 ", state=" + state +
                 ", indicatorType=" + indicatorType +

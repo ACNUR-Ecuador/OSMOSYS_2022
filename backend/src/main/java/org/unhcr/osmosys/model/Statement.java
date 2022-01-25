@@ -56,7 +56,7 @@ public class Statement extends BaseEntity<Long> {
     @OneToMany(mappedBy = "statement", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<PeriodStatementAsignation> periodStatementAsignations = new HashSet<>();
 
-    @ManyToMany(mappedBy = "statements")
+    @OneToMany(mappedBy = "statement",fetch = FetchType.LAZY)
     private Set<Indicator> indicators = new HashSet<>();
 
     @Override

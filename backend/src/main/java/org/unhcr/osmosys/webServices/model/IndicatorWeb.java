@@ -31,7 +31,7 @@ public class IndicatorWeb implements Serializable {
     private Boolean compassIndicator;
     private TotalIndicatorCalculationType totalIndicatorCalculationType;
 
-    private List<StatementWeb> statements = new ArrayList<>();
+    private StatementWeb statement;
     private List<DissagregationAssignationToIndicatorWeb> dissagregationsAssignationToIndicator = new ArrayList<>();
     private List<CustomDissagregationAssignationToIndicatorWeb> customDissagregationAssignationToIndicators = new ArrayList<>();
 
@@ -59,12 +59,12 @@ public class IndicatorWeb implements Serializable {
         this.description = description;
     }
 
-    public List<StatementWeb> getStatements() {
-        return statements;
+    public StatementWeb getStatement() {
+        return statement;
     }
 
-    public void setStatements(List<StatementWeb> statements) {
-        this.statements = statements;
+    public void setStatement(StatementWeb statement) {
+        this.statement = statement;
     }
 
     public String getCategory() {

@@ -12,7 +12,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Stateless
 public class ModelWebTransformationService {
@@ -274,8 +273,7 @@ public class ModelWebTransformationService {
         indicatorWeb.setCompassIndicator(indicator.getCompassIndicator());
         List<MarkerWeb> markers = this.markersToMarkersWeb(indicator.getMarkers());
         indicatorWeb.setMarkers(markers);
-        List<StatementWeb> statements = this.statementsToStatementsWeb(new ArrayList<>(indicator.getStatements()));
-        indicatorWeb.setStatements(statements);
+        indicatorWeb.setStatement(this.statementToStatementWeb(indicator.getStatement()));
         indicatorWeb.setDissagregationsAssignationToIndicator(this.dissagregationAssignationToIndicatorsToDissagregationAssignationToIndicatorsWeb(indicator.getDissagregationsAssignationToIndicator()));
         indicatorWeb.setCustomDissagregationAssignationToIndicators(this.customDissagregationAssignationToIndicatorsToCustomDissagregationAssignationToIndicatorsWeb(indicator.getCustomDissagregationAssignationToIndicators()));
         return indicatorWeb;
@@ -304,10 +302,7 @@ public class ModelWebTransformationService {
         for (Marker marker : markers) {
             indicator.addMarker(marker);
         }
-        Set<Statement> statements = this.statementsWebToStatements(indicatorWeb.getStatements());
-        for (Statement statement : statements) {
-            indicator.addStatement(statement);
-        }
+        indicator.setStatement(this.statementWebToStatement(indicatorWeb.getStatement()));
         Set<DissagregationAssignationToIndicator> dissagregationAssignationToIndicators = this.dissagregationAssignationToIndicatorsWebToDissagregationAssignationToIndicators(indicatorWeb.getDissagregationsAssignationToIndicator());
         for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicators) {
             indicator.addDissagregationAssignationToIndicator(dissagregationAssignationToIndicator);
@@ -703,7 +698,7 @@ public class ModelWebTransformationService {
 
 
     //<editor-fold desc="Statement">
-    public StatementWeb statementWebToStatement(Statement statement) {
+    public StatementWeb statementToStatementWeb(Statement statement) {
         if (statement == null) {
             return null;
         }
@@ -712,7 +707,7 @@ public class ModelWebTransformationService {
         statementWeb.setCode(statement.getCode());
         statementWeb.setDescription(statement.getDescription());
         statementWeb.setState(statement.getState());
-        statementWeb.setParentStatement(this.statementWebToStatement(statement.getParentStatement()));
+        statementWeb.setParentStatement(this.statementToStatementWeb(statement.getParentStatement()));
         statementWeb.setArea(this.areaToAreaWeb(statement.getArea()));
         statementWeb.setAreaType(statement.getAreaType());
         statementWeb.setPillar(this.pillarToPillarWeb(statement.getPillar()));
@@ -774,7 +769,7 @@ public class ModelWebTransformationService {
     public List<StatementWeb> statementsToStatementsWeb(List<Statement> statements) {
         List<StatementWeb> r = new ArrayList<>();
         for (Statement statement : statements) {
-            r.add(this.statementWebToStatement(statement));
+            r.add(this.statementToStatementWeb(statement));
         }
         return r;
     }
@@ -1000,7 +995,8 @@ public class ModelWebTransformationService {
     public IndicatorExecutionGeneralIndicatorAdministrationResumeWeb indicatorExecutionToIndicatorExecutionGeneralIndicatorAdministrationResumeWeb(IndicatorExecution indicatorExecution) {
         IndicatorExecutionGeneralIndicatorAdministrationResumeWeb i = new IndicatorExecutionGeneralIndicatorAdministrationResumeWeb();
         i.setId(indicatorExecution.getId());
-        i.setIndicatorDescription(indicatorExecution.getPeriod().getGeneralIndicator().getDescription());
+        IndicatorWeb indicatorWeb = new IndicatorWeb();
+        indicatorWeb.setDescription(indicatorExecution.getPeriod().getGeneralIndicator().getDescription());
         i.setIndicatorType(indicatorExecution.getIndicatorType());
         i.setTotalExecution(indicatorExecution.getTotalExecution());
         i.setTarget(indicatorExecution.getTarget());
@@ -1081,7 +1077,7 @@ public class ModelWebTransformationService {
         i.setQuarters(quarters);
 
         i.setExecutionPercentage(indicatorExecution.getExecutionPercentage());
-
+        i.setProjectStatement(this.statementToStatementWeb(indicatorExecution.getProjectStatement()));
         return i;
 
     }
@@ -1091,8 +1087,7 @@ public class ModelWebTransformationService {
         IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb i = new IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb();
         i.setId(indicatorExecution.getId());
         i.setActivityDescription(indicatorExecution.getActivityDescription());
-        i.setIndicatorCode(indicatorExecution.getIndicator().getCode());
-        i.setIndicatorDescription(indicatorExecution.getIndicator().getDescription());
+        i.setIndicator(this.indicatorToIndicatorWeb(indicatorExecution.getIndicator()));
         i.setIndicatorType(indicatorExecution.getIndicatorType());
         i.setTotalExecution(indicatorExecution.getTotalExecution());
         i.setTarget(indicatorExecution.getTarget());
@@ -1100,6 +1095,7 @@ public class ModelWebTransformationService {
         i.setQuarters(this.quartersToQuarterResumesWeb(indicatorExecution.getQuarters()));
         i.setExecutionPercentage(indicatorExecution.getExecutionPercentage());
         i.setQuarters(this.quartersToQuarterResumesWeb(indicatorExecution.getQuarters()));
+        i.setProjectStatement(this.statementToStatementWeb(indicatorExecution.getProjectStatement()));
         return i;
 
     }

@@ -433,7 +433,7 @@ public class IndicatorExecutionService {
         monthToUpdate.setChecked(monthValuesWeb.getMonth().getChecked());
         monthToUpdate.setSourceOther(monthValuesWeb.getMonth().getSourceOther());
         monthToUpdate.setSources(new HashSet<>());
-        if(CollectionUtils.isNotEmpty(monthValuesWeb.getMonth().getSources())){
+        if (CollectionUtils.isNotEmpty(monthValuesWeb.getMonth().getSources())) {
 
             for (SourceType source : monthValuesWeb.getMonth().getSources()) {
                 monthToUpdate.addSource(source);
@@ -646,6 +646,24 @@ public class IndicatorExecutionService {
         for (Quarter quarter : indicatorExecution.getQuarters()) {
             this.quarterService.updateQuarterLocationsByAssignation(quarter, cantonesToCreate, locationDissagregationTypes);
         }
+    }
+
+    public Long updateAssignPerformanceIndicatoToProject(IndicatorExecutionAssigmentWeb indicatorExecutionAssigmentWeb) throws GeneralAppException {
+        if (indicatorExecutionAssigmentWeb.getId() == null) {
+            throw new GeneralAppException("No se pudo encontrar el indicador (Id:" + indicatorExecutionAssigmentWeb.getId() + ")", Response.Status.BAD_REQUEST);
+        }
+        IndicatorExecution indicatorExecution = this.indicatorExecutionDao.find(indicatorExecutionAssigmentWeb.getId());
+        if (indicatorExecution == null) {
+            throw new GeneralAppException("No se pudo encontrar el indicador (Id:" + indicatorExecutionAssigmentWeb.getId() + ")", Response.Status.BAD_REQUEST);
+        }
+        if (!indicatorExecution.getProject().getId().equals(indicatorExecutionAssigmentWeb.getProject().getId())) {
+            throw new GeneralAppException("El indicador no corresponde al proyecto (Id:" + indicatorExecutionAssigmentWeb.getId() + " projectId" + indicatorExecutionAssigmentWeb.getId() + ")", Response.Status.BAD_REQUEST);
+        }
+        indicatorExecution.setState(indicatorExecutionAssigmentWeb.getState());
+        indicatorExecution.setProjectStatement(this.modelWebTransformationService.statementWebToStatement(indicatorExecutionAssigmentWeb.getProjectStatement()));
+
+        this.saveOrUpdate(indicatorExecution);
+        return indicatorExecution.getId();
     }
 }
 
