@@ -15,7 +15,7 @@ import {
 } from '../../shared/model/OsmosysModel';
 import {OrganizationService} from '../../shared/services/organization.service';
 import {CantonService} from '../../shared/services/canton.service';
-import {AreaType, ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
+import {AreaType, ColumnDataType, ColumnTable, EnumsIndicatorType, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
 import {EnumsService} from '../../shared/services/enums.service';
 import {OfficeOrganizationPipe} from '../../shared/pipes/officeOrganization.pipe';
 import {PeriodService} from '../../shared/services/period.service';
@@ -93,6 +93,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         private booleanYesNoPipe: BooleanYesNoPipe,
         private router: Router,
         private statementService: StatementService,
+        private _location: Location
     ) {
 
         this.idProjectParam = this.route.snapshot.paramMap.get('projectId');
@@ -345,8 +346,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     };
                     return selectItem;
                 });
-            console.log(periodId);
-            console.log(this.indicatorOptions);
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -481,7 +480,13 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     cancel() {
-        console.log(this.formItem);
+        if (this.idProjectParam) {
+            const idProject = Number(this.idProjectParam);
+            this.loadProject(idProject);
+        } else {
+            this._location.back();
+        }
+
     }
 
     saveLocationsForm() {
@@ -622,29 +627,42 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     ) {
         this.formTargets = this.fb.group({
             indicatorExecutionId: new FormControl(''),
-            quarterGroups: this.fb.array([])
+            indicatorType: new FormControl('', Validators.required),
+            // quarterGroups: this.fb.array([]),
+            // anualTarget: new FormControl(''),
+
         });
         this.utilsService.resetForm(this.formTargets);
         this.formTargets.get('indicatorExecutionId').patchValue(indicator.id);
-        const quarters = indicator.quarters
-            .filter(value => value.state === EnumsState.ACTIVE)
-            .sort((a, b) => a.order - b.order);
-        const quarterGroup = this.fb.array([]);
-        this.quarterGroups.patchValue([]);
-        quarters.forEach(quarter => {
-            const control = this.fb.group({
-                id: new FormControl(quarter.id),
-                quarter: new FormControl(quarter.quarter),
-                commentary: new FormControl(quarter.commentary),
-                order: new FormControl(quarter.order),
-                year: new FormControl(quarter.year),
-                target: new FormControl(quarter.target, Validators.required),
-                totalExecution: new FormControl(quarter.totalExecution),
-                executionPercentage: new FormControl(quarter.executionPercentage),
-                state: new FormControl(quarter.state),
+        this.formTargets.get('indicatorType').patchValue(indicator.indicatorType);
+        if (indicator.indicatorType === EnumsIndicatorType.GENERAL) {
+            this.formTargets.addControl('anualTarget', new FormControl('', Validators.required));
+            console.log(this.formTargets);
+            console.log(this.formTargets.value);
+        } else {
+            this.formTargets.addControl('quarterGroups', this.fb.array([]));
+
+            const quarters = indicator.quarters
+                .filter(value => value.state === EnumsState.ACTIVE)
+                .sort((a, b) => a.order - b.order);
+            const quarterGroup = this.fb.array([]);
+            this.quarterGroups.patchValue([]);
+            quarters.forEach(quarter => {
+                const control = this.fb.group({
+                    id: new FormControl(quarter.id),
+                    quarter: new FormControl(quarter.quarter),
+                    commentary: new FormControl(quarter.commentary),
+                    order: new FormControl(quarter.order),
+                    year: new FormControl(quarter.year),
+                    target: new FormControl(quarter.target, Validators.required),
+                    totalExecution: new FormControl(quarter.totalExecution),
+                    executionPercentage: new FormControl(quarter.executionPercentage),
+                    state: new FormControl(quarter.state),
+                });
+                this.quarterGroups.push(control);
             });
-            this.quarterGroups.push(control);
-        });
+        }
+
         this.showTargetDialog = true;
     }
 
@@ -654,34 +672,42 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
     saveTargets() {
         this.messageService.clear();
-        const targetForms = this.formTargets.controls.quarterGroups.value as Array<any>;
         const targetUpdateDTOWeb: TargetUpdateDTOWeb = new TargetUpdateDTOWeb();
+        const indicatorType = this.formTargets.get('indicatorType').value as EnumsIndicatorType;
         targetUpdateDTOWeb.indicatorExecutionId = this.formTargets.get('indicatorExecutionId').value;
-        targetUpdateDTOWeb.quarters = targetForms.map(value => {
-            const {
-                id,
-                quarter,
-                commentary,
-                order,
-                year,
-                target,
-                totalExecution,
-                executionPercentage,
-                state
-            } = value;
-            const q: QuarterResumeWeb = {
-                id,
-                quarter,
-                commentary,
-                order,
-                year,
-                target,
-                totalExecution,
-                executionPercentage,
-                state
-            };
-            return q;
-        });
+        targetUpdateDTOWeb.indicatorType = indicatorType;
+        if (indicatorType === EnumsIndicatorType.GENERAL) {
+            targetUpdateDTOWeb.annualTarget =
+                this.formTargets.get('anualTarget').value;
+        } else {
+            const targetForms = this.formTargets.controls.quarterGroups.value as Array<any>;
+            targetUpdateDTOWeb.quarters = targetForms.map(value => {
+                const {
+                    id,
+                    quarter,
+                    commentary,
+                    order,
+                    year,
+                    target,
+                    totalExecution,
+                    executionPercentage,
+                    state
+                } = value;
+                const q: QuarterResumeWeb = {
+                    id,
+                    quarter,
+                    commentary,
+                    order,
+                    year,
+                    target,
+                    totalExecution,
+                    executionPercentage,
+                    state
+                };
+                return q;
+            });
+        }
+
 
         this.indicatorExecutionService.updateTargets(targetUpdateDTOWeb).subscribe(value => {
             this.messageService.add({
@@ -702,8 +728,11 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         });
     }
 
-    cancelTargets() {
-        this.quarterGroups.patchValue([]);
+    cancelTargets(targetUpdateDTOWeb) {
+        if (this.quarterGroups) {
+            this.quarterGroups.patchValue([]);
+        }
+
         this.showTargetDialog = false;
     }
 
@@ -849,7 +878,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     onChangePerformanceIndicator(indicator: Indicator) {
-        console.log(indicator);
         this.formPerformanceIndicator.get('borrowedStatement').patchValue(indicator.statement);
 
         if (indicator) {
@@ -890,7 +918,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         } else {
             this.formPerformanceIndicator.get('borrowedStatement').patchValue(indicatorExecution.indicator.statement);
         }
-        console.log(this.formPerformanceIndicator.value);
         this.showPerformanceIndicatorDialog = true;
 
     }

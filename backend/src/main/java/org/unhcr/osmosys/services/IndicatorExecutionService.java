@@ -294,14 +294,18 @@ public class IndicatorExecutionService {
 
     public void updateTargets(TargetUpdateDTOWeb targetUpdateDTOWeb) throws GeneralAppException {
         IndicatorExecution ie = this.indicatorExecutionDao.getByIdWithValues(targetUpdateDTOWeb.getIndicatorExecutionId());
-        for (QuarterResumeWeb quarterResumeWeb : targetUpdateDTOWeb.getQuarters()) {
-            Optional<Quarter> quarterOptional = ie.getQuarters().stream().filter(quarter -> {
-                return quarter.getId().equals(quarterResumeWeb.getId());
-            }).findFirst();
-            if (!quarterOptional.isPresent()) {
-                throw new GeneralAppException("No se pudo encontrar el trimestre con id " + quarterResumeWeb.getId(), Response.Status.NOT_FOUND);
-            } else {
-                quarterOptional.get().setTarget(quarterResumeWeb.getTarget());
+        if (ie.getIndicatorType().equals(IndicatorType.GENERAL)) {
+
+        } else {
+            for (QuarterResumeWeb quarterResumeWeb : targetUpdateDTOWeb.getQuarters()) {
+                Optional<Quarter> quarterOptional = ie.getQuarters().stream().filter(quarter -> {
+                    return quarter.getId().equals(quarterResumeWeb.getId());
+                }).findFirst();
+                if (!quarterOptional.isPresent()) {
+                    throw new GeneralAppException("No se pudo encontrar el trimestre con id " + quarterResumeWeb.getId(), Response.Status.NOT_FOUND);
+                } else {
+                    quarterOptional.get().setTarget(quarterResumeWeb.getTarget());
+                }
             }
         }
 
@@ -323,17 +327,20 @@ public class IndicatorExecutionService {
         for (Quarter quarter : indicatorExecution.getQuarters()) {
             this.quarterService.updateQuarterTotals(quarter, totalIndicatorCalculationType);
         }
-
         List<Quarter> quarters = indicatorExecution.getQuarters().stream().filter(quarter -> {
             return quarter.getState().equals(State.ACTIVO);
         }).collect(Collectors.toList());
-// target total
-        Optional<BigDecimal> totalTarget = quarters.stream().map(Quarter::getTarget).filter(Objects::nonNull).reduce(BigDecimal::add);
-        if (totalTarget.isPresent()) {
-            indicatorExecution.setTarget(totalTarget.get());
-        } else {
-            indicatorExecution.setTarget(null);
+        if (!indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)) {
+            // target total
+            Optional<BigDecimal> totalTargetOpt;
+            totalTargetOpt = quarters.stream().map(Quarter::getTarget).filter(Objects::nonNull).reduce(BigDecimal::add);
+            if (totalTargetOpt.isPresent()) {
+                indicatorExecution.setTarget(totalTargetOpt.get());
+            } else {
+                indicatorExecution.setTarget(null);
+            }
         }
+
         // total execution and total percentage
         List<BigDecimal> totalQuarterValues = quarters.stream()
                 .map(Quarter::getTotalExecution).filter(Objects::nonNull)
@@ -345,6 +352,7 @@ public class IndicatorExecutionService {
         } else {
             BigDecimal totalExecution = null;
             switch (totalIndicatorCalculationType) {
+                //TODO revisar otros valores desde mes
                 case SUMA:
                     totalExecution = totalQuarterValues.stream().reduce(BigDecimal::add).get();
                     break;

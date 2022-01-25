@@ -59,10 +59,10 @@ export enum EnumsState {
 }
 
 export enum EnumsIndicatorType {
-    CORE = 'Core',
-    BUENAS_PRACTICAS = 'Buenas Prácticas',
-    OPERACION = 'Operación',
-    GENERAL = 'General',
+    CORE = 'CORE',
+    BUENAS_PRACTICAS = 'BUENAS_PRACTICAS',
+    OPERACION = 'OPERACION',
+    GENERAL = 'GENERAL',
 }
 
 export enum MeasureType {

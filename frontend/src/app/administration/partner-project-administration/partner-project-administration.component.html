@@ -448,13 +448,17 @@
     </p-dialog>
 </form>
 <form [formGroup]="formTargets" (ngSubmit)="saveTargets()">
-    <p-dialog [(visible)]="showTargetDialog" header="Metas" [modal]="true"
-              styleClass="p-fluid" [closable]="false">
-
+    <p-dialog [(visible)]="showTargetDialog" [modal]="true"
+              styleClass="p-fluid" [closable]="false"
+    >
+        <ng-template pTemplate="header">
+            {{formTargets.get('indicatorType').value === 'GENERAL' ? 'META INDICADOR GENERAL' : 'META INDICADOR PRODUCTO'}}
+        </ng-template>
         <ng-template pTemplate="content">
             <p-messages></p-messages>
             <div class="p-fluid p-formgrid p-grid"
                  formArrayName="quarterGroups"
+                 *ngIf="formTargets.get('indicatorType').value !=='GENERAL'"
             >
                 <div class="card p-col-12 p-md-12"
                      *ngFor="let targetForm of quarterGroups.controls; let i = index">
@@ -462,6 +466,18 @@
 
                         <label>Trimestre: {{targetForm.get('year').value}} - {{targetForm.get('quarter').value}}</label>
                         <p-inputNumber formControlName="target" [min]="0"></p-inputNumber>
+                    </div>
+                </div>
+
+            </div>
+            <div class="p-fluid p-formgrid p-grid"
+                 *ngIf="formTargets.get('indicatorType').value ==='GENERAL'"
+            >
+                <div class="card p-col-12 p-md-12">
+                    <div class="p-field p-col-12 p-md-12">
+
+                        <label>Meta Anual</label>
+                        <p-inputNumber formControlName="anualTarget" [min]="0"></p-inputNumber>
                     </div>
                 </div>
 

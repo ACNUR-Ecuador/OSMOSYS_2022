@@ -1,4 +1,4 @@
-import {EnumsState} from './UtilsModel';
+import {EnumsIndicatorType, EnumsState} from './UtilsModel';
 import {User} from './User';
 
 export class Organization {
@@ -406,7 +406,9 @@ export class QuarterResumeWeb {
 
 export class TargetUpdateDTOWeb {
     public indicatorExecutionId: number;
+    public indicatorType: EnumsIndicatorType;
     public quarters: QuarterResumeWeb[];
+    public annualTarget: number;
 }
 
 export class IndicatorExecutionAssigment {
