@@ -8,6 +8,7 @@ import {AppMainComponent} from './app.main.component';
 import {AppErrorComponent} from './shared/template/errorPages/app.error.component';
 import {AppAccessdeniedComponent} from './shared/template/errorPages/app.accessdenied.component';
 import {AppNotfoundComponent} from './shared/template/errorPages/app.notfound.component';
+import {RecoverPasswordComponent} from './authentication/recover-password/recover-password.component';
 
 @NgModule({
     imports: [
@@ -26,6 +27,7 @@ import {AppNotfoundComponent} from './shared/template/errorPages/app.notfound.co
             {path: 'access', component: AppAccessdeniedComponent},
             {path: 'notfound', component: AppNotfoundComponent},
             {path: 'login', component: AppLoginComponent},
+            {path: 'recover_password', component: RecoverPasswordComponent},
             {path: '**', redirectTo: '/notfound'},
 
         ], {scrollPositionRestoration: 'enabled'

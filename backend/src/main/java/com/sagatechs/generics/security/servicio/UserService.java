@@ -477,7 +477,7 @@ public class UserService implements Serializable {
         return user.getId();
     }
 
-    public void recoverPassword(String email, String appcode) throws GeneralAppException {
+    public void recoverPassword(String email) throws GeneralAppException {
         User user = this.userDao.getByEmail(email);
         if (user == null) {
             throw new GeneralAppException("Usuario no encontrado", Response.Status.NOT_FOUND.getStatusCode());

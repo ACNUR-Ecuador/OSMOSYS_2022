@@ -11,11 +11,15 @@ import {MessageModule} from 'primeng/message';
 import {MessageService} from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
 import {MessagesModule} from 'primeng/messages';
+import { RecoverPasswordComponent } from './recover-password/recover-password.component';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {CardModule} from 'primeng/card';
 
 
 @NgModule({
     declarations: [
-        AppLoginComponent
+        AppLoginComponent,
+        RecoverPasswordComponent
     ],
     imports: [
         CommonModule,
@@ -27,7 +31,9 @@ import {MessagesModule} from 'primeng/messages';
         ReactiveFormsModule,
         MessageModule,
         MessagesModule,
-        ToastModule
+        ToastModule,
+        ConfirmDialogModule,
+        CardModule
     ],
     providers: [
         MessageService

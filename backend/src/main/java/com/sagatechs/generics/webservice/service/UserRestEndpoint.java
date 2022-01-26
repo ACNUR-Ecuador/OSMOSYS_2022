@@ -6,6 +6,7 @@ import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
 import com.sagatechs.generics.security.servicio.RoleService;
 import com.sagatechs.generics.security.servicio.UserService;
+import com.sagatechs.generics.webservice.webModel.ChangePasswordSimple;
 import com.sagatechs.generics.webservice.webModel.CredentialsWeb;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.jboss.logging.Logger;
@@ -88,5 +89,12 @@ public class UserRestEndpoint {
         return this.userService.getUNHCRUsersWebByState(State.ACTIVO);
     }
 
+    @Path("/recoverpassword")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void recoverPasswordSimple(ChangePasswordSimple changePasswordSimple) throws GeneralAppException {
+        this.userService.recoverPassword(changePasswordSimple.getNewPassword());
+    }
 
 }

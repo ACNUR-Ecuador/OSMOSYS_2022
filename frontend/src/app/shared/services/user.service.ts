@@ -130,4 +130,12 @@ export class UserService {
     public updateUser(user: User): Observable<number> {
         return this.http.put<number>(`${mainServiceUrl}/users`, user);
     }
+
+    recoverPassword(email: string) {
+        const changeRequest = {
+            oldPassword: null,
+            newPassword: email
+        };
+        return this.http.post(`${mainServiceUrl}/recoverpassword`, changeRequest);
+    }
 }
