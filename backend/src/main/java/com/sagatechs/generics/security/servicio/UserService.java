@@ -460,6 +460,9 @@ public class UserService implements Serializable {
         for (RoleWeb roleWeb : userWeb.getRoles()) {
             try {
                 RoleType roleType = RoleType.valueOf(roleWeb.getName());
+                if(roleType.equals(RoleType.PUNTO_FOCAL)){
+                    continue;
+                }
                 Role role = this.roleService.findByRoleType(roleType);
                 if (roleWeb.getState().equals(State.ACTIVO)) {
                     user.addRole(role);

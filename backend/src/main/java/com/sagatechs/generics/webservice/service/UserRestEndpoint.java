@@ -29,9 +29,6 @@ public class UserRestEndpoint {
     @Inject
     UserService userService;
 
-    @Inject
-    RoleService roleService;
-
     /**
      * creates new user
      * @param appCode

@@ -10,6 +10,7 @@ import {CardModule} from 'primeng/card';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {InputTextModule} from 'primeng/inputtext';
 import {ButtonModule} from 'primeng/button';
+import {DropdownModule} from 'primeng/dropdown';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import {ButtonModule} from 'primeng/button';
         CardModule,
         ConfirmDialogModule,
         InputTextModule,
-        ButtonModule
-    ]
+        ButtonModule,
+        DropdownModule
+    ],
 })
 export class UsersModule { }
