@@ -33,6 +33,12 @@ export class MenuService {
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
                 },
                 {
+                    label: 'changePassword',
+                    icon: 'pi pi-fw pi-user',
+                    routerLink: ['/users/changePassword'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
+                },
+                {
                     label: 'Configuración del sistema',
                     icon: 'pi pi-fw pi-cog',
                     roles: ['SUPER_ADMINISTRADOR'],

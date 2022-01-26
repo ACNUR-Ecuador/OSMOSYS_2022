@@ -14,7 +14,9 @@ import org.jboss.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 @Path("/authentication")
@@ -95,6 +97,22 @@ public class UserRestEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     public void recoverPasswordSimple(ChangePasswordSimple changePasswordSimple) throws GeneralAppException {
         this.userService.recoverPassword(changePasswordSimple.getNewPassword());
+    }
+    /**
+     * cambio contraseña
+     *
+     * @return
+     * @throws AccessDeniedException
+     */
+    @Secured
+    @Path("/changepassword")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void changePasswordSimple(@Context SecurityContext securityContext, ChangePasswordSimple changePasswordSimple) throws GeneralAppException {
+
+        String username = securityContext.getUserPrincipal().getName();
+        this.userService.changePassword(username, changePasswordSimple.getOldPassword(), changePasswordSimple.getNewPassword());
     }
 
 }

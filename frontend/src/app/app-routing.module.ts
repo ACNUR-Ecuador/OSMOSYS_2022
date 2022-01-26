@@ -30,8 +30,9 @@ import {RecoverPasswordComponent} from './authentication/recover-password/recove
             {path: 'recover_password', component: RecoverPasswordComponent},
             {path: '**', redirectTo: '/notfound'},
 
-        ], {scrollPositionRestoration: 'enabled'
-           // , enableTracing: true
+        ], {
+            scrollPositionRestoration: 'enabled',
+            // enableTracing: true
         })
     ],
     exports: [RouterModule]

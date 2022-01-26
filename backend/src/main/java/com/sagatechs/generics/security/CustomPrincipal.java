@@ -8,7 +8,7 @@ public class CustomPrincipal extends CallerPrincipal {
     UserWeb user;
 
     public CustomPrincipal(UserWeb user) {
-        super(user.getName());
+        super(user.getUsername());
         this.user=user;
     }
 

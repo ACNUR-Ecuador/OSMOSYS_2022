@@ -508,5 +508,24 @@ public class UserService implements Serializable {
     }
 
 
+    public void changePassword(String username, String oldPassword, String newPassword) throws GeneralAppException {
+        // recupero un usuario
+        if (StringUtils.isBlank(username) || StringUtils.isBlank(newPassword) || StringUtils.isBlank(oldPassword)) {
+            throw new GeneralAppException("Los datos no son correctos", Response.Status.BAD_REQUEST.getStatusCode());
+        }
+        byte[] hashedPass = this.securityUtils.hashPasswordByte(oldPassword, salt);
+        User user = this.userDao.findByUserNameAndPassword(username, hashedPass);
+        if (user == null) {
+            throw new GeneralAppException("No se encontró un usuario con el nombre de usuario: " + username + " o la contraseña actual es incorrecta",
+                    Response.Status.NOT_FOUND.getStatusCode());
+
+        }
+
+        // ya que esta verificado, reseteo el pass
+
+        byte[] newHashedPass = this.securityUtils.hashPasswordByte(newPassword, UserService.salt);
+        user.setPassword(newHashedPass);
+        this.userDao.update(user);
+    }
 }
 

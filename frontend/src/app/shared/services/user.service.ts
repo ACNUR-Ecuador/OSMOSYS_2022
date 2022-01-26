@@ -138,4 +138,18 @@ export class UserService {
         };
         return this.http.post(`${mainServiceUrl}/recoverpassword`, changeRequest);
     }
+
+    public getLogedUsername(): User {
+        return this.currentUserSubject.value;
+    }
+
+    changePassword(oldPassword: string, newPassword: string) {
+        const changeRequest = {
+            oldPassword,
+            newPassword
+        };
+        return this.http.post(`${mainServiceUrl}/changepassword`, changeRequest);
+
+
+    }
 }
