@@ -301,4 +301,16 @@ public class ProjectService {
     public List<ProjectWeb> getWebByIds(List<Long> ids) {
         return this.modelWebTransformationService.projectsToProjectsWeb(this.projectDao.getByIds(ids));
     }
+
+    public List<Project> getByPeriodId(Long periodId){
+        return this.projectDao.getByPeriodId(periodId);
+    }
+
+    public void createProjectGeneralStatements(Long periodId) throws GeneralAppException {
+        List<Project> projects = this.getByPeriodId(periodId);
+        for (Project project : projects) {
+            IndicatorExecution ieg = this.indicatorExecutionService.createGeneralIndicatorForProject(project);
+            this.indicatorExecutionService.saveOrUpdate(ieg);
+        }
+    }
 }

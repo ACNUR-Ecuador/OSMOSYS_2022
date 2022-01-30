@@ -91,4 +91,12 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         q.setParameter("ids", ids);
         return q.getResultList();
     }
+
+    public List<Project> getByPeriodId(Long periodId) {
+        String jpql = "SELECT DISTINCT o FROM Project o " +
+                " WHERE o.period.id =:periodId";
+        Query q = getEntityManager().createQuery(jpql, Project.class);
+        q.setParameter("periodId", periodId);
+        return q.getResultList();
+    }
 }

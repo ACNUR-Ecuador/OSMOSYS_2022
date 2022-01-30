@@ -7,6 +7,7 @@ import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.utils.DateUtils;
 import com.sagatechs.generics.webservice.jsonSerializers.LocalDateDeserializer;
 import org.jboss.logging.Logger;
+import org.unhcr.osmosys.model.IndicatorExecution;
 import org.unhcr.osmosys.model.Period;
 import org.unhcr.osmosys.model.Project;
 import org.unhcr.osmosys.model.enums.AreaType;
@@ -58,6 +59,14 @@ public class TestEndpoint {
         LocalDate endNew = LocalDate.of(2022, Month.AUGUST, 21);
         // this.projectService.updateProjectDates(startOld, endOld,startNew, endNew);
         //List<YearMonth> r = this.dateUtils.calculateYearMonthsBetweenDates(startOld, endOld);
+        return "ya";
+    }
+
+    @Path("createGenerals")
+    @GET
+    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    public String createGenerals() throws GeneralAppException {
+        this.projectService.createProjectGeneralStatements(1l);
         return "ya";
     }
 
