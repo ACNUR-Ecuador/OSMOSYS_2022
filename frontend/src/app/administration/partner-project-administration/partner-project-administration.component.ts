@@ -610,7 +610,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 pipeRef: this.codeDescriptionPipe
             },
             {field: 'indicator.code', header: 'Código Indicador', type: ColumnDataType.text},
-            {field: 'indicator.productCode', header: 'Código Producto', type: ColumnDataType.text},
+            {field: 'projectStatement.productCode', header: 'Código Producto', type: ColumnDataType.text},
             {field: 'indicator.description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'target', header: 'Meta', type: ColumnDataType.text},
             {field: 'totalExecution', header: 'Ejecución actual', type: ColumnDataType.text},

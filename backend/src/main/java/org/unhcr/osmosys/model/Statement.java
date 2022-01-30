@@ -32,6 +32,9 @@ public class Statement extends BaseEntity<Long> {
     @Column(name = "code", unique = true)
     private String code;
 
+    @Column(name = "product_code")
+    private String productCode;
+
     @Column(name = "description", columnDefinition = "text", unique = true)
     private String description;
 
@@ -156,6 +159,14 @@ public class Statement extends BaseEntity<Long> {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
     }
 
     @Override

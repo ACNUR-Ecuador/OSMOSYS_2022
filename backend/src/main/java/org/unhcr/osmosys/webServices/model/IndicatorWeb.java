@@ -2,20 +2,16 @@ package org.unhcr.osmosys.webServices.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sagatechs.generics.persistence.model.State;
-import org.unhcr.osmosys.model.Statement;
 import org.unhcr.osmosys.model.enums.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 public class IndicatorWeb implements Serializable {
     private Long id;
     private String code;
-    private String productCode;
     private String description;
     private String category;
     private State state;
@@ -171,11 +167,5 @@ public class IndicatorWeb implements Serializable {
         this.compassIndicator = compassIndicator;
     }
 
-    public String getProductCode() {
-        return productCode;
-    }
 
-    public void setProductCode(String productCode) {
-        this.productCode = productCode;
-    }
 }

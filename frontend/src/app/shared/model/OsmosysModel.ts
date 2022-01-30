@@ -86,6 +86,7 @@ export class Statement {
 
     public id: string;
     public code: string;
+    public productCode: string;
     public description: string;
     public areaType: string;
     public state: string;
@@ -161,7 +162,6 @@ export class Indicator {
 
     public id: number;
     public code: string;
-    public productCode: string;
     public description: string;
     public category: string;
     public state: string;

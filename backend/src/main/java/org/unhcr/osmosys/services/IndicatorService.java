@@ -74,7 +74,6 @@ public class IndicatorService {
         this.validate(indicatorWeb);
         Indicator indicator = this.indicatorDao.findWithData(indicatorWeb.getId());
         indicator.setCode(indicatorWeb.getCode());
-        indicator.setProductCode(indicatorWeb.getProductCode());
         indicator.setDescription(indicatorWeb.getDescription());
         indicator.setCategory(indicatorWeb.getCategory());
         indicator.setState(indicatorWeb.getState());

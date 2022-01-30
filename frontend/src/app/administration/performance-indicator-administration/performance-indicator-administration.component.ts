@@ -87,7 +87,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.registerFilters();
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
-            {field: 'productCode', header: 'Código de Producto', type: ColumnDataType.text},
             {field: 'code', header: 'Código', type: ColumnDataType.text},
             {field: 'description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'category', header: 'Categoría', type: ColumnDataType.text},
@@ -150,7 +149,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.formItem = this.fb.group({
             id: new FormControl(''),
             code: new FormControl('', [Validators.required, Validators.maxLength(10)]),
-            productCode: new FormControl('', [Validators.maxLength(20)]),
             description: new FormControl('', [Validators.required, Validators.maxLength(255)]),
             category: new FormControl('', [Validators.maxLength(255)]),
             state: new FormControl('', Validators.required),
@@ -312,7 +310,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         const {
             id,
             code,
-            productCode,
             description,
             category,
             state,
@@ -336,7 +333,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         const indicator: Indicator = {
             id,
             code,
-            productCode,
             description,
             category,
             state,

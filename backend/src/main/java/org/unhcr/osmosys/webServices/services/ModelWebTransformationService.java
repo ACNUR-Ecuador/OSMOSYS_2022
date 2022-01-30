@@ -259,7 +259,6 @@ public class ModelWebTransformationService {
         IndicatorWeb indicatorWeb = new IndicatorWeb();
         indicatorWeb.setId(indicator.getId());
         indicatorWeb.setCode(indicator.getCode());
-        indicatorWeb.setProductCode(indicator.getProductCode());
         indicatorWeb.setDescription(indicator.getDescription());
         indicatorWeb.setCategory(indicator.getCategory());
         indicatorWeb.setState(indicator.getState());
@@ -286,7 +285,6 @@ public class ModelWebTransformationService {
         Indicator indicator = new Indicator();
         indicator.setId(indicatorWeb.getId());
         indicator.setCode(indicatorWeb.getCode());
-        indicator.setProductCode(indicatorWeb.getProductCode());
         indicator.setDescription(indicatorWeb.getDescription());
         indicator.setCategory(indicatorWeb.getCategory());
         indicator.setState(indicatorWeb.getState());
@@ -705,6 +703,7 @@ public class ModelWebTransformationService {
         StatementWeb statementWeb = new StatementWeb();
         statementWeb.setId(statement.getId());
         statementWeb.setCode(statement.getCode());
+        statementWeb.setProductCode(statement.getProductCode());
         statementWeb.setDescription(statement.getDescription());
         statementWeb.setState(statement.getState());
         statementWeb.setParentStatement(this.statementToStatementWeb(statement.getParentStatement()));
@@ -727,8 +726,10 @@ public class ModelWebTransformationService {
         if (statementWeb.getId() == null) {
             statement = new Statement();
             statement.setState(statementWeb.getState());
+            statement.setProductCode(statementWeb.getProductCode());
             statement.setDescription(statementWeb.getDescription());
             statement.setCode(statementWeb.getCode());
+            statement.setProductCode(statementWeb.getProductCode());
             statement.setAreaType(statementWeb.getArea().getAreaType());
             statement.setParentStatement(this.statementWebToStatement(statementWeb.getParentStatement()));
             statement.setArea(this.areaToAreaWeb(statementWeb.getArea()));
@@ -741,6 +742,7 @@ public class ModelWebTransformationService {
             statement.setState(statementWeb.getState());
             statement.setDescription(statementWeb.getDescription());
             statement.setCode(statementWeb.getCode());
+            statement.setProductCode(statementWeb.getProductCode());
             if (statementWeb.getArea() != null) { // todo controlar
                 statement.setAreaType(statementWeb.getArea().getAreaType());
             }

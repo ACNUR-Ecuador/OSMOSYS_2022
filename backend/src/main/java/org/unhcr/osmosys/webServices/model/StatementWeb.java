@@ -14,6 +14,7 @@ public class StatementWeb implements Serializable {
     private State state;
     private AreaType areaType;
     private String code;
+    private String productCode;
     private String description;
     private StatementWeb parentStatement;
     private AreaWeb area;
@@ -101,5 +102,13 @@ public class StatementWeb implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
     }
 }

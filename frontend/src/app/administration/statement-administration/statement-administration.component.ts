@@ -59,6 +59,7 @@ export class StatementAdministrationComponent implements OnInit {
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
             {field: 'code', header: 'Código', type: ColumnDataType.text},
+            {field: 'productCode', header: 'Código de Producto', type: ColumnDataType.text},
             {field: 'description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
             {field: 'parentStatement', header: 'Declaración Padre', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},
@@ -72,6 +73,7 @@ export class StatementAdministrationComponent implements OnInit {
         this.formItem = this.fb.group({
             id: new FormControl(''),
             code: new FormControl('', Validators.required),
+            productCode: new FormControl('', [Validators.maxLength(20)]),
             shortDescription: new FormControl('', Validators.required),
             description: new FormControl(''),
             state: new FormControl('', Validators.required),
@@ -253,6 +255,7 @@ export class StatementAdministrationComponent implements OnInit {
         const {
             id,
             code,
+            productCode,
             shortDescription,
             description,
             areaType,
@@ -268,6 +271,7 @@ export class StatementAdministrationComponent implements OnInit {
         const statement: Statement = {
             id,
             code,
+            productCode,
             description,
             areaType,
             state,

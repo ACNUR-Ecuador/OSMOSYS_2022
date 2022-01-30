@@ -192,7 +192,7 @@
                         <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter"/>
                     </validation>
                 </datasource>
-				<datasource jta="true" jndi-name="java:jboss/datasources/osmosys_capacitacion" pool-name="osmosys_capacitacion" enabled="true" use-ccm="true" statistics-enabled="true">
+                <datasource jta="true" jndi-name="java:jboss/datasources/osmosys_capacitacion" pool-name="osmosys_capacitacion" enabled="true" use-ccm="true" statistics-enabled="true">
                     <connection-url>jdbc:postgresql://localhost:5432/osmosys_capacitacion</connection-url>
                     <driver>postgresql-driver</driver>
                     <pool>

@@ -22,10 +22,9 @@ public class Indicator extends BaseEntity<Long> {
     @Column(name = "code", nullable = false, unique = true)
     private String code;
 
-    @Column(name = "product_code")
-    private String productCode;
 
-    @Column(name = "description", nullable = false, unique = true)
+
+    @Column(name = "description", nullable = false)
     private String description;
 
     @Column(name = "category")
@@ -247,14 +246,6 @@ public class Indicator extends BaseEntity<Long> {
         this.compassIndicator = compassIndicator;
     }
 
-
-    public String getProductCode() {
-        return productCode;
-    }
-
-    public void setProductCode(String productCode) {
-        this.productCode = productCode;
-    }
 
     public String getCategory() {
         return category;
