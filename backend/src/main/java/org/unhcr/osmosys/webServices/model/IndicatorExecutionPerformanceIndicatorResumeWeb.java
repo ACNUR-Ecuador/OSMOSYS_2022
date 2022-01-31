@@ -1,15 +1,12 @@
 package org.unhcr.osmosys.webServices.model;
 
 import com.sagatechs.generics.persistence.model.State;
-import org.unhcr.osmosys.model.Statement;
 import org.unhcr.osmosys.model.enums.IndicatorType;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 public class IndicatorExecutionPerformanceIndicatorResumeWeb implements Serializable {
@@ -18,8 +15,7 @@ public class IndicatorExecutionPerformanceIndicatorResumeWeb implements Serializ
     private String commentary;
     private BigDecimal target;
     private IndicatorWeb indicator;
-    private String indicatorCode;
-    private String indicatorDescription;
+    private StatementWeb projectStatement;
     private String activityDescription;
     private IndicatorType indicatorType;
     private State state;
@@ -27,9 +23,6 @@ public class IndicatorExecutionPerformanceIndicatorResumeWeb implements Serializ
     private BigDecimal executionPercentage;
     private QuarterWeb lastReportedQuarter;
     private MonthWeb lastReportedMonth;
-    private StatementWeb projectStatement;
-
-
     private List<QuarterWeb> quarters = new ArrayList<>();
 
     public Long getId() {
@@ -56,13 +49,7 @@ public class IndicatorExecutionPerformanceIndicatorResumeWeb implements Serializ
         this.target = target;
     }
 
-    public String getIndicatorDescription() {
-        return indicatorDescription;
-    }
 
-    public void setIndicatorDescription(String indicatorDescription) {
-        this.indicatorDescription = indicatorDescription;
-    }
 
     public IndicatorType getIndicatorType() {
         return indicatorType;
@@ -102,14 +89,6 @@ public class IndicatorExecutionPerformanceIndicatorResumeWeb implements Serializ
 
     public void setExecutionPercentage(BigDecimal executionPercentage) {
         this.executionPercentage = executionPercentage;
-    }
-
-    public String getIndicatorCode() {
-        return indicatorCode;
-    }
-
-    public void setIndicatorCode(String indicatorCode) {
-        this.indicatorCode = indicatorCode;
     }
 
     public IndicatorWeb getIndicator() {
