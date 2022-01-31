@@ -299,7 +299,8 @@ public class ProjectService {
     }
 
     public ProjectWeb getWebById(Long id) {
-        return this.modelWebTransformationService.projectToProjectWeb(this.projectDao.find(id));
+        Project project = this.projectDao.find(id);
+        return this.modelWebTransformationService.projectToProjectWeb(project);
     }
 
     public List<ProjectWeb> getWebByIds(List<Long> ids) {

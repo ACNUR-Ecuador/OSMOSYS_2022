@@ -2,7 +2,7 @@ package org.unhcr.osmosys.model.enums;
 
 public enum SourceType implements EnumInterface {
     PROGRES("ProGres", 1),
-    SISTEMA_ORGANIZACION("Sistema de la Organización", 2),
+    SISTEMA_ORGANIZACION("Sistema de la Organización (Ejem: software específico, base de datos)", 2),
     REGISTRO_HOJA_CALCULO("Registros en Hojas de Cálculo(Ejem: Excel/Google Sheets)", 3),
     FORMULARIOS_EN_LINEA("Formularios en linea (Ejem: Kobo)", 3),
     REGISTROS_MANUALES("Registros Manuales", 4),

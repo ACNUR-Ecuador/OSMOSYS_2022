@@ -3,8 +3,9 @@ package org.unhcr.osmosys.model.enums;
 public enum PopulationType implements EnumInterface {
     REFUGIADOS("Refugiados",1),
     SOLICITANTES_DE_ASILO("Solicitantes de Asilo",2),
-    COMUNIDAD_DE_ACOGIDA("Comidad de Acogida",3),
-    OTROS_DE_INTERES("Otros de interés",4),
+    VENEZOLANOS_DESPLAZADOS("Venezolanos Desplazados en el Extranjero",3),
+    COMUNIDAD_DE_ACOGIDA("Comidad de Acogida",4),
+    OTROS_DE_INTERES("Otros de interés",5),
     ;
 
 

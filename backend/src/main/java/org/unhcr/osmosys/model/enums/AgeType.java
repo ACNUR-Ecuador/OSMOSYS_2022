@@ -2,11 +2,9 @@ package org.unhcr.osmosys.model.enums;
 
 public enum AgeType implements EnumInterface {
     INFANTES("Infantes(0-4)", 1),
-    NINOS("Niña/os(5-11)", 2),
-    ADOLESCENTES("Adolescentes(12-17)", 3),
-    JOVENES_ADULTOS("Jóvenes Adultos(18-29)", 4),
-    ADULTOS("Adultos(30-59)", 5),
-    ADULTOS_MAYORES("Tercera Edad(60+)", 6);
+    NINOS("Niña/os y Adolescentes (5-17)", 2),
+    ADULTOS("Adultos(18-59)", 3),
+    ADULTOS_MAYORES("Adultos Mayores(60+)", 4);
 
     private String label;
 
