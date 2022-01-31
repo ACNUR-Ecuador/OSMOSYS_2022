@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from '../../shared/services/user.service';
+import {ProjectService} from '../../shared/services/project.service';
 
 @Component({
     selector: 'app-home',
@@ -11,7 +12,8 @@ export class HomeComponent implements OnInit {
     projectIdsFocalPoint: number[];
 
     constructor(
-        private userService: UserService
+        private userService: UserService,
+        private projectService: ProjectService
     ) {
     }
 
@@ -21,10 +23,20 @@ export class HomeComponent implements OnInit {
                 return value1.name === 'PUNTO_FOCAL';
             }).length > 0) {
                 this.projectIdsFocalPoint = value.focalPointProjects;
-            } else {
-                this.projectIdsFocalPoint = null;
+            } else if (!this.userService.isUNHCRUser()) {
+                // todo period!!!
+                this.projectService.getProjectResumenWebByPeriodIdAndOrganizationId(1, value.organization.id).subscribe(value1 => {
+                    this.projectIdsFocalPoint = value1.map(value2 => {
+                        return value2.id;
+                    });
+                });
+            }else {
+                this.projectService.getProjectResumenWebByPeriodId(1).subscribe(value1 => {
+                    this.projectIdsFocalPoint = value1.map(value2 => {
+                        return value2.id;
+                    });
+                });
             }
-            console.log(this.projectIdsFocalPoint);
         });
     }
 
