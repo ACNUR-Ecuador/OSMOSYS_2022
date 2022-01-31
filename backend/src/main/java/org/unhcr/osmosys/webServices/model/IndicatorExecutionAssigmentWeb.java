@@ -23,6 +23,7 @@ public class IndicatorExecutionAssigmentWeb implements Serializable {
     /*socios ii*/
     private ProjectWeb project;
     private StatementWeb projectStatement;
+    private String activityDescription;
     /* implementación directa*/
     private OfficeWeb reportingOffice;
     private UserWeb assignedUser;
@@ -115,5 +116,13 @@ public class IndicatorExecutionAssigmentWeb implements Serializable {
 
     public void setProjectStatement(StatementWeb projectStatement) {
         this.projectStatement = projectStatement;
+    }
+
+    public String getActivityDescription() {
+        return activityDescription;
+    }
+
+    public void setActivityDescription(String activityDescription) {
+        this.activityDescription = activityDescription;
     }
 }

@@ -156,8 +156,10 @@
                             <span class="overview-icon">
                                 <i class="pi pi-chart-line"></i>
                             </span>
-                        <span
-                            class="overview-title"> {{'Indicador: ' + selectedPerformanceIndicator.indicator.code + '-' + selectedPerformanceIndicator.indicator.description}}</span>
+                        <span *ngIf="selectedPerformanceIndicator"
+                              class="overview-title"> {{'Indicador: '
+                        + selectedPerformanceIndicator.indicator.code
+                        + '-' + selectedPerformanceIndicator.indicator.description}}</span>
                     </div>
                     <div class="p-grid">
                         <div class="p-col-12 p-md-6 p-xl-4">
@@ -166,7 +168,7 @@
                                 <i class="pi pi-users"></i>
                             </span>
                                 <span class="overview-title">Ejecución</span>
-                                <div class="p-grid overview-detail">
+                                <div class="p-grid overview-detail" *ngIf="selectedPerformanceIndicator">
                                     <div class="p-col-6">
                                         <div
                                             class="overview-number">{{selectedPerformanceIndicator.totalExecution ? selectedPerformanceIndicator.totalExecution : 0}}</div>
@@ -183,7 +185,7 @@
                                 <i class="pi pi-users"></i>
                             </span>
                                 <span class="overview-title">Reportes</span>
-                                <div class="p-grid overview-detail">
+                                <div class="p-grid overview-detail" *ngIf="selectedPerformanceIndicator">
                                     <div class="p-col-6">
                                         <div
                                             [ngClass]="generalIndicatorLate?'late_text':''"
