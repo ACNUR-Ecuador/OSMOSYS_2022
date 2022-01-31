@@ -8,6 +8,7 @@ import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {ProjectService} from '../../shared/services/project.service';
 import {Router} from '@angular/router';
+import {UserService} from '../../shared/services/user.service';
 
 @Component({
     selector: 'app-partners-project-list',
@@ -30,7 +31,8 @@ export class PartnersProjectListComponent implements OnInit {
         public utilsService: UtilsService,
         private enumsService: EnumsService,
         private projectService: ProjectService,
-        private router: Router) {
+        private router: Router,
+        public userService: UserService) {
     }
 
     ngOnInit(): void {
@@ -73,16 +75,32 @@ export class PartnersProjectListComponent implements OnInit {
     }
 
     private loadProjects(periodId: number) {
-        this.projectService.getProjectResumenWebByPeriodId(periodId).subscribe(value => {
-            this.items = value;
-        }, error => {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error al cargar los proyectos',
-                detail: error.error.message,
-                life: 3000
+        if (this.userService.isUNHCRUser()) {
+            this.projectService.getProjectResumenWebByPeriodId(periodId).subscribe(value => {
+                this.items = value;
+            }, error => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los proyectos',
+                    detail: error.error.message,
+                    life: 3000
+                });
             });
-        });
+        } else {
+            this.projectService
+                .getProjectResumenWebByPeriodIdAndOrganizationId(periodId, this.userService.getLogedUsername().organization.id)
+                .subscribe(value => {
+                    this.items = value;
+                }, error => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al cargar los proyectos',
+                        detail: error.error.message,
+                        life: 3000
+                    });
+                });
+        }
+
     }
 
     private createForms() {
@@ -101,7 +119,7 @@ export class PartnersProjectListComponent implements OnInit {
             {field: 'periodYear', header: 'Periodo', type: ColumnDataType.numeric},
         ];
 
-        const hiddenColumns: string[] = ['id', 'organizationId', 'periodId'];
+        const hiddenColumns: string[] = ['id', 'organizationId', 'periodId', 'periodYear'];
         this._selectedColumns = this.cols.filter(value => !hiddenColumns.includes(value.field));
     }
 

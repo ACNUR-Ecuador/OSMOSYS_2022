@@ -37,6 +37,10 @@ export class ProjectService {
         return this.http.get<ProjectResume[]>(`${mainServiceUrl}/getProjectResumenWebByPeriodId/${periodId}`);
     }
 
+    public getProjectResumenWebByPeriodIdAndOrganizationId(periodId: number, organizationId: number): Observable<ProjectResume[]> {
+        return this.http.get<ProjectResume[]>(`${mainServiceUrl}/getProjectResumenWebByPeriodIdAndOrganizationId/${periodId}/${organizationId}`);
+    }
+
     public getProjectById(projectId: number): Observable<Project> {
         return this.http.get<Project>(`${mainServiceUrl}/${projectId}`).pipe(
             map(value => {

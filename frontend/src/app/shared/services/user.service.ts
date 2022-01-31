@@ -152,4 +152,44 @@ export class UserService {
 
 
     }
+
+    hasRole(role: string): boolean {
+        const user = this.currentUserSubject.value;
+        if (user && user.roles && user.roles.length > 1) {
+            // @ts-ignore
+            user.roles.forEach(roleU => {
+                if (roleU.name.toUpperCase() === role.toUpperCase()) {
+                    return true;
+                }
+            });
+        }
+        return false;
+    }
+
+    public hasAnyRole(roles: string[]): boolean {
+        let result = false;
+        const user = this.currentUserSubject.value;
+        if (user && user.roles && user.roles.length > 0) {
+            user.roles.forEach(roleU => {
+                if (roles && roles.length > 0) {
+                    roles.forEach(roleAsked => {
+                        if (roleU.name.toUpperCase() === roleAsked.toUpperCase()) {
+                            result = true;
+                        }
+                    });
+                }
+            });
+        }
+        return result;
+
+    }
+
+    public isUNHCRUser(): boolean {
+        const user = this.currentUserSubject.value;
+        if (user.organization === null || user.organization.acronym === 'ACNUR' || user.organization.acronym === 'UNHCR') {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
