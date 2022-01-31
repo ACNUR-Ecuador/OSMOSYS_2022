@@ -150,8 +150,8 @@ public class UserService implements Serializable {
 
         // todo quitar email
         this.emailService.sendEmailMessage(
-                //user.getEmail()
-                "salazart@unhcr.org"
+                user.getEmail()
+                //"salazart@unhcr.org"
                 , "Bienvenid@ a OSMOSYS ACNUR",
                 message
         );
