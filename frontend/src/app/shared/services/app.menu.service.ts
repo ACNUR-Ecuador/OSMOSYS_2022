@@ -129,7 +129,9 @@ export class MenuService {
             ]
         },
         {
-            label: 'Socios', icon: 'pi pi-users', roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR', 'SOCIO_EJECUTOR', 'SOCIO_ADMINISTRADOR'],
+            label: 'Socios',
+            icon: 'pi pi-users',
+            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'MONITOR_DE_PROGRAMAS', 'EJECUTOR_DE_PROGRAMAS'],
             items: [
                 {
                     label: 'Proyectos',
@@ -140,6 +142,7 @@ export class MenuService {
             ]
         },
         {separator: true},
+        /*
         {
             label: 'Demo', icon: 'pi pi-home',
             items: [
@@ -242,8 +245,9 @@ export class MenuService {
                 {separator: true},
             ]
         },
+         */
         {separator: true},
-
+/*
         {
             label: 'Start', icon: 'pi pi-fw pi-download',
             items: [
@@ -255,6 +259,8 @@ export class MenuService {
                 }
             ]
         },
+
+ */
     ];
 
     private menuSource = new Subject<string>();
