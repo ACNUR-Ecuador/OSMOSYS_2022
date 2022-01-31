@@ -6,7 +6,8 @@ import {UserService} from '../../shared/services/user.service';
 import {OfficeService} from '../../shared/services/office.service';
 import {OfficeOrganizationPipe} from '../../shared/pipes/officeOrganization.pipe';
 import {User} from '../../shared/model/User';
-import {EnumsState} from '../../shared/model/UtilsModel';
+import {EnumsState, EnumsType} from '../../shared/model/UtilsModel';
+import {EnumsService} from '../../shared/services/enums.service';
 
 @Component({
     selector: 'app-user-profile',
@@ -25,7 +26,8 @@ export class UserProfileComponent implements OnInit {
         public utilsService: UtilsService,
         private userService: UserService,
         private officeService: OfficeService,
-        private officeOrganizationPipe: OfficeOrganizationPipe
+        private officeOrganizationPipe: OfficeOrganizationPipe,
+        private enumsService: EnumsService
     ) {
     }
 
@@ -71,6 +73,15 @@ export class UserProfileComponent implements OnInit {
         } else {
             this.userForm.get('office').disable();
         }
+        const roles = currentUser.roles.filter(value => {
+            return value.state === EnumsState.ACTIVE;
+        }).map(value => {
+            return value.name;
+        }).map(value => {
+            return this.enumsService.resolveLabel(EnumsType.RoleType, value);
+        }).join(' - ');
+        this.userForm.get('roles').patchValue(roles);
+        this.userForm.get('roles').disable();
     }
 
     private createForm() {

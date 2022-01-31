@@ -207,25 +207,6 @@ public class IndicatorExecutionService {
 
 
         this.saveOrUpdate(ie);
-        for (Quarter q : qsl) {
-            LOGGER.error("---->" + q.toString());
-            for (Month month : q.getMonths().stream().sorted(Comparator.comparingInt(Month::getOrder)).collect(Collectors.toList())) {
-                LOGGER.error(month.toString());
-                LOGGER.error("indicatorValues " + month.getIndicatorValues().size());
-                List<IndicatorValue> iv = month.getIndicatorValues().stream().sorted(Comparator.comparing(IndicatorValue::getDissagregationType)).collect(Collectors.toList());
-                for (IndicatorValue indicatorValue : iv) {
-                    LOGGER.error(indicatorValue.getDissagregationType() + "-"
-                            + indicatorValue.getDiversityType() + "-"
-                            + indicatorValue.getLocation() + "-"
-                            + indicatorValue.getAgeType() + "-"
-                            + indicatorValue.getCountryOfOrigin() + "-"
-                            + indicatorValue.getGenderType() + "-"
-                            + indicatorValue.getPopulationType() + "-"
-                    );
-                }
-            }
-        }
-
         return ie;
 
     }
@@ -672,6 +653,63 @@ public class IndicatorExecutionService {
 
         this.saveOrUpdate(indicatorExecution);
         return indicatorExecution.getId();
+    }
+
+
+    public void createIndicatorExecForProjects(Long periodId) throws GeneralAppException {
+        List<Project> projects = this.projectService.getByPeriodId(periodId);
+        for (Project project : projects) {
+            List<Canton> cantones = project.getProjectLocationAssigments().stream().map(projectLocationAssigment -> {
+                return projectLocationAssigment.getLocation();
+            }).collect(Collectors.toList());
+            List<IndicatorExecution> iepi = this.indicatorExecutionDao.getPerformanceIndicatorExecutionsByProjectIdAndState(project.getId(), State.ACTIVO);
+            for (IndicatorExecution indicatorExecution : iepi) {
+                IndicatorExecution ie = indicatorExecution;
+                Indicator indicator = ie.getIndicator();
+
+                List<DissagregationAssignationToIndicatorExecution> dissagregationAssignations = indicator.getDissagregationsAssignationToIndicator().stream().filter(dissagregationAssignationToIndicator -> {
+                    return dissagregationAssignationToIndicator.getState().equals(State.ACTIVO) && dissagregationAssignationToIndicator.getPeriod().getId().equals(ie.getPeriod().getId());
+                }).map(dissagregationAssignationToIndicator -> {
+                    DissagregationAssignationToIndicatorExecution da = new DissagregationAssignationToIndicatorExecution();
+                    da.setState(State.ACTIVO);
+                    da.setDissagregationType(dissagregationAssignationToIndicator.getDissagregationType());
+                    return da;
+                }).collect(Collectors.toList());
+                dissagregationAssignations.forEach(dissagregationAssignationToIndicatorExecution -> {
+                    ie.addDissagregationAssignationToIndicatorExecution(dissagregationAssignationToIndicatorExecution);
+                });
+
+                List<CustomDissagregationAssignationToIndicatorExecution> customDissagregationsAssignations = indicator.getCustomDissagregationAssignationToIndicators().stream().filter(customDissagregationAssignationToIndicator -> {
+                    return customDissagregationAssignationToIndicator.getState().equals(State.ACTIVO) && customDissagregationAssignationToIndicator.getPeriod().getId().equals(ie.getPeriod().getId());
+                }).map(customDissagregationAssignationToIndicator -> {
+                    CustomDissagregationAssignationToIndicatorExecution da = new CustomDissagregationAssignationToIndicatorExecution();
+                    da.setCustomDissagregation(customDissagregationAssignationToIndicator.getCustomDissagregation());
+                    da.setState(State.ACTIVO);
+                    return da;
+                }).collect(Collectors.toList());
+                customDissagregationsAssignations.forEach(customDissagregationAssignationToIndicatorExecution -> {
+                    ie.addCustomDissagregationAssignationToIndicatorExecution(customDissagregationAssignationToIndicatorExecution);
+                });
+
+                List<DissagregationType> dissagregationTypes;
+
+                dissagregationTypes = dissagregationAssignations.stream().map(dissagregationAssignationToIndicatorExecution -> {
+                    return dissagregationAssignationToIndicatorExecution.getDissagregationType();
+                }).collect(Collectors.toList());
+
+
+                List<CustomDissagregation> customDissagregations = customDissagregationsAssignations.stream().map(customDissagregationAssignationToIndicatorExecution -> {
+                    return customDissagregationAssignationToIndicatorExecution.getCustomDissagregation();
+                }).collect(Collectors.toList());
+                Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, customDissagregations, cantones);
+                List<Quarter> qsl = setOrderInQuartersAndMonths(qs);
+                for (Quarter quarter : qsl) {
+                    ie.addQuarter(quarter);
+                }
+
+                this.saveOrUpdate(ie);
+            }
+        }
     }
 }
 

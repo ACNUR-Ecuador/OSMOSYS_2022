@@ -70,6 +70,14 @@ public class TestEndpoint {
         return "ya";
     }
 
+    @Path("createperformanceindicators")
+    @GET
+    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    public String createperformanceindicators() throws GeneralAppException {
+        this.indicatorExecutionService.createIndicatorExecForProjects(1l);
+        return "ya";
+    }
+
     @Path("testenum")
     @GET
     @Produces(MediaType.APPLICATION_JSON)

@@ -41,26 +41,17 @@
                     </div>
                 </div>
                 <div class="p-field p-grid">
-                    <label for="officeI" class="p-col-fixed" style="width:200px">Oficina</label>
-                    <div class="p-col">
-                        <p-dropdown id="officeI"
-                                    [filter]="true"
-                                    [style]="{'width':'250px'}"
-                                    formControlName="office"
-                                    [options]="offices"
-                                    placeholder="Selecciona...">
-                        </p-dropdown>
-                        <small class="p-error"
-                               *ngIf="utilsService.showErrorForm('office',userForm)">
-                            {{utilsService.getErrorMessageForm('office', userForm)}}
-                        </small>
+                    <label for="rolesI" class="p-col-fixed" style="width:200px">Permisos asignados</label>
+                    <div class="p-col" style="width:600px">
+                        <input style="width:600px" id="rolesI" type="text" pInputText formControlName="roles">
                     </div>
 
                 </div>
                 <ng-template pTemplate="footer">
                     <div class="p-d-flex p-jc-end p-m-2">
                         <p-button class="btn btn-primary p-mr-2" type="submit"
-                                  [disabled]="!userForm.valid">Guardar</p-button>
+                                  [disabled]="!userForm.valid">Guardar
+                        </p-button>
                         <p-button class="btn btn-primary p-button-secondary" type="button" (click)="cancel()">Cancelar
                         </p-button>
                     </div>
