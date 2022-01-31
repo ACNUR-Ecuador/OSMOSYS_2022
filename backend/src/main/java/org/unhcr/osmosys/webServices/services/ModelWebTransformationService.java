@@ -999,6 +999,7 @@ public class ModelWebTransformationService {
         i.setId(indicatorExecution.getId());
         IndicatorWeb indicatorWeb = new IndicatorWeb();
         indicatorWeb.setDescription(indicatorExecution.getPeriod().getGeneralIndicator().getDescription());
+        i.setIndicator(indicatorWeb);
         i.setIndicatorType(indicatorExecution.getIndicatorType());
         i.setTotalExecution(indicatorExecution.getTotalExecution());
         i.setTarget(indicatorExecution.getTarget());

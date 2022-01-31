@@ -93,6 +93,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         private booleanYesNoPipe: BooleanYesNoPipe,
         private router: Router,
         private statementService: StatementService,
+        // tslint:disable-next-line:variable-name
         private _location: Location
     ) {
 
@@ -384,7 +385,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
         this.formPerformanceIndicator = this.fb.group({
             id: new FormControl(''),
-            commentary: new FormControl(''),
+            activityDescription: new FormControl(''),
             indicator: new FormControl('', Validators.required),
             isBorrowedStatement: new FormControl(''),
             borrowedStatement: new FormControl('', Validators.required),
@@ -901,6 +902,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         editinItem.locations = null;
         editinItem.projectStatement = indicatorExecution.projectStatement;
         editinItem.indicator = indicatorExecution.indicator;
+        editinItem.activityDescription = indicatorExecution.activityDescription;
         this.formPerformanceIndicator.get('indicator').disable();
         this.formPerformanceIndicator.patchValue(editinItem);
         if (indicatorExecution.projectStatement !== null

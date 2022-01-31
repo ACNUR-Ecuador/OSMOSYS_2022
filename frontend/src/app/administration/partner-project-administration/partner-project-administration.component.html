@@ -566,12 +566,12 @@
                     </small>
                 </div>
                 <div class="p-field p-col-12 p-md-12">
-                    <label for="commentaryI">Descripción</label>
-                    <textarea id="commentaryI" pInputTextarea formControlName="commentary">
+                    <label for="commentaryI">Actividades Clave del Producto</label>
+                    <textarea id="commentaryI" pInputTextarea formControlName="activityDescription">
                     </textarea>
                     <small class="p-error"
-                           *ngIf="utilsService.showErrorForm('commentary',formPerformanceIndicator)">
-                        {{utilsService.getErrorMessageForm('commentary', formItem)}}
+                           *ngIf="utilsService.showErrorForm('activityDescription',formPerformanceIndicator)">
+                        {{utilsService.getErrorMessageForm('activityDescription', formItem)}}
                     </small>
                 </div>
                 <div class="p-field p-col-12 p-md-2">

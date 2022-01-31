@@ -426,6 +426,7 @@ export class IndicatorExecutionAssigment {
     // socios
     public project: Project;
     public projectStatement: Statement;
+    public activityDescription: string;
     // direct implementation
     public reportingOffice: Office;
     public assignedUser: User;

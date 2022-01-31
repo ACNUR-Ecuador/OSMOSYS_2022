@@ -152,6 +152,7 @@ public class IndicatorExecutionService {
         ie.setCompassIndicator(indicator.getCompassIndicator());
         ie.setIndicatorType(indicator.getIndicatorType());
         ie.setState(indicatorExecutionWeb.getState());
+        ie.setActivityDescription(indicatorExecutionWeb.getActivityDescription());
         Project project = this.projectService.getById(indicatorExecutionWeb.getProject().getId());
         if (project == null) {
             throw new GeneralAppException("Proyecto no encontrado " + indicatorExecutionWeb.getProject().getId(), Response.Status.BAD_REQUEST);
@@ -650,7 +651,7 @@ public class IndicatorExecutionService {
         }
         indicatorExecution.setState(indicatorExecutionAssigmentWeb.getState());
         indicatorExecution.setProjectStatement(this.modelWebTransformationService.statementWebToStatement(indicatorExecutionAssigmentWeb.getProjectStatement()));
-
+        indicatorExecution.setActivityDescription(indicatorExecutionAssigmentWeb.getActivityDescription());
         this.saveOrUpdate(indicatorExecution);
         return indicatorExecution.getId();
     }
