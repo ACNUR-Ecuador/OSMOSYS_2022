@@ -137,7 +137,7 @@ export class MenuService {
                     label: 'Proyectos',
                     icon: 'pi pi-fw pi-home',
                     routerLink: ['/partners/partnersProjectList'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'MONITOR_DE_PROGRAMAS', 'EJECUTOR_DE_PROGRAMAS']
                 },
             ]
         },
