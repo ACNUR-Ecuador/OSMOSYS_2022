@@ -5,7 +5,7 @@ import {
     DissagregationAssignationToIndicator,
     Marker,
     Office,
-    Organization
+    Organization, Statement
 } from '../model/OsmosysModel';
 import {EnumsService} from './enums.service';
 import {EnumsType} from '../model/UtilsModel';
@@ -68,6 +68,28 @@ export class FilterUtilsService {
             } else {
                 result = false;
             }
+        }
+        return result;
+    }
+
+    statementFilter(value: Statement, filter): boolean {
+
+        if (filter === undefined || filter === null || filter.trim() === '') {
+            return true;
+        }
+
+        if (value === undefined || value === null) {
+            return false;
+        }
+        let result = false;
+
+
+        if (value.code.toLowerCase().includes(filter.toString().toLowerCase())
+            || value.description.toLowerCase().includes(filter.toString().toLowerCase())
+        ) {
+            return result = true;
+        } else {
+            result = false;
         }
         return result;
     }

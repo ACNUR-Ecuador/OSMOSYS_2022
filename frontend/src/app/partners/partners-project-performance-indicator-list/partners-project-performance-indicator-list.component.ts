@@ -1,12 +1,13 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {IndicatorExecutionResumeWeb, Project} from '../../shared/model/OsmosysModel';
-import {MessageService, SelectItem} from 'primeng/api';
+import {FilterService, MessageService, SelectItem} from 'primeng/api';
 import {EnumsService} from '../../shared/services/enums.service';
 import {UtilsService} from '../../shared/services/utils.service';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
 import {PercentPipe} from '@angular/common';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
 import {ColumnDataType, ColumnTable, EnumsType} from '../../shared/model/UtilsModel';
+import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 
 @Component({
     selector: 'app-partners-project-performance-indicator-list',
@@ -32,7 +33,10 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit 
                 private utilsService: UtilsService,
                 private codeDescriptionPipe: CodeDescriptionPipe,
                 private percentPipe: PercentPipe,
-                private indicatorExecutionService: IndicatorExecutionService) {
+                private indicatorExecutionService: IndicatorExecutionService,
+                private filterService: FilterService,
+                private filterUtilsService: FilterUtilsService
+    ) {
     }
 
     ngOnInit(): void {
@@ -43,7 +47,13 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit 
     private loadPerformanceIndicators(idProject: number) {
         this.indicatorExecutionService.getPerformanceIndicatorResume(idProject)
             .subscribe(value => {
-                this.performanceIndicators = value;
+                this.performanceIndicators = value
+                    .sort((a, b) => {
+                        return a.indicator.code.localeCompare(b.indicator.code);
+                    })
+                    .sort((a, b) => {
+                        return a.projectStatement.code.localeCompare(b.projectStatement.code);
+                    });
                 this.createPerformanceIndicatorColumns();
             }, error => {
                 this.messageService.add({
@@ -60,15 +70,25 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit 
         this.colsGeneralIndicators = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
             {field: 'indicatorType', header: 'Tipo', type: ColumnDataType.text},
+            {field: 'projectStatement', header: 'Declaración de Producto', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
+            {field: 'projectStatement.productCode', header: 'Código de Producto', type: ColumnDataType.text},
             {field: 'indicator', header: 'Indicador', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
             {field: 'target', header: 'Meta', type: ColumnDataType.numeric},
             {field: 'totalExecution', header: 'Ejecución Actual', type: ColumnDataType.numeric},
             {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric, pipeRef: this.percentPipe},
+            {field: 'lastReportedMonth', header: 'Último mes reportado', type: ColumnDataType.text},
 
         ];
 
-        const hiddenColumns: string[] = ['id'];
+        const hiddenColumns: string[] = ['id', 'indicatorType'];
         this._selectedColumnsPerformanceIndicators = this.colsGeneralIndicators.filter(value => !hiddenColumns.includes(value.field));
+        this.registerFilters();
+    }
+
+    private registerFilters() {
+        this.filterService.register('projectStatementFilter', (value, filter): boolean => {
+            return this.filterUtilsService.statementFilter(value, filter);
+        });
     }
 
     private loadOptions() {
@@ -100,5 +120,17 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit 
     set selectedColumnsPerformanceIndicators(val: any[]) {
         // restore original order
         this._selectedColumnsPerformanceIndicators = this.colsGeneralIndicators.filter(col => val.includes(col));
+    }
+
+    exportExcel() {
+        import('xlsx').then(xlsx => {
+            const headers = this.selectedColumnsPerformanceIndicators.map(value => value.header);
+            const itemsRenamed = this.utilsService.renameKeys(this.performanceIndicators, this.selectedColumnsPerformanceIndicators);
+            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
+            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
+
+            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
+            this.utilsService.saveAsExcelFile(excelBuffer, 'indicadores_rendimiento_' + this.project.code + '_' + this.project.name);
+        });
     }
 }

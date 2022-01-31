@@ -93,7 +93,12 @@ export class UtilsService {
         objects.forEach(obj => {
             const on = {};
             cols.forEach(col => {
-                on[col.header] = obj[col.field];
+                if (col.pipeRef) {
+                    on[col.header] = col.pipeRef.transform(this.resolveFieldData(obj, col.field));
+                } else {
+                    on[col.header] = this.resolveFieldData(obj, col.field);
+                }
+
             });
             result.push(on);
         });
@@ -466,12 +471,13 @@ export class UtilsService {
 
     getCurrentMonth(): MonthType {
         const today = new Date();
-        const mm = today.getMonth() + 1; //January is 0!
+        const mm = today.getMonth() + 1; // January is 0!
         return this.enumsService.numberToMonthType(mm);
     }
+
     getCurrentMonthNumber(): number {
         const today = new Date();
-        const mm = today.getMonth() + 1; //January is 0!
+        const mm = today.getMonth() + 1; // January is 0!
         return mm;
     }
 
@@ -485,13 +491,13 @@ export class UtilsService {
         const mm = today.getMonth() + 1;
         if (mm > 0 && mm < 4) {
             return QuarterType.I;
-        }else if (mm > 3 && mm < 7) {
+        } else if (mm > 3 && mm < 7) {
             return QuarterType.II;
-        }else if (mm > 6 && mm < 10) {
+        } else if (mm > 6 && mm < 10) {
             return QuarterType.III;
-        }else if (mm > 9 && mm < 13) {
+        } else if (mm > 9 && mm < 13) {
             return QuarterType.III;
-        }else {
+        } else {
             return null;
         }
     }

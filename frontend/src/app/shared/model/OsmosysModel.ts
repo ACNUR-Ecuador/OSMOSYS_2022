@@ -331,16 +331,17 @@ export class IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb exten
 export class IndicatorExecutionResumeWeb {
     public id: number;
     public commentary: string;
-    public activityDescription: string;
     public target: number;
     public indicator: Indicator;
+    public projectStatement: Statement;
+    public activityDescription: string;
     public indicatorType: string;
     public state: string;
     public totalExecution: number;
     public executionPercentage: number;
-    public quarters: Quarter[];
     public lastReportedQuarter: Quarter;
     public lastReportedMonth: Month;
+    public quarters: Quarter[];
 }
 
 export class Quarter {

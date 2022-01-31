@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Indicator, IndicatorExecutionResumeWeb, Project} from '../../shared/model/OsmosysModel';
+import {IndicatorExecutionResumeWeb, Project} from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
 import {MessageService, SelectItem} from 'primeng/api';
@@ -66,6 +66,7 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit {
             {field: 'target', header: 'Meta', type: ColumnDataType.numeric},
             {field: 'totalExecution', header: 'Ejecución Actual', type: ColumnDataType.numeric},
             {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric, pipeRef: this.percentPipe},
+            {field: 'lastReportedMonth', header: 'Último Mes Reportado', type: ColumnDataType.text},
 
         ];
 
@@ -129,5 +130,16 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit {
 
     clearIndicator() {
         this.selectedIndicator = null;
+    }
+    exportExcel() {
+        import('xlsx').then(xlsx => {
+            const headers = this.selectedColumnsGeneralIndicators.map(value => value.header);
+            const itemsRenamed = this.utilsService.renameKeys(this.generalIndicators, this.selectedColumnsGeneralIndicators);
+            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
+            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
+
+            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
+            this.utilsService.saveAsExcelFile(excelBuffer, 'indicadores_rendimiento_' + this.project.code + '_' + this.project.name);
+        });
     }
 }
