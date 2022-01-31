@@ -7,7 +7,7 @@
 
 
             <p-toolbar styleClass="p-mb-4">
-                <div class="p-toolbar-group-left">
+                <div class="p-toolbar-group-left" *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRATOR'])">
                     <button pButton pRipple label="Crear Proyecto" icon="pi pi-plus"
                             class="p-button-success p-mr-2 p-mb-2"
                             (click)="createItem()"></button>

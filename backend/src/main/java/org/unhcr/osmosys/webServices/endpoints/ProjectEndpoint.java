@@ -75,6 +75,17 @@ public class ProjectEndpoint {
     public List<ProjectResumeWeb> getProjectResumenWebByPeriodId(@PathParam("periodId") Long periodId) throws GeneralAppException {
         return this.projectService.getProjectResumenWebByPeriodId(periodId);
     }
+
+    @Path("/getProjectResumenWebByPeriodIdAndFocalPointId/{periodId}/{focalPointId}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndFocalPointId(
+            @PathParam("periodId") Long periodId,
+            @PathParam("focalPointId") Long focalPointId
+            ) throws GeneralAppException {
+        return this.projectService.getProjectResumenWebByPeriodIdAndFocalPointId(periodId,focalPointId);
+    }
     @Path("/getProjectResumenWebByPeriodIdAndOrganizationId/{periodId}/{organizationId}")
     @GET
     @Secured

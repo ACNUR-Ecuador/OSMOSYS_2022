@@ -32,6 +32,7 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
             "pe.year as periodYear, " +
             "pr.start_date as startDate, " +
              "pr.end_date as endDate " +
+             // "pr.focal_point_id as focalPointId " +
             "FROM  " +
             "osmosys.projects pr " +
             "LEFT JOIN osmosys.organizations org ON pr.organization_id=org.id " +
@@ -81,6 +82,15 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         String sql = this.projectResumeWebQuery + " WHERE pe.id =:periodId";
         Query q = getEntityManager().createNativeQuery(sql, "ProjectResumeWebMapping");
         q.setParameter("periodId", periodId);
+        return q.getResultList();
+    }
+
+    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndFocalPointId(Long periodId, Long focalPointId) throws GeneralAppException {
+
+        String sql = this.projectResumeWebQuery + " WHERE pe.id =:periodId and pr.focal_point_id =:focalPointId";
+        Query q = getEntityManager().createNativeQuery(sql, "ProjectResumeWebMapping");
+        q.setParameter("periodId", periodId);
+        q.setParameter("focalPointId", focalPointId);
         return q.getResultList();
     }
 

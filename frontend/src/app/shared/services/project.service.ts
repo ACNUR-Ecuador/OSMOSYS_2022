@@ -37,6 +37,11 @@ export class ProjectService {
         return this.http.get<ProjectResume[]>(`${mainServiceUrl}/getProjectResumenWebByPeriodId/${periodId}`);
     }
 
+    public getProjectResumenWebByPeriodIdAndFocalPointId(periodId: number, focalPointId: number): Observable<ProjectResume[]> {
+        // tslint:disable-next-line:max-line-length
+        return this.http.get<ProjectResume[]>(`${mainServiceUrl}/getProjectResumenWebByPeriodIdAndFocalPointId/${periodId}/${focalPointId}`);
+    }
+
     public getProjectResumenWebByPeriodIdAndOrganizationId(periodId: number, organizationId: number): Observable<ProjectResume[]> {
         return this.http.get<ProjectResume[]>(`${mainServiceUrl}/getProjectResumenWebByPeriodIdAndOrganizationId/${periodId}/${organizationId}`);
     }

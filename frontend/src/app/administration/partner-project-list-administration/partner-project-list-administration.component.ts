@@ -8,6 +8,7 @@ import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {Router} from '@angular/router';
 import {ProjectService} from '../../shared/services/project.service';
+import {UserService} from '../../shared/services/user.service';
 
 @Component({
     selector: 'app-partner-project-list-administration',
@@ -31,7 +32,8 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
         public utilsService: UtilsService,
         private enumsService: EnumsService,
         private projectService: ProjectService,
-        private router: Router) {
+        private router: Router,
+        public userService: UserService) {
     }
 
     ngOnInit(): void {
@@ -74,16 +76,30 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
     }
 
     private loadProjects(periodId: number) {
-        this.projectService.getProjectResumenWebByPeriodId(periodId).subscribe(value => {
-            this.items = value;
-        }, error => {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error al cargar los proyectos',
-                detail: error.error.message,
-                life: 3000
+        if (this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRATOR'])) {
+            this.projectService.getProjectResumenWebByPeriodId(periodId).subscribe(value => {
+                this.items = value;
+            }, error => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los proyectos',
+                    detail: error.error.message,
+                    life: 3000
+                });
             });
-        });
+        } else {
+            // tslint:disable-next-line:max-line-length
+            this.projectService.getProjectResumenWebByPeriodIdAndFocalPointId(periodId, this.userService.getLogedUsername().id).subscribe(value => {
+                this.items = value;
+            }, error => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los proyectos',
+                    detail: error.error.message,
+                    life: 3000
+                });
+            });
+        }
     }
 
     private createForms() {

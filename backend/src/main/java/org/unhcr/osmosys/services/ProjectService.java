@@ -297,6 +297,9 @@ public class ProjectService {
     public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndOrganizationId(Long periodId, Long organizationId) throws GeneralAppException {
         return this.projectDao.getProjectResumenWebByPeriodIdAndOrganizationId(periodId, organizationId);
     }
+    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndFocalPointId(Long periodId, Long focalPointId) throws GeneralAppException {
+        return this.projectDao.getProjectResumenWebByPeriodIdAndFocalPointId(periodId, focalPointId);
+    }
 
     public ProjectWeb getWebById(Long id) {
         Project project = this.projectDao.find(id);
