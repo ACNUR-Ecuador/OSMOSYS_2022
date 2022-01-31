@@ -23,7 +23,7 @@ export class MenuService {
 
     MENUITEMS: Menu[] = [
         {
-            label: 'Administration', icon: 'pi pi-cog', roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR'],
+            label: 'Administration', icon: 'pi pi-cog', roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR', 'PUNTO_FOCAL'],
             items: [
                 // {label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']},
                 {
@@ -123,7 +123,7 @@ export class MenuService {
                     label: 'Proyectos',
                     icon: 'pi pi-fw pi-cog',
                     routerLink: ['/administration/partnerProjectListAdministration'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR', 'PUNTO_FOCAL']
                 },
 
             ]
@@ -131,13 +131,13 @@ export class MenuService {
         {
             label: 'Socios',
             icon: 'pi pi-users',
-            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'MONITOR_DE_PROGRAMAS', 'EJECUTOR_DE_PROGRAMAS'],
+            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'MONITOR_DE_PROGRAMAS', 'EJECUTOR_DE_PROGRAMAS', 'PUNTO_FOCAL'],
             items: [
                 {
                     label: 'Proyectos',
                     icon: 'pi pi-fw pi-home',
                     routerLink: ['/partners/partnersProjectList'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'MONITOR_DE_PROGRAMAS', 'EJECUTOR_DE_PROGRAMAS']
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'MONITOR_DE_PROGRAMAS', 'EJECUTOR_DE_PROGRAMAS', 'PUNTO_FOCAL']
                 },
             ]
         },
@@ -247,20 +247,20 @@ export class MenuService {
         },
          */
         {separator: true},
-/*
-        {
-            label: 'Start', icon: 'pi pi-fw pi-download',
-            items: [
+        /*
                 {
-                    label: 'Buy Now', icon: 'pi pi-fw pi-shopping-cart', url: 'https://www.primefaces.org/store'
+                    label: 'Start', icon: 'pi pi-fw pi-download',
+                    items: [
+                        {
+                            label: 'Buy Now', icon: 'pi pi-fw pi-shopping-cart', url: 'https://www.primefaces.org/store'
+                        },
+                        {
+                            label: 'Documentation', icon: 'pi pi-fw pi-info-circle', routerLink: ['demo/documentation']
+                        }
+                    ]
                 },
-                {
-                    label: 'Documentation', icon: 'pi pi-fw pi-info-circle', routerLink: ['demo/documentation']
-                }
-            ]
-        },
 
- */
+         */
     ];
 
     private menuSource = new Subject<string>();

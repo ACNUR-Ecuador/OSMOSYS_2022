@@ -50,7 +50,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         this.indicatorExecution = this.config.data.indicatorExecution; //
         this.monthId = this.config.data.monthId; //
         this.formItem = this.fb.group({
-            commentary: new FormControl('', Validators.required),
+            commentary: new FormControl('', [Validators.required, Validators.maxLength(1000)]),
             sources: new FormControl('', Validators.required),
             sourceOther: new FormControl(''),
             checked: new FormControl(''),
@@ -58,15 +58,15 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         this.loadMonthValues(this.monthId);
         this.chekedOptions = [];
         this.chekedOptions.push({
-            label: 'Valores No Revisados',
+            label: 'No Verificado',
             value: null
         });
         this.chekedOptions.push({
-            label: 'Valores Aprobados',
+            label: 'Valores Verificados',
             value: true
         });
         this.chekedOptions.push({
-            label: 'Valores No Aprobados',
+            label: 'Requiere correcciones por parte del socio',
             value: false
         });
     }

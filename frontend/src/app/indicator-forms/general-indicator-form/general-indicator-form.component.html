@@ -49,7 +49,7 @@
             <div class="card p-col-12">
                 <div class="p-fluid p-formgrid p-grid">
                     <div class="p-field p-col-12 p-md-8">
-                        <label for="sourcesI">Fuentes del dato</label>
+                        <label for="sourcesI">Fuente de Verificación</label>
                         <p-multiSelect id="sourcesI"
                                        [options]="sourceTypes"
                                        [filter]="true"
@@ -70,7 +70,17 @@
                         </small>
                     </div>
                     <div class="p-field p-col-12 p-md-12">
-                        <label for="commentaryI">Aspectos Cualitativos</label>
+                        <label for="commentaryI">Información Cualitativa</label><br>
+                        <small class="p-col-12">
+                            Máximo 1.000 caracteres. Proporcione un resumen de las actividades desarrolladas para el
+                            cumplimiento de las metas de este indicador (por ejemplo, si es un indicador de
+                            capacitaciones, se debe detallar los eventos de capacitación realizados para cumplir la
+                            meta, lugar y fecha de cada evento, contrapartes involucradas, número de participantes por
+                            cada evento). Adicionalmente, en este espacio se deben registrar las razones por las cuales
+                            no se reporta avance del indicador o se supera el valor inicial de la meta. La información
+                            que se incluye en este campo podrá ser considerada para la elaboración de los reportes
+                            narrativos.
+                        </small>
                         <textarea id="commentaryI"
                                   pInputTextarea
                                   autoResize="true"
@@ -83,7 +93,7 @@
                         </small>
                     </div>
                     <div class="p-field p-col-12 p-md-12">
-                        <label for="checkedI">Revisión Punto Focal</label>
+                        <label for="checkedI">Verificación Punto Focal</label>
                         <p-dropdown id="checkedI" [options]="chekedOptions" formControlName="checked"></p-dropdown>
                         <small class="p-error"
                                *ngIf="utilsService.showErrorForm('checked',formItem)">
