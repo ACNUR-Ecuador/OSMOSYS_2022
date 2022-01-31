@@ -8,6 +8,7 @@ import {EnumsService} from '../../shared/services/enums.service';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
 import {DissagregationType, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {UserService} from '../../shared/services/user.service';
 
 @Component({
     selector: 'app-general-indicator-form',
@@ -17,10 +18,12 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 export class GeneralIndicatorFormComponent implements OnInit {
     indicatorExecution: IndicatorExecutionResumeWeb;
     monthId: number;
+    projectId: number;
     monthValues: MonthValues;
     month: Month;
     monthValuesMap: Map<string, IndicatorValue[]>;
     formItem: FormGroup;
+    isProjectFocalPoint = false;
 
     sourceTypes: SelectItemWithOrder<any>[];
 
@@ -42,13 +45,20 @@ export class GeneralIndicatorFormComponent implements OnInit {
                 public enumsService: EnumsService,
                 public utilsService: UtilsService,
                 private messageService: MessageService,
-                private fb: FormBuilder
+                private fb: FormBuilder,
+                private userService: UserService
     ) {
     }
 
     ngOnInit(): void {
         this.indicatorExecution = this.config.data.indicatorExecution; //
         this.monthId = this.config.data.monthId; //
+        this.projectId = this.config.data.projectId; //
+        if (this.userService.hasRole('PUNTO_FOCAL')) {
+            if (this.userService.getLogedUsername().focalPointProjects.includes(this.projectId)) {
+                this.isProjectFocalPoint = true;
+            }
+        }
         this.formItem = this.fb.group({
             commentary: new FormControl('', [Validators.required, Validators.maxLength(1000)]),
             sources: new FormControl('', Validators.required),
@@ -79,10 +89,17 @@ export class GeneralIndicatorFormComponent implements OnInit {
             this.monthValuesMap = value.indicatorValuesMap;
             this.formItem.get('commentary').patchValue(this.month.commentary);
             this.formItem.get('sources').patchValue(this.month.sources);
+            if (this.isProjectFocalPoint) {
+                this.formItem.get('checked').enable();
+            } else {
+                this.formItem.get('checked').disable();
+            }
             this.setOtherSource(this.formItem.get('sources').value);
             this.enumsService.getByType(EnumsType.SourceType).subscribe(value1 => {
                 this.sourceTypes = value1;
             });
+
+
             this.setDimentionsDissagregations();
         }, error => {
             this.messageService.add({

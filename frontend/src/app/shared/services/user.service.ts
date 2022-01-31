@@ -155,15 +155,16 @@ export class UserService {
 
     hasRole(role: string): boolean {
         const user = this.currentUserSubject.value;
-        if (user && user.roles && user.roles.length > 1) {
+        let result = false;
+        if (user && user.roles && user.roles.length > 0) {
             // @ts-ignore
             user.roles.forEach(roleU => {
                 if (roleU.name.toUpperCase() === role.toUpperCase()) {
-                    return true;
+                    result = true;
                 }
             });
         }
-        return false;
+        return result;
     }
 
     public hasAnyRole(roles: string[]): boolean {

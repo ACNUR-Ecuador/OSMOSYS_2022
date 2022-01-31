@@ -151,7 +151,8 @@ export class PartnersProjectComponent implements OnInit {
 
                 data: {
                     indicatorExecution,
-                    monthId
+                    monthId,
+                    projectId: this.project.id
                 }
             }
         );
@@ -175,7 +176,8 @@ export class PartnersProjectComponent implements OnInit {
 
                 data: {
                     indicatorExecution,
-                    monthId
+                    monthId,
+                    projectId: this.project.id
                 }
             }
         );
