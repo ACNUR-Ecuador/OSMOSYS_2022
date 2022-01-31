@@ -84,6 +84,15 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         return q.getResultList();
     }
 
+    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndOrganizationId(Long periodId, Long organizationId) throws GeneralAppException {
+
+        String sql = this.projectResumeWebQuery + " WHERE pe.id =:periodId and pr.organization_id =:organizationId ";
+        Query q = getEntityManager().createNativeQuery(sql, "ProjectResumeWebMapping");
+        q.setParameter("periodId", periodId);
+        q.setParameter("organizationId", organizationId);
+        return q.getResultList();
+    }
+
 
     public List<Project> getByIds(List<Long> ids) {
         String sql = this.projectResumeWebQuery + " WHERE pe.id in (:ids)";

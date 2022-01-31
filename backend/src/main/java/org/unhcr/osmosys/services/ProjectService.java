@@ -294,6 +294,10 @@ public class ProjectService {
         return this.projectDao.getProjectResumenWebByPeriodId(periodId);
     }
 
+    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndOrganizationId(Long periodId, Long organizationId) throws GeneralAppException {
+        return this.projectDao.getProjectResumenWebByPeriodIdAndOrganizationId(periodId, organizationId);
+    }
+
     public ProjectWeb getWebById(Long id) {
         return this.modelWebTransformationService.projectToProjectWeb(this.projectDao.find(id));
     }
@@ -302,7 +306,7 @@ public class ProjectService {
         return this.modelWebTransformationService.projectsToProjectsWeb(this.projectDao.getByIds(ids));
     }
 
-    public List<Project> getByPeriodId(Long periodId){
+    public List<Project> getByPeriodId(Long periodId) {
         return this.projectDao.getByPeriodId(periodId);
     }
 
