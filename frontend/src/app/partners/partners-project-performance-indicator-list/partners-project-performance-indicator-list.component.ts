@@ -130,7 +130,7 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit 
             const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
 
             const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.utilsService.saveAsExcelFile(excelBuffer, 'indicadores_rendimiento_' + this.project.code + '_' + this.project.name);
+            this.utilsService.saveAsExcelFile(excelBuffer, 'indicadores_producto_' + this.project.code + '_' + this.project.name);
         });
     }
 }

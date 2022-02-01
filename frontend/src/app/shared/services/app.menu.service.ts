@@ -107,7 +107,7 @@ export class MenuService {
                         },
                         // tslint:disable-next-line:max-line-length
                         {
-                            label: 'Indicadores de Rendimiento',
+                            label: 'Indicadores de Producto',
                             icon: 'pi pi-fw pi-cog',
                             routerLink: ['/administration/performanceIndicator'],
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']

@@ -235,7 +235,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         if (this.performanceIndicators.filter(value => {
             return value.state === EnumsState.ACTIVE;
         }).length < 1) {
-            this.messageAlert += 'El proyecto no tiene indicadores de rendimiento asignados./n </br>';
+            this.messageAlert += 'El proyecto no tiene indicadores de producto asignados./n </br>';
             this.showAlert = true;
         }
         const generalIndicatorsTargetsToAlert = this.generalIndicators
@@ -254,7 +254,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 this.messageAlert = this.messageAlert + 'Indicador General: ' + value.indicator.description + '</br>';
             });
             performanceIndicatorsTargetsToAlert.forEach(value => {
-                this.messageAlert = this.messageAlert + 'Indicador de Rendimiento: ' + value.indicator.description + '</br>';
+                this.messageAlert = this.messageAlert + 'Indicador de Producto: ' + value.indicator.description + '</br>';
             });
 
 
@@ -510,7 +510,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 }).join('<br>');
                 if (this.idProjectParam) {
                     this.confirmationService.confirm({
-                        message: 'Quieres agregar los cantones nuevos a todos los indicadores de rendimiento?<br>' + cantonesList,
+                        message: 'Quieres agregar los cantones nuevos a todos los indicadores de producto?<br>' + cantonesList,
                         header: 'Actualización de indicadores',
                         closeOnEscape: false,
                         icon: 'pi pi-exclamation-triangle',
@@ -606,7 +606,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             {field: 'indicator.statement', header: 'Declaración Indicador', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
             {
                 field: 'projectStatement',
-                header: 'Declaración Indicador Proyecto',
+                header: 'Declaración de Producto',
                 type: ColumnDataType.text,
                 pipeRef: this.codeDescriptionPipe
             },
@@ -768,7 +768,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
             const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
             const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.utilsService.saveAsExcelFile(excelBuffer, 'indicadores_rendimiento_' + this.formItem.get('name').value);
+            this.utilsService.saveAsExcelFile(excelBuffer, 'indicadores_producto_' + this.formItem.get('name').value);
         });
     }
 

@@ -111,7 +111,7 @@
                             <p-panel header="Lugares de ejecución" [toggleable]="true">
                                 <ng-template pTemplate="header">
                                     <div class=" p-d-flex p-jc-end">
-                                        <button pButton type="button" pRipple label="Editar lugares de ejecución"
+                                        <button pButton type="button" pRipple label="Editar sitios/cantones de ejecución"
                                                 style="max-width: 20rem"
                                                 icon="pi pi-pencil"
                                                 class="p-button-success"
@@ -273,7 +273,7 @@
             <p-panel>
 
                 <ng-template pTemplate="header">
-                    <h4>Indicadores de Rendimiento</h4>
+                    <h4>Indicadores de Producto</h4>
                 </ng-template>
                 <p-toolbar styleClass="p-mb-4">
 
@@ -393,7 +393,7 @@
     </div>
 </div>
 <form [formGroup]="formItem" (ngSubmit)="saveLocationsForm()">
-    <p-dialog [(visible)]="showLocationsDialog" [style]="{width: '90%'}" header="Lugares de ejecución" [modal]="true"
+    <p-dialog [(visible)]="showLocationsDialog" [style]="{width: '90%'}" header="Sitios/cantones de ejecución" [modal]="true"
               styleClass="p-fluid" [closable]="false">
 
         <ng-template pTemplate="content">
@@ -438,7 +438,7 @@
         </ng-template>
         <p-confirmDialog #cdl key="cdl" [style]="{width: '50vw'}">
             <ng-template pTemplate="header">
-                <h3>Altualización de lugares</h3>
+                <h3>Actualización de sitios/cantones</h3>
             </ng-template>
             <ng-template pTemplate="footer">
                 <button type="button" pButton icon="pi pi-check" label="Sí" (click)="cdl.accept()"></button>
@@ -506,7 +506,7 @@
 </p-confirmDialog>
 
 <form [formGroup]="formPerformanceIndicator" (ngSubmit)="savePerformanceIndicator()">
-    <p-dialog [(visible)]="showPerformanceIndicatorDialog" [style]="{width: '90%'}" header="Indicador de Rendimiento"
+    <p-dialog [(visible)]="showPerformanceIndicatorDialog" [style]="{width: '90%'}" header="Indicador de Producto"
               [modal]="true"
               styleClass="p-fluid" [closable]="false">
 
@@ -592,10 +592,10 @@
 
             </div>
             <div class="p-field p-col-12 p-md-12" *ngIf="formPerformanceIndicator.get('id').value ===null">
-                <p-panel header="Lugares de ejecución" [toggleable]="true">
+                <p-panel header="Sitios/cantones de ejecución" [toggleable]="true">
                     <ng-template pTemplate="header">
                         <div class=" p-d-flex p-jc-end">
-                            <button pButton type="button" pRipple label="Editar lugares de ejecución"
+                            <button pButton type="button" pRipple label="Editar sitios/cantones de ejecución"
                                     style="max-width: 20rem"
                                     icon="pi pi-pencil"
                                     class="p-button-success"
