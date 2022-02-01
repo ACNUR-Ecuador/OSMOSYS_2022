@@ -21,12 +21,15 @@ export class ChartIndicatorExecutionComponent implements OnInit {
     chartDataOptions: any;
     chartDataOptionsQuarter: any;
     plugin = ChartDataLabels;
-
+    isGeneralIndicator = false;
 
     constructor() {
     }
 
     ngOnInit(): void {
+        if (this.indicatorExecution.indicatorType === 'GENERAL') {
+            this.isGeneralIndicator = true;
+        }
         this.prepareChartData();
     }
 
@@ -125,21 +128,34 @@ export class ChartIndicatorExecutionComponent implements OnInit {
                 }
             ]
         };
-        this.chartDataTrimestal = {
-            labels,
-            datasets: [{
-                type: 'bar',
-                label: 'Metas Trimestrales',
-                backgroundColor: '#42A5F5',
-                data: dataTargetsTrimestral
-            }, {
-                type: 'bar',
-                label: 'Ejecución Trimestral',
-                backgroundColor: '#66BB6A',
-                data: dataExecutionsTrimestral
-            }
-            ]
-        };
+        if (this.isGeneralIndicator) {
+            this.chartDataTrimestal = {
+                labels,
+                datasets: [{
+                    type: 'bar',
+                    label: 'Ejecución Trimestral',
+                    backgroundColor: '#66BB6A',
+                    data: dataExecutionsTrimestral
+                }
+                ]
+            };
+        } else {
+            this.chartDataTrimestal = {
+                labels,
+                datasets: [{
+                    type: 'bar',
+                    label: 'Metas Trimestrales',
+                    backgroundColor: '#42A5F5',
+                    data: dataTargetsTrimestral
+                }, {
+                    type: 'bar',
+                    label: 'Ejecución Trimestral',
+                    backgroundColor: '#66BB6A',
+                    data: dataExecutionsTrimestral
+                }
+                ]
+            };
+        }
         this.chartDataOptionsQuarter = {
             plugins: {
                 datalabels: {

@@ -92,7 +92,7 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
                 this.generalIndicatorLate = this.isIndicatorExecutionLate(this.generalIndicator);
             }
             this.loadGeneralIndicatorMonths(projectId, this.generalIndicator.id);
-            this.createGeneralTargetChart(this.generalIndicator.quarters);
+            this.createGeneralTargetChart(this.generalIndicator);
             this.loadPerformanceIndicators(projectId);
         }, error => {
             this.messageService.add({
@@ -191,35 +191,21 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
 
     }
 
-    createGeneralTargetChart(quarters: Quarter[]) {
-        quarters = quarters.sort((a, b) => a.order - b.order);
-
-        const quartersLabels: string[] = [];
-        const quartersExecution: number[] = [];
-        const quartersTargets: number[] = [];
-        const quartersExecutionAcumulated: number[] = [];
-        let monthsExecutionAcumulatedTmp = 0;
-        quarters.forEach(value => {
-            quartersLabels.push(value.quarter + '-' + value.year);
-            quartersExecution.push(value.totalExecution ? value.totalExecution : 0);
-            quartersTargets.push(value.target ? value.target : 0);
-            monthsExecutionAcumulatedTmp += value.totalExecution;
-            quartersExecutionAcumulated.push(monthsExecutionAcumulatedTmp);
-        });
+    createGeneralTargetChart(generalIndicator: IndicatorExecutionResumeWeb) {
         this.chartBeneficiariesTarget = {
-            labels: quartersLabels,
+            labels: ['Valore totales del proyecto'],
             datasets: [
                 {
-                    label: 'Ejecución trimestral',
+                    label: 'Ejecución Total Reportada',
                     type: 'bar',
-                    data: quartersExecution,
+                    data: [generalIndicator.totalExecution],
                     backgroundColor: '#42A5F5',
                     tension: .4
                 },
                 {
-                    label: 'Meta trimestral',
+                    label: 'Meta Total',
                     type: 'bar',
-                    data: quartersTargets,
+                    data: [generalIndicator.target],
                     backgroundColor: '#66BB6A',
                     tension: .4
                 }
