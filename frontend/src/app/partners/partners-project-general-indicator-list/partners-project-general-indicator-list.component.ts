@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {IndicatorExecutionResumeWeb, Project} from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsType} from '../../shared/model/UtilsModel';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
@@ -15,7 +15,7 @@ import {MonthPipe} from '../../shared/pipes/month.pipe';
     templateUrl: './partners-project-general-indicator-list.component.html',
     styleUrls: ['./partners-project-general-indicator-list.component.scss']
 })
-export class PartnersProjectGeneralIndicatorListComponent implements OnInit {
+export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnChanges {
     @Input()
     public project: Project;
     @Output()
@@ -32,7 +32,7 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit {
     constructor(
         private messageService: MessageService,
         private enumsService: EnumsService,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
         private codeDescriptionPipe: CodeDescriptionPipe,
         private percentPipe: PercentPipe,
         private indicatorExecutionService: IndicatorExecutionService,
@@ -45,6 +45,13 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit {
     ngOnInit(): void {
         this.loadGeneralIndicators(this.project.id);
         this.loadOptions();
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes.project.previousValue) {
+            this.loadGeneralIndicators(this.project.id);
+        }else {
+        }
     }
 
     private loadGeneralIndicators(idProject: number) {
@@ -121,6 +128,7 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit {
             this.utilsService.saveAsExcelFile(excelBuffer, 'indicadores_producto_' + this.project.code + '_' + this.project.name);
         });
     }
+
     private registerFilters() {
         this.filterService.register('indicatorFilter', (value, filter): boolean => {
             return this.filterUtilsService.generalFilter(value, ['code', 'description'], filter);
@@ -129,4 +137,6 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit {
             return this.filterUtilsService.generalFilter(value, ['month', 'year'], filter);
         });
     }
+
+
 }

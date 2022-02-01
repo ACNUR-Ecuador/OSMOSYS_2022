@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {IndicatorExecutionResumeWeb, Project} from '../../shared/model/OsmosysModel';
 import {FilterService, MessageService, SelectItem} from 'primeng/api';
 import {EnumsService} from '../../shared/services/enums.service';
@@ -16,7 +16,7 @@ import {MonthPipe} from '../../shared/pipes/month.pipe';
     templateUrl: './partners-project-performance-indicator-list.component.html',
     styleUrls: ['./partners-project-performance-indicator-list.component.scss']
 })
-export class PartnersProjectPerformanceIndicatorListComponent implements OnInit {
+export class PartnersProjectPerformanceIndicatorListComponent implements OnInit, OnChanges {
     @Input()
     public project: Project;
     @Output()
@@ -27,12 +27,12 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit 
     _selectedColumnsPerformanceIndicators: ColumnTable[];
     colsGeneralIndicators: ColumnTable[];
 
-    private states: SelectItem[];
-    private selectedIndicator: IndicatorExecutionResumeWeb;
+    states: SelectItem[];
+    selectedIndicator: IndicatorExecutionResumeWeb;
 
     constructor(private messageService: MessageService,
                 private enumsService: EnumsService,
-                private utilsService: UtilsService,
+                public utilsService: UtilsService,
                 private codeDescriptionPipe: CodeDescriptionPipe,
                 private percentPipe: PercentPipe,
                 private indicatorPipe: IndicatorPipe,
@@ -41,6 +41,13 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit 
                 private filterUtilsService: FilterUtilsService,
                 private monthPipe: MonthPipe
     ) {
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes.project.previousValue) {
+            this.loadPerformanceIndicators(this.project.id);
+        }else {
+        }
     }
 
     ngOnInit(): void {
