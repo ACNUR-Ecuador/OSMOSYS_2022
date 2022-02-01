@@ -60,7 +60,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
             }
         }
         this.formItem = this.fb.group({
-            commentary: new FormControl('', [Validators.required, Validators.maxLength(1000)]),
+            commentary: new FormControl('', [Validators.maxLength(1000)]),
             sources: new FormControl('', Validators.required),
             sourceOther: new FormControl(''),
             checked: new FormControl(''),

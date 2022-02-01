@@ -54,17 +54,13 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         this.indicatorExecution = this.config.data.indicatorExecution; //
         this.monthId = this.config.data.monthId; //
         this.projectId = this.config.data.projectId; //
-        console.log(this.userService.getLogedUsername());
-        console.log(this.userService.getLogedUsername().roles);
-        console.log(this.userService.getLogedUsername().focalPointProjects);
-
         if (this.userService.hasRole('PUNTO_FOCAL')) {
             if (this.userService.getLogedUsername().focalPointProjects.includes(this.projectId)) {
                 this.isProjectFocalPoint = true;
             }
         }
         this.formItem = this.fb.group({
-            commentary: new FormControl('', [Validators.required, Validators.maxLength(1000)]),
+            commentary: new FormControl('', [Validators.maxLength(1000)]),
             sources: new FormControl('', Validators.required),
             sourceOther: new FormControl(''),
             checked: new FormControl(''),
