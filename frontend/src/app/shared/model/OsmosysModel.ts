@@ -326,6 +326,7 @@ export class IndicatorExecutionGeneralIndicatorAdministrationResumeWeb extends I
 export class IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb extends IndicatorExecutionAdministrationResumeWeb {
     public projectStatement: Statement;
     public activityDescription: string;
+    public locations: Canton[];
 }
 
 export class IndicatorExecutionResumeWeb {

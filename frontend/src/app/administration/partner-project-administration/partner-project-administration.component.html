@@ -10,7 +10,7 @@
                     <p-messages severity="warn" *ngIf="showAlert">
                         <ng-template pTemplate>
                             <div class="p-d-flex p-flex-column">
-                                <div class="p-mb-12" *ngFor="let alert of messageAlertArray"
+                                <div  *ngFor="let alert of messageAlertArray"
                                      class="p-ml-2">{{alert}}</div>
                             </div>
                         </ng-template>
@@ -39,7 +39,6 @@
                             <p-selectButton id="stateI"
                                             formControlName="state"
                                             [options]="states"
-                                            placeholder="Selecciona..."
                             >
                             </p-selectButton>
                             <small class="p-error"
@@ -411,7 +410,6 @@
                                 targetFilterPlaceholder="Buscar por cantón o provincia"
                                 [showSourceControls]="false"
                                 [showTargetControls]="false"
-                                [dragdrop]="true"
                     >
                         <ng-template let-product pTemplate="item">
                             <div class="p-d-flex p-jc-between">
@@ -591,7 +589,7 @@
                 </div>
 
             </div>
-            <div class="p-field p-col-12 p-md-12" *ngIf="formPerformanceIndicator.get('id').value ===null">
+            <div class="p-field p-col-12 p-md-12" >
                 <p-panel header="Sitios/cantones de ejecución" [toggleable]="true">
                     <ng-template pTemplate="header">
                         <div class=" p-d-flex p-jc-end">

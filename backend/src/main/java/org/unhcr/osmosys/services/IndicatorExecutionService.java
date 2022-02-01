@@ -20,6 +20,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Stateless
 public class IndicatorExecutionService {
@@ -652,6 +653,61 @@ public class IndicatorExecutionService {
         indicatorExecution.setState(indicatorExecutionAssigmentWeb.getState());
         indicatorExecution.setProjectStatement(this.modelWebTransformationService.statementWebToStatement(indicatorExecutionAssigmentWeb.getProjectStatement()));
         indicatorExecution.setActivityDescription(indicatorExecutionAssigmentWeb.getActivityDescription());
+        // actualizo locations
+        if (CollectionUtils.isNotEmpty(
+                indicatorExecution.getDissagregationsAssignationsToIndicatorExecutions().stream()
+                        .filter(dissagregationAssignationToIndicatorExecution -> {
+                            return
+                                    dissagregationAssignationToIndicatorExecution.getDissagregationType().equals(DissagregationType.LUGAR)
+                                            || dissagregationAssignationToIndicatorExecution.getDissagregationType().equals(DissagregationType.TIPO_POBLACION_Y_LUGAR);
+                        }).collect(Collectors.toSet())
+        )) {
+            // busco las que ya no existen
+            List<IndicatorValue> currentIndicatorValuesCantons =
+                    indicatorExecution.getQuarters().stream()
+                            .flatMap(quarter -> {
+                                return quarter.getMonths().stream();
+                            })
+                            .filter(month -> {
+                                return month.getState().equals(State.ACTIVO);
+                            })
+                            .flatMap(month -> {
+                                return month.getIndicatorValues().stream();
+                            })
+                            .filter(indicatorValue -> {
+                                return
+                                        indicatorValue.getDissagregationType().equals(DissagregationType.LUGAR)
+                                                || indicatorValue.getDissagregationType().equals(DissagregationType.TIPO_POBLACION_Y_LUGAR);
+
+                            })
+                            .collect(Collectors.toList());
+            List<Canton> currentCantons = currentIndicatorValuesCantons.stream().map(indicatorValue -> {
+                        return indicatorValue.getLocation();
+                    }).distinct()
+                    .collect(Collectors.toList());
+            for (Canton currentCanton : currentCantons) {
+                Optional<CantonWeb> exitsCanton = indicatorExecutionAssigmentWeb
+                        .getLocations().stream().filter(cantonWeb -> {
+                            return cantonWeb.getId().equals(currentCanton.getId());
+                        }).findFirst();
+                if(exitsCanton.isPresent()){
+                    currentIndicatorValuesCantons.stream().filter(indicatorValue -> {
+                        return indicatorValue.getLocation().getId().equals(currentCanton.getId());
+                    }).forEach(indicatorValue -> {
+                        indicatorValue.setState(State.ACTIVO);
+                    });
+                }else {
+                    currentIndicatorValuesCantons.stream().filter(indicatorValue -> {
+                        return indicatorValue.getLocation().getId().equals(currentCanton.getId());
+                    }).forEach(indicatorValue -> {
+                        indicatorValue.setState(State.INACTIVO);
+                    });
+                }
+            }
+
+
+        }
+        this.updateIndicatorExecutionTotals(indicatorExecution);
         this.saveOrUpdate(indicatorExecution);
         return indicatorExecution.getId();
     }

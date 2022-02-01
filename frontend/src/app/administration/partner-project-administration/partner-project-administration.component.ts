@@ -725,7 +725,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         });
     }
 
-    cancelTargets(targetUpdateDTOWeb) {
+    cancelTargets() {
         if (this.quarterGroups) {
             this.quarterGroups.patchValue([]);
         }
@@ -795,7 +795,18 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             indicatorExecution.projectStatement = indicator.statement;
         }
         if (indicatorExecution.id) {
-            // update
+            // update+
+            let locationEnabled = [];
+            (this.formPerformanceIndicator.get('locations').value as any[])
+                .forEach(value => locationEnabled.push(Object.assign({}, value)));
+
+            locationEnabled = locationEnabled.filter(value => {
+                return value.enabled;
+            }).map(value => {
+                delete value.enabled;
+                return value as Canton;
+            });
+            indicatorExecution.locations = locationEnabled;
             this.indicatorExecutionService
                 .updateAssignPerformanceIndicatoToProject(indicatorExecution)
                 .subscribe(value => {
@@ -895,7 +906,23 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         editinItem.id = indicatorExecution.id;
         editinItem.project = new Project();
         editinItem.project.id = this.formItem.get('id').value;
-        editinItem.locations = null;
+
+        const projectCantons = [];
+        // clone array
+        (this.formItem.get('originalLocations').value as Canton[]).forEach(value => projectCantons.push(Object.assign({}, value)));
+        console.warn(projectCantons);
+        projectCantons.forEach(value => {
+            const r = indicatorExecution.locations.filter(value1 => {
+                return value1.id === value.id;
+            });
+            if (r && r.length > 0) {
+                value.enabled = true;
+            } else {
+                value.enabled = false;
+            }
+        });
+        console.warn(projectCantons);
+        editinItem.locations = projectCantons;
         editinItem.projectStatement = indicatorExecution.projectStatement;
         editinItem.indicator = indicatorExecution.indicator;
         editinItem.activityDescription = indicatorExecution.activityDescription;
