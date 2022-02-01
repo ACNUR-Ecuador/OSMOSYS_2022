@@ -1,6 +1,19 @@
-<div class="p-grid">
-    <p-toast key="dialogToast" position="top-right"></p-toast>
-    <p-messages></p-messages>
+<p-card>
+    <ng-template pTemplate="header">
+        <p-toast key="dialogToast" position="top-right"></p-toast>
+        <p-messages></p-messages>
+        <div class="p-fluid card" *ngIf="render">
+            <div class="p-field">
+                <p>Para el reporte de este indicador general, recuerde que <b><u>una persona beneficiaria debe
+                    contabilizarse
+                    solamente una vez</u></b>, a pesar de que haya recibido diferentes servicios por parte del proyecto.
+                    <b><u>No se considerarán como parte de la población objetivo del proyecto a funcionarios públicos o de
+                        instituciones privadas o de la sociedad civil</u></b> que participen en el proyecto en el marco del
+                    fortalecimiento de capacidades para atender a las necesidades de las personas de interés.
+                </p>
+            </div>
+        </div>
+    </ng-template>
     <form #myForm="ngForm" [formGroup]="formItem" (ngSubmit)="saveMonth()">
         <p-card>
             <ng-template pTemplate="header">
@@ -120,7 +133,7 @@
             </ng-template>
         </p-card>
     </form>
-</div>
+</p-card>
 <p-dialog [(visible)]="showErrorResume" [closable]="false" [closeOnEscape]="false">
     <ng-template pTemplate="header">
         Existen Errores en lo Valores
