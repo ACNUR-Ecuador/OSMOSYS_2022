@@ -60,6 +60,7 @@ import { UserAdministrationComponent } from './user-administration/user-administ
 import {RolesListPipe} from '../shared/pipes/roles-list.pipe';
 import {AccordionModule} from 'primeng/accordion';
 import {CodeDescriptionListPipe} from '../shared/pipes/code-description-list.pipe';
+import {RippleModule} from 'primeng/ripple';
 
 
 @NgModule({
@@ -112,7 +113,8 @@ import {CodeDescriptionListPipe} from '../shared/pipes/code-description-list.pip
         ConfirmDialogModule,
         SharedModule,
         CheckboxModule,
-        AccordionModule
+        AccordionModule,
+        RippleModule
     ],
     providers: [
         ConfirmationService,
