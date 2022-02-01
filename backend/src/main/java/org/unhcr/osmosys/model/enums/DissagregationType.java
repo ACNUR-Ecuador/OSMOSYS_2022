@@ -7,7 +7,7 @@ public enum DissagregationType  implements EnumInterface{
 	TIPO_POBLACION("Tipo de población",1),
 	EDAD("Edad",2),
 	GENERO("Género",3),
-	LUGAR("Lugar",4),
+	LUGAR("Sitio/cantón",4),
 	PAIS_ORIGEN("País de Origen",5),
 	DIVERSIDAD("Diversidad",6),
 	SIN_DESAGREGACION("Sin Desagregación",7),
@@ -15,7 +15,7 @@ public enum DissagregationType  implements EnumInterface{
 	TIPO_POBLACION_Y_EDAD("Tipo de población y edad",9),
 	TIPO_POBLACION_Y_DIVERSIDAD("Tipo de población y diversidad",10),
 	TIPO_POBLACION_Y_PAIS_ORIGEN("Tipo de población y país de origen",11),
-	TIPO_POBLACION_Y_LUGAR("Tipo de población y lugar",11),
+	TIPO_POBLACION_Y_LUGAR("Tipo de población y sitio/cantón",11),
 	;
 
 	public static List<DissagregationType> getLocationDissagregationTypes(){

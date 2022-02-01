@@ -102,7 +102,7 @@ public class IndicatorValueService {
                 return this.createIndicatorValueDissagregationStandardForPopulationTypeAndLocation(cantones);
 
             default: {
-                throw new GeneralAppException(" Desagregación no implementada para actualizacion de lugares" + dissagregationType, Response.Status.INTERNAL_SERVER_ERROR);
+                throw new GeneralAppException(" Desagregación no implementada para actualización de sitio/cantón" + dissagregationType, Response.Status.INTERNAL_SERVER_ERROR);
             }
         }
     }

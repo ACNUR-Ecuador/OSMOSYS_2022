@@ -254,7 +254,7 @@ public class ProjectService {
             throw new GeneralAppException("Descripción no válida", Response.Status.BAD_REQUEST);
         }
         if (CollectionUtils.isEmpty(projectWeb.getLocations())) {
-            throw new GeneralAppException("No tiene asignado lugares de trabajo", Response.Status.BAD_REQUEST);
+            throw new GeneralAppException("No tiene asignado sitios/cantones de trabajo", Response.Status.BAD_REQUEST);
         }
         if (projectWeb.getOrganization() == null) {
             throw new GeneralAppException("No tiene asignado una organización", Response.Status.BAD_REQUEST);
