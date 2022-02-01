@@ -52,7 +52,7 @@ public class ProjectEndpoint {
         return this.projectService.getWebById(id);
     }
 
-    @Path("/{ids}")
+    @Path("/byIds/{ids}")
     @GET
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
