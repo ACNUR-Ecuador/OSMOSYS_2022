@@ -342,6 +342,14 @@
                                         </p-dropdown>
                                     </ng-template>
                                 </p-columnFilter>
+                                <p-columnFilter *ngSwitchCase="'indicator'"
+                                                type="text"
+                                                [field]="col.field" [showMenu]="false"
+                                                [matchMode]="'indicatorFilter'"></p-columnFilter>
+                                <p-columnFilter *ngSwitchCase="'statement'"
+                                                type="text"
+                                                [field]="col.field" [showMenu]="false"
+                                                [matchMode]="'statementFilter'"></p-columnFilter>
 
                             </th>
                             <th>

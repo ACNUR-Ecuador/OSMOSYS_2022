@@ -7,11 +7,18 @@ import {UserService} from '../../shared/services/user.service';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {Location} from '@angular/common';
 import {
-    Canton, CantonForList, Indicator,
-    IndicatorExecutionAdministrationResumeWeb, IndicatorExecutionAssigment,
-    IndicatorExecutionGeneralIndicatorAdministrationResumeWeb, IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb,
+    Canton,
+    CantonForList,
+    Indicator,
+    IndicatorExecutionAdministrationResumeWeb,
+    IndicatorExecutionAssigment,
+    IndicatorExecutionGeneralIndicatorAdministrationResumeWeb,
+    IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb,
     Period,
-    Project, QuarterResumeWeb, Statement, TargetUpdateDTOWeb
+    Project,
+    QuarterResumeWeb,
+    Statement,
+    TargetUpdateDTOWeb
 } from '../../shared/model/OsmosysModel';
 import {OrganizationService} from '../../shared/services/organization.service';
 import {CantonService} from '../../shared/services/canton.service';
@@ -35,6 +42,7 @@ import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
 import {QuarterService} from '../../shared/services/quarter.service';
 import {BooleanYesNoPipe} from '../../shared/pipes/boolean-yes-no.pipe';
 import {StatementService} from '../../shared/services/statement.service';
+import {IndicatorPipe} from '../../shared/pipes/indicator.pipe';
 
 @Component({
     selector: 'app-partner-project-administration',
@@ -101,6 +109,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         private booleanYesNoPipe: BooleanYesNoPipe,
         private router: Router,
         private statementService: StatementService,
+        private indicatorPipe: IndicatorPipe,
         // tslint:disable-next-line:variable-name
         private _location: Location
     ) {
@@ -163,6 +172,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 life: 3000
             });
         }
+        this.registerFilters();
     }
 
     private loadProject(idProject: number) {
@@ -616,9 +626,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 type: ColumnDataType.text,
                 pipeRef: this.codeDescriptionPipe
             },
-            {field: 'indicator.code', header: 'Código Indicador', type: ColumnDataType.text},
             {field: 'projectStatement.productCode', header: 'Código Producto', type: ColumnDataType.text},
-            {field: 'indicator.description', header: 'Descripción', type: ColumnDataType.text},
+            {field: 'indicator', header: 'Descripción', type: ColumnDataType.text, pipeRef: this.indicatorPipe},
             {field: 'target', header: 'Meta', type: ColumnDataType.text},
             {field: 'totalExecution', header: 'Ejecución actual', type: ColumnDataType.text},
             {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric},
@@ -839,13 +848,12 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             const locationstotal: CantonForList[] = [];
             (this.formPerformanceIndicator.get('locations').value as CantonForList[])
                 .forEach(value => locationstotal.push(Object.assign({}, value)));
-            const locations: Canton[] = locationstotal.filter(value => {
+            indicatorExecution.locations = locationstotal.filter(value => {
                 return value.enabled;
             }).map(value => {
                 delete value.enabled;
                 return value as Canton;
             });
-            indicatorExecution.locations = locations;
 
             this.indicatorExecutionService.assignPerformanceIndicatoToProject(indicatorExecution)
                 .subscribe(value => {
@@ -964,5 +972,14 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 return value.dissagregationType === DissagregationType.LUGAR
                     || value.dissagregationType === DissagregationType.TIPO_POBLACION_Y_LUGAR;
             }).length > 0;
+    }
+
+    private registerFilters() {
+        this.filterService.register('indicatorFilter', (value, filter): boolean => {
+            return this.filterUtilsService.generalFilter(value, ['code', 'description', 'category'], filter);
+        });
+        this.filterService.register('statementFilter', (value, filter): boolean => {
+            return this.filterUtilsService.generalFilter(value, ['code', 'description'], filter);
+        });
     }
 }

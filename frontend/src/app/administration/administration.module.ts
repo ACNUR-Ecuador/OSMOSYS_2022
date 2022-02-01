@@ -61,6 +61,7 @@ import {RolesListPipe} from '../shared/pipes/roles-list.pipe';
 import {AccordionModule} from 'primeng/accordion';
 import {CodeDescriptionListPipe} from '../shared/pipes/code-description-list.pipe';
 import {RippleModule} from 'primeng/ripple';
+import {IndicatorPipe} from '../shared/pipes/indicator.pipe';
 
 
 @NgModule({
@@ -131,7 +132,8 @@ import {RippleModule} from 'primeng/ripple';
         ProjectService,
         QuarterService,
         RolesListPipe,
-        CodeDescriptionListPipe
+        CodeDescriptionListPipe,
+        IndicatorPipe
     ]
 })
 export class AdministrationModule {
