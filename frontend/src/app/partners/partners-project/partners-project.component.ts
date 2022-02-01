@@ -5,8 +5,8 @@ import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {UtilsService} from '../../shared/services/utils.service';
 import {ProjectService} from '../../shared/services/project.service';
 import {ActivatedRoute} from '@angular/router';
-import {Indicator, IndicatorExecutionResumeWeb, Project} from '../../shared/model/OsmosysModel';
-import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
+import {IndicatorExecutionResumeWeb, Project} from '../../shared/model/OsmosysModel';
+import {ColumnTable} from '../../shared/model/UtilsModel';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
 import {EnumValuesToLabelPipe} from '../../shared/pipes/enum-values-to-label.pipe';
@@ -45,7 +45,6 @@ export class PartnersProjectComponent implements OnInit {
     // tslint:disable-next-line:variable-name
     _selectedColumnsGeneralIndicators: ColumnTable[];
     colsGeneralIndicators: ColumnTable[];
-    colsGeneralIndicatorsIndicatorExecution: ColumnTable[] = [];
 
     constructor(
         public dialogService: DialogService,
@@ -86,41 +85,6 @@ export class PartnersProjectComponent implements OnInit {
     }
 
 
-    private createGeneralIndicatorColumns() {
-
-        this.colsGeneralIndicators = [
-            {field: 'id', header: 'Id', type: ColumnDataType.numeric},
-            {field: 'indicatorType', header: 'Tipo', type: ColumnDataType.text},
-            {field: 'indicator', header: 'Indicador', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
-            {field: 'target', header: 'Meta', type: ColumnDataType.numeric},
-            {field: 'totalExecution', header: 'Ejecución Actual', type: ColumnDataType.numeric},
-            {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric},
-
-        ];
-
-        const hiddenColumns: string[] = ['id'];
-        this._selectedColumnsGeneralIndicators = this.colsGeneralIndicators.filter(value => !hiddenColumns.includes(value.field));
-        if (this.generalIndicators && this.generalIndicators.length > 0) {
-            const generalIndicator = this.generalIndicators[0];
-            this.colsGeneralIndicatorsIndicatorExecution = [];
-            const quarters = generalIndicator.quarters.filter(value => {
-                value.state = EnumsState.ACTIVE;
-            });
-            if (quarters && quarters.length > 0) {
-                quarters.forEach(value => {
-                    this.colsGeneralIndicatorsIndicatorExecution.push(
-                        {field: 'order', header: 'Orden', type: ColumnDataType.numeric},
-                        {field: 'year', header: 'Año', type: ColumnDataType.numeric},
-                        {field: 'quarter', header: 'Trimestre', type: ColumnDataType.text},
-                        {field: 'target', header: 'Año', type: ColumnDataType.numeric},
-                        {field: 'totalExecution', header: 'Año', type: ColumnDataType.numeric},
-                        {field: 'executionPercentage', header: 'Año', type: ColumnDataType.numeric},
-                    );
-                });
-            }
-        }
-    }
-
     @Input() get selectedColumnsGeneralIndicators(): any[] {
         return this._selectedColumnsGeneralIndicators;
     }
@@ -128,14 +92,6 @@ export class PartnersProjectComponent implements OnInit {
     set selectedColumnsGeneralIndicators(val: any[]) {
         // restore original order
         this._selectedColumnsGeneralIndicators = this.colsGeneralIndicators.filter(col => val.includes(col));
-    }
-
-    generalIndicatorsExpand(): number {
-        if (this._selectedColumnsGeneralIndicators) {
-            return this._selectedColumnsGeneralIndicators.length;
-        } else {
-            return 1;
-        }
     }
 
     viewDesagregationGeneralIndicator(parameters: Map<string, number | IndicatorExecutionResumeWeb>) {
@@ -156,9 +112,9 @@ export class PartnersProjectComponent implements OnInit {
                 }
             }
         );
-        ref.onClose.subscribe(value => {
+        ref.onClose.subscribe(() => {
             this.loadProject(this.idProjectParam);
-        }, error => {
+        }, () => {
             this.loadProject(this.idProjectParam);
         });
     }

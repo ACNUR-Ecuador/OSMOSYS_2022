@@ -9,6 +9,7 @@ import {EnumsService} from '../../shared/services/enums.service';
 import {ProjectService} from '../../shared/services/project.service';
 import {Router} from '@angular/router';
 import {UserService} from '../../shared/services/user.service';
+import {EnumValuesToLabelPipe} from '../../shared/pipes/enum-values-to-label.pipe';
 
 @Component({
     selector: 'app-partners-project-list',
@@ -32,7 +33,9 @@ export class PartnersProjectListComponent implements OnInit {
         private enumsService: EnumsService,
         private projectService: ProjectService,
         private router: Router,
-        public userService: UserService) {
+        public userService: UserService,
+        private enumValuesToLabelPipe: EnumValuesToLabelPipe
+    ) {
     }
 
     ngOnInit(): void {
@@ -110,8 +113,8 @@ export class PartnersProjectListComponent implements OnInit {
         this.cols = [
             {field: 'id', header: 'id', type: ColumnDataType.numeric},
             {field: 'code', header: 'Código', type: ColumnDataType.text},
-            {field: 'name', header: 'Nombre', type: ColumnDataType.text},
-            {field: 'state', header: 'Estado', type: ColumnDataType.text},
+            {field: 'name', header: 'Título del proyecto', type: ColumnDataType.text},
+            {field: 'state', header: 'Estado', type: ColumnDataType.text, pipeRef: this.enumValuesToLabelPipe, arg1: EnumsType.State},
             {field: 'organizationId', header: 'Id Organización', type: ColumnDataType.numeric},
             {field: 'organizationDescription', header: 'Organización', type: ColumnDataType.text},
             {field: 'organizationAcronym', header: 'Organización Acr.', type: ColumnDataType.text},
@@ -131,7 +134,7 @@ export class PartnersProjectListComponent implements OnInit {
     exportExcel() {
         import('xlsx').then(xlsx => {
             const headers = this.cols.map(value => value.header);
-            const itemsRenamed = this.utilsService.renameKeys(this.items, this.cols);
+            const itemsRenamed = this.utilsService.renameKeys(this.items, this.selectedColumns);
             const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
             const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
 

@@ -94,7 +94,7 @@ export class UtilsService {
             const on = {};
             cols.forEach(col => {
                 if (col.pipeRef) {
-                    on[col.header] = col.pipeRef.transform(this.resolveFieldData(obj, col.field));
+                    on[col.header] = col.pipeRef.transform(this.resolveFieldData(obj, col.field), col.arg1);
                 } else {
                     on[col.header] = this.resolveFieldData(obj, col.field);
                 }
