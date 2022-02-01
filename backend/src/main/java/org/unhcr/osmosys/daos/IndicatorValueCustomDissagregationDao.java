@@ -24,12 +24,14 @@ public class IndicatorValueCustomDissagregationDao extends GenericDaoJpa<Indicat
         return q.getResultList();
     }
 
-    public List<IndicatorValueCustomDissagregation> getIndicatorValueCustomDissagregationsByMonthId(Long monthId) {
+    public List<IndicatorValueCustomDissagregation> getIndicatorValueCustomDissagregationsByMonthId(Long monthId, State state) {
 
         String jpql = "SELECT DISTINCT o FROM IndicatorValueCustomDissagregation o left join fetch o.month m " +
-                "WHERE m.id  = :monthId";
+                "WHERE m.id  = :monthId " +
+                " and o.state =:state ";
         Query q = getEntityManager().createQuery(jpql, IndicatorValueCustomDissagregation.class);
         q.setParameter("monthId",monthId);
+        q.setParameter("state",state);
         return q.getResultList();
     }
 

@@ -3,8 +3,10 @@ package org.unhcr.osmosys.webServices.services;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.servicio.UserService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.StatementDao;
 import org.unhcr.osmosys.model.*;
+import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.enums.IndicatorType;
 import org.unhcr.osmosys.webServices.model.*;
 
@@ -15,6 +17,8 @@ import java.util.stream.Collectors;
 
 @Stateless
 public class ModelWebTransformationService {
+    @SuppressWarnings("unused")
+    private final static Logger LOGGER = Logger.getLogger(ModelWebTransformationService.class);
 
     @Inject
     StatementDao statementDao;
@@ -86,9 +90,7 @@ public class ModelWebTransformationService {
 
         Set<CustomDissagregationOption> options = this.customDissagregationOptionsWebToCustomDissagregationOptions(new ArrayList<>(customDissagregationWeb.getCustomDissagregationOptions()));
 
-        options.forEach(customDissagregationOption -> {
-            customDissagregation.addCustomDissagregationOption(customDissagregationOption);
-        });
+        options.forEach(customDissagregationOption -> customDissagregation.addCustomDissagregationOption(customDissagregationOption));
 
         return customDissagregation;
     }
@@ -817,11 +819,11 @@ public class ModelWebTransformationService {
         w.setEndDate(project.getEndDate());
         w.setState(project.getState());
         w.setFocalPoint(this.userService.userToUserWeb(project.getFocalPoint()));
-        Set<Canton> cantones = project.getProjectLocationAssigments().stream().filter(projectLocationAssigment -> {
-            return projectLocationAssigment.getState().equals(State.ACTIVO);
-        }).map(projectLocationAssigment -> {
-            return projectLocationAssigment.getLocation();
-        }).collect(Collectors.toSet());
+        Set<Canton> cantones = project.getProjectLocationAssigments().stream()
+                .filter(projectLocationAssigment -> projectLocationAssigment.getState().equals(State.ACTIVO))
+                .map(projectLocationAssigment -> {
+                    return projectLocationAssigment.getLocation();
+                }).collect(Collectors.toSet());
 
         for (Canton canton : cantones) {
             w.getLocations().add(this.cantonToCantonWeb(canton));
@@ -1027,15 +1029,15 @@ public class ModelWebTransformationService {
         i.setState(indicatorExecution.getState());
         List<QuarterWeb> quarters = this.quartersToQuarterWeb(indicatorExecution.getQuarters());
         quarters.sort(Comparator.comparing(QuarterWeb::getOrder));
-        List<QuarterWeb> reportedQuarters = quarters.stream().filter(quarterWeb -> {
-            return quarterWeb.getTotalExecution() != null;
-        }).collect(Collectors.toList());
+        List<QuarterWeb> reportedQuarters = quarters.stream()
+                .filter(quarterWeb -> quarterWeb.getTotalExecution() != null)
+                .collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(reportedQuarters)) {
             i.setLastReportedQuarter(reportedQuarters.get(reportedQuarters.size() - 1));
             i.getLastReportedQuarter().getMonths().sort(Comparator.comparing(MonthWeb::getOrder));
-            List<MonthWeb> reportedMonths = i.getLastReportedQuarter().getMonths().stream().filter(monthWeb -> {
-                return monthWeb.getTotalExecution() != null;
-            }).collect(Collectors.toList());
+            List<MonthWeb> reportedMonths = i.getLastReportedQuarter().getMonths().stream()
+                    .filter(monthWeb -> monthWeb.getTotalExecution() != null)
+                    .collect(Collectors.toList());
             if (CollectionUtils.isNotEmpty(reportedMonths)) {
                 i.setLastReportedMonth(reportedMonths.get(reportedMonths.size() - 1));
             }
@@ -1065,15 +1067,15 @@ public class ModelWebTransformationService {
         i.setState(indicatorExecution.getState());
         List<QuarterWeb> quarters = this.quartersToQuarterWeb(indicatorExecution.getQuarters());
         quarters.sort(Comparator.comparing(QuarterWeb::getOrder));
-        List<QuarterWeb> reportedQuarters = quarters.stream().filter(quarterWeb -> {
-            return quarterWeb.getTotalExecution() != null;
-        }).collect(Collectors.toList());
+        List<QuarterWeb> reportedQuarters = quarters.stream()
+                .filter(quarterWeb -> quarterWeb.getTotalExecution() != null)
+                .collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(reportedQuarters)) {
             i.setLastReportedQuarter(reportedQuarters.get(reportedQuarters.size() - 1));
             i.getLastReportedQuarter().getMonths().sort(Comparator.comparing(MonthWeb::getOrder));
-            List<MonthWeb> reportedMonths = i.getLastReportedQuarter().getMonths().stream().filter(monthWeb -> {
-                return monthWeb.getTotalExecution() != null;
-            }).collect(Collectors.toList());
+            List<MonthWeb> reportedMonths = i.getLastReportedQuarter().getMonths().stream()
+                    .filter(monthWeb -> monthWeb.getTotalExecution() != null)
+                    .collect(Collectors.toList());
             if (CollectionUtils.isNotEmpty(reportedMonths)) {
                 i.setLastReportedMonth(reportedMonths.get(reportedMonths.size() - 1));
             }
@@ -1100,6 +1102,26 @@ public class ModelWebTransformationService {
         i.setExecutionPercentage(indicatorExecution.getExecutionPercentage());
         i.setQuarters(this.quartersToQuarterResumesWeb(indicatorExecution.getQuarters()));
         i.setProjectStatement(this.statementToStatementWeb(indicatorExecution.getProjectStatement()));
+        List<Canton> activeCantons =
+                indicatorExecution.getQuarters().stream()
+                        .flatMap(quarter -> quarter.getMonths().stream())
+                        .filter(month -> {
+                            return month.getState().equals(State.ACTIVO);
+                        })
+                        .flatMap(month -> {
+                            return month.getIndicatorValues().stream();
+                        })
+                        .filter(indicatorValue -> {
+                            return (
+                                    indicatorValue.getDissagregationType().equals(DissagregationType.LUGAR)
+                                            || indicatorValue.getDissagregationType().equals(DissagregationType.TIPO_POBLACION_Y_LUGAR)
+                            ) && indicatorValue.getState().equals(State.ACTIVO);
+                        }).map(indicatorValue -> {
+                            return indicatorValue.getLocation();
+                        })
+                        .distinct()
+                        .collect(Collectors.toList());
+        i.setLocations(this.cantonsToCantonsWeb(activeCantons));
         return i;
 
     }

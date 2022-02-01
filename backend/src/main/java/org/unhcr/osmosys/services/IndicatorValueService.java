@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Stateless
 public class IndicatorValueService {
@@ -287,7 +286,7 @@ public class IndicatorValueService {
         return r;
     }
 
-    public List<IndicatorValue> getIndicatorValuesByMonthId(Long monthId) {
-        return this.indicatorValueDao.getIndicatorValuesByMonthId(monthId);
+    public List<IndicatorValue> getIndicatorValuesByMonthId(Long monthId, State state) {
+        return this.indicatorValueDao.getIndicatorValuesByMonthIdAndState(monthId, state);
     }
 }

@@ -25,7 +25,7 @@ public class MonthEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public MonthValuesWeb getMonthIndicatorValueByMonthId(@PathParam("monthId") Long monthId) {
-        return this.monthService.getMonthValuesWeb(monthId);
+        return this.monthService.getMonthValuesWeb(monthId, State.ACTIVO);
     }
 
     @Path("/getMonthsByIndicatorExecutionId/{indicatorExecutionId}")

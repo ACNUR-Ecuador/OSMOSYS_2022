@@ -42,12 +42,9 @@ public class IndicatorValueCustomDissagregationService {
 
     public List<IndicatorValueCustomDissagregation> createIndicatorValuesCustomDissagregationForMonth(
             CustomDissagregation customDissagregation
-    ) throws GeneralAppException {
-
-        List<CustomDissagregationOption> options = customDissagregation.getCustomDissagregationOptions().stream().filter(customDissagregationOption -> {
-            return customDissagregationOption.getState().equals(State.ACTIVO);
-        }).collect(Collectors.toList());
-
+    ) {
+        List<CustomDissagregationOption> options = customDissagregation.getCustomDissagregationOptions().stream()
+                .filter(customDissagregationOption -> customDissagregationOption.getState().equals(State.ACTIVO)).collect(Collectors.toList());
         List<IndicatorValueCustomDissagregation> r = new ArrayList<>();
         for (CustomDissagregationOption option : options) {
             IndicatorValueCustomDissagregation iv = new IndicatorValueCustomDissagregation();
@@ -59,7 +56,7 @@ public class IndicatorValueCustomDissagregationService {
     }
 
 
-    public List<IndicatorValueCustomDissagregation> getIndicatorValuesByMonthId(Long monthId) {
-        return this.indicatorValueCustomDissagregationDao.getIndicatorValueCustomDissagregationsByMonthId(monthId);
+    public List<IndicatorValueCustomDissagregation> getIndicatorValuesByMonthId(Long monthId, State state) {
+        return this.indicatorValueCustomDissagregationDao.getIndicatorValueCustomDissagregationsByMonthId(monthId, state);
     }
 }

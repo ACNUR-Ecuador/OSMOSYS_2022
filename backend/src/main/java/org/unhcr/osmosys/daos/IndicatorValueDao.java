@@ -28,16 +28,17 @@ public class IndicatorValueDao extends GenericDaoJpa<IndicatorValue, Long> {
         return q.getResultList();
     }
 
-    public List<IndicatorValue> getIndicatorValuesByMonthId(Long monthId) {
+    public List<IndicatorValue> getIndicatorValuesByMonthIdAndState(Long monthId, State state) {
 // todo mejorar esta consulta
         String jpql = "SELECT DISTINCT o FROM IndicatorValue o " +
                 "left join fetch o.month m " +
                 "left join fetch m.sources " +
                 "left join fetch m.indicatorValuesIndicatorValueCustomDissagregations " +
-                "left join fetch m.indicatorValues " +
-                "WHERE m.id  = :monthId";
+                "WHERE m.id  = :monthId " +
+                " and o.state=:state";
         Query q = getEntityManager().createQuery(jpql, IndicatorValue.class);
         q.setParameter("monthId", monthId);
+        q.setParameter("state", state);
         return q.getResultList();
     }
 }
