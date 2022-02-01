@@ -15,7 +15,15 @@ import {
 } from '../../shared/model/OsmosysModel';
 import {OrganizationService} from '../../shared/services/organization.service';
 import {CantonService} from '../../shared/services/canton.service';
-import {AreaType, ColumnDataType, ColumnTable, EnumsIndicatorType, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
+import {
+    AreaType,
+    ColumnDataType,
+    ColumnTable,
+    DissagregationType,
+    EnumsIndicatorType,
+    EnumsState,
+    EnumsType
+} from '../../shared/model/UtilsModel';
 import {EnumsService} from '../../shared/services/enums.service';
 import {OfficeOrganizationPipe} from '../../shared/pipes/officeOrganization.pipe';
 import {PeriodService} from '../../shared/services/period.service';
@@ -945,5 +953,16 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         }
         this.showPerformanceIndicatorDialog = true;
 
+    }
+
+    indicatorHasLocationDissagregation(indicator: Indicator): boolean {
+        return indicator.dissagregationsAssignationToIndicator
+            .filter(value => {
+                return value.state === EnumsState.ACTIVE;
+            })
+            .filter(value => {
+                return value.dissagregationType === DissagregationType.LUGAR
+                    || value.dissagregationType === DissagregationType.TIPO_POBLACION_Y_LUGAR;
+            }).length > 0;
     }
 }

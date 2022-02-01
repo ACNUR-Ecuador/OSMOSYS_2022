@@ -10,7 +10,7 @@
                     <p-messages severity="warn" *ngIf="showAlert">
                         <ng-template pTemplate>
                             <div class="p-d-flex p-flex-column">
-                                <div  *ngFor="let alert of messageAlertArray"
+                                <div *ngFor="let alert of messageAlertArray"
                                      class="p-ml-2">{{alert}}</div>
                             </div>
                         </ng-template>
@@ -110,7 +110,8 @@
                             <p-panel header="Lugares de ejecución" [toggleable]="true">
                                 <ng-template pTemplate="header">
                                     <div class=" p-d-flex p-jc-end">
-                                        <button pButton type="button" pRipple label="Editar sitios/cantones de ejecución"
+                                        <button pButton type="button" pRipple
+                                                label="Editar sitios/cantones de ejecución"
                                                 style="max-width: 20rem"
                                                 icon="pi pi-pencil"
                                                 class="p-button-success"
@@ -392,7 +393,8 @@
     </div>
 </div>
 <form [formGroup]="formItem" (ngSubmit)="saveLocationsForm()">
-    <p-dialog [(visible)]="showLocationsDialog" [style]="{width: '90%'}" header="Sitios/cantones de ejecución" [modal]="true"
+    <p-dialog [(visible)]="showLocationsDialog" [style]="{width: '90%'}" header="Sitios/cantones de ejecución"
+              [modal]="true"
               styleClass="p-fluid" [closable]="false">
 
         <ng-template pTemplate="content">
@@ -589,7 +591,8 @@
                 </div>
 
             </div>
-            <div class="p-field p-col-12 p-md-12" >
+            <div class="p-field p-col-12 p-md-12"
+                 *ngIf="indicatorHasLocationDissagregation(formPerformanceIndicator.get('indicator').value)">
                 <p-panel header="Sitios/cantones de ejecución" [toggleable]="true">
                     <ng-template pTemplate="header">
                         <div class=" p-d-flex p-jc-end">
