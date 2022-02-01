@@ -37,31 +37,19 @@
                                 [matchMode]="'contains'"
                                 [showMenu]="false"> matchMode="contains
                 </p-columnFilter>
-                <p-columnFilter *ngSwitchCase="'state'" type="equals" [field]="col.field"
-                                [showMenu]="false">
-                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                        <p-dropdown [ngModel]="value" [options]="states"
-                                    (onChange)="filter($event.value)"
-                                    placeholder="Selecciona..." [showClear]="true">
-                            <ng-template let-option pTemplate="item">
-                                            <span
-                                                [class]="'customer-badge status-' + option">{{option}}</span>
-                            </ng-template>
-                        </p-dropdown>
-                    </ng-template>
-                </p-columnFilter>
                 <p-columnFilter
                     *ngSwitchCase="'customDissagregationAssignationToIndicators'"
                     type="text"
                     [field]="col.field" [showMenu]="false"
                     [matchMode]="'customDissagregationsAssignationToIndicatorFilter'"></p-columnFilter>
-                <p-columnFilter *ngSwitchCase="'dissagregationsAssignationToIndicator'"
+                <p-columnFilter *ngSwitchCase="'indicator'"
                                 type="text"
                                 [field]="col.field" [showMenu]="false"
-                                [matchMode]="'dissagregationsAssignationToIndicatorFilter'"></p-columnFilter>
-                <p-columnFilter *ngSwitchCase="'markers'" type="text"
+                                [matchMode]="'indicatorFilter'"></p-columnFilter>
+                <p-columnFilter *ngSwitchCase="'lastReportedMonth'"
+                                type="text"
                                 [field]="col.field" [showMenu]="false"
-                                [matchMode]="'markersFilter'"></p-columnFilter>
+                                [matchMode]="'monthFilter'"></p-columnFilter>
             </th>
             <th>
 

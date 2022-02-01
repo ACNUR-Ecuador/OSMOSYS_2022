@@ -55,16 +55,18 @@
                     type="text"
                     [field]="col.field" [showMenu]="false"
                     [matchMode]="'customDissagregationsAssignationToIndicatorFilter'"></p-columnFilter>
-                <p-columnFilter *ngSwitchCase="'dissagregationsAssignationToIndicator'"
+                <p-columnFilter *ngSwitchCase="'projectStatement'"
                                 type="text"
                                 [field]="col.field" [showMenu]="false"
-                                [matchMode]="'dissagregationsAssignationToIndicatorFilter'"></p-columnFilter>
-                <p-columnFilter *ngSwitchCase="'markers'" type="text"
-                                [field]="col.field" [showMenu]="false"
-                                [matchMode]="'markersFilter'"></p-columnFilter>
-                <p-columnFilter *ngSwitchCase="'projectStatement'" type="text"
-                                [field]="col.field" [showMenu]="false"
                                 [matchMode]="'projectStatementFilter'"></p-columnFilter>
+                <p-columnFilter *ngSwitchCase="'indicator'"
+                                type="text"
+                                [field]="col.field" [showMenu]="false"
+                                [matchMode]="'indicatorFilter'"></p-columnFilter>
+                <p-columnFilter *ngSwitchCase="'lastReportedMonth'"
+                                type="text"
+                                [field]="col.field" [showMenu]="false"
+                                [matchMode]="'monthFilter'"></p-columnFilter>
 
             </th>
             <th>

@@ -1056,6 +1056,7 @@ public class ModelWebTransformationService {
         indicatorWeb.setCompassIndicator(indicatorExecution.getIndicator().getCompassIndicator());
         indicatorWeb.setCode(indicatorExecution.getIndicator().getCode());
         indicatorWeb.setDescription(indicatorExecution.getIndicator().getDescription());
+        indicatorWeb.setCategory(indicatorExecution.getIndicator().getCategory());
         i.setIndicator(indicatorWeb);
         i.setActivityDescription(indicatorExecution.getActivityDescription());
         i.setIndicatorType(indicatorExecution.getIndicatorType());

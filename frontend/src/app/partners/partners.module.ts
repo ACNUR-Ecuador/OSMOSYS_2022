@@ -25,7 +25,9 @@ import {OverlayPanelModule} from 'primeng/overlaypanel';
 import {DialogService} from 'primeng/dynamicdialog';
 import {ValuesStatePipe} from '../shared/pipes/values-state.pipe';
 import {IndicatorFormsModule} from '../indicator-forms/indicator-forms.module';
-import { PartnersProjectPerformanceIndicatorListComponent } from './partners-project-performance-indicator-list/partners-project-performance-indicator-list.component';
+import {PartnersProjectPerformanceIndicatorListComponent} from './partners-project-performance-indicator-list/partners-project-performance-indicator-list.component';
+import {IndicatorPipe} from '../shared/pipes/indicator.pipe';
+import {MonthPipe} from '../shared/pipes/month.pipe';
 
 
 @NgModule({
@@ -61,7 +63,9 @@ import { PartnersProjectPerformanceIndicatorListComponent } from './partners-pro
         EnumValuesToLabelPipe,
         DialogService,
         ValuesStatePipe,
-        PercentPipe
+        PercentPipe,
+        IndicatorPipe,
+        MonthPipe
     ]
 })
 export class PartnersModule {

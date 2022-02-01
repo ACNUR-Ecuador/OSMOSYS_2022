@@ -8,6 +8,8 @@ import {PercentPipe} from '@angular/common';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
 import {ColumnDataType, ColumnTable, EnumsType} from '../../shared/model/UtilsModel';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
+import {IndicatorPipe} from '../../shared/pipes/indicator.pipe';
+import {MonthPipe} from '../../shared/pipes/month.pipe';
 
 @Component({
     selector: 'app-partners-project-performance-indicator-list',
@@ -33,9 +35,11 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit 
                 private utilsService: UtilsService,
                 private codeDescriptionPipe: CodeDescriptionPipe,
                 private percentPipe: PercentPipe,
+                private indicatorPipe: IndicatorPipe,
                 private indicatorExecutionService: IndicatorExecutionService,
                 private filterService: FilterService,
-                private filterUtilsService: FilterUtilsService
+                private filterUtilsService: FilterUtilsService,
+                private monthPipe: MonthPipe
     ) {
     }
 
@@ -72,11 +76,11 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit 
             {field: 'indicatorType', header: 'Tipo', type: ColumnDataType.text},
             {field: 'projectStatement', header: 'Declaración de Producto', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
             {field: 'projectStatement.productCode', header: 'Código de Producto', type: ColumnDataType.text},
-            {field: 'indicator', header: 'Indicador', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
+            {field: 'indicator', header: 'Indicador', type: ColumnDataType.text, pipeRef: this.indicatorPipe},
             {field: 'target', header: 'Meta', type: ColumnDataType.numeric},
             {field: 'totalExecution', header: 'Ejecución Actual', type: ColumnDataType.numeric},
             {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric, pipeRef: this.percentPipe},
-            {field: 'lastReportedMonth', header: 'Último mes reportado', type: ColumnDataType.text},
+            {field: 'lastReportedMonth', header: 'Último mes reportado', type: ColumnDataType.text, pipeRef: this.monthPipe},
 
         ];
 
@@ -87,7 +91,13 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit 
 
     private registerFilters() {
         this.filterService.register('projectStatementFilter', (value, filter): boolean => {
-            return this.filterUtilsService.statementFilter(value, filter);
+            return this.filterUtilsService.generalFilter(value, ['code', 'description'], filter);
+        });
+        this.filterService.register('indicatorFilter', (value, filter): boolean => {
+            return this.filterUtilsService.generalFilter(value, ['code', 'description', 'category'], filter);
+        });
+        this.filterService.register('monthFilter', (value, filter): boolean => {
+            return this.filterUtilsService.generalFilter(value, ['month', 'year'], filter);
         });
     }
 

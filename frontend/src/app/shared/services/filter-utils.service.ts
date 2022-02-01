@@ -45,6 +45,26 @@ export class FilterUtilsService {
         return result;
     }
 
+    generalFilter(value: any, fields: string[], filter: string): boolean {
+        if (filter === undefined || filter === null || filter.trim() === '') {
+            return true;
+        }
+
+        if (value === undefined || value === null) {
+            return false;
+        }
+        for (const field of fields) {
+            if (value[field] === undefined || value[field] === null) {
+                continue;
+            } else {
+                if (value[field].toLowerCase().includes(filter.toString().toLowerCase())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     dissagregationsAssignationToIndicatorFilter(value: DissagregationAssignationToIndicator[], filter): boolean {
 
         if (filter === undefined || filter === null || filter.trim() === '') {
@@ -222,4 +242,6 @@ export class FilterUtilsService {
 
         return result;
     }
+
+
 }

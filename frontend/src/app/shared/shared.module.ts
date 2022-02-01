@@ -108,6 +108,8 @@ import { CodeDescriptionPipe } from './pipes/code-description.pipe';
 import { ValuesStatePipe } from './pipes/values-state.pipe';
 import { RolesListPipe } from './pipes/roles-list.pipe';
 import { CodeDescriptionListPipe } from './pipes/code-description-list.pipe';
+import { IndicatorPipe } from './pipes/indicator.pipe';
+import { MonthPipe } from './pipes/month.pipe';
 
 
 @NgModule({
@@ -135,6 +137,8 @@ import { CodeDescriptionListPipe } from './pipes/code-description-list.pipe';
         ValuesStatePipe,
         RolesListPipe,
         CodeDescriptionListPipe,
+        IndicatorPipe,
+        MonthPipe
     ],
     imports: [
         CommonModule,

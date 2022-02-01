@@ -1,12 +1,14 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {IndicatorExecutionResumeWeb, Project} from '../../shared/model/OsmosysModel';
-import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
+import {ColumnDataType, ColumnTable, EnumsType} from '../../shared/model/UtilsModel';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
-import {MessageService, SelectItem} from 'primeng/api';
+import {FilterService, MessageService, SelectItem} from 'primeng/api';
 import {EnumsService} from '../../shared/services/enums.service';
 import {UtilsService} from '../../shared/services/utils.service';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
 import {PercentPipe} from '@angular/common';
+import {FilterUtilsService} from '../../shared/services/filter-utils.service';
+import {MonthPipe} from '../../shared/pipes/month.pipe';
 
 @Component({
     selector: 'app-partners-project-general-indicator-list',
@@ -34,6 +36,9 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit {
         private codeDescriptionPipe: CodeDescriptionPipe,
         private percentPipe: PercentPipe,
         private indicatorExecutionService: IndicatorExecutionService,
+        private filterService: FilterService,
+        private filterUtilsService: FilterUtilsService,
+        private monthPipe: MonthPipe
     ) {
     }
 
@@ -66,31 +71,12 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit {
             {field: 'target', header: 'Meta', type: ColumnDataType.numeric},
             {field: 'totalExecution', header: 'Ejecución Actual', type: ColumnDataType.numeric},
             {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric, pipeRef: this.percentPipe},
-            {field: 'lastReportedMonth', header: 'Último Mes Reportado', type: ColumnDataType.text},
+            {field: 'lastReportedMonth', header: 'Último Mes Reportado', type: ColumnDataType.text, pipeRef: this.monthPipe},
 
         ];
 
         const hiddenColumns: string[] = ['id'];
         this._selectedColumnsGeneralIndicators = this.colsGeneralIndicators.filter(value => !hiddenColumns.includes(value.field));
-        /* if (this.generalIndicators && this.generalIndicators.length > 0) {
-             const generalIndicator = this.generalIndicators[0];
-             this.colsGeneralIndicatorsIndicatorExecution = [];
-             const quarters = generalIndicator.quarters.filter(value => {
-                 value.state = EnumsState.ACTIVE;
-             });
-             if (quarters && quarters.length > 0) {
-                 quarters.forEach(value => {
-                     this.colsGeneralIndicatorsIndicatorExecution.push(
-                         {field: 'order', header: 'Orden', type: ColumnDataType.numeric},
-                         {field: 'year', header: 'Año', type: ColumnDataType.numeric},
-                         {field: 'quarter', header: 'Trimestre', type: ColumnDataType.text},
-                         {field: 'target', header: 'Año', type: ColumnDataType.numeric},
-                         {field: 'totalExecution', header: 'Año', type: ColumnDataType.numeric},
-                         {field: 'executionPercentage', header: 'Año', type: ColumnDataType.numeric},
-                     );
-                 });
-             }
-         }*/
     }
 
     @Input() get selectedColumnsGeneralIndicators(): any[] {
@@ -100,14 +86,6 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit {
     set selectedColumnsGeneralIndicators(val: any[]) {
         // restore original order
         this._selectedColumnsGeneralIndicators = this.colsGeneralIndicators.filter(col => val.includes(col));
-    }
-
-    generalIndicatorsExpand(): number {
-        if (this._selectedColumnsGeneralIndicators) {
-            return this._selectedColumnsGeneralIndicators.length;
-        } else {
-            return 1;
-        }
     }
 
     private loadOptions() {
@@ -131,6 +109,7 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit {
     clearIndicator() {
         this.selectedIndicator = null;
     }
+
     exportExcel() {
         import('xlsx').then(xlsx => {
             const headers = this.selectedColumnsGeneralIndicators.map(value => value.header);
@@ -140,6 +119,14 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit {
 
             const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
             this.utilsService.saveAsExcelFile(excelBuffer, 'indicadores_producto_' + this.project.code + '_' + this.project.name);
+        });
+    }
+    private registerFilters() {
+        this.filterService.register('indicatorFilter', (value, filter): boolean => {
+            return this.filterUtilsService.generalFilter(value, ['code', 'description'], filter);
+        });
+        this.filterService.register('monthFilter', (value, filter): boolean => {
+            return this.filterUtilsService.generalFilter(value, ['month', 'year'], filter);
         });
     }
 }
