@@ -28,6 +28,7 @@ import {IndicatorFormsModule} from '../indicator-forms/indicator-forms.module';
 import {PartnersProjectPerformanceIndicatorListComponent} from './partners-project-performance-indicator-list/partners-project-performance-indicator-list.component';
 import {IndicatorPipe} from '../shared/pipes/indicator.pipe';
 import {MonthPipe} from '../shared/pipes/month.pipe';
+import { PartnersGeneralIndicatorQuarterListComponent } from './partners-general-indicator-quarter-list/partners-general-indicator-quarter-list.component';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import {MonthPipe} from '../shared/pipes/month.pipe';
         PartnersProjectComponent,
         PartnersProjectGeneralIndicatorListComponent,
         PartnersIndicatorQuarterListComponent,
-        PartnersProjectPerformanceIndicatorListComponent
+        PartnersProjectPerformanceIndicatorListComponent,
+        PartnersGeneralIndicatorQuarterListComponent
     ],
     imports: [
         CommonModule,

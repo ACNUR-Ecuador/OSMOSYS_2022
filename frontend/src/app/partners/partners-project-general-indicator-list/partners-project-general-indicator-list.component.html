@@ -69,11 +69,12 @@
                 <button type="text" pButton label="ver valores" (click)="op.toggle($event)"  ></button>
                 <p-overlayPanel #op (onShow)="selectedIndicatorSet(rowData)" (onHide)="clearIndicator()">
                     <ng-template pTemplate >
-                        <app-partners-indicator-quarter-list
+                        <app-partners-general-indicator-quarter-list
                             [quarters]="rowData.quarters"
                             (callMonth)="callMonth($event)"
+                            [indicatorExecution]="rowData"
                         >
-                        </app-partners-indicator-quarter-list>
+                        </app-partners-general-indicator-quarter-list>
                     </ng-template>
                 </p-overlayPanel>
             </td>
