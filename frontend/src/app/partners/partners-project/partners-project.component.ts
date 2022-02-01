@@ -14,6 +14,7 @@ import {trigger, state, style, transition, animate} from '@angular/animations';
 import {DialogService} from 'primeng/dynamicdialog';
 import {GeneralIndicatorFormComponent} from '../../indicator-forms/general-indicator-form/general-indicator-form.component';
 import {PerformanceIndicatorFormComponent} from '../../indicator-forms/performance-indicator-form/performance-indicator-form.component';
+import {IndicatorPipe} from '../../shared/pipes/indicator.pipe';
 
 @Component({
     selector: 'app-partners-project',
@@ -56,6 +57,7 @@ export class PartnersProjectComponent implements OnInit {
         private indicatorExecutionService: IndicatorExecutionService,
         private codeDescriptionPipe: CodeDescriptionPipe,
         private enumValuesToLabelPipe: EnumValuesToLabelPipe,
+        private indicatorPipe: IndicatorPipe,
         private route: ActivatedRoute
     ) {
         this.idProjectParam = this.route.snapshot.paramMap.get('projectId');
@@ -123,7 +125,7 @@ export class PartnersProjectComponent implements OnInit {
         const monthId = parameters.get('monthId') as number;
         const indicatorExecution = parameters.get('indicator') as IndicatorExecutionResumeWeb;
         const ref = this.dialogService.open(PerformanceIndicatorFormComponent, {
-                header: 'Indicador: ' + indicatorExecution.indicator.code + ' - ' + indicatorExecution.indicator.description,
+                header: 'Indicador: ' + this.indicatorPipe.transform(indicatorExecution.indicator),
                 width: '90%',
                 height: '90%',
                 closeOnEscape: false,
