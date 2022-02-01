@@ -62,9 +62,9 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     _selectedColumnsGeneralIndicators: ColumnTable[];
     // tslint:disable-next-line:variable-name
     _selectedColumnsPerformanceIndicators: ColumnTable[];
-    public showTargetDialog = false;
-    private statements: Statement[];
-    private statementsOptions: SelectItem[];
+    showTargetDialog = false;
+    statements: Statement[];
+    statementsOptions: SelectItem[];
     messageAlert = '';
     messageAlertArray = [];
     showAlert = false;
@@ -503,7 +503,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             }
             const agregatedLocation = cantonesG.filter((canton1) => !locationsBefore.find(canton2 => canton1.id === canton2.id));
             const deletedLocations = locationsBefore.filter((canton1) => !cantonesG.find(canton2 => canton1.id === canton2.id));
-            console.log(agregatedLocation);
             if (agregatedLocation.length > 0) {
                 const cantonesList = agregatedLocation.map(value => {
                     return value.description + '-' + value.provincia.description;
@@ -537,7 +536,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     this.showLocationsDialog = false;
                 }
             }
-            console.log(deletedLocations);
             this.formItem.get('locations').patchValue(cantonesG);
         }
     }
@@ -638,8 +636,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         this.formTargets.get('indicatorType').patchValue(indicator.indicatorType);
         if (indicator.indicatorType === EnumsIndicatorType.GENERAL) {
             this.formTargets.addControl('anualTarget', new FormControl('', Validators.required));
-            console.log(this.formTargets);
-            console.log(this.formTargets.value);
         } else {
             this.formTargets.addControl('quarterGroups', this.fb.array([]));
 

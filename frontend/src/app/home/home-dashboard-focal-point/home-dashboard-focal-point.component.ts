@@ -39,7 +39,7 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
     chartBeneficiariesTarget: any;
     chartPerformanceMonths: any;
     chartPerformanceTarget: any;
-    private generalIndicatorLate: boolean;
+    generalIndicatorLate: boolean;
 
 
     constructor(
@@ -54,12 +54,9 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        console.log('viewchild');
-        console.log(this.chartBeneficiarios); // works
     }
 
     ngOnInit(): void {
-        console.log(this.projectIds);
         this.selectedProject = null;
         for (const projectId of this.projectIds) {
             this.projectService.getProjectById(projectId).subscribe(value => {
@@ -82,8 +79,7 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
         }
     }
 
-    private loadProject(project: Project) {
-        console.log(project);
+    loadProject(project: Project) {
         this.loadGeneralIndicator(project.id);
 
 
@@ -150,9 +146,6 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
             monthsExecutionAcumulatedTmp += value.totalExecution;
             monthsExecutionAcumulated.push(monthsExecutionAcumulatedTmp);
         });
-        console.log('data');
-        console.log(monthsLabels);
-        console.log(monthsExecution);
         this.chartBeneficiariesMonths = {
             labels: monthsLabels,
             datasets: [
@@ -250,9 +243,6 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
             monthsExecutionAcumulatedTmp += value.totalExecution;
             monthsExecutionAcumulated.push(monthsExecutionAcumulatedTmp);
         });
-        console.log('data');
-        console.log(monthsLabels);
-        console.log(monthsExecution);
         this.chartPerformanceMonths = {
             labels: monthsLabels,
             datasets: [

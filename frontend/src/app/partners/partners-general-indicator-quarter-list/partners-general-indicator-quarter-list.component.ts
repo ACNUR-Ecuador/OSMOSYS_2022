@@ -36,7 +36,6 @@ export class PartnersGeneralIndicatorQuarterListComponent implements OnInit {
                 .sort((a, b) => a.order - b.order);
             this.monthsCount += value.months.length;
         });
-        console.log(this.monthsCount);
         this.quarterMonthResumes = [];
         let yearSpan: number = null;
         let quarterSpan: string = null;

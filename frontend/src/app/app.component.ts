@@ -51,9 +51,6 @@ export class AppComponent implements OnInit {
                 const dow: string[] = config.getTranslation('dayNames');
                 if (dow[0] !== 'Sunday') {
                     const msg = 'Default locale not EN.';
-                    console.error(` ${msg}`);
-                } else {
-                    console.log(` Using locale: '${locale}'`);
                 }
                 break;
             }

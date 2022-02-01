@@ -26,7 +26,6 @@ import {DissagregationsAssignationToIndicatorPipe} from '../../shared/pipes/diss
 import {CustomDissagregationsAssignationToIndicatorPipe} from '../../shared/pipes/custom-dissagregations-assignation-to-indicator.pipe';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {PeriodService} from '../../shared/services/period.service';
-import {CodeDescriptionListPipe} from '../../shared/pipes/code-description-list.pipe';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
 
 @Component({
@@ -40,20 +39,20 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     showDialog = false;
     private submitted = false;
     formItem: FormGroup;
-    private states: SelectItem[];
-    private indicatorTypes: SelectItem[];
-    private measureTypes: SelectItem[];
-    private frecuencies: SelectItem[];
-    private areaTypes: SelectItem[];
-    private totalIndicatorCalculationTypes: SelectItem[];
-    private statements: Statement[];
-    private filteredStatements: { labelItem: string, valueItem: Statement }[];
-    private customDissagregations: CustomDissagregation[];
-    private dissagregationTypes: SelectItem[];
+    states: SelectItem[];
+    indicatorTypes: SelectItem[];
+    measureTypes: SelectItem[];
+    frecuencies: SelectItem[];
+    areaTypes: SelectItem[];
+    totalIndicatorCalculationTypes: SelectItem[];
+    statements: Statement[];
+    filteredStatements: { labelItem: string, valueItem: Statement }[];
+    customDissagregations: CustomDissagregation[];
+    dissagregationTypes: SelectItem[];
     markers: Marker[];
-    private isMonitoredOptions: any[];
-    private isCalculatedOptions: any[];
-    private periods: Period[];
+    isMonitoredOptions: any[];
+    isCalculatedOptions: any[];
+    periods: Period[];
 
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
@@ -193,7 +192,12 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.customDissagregationService.getByState(EnumsState.ACTIVE).subscribe(value => {
             this.customDissagregations = value;
         }, error => {
-            console.log(error);
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al cargar los estados',
+                detail: error.error.message,
+                life: 3000
+            });
         });
         this.isCalculatedOptions = [{label: 'Calculado', value: true}, {label: 'No Calculado', value: false}];
         this.isMonitoredOptions = [{label: 'Monitoreado', value: true}, {label: 'No Monitoreado', value: false}];
@@ -329,7 +333,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             customDissagregationAssignationToIndicators
         }
             = this.formItem.value;
-        console.log(dissagregations);
         const indicator: Indicator = {
             id,
             code,
@@ -423,8 +426,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
             }
         }
-        console.log(indicator);
-
         if (indicator.id) {
             // tslint:disable-next-line:no-shadowed-variable
             this.indicatorService.update(indicator).subscribe(id => {
@@ -532,7 +533,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     }
 
     onChangeArea($event: any) {
-        console.log($event.value);
         const areaType = $event.value as AreaType;
         this.filterStatementsByAreaType(areaType, true);
     }
@@ -547,7 +547,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                     valueItem: value
                 };
             });
-        console.log(this.filteredStatements);
         this.formItem.get('statement').enable();
         if (clearStatements) {
             this.formItem.get('statement').patchValue([]);

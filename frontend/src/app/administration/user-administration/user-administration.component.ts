@@ -22,10 +22,10 @@ export class UserAdministrationComponent implements OnInit {
     items: User[];
 
     // options
-    private states: SelectItem[];
-    private offices: SelectItem[];
-    private organizations: SelectItem[];
-    private roles: SelectItem[];
+    states: SelectItem[];
+    offices: SelectItem[];
+    organizations: SelectItem[];
+    roles: SelectItem[];
 
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
@@ -33,8 +33,8 @@ export class UserAdministrationComponent implements OnInit {
 
     // form
     formItem: FormGroup;
-    private officesActive: SelectItem[];
-    private organizationsActive: SelectItem[];
+    officesActive: SelectItem[];
+    organizationsActive: SelectItem[];
     showDialog = false;
 
     constructor(
@@ -186,7 +186,6 @@ export class UserAdministrationComponent implements OnInit {
         this.formItem.get('roleTypes').patchValue([]);
         this.formItem.get('username').enable();
         this.showDialog = true;
-        console.log(this.formItem.value);
     }
 
     editItem(user: User) {
@@ -200,7 +199,6 @@ export class UserAdministrationComponent implements OnInit {
             });
         this.formItem.get('roleTypes').patchValue(roleTypes);
         this.formItem.get('username').disable();
-        console.log(this.formItem.value);
     }
 
     exportExcel() {
@@ -261,7 +259,6 @@ export class UserAdministrationComponent implements OnInit {
             state
         };
 
-        console.log(user);
         if (user.id) {
             this.userService.updateUser(user)
                 .subscribe(value => {

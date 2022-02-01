@@ -378,7 +378,6 @@ export class UtilsService {
             }
         });
         const totalMonth = Math.max(...monthValuesTotals.values());
-        console.log('totalMonth: ' + totalMonth);
 
         let errorExists = false;
         monthValuesTotals.forEach(value => {

@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild, ViewChildren} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CustomDissagregationValues, IndicatorExecutionResumeWeb, IndicatorValue, Month, MonthValues} from '../../shared/model/OsmosysModel';
 import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
@@ -110,7 +110,6 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     }
 
     saveMonth() {
-        // console.log(this.monthValues);
         this.utilsService.setZerosMonthValues(this.monthValuesMap);
         this.utilsService.setZerosCustomMonthValues(this.monthCustomDissagregatoinValues);
         const totalsValidation = this.utilsService.validateMonth(this.monthValuesMap, this.monthCustomDissagregatoinValues);
@@ -122,7 +121,6 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         } else {
             this.monthValues.month.checked = this.formItem.get('checked').value;
         }
-        console.log(this.monthValues.month);
         if (totalsValidation) {
             this.showErrorResume = true;
             this.totalsValidation = totalsValidation;
@@ -133,7 +131,6 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     }
 
     cancel() {
-        console.log(this.monthValues);
         this.ref.close({test: 2});
     }
 

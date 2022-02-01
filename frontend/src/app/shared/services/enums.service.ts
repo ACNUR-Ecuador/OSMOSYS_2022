@@ -20,11 +20,8 @@ export class EnumsService {
 
     public getByType(type: EnumsType): Observable<SelectItemWithOrder<any>[]> {
         if (this.cacheMap[type]) {
-            console.log('Returning cached value!' + type);
             return this.cacheMap[type];
         } else {
-
-            console.log('Do the request again');
             return this.cacheMap[type] = this.getByTypeFromServer(type).pipe(
                 shareReplay(1),
                 catchError(err => {
@@ -39,14 +36,12 @@ export class EnumsService {
     }
 
     public loadcache() {
-        console.log('loading cache');
         Object.keys(EnumsType).map(key => {
             const enumname: EnumsType = EnumsType[key];
             this.getByTypeFromServer(enumname).subscribe(value => {
                 this.cacheMap.set(enumname, value);
             });
         });
-        console.log('finish loading cache');
     }
 
 

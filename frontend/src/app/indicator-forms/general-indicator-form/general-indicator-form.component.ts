@@ -112,7 +112,6 @@ export class GeneralIndicatorFormComponent implements OnInit {
     }
 
     saveMonth() {
-        // console.log(this.monthValues);
         this.utilsService.setZerosMonthValues(this.monthValuesMap);
         const totalsValidation = this.utilsService.validateMonth(this.monthValuesMap, null);
         this.monthValues.month.commentary = this.formItem.get('commentary').value;
@@ -123,7 +122,6 @@ export class GeneralIndicatorFormComponent implements OnInit {
         } else {
             this.monthValues.month.checked = this.formItem.get('checked').value;
         }
-        console.log(this.monthValues.month);
         if (totalsValidation) {
             this.showErrorResume = true;
             this.totalsValidation = totalsValidation;
