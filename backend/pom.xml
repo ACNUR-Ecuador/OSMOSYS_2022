@@ -307,7 +307,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.3.2</version>
                 <configuration>
-                    <warName>osmosys_capacitacion</warName>
+                    <warName>osmosys</warName>
                 </configuration>
             </plugin>
         </plugins>

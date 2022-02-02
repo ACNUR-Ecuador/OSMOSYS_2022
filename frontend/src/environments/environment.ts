@@ -6,9 +6,9 @@ export const environment = {
     production: false,
     hmr: false,
     locale: 'es',
-    base_url: 'http://localhost:8080/osmosys_capacitacion/api',
+    base_url: 'http://localhost:8080/osmosys/api',
     app_code: 'OSMOSYS',
-    versionCheckURL : 'https://imecuador.unhcr.org/osmosys_capacitacion/version.json',
+    versionCheckURL : 'https://imecuador.unhcr.org/osmosys/version.json',
 };
 
 /*
