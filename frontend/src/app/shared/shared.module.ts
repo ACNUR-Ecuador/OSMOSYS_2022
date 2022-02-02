@@ -110,6 +110,7 @@ import { RolesListPipe } from './pipes/roles-list.pipe';
 import { CodeDescriptionListPipe } from './pipes/code-description-list.pipe';
 import { IndicatorPipe } from './pipes/indicator.pipe';
 import { MonthPipe } from './pipes/month.pipe';
+import { LoaderComponent } from './template/loader/loader.component';
 
 
 @NgModule({
@@ -138,7 +139,8 @@ import { MonthPipe } from './pipes/month.pipe';
         RolesListPipe,
         CodeDescriptionListPipe,
         IndicatorPipe,
-        MonthPipe
+        MonthPipe,
+        LoaderComponent
     ],
     imports: [
         CommonModule,
@@ -248,6 +250,7 @@ import { MonthPipe } from './pipes/month.pipe';
         EnumValuesToLabelPipe,
         CodeDescriptionPipe,
         ValuesStatePipe,
+        LoaderComponent
     ]
 })
 export class SharedModule {

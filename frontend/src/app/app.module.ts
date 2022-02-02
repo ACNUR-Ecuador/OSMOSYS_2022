@@ -101,7 +101,8 @@ import {TokenRequestInterceptor} from './shared/interceptors/token-request.inter
 import {NgxPermissionsModule} from 'ngx-permissions';
 import {AdministrationModule} from './administration/administration.module';
 import es from '@angular/common/locales/es';
-import { registerLocaleData } from '@angular/common';
+import {registerLocaleData} from '@angular/common';
+import {LoaderInterceptor} from './shared/interceptors/loader.interceptor';
 
 registerLocaleData(es);
 FullCalendarModule.registerPlugins([
@@ -214,8 +215,13 @@ FullCalendarModule.registerPlugins([
 
     ],
     providers: [
-        { provide: LOCALE_ID, useValue: 'es-ES' },
+        {provide: LOCALE_ID, useValue: 'es-ES'},
         {provide: LocationStrategy, useClass: HashLocationStrategy},
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: LoaderInterceptor,
+            multi: true
+        },
         {
             provide: HTTP_INTERCEPTORS,
             useClass: TokenResponseInterceptor,
