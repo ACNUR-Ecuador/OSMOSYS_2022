@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from '../../shared/services/user.service';
 import {ProjectService} from '../../shared/services/project.service';
+import {VersionCheckService} from '../../shared/services/version-check.service';
+import {environment} from '../../../environments/environment';
 
 @Component({
     selector: 'app-home',
@@ -13,7 +15,8 @@ export class HomeComponent implements OnInit {
 
     constructor(
         private userService: UserService,
-        private projectService: ProjectService
+        private projectService: ProjectService,
+        private versionCheckService: VersionCheckService
     ) {
     }
 
@@ -38,6 +41,9 @@ export class HomeComponent implements OnInit {
                 });
             }
         });
+        console.log('verificando version');
+        this.versionCheckService.checkVersion(environment.versionCheckURL);
+        console.log('fin verificando version');
     }
 
 }

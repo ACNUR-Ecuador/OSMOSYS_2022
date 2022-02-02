@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {PrimeNGConfig} from 'primeng/api';
 import {EnumsService} from './shared/services/enums.service';
 import {environment} from '../environments/environment';
+import {VersionCheckService} from './shared/services/version-check.service';
 
 @Component({
     selector: 'app-root',
@@ -30,7 +31,8 @@ export class AppComponent implements OnInit {
     ripple: boolean;
 
     constructor(private primengConfig: PrimeNGConfig,
-                private enumsService: EnumsService
+                private enumsService: EnumsService,
+                private versionCheckService: VersionCheckService
     ) {
     }
 
@@ -39,6 +41,10 @@ export class AppComponent implements OnInit {
         this.ripple = true;
         this.enumsService.loadcache();
         this.setLocale(this.primengConfig, environment.locale);
+        this.versionCheckService.initVersionCheck(environment.versionCheckURL);
+        console.log('verificando version');
+        this.versionCheckService.checkVersion(environment.versionCheckURL);
+        console.log('fin verificando version');
     }
 
     /*
