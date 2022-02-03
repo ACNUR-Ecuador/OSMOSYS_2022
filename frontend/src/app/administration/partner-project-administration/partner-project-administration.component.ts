@@ -653,6 +653,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         this.formTargets.get('indicatorType').patchValue(indicator.indicatorType);
         if (indicator.indicatorType === EnumsIndicatorType.GENERAL) {
             this.formTargets.addControl('anualTarget', new FormControl('', Validators.required));
+            this.formTargets.get('anualTarget').patchValue(indicator.target);
         } else {
             this.formTargets.addControl('quarterGroups', this.fb.array([]));
 
@@ -691,7 +692,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         targetUpdateDTOWeb.indicatorExecutionId = this.formTargets.get('indicatorExecutionId').value;
         targetUpdateDTOWeb.indicatorType = indicatorType;
         if (indicatorType === EnumsIndicatorType.GENERAL) {
-            targetUpdateDTOWeb.annualTarget =
+            targetUpdateDTOWeb.totalTarget =
                 this.formTargets.get('anualTarget').value;
         } else {
             const targetForms = this.formTargets.controls.quarterGroups.value as Array<any>;

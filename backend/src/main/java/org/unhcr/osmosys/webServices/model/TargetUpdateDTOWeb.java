@@ -1,6 +1,9 @@
 package org.unhcr.osmosys.webServices.model;
 
+import org.unhcr.osmosys.model.enums.IndicatorType;
+
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +11,8 @@ import java.util.List;
 public class TargetUpdateDTOWeb implements Serializable {
 
     private Long indicatorExecutionId;
+    private IndicatorType indicatorType;
+    private BigDecimal totalTarget;
     private List<QuarterResumeWeb> quarters = new ArrayList<>();
 
     public Long getIndicatorExecutionId() {
@@ -24,5 +29,21 @@ public class TargetUpdateDTOWeb implements Serializable {
 
     public void setQuarters(List<QuarterResumeWeb> quarters) {
         this.quarters = quarters;
+    }
+
+    public IndicatorType getIndicatorType() {
+        return indicatorType;
+    }
+
+    public void setIndicatorType(IndicatorType indicatorType) {
+        this.indicatorType = indicatorType;
+    }
+
+    public BigDecimal getTotalTarget() {
+        return totalTarget;
+    }
+
+    public void setTotalTarget(BigDecimal totalTarget) {
+        this.totalTarget = totalTarget;
     }
 }

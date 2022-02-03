@@ -77,9 +77,7 @@ public class IndicatorExecutionService {
         ie.setState(State.ACTIVO);
 
 
-        List<Canton> cantones = project.getProjectLocationAssigments().stream().filter(projectLocationAssigment -> {
-            return projectLocationAssigment.getState().equals(State.ACTIVO);
-        }).map(ProjectLocationAssigment::getLocation).collect(Collectors.toList());
+        List<Canton> cantones = project.getProjectLocationAssigments().stream().filter(projectLocationAssigment -> projectLocationAssigment.getState().equals(State.ACTIVO)).map(ProjectLocationAssigment::getLocation).collect(Collectors.toList());
         List<DissagregationType> dissagregationTypes;
         GeneralIndicator generalIndicator = this.generalIndicatorService.getByPeriodIdAndState(project.getPeriod().getId(), State.ACTIVO);
 
@@ -88,9 +86,7 @@ public class IndicatorExecutionService {
             LOGGER.error(dissagregations.size());
             if (CollectionUtils.isNotEmpty(dissagregations)) {
                 dissagregationTypes = dissagregations.stream()
-                        .filter(dissagregationAssignationToGeneralIndicator -> {
-                            return dissagregationAssignationToGeneralIndicator.getState().equals(State.ACTIVO);
-                        }).map(DissagregationAssignationToGeneralIndicator::getDissagregationType)
+                        .filter(dissagregationAssignationToGeneralIndicator -> dissagregationAssignationToGeneralIndicator.getState().equals(State.ACTIVO)).map(DissagregationAssignationToGeneralIndicator::getDissagregationType)
                         .collect(Collectors.toList());
             } else {
                 dissagregationTypes = new ArrayList<>();
@@ -278,7 +274,7 @@ public class IndicatorExecutionService {
     public void updateTargets(TargetUpdateDTOWeb targetUpdateDTOWeb) throws GeneralAppException {
         IndicatorExecution ie = this.indicatorExecutionDao.getByIdWithValues(targetUpdateDTOWeb.getIndicatorExecutionId());
         if (ie.getIndicatorType().equals(IndicatorType.GENERAL)) {
-
+            ie.setTarget(targetUpdateDTOWeb.getTotalTarget());
         } else {
             for (QuarterResumeWeb quarterResumeWeb : targetUpdateDTOWeb.getQuarters()) {
                 Optional<Quarter> quarterOptional = ie.getQuarters().stream().filter(quarter -> {
@@ -690,13 +686,13 @@ public class IndicatorExecutionService {
                         .getLocations().stream().filter(cantonWeb -> {
                             return cantonWeb.getId().equals(currentCanton.getId());
                         }).findFirst();
-                if(exitsCanton.isPresent()){
+                if (exitsCanton.isPresent()) {
                     currentIndicatorValuesCantons.stream().filter(indicatorValue -> {
                         return indicatorValue.getLocation().getId().equals(currentCanton.getId());
                     }).forEach(indicatorValue -> {
                         indicatorValue.setState(State.ACTIVO);
                     });
-                }else {
+                } else {
                     currentIndicatorValuesCantons.stream().filter(indicatorValue -> {
                         return indicatorValue.getLocation().getId().equals(currentCanton.getId());
                     }).forEach(indicatorValue -> {

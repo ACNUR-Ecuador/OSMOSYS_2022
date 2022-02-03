@@ -410,7 +410,7 @@ export class TargetUpdateDTOWeb {
     public indicatorExecutionId: number;
     public indicatorType: EnumsIndicatorType;
     public quarters: QuarterResumeWeb[];
-    public annualTarget: number;
+    public totalTarget: number;
 }
 
 export class IndicatorExecutionAssigment {
