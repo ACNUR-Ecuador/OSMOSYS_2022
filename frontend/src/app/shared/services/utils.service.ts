@@ -1,9 +1,18 @@
 import {Injectable} from '@angular/core';
 import * as FileSaver from 'file-saver';
 import {FormGroup} from '@angular/forms';
-import {ColumnTable, DissagregationType, EnumsState, EnumsType, MonthType, QuarterType, SelectItemWithOrder} from '../model/UtilsModel';
+import {
+    ColumnTable,
+    DissagregationType,
+    EnumsIndicatorType,
+    EnumsState,
+    EnumsType,
+    MonthType,
+    QuarterType,
+    SelectItemWithOrder
+} from '../model/UtilsModel';
 import {EnumsService} from './enums.service';
-import {CustomDissagregationValues, IndicatorExecutionAdministrationResumeWeb, IndicatorValue, Quarter} from '../model/OsmosysModel';
+import {CustomDissagregationValues, IndicatorExecutionAdministrationResumeWeb, IndicatorValue} from '../model/OsmosysModel';
 
 @Injectable({
     providedIn: 'root'
@@ -108,8 +117,8 @@ export class UtilsService {
     valueToBadgeStatusAlert(value: number, month: MonthType, year: number): string {
         const now: Date = new Date();
         now.setHours(0, 0, 0, 0);
-        const monthNow = now.getMonth();
-        const yearNow = now.getFullYear();
+        // const monthNow = now.getMonth();
+        // const yearNow = now.getFullYear();
         const monthValue = this.enumsService.monthTypeToNumber(month);
 
         const dateValueFirstDay = this.addMonths(new Date(year, monthValue - 1, 1), 1);
@@ -137,8 +146,8 @@ export class UtilsService {
 
     valueToBadgeValue(value: number, month: MonthType, year: number): string {
         const now: Date = new Date();
-        const monthNow = now.getMonth();
-        const yearNow = now.getFullYear();
+        // const monthNow = now.getMonth();
+        // const yearNow = now.getFullYear();
         const monthValue = this.enumsService.monthTypeToNumber(month);
 
         const dateValueFirstDay = this.addMonths(new Date(year, monthValue - 1, 1), 1);
@@ -165,10 +174,6 @@ export class UtilsService {
             date.setDate(0);
         }
         return date;
-    }
-
-    getQuarterLastMonth(quarter: Quarter) {
-
     }
 
     getEnymTypesByDissagregationTypes(dissagregationType: DissagregationType): EnumsType[] {
@@ -229,9 +234,9 @@ export class UtilsService {
         }
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getDimentionsByDissagregationTypes(dissagregationType: DissagregationType): number {
         const dissagregationTypeE = DissagregationType[dissagregationType];
-        const result: EnumsType[] = [];
         switch (dissagregationTypeE) {
             case DissagregationType.TIPO_POBLACION:
             case DissagregationType.EDAD:
@@ -355,6 +360,7 @@ export class UtilsService {
     }
 
     getTotalIndicatorValuesColumnArrayArray(indicatorValues: IndicatorValue[][], indexColumn: number) {
+        // noinspection JSUnusedLocalSymbols
         return indicatorValues
             .map((value, index) => value[indexColumn])
             .map(value => value.value)
@@ -410,6 +416,7 @@ export class UtilsService {
     }
 
     setZerosMonthValues(monthValuesMap: Map<string, IndicatorValue[]>) {
+        // noinspection JSUnusedLocalSymbols
         monthValuesMap.forEach((value, key) => {
             if (value && value.length > 0) {
                 value.forEach(value1 => {
@@ -456,14 +463,20 @@ export class UtilsService {
 
     getTargetNeedUpdate(indicatorExecution: IndicatorExecutionAdministrationResumeWeb) {
         let result = false;
-        if (indicatorExecution.quarters && indicatorExecution.quarters.length > 0) {
-            indicatorExecution.quarters.filter(value => {
-                return value.state === EnumsState.ACTIVE;
-            }).forEach(value => {
-                if (value.target === null) {
-                    result = true;
-                }
-            });
+        if (indicatorExecution.indicatorType !== EnumsIndicatorType.GENERAL) {
+            if (indicatorExecution.quarters && indicatorExecution.quarters.length > 0) {
+                indicatorExecution.quarters.filter(value => {
+                    return value.state === EnumsState.ACTIVE;
+                }).forEach(value => {
+                    if (value.target === null) {
+                        result = true;
+                    }
+                });
+            }
+        } else {
+            if (indicatorExecution.target === null) {
+                result = true;
+            }
         }
         return result;
     }
@@ -476,8 +489,8 @@ export class UtilsService {
 
     getCurrentMonthNumber(): number {
         const today = new Date();
-        const mm = today.getMonth() + 1; // January is 0!
-        return mm;
+         // January is 0!
+        return today.getMonth() + 1;
     }
 
     getCurrentYear(): number {
@@ -485,6 +498,7 @@ export class UtilsService {
         return today.getFullYear();
     }
 
+    // noinspection JSUnusedGlobalSymbols
     getCurrentQuarter(): QuarterType {
         const today = new Date();
         const mm = today.getMonth() + 1;
