@@ -806,7 +806,12 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         indicatorExecution.project = new Project();
         indicatorExecution.project.id = this.formItem.get('id').value;
         indicatorExecution.indicator = indicator;
-        indicatorExecution.state = state;
+        if (state) {
+            indicatorExecution.state = EnumsState.ACTIVE;
+        } else {
+            indicatorExecution.state = EnumsState.INACTIVE;
+        }
+
         if (isBorrowedStatement) {
             indicatorExecution.projectStatement = borrowedStatement;
         } else {
