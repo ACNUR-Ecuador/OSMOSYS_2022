@@ -970,6 +970,9 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     indicatorHasLocationDissagregation(indicator: Indicator): boolean {
+        if (!indicator) {
+            return false;
+        }
         return indicator.dissagregationsAssignationToIndicator
             .filter(value => {
                 return value.state === EnumsState.ACTIVE;
