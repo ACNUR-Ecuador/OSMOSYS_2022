@@ -62,6 +62,8 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " left join fetch q.months m " +
                 " left join fetch m.sources sou " +
                 " left join fetch m.indicatorValues iv " +
+                " left join fetch iv.location can " +
+                " left join fetch can.provincia " +
                 " left join fetch o.period p " +
                 " left join fetch p.generalIndicator " +
                 " WHERE o.project.id = :projectId" +
