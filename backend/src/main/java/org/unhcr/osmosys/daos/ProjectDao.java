@@ -7,6 +7,7 @@ import org.unhcr.osmosys.model.Project;
 import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityGraph;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
@@ -117,5 +118,27 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         Query q = getEntityManager().createQuery(jpql, Project.class);
         q.setParameter("periodId", periodId);
         return q.getResultList();
+    }
+
+    public Project findWithData(Long projectId) {
+        String jpql = "SELECT DISTINCT " +
+                " o FROM Project o " +
+                " left outer join fetch o.organization " +
+                " left outer join fetch o.focalPoint " +
+                " left outer join fetch o.period pe " +
+                " left outer join fetch pe.generalIndicator " +
+                " left outer join fetch o.projectLocationAssigments pla " +
+                " left outer join fetch pla.location " +
+                " left outer join fetch pla.location can " +
+                " left outer join fetch can.provincia " +
+                " left outer join fetch can.office " +
+                " WHERE o.id =:projectId";
+        Query q = getEntityManager().createQuery(jpql, Project.class);
+        q.setParameter("projectId", projectId);
+        try {
+            return (Project) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 }

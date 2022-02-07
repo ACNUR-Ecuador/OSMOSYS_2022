@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {IndicatorExecutionResumeWeb, Project} from '../../shared/model/OsmosysModel';
+import {IndicatorExecution, Project} from '../../shared/model/OsmosysModel';
 import {FilterService, MessageService, SelectItem} from 'primeng/api';
 import {EnumsService} from '../../shared/services/enums.service';
 import {UtilsService} from '../../shared/services/utils.service';
@@ -20,15 +20,15 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
     @Input()
     public project: Project;
     @Output()
-    callMonthParent = new EventEmitter<Map<string, number | IndicatorExecutionResumeWeb>>();
+    callMonthParent = new EventEmitter<Map<string, number | IndicatorExecution>>();
 
-    public performanceIndicators: IndicatorExecutionResumeWeb[];
+    public performanceIndicators: IndicatorExecution[];
     // tslint:disable-next-line:variable-name
     _selectedColumnsPerformanceIndicators: ColumnTable[];
     colsGeneralIndicators: ColumnTable[];
 
     states: SelectItem[];
-    selectedIndicator: IndicatorExecutionResumeWeb;
+    selectedIndicator: IndicatorExecution;
 
     constructor(private messageService: MessageService,
                 private enumsService: EnumsService,
@@ -46,7 +46,7 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.project.previousValue) {
             this.loadPerformanceIndicators(this.project.id);
-        }else {
+        } else {
         }
     }
 
@@ -115,7 +115,7 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
         });
     }
 
-    selectedIndicatorSet(indicator: IndicatorExecutionResumeWeb) {
+    selectedIndicatorSet(indicator: IndicatorExecution) {
         this.selectedIndicator = indicator;
     }
 
@@ -124,7 +124,7 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
     }
 
     callMonth(monthId: number) {
-        const parametersMap = new Map<string, number | IndicatorExecutionResumeWeb>();
+        const parametersMap = new Map<string, number | IndicatorExecution>();
         parametersMap.set('monthId', monthId);
         parametersMap.set('indicator', this.selectedIndicator);
         this.callMonthParent.emit(parametersMap);

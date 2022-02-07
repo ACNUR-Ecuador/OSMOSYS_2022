@@ -537,6 +537,7 @@
                 <https-listener name="https" socket-binding="https" max-post-size="31457280" security-realm="ApplicationRealm" enable-http2="true"/>
                 <host name="default-host" alias="localhost">
                     <location name="/" handler="welcome-content"/>
+                    <access-log pattern="%h %t &quot;%r&quot; %s &quot;%{i,User-Agent}&quot;" use-server-log="true"/>
                     <http-invoker security-realm="ApplicationRealm"/>
                 </host>
             </server>

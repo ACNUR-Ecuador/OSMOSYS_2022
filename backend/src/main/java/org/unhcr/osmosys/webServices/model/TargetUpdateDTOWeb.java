@@ -13,7 +13,7 @@ public class TargetUpdateDTOWeb implements Serializable {
     private Long indicatorExecutionId;
     private IndicatorType indicatorType;
     private BigDecimal totalTarget;
-    private List<QuarterResumeWeb> quarters = new ArrayList<>();
+    private List<QuarterWeb> quarters = new ArrayList<>();
 
     public Long getIndicatorExecutionId() {
         return indicatorExecutionId;
@@ -23,11 +23,11 @@ public class TargetUpdateDTOWeb implements Serializable {
         this.indicatorExecutionId = indicatorExecutionId;
     }
 
-    public List<QuarterResumeWeb> getQuarters() {
+    public List<QuarterWeb> getQuarters() {
         return quarters;
     }
 
-    public void setQuarters(List<QuarterResumeWeb> quarters) {
+    public void setQuarters(List<QuarterWeb> quarters) {
         this.quarters = quarters;
     }
 

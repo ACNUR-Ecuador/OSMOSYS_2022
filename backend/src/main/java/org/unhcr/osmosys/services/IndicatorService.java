@@ -57,11 +57,11 @@ public class IndicatorService {
     }
 
     public List<IndicatorWeb> getAll() {
-        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.findAll());
+        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.findAll(), true, true, true);
     }
 
     public List<IndicatorWeb> getByState(State state) {
-        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getByState(state));
+        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getByState(state), true, true, true);
     }
 
     public Long update(IndicatorWeb indicatorWeb) throws GeneralAppException {
@@ -109,7 +109,7 @@ public class IndicatorService {
             if (dissagregationAssignationToIndicatorWeb.getId() != null) {
                 Optional<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorOp = indicator.getDissagregationsAssignationToIndicator().stream().filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicatorWeb.getId().equals(dissagregationAssignationToIndicator.getId())).findFirst();
                 dissagregationAssignationToIndicatorOp.ifPresent(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.setState(dissagregationAssignationToIndicatorWeb.getState()));
-            }else{
+            } else {
                 // es nuevo
                 DissagregationAssignationToIndicator da = new DissagregationAssignationToIndicator();
                 da.setState(State.ACTIVO);
@@ -124,7 +124,7 @@ public class IndicatorService {
             if (dissagregationAssignationToIndicatorWeb.getId() != null) {
                 Optional<CustomDissagregationAssignationToIndicator> dissagregationAssignationToIndicatorOp = indicator.getCustomDissagregationAssignationToIndicators().stream().filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicatorWeb.getId().equals(dissagregationAssignationToIndicator.getId())).findFirst();
                 dissagregationAssignationToIndicatorOp.ifPresent(customDissagregationAssignationToIndicator -> customDissagregationAssignationToIndicator.setState(dissagregationAssignationToIndicatorWeb.getState()));
-            }else{
+            } else {
                 // es nuevo
                 CustomDissagregationAssignationToIndicator da = new CustomDissagregationAssignationToIndicator();
                 da.setState(State.ACTIVO);
@@ -204,6 +204,6 @@ public class IndicatorService {
     }
 
     public List<IndicatorWeb> getByPeriodAssignmentAndState(Long periodId, State state) throws GeneralAppException {
-        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getByPeriodAssignmentAndState(periodId, state));
+        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getByPeriodAssignmentAndState(periodId, state), true, true, true);
     }
 }

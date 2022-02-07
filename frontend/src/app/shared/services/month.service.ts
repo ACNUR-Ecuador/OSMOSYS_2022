@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
-import {Month, MonthValues, QuarterResumeWeb, StartEndDatesWeb} from '../model/OsmosysModel';
+import {Month, MonthValues} from '../model/OsmosysModel';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 

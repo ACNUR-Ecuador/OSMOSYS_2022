@@ -5,7 +5,7 @@ import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {UtilsService} from '../../shared/services/utils.service';
 import {ProjectService} from '../../shared/services/project.service';
 import {ActivatedRoute} from '@angular/router';
-import {IndicatorExecutionResumeWeb, Project} from '../../shared/model/OsmosysModel';
+import {IndicatorExecution, Project} from '../../shared/model/OsmosysModel';
 import {ColumnTable} from '../../shared/model/UtilsModel';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
@@ -41,7 +41,7 @@ export class PartnersProjectComponent implements OnInit {
     public formItem: FormGroup;
     public states: SelectItem[];
     public project: Project;
-    public generalIndicators: IndicatorExecutionResumeWeb[];
+    public generalIndicators: IndicatorExecution[];
 
     // tslint:disable-next-line:variable-name
     _selectedColumnsGeneralIndicators: ColumnTable[];
@@ -96,9 +96,9 @@ export class PartnersProjectComponent implements OnInit {
         this._selectedColumnsGeneralIndicators = this.colsGeneralIndicators.filter(col => val.includes(col));
     }
 
-    viewDesagregationGeneralIndicator(parameters: Map<string, number | IndicatorExecutionResumeWeb>) {
+    viewDesagregationGeneralIndicator(parameters: Map<string, number | IndicatorExecution>) {
         const monthId = parameters.get('monthId') as number;
-        const indicatorExecution = parameters.get('indicator') as IndicatorExecutionResumeWeb;
+        const indicatorExecution = parameters.get('indicator') as IndicatorExecution;
         const ref = this.dialogService.open(GeneralIndicatorFormComponent, {
                 header: 'Indicador General: ' + indicatorExecution.indicator.description,
                 width: '90%',
@@ -121,9 +121,9 @@ export class PartnersProjectComponent implements OnInit {
         });
     }
 
-    viewDesagregationPerformanceIndicator(parameters: Map<string, number | IndicatorExecutionResumeWeb>) {
+    viewDesagregationPerformanceIndicator(parameters: Map<string, number | IndicatorExecution>) {
         const monthId = parameters.get('monthId') as number;
-        const indicatorExecution = parameters.get('indicator') as IndicatorExecutionResumeWeb;
+        const indicatorExecution = parameters.get('indicator') as IndicatorExecution;
         const ref = this.dialogService.open(PerformanceIndicatorFormComponent, {
                 header: 'Indicador: ' + this.indicatorPipe.transform(indicatorExecution.indicator),
                 width: '90%',

@@ -33,12 +33,6 @@ export class MenuService {
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
                 },
                 {
-                    label: 'changePassword',
-                    icon: 'pi pi-fw pi-user',
-                    routerLink: ['/users/changePassword'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
-                },
-                {
                     label: 'Configuración del sistema',
                     icon: 'pi pi-fw pi-cog',
                     roles: ['SUPER_ADMINISTRADOR'],
@@ -124,6 +118,12 @@ export class MenuService {
                     icon: 'pi pi-fw pi-cog',
                     routerLink: ['/administration/partnerProjectListAdministration'],
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR', 'PUNTO_FOCAL']
+                },
+                {
+                    label: 'Implementación Directa',
+                    icon: 'pi pi-fw pi-cog',
+                    routerLink: ['/administration/directImplementationAdministration'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']
                 },
 
             ]

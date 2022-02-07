@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {CustomDissagregationValues, IndicatorExecutionResumeWeb, IndicatorValue, Month, MonthValues} from '../../shared/model/OsmosysModel';
+import {CustomDissagregationValues, IndicatorExecution, IndicatorValue, Month, MonthValues} from '../../shared/model/OsmosysModel';
 import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
 import {MonthService} from '../../shared/services/month.service';
@@ -16,7 +16,7 @@ import {UserService} from '../../shared/services/user.service';
     styleUrls: ['./performance-indicator-form.component.scss']
 })
 export class PerformanceIndicatorFormComponent implements OnInit {
-    indicatorExecution: IndicatorExecutionResumeWeb;
+    indicatorExecution: IndicatorExecution;
     monthId: number;
     projectId: number;
     monthValues: MonthValues;

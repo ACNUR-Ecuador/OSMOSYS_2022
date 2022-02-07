@@ -7,12 +7,13 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.threeten.extra.YearQuarter;
 import org.unhcr.osmosys.daos.QuarterDao;
-import org.unhcr.osmosys.model.*;
+import org.unhcr.osmosys.model.Canton;
+import org.unhcr.osmosys.model.CustomDissagregation;
+import org.unhcr.osmosys.model.Month;
+import org.unhcr.osmosys.model.Quarter;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
 import org.unhcr.osmosys.model.enums.TotalIndicatorCalculationType;
-import org.unhcr.osmosys.webServices.model.QuarterResumeWeb;
-import org.unhcr.osmosys.webServices.model.QuarterWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
@@ -21,7 +22,10 @@ import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Stateless

@@ -62,6 +62,7 @@ import {AccordionModule} from 'primeng/accordion';
 import {CodeDescriptionListPipe} from '../shared/pipes/code-description-list.pipe';
 import {RippleModule} from 'primeng/ripple';
 import {IndicatorPipe} from '../shared/pipes/indicator.pipe';
+import { DirectImplementationAdministrationComponent } from './direct-implementation-administration/direct-implementation-administration.component';
 
 
 @NgModule({
@@ -79,7 +80,8 @@ import {IndicatorPipe} from '../shared/pipes/indicator.pipe';
         PartnerProjectAdministrationComponent,
         PartnerProjectListAdministrationComponent,
         GeneralIndicatorConfigurationComponent,
-        UserAdministrationComponent
+        UserAdministrationComponent,
+        DirectImplementationAdministrationComponent
     ],
     imports: [
         CommonModule,

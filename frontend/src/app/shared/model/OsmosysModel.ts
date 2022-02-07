@@ -308,41 +308,30 @@ export class DissagregationAssignationToGeneralIndicator {
     public dissagregationType: string;
 }
 
-export class IndicatorExecutionAdministrationResumeWeb {
+export class IndicatorExecution {
     public id: number;
     public commentary: string;
-    public target: number;
-    public indicatorType: string;
-    public indicator: Indicator;
-    public state: string;
-    public totalExecution: number;
-    public executionPercentage: number;
-    public quarters: QuarterResumeWeb[];
-}
-
-export class IndicatorExecutionGeneralIndicatorAdministrationResumeWeb extends IndicatorExecutionAdministrationResumeWeb {
-}
-
-export class IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb extends IndicatorExecutionAdministrationResumeWeb {
-    public projectStatement: Statement;
-    public activityDescription: string;
-    public locations: Canton[];
-}
-
-export class IndicatorExecutionResumeWeb {
-    public id: number;
-    public commentary: string;
-    public target: number;
-    public indicator: Indicator;
-    public projectStatement: Statement;
     public activityDescription: string;
     public indicatorType: string;
     public state: string;
+    public target: number;
+    public compassIndicator: boolean;
+    public indicator: Indicator;
+    public period: Period;
     public totalExecution: number;
     public executionPercentage: number;
     public lastReportedQuarter: Quarter;
     public lastReportedMonth: Month;
     public quarters: Quarter[];
+    public late: boolean;
+    public lateMonths: Month[];
+    public project: Project;
+    public projectStatement: Statement;
+    public reportingOffice: Office;
+    public assignedUser: User;
+    public assignedUserBackup: User;
+    public locations: Canton[];
+
 }
 
 export class Quarter {
@@ -355,7 +344,7 @@ export class Quarter {
     public totalExecution: number;
     public executionPercentage: number;
     public state: string;
-    public months: Month[];
+    public months?: Month[];
 }
 
 export class Month {
@@ -371,6 +360,7 @@ export class Month {
     public checked: boolean;
 }
 
+/********usado en pantalla*****/
 export class QuarterMonthResume {
     public quarterId: number;
     public quarterMonthCount: number;
@@ -394,22 +384,12 @@ export class QuarterMonthResume {
 }
 
 
-export class QuarterResumeWeb {
-    public id: number;
-    public quarter: string;
-    public commentary: string;
-    public order: number;
-    public year: number;
-    public target: number;
-    public totalExecution: number;
-    public executionPercentage: number;
-    public state: string;
-}
+
 
 export class TargetUpdateDTOWeb {
     public indicatorExecutionId: number;
     public indicatorType: EnumsIndicatorType;
-    public quarters: QuarterResumeWeb[];
+    public quarters: Quarter[];
     public totalTarget: number;
 }
 

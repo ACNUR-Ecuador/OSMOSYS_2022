@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {IndicatorExecutionResumeWeb, IndicatorValue, Month, MonthValues} from '../../shared/model/OsmosysModel';
+import {IndicatorExecution, IndicatorValue, Month, MonthValues} from '../../shared/model/OsmosysModel';
 import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {MonthService} from '../../shared/services/month.service';
 import {MessageService, SelectItem} from 'primeng/api';
@@ -16,7 +16,7 @@ import {UserService} from '../../shared/services/user.service';
     styleUrls: ['./general-indicator-form.component.scss']
 })
 export class GeneralIndicatorFormComponent implements OnInit {
-    indicatorExecution: IndicatorExecutionResumeWeb;
+    indicatorExecution: IndicatorExecution;
     monthId: number;
     projectId: number;
     monthValues: MonthValues;

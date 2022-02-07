@@ -1,0 +1,39 @@
+<p-card>
+    <ng-template pTemplate="header">
+        <h3 class="page-title">Administración de implementación directa
+            <h5 class="page-title">Asignación de indicadores a oficinas ACNUR</h5>
+        </h3>
+        <p-toast></p-toast>
+        <p-messages></p-messages>
+
+        <p-toolbar styleClass="p-mb-4">
+            <div class="p-toolbar-group-left">
+                <button pButton pRipple label="Crear Proyecto" icon="pi pi-plus"
+                        class="p-button-success p-mr-2 p-mb-2"
+                        (click)="createItem()"></button>
+            </div>
+            <form [formGroup]="periodForm">
+                <div class="p-field p-grid">
+
+                    <label for="periodI" class="p-col-fixed" style="width:100px; color: white;">Periodo:</label>
+                    <div class="p-col">
+                        <p-dropdown id="periodI" [options]="periods" optionLabel="year"
+                                    (onChange)="onPeriodChange($event.value)"></p-dropdown>
+                    </div>
+
+                </div>
+            </form>
+            <div class="p-toolbar-group-right">
+
+                <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+                        class="p-button-success p-mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+            </div>
+
+        </p-toolbar>
+
+    </ng-template>
+    Body Content
+    <ng-template pTemplate="footer">
+        Footer content here
+    </ng-template>
+</p-card>

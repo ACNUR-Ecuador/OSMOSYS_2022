@@ -1,5 +1,6 @@
 package org.unhcr.osmosys.services;
 
+import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.utils.DateUtils;
@@ -48,6 +49,9 @@ public class IndicatorExecutionService {
 
     @Inject
     ModelWebTransformationService modelWebTransformationService;
+
+    @Inject
+    AppConfigurationService appConfigurationService;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(IndicatorExecutionService.class);
@@ -256,19 +260,19 @@ public class IndicatorExecutionService {
     }
 
 
-    public List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> getGeneralIndicatorExecutionsAdministrationByProjectId(Long projectId) {
+    public List<IndicatorExecutionWeb> getGeneralIndicatorExecutionsAdministrationByProjectId(Long projectId) throws GeneralAppException {
         List<IndicatorExecution> ies = this.indicatorExecutionDao.getGeneralIndicatorExecutionsByProjectId(projectId);
-        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionGeneralIndicatorAdministrationResumesWeb(ies);
+        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(ies, false);
     }
 
-    public List<IndicatorExecutionGeneralIndicatorResumeWeb> getGeneralIndicatorExecutionsByProjectId(Long projectId, State state) {
+    public List<IndicatorExecutionWeb> getGeneralIndicatorExecutionsByProjectId(Long projectId, State state) throws GeneralAppException {
         List<IndicatorExecution> ies = this.indicatorExecutionDao.getGeneralIndicatorExecutionsByProjectIdAndState(projectId, state);
-        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionGeneralIndicatorResumesWeb(ies);
+        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(ies, false);
     }
 
-    public List<IndicatorExecutionPerformanceIndicatorResumeWeb> getPerformanceIndicatorExecutionsByProjectId(Long projectId, State state) {
+    public List<IndicatorExecutionWeb> getPerformanceIndicatorExecutionsByProjectId(Long projectId, State state) throws GeneralAppException {
         List<IndicatorExecution> ies = this.indicatorExecutionDao.getPerformanceIndicatorExecutionsByProjectIdAndState(projectId, state);
-        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionPerformanceIndicatorResumesWeb(ies);
+        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(ies, false);
     }
 
     public void updateTargets(TargetUpdateDTOWeb targetUpdateDTOWeb) throws GeneralAppException {
@@ -276,7 +280,7 @@ public class IndicatorExecutionService {
         if (ie.getIndicatorType().equals(IndicatorType.GENERAL)) {
             ie.setTarget(targetUpdateDTOWeb.getTotalTarget());
         } else {
-            for (QuarterResumeWeb quarterResumeWeb : targetUpdateDTOWeb.getQuarters()) {
+            for (QuarterWeb quarterResumeWeb : targetUpdateDTOWeb.getQuarters()) {
                 Optional<Quarter> quarterOptional = ie.getQuarters().stream().filter(quarter -> {
                     return quarter.getId().equals(quarterResumeWeb.getId());
                 }).findFirst();
@@ -362,9 +366,9 @@ public class IndicatorExecutionService {
         }
     }
 
-    public List<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb> getPerformanceIndicatorExecutionsAdministrationByProjectId(Long projectId) {
+    public List<IndicatorExecutionWeb> getPerformanceIndicatorExecutionsAdministrationByProjectId(Long projectId) throws GeneralAppException {
         List<IndicatorExecution> ies = this.indicatorExecutionDao.getPerformanceIndicatorExecutionsByProjectId(projectId);
-        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionPerformanceIndicatorAdministrationResumesWeb(ies);
+        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(ies, false);
     }
 
     public void validatePerformanceIndicatorAssignationToProject(IndicatorExecutionAssigmentWeb indicatorExecutionWeb) throws GeneralAppException {
@@ -385,9 +389,9 @@ public class IndicatorExecutionService {
         }
     }
 
-    public IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb getResumeAdministrationPerformanceIndicatorById(Long id) {
+    public IndicatorExecutionWeb getResumeAdministrationPerformanceIndicatorById(Long id, boolean getProject) throws GeneralAppException {
         return this.modelWebTransformationService.
-                indicatorExecutionToIndicatorExecutionPerformanceIndicatorAdministrationResumeWeb(this.indicatorExecutionDao.getPerformanceIndicatorExecutionById(id));
+                indicatorExecutionToIndicatorExecutionWeb(this.indicatorExecutionDao.getPerformanceIndicatorExecutionById(id), getProject);
     }
 
     public Long updateMonthValues(Long indicatorExecutionId, MonthValuesWeb monthValuesWeb) throws GeneralAppException {
@@ -763,6 +767,176 @@ public class IndicatorExecutionService {
                 this.saveOrUpdate(ie);
             }
         }
+    }
+
+    public List<IndicatorExecution> getLateIndicatorExecutionByProjectId(Long projectId) throws GeneralAppException {
+        LocalDate today = LocalDate.now();
+        int todayMonth = today.getMonth().getValue();
+        QuarterEnum todayQuarter = MonthEnum.getQuarterByMonthNumber(todayMonth);
+        int todayYear = today.getYear();
+        List<MonthEnum> monthsToControl = Arrays.stream(MonthEnum.values()).filter(monthEnum -> monthEnum.getOrder() < todayMonth).collect(Collectors.toList());
+        List<QuarterEnum> quartersToControl = Arrays.stream(QuarterEnum.values()).filter(quarterEnum -> quarterEnum.getOrder() < todayQuarter.getOrder()).collect(Collectors.toList());
+        // generals
+        List<IndicatorExecution> generalsLate = this.indicatorExecutionDao.getLateIndicatorExecutionGeneralByProjectIdMonthly(projectId, todayYear, monthsToControl);
+        // monthly indicator
+        List<IndicatorExecution> performancesLateMonthly = this.indicatorExecutionDao.getLateIndicatorExecutionPerformanceByProjectIdMonthly(projectId, todayYear, monthsToControl);
+        // quarterlyIndicator
+        List<IndicatorExecution> performancesLateQuarterly = this.indicatorExecutionDao.getLateIndicatorExecutionPerformanceByProjectIdQuarterly(projectId, todayYear, quartersToControl);
+        // biAnnualIndicator
+        List<QuarterEnum> quartersToControlBiannual;
+        if (todayMonth > 6) {
+            quartersToControlBiannual = Arrays.stream(QuarterEnum.values()).filter(quarterEnum -> quarterEnum.getOrder() < 7).collect(Collectors.toList());
+        } else {
+            quartersToControlBiannual = new ArrayList<>();
+        }
+        List<IndicatorExecution> performancesLateBiannualy = this.indicatorExecutionDao.getLateIndicatorExecutionPerformanceByProjectIdBiannual(projectId, todayYear, quartersToControlBiannual);
+        // anual
+        List<IndicatorExecution> performancesLateAnnualy = this.indicatorExecutionDao.getLateIndicatorExecutionPerformanceByProjectIdAnnual(projectId, todayYear);
+
+        List<IndicatorExecution> total = Stream.of(generalsLate, performancesLateMonthly, performancesLateQuarterly, performancesLateBiannualy, performancesLateAnnualy)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+        return total;
+    }
+
+    public List<IndicatorExecutionWeb> getAllDirectImplementationIndicatorByPeriodId(Long periodId) throws GeneralAppException {
+        List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getAllDirectImplementationIndicatorByPeriodId(periodId);
+        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(indicatorExecutions, false);
+    }
+
+    public List<Month> isLateIndicatorExecution(IndicatorExecution indicatorExecution) throws GeneralAppException {
+        LocalDate today = LocalDate.now();
+        int todayMonth = today.getMonth().getValue();
+        int todayYear = today.getYear();
+        QuarterEnum todayQuarter = MonthEnum.getQuarterByMonthNumber(todayMonth);
+
+        // obtengo los meses
+        List<Month> monthList = indicatorExecution.getQuarters().stream()
+                .filter(quarter -> quarter.getState().equals(State.ACTIVO))
+                .map(quarter -> {
+                    return new ArrayList<>(quarter.getMonths());
+                })
+                .flatMap(Collection::stream)
+                .filter(month -> month.getState().equals(State.ACTIVO))
+                .sorted(Comparator.comparingInt(Month::getOrder))
+                .collect(Collectors.toList());
+        // busco todos lo mese anteriores a hoy y que no esten reportados
+        Frecuency frecuency;
+        if (indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)) {
+            frecuency = Frecuency.MENSUAL;
+        } else {
+            frecuency = indicatorExecution.getIndicator().getFrecuency();
+        }
+        if (frecuency.equals(Frecuency.MENSUAL)) {
+            List<Month> lateMonths = monthList.stream()
+                    // lo que no esten reportados
+                    .filter(month -> month.getTotalExecution() == null)
+                    .filter(month -> {
+                        if (month.getYear().compareTo(todayYear) < 0) {
+                            return true;
+                        }
+                        if (month.getYear().compareTo(todayYear) == 0
+                                && month.getMonth().getOrder() < todayMonth
+                        ) {
+                            return true;
+                        }
+                        return false;
+                    }).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(lateMonths)) {
+                return lateMonths;
+            } else {
+                return new ArrayList<>();
+            }
+        }
+        if (frecuency.equals(Frecuency.TRIMESTRAL)) {
+            // las month of last quarter
+            QuarterEnum previousQuarter = null;
+            if (todayQuarter.getOrder() > 1) {
+                previousQuarter = QuarterEnum.getByQuarterNumber(todayQuarter.getOrder() - 1);
+            }
+            MonthEnum previousMonth;
+            if (previousQuarter != null) {
+                List<MonthEnum> monthtsTmp = MonthEnum.getMonthsByQuarter(previousQuarter);
+                previousMonth = monthtsTmp.stream()
+                        .sorted(Comparator.comparingInt(MonthEnum::getOrder).reversed())
+                        .findFirst().get();
+            } else {
+                previousMonth = null;
+            }
+
+
+            List<Month> lateMonths = monthList.stream()
+                    // lo que no esten reportados
+                    .filter(month -> month.getTotalExecution() == null)
+                    .filter(month -> {
+                        if (month.getYear().compareTo(todayYear) < 0) {
+                            return true;
+                        }
+                        if (month.getYear().compareTo(todayYear) == 0
+                                && previousMonth != null
+                                && month.getMonth().getOrder() <= previousMonth.getOrder()
+                        ) {
+                            return true;
+                        }
+                        return false;
+                    }).collect(Collectors.toList());
+
+            if (CollectionUtils.isNotEmpty(lateMonths)) {
+                return lateMonths;
+            } else {
+                return new ArrayList<>();
+            }
+        }
+
+        if (frecuency.equals(Frecuency.SEMESTRAL)) {
+            // las month of last quarter
+            MonthEnum previousMonth;
+            if (todayMonth > 6) {
+                previousMonth = MonthEnum.JUNIO;
+            } else {
+                previousMonth = null;
+            }
+            List<Month> lateMonths = monthList.stream()
+                    // lo que no esten reportados
+                    .filter(month -> month.getTotalExecution() == null)
+                    .filter(month -> {
+                        if (month.getYear().compareTo(todayYear) < 0) {
+                            return true;
+                        }
+                        if (month.getYear().compareTo(todayYear) == 0
+                                && previousMonth != null
+                                && month.getMonth().getOrder() <= previousMonth.getOrder()
+                        ) {
+                            return true;
+                        }
+                        return false;
+                    }).collect(Collectors.toList());
+
+            if (CollectionUtils.isNotEmpty(lateMonths)) {
+                return lateMonths;
+            } else {
+                return new ArrayList<>();
+            }
+        }
+        if (frecuency.equals(Frecuency.ANUAL)) {
+            // las month of last quarter
+            List<Month> lateMonths = monthList.stream()
+                    // lo que no esten reportados
+                    .filter(month -> month.getTotalExecution() == null)
+                    .filter(month -> {
+                        if (month.getYear().compareTo(todayYear) < 0) {
+                            return true;
+                        }
+                        return false;
+                    }).collect(Collectors.toList());
+
+            if (CollectionUtils.isNotEmpty(lateMonths)) {
+                return lateMonths;
+            } else {
+                return new ArrayList<>();
+            }
+        }
+        return new ArrayList<>();
     }
 }
 

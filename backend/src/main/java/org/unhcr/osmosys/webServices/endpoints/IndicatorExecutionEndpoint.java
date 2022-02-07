@@ -25,7 +25,7 @@ public class IndicatorExecutionEndpoint {
     @GET
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
-    public List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> getGeneralIndicatorExecutionsAdminByProjectId(@PathParam("projectId") Long projectId) {
+    public List<IndicatorExecutionWeb> getGeneralIndicatorExecutionsAdminByProjectId(@PathParam("projectId") Long projectId) throws GeneralAppException {
         return this.indicatorExecutionService.getGeneralIndicatorExecutionsAdministrationByProjectId(projectId);
     }
 
@@ -33,7 +33,7 @@ public class IndicatorExecutionEndpoint {
     @GET
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
-    public List<IndicatorExecutionGeneralIndicatorResumeWeb> getGeneralIndicatorExecutionsByProjectId(@PathParam("projectId") Long projectId) {
+    public List<IndicatorExecutionWeb> getGeneralIndicatorExecutionsByProjectId(@PathParam("projectId") Long projectId) throws GeneralAppException {
         return this.indicatorExecutionService.getGeneralIndicatorExecutionsByProjectId(projectId, State.ACTIVO);
     }
 
@@ -41,7 +41,7 @@ public class IndicatorExecutionEndpoint {
     @GET
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
-    public List<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb> getPerformanceIndicatorExecutionsAdminByProjectId(@PathParam("projectId") Long projectId) {
+    public List<IndicatorExecutionWeb> getPerformanceIndicatorExecutionsAdminByProjectId(@PathParam("projectId") Long projectId) throws GeneralAppException {
         return this.indicatorExecutionService.getPerformanceIndicatorExecutionsAdministrationByProjectId(projectId);
     }
 
@@ -49,8 +49,17 @@ public class IndicatorExecutionEndpoint {
     @GET
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
-    public List<IndicatorExecutionPerformanceIndicatorResumeWeb> getPerformanceIndicatorExecutionsByProjectId(@PathParam("projectId") Long projectId) {
+    public List<IndicatorExecutionWeb> getPerformanceIndicatorExecutionsByProjectId(@PathParam("projectId") Long projectId) throws GeneralAppException {
         return this.indicatorExecutionService.getPerformanceIndicatorExecutionsByProjectId(projectId, State.ACTIVO);
+    }
+
+    @Path("/performanceAllDirectImplementationByPeriodId/{periodId}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<IndicatorExecutionWeb> getAllPerformanceIndicatorExecutionsDirectImplementation(
+            @PathParam("periodId") Long periodId) throws GeneralAppException {
+        return this.indicatorExecutionService.getAllDirectImplementationIndicatorByPeriodId(periodId);
     }
 
 
@@ -89,9 +98,9 @@ public class IndicatorExecutionEndpoint {
     @POST
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
-    public IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb getResumeAdministrationPerformanceIndicatorById(Long id) throws GeneralAppException {
+    public IndicatorExecutionWeb getResumeAdministrationPerformanceIndicatorById(Long id) throws GeneralAppException {
 
-        return this.indicatorExecutionService.getResumeAdministrationPerformanceIndicatorById(id);
+        return this.indicatorExecutionService.getResumeAdministrationPerformanceIndicatorById(id, false);
 
     }
 

@@ -1,17 +1,20 @@
 package org.unhcr.osmosys.webServices.services;
 
+import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.security.servicio.UserService;
+import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.StatementDao;
 import org.unhcr.osmosys.model.*;
-import org.unhcr.osmosys.model.enums.DissagregationType;
-import org.unhcr.osmosys.model.enums.IndicatorType;
+import org.unhcr.osmosys.model.enums.*;
 import org.unhcr.osmosys.webServices.model.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -254,7 +257,7 @@ public class ModelWebTransformationService {
     //</editor-fold>
 
     //<editor-fold desc="Indicator">
-    public IndicatorWeb indicatorToIndicatorWeb(Indicator indicator) {
+    public IndicatorWeb indicatorToIndicatorWeb(Indicator indicator, boolean getMarkers, boolean getStatement, boolean getDissagregations) {
         if (indicator == null) {
             return null;
         }
@@ -272,11 +275,17 @@ public class ModelWebTransformationService {
         indicatorWeb.setCalculated(indicator.getCalculated());
         indicatorWeb.setTotalIndicatorCalculationType(indicator.getTotalIndicatorCalculationType());
         indicatorWeb.setCompassIndicator(indicator.getCompassIndicator());
-        List<MarkerWeb> markers = this.markersToMarkersWeb(indicator.getMarkers());
-        indicatorWeb.setMarkers(markers);
-        indicatorWeb.setStatement(this.statementToStatementWeb(indicator.getStatement()));
-        indicatorWeb.setDissagregationsAssignationToIndicator(this.dissagregationAssignationToIndicatorsToDissagregationAssignationToIndicatorsWeb(indicator.getDissagregationsAssignationToIndicator()));
-        indicatorWeb.setCustomDissagregationAssignationToIndicators(this.customDissagregationAssignationToIndicatorsToCustomDissagregationAssignationToIndicatorsWeb(indicator.getCustomDissagregationAssignationToIndicators()));
+        if (getMarkers) {
+            List<MarkerWeb> markers = this.markersToMarkersWeb(indicator.getMarkers());
+            indicatorWeb.setMarkers(markers);
+        }
+        if (getStatement) {
+            indicatorWeb.setStatement(this.statementToStatementWeb(indicator.getStatement(), false, false, false, false, false));
+        }
+        if (getDissagregations) {
+            indicatorWeb.setDissagregationsAssignationToIndicator(this.dissagregationAssignationToIndicatorsToDissagregationAssignationToIndicatorsWeb(indicator.getDissagregationsAssignationToIndicator()));
+            indicatorWeb.setCustomDissagregationAssignationToIndicators(this.customDissagregationAssignationToIndicatorsToCustomDissagregationAssignationToIndicatorsWeb(indicator.getCustomDissagregationAssignationToIndicators()));
+        }
         return indicatorWeb;
     }
 
@@ -314,10 +323,10 @@ public class ModelWebTransformationService {
         return indicator;
     }
 
-    public List<IndicatorWeb> indicatorsToIndicatorsWeb(List<Indicator> indicators) {
+    public List<IndicatorWeb> indicatorsToIndicatorsWeb(List<Indicator> indicators, boolean getMarkers, boolean getStatement, boolean getDissagregations) {
         List<IndicatorWeb> r = new ArrayList<>();
         for (Indicator indicator : indicators) {
-            r.add(this.indicatorToIndicatorWeb(indicator));
+            r.add(this.indicatorToIndicatorWeb(indicator, getMarkers, getStatement, getDissagregations));
         }
         return r;
     }
@@ -698,7 +707,7 @@ public class ModelWebTransformationService {
 
 
     //<editor-fold desc="Statement">
-    public StatementWeb statementToStatementWeb(Statement statement) {
+    public StatementWeb statementToStatementWeb(Statement statement, boolean getPeriodAssignations, boolean getArea, boolean getPilar, boolean getSituation, boolean getParent) {
         if (statement == null) {
             return null;
         }
@@ -708,14 +717,22 @@ public class ModelWebTransformationService {
         statementWeb.setProductCode(statement.getProductCode());
         statementWeb.setDescription(statement.getDescription());
         statementWeb.setState(statement.getState());
-        statementWeb.setParentStatement(this.statementToStatementWeb(statement.getParentStatement()));
-        statementWeb.setArea(this.areaToAreaWeb(statement.getArea()));
+        if (getParent) {
+            statementWeb.setParentStatement(this.statementToStatementWeb(statement.getParentStatement(), false, false, false, false, false));
+        }
+        if (getArea) {
+            statementWeb.setArea(this.areaToAreaWeb(statement.getArea()));
+        }
         statementWeb.setAreaType(statement.getAreaType());
-        statementWeb.setPillar(this.pillarToPillarWeb(statement.getPillar()));
-        statementWeb.setSituation(this.situationToSituationWeb(statement.getSituation()));
-
-        statementWeb.setPeriodStatementAsignations(this.periodStatementAsignationsToPeriodStatementAsignationsWeb(statement.getPeriodStatementAsignations()));
-
+        if (getPilar) {
+            statementWeb.setPillar(this.pillarToPillarWeb(statement.getPillar()));
+        }
+        if (getSituation) {
+            statementWeb.setSituation(this.situationToSituationWeb(statement.getSituation()));
+        }
+        if (getPeriodAssignations) {
+            statementWeb.setPeriodStatementAsignations(this.periodStatementAsignationsToPeriodStatementAsignationsWeb(statement.getPeriodStatementAsignations()));
+        }
         return statementWeb;
     }
 
@@ -770,10 +787,10 @@ public class ModelWebTransformationService {
         return statement;
     }
 
-    public List<StatementWeb> statementsToStatementsWeb(List<Statement> statements) {
+    public List<StatementWeb> statementsToStatementsWeb(List<Statement> statements, boolean getPeriodAssignations, boolean getArea, boolean getPilar, boolean getSituation, boolean getParent) {
         List<StatementWeb> r = new ArrayList<>();
         for (Statement statement : statements) {
-            r.add(this.statementToStatementWeb(statement));
+            r.add(this.statementToStatementWeb(statement, getPeriodAssignations, getArea, getPilar, getSituation, getParent));
         }
         return r;
     }
@@ -818,7 +835,7 @@ public class ModelWebTransformationService {
         w.setStartDate(project.getStartDate());
         w.setEndDate(project.getEndDate());
         w.setState(project.getState());
-        w.setFocalPoint(this.userService.userToUserWeb(project.getFocalPoint()));
+        w.setFocalPoint(this.userToUserWebSimple(project.getFocalPoint(), false, false));
         Set<Canton> cantones = project.getProjectLocationAssigments().stream()
                 .filter(projectLocationAssigment -> projectLocationAssigment.getState().equals(State.ACTIVO))
                 .map(projectLocationAssigment -> {
@@ -996,114 +1013,69 @@ public class ModelWebTransformationService {
     //</editor-fold>
 
     //<editor-fold desc="IndicatorExecution">
-    public IndicatorExecutionGeneralIndicatorAdministrationResumeWeb indicatorExecutionToIndicatorExecutionGeneralIndicatorAdministrationResumeWeb(IndicatorExecution indicatorExecution) {
-        IndicatorExecutionGeneralIndicatorAdministrationResumeWeb i = new IndicatorExecutionGeneralIndicatorAdministrationResumeWeb();
-        i.setId(indicatorExecution.getId());
-        IndicatorWeb indicatorWeb = new IndicatorWeb();
-        indicatorWeb.setDescription(indicatorExecution.getPeriod().getGeneralIndicator().getDescription());
-        i.setIndicator(indicatorWeb);
-        i.setIndicatorType(indicatorExecution.getIndicatorType());
-        i.setTotalExecution(indicatorExecution.getTotalExecution());
-        i.setTarget(indicatorExecution.getTarget());
-        i.setState(indicatorExecution.getState());
-        i.setQuarters(this.quartersToQuarterResumesWeb(indicatorExecution.getQuarters()));
-        i.setExecutionPercentage(indicatorExecution.getExecutionPercentage());
-        return i;
 
-    }
+    public IndicatorExecutionWeb indicatorExecutionToIndicatorExecutionWeb(IndicatorExecution i, boolean getProject) throws GeneralAppException {
 
-    public IndicatorExecutionGeneralIndicatorResumeWeb indicatorExecutionToIndicatorExecutionGeneralIndicatorResumeWeb(IndicatorExecution indicatorExecution) {
-        IndicatorExecutionGeneralIndicatorResumeWeb i = new IndicatorExecutionGeneralIndicatorResumeWeb();
-        i.setId(indicatorExecution.getId());
+        IndicatorExecutionWeb iw = new IndicatorExecutionWeb();
+        iw.setId(i.getId());
+        iw.setCommentary(i.getCommentary());
+        iw.setActivityDescription(i.getActivityDescription());
+        iw.setIndicatorType(i.getIndicatorType());
+        iw.setState(i.getState());
+        iw.setCompassIndicator(i.getCompassIndicator());
+        iw.setTotalExecution(i.getTotalExecution());
+        iw.setProjectStatement(this.statementToStatementWeb(i.getProjectStatement(), false, true, true, true, false));
+        if (getProject) {
+            iw.setProject(this.projectToProjectWeb(i.getProject()));
+        }
+        iw.setExecutionPercentage(i.getExecutionPercentage());
+        iw.setTarget(i.getTarget());
+        if (i.getIndicatorType().equals(IndicatorType.GENERAL)) {
+            IndicatorWeb indicatorWeb = new IndicatorWeb();
+            indicatorWeb.setIndicatorType(IndicatorType.GENERAL);
+            indicatorWeb.setMonitored(Boolean.TRUE);
+            indicatorWeb.setCompassIndicator(Boolean.FALSE);
+            indicatorWeb.setCode("General");
+            indicatorWeb.setDescription(i.getPeriod().getGeneralIndicator().getDescription());
+            iw.setIndicator(indicatorWeb);
 
-        IndicatorWeb indicatorWeb = new IndicatorWeb();
-        indicatorWeb.setIndicatorType(IndicatorType.GENERAL);
-        indicatorWeb.setMonitored(Boolean.TRUE);
-        indicatorWeb.setCompassIndicator(Boolean.FALSE);
-        indicatorWeb.setCode("General");
-        indicatorWeb.setDescription(indicatorExecution.getPeriod().getGeneralIndicator().getDescription());
-        i.setIndicator(indicatorWeb);
-        i.setIndicatorType(indicatorExecution.getIndicatorType());
-        i.setTotalExecution(indicatorExecution.getTotalExecution());
-        i.setTarget(indicatorExecution.getTarget());
-        i.setState(indicatorExecution.getState());
-        List<QuarterWeb> quarters = this.quartersToQuarterWeb(indicatorExecution.getQuarters());
-        quarters.sort(Comparator.comparing(QuarterWeb::getOrder));
-        List<QuarterWeb> reportedQuarters = quarters.stream()
-                .filter(quarterWeb -> quarterWeb.getTotalExecution() != null)
-                .collect(Collectors.toList());
-        if (CollectionUtils.isNotEmpty(reportedQuarters)) {
-            i.setLastReportedQuarter(reportedQuarters.get(reportedQuarters.size() - 1));
-            i.getLastReportedQuarter().getMonths().sort(Comparator.comparing(MonthWeb::getOrder));
-            List<MonthWeb> reportedMonths = i.getLastReportedQuarter().getMonths().stream()
-                    .filter(monthWeb -> monthWeb.getTotalExecution() != null)
-                    .collect(Collectors.toList());
-            if (CollectionUtils.isNotEmpty(reportedMonths)) {
-                i.setLastReportedMonth(reportedMonths.get(reportedMonths.size() - 1));
+
+        } else {
+            iw.setIndicator(this.indicatorToIndicatorWeb(i.getIndicator(), false, false, false));
+            iw.setReportingOffice(this.officeToOfficeWeb(i.getReportingOffice(), false));
+            iw.setAssignedUser(this.userService.userToUserWeb(i.getAssignedUser()));
+            iw.setAssignedUserBackup(this.userService.userToUserWeb(i.getAssignedUserBackup()));
+
+        }
+        iw.setQuarters(this.quartersToQuarterWeb(i.getQuarters()));
+        Optional<Quarter> lastReportedQuarter = i.getQuarters().stream()
+                .filter(quarter -> quarter.getState().equals(State.ACTIVO))
+                .filter(quarter -> quarter.getTotalExecution() != null)
+                .sorted(Comparator.comparingInt(Quarter::getOrder))
+                .findFirst();
+        if (lastReportedQuarter.isPresent()) {
+            iw.setLastReportedQuarter(this.quarterToQuarterWeb(lastReportedQuarter.get()));
+            Optional<Month> lastReportedMonth = lastReportedQuarter.get().getMonths()
+                    .stream()
+                    .filter(month -> month.getState().equals(State.ACTIVO))
+                    .filter(month -> month.getTotalExecution() != null)
+                    .sorted(Comparator.comparingInt(Month::getOrder))
+                    .findFirst();
+            if (lastReportedMonth.isPresent()) {
+                iw.setLastReportedMonth(this.monthToMonthWeb(lastReportedMonth.get()));
             }
         }
-        i.setQuarters(quarters);
-        i.setExecutionPercentage(indicatorExecution.getExecutionPercentage());
-        return i;
 
-    }
-
-    public IndicatorExecutionPerformanceIndicatorResumeWeb indicatorExecutionToIndicatorExecutionPerformanceIndicatorResumeWeb(IndicatorExecution indicatorExecution) {
-        IndicatorExecutionPerformanceIndicatorResumeWeb i = new IndicatorExecutionPerformanceIndicatorResumeWeb();
-        i.setId(indicatorExecution.getId());
-
-        IndicatorWeb indicatorWeb = new IndicatorWeb();
-        indicatorWeb.setIndicatorType(indicatorExecution.getIndicator().getIndicatorType());
-        indicatorWeb.setMonitored(indicatorExecution.getIndicator().getMonitored());
-        indicatorWeb.setCompassIndicator(indicatorExecution.getIndicator().getCompassIndicator());
-        indicatorWeb.setCode(indicatorExecution.getIndicator().getCode());
-        indicatorWeb.setDescription(indicatorExecution.getIndicator().getDescription());
-        indicatorWeb.setCategory(indicatorExecution.getIndicator().getCategory());
-        i.setIndicator(indicatorWeb);
-        i.setActivityDescription(indicatorExecution.getActivityDescription());
-        i.setIndicatorType(indicatorExecution.getIndicatorType());
-        i.setTotalExecution(indicatorExecution.getTotalExecution());
-        i.setTarget(indicatorExecution.getTarget());
-        i.setState(indicatorExecution.getState());
-        List<QuarterWeb> quarters = this.quartersToQuarterWeb(indicatorExecution.getQuarters());
-        quarters.sort(Comparator.comparing(QuarterWeb::getOrder));
-        List<QuarterWeb> reportedQuarters = quarters.stream()
-                .filter(quarterWeb -> quarterWeb.getTotalExecution() != null)
-                .collect(Collectors.toList());
-        if (CollectionUtils.isNotEmpty(reportedQuarters)) {
-            i.setLastReportedQuarter(reportedQuarters.get(reportedQuarters.size() - 1));
-            i.getLastReportedQuarter().getMonths().sort(Comparator.comparing(MonthWeb::getOrder));
-            List<MonthWeb> reportedMonths = i.getLastReportedQuarter().getMonths().stream()
-                    .filter(monthWeb -> monthWeb.getTotalExecution() != null)
-                    .collect(Collectors.toList());
-            if (CollectionUtils.isNotEmpty(reportedMonths)) {
-                i.setLastReportedMonth(reportedMonths.get(reportedMonths.size() - 1));
-            }
+        List<MonthWeb> lateMonths = this.getLateIndicatorExecutionMonths(iw);
+        if (CollectionUtils.isNotEmpty(lateMonths)) {
+            iw.setLateMonths(lateMonths);
+            iw.setLate(true);
+        } else {
+            iw.setLate(false);
         }
-        i.setQuarters(quarters);
 
-        i.setExecutionPercentage(indicatorExecution.getExecutionPercentage());
-        i.setProjectStatement(this.statementToStatementWeb(indicatorExecution.getProjectStatement()));
-        return i;
-
-    }
-
-    public IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb indicatorExecutionToIndicatorExecutionPerformanceIndicatorAdministrationResumeWeb(
-            IndicatorExecution indicatorExecution) {
-        IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb i = new IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb();
-        i.setId(indicatorExecution.getId());
-        i.setActivityDescription(indicatorExecution.getActivityDescription());
-        i.setIndicator(this.indicatorToIndicatorWeb(indicatorExecution.getIndicator()));
-        i.setIndicatorType(indicatorExecution.getIndicatorType());
-        i.setTotalExecution(indicatorExecution.getTotalExecution());
-        i.setTarget(indicatorExecution.getTarget());
-        i.setState(indicatorExecution.getState());
-        i.setQuarters(this.quartersToQuarterResumesWeb(indicatorExecution.getQuarters()));
-        i.setExecutionPercentage(indicatorExecution.getExecutionPercentage());
-        i.setQuarters(this.quartersToQuarterResumesWeb(indicatorExecution.getQuarters()));
-        i.setProjectStatement(this.statementToStatementWeb(indicatorExecution.getProjectStatement()));
         List<Canton> activeCantons =
-                indicatorExecution.getQuarters().stream()
+                i.getQuarters().stream()
                         .flatMap(quarter -> quarter.getMonths().stream())
                         .filter(month -> {
                             return month.getState().equals(State.ACTIVO);
@@ -1121,67 +1093,160 @@ public class ModelWebTransformationService {
                         })
                         .distinct()
                         .collect(Collectors.toList());
-        i.setLocations(this.cantonsToCantonsWeb(activeCantons));
-        return i;
+        iw.setLocations(this.cantonsToCantonsWeb(activeCantons));
+        return iw;
+
 
     }
 
-    public List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> indicatorExecutionsToIndicatorExecutionGeneralIndicatorAdministrationResumesWeb(List<IndicatorExecution> indicatorExecutions) {
-        List<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb> r = new ArrayList<>();
+    public List<MonthWeb> getLateIndicatorExecutionMonths(IndicatorExecutionWeb indicatorExecution) throws GeneralAppException {
+        LocalDate today = LocalDate.now();
+        int todayMonth = today.getMonth().getValue();
+        int todayYear = today.getYear();
+        QuarterEnum todayQuarter = MonthEnum.getQuarterByMonthNumber(todayMonth);
+
+        // obtengo los meses
+        List<MonthWeb> monthList = indicatorExecution.getQuarters().stream()
+                .filter(quarter -> quarter.getState().equals(State.ACTIVO))
+                .map(quarter -> {
+                    return new ArrayList<>(quarter.getMonths());
+                })
+                .flatMap(Collection::stream)
+                .filter(month -> month.getState().equals(State.ACTIVO))
+                .sorted(Comparator.comparingInt(MonthWeb::getOrder))
+                .collect(Collectors.toList());
+        // busco todos lo mese anteriores a hoy y que no esten reportados
+        Frecuency frecuency;
+        if (indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)) {
+            frecuency = Frecuency.MENSUAL;
+        } else {
+            frecuency = indicatorExecution.getIndicator().getFrecuency();
+        }
+        if (frecuency.equals(Frecuency.MENSUAL)) {
+            List<MonthWeb> lateMonths = monthList.stream()
+                    // lo que no esten reportados
+                    .filter(month -> month.getTotalExecution() == null)
+                    .filter(month -> {
+                        if (month.getYear().compareTo(todayYear) < 0) {
+                            return true;
+                        }
+                        if (month.getYear().compareTo(todayYear) == 0
+                                && month.getMonth().getOrder() < todayMonth
+                        ) {
+                            return true;
+                        }
+                        return false;
+                    }).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(lateMonths)) {
+                return lateMonths;
+            } else {
+                return new ArrayList<>();
+            }
+        }
+        if (frecuency.equals(Frecuency.TRIMESTRAL)) {
+            // las month of last quarter
+            QuarterEnum previousQuarter = null;
+            if (todayQuarter.getOrder() > 1) {
+                previousQuarter = QuarterEnum.getByQuarterNumber(todayQuarter.getOrder() - 1);
+            }
+            MonthEnum previousMonth;
+            if (previousQuarter != null) {
+                List<MonthEnum> monthtsTmp = MonthEnum.getMonthsByQuarter(previousQuarter);
+                previousMonth = monthtsTmp.stream()
+                        .sorted(Comparator.comparingInt(MonthEnum::getOrder).reversed())
+                        .findFirst().get();
+            } else {
+                previousMonth = null;
+            }
+
+
+            List<MonthWeb> lateMonths = monthList.stream()
+                    // lo que no esten reportados
+                    .filter(month -> month.getTotalExecution() == null)
+                    .filter(month -> {
+                        if (month.getYear().compareTo(todayYear) < 0) {
+                            return true;
+                        }
+                        if (month.getYear().compareTo(todayYear) == 0
+                                && previousMonth != null
+                                && month.getMonth().getOrder() <= previousMonth.getOrder()
+                        ) {
+                            return true;
+                        }
+                        return false;
+                    }).collect(Collectors.toList());
+
+            if (CollectionUtils.isNotEmpty(lateMonths)) {
+                return lateMonths;
+            } else {
+                return new ArrayList<>();
+            }
+        }
+
+        if (frecuency.equals(Frecuency.SEMESTRAL)) {
+            // las month of last quarter
+            MonthEnum previousMonth;
+            if (todayMonth > 6) {
+                previousMonth = MonthEnum.JUNIO;
+            } else {
+                previousMonth = null;
+            }
+            List<MonthWeb> lateMonths = monthList.stream()
+                    // lo que no esten reportados
+                    .filter(month -> month.getTotalExecution() == null)
+                    .filter(month -> {
+                        if (month.getYear().compareTo(todayYear) < 0) {
+                            return true;
+                        }
+                        if (month.getYear().compareTo(todayYear) == 0
+                                && previousMonth != null
+                                && month.getMonth().getOrder() <= previousMonth.getOrder()
+                        ) {
+                            return true;
+                        }
+                        return false;
+                    }).collect(Collectors.toList());
+
+            if (CollectionUtils.isNotEmpty(lateMonths)) {
+                return lateMonths;
+            } else {
+                return new ArrayList<>();
+            }
+        }
+        if (frecuency.equals(Frecuency.ANUAL)) {
+            // las month of last quarter
+            List<MonthWeb> lateMonths = monthList.stream()
+                    // lo que no esten reportados
+                    .filter(month -> month.getTotalExecution() == null)
+                    .filter(month -> {
+                        if (month.getYear().compareTo(todayYear) < 0) {
+                            return true;
+                        }
+                        return false;
+                    }).collect(Collectors.toList());
+
+            if (CollectionUtils.isNotEmpty(lateMonths)) {
+                return lateMonths;
+            } else {
+                return new ArrayList<>();
+            }
+        }
+        return new ArrayList<>();
+    }
+
+
+    public List<IndicatorExecutionWeb> indicatorExecutionsToIndicatorExecutionsWeb(List<IndicatorExecution> indicatorExecutions, boolean getProject) throws GeneralAppException {
+        List<IndicatorExecutionWeb> r = new ArrayList<>();
         for (IndicatorExecution indicatorExecution : indicatorExecutions) {
-            r.add(this.indicatorExecutionToIndicatorExecutionGeneralIndicatorAdministrationResumeWeb(indicatorExecution));
+            r.add(this.indicatorExecutionToIndicatorExecutionWeb(indicatorExecution, getProject));
         }
         return r;
     }
 
-    public List<IndicatorExecutionGeneralIndicatorResumeWeb> indicatorExecutionsToIndicatorExecutionGeneralIndicatorResumesWeb(List<IndicatorExecution> indicatorExecutions) {
-        List<IndicatorExecutionGeneralIndicatorResumeWeb> r = new ArrayList<>();
-        for (IndicatorExecution indicatorExecution : indicatorExecutions) {
-            r.add(this.indicatorExecutionToIndicatorExecutionGeneralIndicatorResumeWeb(indicatorExecution));
-        }
-        return r;
-    }
 
-    public List<IndicatorExecutionPerformanceIndicatorResumeWeb> indicatorExecutionsToIndicatorExecutionPerformanceIndicatorResumesWeb(List<IndicatorExecution> indicatorExecutions) {
-        List<IndicatorExecutionPerformanceIndicatorResumeWeb> r = new ArrayList<>();
-        for (IndicatorExecution indicatorExecution : indicatorExecutions) {
-            r.add(this.indicatorExecutionToIndicatorExecutionPerformanceIndicatorResumeWeb(indicatorExecution));
-        }
-        return r;
-    }
-
-    public List<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb> indicatorExecutionsToIndicatorExecutionPerformanceIndicatorAdministrationResumesWeb(List<IndicatorExecution> indicatorExecutions) {
-        List<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb> r = new ArrayList<>();
-        for (IndicatorExecution indicatorExecution : indicatorExecutions) {
-            r.add(this.indicatorExecutionToIndicatorExecutionPerformanceIndicatorAdministrationResumeWeb(indicatorExecution));
-        }
-        return r;
-    }
     //</editor-fold>
 
     //<editor-fold desc="Quarter">
-    public QuarterResumeWeb quarterToQuarterResumeWeb(Quarter quarter) {
-        QuarterResumeWeb q = new QuarterResumeWeb();
-        q.setId(quarter.getId());
-        q.setQuarter(quarter.getQuarter());
-        q.setCommentary(quarter.getCommentary());
-        q.setOrder(quarter.getOrder());
-        q.setYear(quarter.getYear());
-        q.setTarget(quarter.getTarget());
-        q.setTotalExecution(quarter.getTotalExecution());
-        q.setState(quarter.getState());
-        q.setExecutionPercentage(quarter.getExecutionPercentage());
-        return q;
-    }
-
-
-    public Set<QuarterResumeWeb> quartersToQuarterResumesWeb(Set<Quarter> quarters) {
-        Set<QuarterResumeWeb> r = new HashSet<>();
-        for (Quarter quarter : quarters) {
-            r.add(this.quarterToQuarterResumeWeb(quarter));
-        }
-        return r;
-    }
 
 
     public QuarterWeb quarterToQuarterWeb(Quarter quarter) {
@@ -1286,5 +1351,24 @@ public class ModelWebTransformationService {
         }
         return r;
     }
+    //</editor-fold>
+
+    //<editor-fold desc="User">
+    public UserWeb userToUserWebSimple(User user, Boolean setOffice, Boolean setOrganization) {
+        UserWeb uw = new UserWeb();
+        uw.setId(uw.getId());
+        uw.setName(uw.getName());
+        uw.setEmail(uw.getEmail());
+        uw.setUsername(uw.getUsername());
+        if (setOffice) {
+            uw.setOffice(this.officeToOfficeWeb(user.getOffice(), false));
+        }
+        if (setOrganization) {
+            uw.setOrganization(this.organizationToOrganizationWeb(user.getOrganization()));
+        }
+        return uw;
+
+    }
+
     //</editor-fold>
 }

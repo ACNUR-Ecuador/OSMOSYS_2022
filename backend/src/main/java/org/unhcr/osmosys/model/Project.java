@@ -23,19 +23,27 @@ import java.util.Set;
                 @ConstructorResult(
                         targetClass = ProjectResumeWeb.class,
                         columns = {
-                                @ColumnResult(name="id", type=Long.class),
-                                @ColumnResult(name="code", type=String.class),
-                                @ColumnResult(name="name", type=String.class),
-                                @ColumnResult(name="state", type=String.class),
-                                @ColumnResult(name="organizationId", type=Long.class),
-                                @ColumnResult(name="organizationDescription", type=String.class),
-                                @ColumnResult(name="organizationAcronym", type=String.class),
-                                @ColumnResult(name="periodId", type=Long.class),
-                                @ColumnResult(name="periodYear", type=Integer.class),
-                                @ColumnResult(name="startDate", type= LocalDateType.class),
-                                @ColumnResult(name="endDate", type=LocalDateType.class),
+                                @ColumnResult(name = "id", type = Long.class),
+                                @ColumnResult(name = "code", type = String.class),
+                                @ColumnResult(name = "name", type = String.class),
+                                @ColumnResult(name = "state", type = String.class),
+                                @ColumnResult(name = "organizationId", type = Long.class),
+                                @ColumnResult(name = "organizationDescription", type = String.class),
+                                @ColumnResult(name = "organizationAcronym", type = String.class),
+                                @ColumnResult(name = "periodId", type = Long.class),
+                                @ColumnResult(name = "periodYear", type = Integer.class),
+                                @ColumnResult(name = "startDate", type = LocalDateType.class),
+                                @ColumnResult(name = "endDate", type = LocalDateType.class),
                         }
                 )
+        }
+)
+@NamedEntityGraph(name = "projectWithData",
+        attributeNodes = {
+                @NamedAttributeNode("organization"),
+                @NamedAttributeNode("focalPoint"),
+                @NamedAttributeNode("period"),
+                @NamedAttributeNode("projectLocationAssigments"),
         }
 )
 public class Project extends BaseEntity<Long> {
@@ -67,17 +75,17 @@ public class Project extends BaseEntity<Long> {
     private Organization organization;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "focal_point_id",foreignKey = @ForeignKey(name = "fk_project_focal_point"))
+    @JoinColumn(name = "focal_point_id", foreignKey = @ForeignKey(name = "fk_project_focal_point"))
     private User focalPoint;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "period_id", foreignKey = @ForeignKey(name = "fk_project_period"))
     private Period period;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project",cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL)
     private Set<ProjectLocationAssigment> projectLocationAssigments = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project",cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL)
     private Set<IndicatorExecution> indicatorExecutions = new HashSet<>();
 
 
@@ -140,7 +148,7 @@ public class Project extends BaseEntity<Long> {
 
     public void addProjectLocationAssigment(ProjectLocationAssigment projectLocationAssigment) {
         projectLocationAssigment.setProject(this);
-        if(!this.projectLocationAssigments.add(projectLocationAssigment)){
+        if (!this.projectLocationAssigments.add(projectLocationAssigment)) {
             this.projectLocationAssigments.remove(projectLocationAssigment);
             this.projectLocationAssigments.add(projectLocationAssigment);
         }
@@ -172,7 +180,7 @@ public class Project extends BaseEntity<Long> {
 
     public void addIndicatorExecution(IndicatorExecution indicatorExecution) {
         indicatorExecution.setProject(this);
-        if(!this.indicatorExecutions.add(indicatorExecution)){
+        if (!this.indicatorExecutions.add(indicatorExecution)) {
             this.indicatorExecutions.remove(indicatorExecution);
             this.indicatorExecutions.add(indicatorExecution);
         }

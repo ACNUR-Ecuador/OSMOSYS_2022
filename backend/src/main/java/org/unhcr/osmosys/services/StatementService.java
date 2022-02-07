@@ -59,12 +59,12 @@ public class StatementService {
 
     public List<StatementWeb> getAll() {
         List<StatementWeb> r = new ArrayList<>();
-        return this.modelWebTransformationService.statementsToStatementsWeb(this.statementDao.findAll());
+        return this.modelWebTransformationService.statementsToStatementsWeb(this.statementDao.findAll(), true, true,true,true, true);
     }
 
     public List<StatementWeb> getByState(State state) {
         List<StatementWeb> r = new ArrayList<>();
-        return this.modelWebTransformationService.statementsToStatementsWeb(this.statementDao.getByState(state));
+        return this.modelWebTransformationService.statementsToStatementsWeb(this.statementDao.getByState(state), true,true,true,true, true);
     }
 
     public Long update(StatementWeb statementWeb) throws GeneralAppException {

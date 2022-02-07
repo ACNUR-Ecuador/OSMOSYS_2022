@@ -40,9 +40,9 @@ public class Month extends BaseEntity<Long> {
     private Integer year;
 
     @Column(name = "order_", nullable = false)
-    private int order;
+    private Integer order;
 
-    @ElementCollection(targetClass = SourceType.class,fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = SourceType.class,fetch = FetchType.LAZY)
     @CollectionTable(name = "month_source", schema = "osmosys",
             joinColumns = @JoinColumn(name = "month_id"))
     @Column(name = "source_type")
@@ -117,11 +117,11 @@ public class Month extends BaseEntity<Long> {
         this.year = year;
     }
 
-    public int getOrder() {
+    public Integer getOrder() {
         return order;
     }
 
-    public void setOrder(int order) {
+    public void setOrder(Integer order) {
         this.order = order;
     }
 

@@ -2,7 +2,6 @@ package org.unhcr.osmosys.model.enums;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -89,6 +88,30 @@ public enum MonthEnum implements EnumInterface {
                 return MonthEnum.DICIEMBRE;
             default: {
                 throw new GeneralAppException("Month enum no válido " + monthNumber);
+            }
+        }
+    }
+
+    public static QuarterEnum getQuarterByMonthNumber(int monthNumber) throws GeneralAppException {
+        switch (monthNumber) {
+            case 1:
+            case 2:
+            case 3:
+                return QuarterEnum.I;
+            case 4:
+            case 5:
+            case 6:
+                return QuarterEnum.III;
+            case 7:
+            case 8:
+            case 9:
+                return QuarterEnum.III;
+            case 10:
+            case 11:
+            case 12:
+                return QuarterEnum.IV;
+            default: {
+                throw new GeneralAppException("Month number no válido " + monthNumber);
             }
         }
     }

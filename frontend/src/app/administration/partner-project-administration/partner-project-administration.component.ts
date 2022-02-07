@@ -9,14 +9,11 @@ import {Location} from '@angular/common';
 import {
     Canton,
     CantonForList,
-    Indicator,
-    IndicatorExecutionAdministrationResumeWeb,
+    Indicator, IndicatorExecution,
     IndicatorExecutionAssigment,
-    IndicatorExecutionGeneralIndicatorAdministrationResumeWeb,
-    IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb,
     Period,
     Project,
-    QuarterResumeWeb,
+    Quarter,
     Statement,
     TargetUpdateDTOWeb
 } from '../../shared/model/OsmosysModel';
@@ -54,8 +51,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     public cantones: Canton[];
     public cantonesAvailable: Canton[];
 
-    public generalIndicators: IndicatorExecutionGeneralIndicatorAdministrationResumeWeb[] = [];
-    public performanceIndicators: IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb[] = [];
+    public generalIndicators: IndicatorExecution[] = [];
+    public performanceIndicators: IndicatorExecution[] = [];
     public organizations: SelectItem[];
     public states: SelectItem[];
     public formItem: FormGroup;
@@ -639,7 +636,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     updateTargets(
-        indicator: IndicatorExecutionAdministrationResumeWeb
+        indicator: IndicatorExecution
     ) {
         this.formTargets = this.fb.group({
             indicatorExecutionId: new FormControl(''),
@@ -708,7 +705,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     executionPercentage,
                     state
                 } = value;
-                const q: QuarterResumeWeb = {
+                const q: Quarter = {
                     id,
                     quarter,
                     commentary,
@@ -919,7 +916,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         }
     }
 
-    updatePerformanceIndicator(indicatorExecution: IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb) {
+    updatePerformanceIndicator(indicatorExecution: IndicatorExecution) {
         const period: Period = this.formItem.get('period').value as Period;
         this.messageService.clear();
         this.utilsService.resetForm(this.formPerformanceIndicator);

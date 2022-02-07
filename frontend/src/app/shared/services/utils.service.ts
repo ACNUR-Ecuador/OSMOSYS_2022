@@ -12,7 +12,7 @@ import {
     SelectItemWithOrder
 } from '../model/UtilsModel';
 import {EnumsService} from './enums.service';
-import {CustomDissagregationValues, IndicatorExecutionAdministrationResumeWeb, IndicatorValue} from '../model/OsmosysModel';
+import {CustomDissagregationValues, IndicatorExecution, IndicatorValue} from '../model/OsmosysModel';
 
 @Injectable({
     providedIn: 'root'
@@ -461,8 +461,11 @@ export class UtilsService {
         }
     }
 
-    getTargetNeedUpdate(indicatorExecution: IndicatorExecutionAdministrationResumeWeb) {
+    getTargetNeedUpdate(indicatorExecution: IndicatorExecution) {
         let result = false;
+        if (indicatorExecution.state === EnumsState.INACTIVE) {
+            return false;
+        }
         if (indicatorExecution.indicatorType !== EnumsIndicatorType.GENERAL) {
             if (indicatorExecution.quarters && indicatorExecution.quarters.length > 0) {
                 indicatorExecution.quarters.filter(value => {
@@ -489,7 +492,7 @@ export class UtilsService {
 
     getCurrentMonthNumber(): number {
         const today = new Date();
-         // January is 0!
+        // January is 0!
         return today.getMonth() + 1;
     }
 

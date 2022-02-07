@@ -25,11 +25,11 @@ public class Canton extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private State state;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "provincia_id", foreignKey = @ForeignKey(name = "fk_cantones_provincias"))
     private Provincia provincia;
 
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "office_id", foreignKey = @ForeignKey(name = "fk_cantones_offices"))
     private Office office;
 

@@ -14,6 +14,7 @@ import {PartnerProjectAdministrationComponent} from './partner-project-administr
 import {PartnerProjectListAdministrationComponent} from './partner-project-list-administration/partner-project-list-administration.component';
 import {GeneralIndicatorConfigurationComponent} from './general-indicator-configuration/general-indicator-configuration.component';
 import {UserAdministrationComponent} from './user-administration/user-administration.component';
+import {DirectImplementationAdministrationComponent} from './direct-implementation-administration/direct-implementation-administration.component';
 
 const routes: Routes = [
     {
@@ -33,6 +34,7 @@ const routes: Routes = [
             {path: 'generalIndicatorConfiguration', component: GeneralIndicatorConfigurationComponent},
             {path: 'partnerProjectAdministration', component: PartnerProjectAdministrationComponent},
             {path: 'partnerProjectListAdministration', component: PartnerProjectListAdministrationComponent},
+            {path: 'directImplementationAdministration', component: DirectImplementationAdministrationComponent},
         ]
     }
 ];

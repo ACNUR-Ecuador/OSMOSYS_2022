@@ -1,8 +1,6 @@
 import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environment';
-import {Observable} from 'rxjs';
-import {Project, QuarterResumeWeb, StartEndDatesWeb} from '../model/OsmosysModel';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 
 
 const mainServiceUrl = environment.base_url + '/quarters';

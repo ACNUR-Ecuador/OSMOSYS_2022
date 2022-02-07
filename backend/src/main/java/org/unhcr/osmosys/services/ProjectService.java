@@ -302,7 +302,7 @@ public class ProjectService {
     }
 
     public ProjectWeb getWebById(Long id) {
-        Project project = this.projectDao.find(id);
+        Project project = this.projectDao.findWithData(id);
         return this.modelWebTransformationService.projectToProjectWeb(project);
     }
 

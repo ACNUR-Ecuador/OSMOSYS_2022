@@ -2,9 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {Observable} from 'rxjs';
 import {
-    Indicator, IndicatorExecutionAssigment,
-    IndicatorExecutionGeneralIndicatorAdministrationResumeWeb,
-    IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb, IndicatorExecutionResumeWeb, IndicatorValue, MonthValues,
+    IndicatorExecution, IndicatorExecutionAssigment, IndicatorValue, MonthValues,
     TargetUpdateDTOWeb
 } from '../model/OsmosysModel';
 import {HttpClient} from '@angular/common/http';
@@ -20,23 +18,23 @@ export class IndicatorExecutionService {
     }
 
     public getGeneralIndicatorAdministrationResume(projectId: number):
-        Observable<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb[]> {
-        return this.http.get<IndicatorExecutionGeneralIndicatorAdministrationResumeWeb[]>(`${mainServiceUrl}/generalAdmin/${projectId}`);
+        Observable<IndicatorExecution[]> {
+        return this.http.get<IndicatorExecution[]>(`${mainServiceUrl}/generalAdmin/${projectId}`);
     }
 
     public getGeneralIndicatorResume(projectId: number):
-        Observable<IndicatorExecutionResumeWeb[]> {
-        return this.http.get<IndicatorExecutionResumeWeb[]>(`${mainServiceUrl}/generalByProjectId/${projectId}`);
+        Observable<IndicatorExecution[]> {
+        return this.http.get<IndicatorExecution[]>(`${mainServiceUrl}/generalByProjectId/${projectId}`);
     }
 
     public getPerformanceIndicatorAdministrationResume(projectId: number):
-        Observable<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb[]> {
-        return this.http.get<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb[]>(`${mainServiceUrl}/performanceAdminByProject/${projectId}`);
+        Observable<IndicatorExecution[]> {
+        return this.http.get<IndicatorExecution[]>(`${mainServiceUrl}/performanceAdminByProject/${projectId}`);
     }
 
     public getPerformanceIndicatorResume(projectId: number):
-        Observable<IndicatorExecutionResumeWeb[]> {
-        return this.http.get<IndicatorExecutionResumeWeb[]>(`${mainServiceUrl}/performanceByProjectId/${projectId}`);
+        Observable<IndicatorExecution[]> {
+        return this.http.get<IndicatorExecution[]>(`${mainServiceUrl}/performanceByProjectId/${projectId}`);
     }
 
     public updateTargets(targetUpdateDTOWeb: TargetUpdateDTOWeb): Observable<void> {
@@ -51,8 +49,9 @@ export class IndicatorExecutionService {
     }
 
     public getResumeAdministrationPerformanceIndicatorById(
-        indicatorExecutionId: number): Observable<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb> {
-        return this.http.post<IndicatorExecutionPerformanceIndicatorAdministrationResumeWeb>(`${mainServiceUrl}/getResumeAdministrationPerformanceIndicatorById`, indicatorExecutionId);
+        indicatorExecutionId: number): Observable<IndicatorExecution> {
+        // tslint:disable-next-line:max-line-length
+        return this.http.post<IndicatorExecution>(`${mainServiceUrl}/getResumeAdministrationPerformanceIndicatorById`, indicatorExecutionId);
     }
 
     public updateMonthValues(indicatorExecutionId: number, monthValues: MonthValues): Observable<number> {

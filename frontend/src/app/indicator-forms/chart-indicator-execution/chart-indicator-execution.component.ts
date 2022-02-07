@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {EnumsState} from '../../shared/model/UtilsModel';
 import * as ChartDataLabels from 'chartjs-plugin-datalabels';
-import {IndicatorExecutionResumeWeb, Month} from '../../shared/model/OsmosysModel';
+import {IndicatorExecution, Month} from '../../shared/model/OsmosysModel';
 
 @Component({
     selector: 'app-chart-indicator-execution',
@@ -10,7 +10,7 @@ import {IndicatorExecutionResumeWeb, Month} from '../../shared/model/OsmosysMode
 })
 export class ChartIndicatorExecutionComponent implements OnInit {
     @Input()
-    indicatorExecution: IndicatorExecutionResumeWeb;
+    indicatorExecution: IndicatorExecution;
     @Input()
     month: Month;
 

@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {IndicatorExecutionResumeWeb, Quarter, QuarterMonthResume} from '../../shared/model/OsmosysModel';
+import {IndicatorExecution, Quarter, QuarterMonthResume} from '../../shared/model/OsmosysModel';
 import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsState} from '../../shared/model/UtilsModel';
 
@@ -13,7 +13,7 @@ export class PartnersGeneralIndicatorQuarterListComponent implements OnInit {
     quarters: Quarter[];
 
     @Input()
-    indicatorExecution: IndicatorExecutionResumeWeb;
+    indicatorExecution: IndicatorExecution;
 
     @Output()
     callMonth = new EventEmitter<number>();

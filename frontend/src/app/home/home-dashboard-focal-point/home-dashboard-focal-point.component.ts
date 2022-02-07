@@ -1,6 +1,7 @@
 import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {
-    IndicatorExecutionResumeWeb, Month,
+    IndicatorExecution,
+    Month,
     Project, Quarter
 } from '../../shared/model/OsmosysModel';
 import {ProjectService} from '../../shared/services/project.service';
@@ -26,10 +27,10 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
 
     projects: SelectItem[] = [];
     selectedProject: Project;
-    generalIndicator: IndicatorExecutionResumeWeb;
-    performanceIndicators: IndicatorExecutionResumeWeb[];
+    generalIndicator: IndicatorExecution;
+    performanceIndicators: IndicatorExecution[];
     performanceIndicatorsSelectList: SelectItem[];
-    selectedPerformanceIndicator: IndicatorExecutionResumeWeb;
+    selectedPerformanceIndicator: IndicatorExecution;
     countPerformanceIndicators = 0;
     countPerformanceIndicatorsLate = 0;
     renderProject = false;
@@ -104,7 +105,7 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
         });
     }
 
-    isIndicatorExecutionLate(indicatorExecutionResumeWeb: IndicatorExecutionResumeWeb): boolean {
+    isIndicatorExecutionLate(indicatorExecutionResumeWeb: IndicatorExecution): boolean {
         if (!indicatorExecutionResumeWeb.lastReportedMonth) {
             return true;
         } else if (
@@ -191,7 +192,7 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
 
     }
 
-    createGeneralTargetChart(generalIndicator: IndicatorExecutionResumeWeb) {
+    createGeneralTargetChart(generalIndicator: IndicatorExecution) {
         this.chartBeneficiariesTarget = {
             labels: ['Valore totales del proyecto'],
             datasets: [
@@ -347,7 +348,7 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
         });
     }
 
-    loadPerformanceIndicator(indicatorExecution: IndicatorExecutionResumeWeb) {
+    loadPerformanceIndicator(indicatorExecution: IndicatorExecution) {
         this.createIndicatorTargetChart(indicatorExecution.quarters);
         let months: Month[] = [];
         indicatorExecution.quarters.forEach(value => {

@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {IndicatorExecutionResumeWeb, Project} from '../../shared/model/OsmosysModel';
+import {IndicatorExecution, Project} from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsType} from '../../shared/model/UtilsModel';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
 import {FilterService, MessageService, SelectItem} from 'primeng/api';
@@ -19,15 +19,15 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnC
     @Input()
     public project: Project;
     @Output()
-    callMonthParent = new EventEmitter<Map<string, number | IndicatorExecutionResumeWeb>>();
+    callMonthParent = new EventEmitter<Map<string, number | IndicatorExecution>>();
 
-    public generalIndicators: IndicatorExecutionResumeWeb[];
+    public generalIndicators: IndicatorExecution[];
     // tslint:disable-next-line:variable-name
     _selectedColumnsGeneralIndicators: ColumnTable[];
     colsGeneralIndicators: ColumnTable[];
 
     private states: SelectItem[];
-    private selectedIndicator: IndicatorExecutionResumeWeb;
+    private selectedIndicator: IndicatorExecution;
 
     constructor(
         private messageService: MessageService,
@@ -103,13 +103,13 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnC
     }
 
     callMonth(monthId: number) {
-        const parametersMap = new Map<string, number | IndicatorExecutionResumeWeb>();
+        const parametersMap = new Map<string, number | IndicatorExecution>();
         parametersMap.set('monthId', monthId);
         parametersMap.set('indicator', this.selectedIndicator);
         this.callMonthParent.emit(parametersMap);
     }
 
-    selectedIndicatorSet(indicator: IndicatorExecutionResumeWeb) {
+    selectedIndicatorSet(indicator: IndicatorExecution) {
         this.selectedIndicator = indicator;
     }
 

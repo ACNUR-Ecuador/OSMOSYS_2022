@@ -1,37 +1,46 @@
 package org.unhcr.osmosys.webServices.model;
 
 import com.sagatechs.generics.persistence.model.State;
-import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
-import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.IndicatorType;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class IndicatorExecutionWeb implements Serializable {
     private Long id;
     private String commentary;
-    private BigDecimal target;
-    private IndicatorWeb indicator;
-    private Boolean compassIndicator;
+    private String activityDescription;
     private IndicatorType indicatorType;
     private State state;
+    private BigDecimal target;
+    private Boolean compassIndicator;
+    private IndicatorWeb indicator;
     private PeriodWeb period;
     private BigDecimal totalExecution;
     private BigDecimal executionPercentage;
 
-    /*socios ii*/
+    private QuarterWeb lastReportedQuarter;
+    private MonthWeb lastReportedMonth;
+
+    private List<QuarterWeb> quarters = new ArrayList<>();
+    private Boolean late;
+    private List<MonthWeb> lateMonths;
+
+    /******socios*****/
     private ProjectWeb project;
+    private StatementWeb projectStatement;
     /* implementación directa*/
     private OfficeWeb reportingOffice;
     private UserWeb assignedUser;
     private UserWeb assignedUserBackup;
-    private Set<MarkerWeb> markers = new HashSet<>();
+
+
+    /**************administration*********/
+    private List<CantonWeb> locations;
 
     public Long getId() {
         return id;
@@ -49,28 +58,12 @@ public class IndicatorExecutionWeb implements Serializable {
         this.commentary = commentary;
     }
 
-    public BigDecimal getTarget() {
-        return target;
+    public String getActivityDescription() {
+        return activityDescription;
     }
 
-    public void setTarget(BigDecimal target) {
-        this.target = target;
-    }
-
-    public IndicatorWeb getIndicator() {
-        return indicator;
-    }
-
-    public void setIndicator(IndicatorWeb indicator) {
-        this.indicator = indicator;
-    }
-
-    public Boolean getCompassIndicator() {
-        return compassIndicator;
-    }
-
-    public void setCompassIndicator(Boolean compassIndicator) {
-        this.compassIndicator = compassIndicator;
+    public void setActivityDescription(String activityDescription) {
+        this.activityDescription = activityDescription;
     }
 
     public IndicatorType getIndicatorType() {
@@ -87,6 +80,30 @@ public class IndicatorExecutionWeb implements Serializable {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public BigDecimal getTarget() {
+        return target;
+    }
+
+    public void setTarget(BigDecimal target) {
+        this.target = target;
+    }
+
+    public Boolean getCompassIndicator() {
+        return compassIndicator;
+    }
+
+    public void setCompassIndicator(Boolean compassIndicator) {
+        this.compassIndicator = compassIndicator;
+    }
+
+    public IndicatorWeb getIndicator() {
+        return indicator;
+    }
+
+    public void setIndicator(IndicatorWeb indicator) {
+        this.indicator = indicator;
     }
 
     public PeriodWeb getPeriod() {
@@ -113,12 +130,44 @@ public class IndicatorExecutionWeb implements Serializable {
         this.executionPercentage = executionPercentage;
     }
 
+    public QuarterWeb getLastReportedQuarter() {
+        return lastReportedQuarter;
+    }
+
+    public void setLastReportedQuarter(QuarterWeb lastReportedQuarter) {
+        this.lastReportedQuarter = lastReportedQuarter;
+    }
+
+    public MonthWeb getLastReportedMonth() {
+        return lastReportedMonth;
+    }
+
+    public void setLastReportedMonth(MonthWeb lastReportedMonth) {
+        this.lastReportedMonth = lastReportedMonth;
+    }
+
+    public List<QuarterWeb> getQuarters() {
+        return quarters;
+    }
+
+    public void setQuarters(List<QuarterWeb> quarters) {
+        this.quarters = quarters;
+    }
+
     public ProjectWeb getProject() {
         return project;
     }
 
     public void setProject(ProjectWeb project) {
         this.project = project;
+    }
+
+    public StatementWeb getProjectStatement() {
+        return projectStatement;
+    }
+
+    public void setProjectStatement(StatementWeb projectStatement) {
+        this.projectStatement = projectStatement;
     }
 
     public OfficeWeb getReportingOffice() {
@@ -145,11 +194,27 @@ public class IndicatorExecutionWeb implements Serializable {
         this.assignedUserBackup = assignedUserBackup;
     }
 
-    public Set<MarkerWeb> getMarkers() {
-        return markers;
+    public List<CantonWeb> getLocations() {
+        return locations;
     }
 
-    public void setMarkers(Set<MarkerWeb> markers) {
-        this.markers = markers;
+    public void setLocations(List<CantonWeb> locations) {
+        this.locations = locations;
+    }
+
+    public Boolean getLate() {
+        return late;
+    }
+
+    public void setLate(Boolean late) {
+        this.late = late;
+    }
+
+    public List<MonthWeb> getLateMonths() {
+        return lateMonths;
+    }
+
+    public void setLateMonths(List<MonthWeb> lateMonths) {
+        this.lateMonths = lateMonths;
     }
 }

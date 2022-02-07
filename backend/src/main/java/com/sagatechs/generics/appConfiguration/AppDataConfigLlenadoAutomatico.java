@@ -83,6 +83,12 @@ public class AppDataConfigLlenadoAutomatico {
         instantiateConfigurationValues("path to folder files",
                 "path to folder files",
                 AppConfigurationKey.FILE_DIRECTORY, "FILE_DIRECTORY");
+        instantiateConfigurationValues("alert days to report of month, comma separeted ",
+                "alert days to report of month, comma separeted ",
+                AppConfigurationKey.ALERT_DAYS, "5");
+        instantiateConfigurationValues("warning days of month to report, comma separated",
+                "warning days of month to report, comma separated",
+                AppConfigurationKey.WARNING_DAYS, "10");
     }
 
     @SuppressWarnings("SameParameterValue")
