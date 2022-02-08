@@ -2,4 +2,24 @@
   display: none;
 }
 
+.loader-container.loadershow {
+  display: block;
+}
+
+.loader-wrapper {
+  height: 100%;
+  width: 100%;
+  display: block;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  z-index: 1001;
+  top: 0;
+}
+
+.loader {
+  position: relative;
+  margin: auto;
+}
+
 /*# sourceMappingURL=loader.component.css.map */
