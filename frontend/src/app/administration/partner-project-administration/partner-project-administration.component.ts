@@ -123,44 +123,17 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.showLocationMenu = true;
-
-        this.cols = [
-            {field: 'provincia.description', header: 'Provincia', type: ColumnDataType.text},
-            {field: 'description', header: 'Cantón', type: ColumnDataType.text}
-        ];
-
-        this.colsCantonList = [
-            {field: 'provincia.description', header: 'Provincia', type: ColumnDataType.text},
-            {field: 'description', header: 'Cantón', type: ColumnDataType.text},
-            {field: 'enabled', header: 'Activo', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe}
-        ];
-        this.colsCantonListNotEditable = this.colsCantonList.filter(value => {
-            return value.field !== 'enabled';
-        });
         this.createForms();
         this.createTables();
         this.loadOptions();
+        this.showLocationMenu = true;
+
         if (this.idProjectParam) {
             const idProject = Number(this.idProjectParam);
             this.loadProject(idProject);
 
         } else if (this.idPeriodParam) {
-            this.periodService.getById(this.idPeriodParam as number).subscribe(value => {
-                this.periods = [];
-                this.periods.push(value);
-                const project = new Project();
-                project.period = value;
-
-                this.formItem.patchValue(project);
-            }, error => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error al cargar el periodo',
-                    detail: error.error.message,
-                    life: 3000
-                });
-            });
+            this.loadPeriod();
         } else {
             this.messageService.add({
                 severity: 'error',
@@ -170,6 +143,24 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             });
         }
         this.registerFilters();
+    }
+
+    private loadPeriod() {
+        this.periodService.getById(this.idPeriodParam as number).subscribe(value => {
+            this.periods = [];
+            this.periods.push(value);
+            const project = new Project();
+            project.period = value;
+
+            this.formItem.patchValue(project);
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al cargar el periodo',
+                detail: error.error.message,
+                life: 3000
+            });
+        });
     }
 
     private loadProject(idProject: number) {
@@ -205,8 +196,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             });
             this.periods = [];
             this.periods.push(period);
-            this.loadPerformanceIndicatorsOptions(period.id);
-            this.loadGeneralIndicators(id);
+            this.loadPerformanceIndicatorsOptions(value as Project);
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -302,6 +292,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             });
         });
 
+
         this.organizationService.getByState(EnumsState.ACTIVE).subscribe(value => {
             this.organizations = value.filter(value1 => {
                 return value1.acronym.toLowerCase() !== 'acnur';
@@ -316,9 +307,11 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 life: 3000
             });
         });
+
         this.enumsService.getByType(EnumsType.State).subscribe(value => {
             this.states = value;
         });
+
         this.userService.getActiveUNHCRUsers().subscribe(value => {
             this.focalPoints = value;
         }, error => {
@@ -349,11 +342,10 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             });
         });
 
-
     }
 
-    loadPerformanceIndicatorsOptions(periodId: number) {
-        this.indicatorService.getByPeriodAssignment(periodId).subscribe(value => {
+    loadPerformanceIndicatorsOptions(project: Project) {
+        this.indicatorService.getByPeriodAssignment(project.period.id).subscribe(value => {
             this.indicatorOptions = value
                 .map(value1 => {
                     const selectItem: SelectItem = {
@@ -362,6 +354,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     };
                     return selectItem;
                 });
+            this.loadGeneralIndicators(project.id);
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -551,6 +544,13 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     this.showLocationsDialog = false;
                 }
             }
+            if (
+                (agregatedLocation && agregatedLocation.length > 0)
+                ||
+                (deletedLocations && deletedLocations.length > 0)
+            ) {
+                this.formItem.get('locations').markAsDirty();
+            }
             this.formItem.get('locations').patchValue(cantonesG);
         }
     }
@@ -603,6 +603,19 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     private createTables() {
+        this.cols = [
+            {field: 'provincia.description', header: 'Provincia', type: ColumnDataType.text},
+            {field: 'description', header: 'Cantón', type: ColumnDataType.text}
+        ];
+
+        this.colsCantonList = [
+            {field: 'provincia.description', header: 'Provincia', type: ColumnDataType.text},
+            {field: 'description', header: 'Cantón', type: ColumnDataType.text},
+            {field: 'enabled', header: 'Activo', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe}
+        ];
+        this.colsCantonListNotEditable = this.colsCantonList.filter(value => {
+            return value.field !== 'enabled';
+        });
         this.colsGeneralIndicators = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
             // {field: 'commentary', header: 'Código', type: ColumnDataType.numeric},
@@ -943,7 +956,10 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         console.warn(projectCantons);
         editinItem.locations = projectCantons;
         editinItem.projectStatement = indicatorExecution.projectStatement;
-        editinItem.indicator = indicatorExecution.indicator;
+        editinItem.indicator = this.indicatorOptions
+            .map(value => {
+                return value.value;
+            }).filter(value => value.id === indicatorExecution.indicator.id).pop();
         editinItem.activityDescription = indicatorExecution.activityDescription;
         this.formPerformanceIndicator.get('indicator').disable();
         this.formPerformanceIndicator.patchValue(editinItem);
@@ -967,10 +983,15 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     indicatorHasLocationDissagregation(indicator: Indicator): boolean {
-        if (!indicator) {
+        const indicatorTotal: Indicator = this.indicatorOptions.map(value => {
+            return value.value as Indicator;
+        }).filter(value => {
+            return indicator.id === value.id;
+        }).pop();
+        if (!indicatorTotal) {
             return false;
         }
-        return indicator.dissagregationsAssignationToIndicator
+        return indicatorTotal.dissagregationsAssignationToIndicator
             .filter(value => {
                 return value.state === EnumsState.ACTIVE;
             })

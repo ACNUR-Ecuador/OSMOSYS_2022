@@ -11,6 +11,7 @@ import org.unhcr.osmosys.model.enums.QuarterEnum;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,15 +44,23 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
 
     public List<IndicatorExecution> getGeneralIndicatorExecutionsByProjectId(Long projectId) {
         IndicatorType indicatorType = IndicatorType.GENERAL;
+        State active = State.ACTIVO;
         String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
                 " left join fetch o.quarters q " +
+                " left join fetch q.months m " +
+                " left join fetch m.sources sou " +
+                " left join fetch m.indicatorValues iv " +
+                " left join fetch iv.location can " +
+                " left join fetch can.provincia " +
                 " left join fetch o.period p " +
                 " left join fetch p.generalIndicator " +
                 " WHERE o.project.id = :projectId" +
-                " and o.indicatorType =: generalType ";
+                " and o.indicatorType = :generalType " +
+                " and iv.state = :active ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("projectId", projectId);
         q.setParameter("generalType", indicatorType);
+        q.setParameter("active", active);
         return q.getResultList();
     }
 
@@ -67,12 +76,14 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " left join fetch o.period p " +
                 " left join fetch p.generalIndicator " +
                 " WHERE o.project.id = :projectId" +
-                " and o.indicatorType =: generalType " +
-                " and o.state =: state ";
+                " and o.state = :state " +
+                " and iv.state = :state " +
+                " and o.indicatorType =: generalType ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("projectId", projectId);
         q.setParameter("generalType", indicatorType);
         q.setParameter("state", state);
+
         return q.getResultList();
     }
 
@@ -89,15 +100,13 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " left join fetch m.indicatorValues iv " +
                 " left join fetch iv.location can " +
                 " left join fetch can.provincia " +
-                // " left join fetch iv.location " +
-                // " left join fetch m.indicatorValuesIndicatorValueCustomDissagregations ivc " +
                 " left join fetch o.period p " +
                 " left join fetch p.generalIndicator " +
                 " left join fetch o.indicator " +
 
                 " WHERE o.project.id = :projectId" +
                 " and o.indicatorType <> :generalType " +
-                " and o.state = :state "+
+                " and o.state = :state " +
                 " and iv.state = :state ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("projectId", projectId);
@@ -109,14 +118,26 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
     public List<IndicatorExecution> getPerformanceIndicatorExecutionsByProjectId(Long projectId) {
         IndicatorType indicatorType = IndicatorType.GENERAL;
         String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
-                " left join fetch o.quarters " +
+                " left join fetch o.projectStatement pst " +
+                " left join fetch pst.area " +
+                " left join fetch pst.situation " +
+                " left join fetch pst.pillar " +
+                " left join fetch o.quarters q " +
+                " left join fetch q.months m " +
+                " left join fetch m.sources  " +
+                " left join fetch m.indicatorValues iv " +
+                " left join fetch iv.location can " +
+                " left join fetch can.provincia " +
                 " left join fetch o.period p " +
+                " left join fetch p.generalIndicator " +
                 " left join fetch o.indicator " +
                 " WHERE o.project.id = :projectId" +
-                " and o.indicatorType <>: generalType ";
+                " and o.indicatorType <>: generalType " +
+                " and iv.state = :state ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("projectId", projectId);
         q.setParameter("generalType", indicatorType);
+        q.setParameter("state", State.ACTIVO);
         return q.getResultList();
     }
 
@@ -177,7 +198,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
     }
 
     public List<IndicatorExecution> getLateIndicatorExecutionPerformanceByProjectIdMonthly(Long id, Integer yearToControl, List<MonthEnum> monthsToControl) {
-        if(CollectionUtils.isEmpty(monthsToControl)){
+        if (CollectionUtils.isEmpty(monthsToControl)) {
             return new ArrayList<>();
         }
         IndicatorType generalType = IndicatorType.GENERAL;
@@ -230,7 +251,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
 
         if (CollectionUtils.isNotEmpty(quartersToControl)) {
             jpql += " and ( m.year < :year or (m.year =:year and q.quarter in (:quartersToControl))) ";
-        }else {
+        } else {
             jpql += " and ( m.year < :year )) ";
         }
 
@@ -280,7 +301,8 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
 
         q.setParameter("year", yearToControl);
         if (CollectionUtils.isEmpty(quartersToControl)) {
-            q.setParameter("quartersToControl", quartersToControl);        }
+            q.setParameter("quartersToControl", quartersToControl);
+        }
         return q.getResultList();
     }
 

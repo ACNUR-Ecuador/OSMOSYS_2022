@@ -53,6 +53,9 @@ public class IndicatorExecutionService {
     @Inject
     AppConfigurationService appConfigurationService;
 
+    @Inject
+    StatementService statementService;
+
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(IndicatorExecutionService.class);
 
@@ -651,7 +654,8 @@ public class IndicatorExecutionService {
             throw new GeneralAppException("El indicador no corresponde al proyecto (Id:" + indicatorExecutionAssigmentWeb.getId() + " projectId" + indicatorExecutionAssigmentWeb.getId() + ")", Response.Status.BAD_REQUEST);
         }
         indicatorExecution.setState(indicatorExecutionAssigmentWeb.getState());
-        indicatorExecution.setProjectStatement(this.modelWebTransformationService.statementWebToStatement(indicatorExecutionAssigmentWeb.getProjectStatement()));
+
+        indicatorExecution.setProjectStatement(this.statementService.getById(indicatorExecutionAssigmentWeb.getProjectStatement().getId()));
         indicatorExecution.setActivityDescription(indicatorExecutionAssigmentWeb.getActivityDescription());
         // actualizo locations
         if (CollectionUtils.isNotEmpty(

@@ -3,7 +3,7 @@ package org.unhcr.osmosys.webServices.services;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
-import com.sagatechs.generics.security.servicio.UserService;
+// import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
@@ -26,8 +26,6 @@ public class ModelWebTransformationService {
     @Inject
     StatementDao statementDao;
 
-    @Inject
-    UserService userService;
 
     //<editor-fold desc="Areas">
     public List<AreaWeb> areasToAreasWeb(List<Area> areas) {
@@ -835,7 +833,7 @@ public class ModelWebTransformationService {
         w.setStartDate(project.getStartDate());
         w.setEndDate(project.getEndDate());
         w.setState(project.getState());
-        w.setFocalPoint(this.userToUserWebSimple(project.getFocalPoint(), false, false));
+        w.setFocalPoint(this.userToUserWebSimple(project.getFocalPoint(), true, true));
         Set<Canton> cantones = project.getProjectLocationAssigments().stream()
                 .filter(projectLocationAssigment -> projectLocationAssigment.getState().equals(State.ACTIVO))
                 .map(projectLocationAssigment -> {
@@ -1041,10 +1039,10 @@ public class ModelWebTransformationService {
 
 
         } else {
-            iw.setIndicator(this.indicatorToIndicatorWeb(i.getIndicator(), false, false, false));
+            iw.setIndicator(this.indicatorToIndicatorWeb(i.getIndicator(), false, true, false));
             iw.setReportingOffice(this.officeToOfficeWeb(i.getReportingOffice(), false));
-            iw.setAssignedUser(this.userService.userToUserWeb(i.getAssignedUser()));
-            iw.setAssignedUserBackup(this.userService.userToUserWeb(i.getAssignedUserBackup()));
+            iw.setAssignedUser(this.userToUserWebSimple(i.getAssignedUser(), false, false));
+            iw.setAssignedUserBackup(this.userToUserWebSimple(i.getAssignedUserBackup(), false, false));
 
         }
         iw.setQuarters(this.quartersToQuarterWeb(i.getQuarters()));
@@ -1355,11 +1353,15 @@ public class ModelWebTransformationService {
 
     //<editor-fold desc="User">
     public UserWeb userToUserWebSimple(User user, Boolean setOffice, Boolean setOrganization) {
+        if(user==null){
+            return null;
+        }
         UserWeb uw = new UserWeb();
-        uw.setId(uw.getId());
-        uw.setName(uw.getName());
-        uw.setEmail(uw.getEmail());
-        uw.setUsername(uw.getUsername());
+        uw.setId(user.getId());
+        uw.setName(user.getName());
+        uw.setEmail(user.getEmail());
+        uw.setState(user.getState());
+        uw.setUsername(user.getUsername());
         if (setOffice) {
             uw.setOffice(this.officeToOfficeWeb(user.getOffice(), false));
         }
@@ -1367,6 +1369,14 @@ public class ModelWebTransformationService {
             uw.setOrganization(this.organizationToOrganizationWeb(user.getOrganization()));
         }
         return uw;
+
+    }
+    public List<UserWeb> usersToUsersWebSimple(List<User> users, Boolean setOffice, Boolean setOrganization) {
+        List<UserWeb> r = new ArrayList<>();
+        for (User user : users) {
+            r.add(this.userToUserWebSimple(user,true,true));
+        }
+        return r;
 
     }
 

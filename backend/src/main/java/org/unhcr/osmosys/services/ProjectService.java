@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Stateless
 public class ProjectService {
@@ -184,10 +185,12 @@ public class ProjectService {
             }
         });
 
-
+        List<Long> cantonesToCreateIds = cantonesToCreate.stream().map(Canton::getId).collect(Collectors.toList());
         for (IndicatorExecution indicatorExecution : project.getIndicatorExecutions()) {
 
-            this.indicatorExecutionService.updateIndicatorExecutionLocationsByAssignation(indicatorExecution, cantonesToCreate);
+            if(CollectionUtils.isNotEmpty(cantonesToCreate)){
+                this.indicatorExecutionService.updateIndicatorExecutionLocationsByAssignation(indicatorExecution, cantonesToCreate);
+            }
             // tengo q activar y desactivar
             // si es general siempre activo y desactivo
             if (indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)) {
@@ -214,12 +217,14 @@ public class ProjectService {
                                 month.getIndicatorValues().forEach(indicatorValue -> {
                                     if (DissagregationType.getLocationDissagregationTypes().contains(indicatorValue.getDissagregationType())) {
                                         // busco para activar
-                                        if (locationsToActive.contains(indicatorValue.getLocation().getId()) && updateAllLocationsIndicators) {
-                                            indicatorValue.setState(State.ACTIVO);
-                                        } else if (locationsToActive.contains(indicatorValue.getLocation().getId()) && !updateAllLocationsIndicators) {
-                                            indicatorValue.setState(State.INACTIVO);
-                                        } else if (locationsToDissable.contains(indicatorValue.getLocation().getId())) {
-                                            indicatorValue.setState(State.INACTIVO);
+                                        if (locationsToActive.contains(indicatorValue.getLocation().getId()) ) {
+                                            if(updateAllLocationsIndicators){
+                                                indicatorValue.setState(State.ACTIVO);
+                                            }else if(cantonesToCreateIds.contains(indicatorValue.getLocation().getId())){
+                                                indicatorValue.setState(State.INACTIVO);
+                                            }else {
+                                                indicatorValue.setState(State.ACTIVO);
+                                            }
                                         }
                                     }
                                 });

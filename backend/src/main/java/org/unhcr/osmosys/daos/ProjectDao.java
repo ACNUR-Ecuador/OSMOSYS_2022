@@ -124,7 +124,9 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         String jpql = "SELECT DISTINCT " +
                 " o FROM Project o " +
                 " left outer join fetch o.organization " +
-                " left outer join fetch o.focalPoint " +
+                " left outer join fetch o.focalPoint fp " +
+                " left outer join fetch fp.organization " +
+                " left outer join fetch fp.office " +
                 " left outer join fetch o.period pe " +
                 " left outer join fetch pe.generalIndicator " +
                 " left outer join fetch o.projectLocationAssigments pla " +

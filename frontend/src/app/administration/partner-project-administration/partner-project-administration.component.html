@@ -95,7 +95,9 @@
                         <div class="p-field p-col-12 p-md-12">
                             <label for="focalPointI">Punto focal</label>
                             <p-dropdown id="focalPointI" formControlName="focalPoint" [options]="focalPoints"
-                                        placeholder="Selecciona..." [showClear]="true">
+                                        placeholder="Selecciona..." [showClear]="true"
+                                        [filter]="true" filterBy="name"
+                            >
                                 <ng-template pTemplate="item" let-item>
                                     {{item.name + ' ' + item.organization.acronym}}
                                 </ng-template>
@@ -173,7 +175,12 @@
                         <p-messages></p-messages>
                     </div>
                     <div class="p-d-flex p-jc-end">
-
+                        <div class="p-mr-2">
+                            <p-message
+                                *ngIf="!this.formItem.pristine"
+                                severity="warn" text="No olvides guardar los cambios"
+                                styleClass="mr-2"></p-message>
+                        </div>
                         <button pButton type="submit" class="p-mr-2"
                                 [disabled]="!formItem.valid"
                                 pRipple label="Guardar" icon="pi pi-check"
