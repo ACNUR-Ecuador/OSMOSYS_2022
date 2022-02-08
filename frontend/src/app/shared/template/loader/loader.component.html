@@ -4,21 +4,23 @@
         <div class="whirly-loader"> </div>
     </div>
 </div>-->
-<div class="loader-container" [class.loderhide]="!show">
-    <div class="loader">
-        <div class="bottom-section">
-            <div class="bottom"></div>
-            <div class="bottom"></div>
-            <div class="bottom"></div>
-            <div class="bottom"></div>
-        </div>
-        <div class="top-section">
-            <div class="bottom"></div>
-            <div class="bottom"></div>
-            <div class="bottom"></div>
-            <div class="bottom"></div>
-        </div>
-        <div class="middle">
+<div #loader class="loader-wrapper" [class.loderhide]="!show">
+    <div class="loader-container" [class.loderhide]="!show">
+        <div class="loader ">
+            <div class="bottom-section">
+                <div class="bottom"></div>
+                <div class="bottom"></div>
+                <div class="bottom"></div>
+                <div class="bottom"></div>
+            </div>
+            <div class="top-section">
+                <div class="bottom"></div>
+                <div class="bottom"></div>
+                <div class="bottom"></div>
+                <div class="bottom"></div>
+            </div>
+            <div class="middle">
+            </div>
         </div>
     </div>
 </div>
