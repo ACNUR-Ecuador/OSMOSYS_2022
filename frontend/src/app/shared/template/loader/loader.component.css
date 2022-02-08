@@ -2,8 +2,8 @@
   display: none;
 }
 
-.loader-container.loadershow {
-  display: block;
+.loader-wrapper.loderhide {
+  display: none;
 }
 
 .loader-wrapper {

@@ -68,15 +68,9 @@ export class VersionCheckService {
      */
     private hasHashChanged(currentHash, newHash): boolean {
         if (!currentHash || currentHash === '{{POST_BUILD_ENTERS_HASH_HERE}}') {
-            console.log(currentHash);
-            console.log(newHash);
-            console.log('no ha cambiado version');
             return false;
         }
         const change: boolean = currentHash !== newHash;
-        console.log(currentHash);
-        console.log(newHash);
-        console.log('ha cambiado version' + change);
         return change;
     }
 }

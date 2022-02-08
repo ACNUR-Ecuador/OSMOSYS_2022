@@ -16,17 +16,14 @@ export class LoaderInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
         this.loaderService.setLoading(true, request.url);
-        console.log('loading true');
         return next.handle(request)
             .pipe(catchError((err) => {
                 this.loaderService.setLoading(false, request.url);
-                console.log('loading false');
                 return throwError(err);
             }))
             .pipe(map<HttpEvent<any>, any>((evt: HttpEvent<any>) => {
                 if (evt instanceof HttpResponse) {
                     this.loaderService.setLoading(false, request.url);
-                    console.log('loading false');
                 }
                 return evt;
             }));

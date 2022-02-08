@@ -42,9 +42,7 @@ export class AppComponent implements OnInit {
         this.enumsService.loadcache();
         this.setLocale(this.primengConfig, environment.locale);
         this.versionCheckService.initVersionCheck(environment.versionCheckURL);
-        console.log('verificando version');
         this.versionCheckService.checkVersion(environment.versionCheckURL);
-        console.log('fin verificando version');
     }
 
     /*

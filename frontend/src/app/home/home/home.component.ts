@@ -41,9 +41,7 @@ export class HomeComponent implements OnInit {
                 });
             }
         });
-        console.log('verificando version');
         this.versionCheckService.checkVersion(environment.versionCheckURL);
-        console.log('fin verificando version');
     }
 
 }
