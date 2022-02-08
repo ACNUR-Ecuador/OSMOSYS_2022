@@ -431,7 +431,7 @@ public class UserService implements Serializable {
     }
 
     public List<UserWeb> getUNHCRUsersWebByState(State state) {
-        return this.usersToUsersWeb(this.userDao.getUNHCRUsersByState(state));
+        return this.modelWebTransformationService.usersToUsersWebSimple(this.userDao.getUNHCRUsersByState(state), true, true);
     }
 
     public User getById(Long id) {

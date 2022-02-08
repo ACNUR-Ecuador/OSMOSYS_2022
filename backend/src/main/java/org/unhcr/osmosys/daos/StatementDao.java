@@ -23,7 +23,14 @@ public class StatementDao extends GenericDaoJpa<Statement, Long> {
     public List<Statement> getByState(State state) {
 
         String jpql = "SELECT DISTINCT o FROM Statement o " +
-                "WHERE o.state = :state";
+                " left outer join fetch o.area " +
+                " left outer join fetch o.pillar " +
+                " left outer join fetch o.situation " +
+                " left outer join fetch o.periodStatementAsignations psa " +
+                " left outer join fetch psa.period pe " +
+                " left outer join fetch pe.generalIndicator gi " +
+                " left outer join fetch gi.dissagregationAssignationsToGeneralIndicator " +
+                " WHERE o.state = :state";
         Query q = getEntityManager().createQuery(jpql, Statement.class);
         q.setParameter("state", state);
         return q.getResultList();

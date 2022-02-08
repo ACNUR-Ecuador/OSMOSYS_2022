@@ -22,6 +22,8 @@ public class CantonDao extends GenericDaoJpa<Canton, Long> {
     public List<Canton> getByState(State state) {
 
         String jpql = "SELECT DISTINCT o FROM Canton o " +
+                " left outer join fetch o.provincia "+
+                " left outer join fetch o.office "+
                 "WHERE o.state = :state";
         Query q = getEntityManager().createQuery(jpql, Canton.class);
         q.setParameter("state", state);

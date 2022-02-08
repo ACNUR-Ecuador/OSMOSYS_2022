@@ -172,6 +172,8 @@ public class UserDao extends GenericDaoJpa<User, Long> {
         String jpql = "SELECT DISTINCT o FROM User o " +
                 " left outer join fetch o.roleAssigments ra " +
                 " left outer join fetch ra.role ro " +
+                " left outer join fetch o.office " +
+                " left outer join fetch o.organization " +
                 " WHERE (o.organization is null or lower(o.organization.acronym)='unhcr'  or lower(o.organization.acronym)='acnur' ) and o.state=:state ";
         Query query = getEntityManager().createQuery(jpql, User.class);
         query.setParameter("state", state);
