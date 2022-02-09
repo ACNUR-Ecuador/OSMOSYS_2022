@@ -157,6 +157,7 @@ public class IndicatorExecutionService {
         ie.setIndicatorType(indicator.getIndicatorType());
         ie.setState(indicatorExecutionWeb.getState());
         ie.setActivityDescription(indicatorExecutionWeb.getActivityDescription());
+        ie.setProjectStatement(this.statementService.getById(indicatorExecutionWeb.getProjectStatement().getId()));
         Project project = this.projectService.getById(indicatorExecutionWeb.getProject().getId());
         if (project == null) {
             throw new GeneralAppException("Proyecto no encontrado " + indicatorExecutionWeb.getProject().getId(), Response.Status.BAD_REQUEST);

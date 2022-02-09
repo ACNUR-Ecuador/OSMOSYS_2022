@@ -144,8 +144,18 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
     public IndicatorExecution getPerformanceIndicatorExecutionById(Long id) {
         IndicatorType indicatorType = IndicatorType.GENERAL;
         String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
-                " left join fetch o.quarters " +
+                " left join fetch o.projectStatement pst " +
+                " left join fetch pst.area " +
+                " left join fetch pst.situation " +
+                " left join fetch pst.pillar " +
+                " left join fetch o.quarters q " +
+                " left join fetch q.months m " +
+                " left join fetch m.sources  " +
+                " left join fetch m.indicatorValues iv " +
+                " left join fetch iv.location can " +
+                " left join fetch can.provincia " +
                 " left join fetch o.period p " +
+                " left join fetch p.generalIndicator " +
                 " left join fetch o.indicator " +
                 " WHERE o.id = :id" +
                 " and o.indicatorType <>: generalType ";
