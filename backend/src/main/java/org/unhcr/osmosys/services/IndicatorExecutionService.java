@@ -3,6 +3,8 @@ package org.unhcr.osmosys.services;
 import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.model.User;
+import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.utils.DateUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
@@ -55,6 +57,15 @@ public class IndicatorExecutionService {
 
     @Inject
     StatementService statementService;
+
+    @Inject
+    PeriodService periodService;
+
+    @Inject
+    UserService userService;
+
+    @Inject
+    OfficeService officeService;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(IndicatorExecutionService.class);
@@ -942,6 +953,127 @@ public class IndicatorExecutionService {
             }
         }
         return new ArrayList<>();
+    }
+
+    public Long assignPerformanceIndicatoDirectImplementation(IndicatorExecutionAssigmentWeb indicatorExecutionAssigmentWeb) throws GeneralAppException {
+        this.validatePerformanceIndicatorAssignationDirectImplementation(indicatorExecutionAssigmentWeb);
+
+        IndicatorExecution ie = new IndicatorExecution();
+        Indicator indicator = this.indicatorService.getById(indicatorExecutionAssigmentWeb.getIndicator().getId());
+        if (indicator == null) {
+            throw new GeneralAppException("Indicador no encontrado " + indicatorExecutionAssigmentWeb.getIndicator().getId(), Response.Status.BAD_REQUEST);
+        }
+        ie.setIndicator(indicator);
+        Period period = this.periodService.getById(indicatorExecutionAssigmentWeb.getPeriod().getId());
+        if (period == null) {
+            throw new GeneralAppException("Periodo no encontrado " + indicatorExecutionAssigmentWeb.getPeriod().getId(), Response.Status.BAD_REQUEST);
+        }
+        ie.setPeriod(period);
+        Office office = this.officeService.getById(indicatorExecutionAssigmentWeb.getReportingOffice().getId());
+        ie.setReportingOffice(office);
+        if (office == null) {
+            throw new GeneralAppException("Oficina no encontrada " + indicatorExecutionAssigmentWeb.getReportingOffice().getId(), Response.Status.BAD_REQUEST);
+        }
+        User assignedUser = this.userService.getById(indicatorExecutionAssigmentWeb.getAssignedUser().getId());
+        if (assignedUser == null) {
+            throw new GeneralAppException("Usuario responsable no encontrado " + indicatorExecutionAssigmentWeb.getAssignedUser().getId(), Response.Status.BAD_REQUEST);
+        }
+        ie.setAssignedUser(assignedUser);
+        if (indicatorExecutionAssigmentWeb.getAssignedUserBackup() != null) {
+            User assignedUserBackup = this.userService.getById(indicatorExecutionAssigmentWeb.getAssignedUserBackup().getId());
+            if (assignedUserBackup == null) {
+                throw new GeneralAppException("Usuario responsable alterno no encontrado " + indicatorExecutionAssigmentWeb.getAssignedUserBackup().getId(), Response.Status.BAD_REQUEST);
+            }
+            ie.setAssignedUserBackup(assignedUserBackup);
+        }
+        if (indicatorExecutionAssigmentWeb.getSupervisorUser() != null) {
+            User supervisorUser = this.userService.getById(indicatorExecutionAssigmentWeb.getSupervisorUser().getId());
+            if (supervisorUser == null) {
+                throw new GeneralAppException("Usuario supervisor no encontrado " + indicatorExecutionAssigmentWeb.getSupervisorUser().getId(), Response.Status.BAD_REQUEST);
+            }
+            ie.setSupervisorUser(supervisorUser);
+        }
+        List<DissagregationAssignationToIndicatorExecution> dissagregationAssignations = indicator.getDissagregationsAssignationToIndicator()
+                .stream()
+                .filter(dissagregationAssignationToIndicator ->
+                        dissagregationAssignationToIndicator.getState().equals(State.ACTIVO)
+                                && dissagregationAssignationToIndicator.getPeriod().getId().equals(ie.getPeriod().getId())
+                ).map(dissagregationAssignationToIndicator -> {
+                    DissagregationAssignationToIndicatorExecution da = new DissagregationAssignationToIndicatorExecution();
+                    da.setState(State.ACTIVO);
+                    da.setDissagregationType(dissagregationAssignationToIndicator.getDissagregationType());
+                    return da;
+                }).collect(Collectors.toList());
+        dissagregationAssignations.forEach(dissagregationAssignationToIndicatorExecution -> {
+            ie.addDissagregationAssignationToIndicatorExecution(dissagregationAssignationToIndicatorExecution);
+        });
+        List<CustomDissagregationAssignationToIndicatorExecution> customDissagregationsAssignations =
+                indicator.getCustomDissagregationAssignationToIndicators()
+                        .stream()
+                        .filter(customDissagregationAssignationToIndicator ->
+                                customDissagregationAssignationToIndicator.getState().equals(State.ACTIVO)
+                                        && customDissagregationAssignationToIndicator.getPeriod().getId().equals(ie.getPeriod().getId())
+                        ).map(customDissagregationAssignationToIndicator -> {
+                            CustomDissagregationAssignationToIndicatorExecution da = new CustomDissagregationAssignationToIndicatorExecution();
+                            da.setCustomDissagregation(customDissagregationAssignationToIndicator.getCustomDissagregation());
+                            da.setState(State.ACTIVO);
+                            return da;
+                        }).collect(Collectors.toList());
+        customDissagregationsAssignations.forEach(customDissagregationAssignationToIndicatorExecution -> {
+            ie.addCustomDissagregationAssignationToIndicatorExecution(customDissagregationAssignationToIndicatorExecution);
+        });
+        //TODO FILTERS
+        // TODO MARKERS
+        List<DissagregationType> dissagregationTypes = dissagregationAssignations
+                .stream()
+                .map(DissagregationAssignationToIndicatorExecution::getDissagregationType)
+                .collect(Collectors.toList());
+        List<CustomDissagregation> customDissagregations =
+                customDissagregationsAssignations
+                        .stream()
+                        .map(CustomDissagregationAssignationToIndicatorExecution::getCustomDissagregation)
+                        .collect(Collectors.toList());
+        LocalDate startDate = LocalDate.of(period.getYear(), 1, 1);
+        LocalDate endDate = LocalDate.of(period.getYear(), 12, 31);
+        Set<Quarter> qs = this.quarterService.createQuarters(startDate, endDate, dissagregationTypes, customDissagregations, new ArrayList<>());
+        List<Quarter> qsl = setOrderInQuartersAndMonths(qs);
+        for (Quarter quarter : qsl) {
+            ie.addQuarter(quarter);
+        }
+        this.saveOrUpdate(ie);
+        return ie.getId();
+    }
+
+
+    public void validatePerformanceIndicatorAssignationDirectImplementation(IndicatorExecutionAssigmentWeb indicatorExecutionWeb) throws GeneralAppException {
+        if (indicatorExecutionWeb == null) {
+            throw new GeneralAppException("La asignación es obligatorio", Response.Status.BAD_REQUEST);
+        }
+
+        if (indicatorExecutionWeb.getIndicator() == null || indicatorExecutionWeb.getIndicator().getId() == null) {
+            throw new GeneralAppException("Indicador asignado es obligatorio.", Response.Status.BAD_REQUEST);
+        }
+
+        if (indicatorExecutionWeb.getState() == null) {
+            throw new GeneralAppException("El estado es obligatorio.", Response.Status.BAD_REQUEST);
+        }
+
+        if (indicatorExecutionWeb.getReportingOffice() == null || indicatorExecutionWeb.getReportingOffice().getId() == null) {
+            throw new GeneralAppException("La oficina asignada es obligatorio.", Response.Status.BAD_REQUEST);
+        }
+
+        if (indicatorExecutionWeb.getPeriod() == null || indicatorExecutionWeb.getPeriod().getId() == null) {
+            throw new GeneralAppException("El periodo asignado es obligatorio.", Response.Status.BAD_REQUEST);
+        }
+        if (indicatorExecutionWeb.getAssignedUser() == null || indicatorExecutionWeb.getAssignedUser().getId() == null) {
+            throw new GeneralAppException("El usuario responsable es obligatorio.", Response.Status.BAD_REQUEST);
+        }
+        // existe indicador para esta officina para
+        IndicatorExecution assimentFound = this.indicatorExecutionDao.getByIndicatorIdAndOfficeId(indicatorExecutionWeb.getIndicator().getId(), indicatorExecutionWeb.getReportingOffice().getId());
+        if (assimentFound != null && !assimentFound.getId().equals(indicatorExecutionWeb.getId())) {
+            throw new GeneralAppException("Este indicador ya se encuentra asignado para esta oficina.", Response.Status.BAD_REQUEST);
+        }
+
     }
 }
 

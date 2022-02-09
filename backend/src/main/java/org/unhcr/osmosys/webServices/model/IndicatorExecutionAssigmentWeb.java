@@ -2,20 +2,14 @@ package org.unhcr.osmosys.webServices.model;
 
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
-import org.unhcr.osmosys.model.Statement;
-import org.unhcr.osmosys.model.enums.IndicatorType;
-
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
+@SuppressWarnings("unused")
 public class IndicatorExecutionAssigmentWeb implements Serializable {
     private Long id;
-    private String commentary;
     private IndicatorWeb indicator;
     private State state;
     private PeriodWeb period;
@@ -24,11 +18,13 @@ public class IndicatorExecutionAssigmentWeb implements Serializable {
     private ProjectWeb project;
     private StatementWeb projectStatement;
     private String activityDescription;
+    private List<CantonWeb> locations = new ArrayList<>();
     /* implementación directa*/
     private OfficeWeb reportingOffice;
     private UserWeb assignedUser;
+    private UserWeb supervisorUser;
     private UserWeb assignedUserBackup;
-    private List<CantonWeb> locations = new ArrayList<>();
+
 
     public Long getId() {
         return id;
@@ -36,14 +32,6 @@ public class IndicatorExecutionAssigmentWeb implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getCommentary() {
-        return commentary;
-    }
-
-    public void setCommentary(String commentary) {
-        this.commentary = commentary;
     }
 
     public IndicatorWeb getIndicator() {
@@ -124,5 +112,13 @@ public class IndicatorExecutionAssigmentWeb implements Serializable {
 
     public void setActivityDescription(String activityDescription) {
         this.activityDescription = activityDescription;
+    }
+
+    public UserWeb getSupervisorUser() {
+        return supervisorUser;
+    }
+
+    public void setSupervisorUser(UserWeb supervisorUser) {
+        this.supervisorUser = supervisorUser;
     }
 }

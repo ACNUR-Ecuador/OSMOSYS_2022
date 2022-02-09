@@ -10,6 +10,7 @@ import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
 
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -369,5 +370,19 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("periodId", periodId);
         return q.getResultList();
+    }
+
+    public IndicatorExecution getByIndicatorIdAndOfficeId(Long indicatorId, Long reportingOfficeId) {
+        String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
+                " WHERE o.indicator.id = :indicatorId and o.reportingOffice.id = :reportingOfficeId";
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("indicatorId", indicatorId);
+        q.setParameter("reportingOfficeId", reportingOfficeId);
+
+        try {
+            return (IndicatorExecution) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 }
