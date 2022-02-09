@@ -12,7 +12,6 @@ import java.util.List;
 
 public class IndicatorExecutionWeb implements Serializable {
     private Long id;
-    private String commentary;
     private String activityDescription;
     private IndicatorType indicatorType;
     private State state;
@@ -35,8 +34,10 @@ public class IndicatorExecutionWeb implements Serializable {
     private StatementWeb projectStatement;
     /* implementación directa*/
     private OfficeWeb reportingOffice;
+    private UserWeb supervisorUser;
     private UserWeb assignedUser;
     private UserWeb assignedUserBackup;
+
 
 
     /**************administration*********/
@@ -48,14 +49,6 @@ public class IndicatorExecutionWeb implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getCommentary() {
-        return commentary;
-    }
-
-    public void setCommentary(String commentary) {
-        this.commentary = commentary;
     }
 
     public String getActivityDescription() {
@@ -216,5 +209,13 @@ public class IndicatorExecutionWeb implements Serializable {
 
     public void setLateMonths(List<MonthWeb> lateMonths) {
         this.lateMonths = lateMonths;
+    }
+
+    public UserWeb getSupervisorUser() {
+        return supervisorUser;
+    }
+
+    public void setSupervisorUser(UserWeb supervisorUser) {
+        this.supervisorUser = supervisorUser;
     }
 }

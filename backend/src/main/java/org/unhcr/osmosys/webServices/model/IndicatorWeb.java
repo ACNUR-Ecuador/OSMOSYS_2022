@@ -28,6 +28,7 @@ public class IndicatorWeb implements Serializable {
     private TotalIndicatorCalculationType totalIndicatorCalculationType;
 
     private StatementWeb statement;
+    private UnitType unit;
     private List<DissagregationAssignationToIndicatorWeb> dissagregationsAssignationToIndicator = new ArrayList<>();
     private List<CustomDissagregationAssignationToIndicatorWeb> customDissagregationAssignationToIndicators = new ArrayList<>();
 
@@ -167,5 +168,11 @@ public class IndicatorWeb implements Serializable {
         this.compassIndicator = compassIndicator;
     }
 
+    public UnitType getUnit() {
+        return unit;
+    }
 
+    public void setUnit(UnitType unit) {
+        this.unit = unit;
+    }
 }

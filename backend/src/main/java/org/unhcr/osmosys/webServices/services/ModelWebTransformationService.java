@@ -91,7 +91,9 @@ public class ModelWebTransformationService {
 
         Set<CustomDissagregationOption> options = this.customDissagregationOptionsWebToCustomDissagregationOptions(new ArrayList<>(customDissagregationWeb.getCustomDissagregationOptions()));
 
-        options.forEach(customDissagregationOption -> customDissagregation.addCustomDissagregationOption(customDissagregationOption));
+        for (CustomDissagregationOption customDissagregationOption : options) {
+            customDissagregation.addCustomDissagregationOption(customDissagregationOption);
+        }
 
         return customDissagregation;
     }
@@ -273,6 +275,7 @@ public class ModelWebTransformationService {
         indicatorWeb.setCalculated(indicator.getCalculated());
         indicatorWeb.setTotalIndicatorCalculationType(indicator.getTotalIndicatorCalculationType());
         indicatorWeb.setCompassIndicator(indicator.getCompassIndicator());
+        indicatorWeb.setUnit(indicator.getUnit());
         if (getMarkers) {
             List<MarkerWeb> markers = this.markersToMarkersWeb(indicator.getMarkers());
             indicatorWeb.setMarkers(markers);
@@ -305,6 +308,7 @@ public class ModelWebTransformationService {
         indicator.setCalculated(indicatorWeb.getCalculated());
         indicator.setTotalIndicatorCalculationType(indicatorWeb.getTotalIndicatorCalculationType());
         indicator.setCompassIndicator(indicatorWeb.getCompassIndicator());
+        indicator.setUnit(indicatorWeb.getUnit());
         Set<Marker> markers = this.markersWebToMarkers(indicatorWeb.getMarkers());
         for (Marker marker : markers) {
             indicator.addMarker(marker);
@@ -836,9 +840,7 @@ public class ModelWebTransformationService {
         w.setFocalPoint(this.userToUserWebSimple(project.getFocalPoint(), true, true));
         Set<Canton> cantones = project.getProjectLocationAssigments().stream()
                 .filter(projectLocationAssigment -> projectLocationAssigment.getState().equals(State.ACTIVO))
-                .map(projectLocationAssigment -> {
-                    return projectLocationAssigment.getLocation();
-                }).collect(Collectors.toSet());
+                .map(ProjectLocationAssigment::getLocation).collect(Collectors.toSet());
 
         for (Canton canton : cantones) {
             w.getLocations().add(this.cantonToCantonWeb(canton));
@@ -1016,7 +1018,6 @@ public class ModelWebTransformationService {
 
         IndicatorExecutionWeb iw = new IndicatorExecutionWeb();
         iw.setId(i.getId());
-        iw.setCommentary(i.getCommentary());
         iw.setActivityDescription(i.getActivityDescription());
         iw.setIndicatorType(i.getIndicatorType());
         iw.setState(i.getState());
@@ -1048,20 +1049,15 @@ public class ModelWebTransformationService {
         iw.setQuarters(this.quartersToQuarterWeb(i.getQuarters()));
         Optional<Quarter> lastReportedQuarter = i.getQuarters().stream()
                 .filter(quarter -> quarter.getState().equals(State.ACTIVO))
-                .filter(quarter -> quarter.getTotalExecution() != null)
-                .sorted(Comparator.comparingInt(Quarter::getOrder))
-                .findFirst();
+                .filter(quarter -> quarter.getTotalExecution() != null).min(Comparator.comparingInt(Quarter::getOrder));
         if (lastReportedQuarter.isPresent()) {
             iw.setLastReportedQuarter(this.quarterToQuarterWeb(lastReportedQuarter.get()));
             Optional<Month> lastReportedMonth = lastReportedQuarter.get().getMonths()
                     .stream()
                     .filter(month -> month.getState().equals(State.ACTIVO))
                     .filter(month -> month.getTotalExecution() != null)
-                    .sorted(Comparator.comparingInt(Month::getOrder))
-                    .findFirst();
-            if (lastReportedMonth.isPresent()) {
-                iw.setLastReportedMonth(this.monthToMonthWeb(lastReportedMonth.get()));
-            }
+                    .min(Comparator.comparingInt(Month::getOrder));
+            lastReportedMonth.ifPresent(month -> iw.setLastReportedMonth(this.monthToMonthWeb(month)));
         }
 
         List<MonthWeb> lateMonths = this.getLateIndicatorExecutionMonths(iw);
@@ -1075,20 +1071,12 @@ public class ModelWebTransformationService {
         List<Canton> activeCantons =
                 i.getQuarters().stream()
                         .flatMap(quarter -> quarter.getMonths().stream())
-                        .filter(month -> {
-                            return month.getState().equals(State.ACTIVO);
-                        })
-                        .flatMap(month -> {
-                            return month.getIndicatorValues().stream();
-                        })
-                        .filter(indicatorValue -> {
-                            return (
-                                    indicatorValue.getDissagregationType().equals(DissagregationType.LUGAR)
-                                            || indicatorValue.getDissagregationType().equals(DissagregationType.TIPO_POBLACION_Y_LUGAR)
-                            ) && indicatorValue.getState().equals(State.ACTIVO);
-                        }).map(indicatorValue -> {
-                            return indicatorValue.getLocation();
-                        })
+                        .filter(month -> month.getState().equals(State.ACTIVO))
+                        .flatMap(month -> month.getIndicatorValues().stream())
+                        .filter(indicatorValue -> (
+                                indicatorValue.getDissagregationType().equals(DissagregationType.LUGAR)
+                                        || indicatorValue.getDissagregationType().equals(DissagregationType.TIPO_POBLACION_Y_LUGAR)
+                        ) && indicatorValue.getState().equals(State.ACTIVO)).map(IndicatorValue::getLocation)
                         .distinct()
                         .collect(Collectors.toList());
         iw.setLocations(this.cantonsToCantonsWeb(activeCantons));
@@ -1106,9 +1094,7 @@ public class ModelWebTransformationService {
         // obtengo los meses
         List<MonthWeb> monthList = indicatorExecution.getQuarters().stream()
                 .filter(quarter -> quarter.getState().equals(State.ACTIVO))
-                .map(quarter -> {
-                    return new ArrayList<>(quarter.getMonths());
-                })
+                .map(quarter -> new ArrayList<>(quarter.getMonths()))
                 .flatMap(Collection::stream)
                 .filter(month -> month.getState().equals(State.ACTIVO))
                 .sorted(Comparator.comparingInt(MonthWeb::getOrder))
@@ -1128,6 +1114,7 @@ public class ModelWebTransformationService {
                         if (month.getYear().compareTo(todayYear) < 0) {
                             return true;
                         }
+                        //noinspection RedundantIfStatement
                         if (month.getYear().compareTo(todayYear) == 0
                                 && month.getMonth().getOrder() < todayMonth
                         ) {
@@ -1150,9 +1137,8 @@ public class ModelWebTransformationService {
             MonthEnum previousMonth;
             if (previousQuarter != null) {
                 List<MonthEnum> monthtsTmp = MonthEnum.getMonthsByQuarter(previousQuarter);
-                previousMonth = monthtsTmp.stream()
-                        .sorted(Comparator.comparingInt(MonthEnum::getOrder).reversed())
-                        .findFirst().get();
+                //noinspection StreamToLoop,OptionalGetWithoutIsPresent
+                previousMonth = monthtsTmp.stream().max(Comparator.comparingInt(MonthEnum::getOrder)).get();
             } else {
                 previousMonth = null;
             }
@@ -1165,6 +1151,7 @@ public class ModelWebTransformationService {
                         if (month.getYear().compareTo(todayYear) < 0) {
                             return true;
                         }
+                        //noinspection RedundantIfStatement
                         if (month.getYear().compareTo(todayYear) == 0
                                 && previousMonth != null
                                 && month.getMonth().getOrder() <= previousMonth.getOrder()
@@ -1196,6 +1183,7 @@ public class ModelWebTransformationService {
                         if (month.getYear().compareTo(todayYear) < 0) {
                             return true;
                         }
+                        //noinspection RedundantIfStatement
                         if (month.getYear().compareTo(todayYear) == 0
                                 && previousMonth != null
                                 && month.getMonth().getOrder() <= previousMonth.getOrder()
@@ -1216,12 +1204,8 @@ public class ModelWebTransformationService {
             List<MonthWeb> lateMonths = monthList.stream()
                     // lo que no esten reportados
                     .filter(month -> month.getTotalExecution() == null)
-                    .filter(month -> {
-                        if (month.getYear().compareTo(todayYear) < 0) {
-                            return true;
-                        }
-                        return false;
-                    }).collect(Collectors.toList());
+                    .filter(month -> month.getYear().compareTo(todayYear) < 0)
+                    .collect(Collectors.toList());
 
             if (CollectionUtils.isNotEmpty(lateMonths)) {
                 return lateMonths;
@@ -1353,7 +1337,7 @@ public class ModelWebTransformationService {
 
     //<editor-fold desc="User">
     public UserWeb userToUserWebSimple(User user, Boolean setOffice, Boolean setOrganization) {
-        if(user==null){
+        if (user == null) {
             return null;
         }
         UserWeb uw = new UserWeb();
@@ -1371,10 +1355,11 @@ public class ModelWebTransformationService {
         return uw;
 
     }
+
     public List<UserWeb> usersToUsersWebSimple(List<User> users, Boolean setOffice, Boolean setOrganization) {
         List<UserWeb> r = new ArrayList<>();
         for (User user : users) {
-            r.add(this.userToUserWebSimple(user,true,true));
+            r.add(this.userToUserWebSimple(user, true, true));
         }
         return r;
 

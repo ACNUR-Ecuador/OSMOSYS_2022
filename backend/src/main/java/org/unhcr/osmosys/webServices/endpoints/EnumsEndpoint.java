@@ -61,6 +61,8 @@ public class EnumsEndpoint {
                 return this.EnumsToEnumsWeb(RoleType.values());
             case "SourceType":
                 return this.EnumsToEnumsWeb(SourceType.values());
+            case "UnitType":
+                return this.EnumsToEnumsWeb(UnitType.values());
         }
 
         throw new GeneralAppException("Enumerador no soportado " + type, Response.Status.BAD_GATEWAY);
@@ -72,7 +74,7 @@ public class EnumsEndpoint {
         for (EnumInterface enumInterface : enumerator) {
             r.add(this.EnumToEnumWeb(enumInterface));
         }
-        return r.stream().sorted(Comparator.comparingInt(value -> value.getOrder())).collect(Collectors.toList());
+        return r.stream().sorted(Comparator.comparingInt(EnumWeb::getOrder)).collect(Collectors.toList());
     }
 
     public EnumWeb EnumToEnumWeb(EnumInterface enumerator) {

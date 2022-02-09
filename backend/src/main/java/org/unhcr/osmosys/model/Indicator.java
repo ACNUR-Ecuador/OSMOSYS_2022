@@ -68,8 +68,12 @@ public class Indicator extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private TotalIndicatorCalculationType totalIndicatorCalculationType;
 
-    @Column(name = "compass_indicator", nullable = true)
+    @Column(name = "compass_indicator")
     private Boolean compassIndicator;
+
+    @Column(name = "unit")
+    @Enumerated(EnumType.STRING)
+    private UnitType unit;
 
     @OneToMany(mappedBy = "indicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<DissagregationAssignationToIndicator> dissagregationsAssignationToIndicator = new HashSet<>();
@@ -266,6 +270,15 @@ public class Indicator extends BaseEntity<Long> {
         return new EqualsBuilder().append(id, indicator.id).append(code, indicator.code).isEquals();
     }
 
+
+    public UnitType getUnit() {
+        return unit;
+    }
+
+    public void setUnit(UnitType unit) {
+        this.unit = unit;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).append(id).append(code).toHashCode();
@@ -288,4 +301,5 @@ public class Indicator extends BaseEntity<Long> {
                 ", isCalculated=" + isCalculated +
                 '}';
     }
+
 }

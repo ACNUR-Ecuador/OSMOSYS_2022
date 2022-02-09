@@ -85,6 +85,7 @@ public class IndicatorService {
         indicator.setCalculated(indicatorWeb.getCalculated());
         indicator.setTotalIndicatorCalculationType(indicatorWeb.getTotalIndicatorCalculationType());
         indicator.setCompassIndicator(indicatorWeb.getCompassIndicator());
+        indicator.setUnit(indicatorWeb.getUnit());
         // marcadores
         // veo los nuevos
         indicatorWeb.getMarkers().forEach(markerWeb -> {

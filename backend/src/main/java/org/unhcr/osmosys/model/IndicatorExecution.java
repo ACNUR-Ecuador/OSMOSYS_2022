@@ -29,17 +29,14 @@ public class IndicatorExecution extends BaseEntity<Long> {
     @Column(name = "activity_description", columnDefinition = "text")
     private String activityDescription;
 
-    @Column(name = "commentary", columnDefinition = "text")
-    private String commentary;
-
     @Column(name = "target")
     private BigDecimal target;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_statement_id", foreignKey = @ForeignKey(name = "fk_indicator_executions_statement"))
     private Statement projectStatement;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "performance_indicator_id", foreignKey = @ForeignKey(name = "fk_indicator_executions_performance_indicators"))
     private Indicator indicator;
 
@@ -51,14 +48,14 @@ public class IndicatorExecution extends BaseEntity<Long> {
     private IndicatorType indicatorType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "state", nullable = false, length = 12, unique = false)
+    @Column(name = "state", nullable = false, length = 12)
     private State state;
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "period_id", foreignKey = @ForeignKey(name = "fk_indicator_execution_period_id"))
     private Period period;
 
-    @Column(name = "total_execution", nullable = true)
+    @Column(name = "total_execution")
     private BigDecimal totalExecution;
 
     @Column(name = "execution_percentage")
@@ -75,19 +72,23 @@ public class IndicatorExecution extends BaseEntity<Long> {
 
     /*socios ii*/
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id", nullable = true, foreignKey = @ForeignKey(name = "fk_indicator_execution_project"))
+    @JoinColumn(name = "project_id", foreignKey = @ForeignKey(name = "fk_indicator_execution_project"))
     private Project project;
 
     /* implementación directa*/
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reporting_office_id", foreignKey = @ForeignKey(name = "fk_indicator_execution_reporting_office"))
     private Office reportingOffice;
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "supervisor_user_id", foreignKey = @ForeignKey(name = "fk_indicator_execution_supervisor"))
+    private User supervisorUser;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_user_id", foreignKey = @ForeignKey(name = "fk_indicator_execution_user"))
     private User assignedUser;
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_user_backup_id", foreignKey = @ForeignKey(name = "fk_indicator_execution_user_backup"))
     private User assignedUserBackup;
 
@@ -110,14 +111,6 @@ public class IndicatorExecution extends BaseEntity<Long> {
 
     public void setState(State state) {
         this.state = state;
-    }
-
-    public String getCommentary() {
-        return commentary;
-    }
-
-    public void setCommentary(String commentary) {
-        this.commentary = commentary;
     }
 
     public Indicator getIndicator() {
@@ -296,11 +289,18 @@ public class IndicatorExecution extends BaseEntity<Long> {
         this.projectStatement = projectStatement;
     }
 
+    public User getSupervisorUser() {
+        return supervisorUser;
+    }
+
+    public void setSupervisorUser(User supervisorUser) {
+        this.supervisorUser = supervisorUser;
+    }
+
     @Override
     public String toString() {
         return "IndicatorExecution{" +
                 "id=" + id +
-                ", commentary='" + commentary + '\'' +
                 ", target=" + target +
                 ", indicator=" + indicator +
                 ", compassIndicator=" + compassIndicator +
