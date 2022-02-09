@@ -44,6 +44,7 @@ export class IndicatorExecutionService {
     public assignPerformanceIndicatoToProject(indicatorExecutionAssigment: IndicatorExecutionAssigment): Observable<number> {
         return this.http.post<number>(`${mainServiceUrl}/assignPerformanceIndicatoToProject`, indicatorExecutionAssigment);
     }
+
     public updateAssignPerformanceIndicatoToProject(indicatorExecutionAssigment: IndicatorExecutionAssigment): Observable<number> {
         return this.http.put<number>(`${mainServiceUrl}/updateAssignPerformanceIndicatoToProject`, indicatorExecutionAssigment);
     }
@@ -69,5 +70,11 @@ export class IndicatorExecutionService {
         monthValuesP.indicatorValuesMap = convMap;
         monthValuesP.customDissagregationValues = monthValues.customDissagregationValues;
         return this.http.put<number>(`${mainServiceUrl}/updateMonthValues/${indicatorExecutionId}`, monthValuesP);
+    }
+
+    public getPerformanceAllDirectImplementationByPeriodId(
+        periodId: number): Observable<IndicatorExecution[]> {
+        // tslint:disable-next-line:max-line-length
+        return this.http.get<IndicatorExecution[]>(`${mainServiceUrl}/performanceAllDirectImplementationByPeriodId/${periodId}`);
     }
 }

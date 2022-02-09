@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ConfirmationService, ConfirmEventType, FilterService, MessageService, SelectItem} from 'primeng/api';
@@ -108,7 +108,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         private statementService: StatementService,
         private indicatorPipe: IndicatorPipe,
         // tslint:disable-next-line:variable-name
-        private _location: Location
+        private _location: Location,
+        private ref: ChangeDetectorRef
     ) {
 
         this.idProjectParam = this.route.snapshot.paramMap.get('projectId');
@@ -396,7 +397,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             activityDescription: new FormControl(''),
             indicator: new FormControl('', Validators.required),
             isBorrowedStatement: new FormControl(''),
-            borrowedStatement: new FormControl('', Validators.required),
+            projectStatement: new FormControl('', Validators.required),
             state: new FormControl('', Validators.required),
             project: new FormControl(''),
             locations: new FormControl('')
@@ -573,6 +574,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         }
     }
 
+    // noinspection JSMethodCanBeStatic
     private sortCantones(cantones: Canton[]): Canton[] {
         return cantones.sort((a, b) => {
             const x = a.provincia.description.localeCompare(b.provincia.description);
@@ -670,7 +672,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             const quarters = indicator.quarters
                 .filter(value => value.state === EnumsState.ACTIVE)
                 .sort((a, b) => a.order - b.order);
-            const quarterGroup = this.fb.array([]);
             this.quarterGroups.patchValue([]);
             quarters.forEach(quarter => {
                 const control = this.fb.group({
@@ -734,7 +735,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         }
 
 
-        this.indicatorExecutionService.updateTargets(targetUpdateDTOWeb).subscribe(value => {
+        this.indicatorExecutionService.updateTargets(targetUpdateDTOWeb).subscribe(() => {
             this.messageService.add({
                 severity: 'success',
                 summary: 'Metas actualizadas correctamente',
@@ -762,22 +763,14 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     assignNewPerformanceIndicator() {
-        const period: Period = this.formItem.get('period').value as Period;
-
-
         this.messageService.clear();
         this.utilsService.resetForm(this.formPerformanceIndicator);
         const newItem = new IndicatorExecutionAssigment();
         this.formPerformanceIndicator.patchValue(newItem);
         this.formPerformanceIndicator.get('isBorrowedStatement').patchValue(false);
-        this.formPerformanceIndicator.get('isBorrowedStatement').disable();
-        this.formPerformanceIndicator.get('borrowedStatement').disable();
+        this.formPerformanceIndicator.get('projectStatement').disable();
         this.formPerformanceIndicator.get('indicator').enable();
         this.showPerformanceIndicatorDialog = true;
-        const {
-            startDate,
-            endDate
-        } = this.formItem.value;
         const locations: CantonForList [] = this.formItem.get('locations').value;
         locations.map(value1 => {
             const canton = value1 as CantonForList;
@@ -805,17 +798,19 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         this.messageService.clear();
         const {
             id,
-            commentary,
+            activityDescription,
             isBorrowedStatement,
+            projectStatement,
             state,
         } = this.formPerformanceIndicator.value;
         const indicatorExecution: IndicatorExecutionAssigment = new IndicatorExecutionAssigment();
         const indicator = this.formPerformanceIndicator.get('indicator').value;
-        const borrowedStatement = this.formPerformanceIndicator.get('borrowedStatement').value;
+
         indicatorExecution.id = id;
         indicatorExecution.project = new Project();
         indicatorExecution.project.id = this.formItem.get('id').value;
         indicatorExecution.indicator = indicator;
+        indicatorExecution.activityDescription = activityDescription;
         if (state) {
             indicatorExecution.state = EnumsState.ACTIVE;
         } else {
@@ -823,10 +818,11 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         }
 
         if (isBorrowedStatement) {
-            indicatorExecution.projectStatement = borrowedStatement;
+            indicatorExecution.projectStatement = projectStatement;
         } else {
             indicatorExecution.projectStatement = indicator.statement;
         }
+
         if (indicatorExecution.id) {
             // update+
             let locationEnabled = [];
@@ -842,7 +838,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             indicatorExecution.locations = locationEnabled;
             this.indicatorExecutionService
                 .updateAssignPerformanceIndicatoToProject(indicatorExecution)
-                .subscribe(value => {
+                .subscribe(() => {
                     this.messageService.add({
                         severity: 'success',
                         summary: 'Indicador actualizado correctamente',
@@ -870,7 +866,14 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 delete value.enabled;
                 return value as Canton;
             });
-
+            if (indicatorExecution.locations.length < 1 && this.indicatorHasLocationDissagregation(indicatorExecution.indicator)) {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Seleccione al menos un cantón',
+                    detail: 'Este indicador tiene segregación por lugar, es necesario activar al menos un cantón',
+                    life: 3000
+                });
+            }
             this.indicatorExecutionService.assignPerformanceIndicatoToProject(indicatorExecution)
                 .subscribe(value => {
                     this.messageService.add({
@@ -902,35 +905,48 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
     }
 
-
     onChangeIsBorrowed(value: boolean) {
         if (value) {
-            this.formPerformanceIndicator.get('borrowedStatement').setValidators([Validators.required]);
-            this.formPerformanceIndicator.get('borrowedStatement').enable();
+            this.formPerformanceIndicator.get('projectStatement').enable();
+            this.formPerformanceIndicator.get('projectStatement').patchValue(null);
+            this.formPerformanceIndicator.get('projectStatement').setValidators([Validators.required]);
         } else {
-            this.formPerformanceIndicator.get('borrowedStatement').patchValue(
-                this.formPerformanceIndicator.get('indicator').value.statement
-            );
-            this.formPerformanceIndicator.get('borrowedStatement').clearValidators();
-            this.formPerformanceIndicator.get('borrowedStatement').disable();
+            let projectStatement: Statement = null;
+            if (this.formPerformanceIndicator.get('indicator').value) {
+                projectStatement = this.statementsOptions
+                    .map(item => {
+                        return item.value as Statement;
+                    })
+                    .filter(statement => {
+                        return statement.id === this.formPerformanceIndicator.get('indicator').value.statement.id;
+                    }).pop();
+            }
+            this.formPerformanceIndicator.get('projectStatement').patchValue(projectStatement);
+            this.formPerformanceIndicator.get('projectStatement').disable();
+            this.formPerformanceIndicator.get('projectStatement').clearValidators();
         }
-        this.formPerformanceIndicator.get('borrowedStatement').updateValueAndValidity();
+        this.formPerformanceIndicator.get('projectStatement').updateValueAndValidity();
+        this.ref.detectChanges();
     }
 
     onChangePerformanceIndicator(indicator: Indicator) {
-        this.formPerformanceIndicator.get('borrowedStatement').patchValue(indicator.statement);
-
+        let projectStatement: Statement = null;
         if (indicator) {
-            this.formPerformanceIndicator.get('isBorrowedStatement').enable();
-            this.formPerformanceIndicator.get('borrowedStatement').disable();
-        } else {
-            this.formPerformanceIndicator.get('isBorrowedStatement').disable();
-            this.formPerformanceIndicator.get('borrowedStatement').disable();
+            projectStatement = this.statementsOptions
+                .map(item => {
+                    return item.value as Statement;
+                })
+                .filter(statement => {
+                    return statement.id === this.formPerformanceIndicator.get('indicator').value.statement.id;
+                }).pop();
+
         }
+        this.formPerformanceIndicator.get('isBorrowedStatement').patchValue(false);
+        this.formPerformanceIndicator.get('projectStatement').disable();
+        this.formPerformanceIndicator.get('projectStatement').patchValue(projectStatement);
     }
 
     updatePerformanceIndicator(indicatorExecution: IndicatorExecution) {
-        const period: Period = this.formItem.get('period').value as Period;
         this.messageService.clear();
         this.utilsService.resetForm(this.formPerformanceIndicator);
 
@@ -939,66 +955,67 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         editinItem.project = new Project();
         editinItem.project.id = this.formItem.get('id').value;
 
-        const projectCantons = [];
-        // clone array
-        (this.formItem.get('originalLocations').value as Canton[]).forEach(value => projectCantons.push(Object.assign({}, value)));
-        console.warn(projectCantons);
-        projectCantons.forEach(value => {
-            const r = indicatorExecution.locations.filter(value1 => {
-                return value1.id === value.id;
-            });
-            if (r && r.length > 0) {
-                value.enabled = true;
-            } else {
-                value.enabled = false;
-            }
-        });
-        console.warn(projectCantons);
-        editinItem.locations = projectCantons;
-        editinItem.projectStatement = indicatorExecution.projectStatement;
+        editinItem.projectStatement =
+            this.statementsOptions
+                .map(value => {
+                    return value.value as Statement;
+                })
+                .filter(statement => {
+                    return statement.id === indicatorExecution.projectStatement.id;
+                }).pop();
+
         editinItem.indicator = this.indicatorOptions
             .map(value => {
                 return value.value;
             }).filter(value => value.id === indicatorExecution.indicator.id).pop();
         editinItem.activityDescription = indicatorExecution.activityDescription;
-        this.formPerformanceIndicator.get('indicator').disable();
+        /**********locations**********/
+        const projectCantons = [];
+        // clone array
+        (this.formItem.get('originalLocations').value as Canton[]).forEach(value => projectCantons.push(Object.assign({}, value)));
+        projectCantons.forEach(value => {
+            const r = indicatorExecution.locations.filter(value1 => {
+                return value1.id === value.id;
+            });
+            value.enabled = r && r.length > 0;
+        });
+        editinItem.locations = projectCantons;
+        /**********locations**********/
+
         this.formPerformanceIndicator.patchValue(editinItem);
-        if (indicatorExecution.projectStatement !== null
-            && indicatorExecution.projectStatement.id !== indicatorExecution.indicator.statement.id) {
-            this.formPerformanceIndicator.get('isBorrowedStatement').patchValue(true);
-            this.formPerformanceIndicator.get('isBorrowedStatement').enable();
-            this.formPerformanceIndicator.get('borrowedStatement').enable();
-        } else {
+        this.formPerformanceIndicator.get('indicator').disable();
+        if (editinItem.projectStatement.id === editinItem.indicator.statement.id) {
             this.formPerformanceIndicator.get('isBorrowedStatement').patchValue(false);
-            this.formPerformanceIndicator.get('isBorrowedStatement').enable();
-            this.formPerformanceIndicator.get('borrowedStatement').disable();
-        }
-        if (indicatorExecution.projectStatement) {
-            this.formPerformanceIndicator.get('borrowedStatement').patchValue(indicatorExecution.projectStatement);
+            this.formPerformanceIndicator.get('projectStatement').disable();
         } else {
-            this.formPerformanceIndicator.get('borrowedStatement').patchValue(indicatorExecution.indicator.statement);
+            this.formPerformanceIndicator.get('isBorrowedStatement').patchValue(true);
+            this.formPerformanceIndicator.get('projectStatement').enable();
         }
         this.showPerformanceIndicatorDialog = true;
 
     }
 
     indicatorHasLocationDissagregation(indicator: Indicator): boolean {
-        const indicatorTotal: Indicator = this.indicatorOptions.map(value => {
-            return value.value as Indicator;
-        }).filter(value => {
-            return indicator.id === value.id;
-        }).pop();
-        if (!indicatorTotal) {
+        if (indicator) {
+            const indicatorTotal: Indicator = this.indicatorOptions.map(value => {
+                return value.value as Indicator;
+            }).filter(value => {
+                return indicator.id === value.id;
+            }).pop();
+            if (!indicatorTotal) {
+                return false;
+            }
+            return indicatorTotal.dissagregationsAssignationToIndicator
+                .filter(value => {
+                    return value.state === EnumsState.ACTIVE;
+                })
+                .filter(value => {
+                    return value.dissagregationType === DissagregationType.LUGAR
+                        || value.dissagregationType === DissagregationType.TIPO_POBLACION_Y_LUGAR;
+                }).length > 0;
+        } else {
             return false;
         }
-        return indicatorTotal.dissagregationsAssignationToIndicator
-            .filter(value => {
-                return value.state === EnumsState.ACTIVE;
-            })
-            .filter(value => {
-                return value.dissagregationType === DissagregationType.LUGAR
-                    || value.dissagregationType === DissagregationType.TIPO_POBLACION_Y_LUGAR;
-            }).length > 0;
     }
 
     private registerFilters() {

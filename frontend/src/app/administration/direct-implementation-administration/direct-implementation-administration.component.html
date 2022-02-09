@@ -8,7 +8,7 @@
 
         <p-toolbar styleClass="p-mb-4">
             <div class="p-toolbar-group-left">
-                <button pButton pRipple label="Crear Proyecto" icon="pi pi-plus"
+                <button pButton pRipple label="Asignar nuevo indicador" icon="pi pi-plus"
                         class="p-button-success p-mr-2 p-mb-2"
                         (click)="createItem()"></button>
             </div>
@@ -32,8 +32,291 @@
         </p-toolbar>
 
     </ng-template>
-    Body Content
+    <p-table #dtIndicatorExecutions [value]="items"
+             [columns]="selectedColumns"
+             [rowHover]="true" dataKey="id"
+             styleClass="p-datatable-customers"
+             currentPageReportTemplate=" {first} a {last} de {totalRecords} "
+             [showCurrentPageReport]="true">
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between table-header">
+                <h5 class="p-m-0">Indicadores de Producto Implementación Directa</h5>
+                <span class="p-input-icon-left">
+                        </span>
+                <p-multiSelect [options]="cols"
+                               [(ngModel)]="selectedColumns"
+                               optionLabel="header"
+                               selectedItemsLabel="{0} columnas seleccionadas"
+                               [style]="{minWidth: '200px',color:'#6c757d'}"
+                               placeholder="Seleccione las columnas"></p-multiSelect>
+                <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+                        class="p-button-success p-mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+            </div>
+
+        </ng-template>
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                    {{col.header}}
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                </th>
+                <th>
+
+                </th>
+            </tr>
+
+            <tr>
+                <th *ngFor="let col of columns" [ngSwitch]="col.field">
+                    <p-columnFilter *ngSwitchDefault [type]="col.type" [field]="col.field"
+                                    [matchMode]="'contains'"
+                                    [showMenu]="false"> matchMode="contains
+                    </p-columnFilter>
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
+            <tr>
+
+                <td *ngFor="let col of columns"
+                    [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
+                >
+                    {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field)}}
+                </td>
+
+                <td>
+
+                </td>
+            </tr>
+        </ng-template>
+
+
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                Total {{items ? items.length : 0 }} indicadores
+                generales.
+            </div>
+        </ng-template>
+    </p-table>
+
     <ng-template pTemplate="footer">
         Footer content here
     </ng-template>
 </p-card>
+
+<form [formGroup]="itemForm" (ngSubmit)="saveItem()">
+    <p-dialog [(visible)]="showItemDialog" [style]="{width: '90%'}" header="Asignación de productos"
+              [modal]="true"
+              styleClass="p-fluid" [closable]="false">
+
+        <ng-template pTemplate="content">
+
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field p-col-12 p-md-12">
+                    <label for="officeI">Oficina Responsable</label>
+                    <p-dropdown id="officeI"
+                                formControlName="reportingOffice"
+                                [options]="officeOptions"
+                                placeholder="Selecciona..."
+                                filter="true"
+                                appendTo="body"
+                    >
+                    </p-dropdown>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('reportingOffice',itemForm)">
+                        {{utilsService.getErrorMessageForm('reportingOffice', itemForm)}}
+                    </small>
+                </div>
+
+                <div class="p-field p-col-12 p-md-12">
+                    <label for="statementI">Indicador</label>
+                    <input type="text" pInputText id="statementI"
+                           formControlName="statement"/>
+                </div>
+
+                <div class="p-field p-col-12 p-md-12">
+                    <label for="indicatorI">Indicador</label>
+                    <p-dropdown id="indicatorI"
+                                formControlName="indicator"
+                                [options]="indicatorOptions"
+                                placeholder="Selecciona..."
+                                filter="true"
+                                appendTo="body"
+                                (onChange)="onChangeIndicator($event.value)"
+                    >
+                    </p-dropdown>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('indicator',itemForm)">
+                        {{utilsService.getErrorMessageForm('indicator', itemForm)}}
+                    </small>
+                </div>
+                <div class="p-field p-col-12 p-md-12">
+                    <label for="assignedUserI">Responsable de Reporte</label>
+                    <p-dropdown id="assignedUserI"
+                                formControlName="assignedUser"
+                                [options]="userOptions"
+                                placeholder="Selecciona..."
+                                filter="true"
+                                appendTo="body"
+                    >
+                    </p-dropdown>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('assignedUser',itemForm)">
+                        {{utilsService.getErrorMessageForm('assignedUser', itemForm)}}
+                    </small>
+                </div>
+                <div class="p-field p-col-12 p-md-12">
+                    <label for="assignedUserBackupI">Responsable de Reporte Alterno</label>
+                    <p-dropdown id="assignedUserBackupI"
+                                formControlName="assignedUserBackup"
+                                [options]="userOptions"
+                                placeholder="Selecciona..."
+                                filter="true"
+                                appendTo="body"
+                    >
+                    </p-dropdown>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('assignedUserBackup',itemForm)">
+                        {{utilsService.getErrorMessageForm('assignedUserBackup', itemForm)}}
+                    </small>
+                </div>
+                <div class="p-field p-col-12 p-md-12">
+                    <label for="stateI">Estado</label>
+                    <p-selectButton id="stateI"
+                                    formControlName="state"
+                                    [options]="states"
+                    >
+                    </p-selectButton>
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('state',itemForm)">{{utilsService.getErrorMessageForm('state', itemForm)}}</small>
+
+                </div>
+               <!-- <div class="p-field p-col-12 p-md-12">
+                    <label for="indicatorI">Indicador</label>
+                    <p-dropdown id="indicatorI"
+                                formControlName="indicator"
+                                [options]="indicatorOptions"
+                                placeholder="Selecciona..."
+                                filter="true"
+                                (onChange)="onChangePerformanceIndicator($event.value)"
+                    >
+                    </p-dropdown>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('indicator',formPerformanceIndicator)">
+                        {{utilsService.getErrorMessageForm('indicator', formPerformanceIndicator)}}
+                    </small>
+                </div>
+
+                <div class="p-field p-col-12 p-md-2">
+                    <label for="statePII">Estado</label>
+
+                    <p-toggleButton id="statePII"
+                                    formControlName="state"
+                                    onLabel="Activo" offLabel="Inactivo"
+                                    onIcon="pi pi-check" offIcon="pi pi-times"
+                    >
+                    </p-toggleButton>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('state',formPerformanceIndicator)">
+                        {{utilsService.getErrorMessageForm('state', formPerformanceIndicator)}}
+                    </small>
+                </div>-->
+
+            </div><!--
+            <div class="p-field p-col-12 p-md-12"
+                 *ngIf="indicatorHasLocationDissagregation(formPerformanceIndicator.get('indicator').value)">
+                <p-panel header="Sitios/cantones de ejecución" [toggleable]="true">
+                    <ng-template pTemplate="header">
+                        <div class=" p-d-flex p-jc-end">
+                            <button pButton type="button" pRipple label="Editar sitios/cantones de ejecución"
+                                    style="max-width: 20rem"
+                                    icon="pi pi-pencil"
+                                    class="p-button-success"
+                                    (click)="editLocations()"></button>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                        <p-table #dt [value]="formPerformanceIndicator.get('locations').value" [rows]="10"
+                                 [paginator]="true"
+                                 [rowHover]="true" dataKey="id"
+                                 styleClass="p-datatable-customers"
+                                 currentPageReportTemplate=" {first} a {last} de {totalRecords} "
+                                 [showCurrentPageReport]="true">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th *ngFor="let col of colsCantonList" [pSortableColumn]="col.field">
+                                        {{col.header}}
+                                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                                    </th>
+                                </tr>
+
+                                <tr>
+                                    <th *ngFor="let col of colsCantonList" [ngSwitch]="col.field">
+                                        <p-columnFilter *ngSwitchDefault [type]="col.type"
+                                                        [field]="col.field"
+                                                        [matchMode]="'contains'"
+                                                        [showMenu]="false"> matchMode="contains
+                                        </p-columnFilter>
+
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                                <tr>
+                                    <td *ngFor="let col of colsCantonListNotEditable"
+                                        [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
+                                    >
+                                        {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
+                                    </td>
+
+                                    <td pEditableColumn>
+                                        <p-cellEditor>
+                                            <ng-template pTemplate="input">
+                                                <p-checkbox [(ngModel)]="rowData.enabled" binary="true"
+                                                            [ngModelOptions]="{standalone: true}"
+                                                            inputId="binary"></p-checkbox>
+                                            </ng-template>
+                                            <ng-template pTemplate="output">
+                                                <p-checkbox [(ngModel)]="rowData.enabled" binary="true"
+                                                            [ngModelOptions]="{standalone: true}"
+                                                            inputId="binary"></p-checkbox>
+                                            </ng-template>
+                                        </p-cellEditor>
+                                    </td>
+
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="summary">
+                                <div class="p-d-flex p-ai-center p-jc-between">
+                                    Total {{formItem.get('locations').value ? formItem.get('locations').value.length : 0 }}
+                                    cantones.
+                                </div>
+                            </ng-template>
+                        </p-table>
+                    </ng-template>
+
+                </p-panel>
+            </div>
+-->
+
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <button pButton type="submit"
+                    [disabled]="!itemForm.valid"
+                    pRipple label="Guardar" icon="pi pi-check"
+            ></button>
+            <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
+                    (click)="cancelItemDialog()"></button>
+            <p-messages></p-messages>
+        </ng-template>
+    </p-dialog>
+</form>

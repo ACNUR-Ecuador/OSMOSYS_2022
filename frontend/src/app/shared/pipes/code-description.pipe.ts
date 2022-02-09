@@ -1,17 +1,16 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {Indicator, Organization} from '../model/OsmosysModel';
+import {Indicator, Organization, Statement} from '../model/OsmosysModel';
 
 @Pipe({
   name: 'codeDescription'
 })
 export class CodeDescriptionPipe implements PipeTransform {
 
-  transform(value: Indicator| Organization): string {
+  transform(value: Indicator| Organization| Statement): string {
       if (!value) {
           return null;
       }
-      const result = value.code + ' - ' + value.description;
-      return result;
+      return  value.code + ' - ' + value.description;
   }
 
 }
