@@ -257,10 +257,10 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             this.showAlert = true;
             this.messageAlert += 'Las metas de los siguientes indicadores están pendientes de actualización. </br>';
             generalIndicatorsTargetsToAlert.forEach(value => {
-                this.messageAlert = this.messageAlert + 'Indicador General: ' + value.indicator.description + '</br>';
+                this.messageAlert = this.messageAlert + 'Indicador General: ' + this.indicatorPipe.transform(value.indicator) + '</br>';
             });
             performanceIndicatorsTargetsToAlert.forEach(value => {
-                this.messageAlert = this.messageAlert + 'Indicador de Producto: ' + value.indicator.description + '</br>';
+                this.messageAlert = this.messageAlert + 'Indicador de Producto: ' + this.indicatorPipe.transform(value.indicator) + '</br>';
             });
 
 
@@ -836,6 +836,15 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 return value as Canton;
             });
             indicatorExecution.locations = locationEnabled;
+            if (indicatorExecution.locations.length < 1 && this.indicatorHasLocationDissagregation(indicatorExecution.indicator)) {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Seleccione al menos un cantón',
+                    detail: 'Este indicador tiene segregación por lugar, es necesario activar al menos un cantón',
+                    life: 3000
+                });
+                return;
+            }
             this.indicatorExecutionService
                 .updateAssignPerformanceIndicatoToProject(indicatorExecution)
                 .subscribe(() => {
@@ -873,6 +882,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     detail: 'Este indicador tiene segregación por lugar, es necesario activar al menos un cantón',
                     life: 3000
                 });
+                return;
             }
             this.indicatorExecutionService.assignPerformanceIndicatoToProject(indicatorExecution)
                 .subscribe(value => {
@@ -954,20 +964,29 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         editinItem.id = indicatorExecution.id;
         editinItem.project = new Project();
         editinItem.project.id = this.formItem.get('id').value;
-
-        editinItem.projectStatement =
-            this.statementsOptions
-                .map(value => {
-                    return value.value as Statement;
-                })
-                .filter(statement => {
-                    return statement.id === indicatorExecution.projectStatement.id;
-                }).pop();
-
         editinItem.indicator = this.indicatorOptions
             .map(value => {
                 return value.value;
             }).filter(value => value.id === indicatorExecution.indicator.id).pop();
+        if (indicatorExecution.projectStatement) {
+            editinItem.projectStatement =
+                this.statementsOptions
+                    .map(value => {
+                        return value.value as Statement;
+                    })
+                    .filter(statement => {
+                        return statement.id === indicatorExecution.projectStatement.id;
+                    }).pop();
+        } else {
+            editinItem.projectStatement =
+                this.statementsOptions
+                    .map(value => {
+                        return value.value as Statement;
+                    })
+                    .filter(statement => {
+                        return statement.id === indicatorExecution.indicator.statement.id;
+                    }).pop();
+        }
         editinItem.activityDescription = indicatorExecution.activityDescription;
         /**********locations**********/
         const projectCantons = [];
