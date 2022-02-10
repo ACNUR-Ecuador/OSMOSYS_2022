@@ -36,6 +36,7 @@ export enum EnumsType {
     TotalIndicatorCalculationType = 'TotalIndicatorCalculationType',
     RoleType = 'RoleType',
     SourceType = 'SourceType',
+    UnitType = 'UnitType',
 }
 
 export enum DissagregationType {

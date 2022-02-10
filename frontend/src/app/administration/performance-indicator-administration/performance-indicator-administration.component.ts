@@ -258,13 +258,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     }
 
     exportExcel() {
-        import('xlsx').then(xlsx => {
-            const itemsRenamed = this.utilsService.renameKeys(this.items, this.cols);
-            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
-            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
-            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.utilsService.saveAsExcelFile(excelBuffer, 'situaciones');
-        });
+        this.utilsService.exportTableAsExcel(this._selectedColumns, this.items, 'indicadopres_producto');
     }
 
 
@@ -333,6 +327,8 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             customDissagregationAssignationToIndicators
         }
             = this.formItem.value;
+        // todo
+        const unit = null;
         const indicator: Indicator = {
             id,
             code,
@@ -349,6 +345,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             compassIndicator,
             markers,
             statement,
+            unit,
             dissagregationsAssignationToIndicator,
             customDissagregationAssignationToIndicators
         };
@@ -428,7 +425,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         }
         if (indicator.id) {
             // tslint:disable-next-line:no-shadowed-variable
-            this.indicatorService.update(indicator).subscribe(id => {
+            this.indicatorService.update(indicator).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
             }, error => {
@@ -441,7 +438,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             });
         } else {
             // tslint:disable-next-line:no-shadowed-variable
-            this.indicatorService.save(indicator).subscribe(id => {
+            this.indicatorService.save(indicator).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
             }, error => {

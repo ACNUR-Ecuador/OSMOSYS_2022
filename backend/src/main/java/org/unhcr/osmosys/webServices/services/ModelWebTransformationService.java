@@ -1024,6 +1024,7 @@ public class ModelWebTransformationService {
         iw.setCompassIndicator(i.getCompassIndicator());
         iw.setTotalExecution(i.getTotalExecution());
         iw.setProjectStatement(this.statementToStatementWeb(i.getProjectStatement(), false, true, true, true, false));
+        iw.setPeriod(this.periodToPeriodWeb(i.getPeriod()));
         if (getProject) {
             iw.setProject(this.projectToProjectWeb(i.getProject()));
         }
@@ -1042,8 +1043,9 @@ public class ModelWebTransformationService {
         } else {
             iw.setIndicator(this.indicatorToIndicatorWeb(i.getIndicator(), false, true, false));
             iw.setReportingOffice(this.officeToOfficeWeb(i.getReportingOffice(), false));
-            iw.setAssignedUser(this.userToUserWebSimple(i.getAssignedUser(), false, false));
-            iw.setAssignedUserBackup(this.userToUserWebSimple(i.getAssignedUserBackup(), false, false));
+            iw.setSupervisorUser(this.userToUserWebSimple(i.getSupervisorUser(), false, true));
+            iw.setAssignedUser(this.userToUserWebSimple(i.getAssignedUser(), false, true));
+            iw.setAssignedUserBackup(this.userToUserWebSimple(i.getAssignedUserBackup(), false, true));
 
         }
         iw.setQuarters(this.quartersToQuarterWeb(i.getQuarters()));

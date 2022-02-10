@@ -41,6 +41,15 @@ export class IndicatorExecutionService {
         return this.http.put<void>(`${mainServiceUrl}/targetsUpdate`, targetUpdateDTOWeb);
     }
 
+    public assignPerformanceIndicatorDirectImplementation(indicatorExecutionAssigment: IndicatorExecutionAssigment): Observable<number> {
+        return this.http.post<number>(`${mainServiceUrl}/assignPerformanceIndicatorDirectImplementation`, indicatorExecutionAssigment);
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public updateAssignPerformanceIndicatorDirectImplementation(indicatorExecutionAssigment: IndicatorExecutionAssigment): Observable<number> {
+        return this.http.put<number>(`${mainServiceUrl}/updateAssignPerformanceIndicatorDirectImplementation`, indicatorExecutionAssigment);
+    }
+
     public assignPerformanceIndicatoToProject(indicatorExecutionAssigment: IndicatorExecutionAssigment): Observable<number> {
         return this.http.post<number>(`${mainServiceUrl}/assignPerformanceIndicatoToProject`, indicatorExecutionAssigment);
     }

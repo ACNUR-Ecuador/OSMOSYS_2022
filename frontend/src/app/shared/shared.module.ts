@@ -112,6 +112,7 @@ import { IndicatorPipe } from './pipes/indicator.pipe';
 import { MonthPipe } from './pipes/month.pipe';
 import { LoaderComponent } from './template/loader/loader.component';
 import { UserPipe } from './pipes/user.pipe';
+import { MonthListPipe } from './pipes/month-list.pipe';
 
 
 @NgModule({
@@ -142,7 +143,8 @@ import { UserPipe } from './pipes/user.pipe';
         IndicatorPipe,
         MonthPipe,
         LoaderComponent,
-        UserPipe
+        UserPipe,
+        MonthListPipe
     ],
     imports: [
         CommonModule,

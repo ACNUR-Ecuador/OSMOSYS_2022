@@ -56,9 +56,6 @@ public class IndicatorValueService {
                 return this.createIndicatorValueDissagregationStandardForMonthGender();
 
             case LUGAR:
-                if (CollectionUtils.isEmpty(cantones)) {
-                    throw new GeneralAppException("No se puede crear una segregaciones de cantone sin cantones ", Response.Status.BAD_REQUEST);
-                }
                 return this.createIndicatorValueDissagregationStandardForMonthLocation(cantones);
             case PAIS_ORIGEN:
                 return this.createIndicatorValueDissagregationStandardForMonthCountryOfOrigin();

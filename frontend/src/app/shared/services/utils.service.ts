@@ -34,6 +34,18 @@ export class UtilsService {
         FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
     }
 
+    exportTableAsExcel(selectedColumns: ColumnTable[], items: any[], filename: string) {
+        import('xlsx').then(xlsx => {
+            // const headers = selectedColumns.map(value => value.header);
+            const itemsRenamed = this.renameKeys(items, selectedColumns);
+            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
+            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
+
+            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
+            this.saveAsExcelFile(excelBuffer, filename);
+        });
+    }
+
 
     /**
      * utilidad para tablas para uso de pipes
@@ -517,8 +529,6 @@ export class UtilsService {
             return null;
         }
     }
-
-
 }
 
 

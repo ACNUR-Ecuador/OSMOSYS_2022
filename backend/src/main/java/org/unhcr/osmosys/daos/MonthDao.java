@@ -30,6 +30,7 @@ public class MonthDao extends GenericDaoJpa<Month, Long> {
 
     public List<Month> getMonthsIndicatorExecutionId(Long indicatorExecutionId, State state) {
         String jpql = "SELECT DISTINCT o FROM Month o " +
+                " left outer join fetch o.sources " +
                 "WHERE o.state = :state" +
                 " and o.quarter.indicatorExecution.id =: indicatorExecutionId";
         Query q = getEntityManager().createQuery(jpql, Month.class);

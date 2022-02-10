@@ -1,8 +1,7 @@
 <p-card>
     <ng-template pTemplate="header">
-        <h3 class="page-title">Administración de implementación directa
-            <h5 class="page-title">Asignación de indicadores a oficinas ACNUR</h5>
-        </h3>
+            <h3 class="page-title p-mb-1">Administración de implementación directa</h3>
+            <h5 class="page-title p-mt-1">Asignación de indicadores a oficinas ACNUR</h5>
         <p-toast></p-toast>
         <p-messages></p-messages>
 
@@ -23,11 +22,6 @@
 
                 </div>
             </form>
-            <div class="p-toolbar-group-right">
-
-                <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
-                        class="p-button-success p-mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
-            </div>
 
         </p-toolbar>
 
@@ -71,13 +65,46 @@
                                     [matchMode]="'contains'"
                                     [showMenu]="false"> matchMode="contains
                     </p-columnFilter>
+                    <p-columnFilter *ngSwitchCase="'state'" type="equals" [field]="col.field"
+                                    [showMenu]="false">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <p-dropdown [ngModel]="value" [options]="states"
+                                        (onChange)="filter($event.value)"
+                                        placeholder="Selecciona..." [showClear]="true">
+                                <ng-template let-option pTemplate="item">
+                                            <span
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
+                                </ng-template>
+                            </p-dropdown>
+                        </ng-template>
+                    </p-columnFilter>
+                    <p-columnFilter *ngSwitchCase="'indicator'"
+                                    type="text"
+                                    [field]="col.field" [showMenu]="false"
+                                    [matchMode]="'indicatorFilter'">
+                    </p-columnFilter>
+                    <p-columnFilter *ngSwitchCase="'indicator.statement'"
+                                    type="text"
+                                    [field]="col.field" [showMenu]="false"
+                                    [matchMode]="'statementFilter'">
+                    </p-columnFilter>
+                    <p-columnFilter *ngSwitchCase="'reportingOffice'"
+                                    type="text"
+                                    [field]="col.field" [showMenu]="false"
+                                    [matchMode]="'officeFilter'">
+                    </p-columnFilter>
+                    <p-columnFilter *ngSwitchCase="'lateMonths'"
+                                    type="text"
+                                    [field]="col.field" [showMenu]="false"
+                                    [matchMode]="'monthListFilter'">
+                    </p-columnFilter>
                 </th>
                 <th>
 
                 </th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
             <tr>
 
                 <td *ngFor="let col of columns"
@@ -87,7 +114,9 @@
                 </td>
 
                 <td>
-
+                    <button pButton pRipple icon="pi pi-pencil" label="editar indicador"
+                            class="p-button-rounded p-button-success p-mr-2"
+                            (click)="updateAssigment(rowData)"></button>
                 </td>
             </tr>
         </ng-template>
@@ -95,15 +124,11 @@
 
         <ng-template pTemplate="summary">
             <div class="p-d-flex p-ai-center p-jc-between">
-                Total {{items ? items.length : 0 }} indicadores
-                generales.
+                Total {{items ? items.length : 0 }} indicadores.
             </div>
         </ng-template>
     </p-table>
 
-    <ng-template pTemplate="footer">
-        Footer content here
-    </ng-template>
 </p-card>
 
 <form [formGroup]="itemForm" (ngSubmit)="saveItem()">
@@ -132,9 +157,14 @@
                 </div>
 
                 <div class="p-field p-col-12 p-md-12">
-                    <label for="statementI">Indicador</label>
+                    <label for="statementI">Declaración de Producto</label>
                     <input type="text" pInputText id="statementI"
                            formControlName="statement"/>
+                </div>
+                <div class="p-field p-col-12 p-md-12">
+                    <label for="productI">Código de producto</label>
+                    <input type="text" pInputText id="productI"
+                           formControlName="product"/>
                 </div>
 
                 <div class="p-field p-col-12 p-md-12">
@@ -145,6 +175,7 @@
                                 placeholder="Selecciona..."
                                 filter="true"
                                 appendTo="body"
+                                dataKey="id"
                                 (onChange)="onChangeIndicator($event.value)"
                     >
                     </p-dropdown>
@@ -152,6 +183,22 @@
                     <small class="p-error"
                            *ngIf="utilsService.showErrorForm('indicator',itemForm)">
                         {{utilsService.getErrorMessageForm('indicator', itemForm)}}
+                    </small>
+                </div>
+                <div class="p-field p-col-12 p-md-12">
+                    <label for="supervisorUserI">Supervisor del indicador</label>
+                    <p-dropdown id="supervisorUserI"
+                                formControlName="supervisorUser"
+                                [options]="userOptions"
+                                placeholder="Selecciona..."
+                                filter="true"
+                                appendTo="body"
+                    >
+                    </p-dropdown>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('supervisorUser',itemForm)">
+                        {{utilsService.getErrorMessageForm('supervisorUser', itemForm)}}
                     </small>
                 </div>
                 <div class="p-field p-col-12 p-md-12">
@@ -194,119 +241,12 @@
                     >
                     </p-selectButton>
                     <small class="p-error"
-                           *ngIf="utilsService.showErrorForm('state',itemForm)">{{utilsService.getErrorMessageForm('state', itemForm)}}</small>
+                           *ngIf="utilsService.showErrorForm('state',itemForm)">
+                        {{utilsService.getErrorMessageForm('state', itemForm)}}
+                    </small>
 
                 </div>
-               <!-- <div class="p-field p-col-12 p-md-12">
-                    <label for="indicatorI">Indicador</label>
-                    <p-dropdown id="indicatorI"
-                                formControlName="indicator"
-                                [options]="indicatorOptions"
-                                placeholder="Selecciona..."
-                                filter="true"
-                                (onChange)="onChangePerformanceIndicator($event.value)"
-                    >
-                    </p-dropdown>
-
-                    <small class="p-error"
-                           *ngIf="utilsService.showErrorForm('indicator',formPerformanceIndicator)">
-                        {{utilsService.getErrorMessageForm('indicator', formPerformanceIndicator)}}
-                    </small>
-                </div>
-
-                <div class="p-field p-col-12 p-md-2">
-                    <label for="statePII">Estado</label>
-
-                    <p-toggleButton id="statePII"
-                                    formControlName="state"
-                                    onLabel="Activo" offLabel="Inactivo"
-                                    onIcon="pi pi-check" offIcon="pi pi-times"
-                    >
-                    </p-toggleButton>
-
-                    <small class="p-error"
-                           *ngIf="utilsService.showErrorForm('state',formPerformanceIndicator)">
-                        {{utilsService.getErrorMessageForm('state', formPerformanceIndicator)}}
-                    </small>
-                </div>-->
-
-            </div><!--
-            <div class="p-field p-col-12 p-md-12"
-                 *ngIf="indicatorHasLocationDissagregation(formPerformanceIndicator.get('indicator').value)">
-                <p-panel header="Sitios/cantones de ejecución" [toggleable]="true">
-                    <ng-template pTemplate="header">
-                        <div class=" p-d-flex p-jc-end">
-                            <button pButton type="button" pRipple label="Editar sitios/cantones de ejecución"
-                                    style="max-width: 20rem"
-                                    icon="pi pi-pencil"
-                                    class="p-button-success"
-                                    (click)="editLocations()"></button>
-                        </div>
-                    </ng-template>
-                    <ng-template pTemplate="content">
-                        <p-table #dt [value]="formPerformanceIndicator.get('locations').value" [rows]="10"
-                                 [paginator]="true"
-                                 [rowHover]="true" dataKey="id"
-                                 styleClass="p-datatable-customers"
-                                 currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                                 [showCurrentPageReport]="true">
-                            <ng-template pTemplate="header" let-columns>
-                                <tr>
-                                    <th *ngFor="let col of colsCantonList" [pSortableColumn]="col.field">
-                                        {{col.header}}
-                                        <p-sortIcon [field]="col.field"></p-sortIcon>
-                                    </th>
-                                </tr>
-
-                                <tr>
-                                    <th *ngFor="let col of colsCantonList" [ngSwitch]="col.field">
-                                        <p-columnFilter *ngSwitchDefault [type]="col.type"
-                                                        [field]="col.field"
-                                                        [matchMode]="'contains'"
-                                                        [showMenu]="false"> matchMode="contains
-                                        </p-columnFilter>
-
-                                    </th>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="body" let-rowData let-columns="columns">
-                                <tr>
-                                    <td *ngFor="let col of colsCantonListNotEditable"
-                                        [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
-                                    >
-                                        {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
-                                    </td>
-
-                                    <td pEditableColumn>
-                                        <p-cellEditor>
-                                            <ng-template pTemplate="input">
-                                                <p-checkbox [(ngModel)]="rowData.enabled" binary="true"
-                                                            [ngModelOptions]="{standalone: true}"
-                                                            inputId="binary"></p-checkbox>
-                                            </ng-template>
-                                            <ng-template pTemplate="output">
-                                                <p-checkbox [(ngModel)]="rowData.enabled" binary="true"
-                                                            [ngModelOptions]="{standalone: true}"
-                                                            inputId="binary"></p-checkbox>
-                                            </ng-template>
-                                        </p-cellEditor>
-                                    </td>
-
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="summary">
-                                <div class="p-d-flex p-ai-center p-jc-between">
-                                    Total {{formItem.get('locations').value ? formItem.get('locations').value.length : 0 }}
-                                    cantones.
-                                </div>
-                            </ng-template>
-                        </p-table>
-                    </ng-template>
-
-                </p-panel>
             </div>
--->
-
         </ng-template>
 
         <ng-template pTemplate="footer">

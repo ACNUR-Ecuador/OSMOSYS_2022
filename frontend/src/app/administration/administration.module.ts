@@ -64,6 +64,8 @@ import {RippleModule} from 'primeng/ripple';
 import {IndicatorPipe} from '../shared/pipes/indicator.pipe';
 import { DirectImplementationAdministrationComponent } from './direct-implementation-administration/direct-implementation-administration.component';
 import {UserPipe} from '../shared/pipes/user.pipe';
+import {MonthPipe} from '../shared/pipes/month.pipe';
+import {MonthListPipe} from '../shared/pipes/month-list.pipe';
 
 
 @NgModule({
@@ -137,7 +139,9 @@ import {UserPipe} from '../shared/pipes/user.pipe';
         RolesListPipe,
         CodeDescriptionListPipe,
         IndicatorPipe,
-        UserPipe
+        UserPipe,
+        MonthPipe,
+        MonthListPipe
     ]
 })
 export class AdministrationModule {

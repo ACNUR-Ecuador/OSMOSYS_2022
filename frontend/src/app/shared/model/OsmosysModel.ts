@@ -175,6 +175,7 @@ export class Indicator {
     public markers: Marker[];
     public compassIndicator: boolean;
     public statement: Statement;
+    public unit: string;
     public dissagregationsAssignationToIndicator: DissagregationAssignationToIndicator[];
     public customDissagregationAssignationToIndicators: CustomDissagregationAssignationToIndicator[];
 }
@@ -328,6 +329,7 @@ export class IndicatorExecution {
     public project: Project;
     public projectStatement: Statement;
     public reportingOffice: Office;
+    public supervisorUser: User;
     public assignedUser: User;
     public assignedUserBackup: User;
     public locations: Canton[];
@@ -400,19 +402,19 @@ export class IndicatorExecutionAssigment {
     }
 
     public id: number;
-    public commentary: string;
     public indicator: Indicator;
     public state: string;
     public period: Period;
     // socios
-    public project: Project;
-    public projectStatement: Statement;
-    public activityDescription: string;
+    public project?: Project;
+    public projectStatement?: Statement;
+    public activityDescription?: string;
+    public locations?: Canton[];
     // direct implementation
-    public reportingOffice: Office;
-    public assignedUser: User;
-    public assignedUserBackup: User;
-    public locations: Canton[];
+    public reportingOffice?: Office;
+    public supervisorUser?: User;
+    public assignedUser?: User;
+    public assignedUserBackup?: User;
 }
 
 export class StartEndDatesWeb {

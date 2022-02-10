@@ -18,10 +18,7 @@ export class RolesListPipe implements PipeTransform {
             return this.enumsService.resolveLabel(EnumsType.RoleType, value1.name)
                 + '-' + this.enumsService.resolveLabel(EnumsType.State, value1.state);
         });
-
         return result.join(' * ');
-
-
     }
 
 }

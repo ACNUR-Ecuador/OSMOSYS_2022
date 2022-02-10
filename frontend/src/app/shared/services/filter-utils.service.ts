@@ -4,12 +4,10 @@ import {
     CustomDissagregationAssignationToIndicator, CustomDissagregationOption,
     DissagregationAssignationToIndicator,
     Marker,
-    Office,
-    Organization, Statement
+    Statement
 } from '../model/OsmosysModel';
 import {EnumsService} from './enums.service';
 import {EnumsType} from '../model/UtilsModel';
-import {OfficeOrganizationPipe} from '../pipes/officeOrganization.pipe';
 
 @Injectable({
     providedIn: 'root'
@@ -18,8 +16,7 @@ export class FilterUtilsService {
 
     constructor(
         private utilsService: UtilsService,
-        private enumsService: EnumsService,
-        private officeOrganizationPipe: OfficeOrganizationPipe
+        private enumsService: EnumsService
     ) {
 
     }
@@ -54,11 +51,29 @@ export class FilterUtilsService {
             return false;
         }
         for (const field of fields) {
-            if (value[field] === undefined || value[field] === null) {
-                continue;
-            } else {
-                if (value[field].toLowerCase().includes(filter.toString().toLowerCase())) {
+            if (value[field] !== undefined && value[field] !== null) {
+                if ((value[field]).toString().toLowerCase().includes(filter.toString().toLowerCase())) {
                     return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    generalListFilter(valueArray: any[], fields: string[], filter: string): boolean {
+        if (filter === undefined || filter === null || filter.trim() === '') {
+            return true;
+        }
+
+        if (valueArray === undefined || valueArray === null || valueArray.length === 0) {
+            return false;
+        }
+        for (const value of valueArray) {
+            for (const field of fields) {
+                if (value[field] !== undefined || value[field] !== null) {
+                    if ((value[field]).toString().toLowerCase().includes(filter.toString().toLowerCase())) {
+                        return true;
+                    }
                 }
             }
         }
@@ -101,17 +116,8 @@ export class FilterUtilsService {
         if (value === undefined || value === null) {
             return false;
         }
-        let result = false;
-
-
-        if (value.code.toLowerCase().includes(filter.toString().toLowerCase())
-            || value.description.toLowerCase().includes(filter.toString().toLowerCase())
-        ) {
-            return result = true;
-        } else {
-            result = false;
-        }
-        return result;
+        return value.code.toLowerCase().includes(filter.toString().toLowerCase())
+            || value.description.toLowerCase().includes(filter.toString().toLowerCase());
     }
 
     markersFilter(value: Marker[], filter): boolean {
@@ -145,24 +151,6 @@ export class FilterUtilsService {
         return result;
     }
 
-    officeOrganizationAcronymDescriptionFilter(value: Office | Organization, filter): boolean {
-
-        if (filter === undefined || filter === null || filter.trim() === '') {
-            return true;
-        }
-
-        if (value === undefined || value === null) {
-            return false;
-        }
-        let result = false;
-
-        const valueS = this.officeOrganizationPipe.transform(value);
-        if (valueS.toLowerCase().includes(filter.toString().toLowerCase())) {
-            result = true;
-        }
-        return result;
-    }
-
     objectFilterId(value: any, filter): boolean {
 
         if (filter === undefined || filter === null) {
@@ -178,28 +166,6 @@ export class FilterUtilsService {
         if (valueId === filter.id) {
             result = true;
         }
-        return result;
-    }
-
-    // todo sin uso ni prueba
-    objectListFilterId(value: any[], filter: any[]): boolean {
-
-        if (filter === undefined || filter === null || filter.length < 1) {
-            return true;
-        }
-
-        if (value === undefined || value === null || filter.length < 1) {
-            return false;
-        }
-        let result = false;
-        const filterIds: number[] = filter.map(value1 => value1.id as number);
-        const valuesIds: number[] = value.map(value1 => value1.id as number);
-        valuesIds.forEach(value1 => {
-            if (filterIds.includes(value1)) {
-                result = true;
-            }
-        });
-
         return result;
     }
 
