@@ -125,8 +125,8 @@ public class IndicatorExecutionService {
                 .collect(Collectors.toList());
 
         List<CustomDissagregation> customDissagregations = new ArrayList<>();
-        // todo custom dissagregation
         Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, customDissagregations, cantones);
+        this.validateLocationsSegregationsAndCantons(dissagregationTypes,cantones);
         List<Quarter> qsl = setOrderInQuartersAndMonths(qs);
         for (Quarter quarter : qsl) {
             ie.addQuarter(quarter);
@@ -217,6 +217,7 @@ public class IndicatorExecutionService {
             return customDissagregationAssignationToIndicatorExecution.getCustomDissagregation();
         }).collect(Collectors.toList());
         Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, customDissagregations, cantones);
+        this.validateLocationsSegregationsAndCantons(dissagregationTypes,cantones);
         List<Quarter> qsl = setOrderInQuartersAndMonths(qs);
         for (Quarter quarter : qsl) {
             ie.addQuarter(quarter);
@@ -370,7 +371,7 @@ public class IndicatorExecutionService {
             indicatorExecution.setTotalExecution(totalExecution);
 
             if (indicatorExecution.getTotalExecution() != null && indicatorExecution.getTarget() != null) {
-                if (indicatorExecution.getTarget().equals(BigDecimal.ZERO)) {
+                if (indicatorExecution.getTarget().compareTo(BigDecimal.ZERO) == 0) {
                     indicatorExecution.setTarget(BigDecimal.ZERO);
                 } else {
                     indicatorExecution.setExecutionPercentage(indicatorExecution.getTotalExecution().divide(indicatorExecution.getTarget(), 4, RoundingMode.HALF_UP));
@@ -591,6 +592,7 @@ public class IndicatorExecutionService {
 
 
                 } else {
+                    this.validateLocationsSegregationsAndCantons(dissagregationTypes,cantones);
                     Quarter newCreatedQuarter = this.quarterService.createQuarter(newQuarter, newStartDate, newEndDate, dissagregationTypes, customDissagregations, cantones);
                     indicatorExecution.addQuarter(newCreatedQuarter);
                 }
@@ -627,6 +629,16 @@ public class IndicatorExecutionService {
 
     }
 
+    private void validateLocationsSegregationsAndCantons(List<DissagregationType> dissagregationTypes, List<Canton> cantones) throws GeneralAppException {
+        for (DissagregationType dissagregationType : dissagregationTypes) {
+            if (DissagregationType.getLocationDissagregationTypes().contains(dissagregationType)) {
+                if (CollectionUtils.isEmpty(cantones)) {
+                    throw new GeneralAppException("No se puede crear una segregaciones de lugar sin cantones ", Response.Status.BAD_REQUEST);
+                }
+            }
+        }
+    }
+
     public void updateIndicatorExecutionLocationsByAssignation(IndicatorExecution indicatorExecution, List<Canton> cantonesToCreate) throws GeneralAppException {
         List<DissagregationType> locationDissagregationTypes;
         if (indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)) {
@@ -656,11 +668,11 @@ public class IndicatorExecutionService {
 
     public Long updateAssignPerformanceIndicatoToProject(IndicatorExecutionAssigmentWeb indicatorExecutionAssigmentWeb) throws GeneralAppException {
         if (indicatorExecutionAssigmentWeb.getId() == null) {
-            throw new GeneralAppException("No se pudo encontrar el indicador (Id:" + indicatorExecutionAssigmentWeb.getId() + ")", Response.Status.BAD_REQUEST);
+            throw new GeneralAppException("No se pudo encontrar la asignación (Id:" + indicatorExecutionAssigmentWeb.getId() + ")", Response.Status.BAD_REQUEST);
         }
         IndicatorExecution indicatorExecution = this.indicatorExecutionDao.find(indicatorExecutionAssigmentWeb.getId());
         if (indicatorExecution == null) {
-            throw new GeneralAppException("No se pudo encontrar el indicador (Id:" + indicatorExecutionAssigmentWeb.getId() + ")", Response.Status.BAD_REQUEST);
+            throw new GeneralAppException("No se pudo encontrar la asignación (Id:" + indicatorExecutionAssigmentWeb.getId() + ")", Response.Status.BAD_REQUEST);
         }
         if (!indicatorExecution.getProject().getId().equals(indicatorExecutionAssigmentWeb.getProject().getId())) {
             throw new GeneralAppException("El indicador no corresponde al proyecto (Id:" + indicatorExecutionAssigmentWeb.getId() + " projectId" + indicatorExecutionAssigmentWeb.getId() + ")", Response.Status.BAD_REQUEST);
@@ -774,6 +786,7 @@ public class IndicatorExecutionService {
                 List<CustomDissagregation> customDissagregations = customDissagregationsAssignations.stream().map(customDissagregationAssignationToIndicatorExecution -> {
                     return customDissagregationAssignationToIndicatorExecution.getCustomDissagregation();
                 }).collect(Collectors.toList());
+                this.validateLocationsSegregationsAndCantons(dissagregationTypes,cantones);
                 Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, customDissagregations, cantones);
                 List<Quarter> qsl = setOrderInQuartersAndMonths(qs);
                 for (Quarter quarter : qsl) {
@@ -968,6 +981,9 @@ public class IndicatorExecutionService {
         if (period == null) {
             throw new GeneralAppException("Periodo no encontrado " + indicatorExecutionAssigmentWeb.getPeriod().getId(), Response.Status.BAD_REQUEST);
         }
+        ie.setCompassIndicator(indicator.getCompassIndicator());
+        ie.setIndicatorType(indicator.getIndicatorType());
+        ie.setState(indicatorExecutionAssigmentWeb.getState());
         ie.setPeriod(period);
         Office office = this.officeService.getById(indicatorExecutionAssigmentWeb.getReportingOffice().getId());
         ie.setReportingOffice(office);
@@ -1042,6 +1058,41 @@ public class IndicatorExecutionService {
         }
         this.saveOrUpdate(ie);
         return ie.getId();
+    }
+
+
+    public Long updateAssignPerformanceIndicatorDirectImplementation(IndicatorExecutionAssigmentWeb indicatorExecutionAssigmentWeb) throws GeneralAppException {
+        if (indicatorExecutionAssigmentWeb.getId() == null) {
+            throw new GeneralAppException("No se pudo encontrar la asignación (Id:" + indicatorExecutionAssigmentWeb.getId() + ")", Response.Status.BAD_REQUEST);
+        }
+        this.validatePerformanceIndicatorAssignationDirectImplementation(indicatorExecutionAssigmentWeb);
+        IndicatorExecution indicatorExecution = this.indicatorExecutionDao.find(indicatorExecutionAssigmentWeb.getId());
+        if (indicatorExecution == null) {
+            throw new GeneralAppException("No se pudo encontrar la asignación (Id:" + indicatorExecutionAssigmentWeb.getId() + ")", Response.Status.BAD_REQUEST);
+        }
+
+        indicatorExecution.setState(indicatorExecutionAssigmentWeb.getState());
+        User assignedUser = this.userService.getById(indicatorExecutionAssigmentWeb.getAssignedUser().getId());
+        if (assignedUser == null) {
+            throw new GeneralAppException("Usuario responsable no encontrado " + indicatorExecutionAssigmentWeb.getAssignedUser().getId(), Response.Status.BAD_REQUEST);
+        }
+        indicatorExecution.setAssignedUser(assignedUser);
+        if (indicatorExecutionAssigmentWeb.getAssignedUserBackup() != null) {
+            User assignedUserBackup = this.userService.getById(indicatorExecutionAssigmentWeb.getAssignedUserBackup().getId());
+            if (assignedUserBackup == null) {
+                throw new GeneralAppException("Usuario responsable alterno no encontrado " + indicatorExecutionAssigmentWeb.getAssignedUserBackup().getId(), Response.Status.BAD_REQUEST);
+            }
+            indicatorExecution.setAssignedUserBackup(assignedUserBackup);
+        }
+        if (indicatorExecutionAssigmentWeb.getSupervisorUser() != null) {
+            User supervisorUser = this.userService.getById(indicatorExecutionAssigmentWeb.getSupervisorUser().getId());
+            if (supervisorUser == null) {
+                throw new GeneralAppException("Usuario supervisor no encontrado " + indicatorExecutionAssigmentWeb.getSupervisorUser().getId(), Response.Status.BAD_REQUEST);
+            }
+            indicatorExecution.setSupervisorUser(supervisorUser);
+        }
+        this.saveOrUpdate(indicatorExecution);
+        return indicatorExecution.getId();
     }
 
 

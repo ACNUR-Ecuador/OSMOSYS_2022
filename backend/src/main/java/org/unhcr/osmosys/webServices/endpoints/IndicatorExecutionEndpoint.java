@@ -103,6 +103,15 @@ public class IndicatorExecutionEndpoint {
         return this.indicatorExecutionService.updateAssignPerformanceIndicatoToProject(indicatorExecutionAssigmentWeb);
 
     }
+    @Path("/updateAssignPerformanceIndicatorDirectImplementation")
+    @PUT
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public Long updateAssignPerformanceIndicatorDirectImplementation(IndicatorExecutionAssigmentWeb indicatorExecutionAssigmentWeb) throws GeneralAppException {
+
+        return this.indicatorExecutionService.updateAssignPerformanceIndicatorDirectImplementation(indicatorExecutionAssigmentWeb);
+
+    }
 
     @Path("/getResumeAdministrationPerformanceIndicatorById")
     @POST

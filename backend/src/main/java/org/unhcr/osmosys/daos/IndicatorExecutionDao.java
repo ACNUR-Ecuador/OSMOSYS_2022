@@ -12,7 +12,6 @@ import org.unhcr.osmosys.model.enums.QuarterEnum;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -182,6 +181,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " left join fetch o.indicator ind " +
                 " left join fetch o.quarters q " +
                 " left join fetch q.months m " +
+                " left join fetch m.sources " +
                 " left join fetch  m.indicatorValues " +
                 " left join fetch  m.indicatorValuesIndicatorValueCustomDissagregations " +
                 " WHERE o.id = :id";
@@ -198,6 +198,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " DISTINCT o FROM IndicatorExecution o " +
                 " join fetch o.quarters q " +
                 " join fetch q.months m " +
+                " left join fetch m.sources " +
                 " join fetch  m.indicatorValues " +
                 " join fetch  m.indicatorValuesIndicatorValueCustomDissagregations " +
                 " WHERE " +
@@ -231,6 +232,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " join fetch o.indicator ind " +
                 " join fetch o.quarters q " +
                 " join fetch q.months m " +
+                " left join fetch m.sources " +
                 " join fetch  m.indicatorValues " +
                 " join fetch  m.indicatorValuesIndicatorValueCustomDissagregations " +
                 " WHERE " +
@@ -261,6 +263,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " join fetch o.indicator ind " +
                 " join fetch o.quarters q " +
                 " join fetch q.months m " +
+                " left join fetch m.sources " +
                 " join fetch  m.indicatorValues " +
                 " join fetch  m.indicatorValuesIndicatorValueCustomDissagregations " +
                 " WHERE " +
@@ -299,6 +302,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " join fetch o.indicator ind " +
                 " join fetch o.quarters q " +
                 " join fetch q.months m " +
+                " left join fetch m.sources " +
                 " join fetch  m.indicatorValues " +
                 " join fetch  m.indicatorValuesIndicatorValueCustomDissagregations " +
                 " WHERE " +
@@ -337,6 +341,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " join fetch o.indicator ind " +
                 " join fetch o.quarters q " +
                 " join fetch q.months m " +
+                " left join fetch m.sources " +
                 " join fetch  m.indicatorValues " +
                 " join fetch  m.indicatorValuesIndicatorValueCustomDissagregations " +
                 " WHERE " +
@@ -358,17 +363,24 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
     }
 
     public List<IndicatorExecution> getAllDirectImplementationIndicatorByPeriodId(Long periodId) {
+        IndicatorType generalType = IndicatorType.GENERAL;
         String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
                 " left join fetch o.indicator i " +
                 " left join fetch o.quarters q " +
                 " left join fetch q.months m " +
+                " left join fetch m.sources " +
                 " left join fetch o.period p " +
                 " left join fetch o.reportingOffice offf " +
                 " left join fetch o.assignedUser u " +
                 " left join fetch o.assignedUser ub " +
-                " WHERE p.id = :periodId";
+                " left join fetch  m.indicatorValues " +
+                " left join fetch  m.indicatorValuesIndicatorValueCustomDissagregations " +
+                " WHERE p.id = :periodId " +
+                " and o.indicatorType <> :generalType " +
+                " and o.project.id is null";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("periodId", periodId);
+        q.setParameter("generalType", generalType);
         return q.getResultList();
     }
 

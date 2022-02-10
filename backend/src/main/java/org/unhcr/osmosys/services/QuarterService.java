@@ -60,7 +60,6 @@ public class QuarterService {
     }
 
 
-
     public Quarter createQuarter(YearQuarter yearQuarter,
                                  LocalDate startDate, LocalDate endDate,
                                  List<DissagregationType> dissagregationTypes,
@@ -138,7 +137,8 @@ public class QuarterService {
             quarter.setTotalExecution(totalExecution);
 
             if (quarter.getTotalExecution() != null && quarter.getTarget() != null) {
-                if (quarter.getTarget().equals(BigDecimal.ZERO)) {
+                // if (quarter.getTarget().equals(BigDecimal.ZERO)) {
+                if (quarter.getTarget().compareTo(BigDecimal.ZERO) == 0) {
                     quarter.setTarget(BigDecimal.ZERO);
                 } else {
                     quarter.setExecutionPercentage(quarter.getTotalExecution().divide(quarter.getTarget(), 4, RoundingMode.HALF_UP));
@@ -149,9 +149,9 @@ public class QuarterService {
         }
     }
 
-    public void updateQuarterLocationsByAssignation(Quarter quarter, List<Canton> cantonesToCreate,List<DissagregationType> locationDissagregationTypes) throws GeneralAppException {
+    public void updateQuarterLocationsByAssignation(Quarter quarter, List<Canton> cantonesToCreate, List<DissagregationType> locationDissagregationTypes) throws GeneralAppException {
         for (Month month : quarter.getMonths()) {
-            this.monthService.updateMonthLocationsByAssignation(month,cantonesToCreate, locationDissagregationTypes);
+            this.monthService.updateMonthLocationsByAssignation(month, cantonesToCreate, locationDissagregationTypes);
         }
     }
 }
