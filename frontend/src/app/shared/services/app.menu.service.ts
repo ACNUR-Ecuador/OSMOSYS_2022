@@ -141,6 +141,19 @@ export class MenuService {
                 },
             ]
         },
+        {
+            label: 'Implementación Directa',
+            icon: 'pi pi-sitemap',
+            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR', 'MONITOR_DE_PROGRAMAS', 'EJECUTOR_DE_PROGRAMAS'],
+            items: [
+                {
+                    label: 'Reporte de indicadores',
+                    icon: 'pi pi-fw pi-th-large',
+                    routerLink: ['/directImplementation/areasMenu'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR', 'MONITOR_DE_PROGRAMAS', 'EJECUTOR_DE_PROGRAMAS']
+                },
+            ]
+        },
         {separator: true},
         /*
         {

@@ -15,6 +15,10 @@ export const content: Routes = [
         loadChildren: () => import('../../partners/partners.module').then(m => m.PartnersModule)
     },
     {
+        path: 'directImplementation',
+        loadChildren: () => import('../../direct-implementation/direct-implementation.module').then(m => m.DirectImplementationModule)
+    },
+    {
         path: 'users',
         loadChildren: () => import('../../users/users.module').then(m => m.UsersModule)
     },

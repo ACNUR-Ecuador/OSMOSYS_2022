@@ -212,7 +212,6 @@ FullCalendarModule.registerPlugins([
     ],
     declarations: [
         AppComponent
-
     ],
     providers: [
         {provide: LOCALE_ID, useValue: 'es-ES'},
