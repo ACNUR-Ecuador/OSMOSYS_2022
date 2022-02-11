@@ -1,6 +1,8 @@
 package org.unhcr.osmosys.webServices.model;
 
 import com.sagatechs.generics.persistence.model.State;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.AreaType;
 
 import java.io.Serializable;
@@ -70,5 +72,21 @@ public class AreaWeb implements Serializable {
 
     public void setDefinition(String definition) {
         this.definition = definition;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof AreaWeb)) return false;
+
+        AreaWeb areaWeb = (AreaWeb) o;
+
+        return new EqualsBuilder().append(id, areaWeb.id).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(id).toHashCode();
     }
 }

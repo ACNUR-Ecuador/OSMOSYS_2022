@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environment';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Area} from '../model/OsmosysModel';
+import {Area, AreaResume} from '../model/OsmosysModel';
 import {EnumsState} from '../model/UtilsModel';
 
 const mainServiceUrl = environment.base_url + '/areas';
@@ -29,5 +29,25 @@ export class AreaService {
 
     public getByState(state: EnumsState): Observable<Area[]> {
         return this.http.get<Area[]>(`${mainServiceUrl}/byState/${state}`);
+    }
+
+    public getDirectImplementationAreaResume(
+        userId: number,
+        periodId: number,
+        officeId: number,
+        supervisor: boolean,
+        responsible: boolean,
+        backup: boolean,
+    ): Observable<AreaResume[]> {
+        // Initialize Params Object
+        let params = new HttpParams();
+        // Begin assigning parameters
+        params = params.append('userId', String(userId));
+        params = params.append('periodId', String(periodId));
+        params = params.append('officeId', String(officeId));
+        params = params.append('supervisor', String(supervisor));
+        params = params.append('responsible', String(responsible));
+        params = params.append('backup', String(backup));
+        return this.http.get<AreaResume[]>(`${mainServiceUrl}/getDirectImplementationAreaResume`, {params});
     }
 }

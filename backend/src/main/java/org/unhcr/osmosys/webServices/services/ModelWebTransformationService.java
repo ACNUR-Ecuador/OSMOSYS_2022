@@ -52,6 +52,7 @@ public class ModelWebTransformationService {
         return areaWeb;
     }
 
+    @SuppressWarnings("unused")
     public List<Area> areasWebToAreas(List<AreaWeb> areasWebs) {
         List<Area> r = new ArrayList<>();
         for (AreaWeb areaWeb : areasWebs) {
@@ -74,6 +75,51 @@ public class ModelWebTransformationService {
         area.setDefinition(areaWeb.getDefinition());
         area.setShortDescription(areaWeb.getShortDescription());
         return area;
+    }
+
+
+    public List<AreaResumeWeb> indicatorExecutionsToAreaWebs(List<IndicatorExecutionWeb> indicatorExecutions) {
+        // grouped by areas
+        List<AreaResumeWeb> r = new ArrayList<>();
+        Map<AreaWeb, List<IndicatorExecutionWeb>> mapAreas = new HashMap<>();
+        for (IndicatorExecutionWeb indicatorExecution : indicatorExecutions) {
+            AreaWeb area = indicatorExecution.getIndicator().getStatement().getArea();
+            if (mapAreas.get(indicatorExecution.getIndicator().getStatement().getArea()) == null) {
+                mapAreas.put(area, new ArrayList<>());
+            }
+            mapAreas.get(area).add(indicatorExecution);
+        }
+
+        for (AreaWeb areaWeb : mapAreas.keySet()) {
+            List<IndicatorExecutionWeb> indicatorExecutionsArea = mapAreas.get(areaWeb);
+            AreaResumeWeb arw = new AreaResumeWeb();
+            arw.setArea(areaWeb);
+            arw.setNumberOfLateIndicators(indicatorExecutionsArea.size());
+
+            int lateCount = 0;
+            List<IndicatorWeb> indicators = new ArrayList<>();
+            for (IndicatorExecutionWeb indicatorExecutionWeb : indicatorExecutionsArea) {
+                indicators.add(indicatorExecutionWeb.getIndicator());
+                if (indicatorExecutionWeb.getLate()) {
+                    lateCount++;
+                }
+            }
+            indicators.sort((o1, o2) -> {
+                int staComp = o1.getStatement().getCode().compareTo(o2.getStatement().getCode());
+                if (staComp != 0) {
+                    return staComp;
+                } else {
+                    return o1.getDescription().compareTo(o2.getDescription());
+                }
+            });
+
+            arw.setNumberOfLateIndicators(lateCount);
+            arw.setIndicators(indicators);
+            r.sort(Comparator.comparing(o -> o.getArea().getId()));
+            r.add(arw);
+        }
+
+        return r;
     }
     //</editor-fold>
 
@@ -122,6 +168,7 @@ public class ModelWebTransformationService {
         return r;
     }
 
+    @SuppressWarnings("unused")
     public List<CustomDissagregation> customDissagregationsWebToCustomDissagregations(List<CustomDissagregationWeb> customDissagregationsWebs) {
         List<CustomDissagregation> r = new ArrayList<>();
         for (CustomDissagregationWeb customDissagregationWeb : customDissagregationsWebs) {
@@ -333,6 +380,7 @@ public class ModelWebTransformationService {
         return r;
     }
 
+    @SuppressWarnings("unused")
     public List<Indicator> indicatorsWebToIndicators(List<IndicatorWeb> indicatorsWebs) {
         List<Indicator> r = new ArrayList<>();
         for (IndicatorWeb indicatorWeb : indicatorsWebs) {
@@ -518,6 +566,7 @@ public class ModelWebTransformationService {
         return r;
     }
 
+    @SuppressWarnings("unused")
     public List<Office> officesWebToOffices(List<OfficeWeb> officesWebs) {
         List<Office> r = new ArrayList<>();
         for (OfficeWeb officeWeb : officesWebs) {
@@ -555,6 +604,7 @@ public class ModelWebTransformationService {
     }
 
 
+    @SuppressWarnings("unused")
     public List<Organization> organizationsWebToOrganizations(List<OrganizationWeb> organizationsWebs) {
         List<Organization> r = new ArrayList<>();
         for (OrganizationWeb organizationWeb : organizationsWebs) {
@@ -606,6 +656,7 @@ public class ModelWebTransformationService {
     }
 
 
+    @SuppressWarnings("unused")
     public List<Period> periodsWebToPeriods(List<PeriodWeb> periodsWebs) {
         List<Period> r = new ArrayList<>();
         for (PeriodWeb periodWeb : periodsWebs) {
@@ -653,6 +704,7 @@ public class ModelWebTransformationService {
     }
 
 
+    @SuppressWarnings("unused")
     public List<Pillar> pillarsWebToPillars(List<PillarWeb> pillarsWebs) {
         List<Pillar> r = new ArrayList<>();
         for (PillarWeb pillarWeb : pillarsWebs) {
@@ -690,6 +742,7 @@ public class ModelWebTransformationService {
         return situationWeb;
     }
 
+    @SuppressWarnings("unused")
     public List<Situation> situationsWebToSituations(List<SituationWeb> situationsWebs) {
         List<Situation> r = new ArrayList<>();
         for (SituationWeb situationWeb : situationsWebs) {
@@ -797,6 +850,7 @@ public class ModelWebTransformationService {
         return r;
     }
 
+    @SuppressWarnings("unused")
     public Set<Statement> statementsWebToStatements(List<StatementWeb> statementsWebs) {
         Set<Statement> r = new HashSet<>();
         for (StatementWeb statementWeb : statementsWebs) {
@@ -1003,6 +1057,7 @@ public class ModelWebTransformationService {
         return r;
     }
 
+    @SuppressWarnings("unused")
     public List<GeneralIndicator> generalIndicatorsWebToGeneralIndicators(List<GeneralIndicatorWeb> indicatorsWebs) {
         List<GeneralIndicator> r = new ArrayList<>();
         for (GeneralIndicatorWeb indicatorWeb : indicatorsWebs) {
@@ -1361,11 +1416,12 @@ public class ModelWebTransformationService {
     public List<UserWeb> usersToUsersWebSimple(List<User> users, Boolean setOffice, Boolean setOrganization) {
         List<UserWeb> r = new ArrayList<>();
         for (User user : users) {
-            r.add(this.userToUserWebSimple(user, true, true));
+            r.add(this.userToUserWebSimple(user, setOffice, setOrganization));
         }
         return r;
 
     }
+
 
     //</editor-fold>
 }

@@ -371,6 +371,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " left join fetch m.sources " +
                 " left join fetch o.period p " +
                 " left join fetch o.reportingOffice offf " +
+                " left join fetch o.supervisorUser su " +
                 " left join fetch o.assignedUser u " +
                 " left join fetch o.assignedUser ub " +
                 " left join fetch  m.indicatorValues " +
@@ -396,5 +397,76 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    public List<IndicatorExecution> getDirectImplementationIndicatorByPeriodIdResponsableIdSupervisorIdAndOfficeId(
+            Long userId,
+            Long periodId,
+            Long officeId,
+            boolean supervisor,
+            boolean responsible,
+            boolean backup) {
+        IndicatorType generalType = IndicatorType.GENERAL;
+        String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
+                " left join fetch o.markers " +
+                " left join fetch o.indicator i " +
+                " left join fetch i.statement " +
+                " left join fetch o.quarters q " +
+                " left join fetch q.months m " +
+                " left join fetch m.sources " +
+                " left join fetch o.period p " +
+                " left join fetch p.generalIndicator " +
+                " left join fetch o.reportingOffice offf " +
+                " left join fetch o.supervisorUser su " +
+                " left join fetch su.organization " +
+                " left join fetch su.office " +
+                " left join fetch o.assignedUser u " +
+                " left join fetch u.organization " +
+                " left join fetch u.office " +
+                " left join fetch o.assignedUserBackup ub " +
+                " left join fetch ub.organization " +
+                " left join fetch ub.office " +
+                " left join fetch  m.indicatorValues iv " +
+                " left join fetch  m.indicatorValuesIndicatorValueCustomDissagregations ivc " +
+                " WHERE p.id = :periodId " +
+                " and o.indicatorType <> :generalType " +
+                " and o.project.id is null " +
+                " and o.state =:state " +
+                " and q.state =:state " +
+                " and m.state =:state " +
+                " and (iv.state is null  or iv.state =:state) " +
+                " and (ivc.state is null  or ivc.state =:state) ";
+
+        if (officeId != null) {
+            jpql += " and offf.id =:officeId ";
+        }
+        if (userId != null) {
+            if (responsible && backup && supervisor) {
+                jpql += " and (u.id =:userId or ub.id =:userId or su.id =:userId ) ";
+            } else if (responsible && backup) {
+                jpql += " and (u.id =:userId or ub.id =:userId) ";
+            } else if (responsible && supervisor) {
+                jpql += " and (u.id =:userId or su.id =:userId ) ";
+            } else if (responsible) {
+                jpql += " and (u.id =:userId) ";
+            } else if (backup && supervisor) {
+                jpql += " and (ub.id =:userId or su.id =:userId ) ";
+            } else if (backup) {
+                jpql += " and (ub.id =:userId) ";
+            } else if (supervisor) {
+                jpql += " and ( su.id =:userId ) ";
+            }
+        }
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("periodId", periodId);
+        q.setParameter("generalType", generalType);
+        q.setParameter("state", State.ACTIVO);
+        if (officeId != null) {
+            q.setParameter("officeId", officeId);
+        }
+        if (userId != null) {
+            q.setParameter("userId", userId);
+        }
+        return q.getResultList();
     }
 }

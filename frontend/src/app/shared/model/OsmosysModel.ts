@@ -42,6 +42,13 @@ export class Area {
     public definition: string[];
 }
 
+export class AreaResume {
+    public area: Area;
+    public numberOfIndicators: number;
+    public numberOfLateIndicators: number;
+    public indicators: Indicator[];
+}
+
 export class Period {
 
     constructor() {
@@ -384,8 +391,6 @@ export class QuarterMonthResume {
     public yearSpan: boolean;
     public yearSpanCount: number;
 }
-
-
 
 
 export class TargetUpdateDTOWeb {

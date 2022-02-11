@@ -12,7 +12,7 @@ import {
     SelectItemWithOrder
 } from '../model/UtilsModel';
 import {EnumsService} from './enums.service';
-import {CustomDissagregationValues, IndicatorExecution, IndicatorValue} from '../model/OsmosysModel';
+import {CustomDissagregationValues, IndicatorExecution, IndicatorValue, Period} from '../model/OsmosysModel';
 
 @Injectable({
     providedIn: 'root'
@@ -529,6 +529,21 @@ export class UtilsService {
             return null;
         }
     }
+
+    getCurrectPeriodOrDefault(periods: Period[]): Period {
+        if (periods.length < 1) {
+            return null;
+        } else {
+            const currentYear = (new Date()).getFullYear();
+            if (periods.some(e => e.year === currentYear)) {
+                return periods.find(period => period.year === currentYear);
+            } else {
+                const moreCurrentYear = Math.max(...periods.filter(value => value.year < currentYear).map(value1 => value1.year));
+                return periods.find(value => value.year === moreCurrentYear);
+            }
+        }
+    }
+
 }
 
 

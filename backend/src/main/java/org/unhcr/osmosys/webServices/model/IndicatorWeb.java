@@ -2,6 +2,8 @@ package org.unhcr.osmosys.webServices.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sagatechs.generics.persistence.model.State;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.*;
 
 import java.io.Serializable;
@@ -174,5 +176,21 @@ public class IndicatorWeb implements Serializable {
 
     public void setUnit(UnitType unit) {
         this.unit = unit;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof IndicatorWeb)) return false;
+
+        IndicatorWeb that = (IndicatorWeb) o;
+
+        return new EqualsBuilder().append(id, that.id).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(id).toHashCode();
     }
 }
