@@ -111,14 +111,12 @@ public class IndicatorExecutionService {
         }
 
         // guardos las segregaciones asignadas
-        dissagregationTypes.stream().map(dissagregationType -> {
-                    DissagregationAssignationToIndicatorExecution da = new DissagregationAssignationToIndicatorExecution();
-                    da.setDissagregationType(dissagregationType);
-                    da.setState(State.ACTIVO);
-                    ie.addDissagregationAssignationToIndicatorExecution(da);
-                    return da;
-                })
-                .collect(Collectors.toList());
+        dissagregationTypes.forEach(dissagregationType -> {
+            DissagregationAssignationToIndicatorExecution da = new DissagregationAssignationToIndicatorExecution();
+            da.setDissagregationType(dissagregationType);
+            da.setState(State.ACTIVO);
+            ie.addDissagregationAssignationToIndicatorExecution(da);
+        });
 
         List<CustomDissagregation> customDissagregations = new ArrayList<>();
         Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, customDissagregations, cantones);
