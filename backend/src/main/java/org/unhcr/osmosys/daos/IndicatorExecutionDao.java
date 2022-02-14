@@ -469,4 +469,39 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         }
         return q.getResultList();
     }
+
+    public List<IndicatorExecution> getAllIndicatorDirectImplementation(Long periodId) {
+        IndicatorType generalType = IndicatorType.GENERAL;
+        String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
+                " left join fetch o.markers " +
+                " left join fetch o.indicator i " +
+                " left join fetch i.statement " +
+                " left join fetch o.quarters q " +
+                " left join fetch q.months m " +
+                " left join fetch m.sources " +
+                " left join fetch o.period p " +
+                " left join fetch p.generalIndicator " +
+                " left join fetch o.reportingOffice offf " +
+                " left join fetch o.supervisorUser su " +
+                " left join fetch su.organization " +
+                " left join fetch su.office " +
+                " left join fetch o.assignedUser u " +
+                " left join fetch u.organization " +
+                " left join fetch u.office " +
+                " left join fetch o.assignedUserBackup ub " +
+                " left join fetch ub.organization " +
+                " left join fetch ub.office " +
+                " left join fetch  m.indicatorValues iv " +
+                " left join fetch  m.indicatorValuesIndicatorValueCustomDissagregations ivc " +
+                " WHERE p.id = :periodId " +
+                " and o.indicatorType <> :generalType " +
+                " and o.project is null " +
+                " and o.state =:state ";
+
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("periodId", periodId);
+        q.setParameter("generalType", generalType);
+        q.setParameter("state", State.ACTIVO);
+        return q.getResultList();
+    }
 }

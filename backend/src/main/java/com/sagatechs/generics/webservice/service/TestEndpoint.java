@@ -70,11 +70,19 @@ public class TestEndpoint {
         return "ya";
     }
 
-    @Path("createperformanceindicators")
+    @Path("createperformanceindicatorsPartners")
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
     public String createperformanceindicators() throws GeneralAppException {
         this.indicatorExecutionService.createIndicatorExecForProjects(1l);
+        return "ya";
+    }
+
+    @Path("createperformanceindicatorsID")
+    @GET
+    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    public String createperformanceindicatorsID() throws GeneralAppException {
+        this.indicatorExecutionService.createIndicatorExecForID(1l);
         return "ya";
     }
 

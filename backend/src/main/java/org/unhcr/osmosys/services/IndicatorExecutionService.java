@@ -672,6 +672,58 @@ public class IndicatorExecutionService {
         }
     }
 
+    @SuppressWarnings("DuplicatedCode")
+    public void createIndicatorExecForID(Long periodId) throws GeneralAppException {
+        List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getAllIndicatorDirectImplementation(periodId);
+        indicatorExecutions = indicatorExecutions
+                .stream()
+                .filter(indicatorExecution -> indicatorExecution.getQuarters().size() < 1)
+                .collect(Collectors.toList());
+        Period period = this.periodService.getById(periodId);
+        for (IndicatorExecution indicatorExecution : indicatorExecutions) {
+            Indicator indicator = indicatorExecution.getIndicator();
+
+            List<DissagregationAssignationToIndicatorExecution> dissagregationAssignations = indicator.getDissagregationsAssignationToIndicator().stream().filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.getState().equals(State.ACTIVO) && dissagregationAssignationToIndicator.getPeriod().getId().equals(indicatorExecution.getPeriod().getId())).map(dissagregationAssignationToIndicator -> {
+                DissagregationAssignationToIndicatorExecution da = new DissagregationAssignationToIndicatorExecution();
+                da.setState(State.ACTIVO);
+                da.setDissagregationType(dissagregationAssignationToIndicator.getDissagregationType());
+                return da;
+            }).collect(Collectors.toList());
+            dissagregationAssignations
+                    .forEach(indicatorExecution::addDissagregationAssignationToIndicatorExecution);
+
+            List<CustomDissagregationAssignationToIndicatorExecution> customDissagregationsAssignations = indicator.getCustomDissagregationAssignationToIndicators().stream().filter(customDissagregationAssignationToIndicator -> customDissagregationAssignationToIndicator.getState().equals(State.ACTIVO) && customDissagregationAssignationToIndicator.getPeriod().getId().equals(indicatorExecution.getPeriod().getId())).map(customDissagregationAssignationToIndicator -> {
+                CustomDissagregationAssignationToIndicatorExecution da = new CustomDissagregationAssignationToIndicatorExecution();
+                da.setCustomDissagregation(customDissagregationAssignationToIndicator.getCustomDissagregation());
+                da.setState(State.ACTIVO);
+                return da;
+            }).collect(Collectors.toList());
+            customDissagregationsAssignations
+                    .forEach(indicatorExecution::addCustomDissagregationAssignationToIndicatorExecution);
+
+            List<DissagregationType> dissagregationTypes = dissagregationAssignations.stream()
+                    .map(DissagregationAssignationToIndicatorExecution::getDissagregationType)
+                    .collect(Collectors.toList());
+
+
+            List<CustomDissagregation> customDissagregations = customDissagregationsAssignations
+                    .stream()
+                    .map(CustomDissagregationAssignationToIndicatorExecution::getCustomDissagregation)
+                    .collect(Collectors.toList());
+
+            LocalDate startDate = LocalDate.of(period.getYear(), 1, 1);
+            LocalDate endDate = LocalDate.of(period.getYear(), 12, 31);
+
+            Set<Quarter> qs = this.quarterService.createQuarters(startDate, endDate, dissagregationTypes, customDissagregations, new ArrayList<>());
+            List<Quarter> qsl = setOrderInQuartersAndMonths(qs);
+            for (Quarter quarter : qsl) {
+                indicatorExecution.addQuarter(quarter);
+            }
+
+            this.saveOrUpdate(indicatorExecution);
+        }
+    }
+
     public List<IndicatorExecution> getLateIndicatorExecutionByProjectId(Long projectId) throws GeneralAppException {
         LocalDate today = LocalDate.now();
         int todayMonth = today.getMonth().getValue();
@@ -701,7 +753,8 @@ public class IndicatorExecutionService {
                 .collect(Collectors.toList());
     }
 
-    public List<IndicatorExecutionWeb> getAllDirectImplementationIndicatorByPeriodId(Long periodId) throws GeneralAppException {
+    public List<IndicatorExecutionWeb> getAllDirectImplementationIndicatorByPeriodId(Long periodId) throws
+            GeneralAppException {
         List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getAllDirectImplementationIndicatorByPeriodId(periodId);
         return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(indicatorExecutions, false);
     }
@@ -841,7 +894,8 @@ public class IndicatorExecutionService {
         return new ArrayList<>();
     }*/
 
-    public Long assignPerformanceIndicatoDirectImplementation(IndicatorExecutionAssigmentWeb indicatorExecutionAssigmentWeb) throws GeneralAppException {
+    public Long assignPerformanceIndicatoDirectImplementation(IndicatorExecutionAssigmentWeb
+                                                                      indicatorExecutionAssigmentWeb) throws GeneralAppException {
         this.validatePerformanceIndicatorAssignationDirectImplementation(indicatorExecutionAssigmentWeb);
 
         IndicatorExecution ie = new IndicatorExecution();
@@ -930,7 +984,8 @@ public class IndicatorExecutionService {
     }
 
 
-    public Long updateAssignPerformanceIndicatorDirectImplementation(IndicatorExecutionAssigmentWeb indicatorExecutionAssigmentWeb) throws GeneralAppException {
+    public Long updateAssignPerformanceIndicatorDirectImplementation(IndicatorExecutionAssigmentWeb
+                                                                             indicatorExecutionAssigmentWeb) throws GeneralAppException {
         if (indicatorExecutionAssigmentWeb.getId() == null) {
             throw new GeneralAppException("No se pudo encontrar la asignación (Id:" + indicatorExecutionAssigmentWeb.getId() + ")", Response.Status.BAD_REQUEST);
         }
@@ -965,7 +1020,8 @@ public class IndicatorExecutionService {
     }
 
 
-    public void validatePerformanceIndicatorAssignationDirectImplementation(IndicatorExecutionAssigmentWeb indicatorExecutionWeb) throws GeneralAppException {
+    public void validatePerformanceIndicatorAssignationDirectImplementation(IndicatorExecutionAssigmentWeb
+                                                                                    indicatorExecutionWeb) throws GeneralAppException {
         if (indicatorExecutionWeb == null) {
             throw new GeneralAppException("La asignación es obligatorio", Response.Status.BAD_REQUEST);
         }
@@ -996,13 +1052,14 @@ public class IndicatorExecutionService {
 
     }
 
-    public List<IndicatorExecutionWeb> getDirectImplementationIndicatorByPeriodIdResponsableIdSupervisorIdAndOfficeId(
-            Long userId,
-            Long periodId,
-            Long officeId,
-            Boolean supervisor,
-            Boolean responsible,
-            Boolean backup) throws GeneralAppException {
+    public List<IndicatorExecutionWeb> getDirectImplementationIndicatorByPeriodIdResponsableIdSupervisorIdAndOfficeId
+            (
+                    Long userId,
+                    Long periodId,
+                    Long officeId,
+                    Boolean supervisor,
+                    Boolean responsible,
+                    Boolean backup) throws GeneralAppException {
         List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getDirectImplementationIndicatorByPeriodIdResponsableIdSupervisorIdAndOfficeId(
                 userId, periodId, officeId, supervisor, responsible, backup
         );
