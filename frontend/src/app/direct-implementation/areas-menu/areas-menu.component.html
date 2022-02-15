@@ -1,6 +1,93 @@
 <p-card>
     <ng-template pTemplate="header">
-        Header content here
+        <h3 class="page-title p-mb-1">Implementaciòn Directa</h3>
+        <h5 class="page-title p-mt-1">Indicadores reportados</h5>
+        <p-card>
+            <form [formGroup]="queryForm" (ngSubmit)="search()">
+                <div class="p-fluid p-formgrid p-grid">
+                    <div class="p-field p-col-3 p-md-3">
+                        <label for="periodI">Periodo</label>
+                        <p-dropdown id="periodI"
+                                    formControlName="period"
+                                    [options]="periodOptions"
+                                    placeholder="Selecciona..."
+                                    filter="true"
+                                    appendTo="body"
+                                    dataKey="id"
+                        >
+                        </p-dropdown>
+
+                        <small class="p-error"
+                               *ngIf="utilsService.showErrorForm('period',queryForm)">
+                            {{utilsService.getErrorMessageForm('period', queryForm)}}
+                        </small>
+                    </div>
+                    <div class="p-field p-col-3 p-md-3">
+                        <label for="officeI">Oficina</label>
+                        <p-dropdown id="officeI"
+                                    formControlName="office"
+                                    [options]="officeOptions"
+                                    placeholder="Selecciona..."
+                                    filter="true"
+                                    appendTo="body"
+                                    dataKey="id"
+                                    showClear="true"
+                        >
+                        </p-dropdown>
+
+                        <small class="p-error"
+                               *ngIf="utilsService.showErrorForm('office',queryForm)">
+                            {{utilsService.getErrorMessageForm('office', queryForm)}}
+                        </small>
+                    </div>
+                    <div class="p-field p-col-3 p-md-3">
+                        <label for="officeI">Usuario</label>
+                        <p-dropdown id="userI"
+                                    formControlName="user"
+                                    [options]="userOptions"
+                                    placeholder="Selecciona..."
+                                    filter="true"
+                                    appendTo="body"
+                                    dataKey="id"
+                                    showClear="true"
+                        >
+                        </p-dropdown>
+
+                        <small class="p-error"
+                               *ngIf="utilsService.showErrorForm('user',queryForm)">
+                            {{utilsService.getErrorMessageForm('user', queryForm)}}
+                        </small>
+                    </div>
+                    <div class="p-field p-col-3 p-md-3">
+                        <label for="officeI">Roles</label>
+                        <p-multiSelect id="rolesI"
+                                       formControlName="roles"
+                                       [options]="roleOptions"
+                                       placeholder="Selecciona..."
+                                       filter="true"
+                                       appendTo="body"
+                        >
+                        </p-multiSelect>
+
+                        <small class="p-error"
+                               *ngIf="utilsService.showErrorForm('roles',queryForm)">
+                            {{utilsService.getErrorMessageForm('roles', queryForm)}}
+                        </small>
+                    </div>
+                    <div class="p-field p-col-3 p-md-3"></div>
+                    <div class="p-field p-col-3 p-md-3"></div>
+                    <div class="p-field p-col-3 p-md-3">
+                        <p-messages></p-messages>
+                        <p-toast></p-toast>
+                    </div>
+                    <div class="p-field p-col-3 p-md-3">
+                        <button pButton type="submit"
+                                label="Buscar" icon="pi pi-search"
+                        ></button>
+                    </div>
+                </div>
+            </form>
+        </p-card>
     </ng-template>
     <div class="p-grid  p-jc-center ">
         <div class="p-col-12">
@@ -8,6 +95,7 @@
                 <div class="p-mb-2 p-p-2 p-col-3 text-center"
                      *ngFor="let area of areas">
                     <p-button
+                        (onClick)="goToArea(area)"
                         styleClass="{{area.numberOfLateIndicators>0?'p-button-outlined p-button-raised p-button-rounded p-button-danger ':'p-button-outlined p-button-raised p-button-rounded p-button-info'}}"
                         [style]="{'height':'10vh', 'width': '20vw'}"
                     >

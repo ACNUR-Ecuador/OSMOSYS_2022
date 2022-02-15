@@ -6,6 +6,12 @@ import {AreasMenuComponent} from './areas-menu/areas-menu.component';
 import {ButtonModule} from 'primeng/button';
 import {CardModule} from 'primeng/card';
 import {BadgeModule} from 'primeng/badge';
+import {DropdownModule} from 'primeng/dropdown';
+import {ReactiveFormsModule} from '@angular/forms';
+import {MultiSelectModule} from 'primeng/multiselect';
+import {MessageModule} from 'primeng/message';
+import {MessagesModule} from 'primeng/messages';
+import {ToastModule} from 'primeng/toast';
 
 
 @NgModule({
@@ -17,7 +23,13 @@ import {BadgeModule} from 'primeng/badge';
         DirectImplementationRoutingModule,
         ButtonModule,
         CardModule,
-        BadgeModule
+        BadgeModule,
+        DropdownModule,
+        ReactiveFormsModule,
+        MultiSelectModule,
+        MessageModule,
+        MessagesModule,
+        ToastModule
     ]
 })
 export class DirectImplementationModule {

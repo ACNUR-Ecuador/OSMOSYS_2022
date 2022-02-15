@@ -32,7 +32,7 @@ export class AreasMenuComponent implements OnInit {
     constructor(private fb: FormBuilder,
                 private periodService: PeriodService,
                 private messageService: MessageService,
-                private utilsService: UtilsService,
+                public utilsService: UtilsService,
                 private userService: UserService,
                 private officeService: OfficeService,
                 private enumsService: EnumsService,
@@ -75,6 +75,7 @@ export class AreasMenuComponent implements OnInit {
             const currentUser = this.userService.getLogedUsername();
             this.queryForm.get('period').patchValue(selectedPeriod);
             this.queryForm.get('user').patchValue(currentUser);
+            this.queryForm.get('roles').patchValue(this.roleOptions.filter(value1 => value1.value === 'supervisorUser' || value1.value === 'assignedUser').map(value1 => value1.value));
             this.loadAreas(currentUser.id, selectedPeriod.id, null, true, true, false);
         }, error => {
             this.messageService.add({
@@ -141,6 +142,7 @@ export class AreasMenuComponent implements OnInit {
               supervisor: boolean,
               responsible: boolean,
               backup: boolean) {
+        this.messageService.clear();
         this.areaService.getDirectImplementationAreaResume(userId,
             periodId,
             officeId,
@@ -149,7 +151,6 @@ export class AreasMenuComponent implements OnInit {
             backup
         ).subscribe(value => {
             this.areas = value;
-            console.log(this.areas);
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -158,5 +159,26 @@ export class AreasMenuComponent implements OnInit {
                 life: 3000
             });
         });
+    }
+
+    search() {
+        console.log(this.queryForm.value);
+        const {
+            period,
+            office,
+            roles,
+            user,
+        } = this.queryForm.value;
+        const rolesF = roles as string[];
+        const responsible = rolesF.includes('assignedUser');
+        const responsibleBackup = rolesF.includes('assignedUserBackup');
+        const supervisor = rolesF.includes('supervisorUser');
+        this.loadAreas(user ? user.id : null,
+            period ? period.id : null,
+            office ? office.id : null, supervisor, responsible, responsibleBackup);
+    }
+
+    goToArea(area: AreaResume) {
+        console.log(area);
     }
 }
