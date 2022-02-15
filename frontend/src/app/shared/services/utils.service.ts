@@ -13,6 +13,7 @@ import {
 } from '../model/UtilsModel';
 import {EnumsService} from './enums.service';
 import {CustomDissagregationValues, IndicatorExecution, IndicatorValue, Period} from '../model/OsmosysModel';
+import {HttpResponse} from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root'
@@ -543,7 +544,29 @@ export class UtilsService {
             }
         }
     }
+    public downloadFileResponse(response: HttpResponse<Blob>) {
 
+        const filename: string = this.getFileName(response);
+        const binaryData = [];
+        binaryData.push(response.body);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, {type: 'blob'}));
+        downloadLink.setAttribute('download', filename);
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+    }
+    public getFileName(response: HttpResponse<Blob>) {
+        let filename: string;
+        try {
+            const contentDisposition: string = response.headers.get('content-disposition');
+            // noinspection RegExpUnnecessaryNonCapturingGroup
+            const r = /(?:filename=")(.+)(?:")/;
+            filename = r.exec(contentDisposition)[1];
+        } catch (e) {
+            filename = 'reporte.xlsx';
+        }
+        return filename;
+    }
 }
 
 

@@ -23,6 +23,10 @@ export const content: Routes = [
         loadChildren: () => import('../../users/users.module').then(m => m.UsersModule)
     },
     {
+        path: 'reports',
+        loadChildren: () => import('../../reports/reports.module').then(m => m.ReportsModule)
+    },
+    {
         path: 'demo',
         loadChildren: () => import('../../demo/demo.module').then(m => m.DemoModule)
     },

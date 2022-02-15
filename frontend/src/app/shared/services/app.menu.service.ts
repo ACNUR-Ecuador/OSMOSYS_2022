@@ -139,6 +139,19 @@ export class MenuService {
                     routerLink: ['/partners/partnersProjectList'],
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'MONITOR_DE_PROGRAMAS', 'EJECUTOR_DE_PROGRAMAS', 'PUNTO_FOCAL']
                 },
+                {
+                    label: 'Reportes',
+                    icon: 'pi pi-users',
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR', 'MONITOR_DE_PROGRAMAS'],
+                    items: [
+                        {
+                            label: 'Estado de Reporte de Proyectos',
+                            icon: 'pi pi-fw book',
+                            routerLink: ['/reports/allProjectsState'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRATOR', 'MONITOR_DE_PROGRAMAS'],
+                        },
+                    ]
+                }
             ]
         },
         {
