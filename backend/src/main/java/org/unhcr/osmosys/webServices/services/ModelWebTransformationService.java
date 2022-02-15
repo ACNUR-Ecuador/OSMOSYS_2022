@@ -3,7 +3,6 @@ package org.unhcr.osmosys.webServices.services;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
-// import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;

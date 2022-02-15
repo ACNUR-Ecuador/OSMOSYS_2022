@@ -9,11 +9,11 @@
             <entry key="com.zeroturnaround.jrebel.remoting.DeleteUnindexedFiles" value="false" />
             <entry key="com.zeroturnaround.jrebel.remoting.ModuleRemoteServerSelection" value="off" />
             <entry key="jrebelEnabled" value="true" />
-            <entry key="lastExternalPluginCheckTime" value="1642184037903" />
+            <entry key="lastExternalPluginCheckTime" value="1644933246622" />
             <entry key="rebelXmlGenerationType" value="ide" />
           </map>
         </option>
-        <option name="version" value="37" />
+        <option name="version" value="38" />
       </configuration>
     </facet>
     <facet type="web" name="Web">
