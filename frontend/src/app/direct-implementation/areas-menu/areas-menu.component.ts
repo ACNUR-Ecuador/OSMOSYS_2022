@@ -149,6 +149,7 @@ export class AreasMenuComponent implements OnInit {
             backup
         ).subscribe(value => {
             this.areas = value;
+            console.log(this.areas);
         }, error => {
             this.messageService.add({
                 severity: 'error',

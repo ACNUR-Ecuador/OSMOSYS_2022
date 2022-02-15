@@ -6,21 +6,35 @@
         <div class="p-col-12">
             <div class="p-d-flex p-flex-wrap">
                 <div class="p-mb-2 p-p-2 p-col-3 text-center"
-                     *ngFor="let number of numbers">
-                    <button pButton type="button" class="p-button-outlined p-button-rounded "
-                            [style]="{'height':'10vh', 'width': '20vw'}"
+                     *ngFor="let area of areas">
+                    <p-button
+                        styleClass="{{area.numberOfLateIndicators>0?'p-button-outlined p-button-raised p-button-rounded p-button-danger ':'p-button-outlined p-button-raised p-button-rounded p-button-info'}}"
+                        [style]="{'height':'10vh', 'width': '20vw'}"
                     >
                         <!--suppress HtmlUnknownTag -->
-                        <div class="text-center">
-                            <img alt="logo" src="{{'assets/images/areas_icons/AR'+number+'.svg'}}"
-                                 style="height: 6vh; max-width: 25vw;"/>
-                        </div>
-                        <div class="p-p-2 " style="text-align: left !important;height: 10vh; max-width: 25vw">
-                            <span
-                                class="p-text-bold">{{'PrimeNG PrimeNG PrimeNG PrimeNG PrimeNG PrimeNG PrimeNG ' + number}}</span>
-                        </div>
-                    </button>
-                    <p-badge [value]="'2'" class="p-overlay-badge" severity="success" size="large"></p-badge>
+                        <ng-template pTemplate="content">
+                            <div class="p-grid p-ai-center vertical-container"
+                                 style="margin: 0; padding: 0;height:100%; width:100%;">
+                                <div class="p-col-3" style="margin: 0; padding: 0;">
+                                    <img
+                                        style="max-height: 8vh;"
+                                        alt="logo" src="{{'assets/images/areas_icons/'+area.area.code+'.svg'}}"
+                                    />
+                                </div>
+                                <div class="p-col-8" style="margin: 0; padding: 0;">
+                                    <span>{{area.area.description}}</span>
+                                </div>
+                                <div class="p-col-1" style="margin: 0; padding: 0;">
+                                    <p-badge [value]="area.numberOfIndicators+''" severity="info"
+                                             size="large"></p-badge>
+                                    <p-badge *ngIf="(area.numberOfLateIndicators >0)"
+                                             [value]="area.numberOfLateIndicators+''" severity="danger"
+                                    ></p-badge>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-button>
+
                 </div>
             </div>
         </div>
