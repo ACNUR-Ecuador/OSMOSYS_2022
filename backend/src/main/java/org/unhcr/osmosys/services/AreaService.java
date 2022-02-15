@@ -116,18 +116,19 @@ public class AreaService {
     }
 
     public List<AreaResumeWeb> getDirectImplementationAreaResume(Long userId,
-                                                                       Long periodId,
-                                                                       Long officeId,
-                                                                       Boolean supervisor,
-                                                                       Boolean responsible,
-                                                                       Boolean backup) throws GeneralAppException {
+                                                                 Long periodId,
+                                                                 Long officeId,
+                                                                 Boolean supervisor,
+                                                                 Boolean responsible,
+                                                                 Boolean backup) throws GeneralAppException {
 
         List<IndicatorExecutionWeb> indicatorExecutions = this.indicatorExecutionService
                 .getDirectImplementationIndicatorByPeriodIdResponsableIdSupervisorIdAndOfficeId(
                         userId, periodId, officeId, supervisor, responsible, backup
                 );
+        List<Area> areas = this.areaDao.findAll();
 
 
-        return this.modelWebTransformationService.indicatorExecutionsToAreaWebs(indicatorExecutions);
+        return this.modelWebTransformationService.indicatorExecutionsToAreaWebs(indicatorExecutions, areas);
     }
 }

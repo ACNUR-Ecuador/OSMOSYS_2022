@@ -14,6 +14,7 @@ import org.unhcr.osmosys.webServices.model.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -78,15 +79,21 @@ public class ModelWebTransformationService {
     }
 
 
-    public List<AreaResumeWeb> indicatorExecutionsToAreaWebs(List<IndicatorExecutionWeb> indicatorExecutions) {
+    public List<AreaResumeWeb> indicatorExecutionsToAreaWebs(List<IndicatorExecutionWeb> indicatorExecutions, List<Area> areas) throws GeneralAppException {
         // grouped by areas
         List<AreaResumeWeb> r = new ArrayList<>();
+
+        List<AreaWeb> areasWeb = this.areasToAreasWeb(areas);
         Map<AreaWeb, List<IndicatorExecutionWeb>> mapAreas = new HashMap<>();
         for (IndicatorExecutionWeb indicatorExecution : indicatorExecutions) {
             AreaWeb area = indicatorExecution.getIndicator().getStatement().getArea();
-            if (mapAreas.get(indicatorExecution.getIndicator().getStatement().getArea()) == null) {
-                mapAreas.put(area, new ArrayList<>());
+            Optional<AreaWeb> areaT = areasWeb.stream().filter(area1 -> area1.getId().equals(area.getId())).findFirst();
+            if (!areaT.isPresent()) {
+                throw new GeneralAppException("Area no encontrada, error interno", Response.Status.INTERNAL_SERVER_ERROR);
             }
+
+            mapAreas.put(areaT.get(), new ArrayList<>());
+
             mapAreas.get(area).add(indicatorExecution);
         }
 
@@ -114,6 +121,7 @@ public class ModelWebTransformationService {
             });
 
             arw.setNumberOfLateIndicators(lateCount);
+            arw.setNumberOfIndicators(indicators.size());
             arw.setIndicators(indicators);
             r.sort(Comparator.comparing(o -> o.getArea().getId()));
             r.add(arw);
@@ -328,7 +336,7 @@ public class ModelWebTransformationService {
             indicatorWeb.setMarkers(markers);
         }
         if (getStatement) {
-            indicatorWeb.setStatement(this.statementToStatementWeb(indicator.getStatement(), false, false, false, false, false));
+            indicatorWeb.setStatement(this.statementToStatementWeb(indicator.getStatement(), false, true, false, false, false));
         }
         if (getDissagregations) {
             indicatorWeb.setDissagregationsAssignationToIndicator(this.dissagregationAssignationToIndicatorsToDissagregationAssignationToIndicatorsWeb(indicator.getDissagregationsAssignationToIndicator()));

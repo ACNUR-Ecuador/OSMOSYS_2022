@@ -410,7 +410,8 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
                 " left join fetch o.markers " +
                 " left join fetch o.indicator i " +
-                " left join fetch i.statement " +
+                " left join fetch i.statement statement" +
+                " left join fetch statement.area " +
                 " left join fetch o.quarters q " +
                 " left join fetch q.months m " +
                 " left join fetch m.sources " +
