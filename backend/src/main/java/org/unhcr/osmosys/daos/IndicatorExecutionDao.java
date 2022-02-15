@@ -505,4 +505,45 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         q.setParameter("state", State.ACTIVO);
         return q.getResultList();
     }
+
+    public List<IndicatorExecution> getActiveProjectIndicatorExecutionsByPeriodId(Long periodId) {
+        String jpql = "SELECT DISTINCT o " +
+                " FROM IndicatorExecution o " +
+                " inner join fetch o.project pr " +
+                " left join fetch pr.projectLocationAssigments pla" +
+                " left join fetch pla.location canpl" +
+                " left join fetch canpl.provincia " +
+                " left join fetch pr.focalPoint fp" +
+                " left join fetch fp.organization " +
+                " left join fetch  pr.organization " +
+                " left join fetch o.indicator ind " +
+                " left join fetch ind.statement stati " +
+                " left join fetch stati.area " +
+                " left join fetch ind.markers " +
+                " left join fetch o.projectStatement pst " +
+                " left join fetch pst.area " +
+                " left join fetch pst.situation " +
+                " left join fetch o.period p " +
+                " left join fetch pst.pillar " +
+                " left join fetch o.quarters q " +
+                " left join fetch q.months m " +
+                " left join fetch m.sources sou " +
+                " left join fetch m.indicatorValues iv " +
+                " left join fetch m.indicatorValuesIndicatorValueCustomDissagregations ivc " +
+                " left join fetch p.generalIndicator " +
+                " WHERE pr.state =:state " +
+                " and o.state =:state " +
+                " and (pla.state is null or pla.state =:state )" +
+                " and (q.state is null or q.state =:state )" +
+                " and (m.state is null or m.state =:state )" +
+                " and (iv.state is null or iv.state =:state )" +
+                " and (ivc.state is null or ivc.state =:state )" +
+                " and p.id =:periodId " +
+                " order by pr.organization.acronym, pr.organization.description, " +
+                " pr.code, pr.name, o.indicatorType, o.projectStatement.code , ind.code  ";
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("periodId", periodId);
+        return q.getResultList();
+    }
 }

@@ -2,15 +2,13 @@ package org.unhcr.osmosys.reports.service;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.export.OutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import org.jboss.logging.Logger;
-import org.unhcr.osmosys.reports.model.LateReportingDto;
-import org.unhcr.osmosys.services.IndicatorExecutionService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -24,27 +22,23 @@ import java.util.Map;
 
 @Stateless
 public class ReportService {
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = Logger.getLogger(ReportService.class);
 
     @Inject
     ReportDataService reportDataService;
 
-    public ByteArrayOutputStream generatePartnerLateReportByProjectId(Long projectId) throws GeneralAppException {
-        String jrxmlFile = "ProjectLateReport.jrxml";
+    public ByteArrayOutputStream indicatorExecutionsToLateProjectsReportsByPeriodYear(Long periodId) throws GeneralAppException {
+        String jrxmlFile = "AllProjectStateReport.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         InputStream file = this.getReportFile(jrxmlFile);
-        List<LateReportingDto> r = this.reportDataService.getLateIndicatorExecutionByProjectId(projectId);
-
-
         try {
             JasperReport jasperReport = JasperCompileManager.compileReport(file);
+            List<Map<String, Object>> data = this.reportDataService.indicatorExecutionsProjectsReportsByPeriodId(periodId);
+            JRMapArrayDataSource dataSource = new JRMapArrayDataSource(data.toArray());
+            parameters.put("DataParameter", dataSource);
 
-            if (parameters == null) {
-                parameters = new HashMap<>();
-            }
-            JRDataSource dataSource = new JRBeanCollectionDataSource(r);
-            JasperPrint jasperprint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-
+            JasperPrint jasperprint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
             JRXlsxExporter xlsxExporter = new JRXlsxExporter();
             xlsxExporter.setExporterInput(new SimpleExporterInput(jasperprint));
             ByteArrayOutputStream finalReport = new ByteArrayOutputStream();
@@ -58,8 +52,7 @@ public class ReportService {
             xlsxExporter.setConfiguration(xlsReportConfiguration);
             xlsxExporter.exportReport();
             return finalReport;
-
-        } catch (Exception e) {
+        } catch (JRException e) {
             throw new GeneralAppException("Error al generar el reporte", Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
         }
     }
@@ -67,9 +60,6 @@ public class ReportService {
     public InputStream getReportFile(String fileName) {
         //URL fileUrl = this.getClass().getResource("reportsJR/GeneralReportsTotal.jrxml");
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        InputStream resource = classLoader.getResourceAsStream("reports" + File.separator + fileName);
-
-
-        return resource;
+        return classLoader.getResourceAsStream("reports" + File.separator + fileName);
     }
 }

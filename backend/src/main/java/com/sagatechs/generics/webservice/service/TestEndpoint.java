@@ -11,6 +11,7 @@ import org.unhcr.osmosys.model.IndicatorExecution;
 import org.unhcr.osmosys.model.Period;
 import org.unhcr.osmosys.model.Project;
 import org.unhcr.osmosys.model.enums.AreaType;
+import org.unhcr.osmosys.reports.service.ReportService;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
 import org.unhcr.osmosys.services.PeriodService;
 import org.unhcr.osmosys.services.ProjectService;
@@ -44,6 +45,8 @@ public class TestEndpoint {
     @Inject
     ProjectService projectService;
 
+    @Inject
+    ReportService reportService;
 
     @Inject
     DateUtils dateUtils;
@@ -119,6 +122,13 @@ public class TestEndpoint {
         this.indicatorExecutionService.createGeneralIndicatorForProject(p);
 
 
+    }
+
+    @Path("testreport")
+    @GET
+    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    public void testReport() throws GeneralAppException {
+        this.reportService.indicatorExecutionsToLateProjectsReportsByPeriodYear(1L);
     }
 }
 

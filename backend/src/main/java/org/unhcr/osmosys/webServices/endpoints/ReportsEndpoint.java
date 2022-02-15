@@ -22,16 +22,16 @@ public class ReportsEndpoint {
     @Inject
     ReportService reportService;
 
-    @Path("/generatePartnerLateReportByProjectId/{projectId}")
+    @Path("/getAllPartnertsStateReport/{periodId}")
     @GET
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public Response getFile(
-            @PathParam("projectId") Long projectId
+            @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
 
-        ByteArrayOutputStream r = this.reportService.generatePartnerLateReportByProjectId(projectId);
+        ByteArrayOutputStream r = this.reportService.indicatorExecutionsToLateProjectsReportsByPeriodYear(periodId);
 
-        String filename = "Reporte_retrasos_proyecto_" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        String filename = "Reporte_estado_proyectos_" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 }
