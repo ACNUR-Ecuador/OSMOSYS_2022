@@ -3,7 +3,7 @@ import {MessageService, SelectItem} from 'primeng/api';
 import {PeriodService} from '../../shared/services/period.service';
 import {UtilsService} from '../../shared/services/utils.service';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
-import {AreaResume, Period} from '../../shared/model/OsmosysModel';
+import {Area, AreaResume, Indicator, Period} from '../../shared/model/OsmosysModel';
 import {UserService} from '../../shared/services/user.service';
 import {UserPipe} from '../../shared/pipes/user.pipe';
 import {OfficeService} from '../../shared/services/office.service';
@@ -11,6 +11,7 @@ import {EnumsState, EnumsType} from '../../shared/model/UtilsModel';
 import {OfficeOrganizationPipe} from '../../shared/pipes/officeOrganization.pipe';
 import {EnumsService} from '../../shared/services/enums.service';
 import {AreaService} from '../../shared/services/area.service';
+import {IndicatorPipe} from '../../shared/pipes/indicator.pipe';
 
 @Component({
     selector: 'app-areas-menu',
@@ -25,9 +26,12 @@ export class AreasMenuComponent implements OnInit {
     roleOptions: SelectItem[];
     userOptions: SelectItem[];
     periodOptions: SelectItem[];
+    indicatorOptions: SelectItem[];
 
     areas: AreaResume[];
+    highlightArea: Area;
     queryForm: FormGroup;
+    indicatorForm: FormGroup;
 
     constructor(private fb: FormBuilder,
                 private periodService: PeriodService,
@@ -39,6 +43,7 @@ export class AreasMenuComponent implements OnInit {
                 private areaService: AreaService,
                 private userPipe: UserPipe,
                 private officeOrganizationPipe: OfficeOrganizationPipe,
+                private indicatorPipe: IndicatorPipe,
     ) {
         this.numbers = Array(21).fill(0).map((x, i) => i + 1);
     }
@@ -55,6 +60,9 @@ export class AreasMenuComponent implements OnInit {
             office: new FormControl(''),
             roles: new FormControl(''),
             user: new FormControl('')
+        });
+        this.indicatorForm = this.fb.group({
+            indicator: new FormControl('')
         });
     }
 
@@ -151,6 +159,7 @@ export class AreasMenuComponent implements OnInit {
             backup
         ).subscribe(value => {
             this.areas = value;
+            this.loadIndicatorOptions();
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -159,6 +168,22 @@ export class AreasMenuComponent implements OnInit {
                 life: 3000
             });
         });
+    }
+
+    loadIndicatorOptions() {
+        this.highlightArea = null;
+        this.indicatorOptions = this.areas
+            .map(value => {
+                return value.indicators;
+            })
+            .reduce((previousValue, currentValue) => previousValue.concat(currentValue), [])
+            .map(indicator => {
+                return {
+                    value: indicator,
+                    label: this.indicatorPipe.transform(indicator)
+                } as SelectItem;
+            });
+        console.log(this.indicatorOptions);
     }
 
     search() {
@@ -180,5 +205,26 @@ export class AreasMenuComponent implements OnInit {
 
     goToArea(area: AreaResume) {
         console.log(area);
+    }
+
+    highlightIndicator(indicator: Indicator) {
+        if (!indicator) {
+            this.highlightArea = null;
+            return;
+        }
+        this.highlightArea = this.areas.filter(area => {
+            return area.indicators.some(indicatorF => indicator.id === indicatorF.id);
+        }).pop().area;
+        console.log(this.highlightArea);
+    }
+
+    getButtonStyles(areaResume: AreaResume): string {
+        let result = areaResume.numberOfLateIndicators > 0 ? 'p-button-outlined p-button-raised p-button-rounded p-button-danger ' : 'p-button-outlined p-button-raised p-button-rounded p-button-info';
+
+        if (this.highlightArea && areaResume.area.id === this.highlightArea.id) {
+            result = 'p-button-rounded p-button-warning';
+        }
+        console.log(result);
+        return result;
     }
 }

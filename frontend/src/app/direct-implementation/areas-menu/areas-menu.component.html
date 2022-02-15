@@ -96,7 +96,7 @@
                      *ngFor="let area of areas">
                     <p-button
                         (onClick)="goToArea(area)"
-                        styleClass="{{area.numberOfLateIndicators>0?'p-button-outlined p-button-raised p-button-rounded p-button-danger ':'p-button-outlined p-button-raised p-button-rounded p-button-info'}}"
+                        styleClass="{{getButtonStyles(area)}}"
                         [style]="{'height':'10vh', 'width': '20vw'}"
                     >
                         <!--suppress HtmlUnknownTag -->
@@ -128,7 +128,25 @@
         </div>
     </div>
     <ng-template pTemplate="footer">
-        Footer content here
+        <form [formGroup]="queryForm" (ngSubmit)="search()">
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field p-col-3 p-md-3">
+                    <label for="periodI">Buscador de indicadores</label>
+                    <p-dropdown id="indicatorI"
+                                formControlName="indicator"
+                                [options]="indicatorOptions"
+                                placeholder="Selecciona..."
+                                filter="true"
+                                appendTo="body"
+                                dataKey="id"
+                                (onChange)="highlightIndicator($event.value)"
+                                (onClear)="highlightIndicator(null)"
+                                showClear="true"
+                    >
+                    </p-dropdown>
+                </div>
+            </div>
+        </form>
     </ng-template>
 </p-card>
 
