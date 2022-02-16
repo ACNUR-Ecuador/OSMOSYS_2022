@@ -11,6 +11,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
 import java.util.List;
 
 @Path("/indicatorExecutions")
@@ -63,7 +64,6 @@ public class IndicatorExecutionEndpoint {
     }
 
 
-
     @Path("/targetsUpdate")
     @PUT
     @Secured
@@ -103,6 +103,7 @@ public class IndicatorExecutionEndpoint {
         return this.indicatorExecutionService.updateAssignPerformanceIndicatoToProject(indicatorExecutionAssigmentWeb);
 
     }
+
     @Path("/updateAssignPerformanceIndicatorDirectImplementation")
     @PUT
     @Secured
@@ -129,5 +130,14 @@ public class IndicatorExecutionEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Long updateMonthValues(@PathParam("indicatorExecutionId") Long indicatorExecutionId, MonthValuesWeb monthValuesWeb) throws GeneralAppException {
         return this.indicatorExecutionService.updateMonthValues(indicatorExecutionId, monthValuesWeb);
+    }
+
+    @Path("/getDirectImplementationIndicatorExecutionsByIds")
+    @POST
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<IndicatorExecutionWeb> getDirectImplementationIndicatorExecutionsByIds(List<Long> indicatorExecutionIds) throws GeneralAppException {
+        LOGGER.error(indicatorExecutionIds);
+        return this.indicatorExecutionService.getDirectImplementationIndicatorExecutionsByIds(indicatorExecutionIds);
     }
 }

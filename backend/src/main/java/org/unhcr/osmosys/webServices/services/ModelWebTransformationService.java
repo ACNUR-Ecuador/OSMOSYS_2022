@@ -91,8 +91,10 @@ public class ModelWebTransformationService {
                 throw new GeneralAppException("Area no encontrada, error interno", Response.Status.INTERNAL_SERVER_ERROR);
             }
 
-            mapAreas.put(areaT.get(), new ArrayList<>());
-
+            //noinspection SuspiciousMethodCalls
+            if (mapAreas.get(areaT.get()) == null) {
+                mapAreas.put(areaT.get(), new ArrayList<>());
+            }
             mapAreas.get(area).add(indicatorExecution);
         }
 
@@ -101,11 +103,12 @@ public class ModelWebTransformationService {
             AreaResumeWeb arw = new AreaResumeWeb();
             arw.setArea(areaWeb);
             arw.setNumberOfLateIndicators(indicatorExecutionsArea.size());
-
+            arw.setIndicatorExecutionIds(new ArrayList<>());
             int lateCount = 0;
             List<IndicatorWeb> indicators = new ArrayList<>();
             for (IndicatorExecutionWeb indicatorExecutionWeb : indicatorExecutionsArea) {
                 indicators.add(indicatorExecutionWeb.getIndicator());
+                arw.getIndicatorExecutionIds().add(indicatorExecutionWeb.getId());
                 if (indicatorExecutionWeb.getLate()) {
                     lateCount++;
                 }

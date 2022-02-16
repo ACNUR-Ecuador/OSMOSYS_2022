@@ -8,6 +8,7 @@ import org.unhcr.osmosys.model.enums.Frecuency;
 import org.unhcr.osmosys.model.enums.IndicatorType;
 import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
+import org.unhcr.osmosys.webServices.model.IndicatorExecutionWeb;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
@@ -544,6 +545,44 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("state", State.ACTIVO);
         q.setParameter("periodId", periodId);
+        return q.getResultList();
+    }
+
+    public List<IndicatorExecution> getDirectImplementationIndicatorExecutionsByIds(List<Long> indicatorExecutionIds) {
+        IndicatorType generalType = IndicatorType.GENERAL;
+        String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
+                " left join fetch o.markers " +
+                " left join fetch o.indicator i " +
+                " left join fetch i.statement st " +
+                " left join fetch st.area " +
+                " left join fetch o.quarters q " +
+                " left join fetch q.months m " +
+                " left join fetch m.sources " +
+                " left join fetch o.period p " +
+                " left join fetch p.generalIndicator " +
+                " left join fetch o.reportingOffice offf " +
+                " left join fetch o.supervisorUser su " +
+                " left join fetch su.organization " +
+                " left join fetch su.office " +
+                " left join fetch o.assignedUser u " +
+                " left join fetch u.organization " +
+                " left join fetch u.office " +
+                " left join fetch o.assignedUserBackup ub " +
+                " left join fetch ub.organization " +
+                " left join fetch ub.office " +
+                " left join fetch  m.indicatorValues iv " +
+                " left join fetch  m.indicatorValuesIndicatorValueCustomDissagregations ivc " +
+                " WHERE o.id in (:indicatorExecutionIds) " +
+                " and o.state=:state " +
+                " and o.indicatorType <> :generalType " +
+                " and o.project is null " +
+                " and (iv.state is null or iv.state=:state) " +
+                " and (ivc.state is null or ivc.state=:state) " +
+                " ";
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("generalType", generalType);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("indicatorExecutionIds", indicatorExecutionIds);
         return q.getResultList();
     }
 }

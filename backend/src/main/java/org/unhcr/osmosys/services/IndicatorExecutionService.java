@@ -1071,6 +1071,12 @@ public class IndicatorExecutionService {
         return this.modelWebTransformationService
                 .indicatorExecutionsToIndicatorExecutionsWeb(indicatorExecutions, true);
     }
+
+    public List<IndicatorExecutionWeb> getDirectImplementationIndicatorExecutionsByIds(List<Long> indicatorExecutionIds) throws GeneralAppException {
+        return this.modelWebTransformationService
+                .indicatorExecutionsToIndicatorExecutionsWeb(
+                        this.indicatorExecutionDao.getDirectImplementationIndicatorExecutionsByIds(indicatorExecutionIds), false);
+    }
 }
 
 
