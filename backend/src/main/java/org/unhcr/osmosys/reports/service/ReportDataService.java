@@ -3,7 +3,7 @@ package org.unhcr.osmosys.reports.service;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.collections4.CollectionUtils;
-import org.unhcr.osmosys.model.IndicatorExecution;
+import org.apache.commons.lang3.StringUtils;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
 import org.unhcr.osmosys.webServices.model.IndicatorExecutionWeb;
 import org.unhcr.osmosys.webServices.model.MonthWeb;
@@ -20,33 +20,6 @@ public class ReportDataService {
     @Inject
     IndicatorExecutionService indicatorExecutionService;
 
- /*   public List<LateReportingDto> getLateIndicatorExecutionByProjectId(Long projectId) throws GeneralAppException {
-        List<IndicatorExecution> data = this.indicatorExecutionService.getLateIndicatorExecutionByProjectId(projectId);
-        return data.stream().map(indicatorExecution -> {
-            LateReportingDto dto = new LateReportingDto();
-            dto.setProjectName(indicatorExecution.getProject().getName());
-            dto.setPartnerCode(indicatorExecution.getProject().getOrganization().getCode());
-            dto.setPartnerName(indicatorExecution.getProject().getOrganization().getAcronym() + "-" + indicatorExecution.getProject().getOrganization().getDescription());
-            dto.setStatmentName(indicatorExecution.getProjectStatement().getCode() + "-" + indicatorExecution.getProjectStatement().getDescription());
-            if (indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)) {
-                dto.setIndicatorName(indicatorExecution.getPeriod().getGeneralIndicator().getDescription());
-            } else {
-                dto.setIndicatorName(indicatorExecution.getIndicator().getCode() + "-" + indicatorExecution.getIndicator().getDescription());
-            }
-            String notReportedMonths = indicatorExecution.getQuarters().stream()
-                    .map(quarter -> quarter.getMonths())
-                    .flatMap(Collection::stream).sorted((o1, o2) -> {
-                        return o1.getOrder().compareTo(o2.getOrder());
-                    })
-                    .map(month -> {
-                        return month.getMonth().getLabel() + "-" + month.getYear();
-                    })
-                    .collect(Collectors.joining(", "));
-            dto.setNotReportedMonths(notReportedMonths);
-            return dto;
-        }).collect(Collectors.toList());
-    }*/
-
     public List<Map<String, Object>> indicatorExecutionsProjectsReportsByPeriodId(Long periodId) throws GeneralAppException {
         List<IndicatorExecutionWeb> indicatorExecutions = this.indicatorExecutionService.getActiveProjectIndicatorExecutionsByPeriodId(periodId);
         return this.indicatorExecutionsProjectsReports(indicatorExecutions);
@@ -61,7 +34,8 @@ public class ReportDataService {
             map.put("project", ie.getProject().getCode() + '-' + ie.getProject().getName());
             map.put("indicatorType", ie.getIndicatorType().getLabel());
             map.put("outcomeStatement", ie.getProjectStatement() != null ? ie.getProjectStatement().getCode() + '-' + ie.getProjectStatement().getDescription() : null);
-            map.put("indicator", ie.getIndicator().getCode() + "-" + ie.getIndicator().getDescription());
+            map.put("indicator", ie.getIndicator().getCode() + "-" + ie.getIndicator().getDescription()
+                    + (StringUtils.isNotEmpty(ie.getIndicator().getCategory()) ? " (Categoría: " + ie.getIndicator().getCategory() + " )" : ""));
             map.put("target", ie.getTarget());
             map.put("totalExecution", ie.getTotalExecution());
             map.put("executionPercentage", ie.getExecutionPercentage());
