@@ -133,6 +133,6 @@ export class IndicatorsListComponent implements OnInit {
     }
 
     exportExcel() {
-        this.utilsService.exportTableAsExcel(this._selectedColumns, this.items, 'Asignacion_indicadores_id');
+        this.utilsService.exportTableAsExcelV3(this._selectedColumns, this.items, 'estado_indicadores_id');
     }
 }

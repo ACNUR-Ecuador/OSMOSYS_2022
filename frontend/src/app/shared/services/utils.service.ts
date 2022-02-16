@@ -14,6 +14,7 @@ import {
 import {EnumsService} from './enums.service';
 import {CustomDissagregationValues, IndicatorExecution, IndicatorValue, Period} from '../model/OsmosysModel';
 import {HttpResponse} from '@angular/common/http';
+import {TableColumnProperties} from 'exceljs';
 
 @Injectable({
     providedIn: 'root'
@@ -46,6 +47,69 @@ export class UtilsService {
         });
     }
 
+    exportTableAsExcelV3(selectedColumns: ColumnTable[], items: any[], filename: string) {
+        // noinspection DuplicatedCode
+        // tslint:disable-next-line:no-shadowed-variable
+        const Excel = require('exceljs');
+        const workbook = new Excel.Workbook();
+        const itemsRenamed = this.renameKeys(items, selectedColumns);
+        const worksheet = workbook.addWorksheet('Data');
+        // add a table to a sheet
+        const header = Object.keys(itemsRenamed[0]);
+        // Add Data and Conditional Formatting
+        const rowsData = [];
+        itemsRenamed.forEach(d => {
+            rowsData.push(Object.values(d));
+        });
+        const rowsColumns = header.map(value => {
+            const colum: TableColumnProperties = {
+                name: value,
+                filterButton: true
+            };
+            return colum;
+        });
+        worksheet.addTable({
+            name: 'MyTable',
+            ref: 'A1',
+            headerRow: true,
+            totalsRow: false,
+            style: {
+                theme: 'TableStyleMedium2',
+                showRowStripes: true,
+            },
+            columns: rowsColumns,
+            rows: rowsData
+        });
+
+        this.autoWidth(worksheet, 15);
+        let rowIndex = 1;
+        for (rowIndex; rowIndex <= worksheet.rowCount; rowIndex++) {
+            worksheet.getRow(rowIndex).alignment = { vertical: 'top', horizontal: 'left', wrapText: true };
+        }
+        workbook.xlsx.writeBuffer().then(excelData => {
+
+            const blob = new Blob([excelData], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+            const EXCEL_EXTENSION = '.xlsx';
+            FileSaver.saveAs(blob, filename + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+
+        });
+
+    }
+
+
+    autoWidth(worksheet, minimalWidth = 10, maximalWidth = 50) {
+        worksheet.columns.forEach((column) => {
+            let maxColumnLength = 0;
+            column.eachCell({includeEmpty: true}, (cell) => {
+                maxColumnLength = Math.max(
+                    maxColumnLength,
+                    minimalWidth,
+                    cell.value ? cell.value.toString().length : 0
+                );
+            });
+            column.width = maxColumnLength > maximalWidth ? maximalWidth : maxColumnLength + 2;
+        });
+    }
 
     /**
      * utilidad para tablas para uso de pipes
@@ -543,6 +607,7 @@ export class UtilsService {
             }
         }
     }
+
     public downloadFileResponse(response: HttpResponse<Blob>) {
 
         const filename: string = this.getFileName(response);
@@ -554,6 +619,7 @@ export class UtilsService {
         document.body.appendChild(downloadLink);
         downloadLink.click();
     }
+
     public getFileName(response: HttpResponse<Blob>) {
         let filename: string;
         try {
