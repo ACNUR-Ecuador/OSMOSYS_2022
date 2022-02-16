@@ -1,0 +1,104 @@
+<p-card>
+    <ng-template pTemplate="header">
+        <h3 class="page-title p-mb-1">Implementación Directa</h3>
+        <h5 class="page-title p-mt-1">Indicadores reportados</h5></ng-template>
+    <p-toast></p-toast>
+    <p-messages></p-messages>
+    <p-table #dtIndicatorExecutions [value]="items"
+             [columns]="selectedColumns"
+             [rowHover]="true" dataKey="id"
+             styleClass="p-datatable-customers"
+             currentPageReportTemplate=" {first} a {last} de {totalRecords} "
+             [showCurrentPageReport]="true">
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between table-header">
+                <h5 class="p-m-0">Indicadores de Producto Implementación Directa</h5>
+                <span class="p-input-icon-left">
+                        </span>
+                <p-multiSelect [options]="cols"
+                               [(ngModel)]="selectedColumns"
+                               optionLabel="header"
+                               selectedItemsLabel="{0} columnas seleccionadas"
+                               [style]="{minWidth: '200px',color:'#6c757d'}"
+                               placeholder="Seleccione las columnas"></p-multiSelect>
+                <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+                        class="p-button-success p-mr-2"></button>
+            </div>
+
+        </ng-template>
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                    {{col.header}}
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                </th>
+                <th>
+
+                </th>
+            </tr>
+
+            <tr>
+                <th *ngFor="let col of columns" [ngSwitch]="col.field">
+                    <p-columnFilter *ngSwitchDefault [type]="col.type" [field]="col.field"
+                                    [matchMode]="'contains'"
+                                    [showMenu]="false"> matchMode="contains
+                    </p-columnFilter>
+                    <p-columnFilter *ngSwitchCase="'state'" type="equals" [field]="col.field"
+                                    [showMenu]="false">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <p-dropdown [ngModel]="value" [options]="stateOptions"
+                                        (onChange)="filter($event.value)"
+                                        placeholder="Selecciona..." [showClear]="true">
+                                <ng-template let-option pTemplate="item">
+                                            <span
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
+                                </ng-template>
+                            </p-dropdown>
+                        </ng-template>
+                    </p-columnFilter>
+                    <p-columnFilter *ngSwitchCase="'indicator'"
+                                    type="text"
+                                    [field]="col.field" [showMenu]="false"
+                                    [matchMode]="'indicatorFilter'">
+                    </p-columnFilter>
+                    <p-columnFilter *ngSwitchCase="'indicator.statement'"
+                                    type="text"
+                                    [field]="col.field" [showMenu]="false"
+                                    [matchMode]="'statementFilter'">
+                    </p-columnFilter>
+                    <p-columnFilter *ngSwitchCase="'reportingOffice'"
+                                    type="text"
+                                    [field]="col.field" [showMenu]="false"
+                                    [matchMode]="'officeFilter'">
+                    </p-columnFilter>
+                    <p-columnFilter *ngSwitchCase="'lateMonths'"
+                                    type="text"
+                                    [field]="col.field" [showMenu]="false"
+                                    [matchMode]="'monthListFilter'">
+                    </p-columnFilter>
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr>
+
+                <td *ngFor="let col of columns"
+                    [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
+                >
+                    {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field)}}
+                </td>
+
+            </tr>
+        </ng-template>
+
+
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                Total {{items ? items.length : 0 }} indicadores.
+            </div>
+        </ng-template>
+    </p-table>
+</p-card>

@@ -7,16 +7,21 @@ import {ButtonModule} from 'primeng/button';
 import {CardModule} from 'primeng/card';
 import {BadgeModule} from 'primeng/badge';
 import {DropdownModule} from 'primeng/dropdown';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {MessageModule} from 'primeng/message';
 import {MessagesModule} from 'primeng/messages';
 import {ToastModule} from 'primeng/toast';
+import { IndicatorsListComponent } from './indicators-list/indicators-list.component';
+import {TableModule} from 'primeng/table';
+import {RippleModule} from 'primeng/ripple';
+import {TooltipModule} from 'primeng/tooltip';
 
 
 @NgModule({
     declarations: [
-        AreasMenuComponent
+        AreasMenuComponent,
+        IndicatorsListComponent
     ],
     imports: [
         CommonModule,
@@ -29,7 +34,11 @@ import {ToastModule} from 'primeng/toast';
         MultiSelectModule,
         MessageModule,
         MessagesModule,
-        ToastModule
+        ToastModule,
+        TableModule,
+        FormsModule,
+        RippleModule,
+        TooltipModule
     ]
 })
 export class DirectImplementationModule {

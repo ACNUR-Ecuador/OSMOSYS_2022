@@ -86,4 +86,9 @@ export class IndicatorExecutionService {
         // tslint:disable-next-line:max-line-length
         return this.http.get<IndicatorExecution[]>(`${mainServiceUrl}/performanceAllDirectImplementationByPeriodId/${periodId}`);
     }
+
+    public getDirectImplementationIndicatorExecutionsByIds(indicatorExecutionIds: number[]): Observable<IndicatorExecution[]> {
+        return this.http.post<IndicatorExecution[]>(`${mainServiceUrl}/getDirectImplementationIndicatorExecutionsByIds`,
+            indicatorExecutionIds);
+    }
 }

@@ -12,6 +12,7 @@ import {OfficeOrganizationPipe} from '../../shared/pipes/officeOrganization.pipe
 import {EnumsService} from '../../shared/services/enums.service';
 import {AreaService} from '../../shared/services/area.service';
 import {IndicatorPipe} from '../../shared/pipes/indicator.pipe';
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'app-areas-menu',
@@ -44,6 +45,7 @@ export class AreasMenuComponent implements OnInit {
                 private userPipe: UserPipe,
                 private officeOrganizationPipe: OfficeOrganizationPipe,
                 private indicatorPipe: IndicatorPipe,
+                private router: Router
     ) {
         this.numbers = Array(21).fill(0).map((x, i) => i + 1);
     }
@@ -205,6 +207,10 @@ export class AreasMenuComponent implements OnInit {
 
     goToArea(area: AreaResume) {
         console.log(area);
+        console.log(area.indicatorExecutionIds);
+        this.router.navigateByUrl('/directImplementation/indicatorLists',
+            {state: {indicatorExecutionIds: area.indicatorExecutionIds}});
+
     }
 
     highlightIndicator(indicator: Indicator) {

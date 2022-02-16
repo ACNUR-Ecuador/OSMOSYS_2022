@@ -47,6 +47,7 @@ export class AreaResume {
     public numberOfIndicators: number;
     public numberOfLateIndicators: number;
     public indicators: Indicator[];
+    public indicatorExecutionIds: number[];
 }
 
 export class Period {

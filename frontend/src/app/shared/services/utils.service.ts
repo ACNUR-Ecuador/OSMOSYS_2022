@@ -37,7 +37,6 @@ export class UtilsService {
 
     exportTableAsExcel(selectedColumns: ColumnTable[], items: any[], filename: string) {
         import('xlsx').then(xlsx => {
-            // const headers = selectedColumns.map(value => value.header);
             const itemsRenamed = this.renameKeys(items, selectedColumns);
             const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
             const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
