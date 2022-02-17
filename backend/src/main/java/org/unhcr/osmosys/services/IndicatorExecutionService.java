@@ -1098,7 +1098,7 @@ public class IndicatorExecutionService {
         if (indicatorExecutionId == null) {
             throw new GeneralAppException("indicador id es dato obligatorio", Response.Status.BAD_REQUEST);
         }
-        if (CollectionUtils.isNotEmpty(cantonesWeb)) {
+        if (CollectionUtils.isEmpty(cantonesWeb)) {
             throw new GeneralAppException("Al menos debe haber un cantón", Response.Status.BAD_REQUEST);
         }
         // recupero el ie
@@ -1144,7 +1144,13 @@ public class IndicatorExecutionService {
         }
 
         // debo crear los iv para la todos los q sean locations
-        List<Canton> cantonesToCreate = this.cantonService.getByIds(cantonesIdsToCreate);
+        List<Canton> cantonesToCreate;
+        if(CollectionUtils.isEmpty(cantonesIdsToCreate)){
+            cantonesToCreate = new ArrayList<>();
+        }else {
+            cantonesToCreate = this.cantonService.getByIds(cantonesIdsToCreate);
+        }
+
         List<DissagregationAssignationToIndicatorExecution> dissagregationToUpdate =
                 ie.getDissagregationsAssignationsToIndicatorExecutions()
                         .stream()

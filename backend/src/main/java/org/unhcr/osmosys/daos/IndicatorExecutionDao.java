@@ -26,6 +26,8 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
     private static final String jpqlProjectIndicators =
             " SELECT DISTINCT o FROM IndicatorExecution o " +
                     " left join fetch o.indicator i " +
+                    " left join fetch i.statement ist " +
+                    " left join fetch ist.area " +
                     " left join fetch o.projectStatement pst " +
                     " left join fetch o.indicatorExecutionLocationAssigments iela " +
                     " left join fetch iela.location can " +
@@ -298,7 +300,10 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
     // todo
     public List<IndicatorExecution> getActiveProjectIndicatorExecutionsByPeriodId(Long periodId) {
         String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
-                " left join fetch o.project pr" +
+                " left join fetch o.project pr " +
+                " left join fetch pr.organization org " +
+                " left join fetch pr.focalPoint fpu " +
+                " left join fetch fpu.organization fpuorg " +
                 " left join fetch pr.projectLocationAssigments pla" +
                 " left join fetch pla.location canpl" +
                 " left join fetch canpl.provincia " +
@@ -308,7 +313,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " and (q.state is null or q.state =:state )" +
                 " and (m.state is null or m.state =:state )" +
                 " and p.id =:periodId " +
-                " order by pr.organization.acronym, pr.organization.description, " +
+                " order by org.acronym, org.description, " +
                 " pr.code, pr.name, o.indicatorType, o.projectStatement.code , i.code  ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("state", State.ACTIVO);
@@ -431,8 +436,6 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " WHERE o.id =:indicatorExecutionId " +
                 " and o.project is null ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
-        q.setParameter("generalType", generalType);
-        q.setParameter("state", State.ACTIVO);
         q.setParameter("indicatorExecutionId", indicatorExecutionId);
         try {
             return (IndicatorExecution) q.getSingleResult();
