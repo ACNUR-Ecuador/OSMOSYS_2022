@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {Observable} from 'rxjs';
 import {
+    Canton,
     IndicatorExecution, IndicatorExecutionAssigment, IndicatorValue, MonthValues,
     TargetUpdateDTOWeb
 } from '../model/OsmosysModel';
@@ -94,5 +95,11 @@ export class IndicatorExecutionService {
 
     public getDissagregationsAssignationsByIndicatorExecutionId(indicatorExecutionId: number): Observable<string[]> {
         return this.http.get<string[]>(`${mainServiceUrl}/getDissagregationsAssignationsByIndicatorExecutionId/${indicatorExecutionId}`);
+    }
+
+    // tslint:disable-next-line:max-line-length
+    public updateDirectImplementationIndicatorExecutionLocationAssigment(indicatorExecutionId: number, cantones: Canton[]): Observable<any> {
+        return this.http
+            .post(`${mainServiceUrl}/updateDirectImplementationIndicatorExecutionLocationAssigment/${indicatorExecutionId}`, cantones);
     }
 }

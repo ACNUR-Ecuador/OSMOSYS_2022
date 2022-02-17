@@ -1,6 +1,5 @@
 package org.unhcr.osmosys.daos;
 
-import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.CustomDissagregationAssignationToIndicatorExecution;
@@ -9,9 +8,7 @@ import org.unhcr.osmosys.model.Month;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
-import javax.ws.rs.core.Response;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
@@ -37,6 +34,15 @@ public class MonthDao extends GenericDaoJpa<Month, Long> {
                 " and o.quarter.indicatorExecution.id =: indicatorExecutionId";
         Query q = getEntityManager().createQuery(jpql, Month.class);
         q.setParameter("state", state);
+        q.setParameter("indicatorExecutionId", indicatorExecutionId);
+        return q.getResultList();
+    }
+
+    public List<Month> getMonthsIndicatorExecutionId(Long indicatorExecutionId) {
+        String jpql = "SELECT DISTINCT o FROM Month o " +
+                " left outer join fetch o.sources " +
+                "WHERE o.quarter.indicatorExecution.id =: indicatorExecutionId";
+        Query q = getEntityManager().createQuery(jpql, Month.class);
         q.setParameter("indicatorExecutionId", indicatorExecutionId);
         return q.getResultList();
     }
@@ -69,6 +75,7 @@ public class MonthDao extends GenericDaoJpa<Month, Long> {
         q.setParameter("monthId", monthId);
         return q.getResultList();
     }
+
     public List<CustomDissagregationAssignationToIndicatorExecution> getCustomDissagregationsByMonthId(Long monthId) {
 
         String jpql = "SELECT DISTINCT o " +

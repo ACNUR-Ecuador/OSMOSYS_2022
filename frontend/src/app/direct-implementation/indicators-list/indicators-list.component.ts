@@ -15,7 +15,6 @@ import {UserPipe} from '../../shared/pipes/user.pipe';
 import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
-import {PerformanceIndicatorFormComponent} from '../../indicator-forms/performance-indicator-form/performance-indicator-form.component';
 import {DialogService} from 'primeng/dynamicdialog';
 import {DirectImplementationPerformanceIndicatorFormComponent} from '../../indicator-forms/direct-implementation-performance-indicator-form/direct-implementation-performance-indicator-form.component';
 
@@ -174,7 +173,7 @@ export class IndicatorsListComponent implements OnInit {
                 }
             }
         );
-        ref.onClose.subscribe(value => {
+        ref.onClose.subscribe(() => {
             this.loadIndicatorExecutions();
         }, error => {
             this.loadIndicatorExecutions();

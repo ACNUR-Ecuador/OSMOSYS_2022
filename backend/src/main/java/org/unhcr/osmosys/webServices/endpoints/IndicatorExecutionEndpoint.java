@@ -141,4 +141,12 @@ public class IndicatorExecutionEndpoint {
         return this.indicatorExecutionService.getDirectImplementationIndicatorExecutionsByIds(indicatorExecutionIds);
     }
 
+    @Path("/updateDirectImplementationIndicatorExecutionLocationAssigment/{indicatorExecutionId}")
+    @POST
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public Long updateDirectImplementationIndicatorExecutionLocationAssigment(@PathParam("indicatorExecutionId") Long indicatorExecutionId, List<CantonWeb> cantones) throws GeneralAppException {
+        return this.indicatorExecutionService.updateDirectImplementationIndicatorExecutionLocationAssigment(indicatorExecutionId, cantones);
+    }
+
 }

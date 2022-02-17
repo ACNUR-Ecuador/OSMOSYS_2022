@@ -41,5 +41,9 @@ public class CantonService {
         return this.modelWebTransformationService.cantonsToCantonsWeb(this.cantonDao.getByState(state));
     }
 
+    public List<Canton> getByIds(List<Long> ids) {
+        return this.cantonDao.getByIds(ids);
+    }
+
 
 }

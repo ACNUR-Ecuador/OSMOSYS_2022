@@ -424,4 +424,20 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         q.setParameter("indicatorExecutionIds", indicatorExecutionIds);
         return q.getResultList();
     }
+
+    public IndicatorExecution getDirectImplementationIndicatorExecutionsById(Long indicatorExecutionId) {
+        IndicatorType generalType = IndicatorType.GENERAL;
+        String jpql = IndicatorExecutionDao.jpqlDirectImplementationIndicators +
+                " WHERE o.id =:indicatorExecutionId " +
+                " and o.project is null ";
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("generalType", generalType);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("indicatorExecutionId", indicatorExecutionId);
+        try {
+            return (IndicatorExecution) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 }

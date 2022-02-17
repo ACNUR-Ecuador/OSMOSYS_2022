@@ -274,4 +274,7 @@ public class MonthService {
         List<Month> months = this.monthDao.getMonthsIndicatorExecutionId(indicatorExecutionId, state);
         return this.modelWebTransformationService.monthsToMonthsWeb(new HashSet<>(months));
     }
+    public List<Month> getMonthsIndicatorExecutionId(Long indicatorExecutionId) {
+        return this.monthDao.getMonthsIndicatorExecutionId(indicatorExecutionId);
+    }
 }
