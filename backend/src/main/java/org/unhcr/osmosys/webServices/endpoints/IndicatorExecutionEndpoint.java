@@ -4,6 +4,7 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
 import org.jboss.logging.Logger;
+import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
 import org.unhcr.osmosys.webServices.model.*;
 
@@ -11,7 +12,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
 import java.util.List;
 
 @Path("/indicatorExecutions")
@@ -140,4 +140,5 @@ public class IndicatorExecutionEndpoint {
         LOGGER.error(indicatorExecutionIds);
         return this.indicatorExecutionService.getDirectImplementationIndicatorExecutionsByIds(indicatorExecutionIds);
     }
+
 }

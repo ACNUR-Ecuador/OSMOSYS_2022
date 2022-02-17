@@ -97,6 +97,9 @@ public class IndicatorExecution extends BaseEntity<Long> {
     @JoinTable(schema = "osmosys", name = "indicator_executions_markers", joinColumns = @JoinColumn(name = "indicator_execution_id"), inverseJoinColumns = @JoinColumn(name = "marker_id"))
     private Set<Marker> markers = new HashSet<>();
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "indicatorExecution", cascade = CascadeType.ALL)
+    private Set<IndicatorExecutionLocationAssigment> indicatorExecutionLocationAssigments = new HashSet<>();
+
     @Override
     public Long getId() {
         return id;
@@ -296,6 +299,22 @@ public class IndicatorExecution extends BaseEntity<Long> {
 
     public void setSupervisorUser(User supervisorUser) {
         this.supervisorUser = supervisorUser;
+    }
+
+    public Set<IndicatorExecutionLocationAssigment> getIndicatorExecutionLocationAssigments() {
+        return indicatorExecutionLocationAssigments;
+    }
+
+    public void setIndicatorExecutionLocationAssigments(Set<IndicatorExecutionLocationAssigment> indicatorExecutionLocationAssigments) {
+        this.indicatorExecutionLocationAssigments = indicatorExecutionLocationAssigments;
+    }
+
+    public void addIndicatorExecutionLocationAssigment(IndicatorExecutionLocationAssigment indicatorExecutionLocationAssigment) {
+        indicatorExecutionLocationAssigment.setIndicatorExecution(this);
+        if (!this.indicatorExecutionLocationAssigments.add(indicatorExecutionLocationAssigment)) {
+            this.indicatorExecutionLocationAssigments.remove(indicatorExecutionLocationAssigment);
+            this.indicatorExecutionLocationAssigments.add(indicatorExecutionLocationAssigment);
+        }
     }
 
     @Override

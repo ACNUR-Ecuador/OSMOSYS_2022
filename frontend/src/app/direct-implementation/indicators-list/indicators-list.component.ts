@@ -15,6 +15,9 @@ import {UserPipe} from '../../shared/pipes/user.pipe';
 import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
+import {PerformanceIndicatorFormComponent} from '../../indicator-forms/performance-indicator-form/performance-indicator-form.component';
+import {DialogService} from 'primeng/dynamicdialog';
+import {DirectImplementationPerformanceIndicatorFormComponent} from '../../indicator-forms/direct-implementation-performance-indicator-form/direct-implementation-performance-indicator-form.component';
 
 @Component({
     selector: 'app-indicators-list',
@@ -29,6 +32,8 @@ export class IndicatorsListComponent implements OnInit {
     cols: ColumnTable[];
 
     public stateOptions: SelectItem[];
+
+    private selectedIndicatorIndicatorExecution: IndicatorExecution;
 
     constructor(private router: Router,
                 private indicatorExecutionService: IndicatorExecutionService,
@@ -45,11 +50,10 @@ export class IndicatorsListComponent implements OnInit {
                 private enumsService: EnumsService,
                 private filterService: FilterService,
                 private filterUtilsService: FilterUtilsService,
+                private dialogService: DialogService
     ) {
         if (this.router.getCurrentNavigation().extras.state) {
             this.indicatorExecutionIds = this.router.getCurrentNavigation().extras.state.indicatorExecutionIds;
-            console.log('->');
-            console.log(this.indicatorExecutionIds);
         } else {
             this.router.navigateByUrl('/directImplementation/areasMenu');
         }
@@ -97,6 +101,7 @@ export class IndicatorsListComponent implements OnInit {
         const hiddenColumns: string[] = ['id', 'indicator.statement.productCode', 'lateMonths', 'assignedUserBackup'];
         this._selectedColumns = this.cols.filter(value => !hiddenColumns.includes(value.field));
     }
+
     private registerFilters() {
         this.filterService.register('indicatorFilter', (value, filter): boolean => {
             return this.filterUtilsService.generalFilter(value, ['code', 'description', 'category'], filter);
@@ -117,6 +122,7 @@ export class IndicatorsListComponent implements OnInit {
             return this.filterUtilsService.generalListFilter(value, ['month', 'year'], filter);
         });
     }
+
     private loadOptions() {
         this.enumsService.getByType(EnumsType.State).subscribe(value => {
             this.stateOptions = value;
@@ -134,5 +140,44 @@ export class IndicatorsListComponent implements OnInit {
 
     exportExcel() {
         this.utilsService.exportTableAsExcelV3(this._selectedColumns, this.items, 'estado_indicadores_id');
+    }
+
+    selectedIndicatorIndicatorExecutionSet(indicatorExecution: IndicatorExecution) {
+        this.selectedIndicatorIndicatorExecution = indicatorExecution;
+    }
+
+    clearSelectedIndicatorIndicatorExecution() {
+        this.selectedIndicatorIndicatorExecution = null;
+    }
+
+    callMonth(monthId: number) {
+        const parametersMap = new Map<string, number | IndicatorExecution>();
+        parametersMap.set('monthId', monthId);
+        parametersMap.set('indicator', this.selectedIndicatorIndicatorExecution);
+        this.viewDesagregationPerformanceIndicator(parametersMap);
+    }
+
+    viewDesagregationPerformanceIndicator(parameters: Map<string, number | IndicatorExecution>) {
+        const monthId = parameters.get('monthId') as number;
+        const indicatorExecution = parameters.get('indicator') as IndicatorExecution;
+        const ref = this.dialogService.open(DirectImplementationPerformanceIndicatorFormComponent, {
+                header: 'Indicador: ' + this.indicatorPipe.transform(indicatorExecution.indicator),
+                width: '90%',
+                height: '90%',
+                closeOnEscape: false,
+                autoZIndex: true,
+                closable: false,
+                modal: true,
+                data: {
+                    indicatorExecution,
+                    monthId
+                }
+            }
+        );
+        ref.onClose.subscribe(value => {
+            this.loadIndicatorExecutions();
+        }, error => {
+            this.loadIndicatorExecutions();
+        });
     }
 }

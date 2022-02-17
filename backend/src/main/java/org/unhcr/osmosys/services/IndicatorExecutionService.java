@@ -1077,6 +1077,16 @@ public class IndicatorExecutionService {
                 .indicatorExecutionsToIndicatorExecutionsWeb(
                         this.indicatorExecutionDao.getDirectImplementationIndicatorExecutionsByIds(indicatorExecutionIds), false);
     }
+
+    public List<DissagregationType> getDissagregationsAssignationsByIndicatorExecutionId(Long indicatorExecutionId) {
+        IndicatorExecution indicatorExecution = this.indicatorExecutionDao.find(indicatorExecutionId);
+        return indicatorExecution.getDissagregationsAssignationsToIndicatorExecutions()
+                .stream()
+                .filter(dissagregationAssignationToIndicatorExecution -> dissagregationAssignationToIndicatorExecution.getState().equals(State.ACTIVO))
+                .map(DissagregationAssignationToIndicatorExecution::getDissagregationType)
+                .collect(Collectors.toList());
+
+    }
 }
 
 

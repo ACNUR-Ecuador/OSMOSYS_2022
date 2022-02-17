@@ -17,12 +17,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.Period;
-import java.time.YearMonth;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -108,13 +104,14 @@ public class MonthService {
         return m;
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     public void updateMonthTotals(Month month, TotalIndicatorCalculationType totalIndicatorCalculationType) throws GeneralAppException {
         List<IndicatorValue> ivs = month.getIndicatorValues().stream()
                 .filter(indicatorValue -> indicatorValue.getState().equals(State.ACTIVO))
                 .collect(Collectors.toList());
 
         Set<DissagregationType> dissagregationsTypes = ivs.stream()
-                .map(indicatorValue -> indicatorValue.getDissagregationType())
+                .map(IndicatorValue::getDissagregationType)
                 .collect(Collectors.toSet());
         if (CollectionUtils.isEmpty(dissagregationsTypes)) {
             month.setTotalExecution(BigDecimal.ZERO);
@@ -126,11 +123,7 @@ public class MonthService {
                 dissagregationsTypes.stream()
                         .filter(dissagregationType1 -> !dissagregationType1.equals(DissagregationType.DIVERSIDAD))
                         .findFirst();
-        if (dissagregationTypeOptional.isPresent()) {
-            dissagregationTypeToCalculate = dissagregationTypeOptional.get();
-        } else {
-            dissagregationTypeToCalculate = dissagregationsTypes.iterator().next();
-        }
+        dissagregationTypeToCalculate = dissagregationTypeOptional.orElseGet(() -> dissagregationsTypes.iterator().next());
         DissagregationType finalDissagregationTypeToCalculate = dissagregationTypeToCalculate;
         ivs = ivs.stream()
                 .filter(indicatorValue -> indicatorValue.getDissagregationType().equals(finalDissagregationTypeToCalculate))
@@ -140,7 +133,7 @@ public class MonthService {
         List<BigDecimal> numeratorsList = ivs.stream().map(IndicatorValue::getNumeratorValue).filter(Objects::nonNull).collect(Collectors.toList());
         List<BigDecimal> denominatorsList = ivs.stream().map(IndicatorValue::getDenominatorValue).filter(Objects::nonNull).collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(valuesList) && CollectionUtils.isEmpty(numeratorsList) && CollectionUtils.isEmpty(denominatorsList)) {
-            BigDecimal totalExecution = null;
+            BigDecimal totalExecution;
             switch (totalIndicatorCalculationType) {
                 case SUMA:
                     totalExecution = valuesList.stream().reduce(BigDecimal::add).get();
@@ -161,18 +154,14 @@ public class MonthService {
             month.setTotalExecution(totalExecution);
         } else if (CollectionUtils.isNotEmpty(numeratorsList) && CollectionUtils.isNotEmpty(denominatorsList)) {
 
-            BigDecimal totalExecution = null;
-            BigDecimal totalNumeratorExecution = null;
-            BigDecimal totalDenominatorExecution = null;
+            BigDecimal totalExecution;
+            BigDecimal totalNumeratorExecution;
+            BigDecimal totalDenominatorExecution;
             switch (totalIndicatorCalculationType) {
                 case SUMA:
-                    totalExecution = ivs.stream().filter(indicatorValue -> {
-                        return indicatorValue.getDenominatorValue() != null
-                                && indicatorValue.getDenominatorValue().compareTo(BigDecimal.ZERO) != 0
-                                && indicatorValue.getNumeratorValue() != null;
-                    }).map(indicatorValue -> {
-                        return indicatorValue.getNumeratorValue().divide(indicatorValue.getDenominatorValue(), RoundingMode.HALF_UP);
-                    }).reduce(BigDecimal::add).get();
+                    totalExecution = ivs.stream().filter(indicatorValue -> indicatorValue.getDenominatorValue() != null
+                            && indicatorValue.getDenominatorValue().compareTo(BigDecimal.ZERO) != 0
+                            && indicatorValue.getNumeratorValue() != null).map(indicatorValue -> indicatorValue.getNumeratorValue().divide(indicatorValue.getDenominatorValue(), RoundingMode.HALF_UP)).reduce(BigDecimal::add).get();
                     break;
                 case PROMEDIO:
                     totalNumeratorExecution = numeratorsList.stream().reduce(BigDecimal::add).get();
@@ -184,22 +173,14 @@ public class MonthService {
                     }
                     break;
                 case MAXIMO:
-                    totalExecution = ivs.stream().filter(indicatorValue -> {
-                        return indicatorValue.getDenominatorValue() != null
-                                && indicatorValue.getDenominatorValue().compareTo(BigDecimal.ZERO) != 0
-                                && indicatorValue.getNumeratorValue() != null;
-                    }).map(indicatorValue -> {
-                        return indicatorValue.getNumeratorValue().divide(indicatorValue.getDenominatorValue(), RoundingMode.HALF_UP);
-                    }).reduce(BigDecimal::max).get();
+                    totalExecution = ivs.stream().filter(indicatorValue -> indicatorValue.getDenominatorValue() != null
+                            && indicatorValue.getDenominatorValue().compareTo(BigDecimal.ZERO) != 0
+                            && indicatorValue.getNumeratorValue() != null).map(indicatorValue -> indicatorValue.getNumeratorValue().divide(indicatorValue.getDenominatorValue(), RoundingMode.HALF_UP)).reduce(BigDecimal::max).get();
                     break;
                 case MINIMO:
-                    totalExecution = ivs.stream().filter(indicatorValue -> {
-                        return indicatorValue.getDenominatorValue() != null
-                                && indicatorValue.getDenominatorValue().compareTo(BigDecimal.ZERO) != 0
-                                && indicatorValue.getNumeratorValue() != null;
-                    }).map(indicatorValue -> {
-                        return indicatorValue.getNumeratorValue().divide(indicatorValue.getDenominatorValue(), RoundingMode.HALF_UP);
-                    }).reduce(BigDecimal::min).get();
+                    totalExecution = ivs.stream().filter(indicatorValue -> indicatorValue.getDenominatorValue() != null
+                            && indicatorValue.getDenominatorValue().compareTo(BigDecimal.ZERO) != 0
+                            && indicatorValue.getNumeratorValue() != null).map(indicatorValue -> indicatorValue.getNumeratorValue().divide(indicatorValue.getDenominatorValue(), RoundingMode.HALF_UP)).reduce(BigDecimal::min).get();
                     break;
                 default:
                     throw new GeneralAppException("Tipo de calculo no soportado, por favor comuniquese con el administrador del sistema", Response.Status.INTERNAL_SERVER_ERROR);
@@ -218,39 +199,50 @@ public class MonthService {
                 this.indicatorValueCustomDissagregationService.getIndicatorValuesByMonthId(monthId, state);
 
         List<IndicatorValueWeb> indicatorValuesWeb = this.modelWebTransformationService.indicatorsToIndicatorValuesWeb(new HashSet<>(indicatorValues));
+        // Desagregaciones del IE
+        List<DissagregationAssignationToIndicatorExecution> dissagregationAsignations = this.monthDao.getDissagregationsByMonthId(monthId);
+        List<DissagregationType> dissagregationTypeAssignated = dissagregationAsignations.stream().map(DissagregationAssignationToIndicatorExecution::getDissagregationType).collect(Collectors.toList());
         // clasifico por tipo desagreggacions
-
-
         Map<DissagregationType, List<IndicatorValueWeb>> map = new HashMap<>();
         for (DissagregationType dissagregationType : DissagregationType.values()) {
             map.put(dissagregationType, new ArrayList<>());
             // los filtros
-            List<IndicatorValueWeb> values = indicatorValuesWeb.stream().filter(indicatorValue -> {
-                return indicatorValue.getDissagregationType().equals(dissagregationType);
-            }).collect(Collectors.toList());
+            List<IndicatorValueWeb> values = indicatorValuesWeb.stream().filter(indicatorValue -> indicatorValue.getDissagregationType().equals(dissagregationType)).collect(Collectors.toList());
             if (CollectionUtils.isEmpty(values)) {
                 map.put(dissagregationType, null);
             } else {
                 map.put(dissagregationType, values);
             }
         }
+        // valido segregaciones, si no hay mando con array vacio
+        for (DissagregationType dissagregationType : dissagregationTypeAssignated) {
+            map.computeIfAbsent(dissagregationType, k -> new ArrayList<>());
+        }
 
         MonthValuesWeb r = new MonthValuesWeb();
-        r.setMonth(this.modelWebTransformationService.monthToMonthWeb(indicatorValues.get(0).getMonth()));
+        if (CollectionUtils.isNotEmpty(indicatorValues)) {
+            r.setMonth(this.modelWebTransformationService.monthToMonthWeb(indicatorValues.get(0).getMonth()));
+        } else if (CollectionUtils.isNotEmpty(indicatorValuesCustomDissagregation)) {
+            r.setMonth(this.modelWebTransformationService.monthToMonthWeb(indicatorValuesCustomDissagregation.get(0).getMonth()));
+        } else {
+            r.setMonth(this.modelWebTransformationService.monthToMonthWeb(this.monthDao.find(monthId)));
+        }
+
         r.setIndicatorValuesMap(map);
         // clasifico por desagregaciones
+        List<CustomDissagregationAssignationToIndicatorExecution> customDissagregationAsignations = this.monthDao.getCustomDissagregationsByMonthId(monthId);
+        List<CustomDissagregation> customDissagregationTypeAssignated = customDissagregationAsignations
+                .stream()
+                .map(CustomDissagregationAssignationToIndicatorExecution::getCustomDissagregation)
+                .collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(indicatorValuesCustomDissagregation)) {
             r.setCustomDissagregationValues(new ArrayList<>());
             Map<CustomDissagregation, Set<IndicatorValueCustomDissagregation>> mapCustom = new HashMap<>();
             // saco un set de disegraciones
             Set<CustomDissagregation> setCustomDissagegations = indicatorValuesCustomDissagregation.stream()
-                    .map(indicatorValueCustomDissagregation -> {
-                        return indicatorValueCustomDissagregation.getCustomDissagregationOption().getCustomDissagregation();
-                    }).collect(Collectors.toSet());
-            setCustomDissagegations.stream().forEach(customDissagregation -> {
-                Set<IndicatorValueCustomDissagregation> values = indicatorValuesCustomDissagregation.stream().filter(indicatorValueCustomDissagregation -> {
-                    return indicatorValueCustomDissagregation.getCustomDissagregationOption().getCustomDissagregation().getId().equals(customDissagregation.getId());
-                }).collect(Collectors.toSet());
+                    .map(indicatorValueCustomDissagregation -> indicatorValueCustomDissagregation.getCustomDissagregationOption().getCustomDissagregation()).collect(Collectors.toSet());
+            setCustomDissagegations.forEach(customDissagregation -> {
+                Set<IndicatorValueCustomDissagregation> values = indicatorValuesCustomDissagregation.stream().filter(indicatorValueCustomDissagregation -> indicatorValueCustomDissagregation.getCustomDissagregationOption().getCustomDissagregation().getId().equals(customDissagregation.getId())).collect(Collectors.toSet());
                 mapCustom.put(customDissagregation, values);
             });
             mapCustom.forEach((customDissagregation, indicatorValueCustomDissagregations) -> {
@@ -261,8 +253,11 @@ public class MonthService {
                 customDissagregationValuesWeb.setIndicatorValuesCustomDissagregation(values);
                 r.getCustomDissagregationValues().add(customDissagregationValuesWeb);
             });
+            // valido segregaciones, si no hay mando con array vacio
+            for (CustomDissagregation customDissagregation : customDissagregationTypeAssignated) {
+                mapCustom.computeIfAbsent(customDissagregation, k -> new HashSet<>());
+            }
         }
-
         return r;
 
     }
@@ -272,13 +267,11 @@ public class MonthService {
         for (DissagregationType locationDissagregationType : locationDissagregationTypes) {
             newValues.addAll(this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(locationDissagregationType, cantones));
         }
-        newValues.forEach(indicatorValue -> {
-            month.addIndicatorValue(indicatorValue);
-        });
+        newValues.forEach(month::addIndicatorValue);
     }
 
     public List<MonthWeb> getMonthsIndicatorExecutionId(Long indicatorExecutionId, State state) {
-        List<Month> months=this.monthDao.getMonthsIndicatorExecutionId(indicatorExecutionId, state);
+        List<Month> months = this.monthDao.getMonthsIndicatorExecutionId(indicatorExecutionId, state);
         return this.modelWebTransformationService.monthsToMonthsWeb(new HashSet<>(months));
     }
 }

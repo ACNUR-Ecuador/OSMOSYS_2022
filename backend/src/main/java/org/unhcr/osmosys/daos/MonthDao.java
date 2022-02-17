@@ -3,6 +3,8 @@ package org.unhcr.osmosys.daos;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
+import org.unhcr.osmosys.model.CustomDissagregationAssignationToIndicatorExecution;
+import org.unhcr.osmosys.model.DissagregationAssignationToIndicatorExecution;
 import org.unhcr.osmosys.model.Month;
 
 import javax.ejb.Stateless;
@@ -38,4 +40,49 @@ public class MonthDao extends GenericDaoJpa<Month, Long> {
         q.setParameter("indicatorExecutionId", indicatorExecutionId);
         return q.getResultList();
     }
+
+    @Override
+    public Month find(Long monthId) {
+        String jpql = "SELECT DISTINCT o FROM Month o " +
+                " left outer join fetch o.sources " +
+                "WHERE o.id =: monthId";
+        Query q = getEntityManager().createQuery(jpql, Month.class);
+        q.setParameter("monthId", monthId);
+        try {
+            return (Month) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    public List<DissagregationAssignationToIndicatorExecution> getDissagregationsByMonthId(Long monthId) {
+
+        String jpql = "SELECT DISTINCT o " +
+                " FROM DissagregationAssignationToIndicatorExecution o " +
+                " inner join fetch o.indicatorExecution ie " +
+                " inner join fetch ie.quarters q " +
+                " inner join fetch q.months mon " +
+                " WHERE mon.id = :monthId " +
+                " and o.state =:state ";
+        Query q = getEntityManager().createQuery(jpql, DissagregationAssignationToIndicatorExecution.class);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("monthId", monthId);
+        return q.getResultList();
+    }
+    public List<CustomDissagregationAssignationToIndicatorExecution> getCustomDissagregationsByMonthId(Long monthId) {
+
+        String jpql = "SELECT DISTINCT o " +
+                " FROM CustomDissagregationAssignationToIndicatorExecution o " +
+                " inner join fetch o.indicatorExecution ie " +
+                " inner join fetch o.customDissagregation " +
+                " inner join fetch ie.quarters q " +
+                " inner join fetch q.months mon " +
+                " WHERE mon.id = :monthId " +
+                " and o.state =:state ";
+        Query q = getEntityManager().createQuery(jpql, CustomDissagregationAssignationToIndicatorExecution.class);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("monthId", monthId);
+        return q.getResultList();
+    }
+
 }
