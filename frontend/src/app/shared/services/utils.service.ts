@@ -12,7 +12,7 @@ import {
     SelectItemWithOrder
 } from '../model/UtilsModel';
 import {EnumsService} from './enums.service';
-import {CustomDissagregationValues, IndicatorExecution, IndicatorValue, Period} from '../model/OsmosysModel';
+import {Canton, CustomDissagregationValues, IndicatorExecution, IndicatorValue, Period} from '../model/OsmosysModel';
 import {HttpResponse} from '@angular/common/http';
 import {TableColumnProperties} from 'exceljs';
 
@@ -84,7 +84,7 @@ export class UtilsService {
         this.autoWidth(worksheet, 15);
         let rowIndex = 1;
         for (rowIndex; rowIndex <= worksheet.rowCount; rowIndex++) {
-            worksheet.getRow(rowIndex).alignment = { vertical: 'top', horizontal: 'left', wrapText: true };
+            worksheet.getRow(rowIndex).alignment = {vertical: 'top', horizontal: 'left', wrapText: true};
         }
         workbook.xlsx.writeBuffer().then(excelData => {
 
@@ -347,6 +347,26 @@ export class UtilsService {
         result.push(DissagregationType.PAIS_ORIGEN);
         result.push(DissagregationType.DIVERSIDAD);
         return result;
+    }
+
+    isLocationDissagregation(dissagregationType: DissagregationType): boolean {
+        const dissagregationTypeE = DissagregationType[dissagregationType];
+        switch (dissagregationTypeE) {
+            case DissagregationType.LUGAR:
+            case DissagregationType.TIPO_POBLACION_Y_LUGAR:
+                return true;
+            case DissagregationType.TIPO_POBLACION:
+            case DissagregationType.EDAD:
+            case DissagregationType.GENERO:
+            case DissagregationType.PAIS_ORIGEN:
+            case DissagregationType.DIVERSIDAD:
+            case DissagregationType.SIN_DESAGREGACION:
+            case DissagregationType.TIPO_POBLACION_Y_GENERO:
+            case DissagregationType.TIPO_POBLACION_Y_EDAD:
+            case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD:
+            case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN:
+                return false;
+        }
     }
 
     getTwoDimentionsDissagregationTypes(): DissagregationType[] {
@@ -631,6 +651,17 @@ export class UtilsService {
             filename = 'reporte.xlsx';
         }
         return filename;
+    }
+
+    public sortCantones(cantones: Canton[]): Canton[] {
+        return cantones.sort((a, b) => {
+            const x = a.provincia.description.localeCompare(b.provincia.description);
+            if (x === 0) {
+                return a.description.localeCompare(b.description);
+            } else {
+                return x;
+            }
+        });
     }
 }
 

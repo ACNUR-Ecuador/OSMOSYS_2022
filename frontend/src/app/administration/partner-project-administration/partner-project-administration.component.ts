@@ -178,7 +178,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 locations,
                 focalPoint
             } = value;
-            this.sortCantones(locations);
+            this.utilsService.sortCantones(locations);
             const originalLocations = [];
             locations.forEach(val => originalLocations.push(Object.assign({}, val)));
             this.formItem.patchValue({
@@ -283,7 +283,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
     loadOptions() {
         this.cantonService.getByState(EnumsState.ACTIVE).subscribe(value => {
-            this.cantones = this.sortCantones(value);
+            this.cantones = this.utilsService.sortCantones(value);
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -508,7 +508,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 locationsBefore = this.formItem.get('originalLocations').value as Canton[];
             }
             if (this.formLocations.get('locationsSelected').value) {
-                cantonesG = this.sortCantones(this.formLocations.get('locationsSelected').value);
+                cantonesG = this.utilsService.sortCantones(this.formLocations.get('locationsSelected').value);
             }
             const agregatedLocation = cantonesG.filter((canton1) => !locationsBefore.find(canton2 => canton1.id === canton2.id));
             const deletedLocations = locationsBefore.filter((canton1) => !cantonesG.find(canton2 => canton1.id === canton2.id));
@@ -572,18 +572,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             this.cantonesAvailable =
                 this.cantones.filter((canton1) => !currentCantones.find(canton2 => canton1.id === canton2.id));
         }
-    }
-
-    // noinspection JSMethodCanBeStatic
-    private sortCantones(cantones: Canton[]): Canton[] {
-        return cantones.sort((a, b) => {
-            const x = a.provincia.description.localeCompare(b.provincia.description);
-            if (x === 0) {
-                return a.description.localeCompare(b.description);
-            } else {
-                return x;
-            }
-        });
     }
 
     @Input() get selectedColumnsGeneralIndicators(): any[] {

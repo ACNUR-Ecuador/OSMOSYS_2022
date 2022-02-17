@@ -135,7 +135,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     }
 
     private sendMonthValue() {
-        this.indicatorExecutionService.updateMonthValues(this.indicatorExecution.id, this.monthValues).subscribe(value => {
+        this.indicatorExecutionService.updateMonthValues(this.indicatorExecution.id, this.monthValues).subscribe(() => {
             this.messageService.add({severity: 'success', summary: 'Guardado con éxito', detail: ''});
             this.ref.close({test: 1});
         }, error => {

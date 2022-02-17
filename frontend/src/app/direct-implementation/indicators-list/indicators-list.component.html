@@ -4,7 +4,7 @@
         <h5 class="page-title p-mt-1">Indicadores reportados</h5></ng-template>
     <p-toast></p-toast>
     <p-messages></p-messages>
-    <p-table #dtIndicatorExecutions [value]="items"
+    <p-table [value]="items"
              [columns]="selectedColumns"
              [rowHover]="true" dataKey="id"
              styleClass="p-datatable-customers"
@@ -90,7 +90,19 @@
                 >
                     {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field)}}
                 </td>
-
+                <td>
+                    <button pButton label="ver valores" (click)="op.toggle($event)"></button>
+                    <p-overlayPanel #op (onShow)="selectedIndicatorIndicatorExecutionSet(rowData)"
+                                    (onHide)="clearSelectedIndicatorIndicatorExecution()">
+                        <ng-template pTemplate>
+                            <app-indicator-quarter-list
+                                [quarters]="rowData.quarters"
+                                (callMonth)="callMonth($event)"
+                                [indicatorExecution]="rowData"
+                            ></app-indicator-quarter-list>
+                        </ng-template>
+                    </p-overlayPanel>
+                </td>
             </tr>
         </ng-template>
 

@@ -1,0 +1,30 @@
+<div class="card">
+    <p-table [value]="quarterMonthResumes" rowGroupMode="rowspan" groupRowsBy="quarterQuarter"
+             sortField="representative.name" sortMode="single" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Mes</th>
+                <th>Ejecución Mensual</th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowdata let-rowIndex="rowIndex" let-rowgroup="rowgroup"
+                     let-rowspan="rowspan">
+            <tr>
+                <td>
+                    <span class="p-text-bold p-ml-2"
+                    >{{rowdata.monthMonth }}</span>
+                </td>
+                <td>
+                    <span
+                        [class]="'values-badge status-'+utilsService.valueToBadgeStatusAlert(rowdata.monthTotalExecution, rowdata.monthMonth, rowdata.monthYear)"
+                        class="p-text-bold p-ml-2">{{rowdata.monthTotalExecution | valuesState:rowdata.monthMonth :rowdata.monthYear}}</span>
+                </td>
+                <td>
+                    <button pButton label="Ver valores"
+                            (click)="viewValues(rowdata.monthId)"></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

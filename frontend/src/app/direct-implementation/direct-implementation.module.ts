@@ -12,16 +12,21 @@ import {MultiSelectModule} from 'primeng/multiselect';
 import {MessageModule} from 'primeng/message';
 import {MessagesModule} from 'primeng/messages';
 import {ToastModule} from 'primeng/toast';
-import { IndicatorsListComponent } from './indicators-list/indicators-list.component';
+import {IndicatorsListComponent} from './indicators-list/indicators-list.component';
 import {TableModule} from 'primeng/table';
 import {RippleModule} from 'primeng/ripple';
 import {TooltipModule} from 'primeng/tooltip';
+import {OverlayPanelModule} from 'primeng/overlaypanel';
+import {IndicatorQuarterListComponent} from './indicator-quarter-list/indicator-quarter-list.component';
+import {SharedModule} from '../shared/shared.module';
+import {DialogService} from 'primeng/dynamicdialog';
 
 
 @NgModule({
     declarations: [
         AreasMenuComponent,
-        IndicatorsListComponent
+        IndicatorsListComponent,
+        IndicatorQuarterListComponent
     ],
     imports: [
         CommonModule,
@@ -38,7 +43,12 @@ import {TooltipModule} from 'primeng/tooltip';
         TableModule,
         FormsModule,
         RippleModule,
-        TooltipModule
+        TooltipModule,
+        OverlayPanelModule,
+        SharedModule
+    ],
+    providers: [
+        DialogService
     ]
 })
 export class DirectImplementationModule {

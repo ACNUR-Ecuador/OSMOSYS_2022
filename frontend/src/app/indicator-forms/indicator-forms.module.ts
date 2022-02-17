@@ -22,6 +22,9 @@ import {MultiSelectModule} from 'primeng/multiselect';
 import {InputTextModule} from 'primeng/inputtext';
 import {ToggleButtonModule} from 'primeng/togglebutton';
 import {DropdownModule} from 'primeng/dropdown';
+import { DirectImplementationPerformanceIndicatorFormComponent } from './direct-implementation-performance-indicator-form/direct-implementation-performance-indicator-form.component';
+import {RippleModule} from 'primeng/ripple';
+import {PickListModule} from 'primeng/picklist';
 
 
 @NgModule({
@@ -32,7 +35,8 @@ import {DropdownModule} from 'primeng/dropdown';
         DissagregationNoDissagregationIntegerComponent,
         PerformanceIndicatorFormComponent,
         ChartIndicatorExecutionComponent,
-        CustomDissagregationIntegerComponent
+        CustomDissagregationIntegerComponent,
+        DirectImplementationPerformanceIndicatorFormComponent
     ],
     imports: [
         CommonModule,
@@ -51,7 +55,9 @@ import {DropdownModule} from 'primeng/dropdown';
         MultiSelectModule,
         InputTextModule,
         ToggleButtonModule,
-        DropdownModule
+        DropdownModule,
+        RippleModule,
+        PickListModule
     ]
 })
 export class IndicatorFormsModule {

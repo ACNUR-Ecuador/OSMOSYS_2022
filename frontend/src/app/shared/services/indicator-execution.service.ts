@@ -91,4 +91,8 @@ export class IndicatorExecutionService {
         return this.http.post<IndicatorExecution[]>(`${mainServiceUrl}/getDirectImplementationIndicatorExecutionsByIds`,
             indicatorExecutionIds);
     }
+
+    public getDissagregationsAssignationsByIndicatorExecutionId(indicatorExecutionId: number): Observable<string[]> {
+        return this.http.get<string[]>(`${mainServiceUrl}/getDissagregationsAssignationsByIndicatorExecutionId/${indicatorExecutionId}`);
+    }
 }

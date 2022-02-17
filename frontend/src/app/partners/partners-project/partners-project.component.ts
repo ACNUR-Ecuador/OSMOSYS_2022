@@ -105,7 +105,7 @@ export class PartnersProjectComponent implements OnInit {
                 height: '90%',
                 closeOnEscape: false,
                 autoZIndex: true,
-                closable: true,
+                closable: false,
 
                 data: {
                     indicatorExecution,
@@ -130,7 +130,7 @@ export class PartnersProjectComponent implements OnInit {
                 height: '90%',
                 closeOnEscape: false,
                 autoZIndex: true,
-                closable: true,
+                closable: false,
 
                 data: {
                     indicatorExecution,
@@ -139,7 +139,8 @@ export class PartnersProjectComponent implements OnInit {
                 }
             }
         );
-        ref.onClose.subscribe(value => {
+        // noinspection JSUnusedLocalSymbols
+        ref.onClose.subscribe(() => {
             this.loadProject(this.idProjectParam);
         }, error => {
             this.loadProject(this.idProjectParam);

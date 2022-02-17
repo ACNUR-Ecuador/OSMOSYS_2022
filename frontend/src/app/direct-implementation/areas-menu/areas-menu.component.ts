@@ -185,11 +185,9 @@ export class AreasMenuComponent implements OnInit {
                     label: this.indicatorPipe.transform(indicator)
                 } as SelectItem;
             });
-        console.log(this.indicatorOptions);
     }
 
     search() {
-        console.log(this.queryForm.value);
         const {
             period,
             office,
@@ -206,8 +204,6 @@ export class AreasMenuComponent implements OnInit {
     }
 
     goToArea(area: AreaResume) {
-        console.log(area);
-        console.log(area.indicatorExecutionIds);
         this.router.navigateByUrl('/directImplementation/indicatorLists',
             {state: {indicatorExecutionIds: area.indicatorExecutionIds}});
 
@@ -221,7 +217,6 @@ export class AreasMenuComponent implements OnInit {
         this.highlightArea = this.areas.filter(area => {
             return area.indicators.some(indicatorF => indicator.id === indicatorF.id);
         }).pop().area;
-        console.log(this.highlightArea);
     }
 
     getButtonStyles(areaResume: AreaResume): string {
@@ -230,7 +225,6 @@ export class AreasMenuComponent implements OnInit {
         if (this.highlightArea && areaResume.area.id === this.highlightArea.id) {
             result = 'p-button-rounded p-button-warning';
         }
-        console.log(result);
         return result;
     }
 }
