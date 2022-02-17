@@ -91,10 +91,7 @@ public class ModelWebTransformationService {
                 throw new GeneralAppException("Area no encontrada, error interno", Response.Status.INTERNAL_SERVER_ERROR);
             }
 
-            //noinspection SuspiciousMethodCalls
-            if (mapAreas.get(areaT.get()) == null) {
-                mapAreas.put(areaT.get(), new ArrayList<>());
-            }
+            mapAreas.computeIfAbsent(areaT.get(), k -> new ArrayList<>());
             mapAreas.get(area).add(indicatorExecution);
         }
 
@@ -1079,42 +1076,42 @@ public class ModelWebTransformationService {
 
     //<editor-fold desc="IndicatorExecution">
 
-    public IndicatorExecutionWeb indicatorExecutionToIndicatorExecutionWeb(IndicatorExecution i, boolean getProject) throws GeneralAppException {
+    public IndicatorExecutionWeb indicatorExecutionToIndicatorExecutionWeb(IndicatorExecution ie, boolean getProject) throws GeneralAppException {
 
         IndicatorExecutionWeb iw = new IndicatorExecutionWeb();
-        iw.setId(i.getId());
-        iw.setActivityDescription(i.getActivityDescription());
-        iw.setIndicatorType(i.getIndicatorType());
-        iw.setState(i.getState());
-        iw.setCompassIndicator(i.getCompassIndicator());
-        iw.setTotalExecution(i.getTotalExecution());
-        iw.setProjectStatement(this.statementToStatementWeb(i.getProjectStatement(), false, true, true, true, false));
-        iw.setPeriod(this.periodToPeriodWeb(i.getPeriod()));
+        iw.setId(ie.getId());
+        iw.setActivityDescription(ie.getActivityDescription());
+        iw.setIndicatorType(ie.getIndicatorType());
+        iw.setState(ie.getState());
+        iw.setCompassIndicator(ie.getCompassIndicator());
+        iw.setTotalExecution(ie.getTotalExecution());
+        iw.setProjectStatement(this.statementToStatementWeb(ie.getProjectStatement(), false, true, true, true, false));
+        iw.setPeriod(this.periodToPeriodWeb(ie.getPeriod()));
         if (getProject) {
-            iw.setProject(this.projectToProjectWeb(i.getProject()));
+            iw.setProject(this.projectToProjectWeb(ie.getProject()));
         }
-        iw.setExecutionPercentage(i.getExecutionPercentage());
-        iw.setTarget(i.getTarget());
-        if (i.getIndicatorType().equals(IndicatorType.GENERAL)) {
+        iw.setExecutionPercentage(ie.getExecutionPercentage());
+        iw.setTarget(ie.getTarget());
+        if (ie.getIndicatorType().equals(IndicatorType.GENERAL)) {
             IndicatorWeb indicatorWeb = new IndicatorWeb();
             indicatorWeb.setIndicatorType(IndicatorType.GENERAL);
             indicatorWeb.setMonitored(Boolean.TRUE);
             indicatorWeb.setCompassIndicator(Boolean.FALSE);
             indicatorWeb.setCode("General");
-            indicatorWeb.setDescription(i.getPeriod().getGeneralIndicator().getDescription());
+            indicatorWeb.setDescription(ie.getPeriod().getGeneralIndicator().getDescription());
             iw.setIndicator(indicatorWeb);
 
 
         } else {
-            iw.setIndicator(this.indicatorToIndicatorWeb(i.getIndicator(), false, true, false));
-            iw.setReportingOffice(this.officeToOfficeWeb(i.getReportingOffice(), false));
-            iw.setSupervisorUser(this.userToUserWebSimple(i.getSupervisorUser(), false, true));
-            iw.setAssignedUser(this.userToUserWebSimple(i.getAssignedUser(), false, true));
-            iw.setAssignedUserBackup(this.userToUserWebSimple(i.getAssignedUserBackup(), false, true));
+            iw.setIndicator(this.indicatorToIndicatorWeb(ie.getIndicator(), false, true, false));
+            iw.setReportingOffice(this.officeToOfficeWeb(ie.getReportingOffice(), false));
+            iw.setSupervisorUser(this.userToUserWebSimple(ie.getSupervisorUser(), false, true));
+            iw.setAssignedUser(this.userToUserWebSimple(ie.getAssignedUser(), false, true));
+            iw.setAssignedUserBackup(this.userToUserWebSimple(ie.getAssignedUserBackup(), false, true));
 
         }
-        iw.setQuarters(this.quartersToQuarterWeb(i.getQuarters()));
-        Optional<Quarter> lastReportedQuarter = i.getQuarters().stream()
+        iw.setQuarters(this.quartersToQuarterWeb(ie.getQuarters()));
+        Optional<Quarter> lastReportedQuarter = ie.getQuarters().stream()
                 .filter(quarter -> quarter.getState().equals(State.ACTIVO))
                 .filter(quarter -> quarter.getTotalExecution() != null).min(Comparator.comparingInt(Quarter::getOrder));
         if (lastReportedQuarter.isPresent()) {
@@ -1135,17 +1132,11 @@ public class ModelWebTransformationService {
             iw.setLate(false);
         }
 
-        List<Canton> activeCantons =
-                i.getQuarters().stream()
-                        .flatMap(quarter -> quarter.getMonths().stream())
-                        .filter(month -> month.getState().equals(State.ACTIVO))
-                        .flatMap(month -> month.getIndicatorValues().stream())
-                        .filter(indicatorValue -> (
-                                indicatorValue.getDissagregationType().equals(DissagregationType.LUGAR)
-                                        || indicatorValue.getDissagregationType().equals(DissagregationType.TIPO_POBLACION_Y_LUGAR)
-                        ) && indicatorValue.getState().equals(State.ACTIVO)).map(IndicatorValue::getLocation)
-                        .distinct()
-                        .collect(Collectors.toList());
+        List<Canton> activeCantons = ie.getIndicatorExecutionLocationAssigments()
+                .stream()
+                .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getState().equals(State.ACTIVO))
+                .map(IndicatorExecutionLocationAssigment::getLocation)
+                .collect(Collectors.toList());
         iw.setLocations(this.cantonsToCantonsWeb(activeCantons));
         return iw;
 
