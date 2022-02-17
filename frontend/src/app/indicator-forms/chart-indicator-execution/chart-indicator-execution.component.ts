@@ -22,6 +22,7 @@ export class ChartIndicatorExecutionComponent implements OnInit {
     chartDataOptionsQuarter: any;
     plugin = ChartDataLabels;
     isGeneralIndicator = false;
+    isDirectImplementation = false;
 
     constructor() {
     }
@@ -29,6 +30,9 @@ export class ChartIndicatorExecutionComponent implements OnInit {
     ngOnInit(): void {
         if (this.indicatorExecution.indicatorType === 'GENERAL') {
             this.isGeneralIndicator = true;
+        }
+        if (this.indicatorExecution.project === null) {
+            this.isDirectImplementation = true;
         }
         this.prepareChartData();
     }
@@ -128,7 +132,7 @@ export class ChartIndicatorExecutionComponent implements OnInit {
                 }
             ]
         };
-        if (this.isGeneralIndicator) {
+        if (this.isGeneralIndicator || this.isDirectImplementation) {
             this.chartDataTrimestal = {
                 labels,
                 datasets: [{
@@ -203,21 +207,35 @@ export class ChartIndicatorExecutionComponent implements OnInit {
         };
         dataTargetsTotal.push(this.indicatorExecution.target);
         dataExecutionsTotal.push(this.indicatorExecution.totalExecution);
-        this.chartDataTotal = {
-            labels: ['Ejecución Total'],
-            datasets: [{
-                type: 'bar',
-                label: 'Meta Total',
-                backgroundColor: '#42A5F5',
-                data: dataTargetsTotal
-            }, {
-                type: 'bar',
-                label: 'Ejecución Total',
-                backgroundColor: '#66BB6A',
-                data: dataExecutionsTotal
-            }
-            ]
-        };
+        if (this.isDirectImplementation) {
+            this.chartDataTotal = {
+                labels: ['Ejecución Total'],
+                datasets: [{
+                    type: 'bar',
+                    label: 'Ejecución Total',
+                    backgroundColor: '#66BB6A',
+                    data: dataExecutionsTotal
+                }
+                ]
+            };
+        } else {
+            this.chartDataTotal = {
+                labels: ['Ejecución Total'],
+                datasets: [{
+                    type: 'bar',
+                    label: 'Meta Total',
+                    backgroundColor: '#42A5F5',
+                    data: dataTargetsTotal
+                }, {
+                    type: 'bar',
+                    label: 'Ejecución Total',
+                    backgroundColor: '#66BB6A',
+                    data: dataExecutionsTotal
+                }
+                ]
+            };
+        }
+
 
     }
 
