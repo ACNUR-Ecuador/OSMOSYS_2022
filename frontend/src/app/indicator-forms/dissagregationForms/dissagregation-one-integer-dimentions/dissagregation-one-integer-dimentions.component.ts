@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {DissagregationType, EnumsType, SelectItemWithOrder} from '../../../shared/model/UtilsModel';
 import {Canton, IndicatorValue} from '../../../shared/model/OsmosysModel';
 import {EnumsService} from '../../../shared/services/enums.service';
@@ -10,7 +10,7 @@ import {UtilsService} from '../../../shared/services/utils.service';
     templateUrl: './dissagregation-one-integer-dimentions.component.html',
     styleUrls: ['./dissagregation-one-integer-dimentions.component.scss']
 })
-export class DissagregationOneIntegerDimentionsComponent implements OnInit {
+export class DissagregationOneIntegerDimentionsComponent implements OnInit, OnChanges {
     @Input()
     dissagregationType: DissagregationType;
     @Input()
@@ -24,7 +24,7 @@ export class DissagregationOneIntegerDimentionsComponent implements OnInit {
     constructor(
         public enumsService: EnumsService,
         private messageService: MessageService,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
     ) {
     }
 
@@ -101,4 +101,7 @@ export class DissagregationOneIntegerDimentionsComponent implements OnInit {
         }
     }
 
+    ngOnChanges() {
+        this.processDissagregationValues();
+    }
 }

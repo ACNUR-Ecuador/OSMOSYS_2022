@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {DissagregationType, EnumsType, SelectItemWithOrder} from '../../../shared/model/UtilsModel';
 import {Canton, IndicatorValue} from '../../../shared/model/OsmosysModel';
 import {EnumsService} from '../../../shared/services/enums.service';
@@ -11,7 +11,7 @@ import {forkJoin} from 'rxjs';
     templateUrl: './dissagregation-two-integer-dimentions.component.html',
     styleUrls: ['./dissagregation-two-integer-dimentions.component.scss']
 })
-export class DissagregationTwoIntegerDimentionsComponent implements OnInit {
+export class DissagregationTwoIntegerDimentionsComponent implements OnInit, OnChanges {
     @Input()
     dissagregationType: DissagregationType;
     @Input()
@@ -29,7 +29,7 @@ export class DissagregationTwoIntegerDimentionsComponent implements OnInit {
     constructor(
         public enumsService: EnumsService,
         private messageService: MessageService,
-        private utilsService: UtilsService,
+        public utilsService: UtilsService,
     ) {
     }
 
@@ -136,6 +136,10 @@ export class DissagregationTwoIntegerDimentionsComponent implements OnInit {
                 this.rows.push(row);
             });
         }
+    }
+
+    ngOnChanges() {
+        this.processDissagregationValues();
     }
 }
 

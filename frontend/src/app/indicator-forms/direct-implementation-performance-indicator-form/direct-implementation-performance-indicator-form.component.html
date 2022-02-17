@@ -166,33 +166,46 @@
         </div>
     </ng-template>
 </p-dialog>
-<p-dialog [(visible)]="showLocationsDialog" [modal]="true" header="Selección de Cantones" [style]="{width: '80%', height: '80%'}">
-    <div class="p-field p-col-12 p-md-12">
-
-
+<form [formGroup]="formLocations" (ngSubmit)="saveLocations()">
+    <p-dialog [(visible)]="showLocationsDialog" [modal]="true" header="Selección de Cantones"
+              [style]="{width: '80%', height: '80%'}">
         <div class="p-field p-col-12 p-md-12">
-            <p-pickList [source]="cantonesAvailable" [target]="formLocations.get('locationsSelected').value"
-                        sourceHeader="Disponibles" targetHeader="Seleccionados"
-                        [dragdrop]="true"
-                        [responsive]="true"
-                        [sourceStyle]="{'height':'25rem'}" [targetStyle]="{'height':'25rem'}"
-                        filterBy="description,provincia.description"
-                        sourceFilterPlaceholder="Buscar por cantón o provincia"
-                        targetFilterPlaceholder="Buscar por cantón o provincia"
-                        [showSourceControls]="false"
-                        [showTargetControls]="false"
-            >
-                <ng-template let-product pTemplate="item">
-                    <div class="p-d-flex p-jc-between">
+            <p-messages></p-messages>
+
+            <div class="p-field p-col-12 p-md-12">
+                <p-pickList [source]="cantonesAvailable" [target]="formLocations.get('locationsSelected').value"
+                            sourceHeader="Disponibles" targetHeader="Seleccionados"
+                            [dragdrop]="true"
+                            [responsive]="true"
+                            [sourceStyle]="{'height':'25rem'}" [targetStyle]="{'height':'25rem'}"
+                            filterBy="description,provincia.description"
+                            sourceFilterPlaceholder="Buscar por cantón o provincia"
+                            targetFilterPlaceholder="Buscar por cantón o provincia"
+                            [showSourceControls]="false"
+                            [showTargetControls]="false"
+                >
+                    <ng-template let-product pTemplate="item">
+                        <div class="p-d-flex p-jc-between">
                                         <span
                                             style="font-size:14px;font-weight: 800;vertical-align: middle;">{{product.description}}</span>
 
-                        <span style="font-size:10px;font-weight: 600;vertical-align: middle;"><i
-                            class="pi pi-map-marker product-category-icon"></i>{{product.provincia.description}}</span>
-                    </div>
+                            <span style="font-size:10px;font-weight: 600;vertical-align: middle;"><i
+                                class="pi pi-map-marker product-category-icon"></i>{{product.provincia.description}}</span>
+                        </div>
 
-                </ng-template>
-            </p-pickList>
+                    </ng-template>
+                </p-pickList>
+            </div>
         </div>
-    </div>
-</p-dialog>
+
+        <ng-template pTemplate="footer">
+            <button pButton type="submit"
+                    [disabled]="!formLocations.valid"
+                    pRipple label="Guardar" icon="pi pi-check"
+            ></button>
+            <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
+                    (click)="cancelLocations()"></button>
+
+        </ng-template>
+    </p-dialog>
+</form>

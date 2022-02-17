@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Canton, CustomDissagregationValues, IndicatorExecution, IndicatorValue, Month, MonthValues} from '../../shared/model/OsmosysModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {DissagregationType, EnumsState, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
@@ -52,7 +52,8 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
                 public utilsService: UtilsService,
                 private cantonService: CantonService,
                 private messageService: MessageService,
-                private fb: FormBuilder
+                private fb: FormBuilder,
+                private cd: ChangeDetectorRef
     ) {
     }
 
@@ -107,6 +108,8 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             this.setDimentionsDissagregations();
             this.validateSegregations();
             this.getHasLocationDissagregation();
+            this.cd.detectChanges();
+            console.log(this.oneDimentionDissagregations);
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -148,6 +151,9 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
         const totalOneDimentions = this.utilsService.getOneDimentionsDissagregationTypes();
         const totalTwoDimentions = this.utilsService.getTwoDimentionsDissagregationTypes();
         const totalNoDimentions = this.utilsService.getNoDimentionsDissagregationTypes();
+        this.oneDimentionDissagregations = [];
+        this.twoDimentionDissagregations = [];
+        this.noDimentionDissagregations = [];
         this.monthValuesMap.forEach((value, key) => {
             if (value) {
                 const dissagregationType: DissagregationType = DissagregationType[key];
@@ -216,17 +222,18 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     }
 
     openLocationsDialog() {
+        this.messageService.clear();
         this.cantonService.getByState(EnumsState.ACTIVE).subscribe(value => {
             this.cantonesOptions = this.utilsService.sortCantones(value);
             // noinspection JSMismatchedCollectionQueryUpdate
-            const cantonesCurrent: Canton[] = [];
+            let cantonesCurrent: Canton[] = [];
             this.monthValuesMap.forEach((value1, key) => {
                 if (this.utilsService.isLocationDissagregation(key as DissagregationType) && value1) {
                     const cantones = value1
                         .filter(value2 => value2.state === EnumsState.ACTIVE)
                         .filter(value2 => value2.location)
                         .map(value2 => value2.location);
-                    cantonesCurrent.concat(cantones);
+                    cantonesCurrent = cantonesCurrent.concat(cantones);
                 }
 
             });
@@ -244,6 +251,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
                     this.cantonesOptions.filter((canton1) => !cantonesCurrentUnique.find(canton2 => canton1.id === canton2.id));
             }
             this.showLocationsDialog = true;
+            this.cd.detectChanges();
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -253,5 +261,36 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             });
         });
 
+    }
+
+    saveLocations() {
+        const cantones: Canton[] = this.formLocations.get('locationsSelected').value;
+        if (!cantones || cantones.length < 1) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Selecciona al menos un cantán',
+                life: 3000
+            });
+        } else {
+            this.indicatorExecutionService
+                .updateDirectImplementationIndicatorExecutionLocationAssigment(this.indicatorExecution.id, cantones)
+                .subscribe(() => {
+                    this.loadMonthValues(this.monthId);
+                    this.cd.detectChanges();
+                    this.showLocationsDialog = false;
+                }, error => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al guardar los cantones',
+                        detail: error.error.message,
+                        life: 3000
+                    });
+                });
+        }
+    }
+
+    cancelLocations() {
+        console.log(this.formLocations.get('locationsSelected').value);
+        this.showLocationsDialog = false;
     }
 }

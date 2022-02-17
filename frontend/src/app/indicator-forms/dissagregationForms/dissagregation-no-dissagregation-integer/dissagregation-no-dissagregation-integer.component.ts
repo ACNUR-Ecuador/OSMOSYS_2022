@@ -1,16 +1,14 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {DissagregationType, EnumsType, SelectItemWithOrder} from '../../../shared/model/UtilsModel';
-import {Canton, IndicatorValue, Month} from '../../../shared/model/OsmosysModel';
+import {Component, Input, OnChanges, OnInit} from '@angular/core';
+import {DissagregationType} from '../../../shared/model/UtilsModel';
+import {IndicatorValue, Month} from '../../../shared/model/OsmosysModel';
 import {EnumsService} from '../../../shared/services/enums.service';
-import {MessageService} from 'primeng/api';
-import {UtilsService} from '../../../shared/services/utils.service';
 
 @Component({
     selector: 'app-dissagregation-no-dissagregation-integer',
     templateUrl: './dissagregation-no-dissagregation-integer.component.html',
     styleUrls: ['./dissagregation-no-dissagregation-integer.component.scss']
 })
-export class DissagregationNoDissagregationIntegerComponent implements OnInit {
+export class DissagregationNoDissagregationIntegerComponent implements OnInit, OnChanges {
     @Input()
     dissagregationType: DissagregationType;
     @Input()
@@ -21,9 +19,7 @@ export class DissagregationNoDissagregationIntegerComponent implements OnInit {
     rows = new Array<Array<IndicatorValue>>();
 
     constructor(
-        public enumsService: EnumsService,
-        private messageService: MessageService,
-        private utilsService: UtilsService,
+        public enumsService: EnumsService
     ) {
     }
 
@@ -35,5 +31,9 @@ export class DissagregationNoDissagregationIntegerComponent implements OnInit {
     processDissagregationValues() {
         this.rows.push(this.values);
 
+    }
+
+    ngOnChanges() {
+        this.processDissagregationValues();
     }
 }
