@@ -4,7 +4,6 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.security.servicio.UserService;
-import com.sagatechs.generics.utils.DateUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Stateless
 public class ProjectService {
@@ -38,8 +36,6 @@ public class ProjectService {
     @Inject
     PeriodService periodService;
 
-    @Inject
-    ProjectLocationAssigmentService projectLocationAssigmentService;
 
     @Inject
     IndicatorExecutionService indicatorExecutionService;
@@ -50,8 +46,6 @@ public class ProjectService {
     @Inject
     ModelWebTransformationService modelWebTransformationService;
 
-    @Inject
-    DateUtils dateUtils;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(ProjectService.class);
@@ -95,7 +89,7 @@ public class ProjectService {
         }
 
         project.setFocalPoint(focalPoint);
-        List<Long> idsCanton = projectWeb.getLocations().stream().map(cantonWeb -> cantonWeb.getId()).collect(Collectors.toList());
+        List<Long> idsCanton = projectWeb.getLocations().stream().map(CantonWeb::getId).collect(Collectors.toList());
         List<Canton> cantones = this.cantonDao.getByIds(idsCanton);
         for (Canton canton : cantones) {
             ProjectLocationAssigment projectLocationAssigment = new ProjectLocationAssigment();
@@ -159,9 +153,8 @@ public class ProjectService {
         List<Long> locationsToDissable = new ArrayList<>();
 
         project.getProjectLocationAssigments().forEach(projectLocationAssigment -> {
-            Optional<CantonWeb> cantonFound = projectWeb.getLocations().stream().filter(cantonWeb -> {
-                return projectLocationAssigment.getLocation().getId().equals(cantonWeb.getId());
-            }).findFirst();
+            Optional<CantonWeb> cantonFound = projectWeb.getLocations().stream()
+                    .filter(cantonWeb -> projectLocationAssigment.getLocation().getId().equals(cantonWeb.getId())).findFirst();
             if (!cantonFound.isPresent()) {
                 projectLocationAssigment.setState(State.INACTIVO);
                 locationsToDissable.add(projectLocationAssigment.getLocation().getId());
@@ -187,62 +180,111 @@ public class ProjectService {
 
         List<Long> cantonesToCreateIds = cantonesToCreate.stream().map(Canton::getId).collect(Collectors.toList());
         for (IndicatorExecution indicatorExecution : project.getIndicatorExecutions()) {
-
-            if(CollectionUtils.isNotEmpty(cantonesToCreate)){
+            for (Canton canton : cantonesToCreate) {
+                IndicatorExecutionLocationAssigment iela = new IndicatorExecutionLocationAssigment();
+                iela.setLocation(canton);
+                iela.setState(State.ACTIVO);
+                indicatorExecution.addIndicatorExecutionLocationAssigment(iela);
+            }
+            for (Long cantonId : locationsToDissable) {
+                indicatorExecution.getIndicatorExecutionLocationAssigments()
+                        .stream()
+                        .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(cantonId))
+                        .findFirst()
+                        .ifPresent(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.setState(State.INACTIVO));
+            }
+            if (CollectionUtils.isNotEmpty(cantonesToCreate)) {
                 this.indicatorExecutionService.updateIndicatorExecutionLocationsByAssignation(indicatorExecution, cantonesToCreate);
             }
             // tengo q activar y desactivar
             // si es general siempre activo y desactivo
             if (indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)) {
+                for (Long cantonId : locationsToActive) {
+                    indicatorExecution.getIndicatorExecutionLocationAssigments()
+                            .stream()
+                            .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(cantonId))
+                            .findFirst()
+                            .ifPresent(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.setState(State.ACTIVO));
+                }
+                for (Long cantonId : locationsToDissable) {
+                    indicatorExecution.getIndicatorExecutionLocationAssigments()
+                            .stream()
+                            .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(cantonId))
+                            .findFirst()
+                            .ifPresent(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.setState(State.INACTIVO));
+                }
                 indicatorExecution.getQuarters()
-                        .forEach(quarter -> {
-                            quarter.getMonths().forEach(month -> {
-                                month.getIndicatorValues().forEach(indicatorValue -> {
-                                    if (DissagregationType.getLocationDissagregationTypes().contains(indicatorValue.getDissagregationType())) {
-                                        // busco para activar
-                                        if (locationsToActive.contains(indicatorValue.getLocation().getId())) {
-                                            indicatorValue.setState(State.ACTIVO);
-                                        } else if (locationsToDissable.contains(indicatorValue.getLocation().getId())) {
-                                            indicatorValue.setState(State.INACTIVO);
-                                        }
-                                    }
-                                });
-                            });
-                        });
+                        .forEach(quarter -> quarter.getMonths().
+                                forEach(month -> month.getIndicatorValues()
+                                        .forEach(indicatorValue -> {
+                                            if (DissagregationType.getLocationDissagregationTypes().contains(indicatorValue.getDissagregationType())) {
+                                                // busco para activar
+                                                if (locationsToActive.contains(indicatorValue.getLocation().getId())) {
+                                                    indicatorValue.setState(State.ACTIVO);
+                                                } else if (locationsToDissable.contains(indicatorValue.getLocation().getId())) {
+                                                    indicatorValue.setState(State.INACTIVO);
+                                                }
+                                            }
+                                        })));
             } else {
                 // si es rendimiento siempre desactivo desactivo y activo solo si updateAllLocationsIndicators
-                indicatorExecution.getQuarters()
-                        .forEach(quarter -> {
-                            quarter.getMonths().forEach(month -> {
-                                month.getIndicatorValues().forEach(indicatorValue -> {
-                                    if (DissagregationType.getLocationDissagregationTypes().contains(indicatorValue.getDissagregationType())) {
-                                        // busco para activar
-                                        if (locationsToActive.contains(indicatorValue.getLocation().getId()) ) {
-                                            if(updateAllLocationsIndicators){
-                                                indicatorValue.setState(State.ACTIVO);
-                                            }else if(cantonesToCreateIds.contains(indicatorValue.getLocation().getId())){
-                                                indicatorValue.setState(State.INACTIVO);
-                                            }else {
-                                                indicatorValue.setState(State.ACTIVO);
-                                            }
-                                        }
-                                    }
-                                });
+                for (Long cantonId : locationsToActive) {
+                    indicatorExecution.getIndicatorExecutionLocationAssigments()
+                            .stream()
+                            .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(cantonId))
+                            .findFirst()
+                            .ifPresent(indicatorExecutionLocationAssigment ->
+                            {
+                                if (updateAllLocationsIndicators) {
+                                    indicatorExecutionLocationAssigment.setState(State.ACTIVO);
+                                } else if (cantonesToCreateIds.contains(indicatorExecutionLocationAssigment.getLocation().getId())) {
+                                    indicatorExecutionLocationAssigment.setState(State.INACTIVO);
+                                } else {
+                                    indicatorExecutionLocationAssigment.setState(State.ACTIVO);
+                                }
+
                             });
-                        });
+                }
+                for (Long cantonId : locationsToActive) {
+                    indicatorExecution.getIndicatorExecutionLocationAssigments()
+                            .stream()
+                            .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(cantonId))
+                            .findFirst()
+                            .ifPresent(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.setState(State.ACTIVO));
+                }
+                for (Long cantonId : locationsToDissable) {
+                    indicatorExecution.getIndicatorExecutionLocationAssigments()
+                            .stream()
+                            .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(cantonId))
+                            .findFirst()
+                            .ifPresent(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.setState(State.INACTIVO));
+                }
+                indicatorExecution.getQuarters()
+                        .forEach(quarter -> quarter.getMonths().forEach(month -> month.getIndicatorValues().forEach(indicatorValue -> {
+                            if (DissagregationType.getLocationDissagregationTypes().contains(indicatorValue.getDissagregationType())) {
+                                // busco para activar
+                                if (locationsToActive.contains(indicatorValue.getLocation().getId())) {
+                                    if (updateAllLocationsIndicators) {
+                                        indicatorValue.setState(State.ACTIVO);
+                                    } else if (cantonesToCreateIds.contains(indicatorValue.getLocation().getId())) {
+                                        indicatorValue.setState(State.INACTIVO);
+                                    } else {
+                                        indicatorValue.setState(State.ACTIVO);
+                                    }
+                                }
+                            }
+                        })));
             }
         }
     }
 
 
     public List<ProjectWeb> getAll() {
-        List<ProjectWeb> r = new ArrayList<>();
         return this.modelWebTransformationService.projectsToProjectsWeb(this.projectDao.findAll());
     }
 
 
     public List<ProjectWeb> getByState(State state) {
-        List<ProjectWeb> r = new ArrayList<>();
         return this.modelWebTransformationService.projectsToProjectsWeb(this.projectDao.getByState(state));
     }
 
@@ -270,7 +312,7 @@ public class ProjectService {
         if (projectWeb.getPeriod() == null) {
             throw new GeneralAppException("Periodo no válido", Response.Status.BAD_REQUEST);
         }
-        if (projectWeb.getState() == null || projectWeb.getEndDate() == null) {
+        if (projectWeb.getStartDate() == null || projectWeb.getEndDate() == null) {
             throw new GeneralAppException("Las fechas de inicio y fin del proyecto son datos obligatorios", Response.Status.BAD_REQUEST);
         } else {
             if (projectWeb.getEndDate().isBefore(projectWeb.getStartDate())) {
@@ -302,6 +344,7 @@ public class ProjectService {
     public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndOrganizationId(Long periodId, Long organizationId) throws GeneralAppException {
         return this.projectDao.getProjectResumenWebByPeriodIdAndOrganizationId(periodId, organizationId);
     }
+
     public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndFocalPointId(Long periodId, Long focalPointId) throws GeneralAppException {
         return this.projectDao.getProjectResumenWebByPeriodIdAndFocalPointId(periodId, focalPointId);
     }

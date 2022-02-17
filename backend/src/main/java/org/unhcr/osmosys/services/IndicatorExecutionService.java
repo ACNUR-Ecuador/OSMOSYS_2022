@@ -175,6 +175,14 @@ public class IndicatorExecutionService {
 
         dissagregationTypes = dissagregationAssignations.stream().map(DissagregationAssignationToIndicatorExecution::getDissagregationType).collect(Collectors.toList());
 
+        // location assignations
+        Set<ProjectLocationAssigment> projectLocationAsignations = project.getProjectLocationAssigments();
+        for (ProjectLocationAssigment projectLocationAsignation : projectLocationAsignations) {
+            IndicatorExecutionLocationAssigment iela = new IndicatorExecutionLocationAssigment();
+            iela.setState(projectLocationAsignation.getState());
+            iela.setLocation(projectLocationAsignation.getLocation());
+            ie.addIndicatorExecutionLocationAssigment(iela);
+        }
 
         List<CustomDissagregation> customDissagregations = customDissagregationsAssignations.stream().map(CustomDissagregationAssignationToIndicatorExecution::getCustomDissagregation).collect(Collectors.toList());
         Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, customDissagregations, cantones);
@@ -1078,15 +1086,6 @@ public class IndicatorExecutionService {
                         this.indicatorExecutionDao.getDirectImplementationIndicatorExecutionsByIds(indicatorExecutionIds), false);
     }
 
-    public List<DissagregationType> getDissagregationsAssignationsByIndicatorExecutionId(Long indicatorExecutionId) {
-        IndicatorExecution indicatorExecution = this.indicatorExecutionDao.find(indicatorExecutionId);
-        return indicatorExecution.getDissagregationsAssignationsToIndicatorExecutions()
-                .stream()
-                .filter(dissagregationAssignationToIndicatorExecution -> dissagregationAssignationToIndicatorExecution.getState().equals(State.ACTIVO))
-                .map(DissagregationAssignationToIndicatorExecution::getDissagregationType)
-                .collect(Collectors.toList());
-
-    }
 }
 
 
