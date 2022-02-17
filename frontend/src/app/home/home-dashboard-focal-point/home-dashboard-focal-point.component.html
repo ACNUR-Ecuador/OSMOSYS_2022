@@ -5,9 +5,11 @@
         </div>
 
         <div class="p-grid p-jc-center">
-            <p-dropdown class="p-col-10" autoWidth="false" [style]="{'width':'90%'}"
+            <p-dropdown class="p-col-10" [style]="{'width':'90%'}"
                         (onChange)="loadProject($event.value)"
-                        [options]="projects" [(ngModel)]="selectedProject"></p-dropdown>
+                        [options]="projects" [(ngModel)]="selectedProject"
+                        [filter]="true"
+            ></p-dropdown>
         </div>
 
     </ng-template>
@@ -143,7 +145,7 @@
                             </span>
                         <span class="overview-title">Selecciona un Indicador de Producto</span>
                         <div class="p-grid overview-detail">
-                            <p-dropdown class="p-col-10" autoWidth="false" [style]="{'width':'90%'}"
+                            <p-dropdown class="p-col-10" [style]="{'width':'90%'}"
                                         (onChange)="loadPerformanceIndicator($event.value)"
                                         [options]="performanceIndicatorsSelectList"
                                         [(ngModel)]="selectedPerformanceIndicator"></p-dropdown>

@@ -10,8 +10,6 @@ import {IndicatorExecutionService} from '../../shared/services/indicator-executi
 import {MonthService} from '../../shared/services/month.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {UIChart} from 'primeng/chart';
-import {MonthType} from '../../shared/model/UtilsModel';
-import {UtilsService} from '../../shared/services/utils.service';
 
 @Component({
     selector: 'app-home-dashboard-focal-point',
@@ -49,8 +47,7 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
         private indicatorExecutionService: IndicatorExecutionService,
         private monthService: MonthService,
         private enumsService: EnumsService,
-        private changeDetectorRef: ChangeDetectorRef,
-        private utilsService: UtilsService
+        private changeDetectorRef: ChangeDetectorRef
     ) {
     }
 
@@ -65,6 +62,7 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
                     label: value.organization.acronym + '-' + value.name + '-' + value.period.year,
                     value
                 });
+                this.projects.sort((a, b) => a.label.localeCompare(b.label));
                 if (!this.selectedProject) {
                     this.selectedProject = value;
                     this.loadProject(this.selectedProject);
@@ -90,7 +88,7 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
         this.indicatorExecutionService.getGeneralIndicatorResume(projectId).subscribe(value => {
             if (value && value.length > 0) {
                 this.generalIndicator = value[0];
-                this.generalIndicatorLate = this.isIndicatorExecutionLate(this.generalIndicator);
+                this.generalIndicatorLate = this.generalIndicator.late;
             }
             this.loadGeneralIndicatorMonths(projectId, this.generalIndicator.id);
             this.createGeneralTargetChart(this.generalIndicator);
@@ -105,19 +103,6 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
         });
     }
 
-    isIndicatorExecutionLate(indicatorExecutionResumeWeb: IndicatorExecution): boolean {
-        if (!indicatorExecutionResumeWeb.lastReportedMonth) {
-            return true;
-        } else if (
-            this.enumsService.monthTypeToNumber(indicatorExecutionResumeWeb.lastReportedMonth.month as MonthType)
-            >= this.utilsService.getCurrentMonthNumber()
-            && indicatorExecutionResumeWeb.lastReportedMonth.year > this.utilsService.getCurrentYear()
-        ) {
-            return false;
-        } else {
-            return true;
-        }
-    }
 
     loadGeneralIndicatorMonths(projectId: number, generalIndicatorId) {
         // todo flat
@@ -139,13 +124,11 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
 
         const monthsLabels: string[] = [];
         const monthsExecution: number[] = [];
-        const monthsExecutionAcumulated: number[] = [];
         let monthsExecutionAcumulatedTmp = 0;
         months.forEach(value => {
             monthsLabels.push(value.month);
             monthsExecution.push(value.totalExecution ? value.totalExecution : 0);
             monthsExecutionAcumulatedTmp += value.totalExecution;
-            monthsExecutionAcumulated.push(monthsExecutionAcumulatedTmp);
         });
         this.chartBeneficiariesMonths = {
             labels: monthsLabels,
@@ -222,13 +205,11 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
 
         const monthsLabels: string[] = [];
         const monthsExecution: number[] = [];
-        const monthsExecutionAcumulated: number[] = [];
         let monthsExecutionAcumulatedTmp = 0;
         months.forEach(value => {
             monthsLabels.push(value.month);
             monthsExecution.push(value.totalExecution ? value.totalExecution : 0);
             monthsExecutionAcumulatedTmp += value.totalExecution;
-            monthsExecutionAcumulated.push(monthsExecutionAcumulatedTmp);
         });
         this.chartPerformanceMonths = {
             labels: monthsLabels,
@@ -281,14 +262,12 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
         const quartersLabels: string[] = [];
         const quartersExecution: number[] = [];
         const quartersTargets: number[] = [];
-        const quartersExecutionAcumulated: number[] = [];
         let monthsExecutionAcumulatedTmp = 0;
         quarters.forEach(value => {
             quartersLabels.push(value.quarter + '-' + value.year);
             quartersExecution.push(value.totalExecution ? value.totalExecution : 0);
             quartersTargets.push(value.target ? value.target : 0);
             monthsExecutionAcumulatedTmp += value.totalExecution;
-            quartersExecutionAcumulated.push(monthsExecutionAcumulatedTmp);
         });
         this.chartPerformanceTarget = {
             labels: quartersLabels,
@@ -329,11 +308,7 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
                 });
                 this.countPerformanceIndicators = value.length;
                 this.countPerformanceIndicatorsLate = 0;
-                this.performanceIndicators.forEach(value1 => {
-                    if (this.isIndicatorExecutionLate(value1)) {
-                        this.countPerformanceIndicatorsLate++;
-                    }
-                });
+                this.countPerformanceIndicatorsLate = this.performanceIndicators.filter(value1 => value1.late).length;
                 this.loadPerformanceIndicator(this.performanceIndicators[0]);
             }
 
