@@ -140,13 +140,13 @@
                         <div class="p-field p-col-12 p-md-5">
                             <label for="statementI">Declaración</label>
                             <p-dropdown id="statementI"
-                                           formControlName="statement"
-                                           [options]="filteredStatements"
-                                           appendTo="body"
-                                           optionLabel="labelItem"
-                                           optionValue="valueItem"
+                                        formControlName="statement"
+                                        [options]="filteredStatements"
+                                        appendTo="body"
+                                        optionLabel="labelItem"
+                                        optionValue="valueItem"
                                         emptyMessage="Selecciona un tipo de área"
-
+                                        filter="true"
                             >
                             </p-dropdown>
                             <small class="p-error"
@@ -294,6 +294,7 @@
                                                         <div class="p-formgroup-inline p-pt-2">
                                                             <div class="p-field-checkbox p-col-12 p-md-3"
                                                                  *ngFor="let dissagregationTypePeriod of getDissagregationTypeByPeriod(period)">
+                                                                <!--suppress AngularInvalidExpressionResultType -->
                                                                 <p-checkbox name="group1"
                                                                             [inputId]="dissagregationTypePeriod.value"
                                                                             [value]="dissagregationTypePeriod.value"
@@ -321,6 +322,7 @@
 
                                                             <div class="p-field-checkbox p-col-12 p-md-3"
                                                                  *ngFor="let custd of getCustomDissagregationTypeByPeriod(period)">
+                                                                <!--suppress AngularInvalidExpressionResultType -->
                                                                 <p-checkbox name="group2" [inputId]="custd.value"
                                                                             [value]="custd.value"
                                                                             [formControl]="formItem.controls['customDissagregations']"

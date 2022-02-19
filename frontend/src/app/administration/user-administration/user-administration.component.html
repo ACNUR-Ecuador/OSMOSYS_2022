@@ -2,7 +2,7 @@
     <div class="p-col-12">
         <p-toast></p-toast>
         <div class="card">
-            <h3 class="page-title">Administración de Declaraciones</h3>
+            <h3 class="page-title">Administración de Usuarios</h3>
             <p-toolbar styleClass="p-mb-4">
                 <ng-template pTemplate="left">
                     <button pButton pRipple label="Crear" icon="pi pi-plus" class="p-button-success p-mr-2 p-mb-2"
@@ -14,7 +14,7 @@
                             class="p-button-success p-mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
                 </ng-template>
             </p-toolbar>
-            <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true"
+            <p-table [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true"
                      [rowHover]="true" dataKey="id"
                      styleClass="p-datatable-customers"
                      currentPageReportTemplate=" {first} a {last} de {totalRecords} "
@@ -129,7 +129,7 @@
                 </ng-template>
                 <ng-template pTemplate="summary">
                     <div class="p-d-flex p-ai-center p-jc-between">
-                        Total {{items ? items.length : 0 }} declaraciones.
+                        Total {{items ? items.length : 0 }} usuarios.
                     </div>
                 </ng-template>
             </p-table>
@@ -204,7 +204,6 @@
                 <p-selectButton id="stateI"
                                 formControlName="state"
                                 [options]="states"
-                                placeholder="Selecciona..."
                 >
                 </p-selectButton>
                 <small class="p-error" *ngIf="utilsService.showErrorForm('state',formItem)">
@@ -216,6 +215,7 @@
                 <div class="p-formgroup-inline p-pt-2">
                     <div class="p-field-checkbox p-col-12 p-md-2"
                          *ngFor="let category of roles">
+                        <!--suppress AngularInvalidExpressionResultType -->
                         <p-checkbox name="group1" [inputId]="category.value"
                                     [value]="category.value"
                                     [formControl]="formItem.controls['roleTypes']">

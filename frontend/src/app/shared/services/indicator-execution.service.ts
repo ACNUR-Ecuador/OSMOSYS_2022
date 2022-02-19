@@ -6,7 +6,7 @@ import {
     IndicatorExecution, IndicatorExecutionAssigment, IndicatorValue, MonthValues,
     TargetUpdateDTOWeb
 } from '../model/OsmosysModel';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 
 const mainServiceUrl = environment.base_url + '/indicatorExecutions';
 
@@ -101,5 +101,25 @@ export class IndicatorExecutionService {
     public updateDirectImplementationIndicatorExecutionLocationAssigment(indicatorExecutionId: number, cantones: Canton[]): Observable<any> {
         return this.http
             .post(`${mainServiceUrl}/updateDirectImplementationIndicatorExecutionLocationAssigment/${indicatorExecutionId}`, cantones);
+    }
+
+    public getDirectImplementationIndicatorByPeriodIdResponsableIdSupervisorIdAndOfficeId(
+        userId: number,
+        periodId: number,
+        officeId: number,
+        supervisor: boolean,
+        responsible: boolean,
+        backup: boolean,
+    ): Observable<IndicatorExecution[]> {
+        // Initialize Params Object
+        let params = new HttpParams();
+        // Begin assigning parameters
+        params = params.append('userId', String(userId ? userId : null));
+        params = params.append('periodId', String(periodId ? periodId : null));
+        params = params.append('officeId', String(officeId ? officeId : null));
+        params = params.append('supervisor', String(supervisor ? supervisor : false));
+        params = params.append('responsible', String(responsible ? responsible : false));
+        params = params.append('backup', String(backup ? backup : false));
+        return this.http.get<IndicatorExecution[]>(`${mainServiceUrl}/getDirectImplementationIndicatorByPeriodIdResponsableIdSupervisorIdAndOfficeId`, {params});
     }
 }

@@ -6,14 +6,20 @@ import { HomeComponent } from './home/home.component';
 import { HomeDashboardFocalPointComponent } from './home-dashboard-focal-point/home-dashboard-focal-point.component';
 import {CardModule} from 'primeng/card';
 import {DropdownModule} from 'primeng/dropdown';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ChartModule} from 'primeng/chart';
+import { HomeDashboardDirectImplementationComponent } from './home-dashboard-direct-implementation/home-dashboard-direct-implementation.component';
+import {MultiSelectModule} from 'primeng/multiselect';
+import {MessagesModule} from 'primeng/messages';
+import {ToastModule} from 'primeng/toast';
+import {ButtonModule} from 'primeng/button';
 
 
 @NgModule({
   declarations: [
     HomeComponent,
-    HomeDashboardFocalPointComponent
+    HomeDashboardFocalPointComponent,
+    HomeDashboardDirectImplementationComponent
   ],
     imports: [
         CommonModule,
@@ -21,7 +27,12 @@ import {ChartModule} from 'primeng/chart';
         CardModule,
         DropdownModule,
         FormsModule,
-        ChartModule
+        ChartModule,
+        ReactiveFormsModule,
+        MultiSelectModule,
+        MessagesModule,
+        ToastModule,
+        ButtonModule
     ]
 })
 export class HomeModule { }
