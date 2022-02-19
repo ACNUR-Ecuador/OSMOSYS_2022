@@ -5,10 +5,7 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.utils.DateUtils;
-import com.sagatechs.generics.webservice.jsonSerializers.LocalDateDeserializer;
 import org.jboss.logging.Logger;
-import org.unhcr.osmosys.model.IndicatorExecution;
-import org.unhcr.osmosys.model.Period;
 import org.unhcr.osmosys.model.Project;
 import org.unhcr.osmosys.model.enums.AreaType;
 import org.unhcr.osmosys.reports.service.ReportService;
@@ -24,8 +21,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.YearMonth;
-import java.util.List;
 
 
 @SuppressWarnings("ALL")
@@ -118,7 +113,7 @@ public class TestEndpoint {
         p.setCode("test123");
         p.setName("test123");
         p.setState(State.ACTIVO);
-        p.setPeriod(this.periodService.getById(1L));
+        p.setPeriod(this.periodService.find(1L));
         this.indicatorExecutionService.createGeneralIndicatorForProject(p);
 
 

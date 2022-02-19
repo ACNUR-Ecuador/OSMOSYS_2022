@@ -30,7 +30,7 @@ public class CustomDissagregationService {
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(CustomDissagregationService.class);
 
-    public CustomDissagregation getById(Long id) {
+    public CustomDissagregation find(Long id) {
         return this.customDissagregationDao.find(id);
     }
 

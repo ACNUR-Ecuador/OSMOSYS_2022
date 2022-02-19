@@ -344,54 +344,11 @@ public class ModelWebTransformationService {
         return indicatorWeb;
     }
 
-    public Indicator indicatorWebToIndicator(IndicatorWeb indicatorWeb) {
-        if (indicatorWeb == null) {
-            return null;
-        }
-        Indicator indicator = new Indicator();
-        indicator.setId(indicatorWeb.getId());
-        indicator.setCode(indicatorWeb.getCode());
-        indicator.setDescription(indicatorWeb.getDescription());
-        indicator.setCategory(indicatorWeb.getCategory());
-        indicator.setState(indicatorWeb.getState());
-        indicator.setIndicatorType(indicatorWeb.getIndicatorType());
-        indicator.setMeasureType(indicatorWeb.getMeasureType());
-        indicator.setFrecuency(indicatorWeb.getFrecuency());
-        indicator.setAreaType(indicatorWeb.getAreaType());
-        indicator.setMonitored(indicatorWeb.getMonitored());
-        indicator.setCalculated(indicatorWeb.getCalculated());
-        indicator.setTotalIndicatorCalculationType(indicatorWeb.getTotalIndicatorCalculationType());
-        indicator.setCompassIndicator(indicatorWeb.getCompassIndicator());
-        indicator.setUnit(indicatorWeb.getUnit());
-        Set<Marker> markers = this.markersWebToMarkers(indicatorWeb.getMarkers());
-        for (Marker marker : markers) {
-            indicator.addMarker(marker);
-        }
-        indicator.setStatement(this.statementWebToStatement(indicatorWeb.getStatement()));
-        Set<DissagregationAssignationToIndicator> dissagregationAssignationToIndicators = this.dissagregationAssignationToIndicatorsWebToDissagregationAssignationToIndicators(indicatorWeb.getDissagregationsAssignationToIndicator());
-        for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicators) {
-            indicator.addDissagregationAssignationToIndicator(dissagregationAssignationToIndicator);
-        }
-        Set<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicators = this.customDissagregationAssignationToIndicatorsWebToCustomDissagregationAssignationToIndicators(indicatorWeb.getCustomDissagregationAssignationToIndicators());
-        for (CustomDissagregationAssignationToIndicator customDissagregationAssignationToIndicator : customDissagregationAssignationToIndicators) {
-            indicator.addCustomDissagregationAssignationToIndicator(customDissagregationAssignationToIndicator);
-        }
-        return indicator;
-    }
 
     public List<IndicatorWeb> indicatorsToIndicatorsWeb(List<Indicator> indicators, boolean getMarkers, boolean getStatement, boolean getDissagregations) {
         List<IndicatorWeb> r = new ArrayList<>();
         for (Indicator indicator : indicators) {
             r.add(this.indicatorToIndicatorWeb(indicator, getMarkers, getStatement, getDissagregations));
-        }
-        return r;
-    }
-
-    @SuppressWarnings("unused")
-    public List<Indicator> indicatorsWebToIndicators(List<IndicatorWeb> indicatorsWebs) {
-        List<Indicator> r = new ArrayList<>();
-        for (IndicatorWeb indicatorWeb : indicatorsWebs) {
-            r.add(this.indicatorWebToIndicator(indicatorWeb));
         }
         return r;
     }

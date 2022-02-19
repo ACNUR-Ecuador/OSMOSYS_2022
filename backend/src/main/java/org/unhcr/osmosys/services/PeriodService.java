@@ -29,7 +29,7 @@ public class PeriodService {
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(PeriodService.class);
 
-    public Period getById(Long id) {
+    public Period find(Long id) {
         return this.periodDao.find(id);
     }
 

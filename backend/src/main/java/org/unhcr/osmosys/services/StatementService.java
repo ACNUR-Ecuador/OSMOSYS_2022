@@ -14,7 +14,6 @@ import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -22,9 +21,6 @@ public class StatementService {
 
     @Inject
     StatementDao statementDao;
-
-    @Inject
-    StatementService statementService;
 
     @Inject
     ModelWebTransformationService modelWebTransformationService;
@@ -58,13 +54,11 @@ public class StatementService {
     }
 
     public List<StatementWeb> getAll() {
-        List<StatementWeb> r = new ArrayList<>();
-        return this.modelWebTransformationService.statementsToStatementsWeb(this.statementDao.findAll(), true, true,true,true, true);
+        return this.modelWebTransformationService.statementsToStatementsWeb(this.statementDao.findAll(), true, true, true, true, true);
     }
 
     public List<StatementWeb> getByState(State state) {
-        List<StatementWeb> r = new ArrayList<>();
-        return this.modelWebTransformationService.statementsToStatementsWeb(this.statementDao.getByState(state), true,true,true,true, true);
+        return this.modelWebTransformationService.statementsToStatementsWeb(this.statementDao.getByState(state), true, true, true, true, true);
     }
 
     public Long update(StatementWeb statementWeb) throws GeneralAppException {
@@ -78,12 +72,6 @@ public class StatementService {
         Statement statement = this.saveOrUpdate(this.modelWebTransformationService.statementWebToStatement(statementWeb));
         return statement.getId();
     }
-
-
-
-
-
-
 
 
     public void validate(StatementWeb statementWeb) throws GeneralAppException {
@@ -121,9 +109,14 @@ public class StatementService {
         }
         for (PeriodStatementAsignationWeb periodStatementAsignation : statementWeb.getPeriodStatementAsignations()) {
             if (periodStatementAsignation.getPeriod() == null || periodStatementAsignation.getPeriod().getId() == null) {
+                //noinspection ConstantConditions
                 throw new GeneralAppException("El periodo no tiene un id " + periodStatementAsignation.getPeriod().toString(), Response.Status.BAD_REQUEST);
             }
         }
 
+    }
+
+    public Statement find(Long id) {
+        return this.statementDao.find(id);
     }
 }

@@ -4,7 +4,6 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.Indicator;
-import org.unhcr.osmosys.model.enums.AreaType;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
@@ -16,46 +15,32 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 @Stateless
 public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
+
+    private static final String indicatorJpql =
+            " SELECT DISTINCT o" +
+                    " FROM Indicator o " +
+                    " left outer join o.statement sta " +
+                    " left join sta.periodStatementAsignations psa " +
+                    " left outer join o.customDissagregationAssignationToIndicators cda " +
+                    " left outer join cda.customDissagregation " +
+                    " left outer join cda.customDissagregationFilterIndicators " +
+                    " left outer join o.dissagregationsAssignationToIndicator da " +
+                    " left outer join da.dissagregationFilterIndicators " +
+                    " left join psa.period p " +
+                    " left outer join o.markers ";
+
     public IndicatorDao() {
         super(Indicator.class, Long.class);
     }
 
     public List<Indicator> getByState(State state) {
 
-        String jpql = "SELECT DISTINCT o FROM Indicator o " +
+        String jpql = IndicatorDao.indicatorJpql +
                 "WHERE o.state = :state";
         Query q = getEntityManager().createQuery(jpql, Indicator.class);
         q.setParameter("state", state);
         return q.getResultList();
     }
-
-    public List<Indicator> getByAreaType(AreaType areaType) throws GeneralAppException {
-
-        String jpql = "SELECT DISTINCT o FROM Indicator o " +
-                "WHERE o.areaType = :areaType ";
-        Query q = getEntityManager().createQuery(jpql, Indicator.class);
-        q.setParameter("areaType", areaType);
-
-        return q.getResultList();
-
-    }
-
-
-    public Indicator getByDescription(String description) throws GeneralAppException {
-
-        String jpql = "SELECT DISTINCT o FROM Indicator o " +
-                "WHERE lower(o.description) = lower(:description)";
-        Query q = getEntityManager().createQuery(jpql, Indicator.class);
-        q.setParameter("description", description);
-        try {
-            return (Indicator) q.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        } catch (NonUniqueResultException e) {
-            throw new GeneralAppException("Se encontró más de un item con la descripción  " + description, Response.Status.INTERNAL_SERVER_ERROR);
-        }
-    }
-
 
     public Indicator getByCode(String code) throws GeneralAppException {
         String jpql = "SELECT DISTINCT o FROM Indicator o " +
@@ -71,11 +56,8 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
         }
     }
 
-    public List<Indicator> getByPeriodAssignmentAndState(Long periodId, State state) throws GeneralAppException {
-        String jpql = "SELECT DISTINCT o FROM Indicator o " +
-                " left join o.statement sta " +
-                " left join sta.periodStatementAsignations psa " +
-                " left join psa.period p " +
+    public List<Indicator> getByPeriodAssignmentAndState(Long periodId, State state) {
+        String jpql = IndicatorDao.indicatorJpql +
                 " WHERE p.id = :periodId and psa.state =:state and o.state =:state";
         Query q = getEntityManager().createQuery(jpql, Indicator.class);
         q.setParameter("periodId", periodId);
@@ -86,15 +68,7 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
 
     public Indicator findWithData(Long id) throws GeneralAppException {
 
-        String jpql = "SELECT DISTINCT o" +
-                " FROM Indicator o " +
-                " left outer join o.statement sts "+
-                " left outer join o.customDissagregationAssignationToIndicators cda "+
-                " left outer join cda.customDissagregation "+
-                " left outer join cda.customDissagregationFilterIndicators "+
-                " left outer join o.dissagregationsAssignationToIndicator da "+
-                " left outer join da.dissagregationFilterIndicators "+
-                " left outer join o.markers "+
+        String jpql = IndicatorDao.indicatorJpql +
                 " WHERE o.id=:id";
         Query q = getEntityManager().createQuery(jpql, Indicator.class);
         q.setParameter("id", id);
@@ -105,5 +79,11 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
         } catch (NonUniqueResultException e) {
             throw new GeneralAppException("Se encontró más de un item con el id  " + id, Response.Status.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public List<Indicator> getAllWithData() {
+
+        Query q = getEntityManager().createQuery(IndicatorDao.indicatorJpql, Indicator.class);
+        return q.getResultList();
     }
 }
