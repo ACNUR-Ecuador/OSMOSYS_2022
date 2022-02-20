@@ -36,7 +36,6 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     showOtherSource: boolean;
     totalsValidation: Map<string, number> = null;
     chekedOptions: SelectItem[];
-    dissagregationAssignations: string[];
     disableSave = false;
     hasLocationDissagregation: boolean;
     showLocationsDialog = false;
@@ -133,6 +132,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     }
 
     validateSegregations() {
+        this.disableSave = false;
         this.monthValuesMap.forEach((value, key) => {
             if (value && value.length === 0) {
                 this.messageService.add({

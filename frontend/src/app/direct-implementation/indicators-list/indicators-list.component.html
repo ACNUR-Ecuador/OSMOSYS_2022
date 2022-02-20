@@ -91,7 +91,9 @@
                     {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field)}}
                 </td>
                 <td>
-                    <button pButton label="ver valores" (click)="op.toggle($event)"></button>
+                    <button pButton label="ver valores" (click)="op.toggle($event)"
+                            [ngClass]="rowData.late?'p-button-danger':''"
+                    ></button>
                     <p-overlayPanel #op (onShow)="selectedIndicatorIndicatorExecutionSet(rowData)"
                                     (onHide)="clearSelectedIndicatorIndicatorExecution()">
                         <ng-template pTemplate>
