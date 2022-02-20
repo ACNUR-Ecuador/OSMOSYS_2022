@@ -10,6 +10,7 @@ import {ProjectService} from '../../shared/services/project.service';
 import {Router} from '@angular/router';
 import {UserService} from '../../shared/services/user.service';
 import {EnumValuesToLabelPipe} from '../../shared/pipes/enum-values-to-label.pipe';
+import {Table} from 'primeng/table';
 
 @Component({
     selector: 'app-partners-project-list',
@@ -23,7 +24,7 @@ export class PartnersProjectListComponent implements OnInit {
     items: ProjectResume[];
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
-    private states: SelectItem[];
+    states: SelectItem[];
 
     constructor(
         private fb: FormBuilder,
@@ -131,16 +132,10 @@ export class PartnersProjectListComponent implements OnInit {
         this.loadProjects(period.id);
     }
 
-    exportExcel() {
-        import('xlsx').then(xlsx => {
-            const headers = this.cols.map(value => value.header);
-            const itemsRenamed = this.utilsService.renameKeys(this.items, this.selectedColumns);
-            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
-            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
-
-            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.utilsService.saveAsExcelFile(excelBuffer, 'areas');
-        });
+    exportExcel(table: Table) {
+        this.utilsService.exportTableAsExcel(this._selectedColumns,
+            table.filteredValue ? table.filteredValue : this.items,
+            'proyectos');
     }
 
     createItem() {

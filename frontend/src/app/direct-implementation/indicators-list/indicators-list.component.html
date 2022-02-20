@@ -4,7 +4,7 @@
         <h5 class="page-title p-mt-1">Indicadores reportados</h5></ng-template>
     <p-toast></p-toast>
     <p-messages></p-messages>
-    <p-table [value]="items"
+    <p-table #dt [value]="items"
              [columns]="selectedColumns"
              [rowHover]="true" dataKey="id"
              styleClass="p-datatable-customers"
@@ -21,7 +21,7 @@
                                selectedItemsLabel="{0} columnas seleccionadas"
                                [style]="{minWidth: '200px',color:'#6c757d'}"
                                placeholder="Seleccione las columnas"></p-multiSelect>
-                <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+                <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel(dt)"
                         class="p-button-success p-mr-2"></button>
             </div>
 

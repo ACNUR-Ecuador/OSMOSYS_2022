@@ -27,6 +27,7 @@ import {CustomDissagregationsAssignationToIndicatorPipe} from '../../shared/pipe
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {PeriodService} from '../../shared/services/period.service';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
+import {Table} from 'primeng/table';
 
 @Component({
     selector: 'app-performance-indicator-administration',
@@ -257,8 +258,10 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         });
     }
 
-    exportExcel() {
-        this.utilsService.exportTableAsExcel(this._selectedColumns, this.items, 'indicadopres_producto');
+    exportExcel(table: Table) {
+        this.utilsService.exportTableAsExcel(this._selectedColumns,
+            table.filteredValue ? table.filteredValue : this.items,
+            'indicadores');
     }
 
 

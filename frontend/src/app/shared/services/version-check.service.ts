@@ -14,7 +14,7 @@ export class VersionCheckService {
     /**
      * Checks in every set frequency the version of frontend application
      * @param url where to check url
-     * @param period to check {number} frequency - in milliseconds, defaults to 60 minutes
+     * @param frequency to check {number} frequency - in milliseconds, defaults to 60 minutes
      */
     public initVersionCheck(url, frequency = 1000 * 60 * 60) {
         setInterval(() => {
@@ -40,9 +40,13 @@ export class VersionCheckService {
             .subscribe(
                 (response: any) => {
                     const hash = response.hash;
+                    console.error('hash: ' + hash);
+                    console.error('currenthash: ' + this.currentHash);
                     const hashChanged = this.hasHashChanged(this.currentHash, hash);
 // If new version, do something
+                    console.error('has changed: ' + hashChanged);
                     if (hashChanged) {
+                        console.error('reloading');
                         window.location.reload();
 // ENTER YOUR CODE TO DO SOMETHING UPON VERSION CHANGE
 // for an example: location.reload();
@@ -58,12 +62,13 @@ export class VersionCheckService {
             );
     }
 
+    // noinspection JSMethodCanBeStatic
     /**
      * Checks if hash has changed.
      * This file has the JS hash, if it is a different one than in the version.json
      * we are dealing with version change
-     * @param hash current version currentHash
-     * @param new hash newHash
+     * @param currentHash current version currentHash
+     * @param newHash hash newHash
      * @returns true if changes {boolean}
      */
     private hasHashChanged(currentHash, newHash): boolean {
@@ -71,6 +76,7 @@ export class VersionCheckService {
             return false;
         }
         const change: boolean = currentHash !== newHash;
+        console.error('changed: ' + change);
         return change;
     }
 }

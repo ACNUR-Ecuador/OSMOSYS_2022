@@ -6,6 +6,7 @@ import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
 import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {SituationService} from '../../shared/services/situation.service';
+import {Table} from 'primeng/table';
 
 @Component({
     selector: 'app-situation-administration',
@@ -18,7 +19,7 @@ export class SituationAdministrationComponent implements OnInit {
     showDialog = false;
     private submitted = false;
     formItem: FormGroup;
-    private states: SelectItem[];
+    states: SelectItem[];
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
 
@@ -69,14 +70,10 @@ export class SituationAdministrationComponent implements OnInit {
         });
     }
 
-    exportExcel() {
-        import('xlsx').then(xlsx => {
-            const itemsRenamed = this.utilsService.renameKeys(this.items, this.cols);
-            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
-            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
-            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.utilsService.saveAsExcelFile(excelBuffer, 'situaciones');
-        });
+    exportExcel(table: Table) {
+        this.utilsService.exportTableAsExcel(this._selectedColumns,
+            table.filteredValue ? table.filteredValue : this.items,
+            'situaciones');
     }
 
 
@@ -116,7 +113,7 @@ export class SituationAdministrationComponent implements OnInit {
         };
         if (situacion.id) {
             // tslint:disable-next-line:no-shadowed-variable
-            this.situationService.update(situacion).subscribe(id => {
+            this.situationService.update(situacion).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
             }, error => {
@@ -129,7 +126,7 @@ export class SituationAdministrationComponent implements OnInit {
             });
         } else {
             // tslint:disable-next-line:no-shadowed-variable
-            this.situationService.save(situacion).subscribe(id => {
+            this.situationService.save(situacion).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
             }, error => {

@@ -10,6 +10,7 @@ import {MarkerService} from '../../shared/services/marker.service';
 import {MarkersListPipe} from '../../shared/pipes/markers-list.pipe';
 import {CustomDissagregationOptionsListPipe} from '../../shared/pipes/custom-dissagregation-options-list.pipe';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
+import {Table} from 'primeng/table';
 
 @Component({
     selector: 'app-custom-dissagregation-administration',
@@ -26,15 +27,13 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
     private submitted = false;
     formItem: FormGroup;
     formOptionItem: FormGroup;
-    private states: SelectItem[];
+    states: SelectItem[];
 
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
     // tslint:disable-next-line:variable-name
     _selectedColumnsOptions: ColumnTable[];
     markers: Marker[];
-    selectedMarkers: Marker[] = [];
-
     sourceCities: any[];
 
     targetCities: any[];
@@ -103,6 +102,7 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
             this.states = value;
         });
     }
+
     private registerFilters() {
         this.filterService.register('dissagegationsFilters', (value, filter): boolean => {
             return this.filterUtilsService.customDissagregationName(value, filter);
@@ -148,14 +148,10 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
         });
     }
 
-    exportExcel() {
-        import('xlsx').then(xlsx => {
-            const itemsRenamed = this.utilsService.renameKeys(this.items, this.cols);
-            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
-            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
-            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.utilsService.saveAsExcelFile(excelBuffer, 'desagregaciones');
-        });
+    exportExcel(table: Table) {
+        this.utilsService.exportTableAsExcel(this._selectedColumns,
+            table.filteredValue ? table.filteredValue : this.items,
+            'desagregaciones_personalizadas');
     }
 
 
@@ -223,7 +219,7 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
         };
         if (customDissagregation.id) {
             // tslint:disable-next-line:no-shadowed-variable
-            this.customDissagregationService.update(customDissagregation).subscribe(id => {
+            this.customDissagregationService.update(customDissagregation).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
             }, error => {
@@ -236,7 +232,7 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
             });
         } else {
             // tslint:disable-next-line:no-shadowed-variable
-            this.customDissagregationService.save(customDissagregation).subscribe(id => {
+            this.customDissagregationService.save(customDissagregation).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
             }, error => {
@@ -310,7 +306,6 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
         // restore original order
         this._selectedColumnsOptions = this.cols.filter(col => val.includes(col));
     }
-
 
 
 }

@@ -12,6 +12,7 @@ import {SituationService} from '../../shared/services/situation.service';
 import {CodeShortDescriptionPipe} from '../../shared/pipes/code-short-description.pipe';
 import {PeriodService} from '../../shared/services/period.service';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
+import {Table} from 'primeng/table';
 
 
 @Component({
@@ -25,12 +26,12 @@ export class StatementAdministrationComponent implements OnInit {
     showDialog = false;
     private submitted = false;
     formItem: FormGroup;
-    private states: SelectItem[];
-    private areasItems: SelectItem[];
-    private pillarsItems: SelectItem[];
-    private situationsItems: SelectItem[];
-    private periodsItems: SelectItem[];
-    private parentStatementsItems: SelectItem[];
+    states: SelectItem[];
+    areasItems: SelectItem[];
+    pillarsItems: SelectItem[];
+    situationsItems: SelectItem[];
+    periodsItems: SelectItem[];
+    parentStatementsItems: SelectItem[];
 
 
     // tslint:disable-next-line:variable-name
@@ -200,14 +201,10 @@ export class StatementAdministrationComponent implements OnInit {
         });
     }
 
-    exportExcel() {
-        import('xlsx').then(xlsx => {
-            const itemsRenamed = this.utilsService.renameKeys(this.items, this.cols);
-            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
-            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
-            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.utilsService.saveAsExcelFile(excelBuffer, 'pilares');
-        });
+    exportExcel(table: Table) {
+        this.utilsService.exportTableAsExcel(this._selectedColumns,
+            table.filteredValue ? table.filteredValue : this.items,
+            'declaraciones');
     }
 
 
@@ -301,7 +298,7 @@ export class StatementAdministrationComponent implements OnInit {
         statement.periodStatementAsignations = periodStatementAsignationsCasted;
         if (statement.id) {
             // tslint:disable-next-line:no-shadowed-variable
-            this.statementService.update(statement).subscribe(id => {
+            this.statementService.update(statement).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
             }, error => {
@@ -314,7 +311,7 @@ export class StatementAdministrationComponent implements OnInit {
             });
         } else {
             // tslint:disable-next-line:no-shadowed-variable
-            this.statementService.save(statement).subscribe(id => {
+            this.statementService.save(statement).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
             }, error => {

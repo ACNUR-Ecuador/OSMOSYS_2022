@@ -11,7 +11,7 @@
                 </ng-template>
 
                 <ng-template pTemplate="right">
-                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel(dt)"
                             class="p-button-success p-mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
                 </ng-template>
             </p-toolbar>
@@ -112,7 +112,6 @@
                         <p-selectButton id="stateI"
                                         formControlName="state"
                                         [options]="states"
-                                        placeholder="Selecciona..."
                         >
                         </p-selectButton>
 
@@ -163,7 +162,6 @@
                                     <p-selectButton id="generalIndicatorStateI"
                                                     formControlName="generalIndicatorState"
                                                     [options]="states"
-                                                    placeholder="Selecciona..."
                                     ></p-selectButton>
 
                                     <small class="p-error"
@@ -177,6 +175,7 @@
                                             <div class="p-formgroup-inline p-pt-2">
                                                 <div class="p-field-checkbox p-col-12 p-md-2"
                                                      *ngFor="let category of dissagregationTypes">
+                                                    <!--suppress AngularInvalidExpressionResultType -->
                                                     <p-checkbox name="group1" [inputId]="category.value"
                                                                 [value]="category.value"
                                                                 [formControl]="formItem.controls['generalIndicatorDissagregations']">

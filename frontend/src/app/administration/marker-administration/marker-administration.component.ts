@@ -6,6 +6,7 @@ import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
 import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {MarkerService} from '../../shared/services/marker.service';
+import {Table} from 'primeng/table';
 
 @Component({
     selector: 'app-marker-administration',
@@ -18,9 +19,9 @@ export class MarkerAdministrationComponent implements OnInit {
     showDialog = false;
     private submitted = false;
     formItem: FormGroup;
-    private states: SelectItem[];
-    private types: SelectItem[];
-    private subTypes: string[];
+    states: SelectItem[];
+    types: SelectItem[];
+    subTypes: string[];
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
 
@@ -79,14 +80,10 @@ export class MarkerAdministrationComponent implements OnInit {
         });
     }
 
-    exportExcel() {
-        import('xlsx').then(xlsx => {
-            const itemsRenamed = this.utilsService.renameKeys(this.items, this.cols);
-            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
-            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
-            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.utilsService.saveAsExcelFile(excelBuffer, 'marcadores');
-        });
+    exportExcel(table: Table) {
+        this.utilsService.exportTableAsExcel(this._selectedColumns,
+            table.filteredValue ? table.filteredValue : this.items,
+            'marcadores');
     }
 
 
@@ -128,7 +125,7 @@ export class MarkerAdministrationComponent implements OnInit {
         };
         if (marker.id) {
             // tslint:disable-next-line:no-shadowed-variable
-            this.markerService.update(marker).subscribe(id => {
+            this.markerService.update(marker).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
             }, error => {
@@ -141,7 +138,7 @@ export class MarkerAdministrationComponent implements OnInit {
             });
         } else {
             // tslint:disable-next-line:no-shadowed-variable
-            this.markerService.save(marker).subscribe(id => {
+            this.markerService.save(marker).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
             }, error => {

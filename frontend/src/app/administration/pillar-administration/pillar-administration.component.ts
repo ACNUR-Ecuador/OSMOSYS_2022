@@ -6,6 +6,7 @@ import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
 import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {PillarService} from '../../shared/services/pillar.service';
+import {Table} from 'primeng/table';
 
 @Component({
     selector: 'app-pillar-administration',
@@ -18,7 +19,7 @@ export class PillarAdministrationComponent implements OnInit {
     showDialog = false;
     private submitted = false;
     formItem: FormGroup;
-    private states: SelectItem[];
+    states: SelectItem[];
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
 
@@ -69,14 +70,10 @@ export class PillarAdministrationComponent implements OnInit {
         });
     }
 
-    exportExcel() {
-        import('xlsx').then(xlsx => {
-            const itemsRenamed = this.utilsService.renameKeys(this.items, this.cols);
-            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
-            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
-            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.utilsService.saveAsExcelFile(excelBuffer, 'pilares');
-        });
+    exportExcel(table: Table) {
+        this.utilsService.exportTableAsExcel(this._selectedColumns,
+            table.filteredValue ? table.filteredValue : this.items,
+            'pilares');
     }
 
 
@@ -116,7 +113,7 @@ export class PillarAdministrationComponent implements OnInit {
         };
         if (pillar.id) {
             // tslint:disable-next-line:no-shadowed-variable
-            this.pillarService.update(pillar).subscribe(id => {
+            this.pillarService.update(pillar).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
             }, error => {
@@ -129,7 +126,7 @@ export class PillarAdministrationComponent implements OnInit {
             });
         } else {
             // tslint:disable-next-line:no-shadowed-variable
-            this.pillarService.save(pillar).subscribe(id => {
+            this.pillarService.save(pillar).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
             }, error => {

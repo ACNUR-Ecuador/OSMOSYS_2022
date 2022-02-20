@@ -6,6 +6,7 @@ import {UtilsService} from '../../shared/services/utils.service';
 import {ColumnDataType, ColumnTable, EnumsType} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {EnumsService} from '../../shared/services/enums.service';
+import {Table} from 'primeng/table';
 
 @Component({
     selector: 'app-areas-administration',
@@ -18,8 +19,8 @@ export class AreasAdministrationComponent implements OnInit {
     showDialog = false;
     private submitted = false;
     formItem: FormGroup;
-    private areaTypes: SelectItem[];
-    private states: SelectItem[];
+    areaTypes: SelectItem[];
+    states: SelectItem[];
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
 
@@ -75,16 +76,10 @@ export class AreasAdministrationComponent implements OnInit {
         });
     }
 
-    exportExcel() {
-        import('xlsx').then(xlsx => {
-            const headers = this.cols.map(value => value.header);
-            const itemsRenamed = this.utilsService.renameKeys(this.items, this.cols);
-            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
-            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
-
-            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.utilsService.saveAsExcelFile(excelBuffer, 'areas');
-        });
+    exportExcel(table: Table) {
+        this.utilsService.exportTableAsExcel(this._selectedColumns,
+            table.filteredValue ? table.filteredValue : this.items,
+            'areas');
     }
 
 
@@ -133,7 +128,7 @@ export class AreasAdministrationComponent implements OnInit {
         };
         if (area.id) {
             // tslint:disable-next-line:no-shadowed-variable
-            this.areaService.update(area).subscribe(id => {
+            this.areaService.update(area).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
             }, error => {
@@ -146,7 +141,7 @@ export class AreasAdministrationComponent implements OnInit {
             });
         } else {
             // tslint:disable-next-line:no-shadowed-variable
-            this.areaService.save(area).subscribe(id => {
+            this.areaService.save(area).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
             }, error => {

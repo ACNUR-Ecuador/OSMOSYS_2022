@@ -292,7 +292,7 @@
 
                     <ng-template pTemplate="right">
                         <button type="button" pButton pRipple icon="pi pi-file-excel"
-                                (click)="exportExcelPerformancceIndicators()"
+                                (click)="exportExcelPerformancceIndicators(dt)"
                                 class="p-button-success p-mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
                     </ng-template>
                 </p-toolbar>
@@ -477,6 +477,7 @@
             >
                 <div class="card p-col-12 p-md-12"
                      *ngFor="let targetForm of quarterGroups.controls; let i = index">
+                    <!--suppress AngularInvalidExpressionResultType -->
                     <div class="p-field p-col-12 p-md-12" [formGroup]="targetForm">
 
                         <label>Trimestre: {{targetForm.get('year').value}} - {{targetForm.get('quarter').value}}</label>
@@ -547,6 +548,7 @@
                 <div class="p-field p-col-4 p-md-4">
                     <label for="isBorrowedStatementI">Indicador prestado</label>
                     <div class="field-checkbox">
+                        <!--suppress AngularInvalidExpressionResultType -->
                         <p-checkbox id="isBorrowedStatementI"
                                     inputId="ibs"
                                     [formControl]="formPerformanceIndicator.controls['isBorrowedStatement']"

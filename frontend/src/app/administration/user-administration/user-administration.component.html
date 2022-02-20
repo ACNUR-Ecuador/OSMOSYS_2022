@@ -10,11 +10,11 @@
                 </ng-template>
 
                 <ng-template pTemplate="right">
-                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel(dt)"
                             class="p-button-success p-mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
                 </ng-template>
             </p-toolbar>
-            <p-table [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true"
+            <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true"
                      [rowHover]="true" dataKey="id"
                      styleClass="p-datatable-customers"
                      currentPageReportTemplate=" {first} a {last} de {totalRecords} "

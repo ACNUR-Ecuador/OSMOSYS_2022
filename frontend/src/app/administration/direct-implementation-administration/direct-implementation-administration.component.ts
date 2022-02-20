@@ -19,6 +19,7 @@ import {UserPipe} from '../../shared/pipes/user.pipe';
 import {MonthPipe} from '../../shared/pipes/month.pipe';
 import {BooleanYesNoPipe} from '../../shared/pipes/boolean-yes-no.pipe';
 import {MonthListPipe} from '../../shared/pipes/month-list.pipe';
+import {Table} from 'primeng/table';
 
 @Component({
     selector: 'app-direct-implementation-administration',
@@ -231,8 +232,10 @@ export class DirectImplementationAdministrationComponent implements OnInit {
         this.loadItems(period.id);
     }
 
-    exportExcel() {
-        this.utilsService.exportTableAsExcel(this._selectedColumns, this.items, 'Asignacion_indicadores_id');
+    exportExcel(table: Table) {
+        this.utilsService.exportTableAsExcel(this._selectedColumns,
+            table.filteredValue ? table.filteredValue : this.items,
+            'asignacion_indicadores_implemetacion_directa');
     }
 
     @Input() get selectedColumns(): any[] {

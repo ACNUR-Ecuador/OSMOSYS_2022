@@ -37,17 +37,6 @@ export class UtilsService {
     }
 
     exportTableAsExcel(selectedColumns: ColumnTable[], items: any[], filename: string) {
-        import('xlsx').then(xlsx => {
-            const itemsRenamed = this.renameKeys(items, selectedColumns);
-            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
-            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
-
-            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.saveAsExcelFile(excelBuffer, filename);
-        });
-    }
-
-    exportTableAsExcelV3(selectedColumns: ColumnTable[], items: any[], filename: string) {
         // noinspection DuplicatedCode
         // tslint:disable-next-line:no-shadowed-variable
         const Excel = require('exceljs');

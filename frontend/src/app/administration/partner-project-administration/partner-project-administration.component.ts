@@ -40,6 +40,7 @@ import {QuarterService} from '../../shared/services/quarter.service';
 import {BooleanYesNoPipe} from '../../shared/pipes/boolean-yes-no.pipe';
 import {StatementService} from '../../shared/services/statement.service';
 import {IndicatorPipe} from '../../shared/pipes/indicator.pipe';
+import {Table} from 'primeng/table';
 
 @Component({
     selector: 'app-partner-project-administration',
@@ -767,14 +768,10 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         this.formPerformanceIndicator.get('locations').patchValue(locations);
     }
 
-    exportExcelPerformancceIndicators() {
-        import('xlsx').then(xlsx => {
-            const itemsRenamed = this.utilsService.renameKeys(this.performanceIndicators, this.colsPerformancelIndicators);
-            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
-            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
-            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.utilsService.saveAsExcelFile(excelBuffer, 'indicadores_producto_' + this.formItem.get('name').value);
-        });
+    exportExcelPerformancceIndicators(table: Table) {
+        this.utilsService.exportTableAsExcel(this._selectedColumnsPerformanceIndicators,
+            table.filteredValue ? table.filteredValue : this.performanceIndicators,
+            'indicadores');
     }
 
     cancelPerformanceIndicatorDialog() {

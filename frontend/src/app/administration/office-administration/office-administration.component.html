@@ -10,7 +10,7 @@
                 </ng-template>
 
                 <ng-template pTemplate="right">
-                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel(dt)"
                             class="p-button-success p-mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
                 </ng-template>
             </p-toolbar>
@@ -169,7 +169,6 @@
                         <p-selectButton id="stateI"
                                         formControlName="state"
                                         [options]="states"
-                                        placeholder="Selecciona..."
                         >
                         </p-selectButton>
 

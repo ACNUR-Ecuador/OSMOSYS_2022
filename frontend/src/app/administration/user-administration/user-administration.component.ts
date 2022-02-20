@@ -11,6 +11,7 @@ import {UtilsService} from '../../shared/services/utils.service';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {RolesListPipe} from '../../shared/pipes/roles-list.pipe';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Table} from 'primeng/table';
 
 @Component({
     selector: 'app-user-administration',
@@ -201,8 +202,10 @@ export class UserAdministrationComponent implements OnInit {
         this.formItem.get('username').disable();
     }
 
-    exportExcel() {
-
+    exportExcel(table: Table) {
+        this.utilsService.exportTableAsExcel(this._selectedColumns,
+            table.filteredValue ? table.filteredValue : this.items,
+            'usuarios');
     }
 
     cancelDialog() {
@@ -261,7 +264,7 @@ export class UserAdministrationComponent implements OnInit {
 
         if (user.id) {
             this.userService.updateUser(user)
-                .subscribe(value => {
+                .subscribe(() => {
                     this.showDialog = false;
                     this.messageService.add({
                         severity: 'success',
@@ -279,7 +282,7 @@ export class UserAdministrationComponent implements OnInit {
                 });
         } else {
             this.userService.createUser(user)
-                .subscribe(value => {
+                .subscribe(() => {
                     this.showDialog = false;
                     this.messageService.add({
                         severity: 'success',

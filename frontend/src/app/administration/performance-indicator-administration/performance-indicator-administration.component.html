@@ -12,7 +12,7 @@
                 </ng-template>
 
                 <ng-template pTemplate="right">
-                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel(dt)"
                             class="p-button-success p-mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
                 </ng-template>
             </p-toolbar>
@@ -21,7 +21,8 @@
                      [rowHover]="true" dataKey="id"
                      styleClass="p-datatable-customers"
                      currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                     [showCurrentPageReport]="true">
+                     [showCurrentPageReport]="true"
+            >
                 <ng-template pTemplate="caption">
                     <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between table-header">
                         <h5 class="p-m-0">Situaciones</h5>

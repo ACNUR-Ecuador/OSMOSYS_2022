@@ -7,6 +7,7 @@ import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {OfficeService} from '../../shared/services/office.service';
 import {OfficeOrganizationPipe} from '../../shared/pipes/officeOrganization.pipe';
+import {Table} from 'primeng/table';
 
 @Component({
     selector: 'app-office-administration',
@@ -19,7 +20,7 @@ export class OfficeAdministrationComponent implements OnInit {
     showDialog = false;
     private submitted = false;
     formItem: FormGroup;
-    private states: SelectItem[];
+    states: SelectItem[];
     officeTypes: SelectItem[];
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
@@ -171,14 +172,14 @@ export class OfficeAdministrationComponent implements OnInit {
                 /*value.childOffices.forEach(value1 => {
                     node.children.push(this.officeToNodeTree(value1));
                 });*/
-                const childNodes = this.officeTreeToNodeTree(value.childOffices);
-                node.children = childNodes;
+                node.children = this.officeTreeToNodeTree(value.childOffices);
             }
             treeNode.push(node);
         });
         return treeNode;
     }
 
+    // noinspection JSMethodCanBeStatic
     private officeToNodeTree(office: Office) {
         const node: TreeNode = {
             label: office.acronym,
@@ -203,16 +204,11 @@ export class OfficeAdministrationComponent implements OnInit {
         });
     }
 
-    exportExcel() {
-        import('xlsx').then(xlsx => {
-            const itemsRenamed = this.utilsService.renameKeys(this.items, this.cols);
-            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
-            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
-            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.utilsService.saveAsExcelFile(excelBuffer, 'oficinas');
-        });
+    exportExcel(table: Table) {
+        this.utilsService.exportTableAsExcel(this._selectedColumns,
+            table.filteredValue ? table.filteredValue : this.items,
+            'oficinas');
     }
-
 
     createItem() {
         this.messageService.clear();
@@ -254,7 +250,7 @@ export class OfficeAdministrationComponent implements OnInit {
         };
         if (office.id) {
             // tslint:disable-next-line:no-shadowed-variable
-            this.officeService.update(office).subscribe(id => {
+            this.officeService.update(office).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
                 this.loadTree();
@@ -268,7 +264,7 @@ export class OfficeAdministrationComponent implements OnInit {
             });
         } else {
             // tslint:disable-next-line:no-shadowed-variable
-            this.officeService.save(office).subscribe(id => {
+            this.officeService.save(office).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
                 this.loadTree();

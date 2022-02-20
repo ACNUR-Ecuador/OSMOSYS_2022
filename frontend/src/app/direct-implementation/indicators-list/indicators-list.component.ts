@@ -17,6 +17,7 @@ import {EnumsService} from '../../shared/services/enums.service';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {DialogService} from 'primeng/dynamicdialog';
 import {DirectImplementationPerformanceIndicatorFormComponent} from '../../indicator-forms/direct-implementation-performance-indicator-form/direct-implementation-performance-indicator-form.component';
+import {Table} from 'primeng/table';
 
 @Component({
     selector: 'app-indicators-list',
@@ -137,8 +138,10 @@ export class IndicatorsListComponent implements OnInit {
         this._selectedColumns = this.cols.filter(col => val.includes(col));
     }
 
-    exportExcel() {
-        this.utilsService.exportTableAsExcelV3(this._selectedColumns, this.items, 'estado_indicadores_id');
+    exportExcel(table: Table) {
+        this.utilsService.exportTableAsExcel(this._selectedColumns,
+            table.filteredValue ? table.filteredValue : this.items,
+            'indicadores');
     }
 
     selectedIndicatorIndicatorExecutionSet(indicatorExecution: IndicatorExecution) {
@@ -173,6 +176,7 @@ export class IndicatorsListComponent implements OnInit {
                 }
             }
         );
+        // noinspection JSUnusedLocalSymbols
         ref.onClose.subscribe(() => {
             this.loadIndicatorExecutions();
         }, error => {

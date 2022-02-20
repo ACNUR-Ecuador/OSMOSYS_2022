@@ -1,11 +1,12 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Organization} from '../../shared/model/OsmosysModel';
+import {Indicator, Organization} from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsType} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
 import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {OrganizationService} from '../../shared/services/organization.service';
+import {Table} from 'primeng/table';
 
 @Component({
     selector: 'app-organization-administration',
@@ -14,11 +15,12 @@ import {OrganizationService} from '../../shared/services/organization.service';
 })
 export class OrganizationAdministrationComponent implements OnInit {
     items: Organization[];
+    itemsFiltered: Indicator[];
     cols: ColumnTable[];
     showDialog = false;
     private submitted = false;
     formItem: FormGroup;
-    private states: SelectItem[];
+    states: SelectItem[];
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
 
@@ -69,14 +71,10 @@ export class OrganizationAdministrationComponent implements OnInit {
         });
     }
 
-    exportExcel() {
-        import('xlsx').then(xlsx => {
-            const itemsRenamed = this.utilsService.renameKeys(this.items, this.cols);
-            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
-            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
-            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.utilsService.saveAsExcelFile(excelBuffer, 'organizationos');
-        });
+    exportExcel(table: Table) {
+        this.utilsService.exportTableAsExcel(this._selectedColumns,
+            table.filteredValue ? table.filteredValue : this.items,
+            'organizaciones');
     }
 
     createItem() {
@@ -115,7 +113,7 @@ export class OrganizationAdministrationComponent implements OnInit {
         };
         if (organization.id) {
             // tslint:disable-next-line:no-shadowed-variable
-            this.organizationService.update(organization).subscribe(id => {
+            this.organizationService.update(organization).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
             }, error => {
@@ -128,7 +126,7 @@ export class OrganizationAdministrationComponent implements OnInit {
             });
         } else {
             // tslint:disable-next-line:no-shadowed-variable
-            this.organizationService.save(organization).subscribe(id => {
+            this.organizationService.save(organization).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
             }, error => {

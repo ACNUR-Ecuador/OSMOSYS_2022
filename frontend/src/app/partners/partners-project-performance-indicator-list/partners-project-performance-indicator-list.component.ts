@@ -10,6 +10,7 @@ import {ColumnDataType, ColumnTable, EnumsType} from '../../shared/model/UtilsMo
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {IndicatorPipe} from '../../shared/pipes/indicator.pipe';
 import {MonthPipe} from '../../shared/pipes/month.pipe';
+import {Table} from 'primeng/table';
 
 @Component({
     selector: 'app-partners-project-performance-indicator-list',
@@ -139,15 +140,9 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
         this._selectedColumnsPerformanceIndicators = this.colsGeneralIndicators.filter(col => val.includes(col));
     }
 
-    exportExcel() {
-        import('xlsx').then(xlsx => {
-            const headers = this.selectedColumnsPerformanceIndicators.map(value => value.header);
-            const itemsRenamed = this.utilsService.renameKeys(this.performanceIndicators, this.selectedColumnsPerformanceIndicators);
-            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
-            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
-
-            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.utilsService.saveAsExcelFile(excelBuffer, 'indicadores_producto_' + this.project.code + '_' + this.project.name);
-        });
+    exportExcel(table: Table) {
+        this.utilsService.exportTableAsExcel(this._selectedColumnsPerformanceIndicators,
+            table.filteredValue ? table.filteredValue : this.performanceIndicators,
+            'indicadores');
     }
 }

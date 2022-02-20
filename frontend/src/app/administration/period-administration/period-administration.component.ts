@@ -6,7 +6,7 @@ import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
 import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {PeriodService} from '../../shared/services/period.service';
-import {GeneralIndicatorService} from '../../shared/services/general-indicator.service';
+import {Table} from 'primeng/table';
 
 @Component({
     selector: 'app-period-administration',
@@ -19,7 +19,7 @@ export class PeriodAdministrationComponent implements OnInit {
     showDialog = false;
     private submitted = false;
     formItem: FormGroup;
-    private states: SelectItem[];
+    states: SelectItem[];
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
     dissagregationTypes: SelectItem[];
@@ -86,14 +86,10 @@ export class PeriodAdministrationComponent implements OnInit {
         });
     }
 
-    exportExcel() {
-        import('xlsx').then(xlsx => {
-            const itemsRenamed = this.utilsService.renameKeys(this.items, this.cols);
-            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
-            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
-            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.utilsService.saveAsExcelFile(excelBuffer, 'periodos');
-        });
+    exportExcel(table: Table) {
+        this.utilsService.exportTableAsExcel(this._selectedColumns,
+            table.filteredValue ? table.filteredValue : this.items,
+            'periodos');
     }
 
     createItem() {
@@ -236,7 +232,7 @@ export class PeriodAdministrationComponent implements OnInit {
 
         if (period.id) {
             // tslint:disable-next-line:no-shadowed-variable
-            this.periodService.update(period).subscribe(id => {
+            this.periodService.update(period).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
             }, error => {
@@ -249,7 +245,7 @@ export class PeriodAdministrationComponent implements OnInit {
             });
         } else {
             // tslint:disable-next-line:no-shadowed-variable
-            this.periodService.save(period).subscribe(id => {
+            this.periodService.save(period).subscribe(() => {
                 this.cancelDialog();
                 this.loadItems();
             }, error => {

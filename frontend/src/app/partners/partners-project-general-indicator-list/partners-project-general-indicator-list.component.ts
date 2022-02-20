@@ -9,6 +9,7 @@ import {IndicatorExecutionService} from '../../shared/services/indicator-executi
 import {PercentPipe} from '@angular/common';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {MonthPipe} from '../../shared/pipes/month.pipe';
+import {Table} from 'primeng/table';
 
 @Component({
     selector: 'app-partners-project-general-indicator-list',
@@ -26,8 +27,8 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnC
     _selectedColumnsGeneralIndicators: ColumnTable[];
     colsGeneralIndicators: ColumnTable[];
 
-    private states: SelectItem[];
-    private selectedIndicator: IndicatorExecution;
+    states: SelectItem[];
+    selectedIndicator: IndicatorExecution;
 
     constructor(
         private messageService: MessageService,
@@ -45,6 +46,7 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnC
     ngOnInit(): void {
         this.loadGeneralIndicators(this.project.id);
         this.loadOptions();
+        this.registerFilters();
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -117,16 +119,10 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnC
         this.selectedIndicator = null;
     }
 
-    exportExcel() {
-        import('xlsx').then(xlsx => {
-            const headers = this.selectedColumnsGeneralIndicators.map(value => value.header);
-            const itemsRenamed = this.utilsService.renameKeys(this.generalIndicators, this.selectedColumnsGeneralIndicators);
-            const worksheet = xlsx.utils.json_to_sheet(itemsRenamed);
-            const workbook = {Sheets: {data: worksheet}, SheetNames: ['data']};
-
-            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
-            this.utilsService.saveAsExcelFile(excelBuffer, 'indicadores_producto_' + this.project.code + '_' + this.project.name);
-        });
+    exportExcel(table: Table) {
+        this.utilsService.exportTableAsExcel(this._selectedColumnsGeneralIndicators,
+            table.filteredValue ? table.filteredValue : this._selectedColumnsGeneralIndicators,
+            'indicadores');
     }
 
     private registerFilters() {
