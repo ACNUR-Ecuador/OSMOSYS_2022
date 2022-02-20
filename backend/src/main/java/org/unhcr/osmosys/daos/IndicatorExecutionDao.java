@@ -31,6 +31,9 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
     private static final String jpqlProjectIndicators =
             " SELECT DISTINCT o FROM IndicatorExecution o " +
                     " left join fetch o.indicator i " +
+                    " left join fetch o.project pr " +
+                    " left join fetch pr.focalPoint fpu " +
+                    " left join fetch pr.organization org " +
                     " left join fetch i.statement ist " +
                     " left join fetch ist.area " +
                     " left join fetch o.projectStatement pst " +
@@ -74,7 +77,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
     public List<IndicatorExecution> getGeneralAndPerformanceIndicatorExecutionsByProjectId(Long projectId) {
 
         String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
-                " WHERE o.project.id = :projectId";
+                " WHERE pr.id = :projectId";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("projectId", projectId);
         return q.getResultList();
@@ -84,7 +87,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         IndicatorType indicatorType = IndicatorType.GENERAL;
         State active = State.ACTIVO;
         String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
-                " WHERE o.project.id = :projectId" +
+                " WHERE pr.id = :projectId" +
                 " and o.indicatorType = :generalType ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("projectId", projectId);
@@ -96,7 +99,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
     public List<IndicatorExecution> getGeneralIndicatorExecutionsByProjectIdAndState(Long projectId, State state) {
         IndicatorType indicatorType = IndicatorType.GENERAL;
         String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
-                " WHERE o.project.id = :projectId" +
+                " WHERE pr.id = :projectId" +
                 " and o.state = :state " +
                 " and o.indicatorType =: generalType ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
@@ -111,7 +114,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         IndicatorType indicatorType = IndicatorType.GENERAL;
         String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
 
-                " WHERE o.project.id = :projectId" +
+                " WHERE pr.id = :projectId" +
                 " and o.indicatorType <> :generalType " +
                 " and o.state = :state ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
@@ -124,7 +127,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
     public List<IndicatorExecution> getPerformanceIndicatorExecutionsByProjectId(Long projectId) {
         IndicatorType indicatorType = IndicatorType.GENERAL;
         String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
-                " WHERE o.project.id = :projectId" +
+                " WHERE pr.id = :projectId" +
                 " and o.indicatorType <>: generalType ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("projectId", projectId);
@@ -302,12 +305,8 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         return q.getResultList();
     }
 
-    // todo
     public List<IndicatorExecution> getActiveProjectIndicatorExecutionsByPeriodId(Long periodId) {
         String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
-                " left join fetch o.project pr " +
-                " left join fetch pr.organization org " +
-                " left join fetch pr.focalPoint fpu " +
                 " left join fetch fpu.organization fpuorg " +
                 " left join fetch pr.projectLocationAssigments pla" +
                 " left join fetch pla.location canpl" +

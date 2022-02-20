@@ -240,17 +240,17 @@ public class IndicatorExecutionService {
 
     public List<IndicatorExecutionWeb> getGeneralIndicatorExecutionsAdministrationByProjectId(Long projectId) throws GeneralAppException {
         List<IndicatorExecution> ies = this.indicatorExecutionDao.getGeneralIndicatorExecutionsByProjectId(projectId);
-        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(ies, false);
+        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(ies, true);
     }
 
     public List<IndicatorExecutionWeb> getGeneralIndicatorExecutionsByProjectId(Long projectId, State state) throws GeneralAppException {
         List<IndicatorExecution> ies = this.indicatorExecutionDao.getGeneralIndicatorExecutionsByProjectIdAndState(projectId, state);
-        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(ies, false);
+        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(ies, true);
     }
 
     public List<IndicatorExecutionWeb> getPerformanceIndicatorExecutionsByProjectId(Long projectId, State state) throws GeneralAppException {
         List<IndicatorExecution> ies = this.indicatorExecutionDao.getPerformanceIndicatorExecutionsByProjectIdAndState(projectId, state);
-        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(ies, false);
+        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(ies, true);
     }
 
     public void updateTargets(TargetUpdateDTOWeb targetUpdateDTOWeb) throws GeneralAppException {
@@ -343,7 +343,7 @@ public class IndicatorExecutionService {
 
     public List<IndicatorExecutionWeb> getPerformanceIndicatorExecutionsAdministrationByProjectId(Long projectId) throws GeneralAppException {
         List<IndicatorExecution> ies = this.indicatorExecutionDao.getPerformanceIndicatorExecutionsByProjectId(projectId);
-        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(ies, false);
+        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(ies, true);
     }
 
     public void validatePerformanceIndicatorAssignationToProject(IndicatorExecutionAssigmentWeb indicatorExecutionWeb) throws GeneralAppException {

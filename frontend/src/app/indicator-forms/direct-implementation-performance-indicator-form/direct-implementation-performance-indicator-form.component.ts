@@ -9,6 +9,7 @@ import {MonthService} from '../../shared/services/month.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {UtilsService} from '../../shared/services/utils.service';
 import {CantonService} from '../../shared/services/canton.service';
+import {UserService} from '../../shared/services/user.service';
 
 @Component({
     selector: 'app-direct-implementation-performance-indicator-form',
@@ -23,7 +24,8 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     monthValuesMap: Map<string, IndicatorValue[]>;
     monthCustomDissagregatoinValues: CustomDissagregationValues[];
     formItem: FormGroup;
-    isProjectSupervisor = false;
+    isSupervisor = false;
+    isResponsible = false;
 
     oneDimentionDissagregations: DissagregationType[] = [];
     twoDimentionDissagregations: DissagregationType[] = [];
@@ -42,6 +44,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     cantonesAvailable: Canton[];
     public formLocations: FormGroup;
     public cantonesOptions: Canton[];
+    editable: boolean;
 
     constructor(public ref: DynamicDialogRef,
                 public config: DynamicDialogConfig,
@@ -51,6 +54,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
                 public utilsService: UtilsService,
                 private cantonService: CantonService,
                 private messageService: MessageService,
+                private userService: UserService,
                 private fb: FormBuilder,
                 private cd: ChangeDetectorRef
     ) {
@@ -60,7 +64,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
         this.indicatorExecution = this.config.data.indicatorExecution;
         console.log(this.indicatorExecution);
         this.monthId = this.config.data.monthId;
-        this.isProjectSupervisor = true; // todo
+        this.getUserRoles();
         this.formItem = this.fb.group({
             commentary: new FormControl('', [Validators.maxLength(1000)]),
             sources: new FormControl('', Validators.required),
@@ -86,6 +90,20 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
         });
     }
 
+    private getUserRoles() {
+        const userId = this.userService.getLogedUsername().id;
+        const isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
+        if (isAdmin || (this.indicatorExecution.supervisorUser && this.indicatorExecution.supervisorUser.id === userId)) {
+            this.isSupervisor = true;
+        }
+        if (isAdmin || (this.indicatorExecution.assignedUser && this.indicatorExecution.assignedUser.id === userId)) {
+            this.isSupervisor = true;
+        }
+        if (isAdmin || (this.indicatorExecution.assignedUserBackup && this.indicatorExecution.assignedUserBackup.id === userId)) {
+            this.isSupervisor = true;
+        }
+        this.editable = this.isSupervisor || this.isResponsible;
+    }
 
     loadMonthValues(monthId: number) {
         this.monthService.getMonthIndicatorValueByMonthId(monthId).subscribe(value => {
@@ -95,14 +113,15 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             this.monthCustomDissagregatoinValues = value.customDissagregationValues;
             this.formItem.get('commentary').patchValue(this.month.commentary);
             this.formItem.get('sources').patchValue(this.month.sources);
-            if (this.isProjectSupervisor) {
+            if (this.isSupervisor) {
                 this.formItem.get('checked').enable();
             } else {
                 this.formItem.get('checked').disable();
             }
             this.setOtherSource(this.formItem.get('sources').value);
             this.enumsService.getByType(EnumsType.SourceType).subscribe(value1 => {
-                this.sourceTypes = value1;
+                this.sourceTypes = value1.filter(value2 => value2.value !== 'SISTEMA_ORGANIZACION');
+
             });
             this.setDimentionsDissagregations();
             this.validateSegregations();
