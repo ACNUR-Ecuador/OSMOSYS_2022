@@ -104,8 +104,11 @@ export class PartnersProjectComponent implements OnInit {
                 width: '90%',
                 height: '90%',
                 closeOnEscape: false,
-                autoZIndex: true,
+                autoZIndex: false,
                 closable: false,
+                baseZIndex: 1000,
+                modal: true,
+                dismissableMask: false,
 
                 data: {
                     indicatorExecution,
@@ -129,7 +132,7 @@ export class PartnersProjectComponent implements OnInit {
                 width: '90%',
                 height: '90%',
                 closeOnEscape: false,
-                autoZIndex: true,
+                autoZIndex: false,
                 closable: false,
 
                 data: {

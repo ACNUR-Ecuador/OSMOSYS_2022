@@ -18,6 +18,8 @@ import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {DialogService} from 'primeng/dynamicdialog';
 import {DirectImplementationPerformanceIndicatorFormComponent} from '../../indicator-forms/direct-implementation-performance-indicator-form/direct-implementation-performance-indicator-form.component';
 import {Table} from 'primeng/table';
+import {UserService} from '../../shared/services/user.service';
+import {OverlayPanel} from 'primeng/overlaypanel';
 
 @Component({
     selector: 'app-indicators-list',
@@ -45,6 +47,7 @@ export class IndicatorsListComponent implements OnInit {
                 private monthPipe: MonthPipe,
                 private monthListPipe: MonthListPipe,
                 private booleanYesNoPipe: BooleanYesNoPipe,
+                private userService: UserService,
                 private userPipe: UserPipe,
                 public utilsService: UtilsService,
                 private enumsService: EnumsService,
@@ -152,7 +155,8 @@ export class IndicatorsListComponent implements OnInit {
         this.selectedIndicatorIndicatorExecution = null;
     }
 
-    callMonth(monthId: number) {
+    callMonth(monthId: any, overlayer: OverlayPanel) {
+        overlayer.hide();
         const parametersMap = new Map<string, number | IndicatorExecution>();
         parametersMap.set('monthId', monthId);
         parametersMap.set('indicator', this.selectedIndicatorIndicatorExecution);
@@ -163,11 +167,11 @@ export class IndicatorsListComponent implements OnInit {
         const monthId = parameters.get('monthId') as number;
         const indicatorExecution = parameters.get('indicator') as IndicatorExecution;
         const ref = this.dialogService.open(DirectImplementationPerformanceIndicatorFormComponent, {
-                header: 'Indicador: ' + this.indicatorPipe.transform(indicatorExecution.indicator),
+                header: 'Indicador: ' + this.getHeaderIndicatorForm(indicatorExecution),
                 width: '90%',
                 height: '90%',
                 closeOnEscape: false,
-                autoZIndex: true,
+                autoZIndex: false,
                 closable: false,
                 modal: true,
                 data: {
@@ -182,5 +186,24 @@ export class IndicatorsListComponent implements OnInit {
         }, error => {
             this.loadIndicatorExecutions();
         });
+    }
+
+    private getHeaderIndicatorForm(indicatorExecution: IndicatorExecution) {
+        const userId = this.userService.getLogedUsername().id;
+        let header = this.indicatorPipe.transform(indicatorExecution.indicator);
+        const roles: string[] = [];
+        if (indicatorExecution.supervisorUser && indicatorExecution.supervisorUser.id === userId) {
+            roles.push('Supervisor');
+        }
+        if (indicatorExecution.assignedUser && indicatorExecution.assignedUser.id === userId) {
+            roles.push('Responsable de reporte');
+        }
+        if (indicatorExecution.assignedUserBackup && indicatorExecution.assignedUserBackup.id === userId) {
+            roles.push('Responsable de reporte alterno');
+        }
+        if (roles.length > 0) {
+            header = header + ' (' + roles.join(', ') + ')';
+        }
+        return header;
     }
 }

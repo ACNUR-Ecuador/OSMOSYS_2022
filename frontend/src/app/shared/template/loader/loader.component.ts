@@ -24,6 +24,7 @@ export class LoaderComponent implements OnInit {
             // console.log('responce' + response.status);
             // console.log('responce id' + this.id);
             this.show = this.id === response.id && response.status;
+            this.cd.detectChanges();
         });
     }
 
@@ -36,9 +37,8 @@ export class LoaderComponent implements OnInit {
     }
 
     isShowExpand() {
-        const show = this.boxElement && this.boxElement.nativeElement.scrollHeight > this.boxElement.nativeElement.clientHeight;
         // console.log('show: ' + show);
-        return show;
+        return this.boxElement && this.boxElement.nativeElement.scrollHeight > this.boxElement.nativeElement.clientHeight;
     }
 
 }

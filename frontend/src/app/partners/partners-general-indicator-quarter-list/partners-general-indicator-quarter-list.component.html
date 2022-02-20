@@ -31,13 +31,13 @@
                     <span class="p-text-bold p-ml-2"
                     >{{rowdata.monthMonth }}</span>
                 </td>
-                <td>
+                <td style="text-align: center !important;">
                     <span
                         [class]="'values-badge status-'+utilsService.valueToBadgeStatusAlert(rowdata.monthTotalExecution, rowdata.monthMonth, rowdata.monthYear)"
                         class="p-text-bold p-ml-2">{{rowdata.monthTotalExecution | valuesState:rowdata.monthMonth :rowdata.monthYear}}</span>
                 </td>
                 <td>
-                    <button type="text" pButton label="Ver valores"
+                    <button type="button" pButton label="Ver valores"
                             (click)="callMonthInParenth(rowdata.monthId)"></button>
                 </td>
             </tr>

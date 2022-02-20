@@ -11,6 +11,7 @@ import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {IndicatorPipe} from '../../shared/pipes/indicator.pipe';
 import {MonthPipe} from '../../shared/pipes/month.pipe';
 import {Table} from 'primeng/table';
+import {OverlayPanel} from 'primeng/overlaypanel';
 
 @Component({
     selector: 'app-partners-project-performance-indicator-list',
@@ -124,7 +125,8 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
         this.selectedIndicator = null;
     }
 
-    callMonth(monthId: number) {
+    callMonth(monthId: number, overlayPanel: OverlayPanel) {
+        overlayPanel.hide();
         const parametersMap = new Map<string, number | IndicatorExecution>();
         parametersMap.set('monthId', monthId);
         parametersMap.set('indicator', this.selectedIndicator);

@@ -15,7 +15,7 @@
                     <span class="p-text-bold p-ml-2"
                     >{{rowdata.monthMonth }}</span>
                 </td>
-                <td>
+                <td style="text-align: center !important;">
                     <span
                         [class]="'values-badge status-'+utilsService.valueToBadgeStatusAlert(rowdata.monthTotalExecution, rowdata.monthMonth, rowdata.monthYear)"
                         class="p-text-bold p-ml-2">{{rowdata.monthTotalExecution | valuesState:rowdata.monthMonth :rowdata.monthYear}}</span>

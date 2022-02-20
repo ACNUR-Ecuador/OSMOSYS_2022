@@ -10,6 +10,7 @@ import {PercentPipe} from '@angular/common';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {MonthPipe} from '../../shared/pipes/month.pipe';
 import {Table} from 'primeng/table';
+import {OverlayPanel} from 'primeng/overlaypanel';
 
 @Component({
     selector: 'app-partners-project-general-indicator-list',
@@ -52,7 +53,7 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnC
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.project.previousValue) {
             this.loadGeneralIndicators(this.project.id);
-        }else {
+        } else {
         }
     }
 
@@ -104,7 +105,8 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnC
         });
     }
 
-    callMonth(monthId: number) {
+    callMonth(monthId: number, overlayPanel: OverlayPanel) {
+        overlayPanel.hide();
         const parametersMap = new Map<string, number | IndicatorExecution>();
         parametersMap.set('monthId', monthId);
         parametersMap.set('indicator', this.selectedIndicator);

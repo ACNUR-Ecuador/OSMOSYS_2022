@@ -99,7 +99,7 @@
                         <ng-template pTemplate>
                             <app-indicator-quarter-list
                                 [quarters]="rowData.quarters"
-                                (callMonth)="callMonth($event)"
+                                (callMonth)="callMonth($event, op)"
                                 [indicatorExecution]="rowData"
                             ></app-indicator-quarter-list>
                         </ng-template>
