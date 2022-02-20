@@ -15,11 +15,14 @@ export class DissagregationOneIntegerDimentionsComponent implements OnInit, OnCh
     dissagregationType: DissagregationType;
     @Input()
     values: IndicatorValue[];
+    @Input()
+    editable: boolean;
 
     dissagregationOptionsRows: SelectItemWithOrder<any>[];
     enumTypeRows: EnumsType;
     dissagregationTypeRows: DissagregationType;
     rows = new Array<Array<IndicatorValue>>();
+
 
     constructor(
         public enumsService: EnumsService,

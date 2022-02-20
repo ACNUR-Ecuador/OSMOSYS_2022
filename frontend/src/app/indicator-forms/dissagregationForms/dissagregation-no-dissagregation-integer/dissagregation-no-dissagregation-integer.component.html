@@ -9,7 +9,7 @@
             <td class="table-title">{{month.month}}</td>
             <td pEditableColumn
                 class="text-right">
-                <p-cellEditor>
+                <p-cellEditor *ngIf="editable">
                     <ng-template pTemplate="input">
                         <p-inputNumber
                             name="{{row[0].id}}"
@@ -21,6 +21,9 @@
                         {{row[0].value}}
                     </ng-template>
                 </p-cellEditor>
+                <div *ngIf="!editable">
+                    {{row[0].value}}
+                </div>
             </td>
         </tr>
 

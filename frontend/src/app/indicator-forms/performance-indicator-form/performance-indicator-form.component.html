@@ -26,6 +26,7 @@
                         [month]="month"
                         [dissagregationType]="dissagregation"
                         [values]="monthValuesMap.get(dissagregation)"
+                        [editable]="editable"
                     ></app-dissagregation-no-dissagregation-integer>
                 </div>
             </div>
@@ -36,6 +37,7 @@
                         *ngIf="monthValuesMap.get(dissagregation)"
                         [dissagregationType]="dissagregation"
                         [values]="monthValuesMap.get(dissagregation)"
+                        [editable]="editable"
                     ></app-dissagregation-one-integer-dimentions>
                 </div>
             </div>
@@ -45,6 +47,7 @@
                         *ngIf="monthValuesMap.get(dissagregation)"
                         [dissagregationType]="dissagregation"
                         [values]="monthValuesMap.get(dissagregation)"
+                        [editable]="editable"
                     ></app-dissagregation-two-integer-dimentions>
                 </div>
             </div>
@@ -54,6 +57,7 @@
                     <app-custom-dissagregation-integer
                         [values]="monthCustomDissagregatoinValue.indicatorValuesCustomDissagregation"
                         [customDissagregation]="monthCustomDissagregatoinValue.customDissagregation"
+                        [editable]="editable"
                     ></app-custom-dissagregation-integer>
                 </div>
             </div>
@@ -118,13 +122,18 @@
                 <div class="p-col-12 p-md-12">
                     <p-messages></p-messages>
                 </div>
-                <div class="p-d-flex p-jc-end">
+                <div class="p-d-flex p-jc-end" *ngIf="editable">
 
                     <button pButton type="submit" class="p-mr-2"
                             pRipple label="Guardar" icon="pi pi-check"
                     ></button>
                     <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times"
                             class="p-button-secondary"
+                            (click)="cancel()"></button>
+                </div>
+                <div class="p-d-flex p-jc-end" *ngIf="!editable">
+
+                    <button pButton type="button" pRipple label="Salir" icon="pi pi-times"
                             (click)="cancel()"></button>
                 </div>
             </ng-template>
@@ -142,6 +151,7 @@
                 iguales.
             </div>
             <div class="p-mb-2">
+                <!--suppress AngularInvalidExpressionResultType -->
                 <p-table [value]="totalsValidation.keys()" responsiveLayout="scroll">
                     <ng-template pTemplate="header">
                         <tr>

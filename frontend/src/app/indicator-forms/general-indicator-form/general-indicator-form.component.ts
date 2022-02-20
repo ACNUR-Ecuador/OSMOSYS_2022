@@ -24,6 +24,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
     monthValuesMap: Map<string, IndicatorValue[]>;
     formItem: FormGroup;
     isProjectFocalPoint = false;
+    editable: boolean;
 
     sourceTypes: SelectItemWithOrder<any>[];
 
@@ -54,11 +55,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
         this.indicatorExecution = this.config.data.indicatorExecution; //
         this.monthId = this.config.data.monthId; //
         this.projectId = this.config.data.projectId; //
-        if (this.userService.hasRole('PUNTO_FOCAL')) {
-            if (this.userService.getLogedUsername().focalPointProjects.includes(this.projectId)) {
-                this.isProjectFocalPoint = true;
-            }
-        }
+        this.setRoles();
         this.formItem = this.fb.group({
             commentary: new FormControl('', [Validators.maxLength(1000)]),
             sources: new FormControl('', Validators.required),
@@ -80,6 +77,17 @@ export class GeneralIndicatorFormComponent implements OnInit {
             value: false
         });
 
+    }
+
+    private setRoles() {
+        const userId = this.userService.getLogedUsername().id;
+        const orgId = this.userService.getLogedUsername().organization.id;
+        const isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']);
+        this.isProjectFocalPoint = isAdmin
+            || (this.indicatorExecution.project.focalPoint && this.indicatorExecution.project.focalPoint.id === userId);
+        this.editable = isAdmin ||
+            (this.indicatorExecution.project.focalPoint && this.indicatorExecution.project.focalPoint.id === userId)
+            || (this.indicatorExecution.project.organization.id === orgId && this.userService.hasRole('EJECUTOR_PROYECTOS'));
     }
 
     loadMonthValues(monthId: number) {
@@ -136,7 +144,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
     }
 
     private sendMonthValue() {
-        this.indicatorExecutionService.updateMonthValues(this.indicatorExecution.id, this.monthValues).subscribe(value => {
+        this.indicatorExecutionService.updateMonthValues(this.indicatorExecution.id, this.monthValues).subscribe(() => {
             this.messageService.add({severity: 'success', summary: 'Guardado con éxito', detail: ''});
             this.ref.close({test: 1});
         }, error => {

@@ -1,7 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {SelectItemWithOrder} from '../../../shared/model/UtilsModel';
 import {
-    CustomDissagregation, IndicatorValueCustomDissagregationWeb} from '../../../shared/model/OsmosysModel';
+    CustomDissagregation, IndicatorValueCustomDissagregationWeb
+} from '../../../shared/model/OsmosysModel';
 import {MessageService} from 'primeng/api';
 import {UtilsService} from '../../../shared/services/utils.service';
 
@@ -15,12 +16,14 @@ export class CustomDissagregationIntegerComponent implements OnInit {
     customDissagregation: CustomDissagregation;
     @Input()
     values: IndicatorValueCustomDissagregationWeb[];
+    @Input()
+    editable: boolean;
 
     dissagregationOptionsRows: SelectItemWithOrder<any>[];
     rows = new Array<Array<IndicatorValueCustomDissagregationWeb>>();
 
-    constructor(private messageService: MessageService,
-                private utilsService: UtilsService) {
+    constructor(
+                public utilsService: UtilsService) {
     }
 
     ngOnInit(): void {

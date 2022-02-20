@@ -16,6 +16,8 @@ export class DissagregationTwoIntegerDimentionsComponent implements OnInit, OnCh
     dissagregationType: DissagregationType;
     @Input()
     values: IndicatorValue[];
+    @Input()
+    editable: boolean;
 
     dissagregationOptionsColumns: SelectItemWithOrder<any>[];
     dissagregationOptionsRows: SelectItemWithOrder<any>[];

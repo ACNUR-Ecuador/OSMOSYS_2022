@@ -37,6 +37,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     showOtherSource: boolean;
     totalsValidation: Map<string, number> = null;
     chekedOptions: SelectItem[];
+    editable: boolean;
 
     constructor(public ref: DynamicDialogRef,
                 public config: DynamicDialogConfig,
@@ -54,11 +55,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         this.indicatorExecution = this.config.data.indicatorExecution; //
         this.monthId = this.config.data.monthId; //
         this.projectId = this.config.data.projectId; //
-        if (this.userService.hasRole('PUNTO_FOCAL')) {
-            if (this.userService.getLogedUsername().focalPointProjects.includes(this.projectId)) {
-                this.isProjectFocalPoint = true;
-            }
-        }
+        this.setRoles();
         this.formItem = this.fb.group({
             commentary: new FormControl('', [Validators.maxLength(1000)]),
             sources: new FormControl('', Validators.required),
@@ -79,6 +76,23 @@ export class PerformanceIndicatorFormComponent implements OnInit {
             label: 'Requiere correcciones por parte del socio',
             value: false
         });
+    }
+
+    private setRoles() {
+        const userId = this.userService.getLogedUsername().id;
+        const orgId = this.userService.getLogedUsername().organization.id;
+        const isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']);
+        this.isProjectFocalPoint = isAdmin
+            || (this.indicatorExecution.project.focalPoint && this.indicatorExecution.project.focalPoint.id === userId);
+        if (isAdmin ||
+            (this.indicatorExecution.project.focalPoint && this.indicatorExecution.project.focalPoint.id === userId)
+            || (this.indicatorExecution.project.organization.id === orgId && this.userService.hasRole('EJECUTOR_PROYECTOS'))
+
+        ) {
+            this.editable = true;
+        } else {
+            this.editable = true;
+        }
     }
 
     loadMonthValues(monthId: number) {

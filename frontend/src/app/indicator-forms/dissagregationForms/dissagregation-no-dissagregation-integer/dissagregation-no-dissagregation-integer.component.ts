@@ -15,6 +15,8 @@ export class DissagregationNoDissagregationIntegerComponent implements OnInit, O
     values: IndicatorValue[];
     @Input()
     month: Month;
+    @Input()
+    editable: boolean;
 
     rows = new Array<Array<IndicatorValue>>();
 

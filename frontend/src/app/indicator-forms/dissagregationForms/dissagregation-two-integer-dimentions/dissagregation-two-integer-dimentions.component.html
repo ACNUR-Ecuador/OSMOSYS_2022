@@ -14,8 +14,9 @@
     <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
         <tr>
             <td class="table-title">{{dissagregationOptionsRows[rowIndex].label}}</td>
-            <td pEditableColumn *ngFor="let rowOp of dissagregationOptionsColumns; index as indexColumn" class="text-right">
-                <p-cellEditor>
+            <td pEditableColumn *ngFor="let rowOp of dissagregationOptionsColumns; index as indexColumn"
+                class="text-right">
+                <p-cellEditor *ngIf="editable">
                     <ng-template pTemplate="input">
                         <p-inputNumber
                             name="{{row[indexColumn].id}}"
@@ -23,10 +24,13 @@
                             [(ngModel)]="row[indexColumn].value"
                         ></p-inputNumber>
                     </ng-template>
-                    <ng-template pTemplate="output" >
+                    <ng-template pTemplate="output">
                         {{row[indexColumn].value}}
                     </ng-template>
                 </p-cellEditor>
+                <div *ngIf="!editable">
+                    {{row[indexColumn].value}}
+                </div>
             </td>
 
             <td class="subtotal_value">{{this.utilsService.getTotalIndicatorValuesArray(row)}}</td>
