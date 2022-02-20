@@ -3,6 +3,7 @@ package org.unhcr.osmosys.daos;
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.collections4.CollectionUtils;
+import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.IndicatorExecution;
 import org.unhcr.osmosys.model.enums.Frecuency;
 import org.unhcr.osmosys.model.enums.IndicatorType;
@@ -16,9 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 @SuppressWarnings("unchecked")
 @Stateless
 public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Long> {
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = Logger.getLogger(IndicatorExecutionDao.class);
+
     public IndicatorExecutionDao() {
         super(IndicatorExecution.class, Long.class);
     }
@@ -368,7 +373,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                         " and m.state =:state ";
 
         if (officeId != null) {
-            jpql += " and offf.id =:officeId ";
+            jpql += " and repOff.id =:officeId ";
         }
         if (userId != null) {
             if (responsible && backup && supervisor) {
@@ -431,7 +436,6 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
     }
 
     public IndicatorExecution getDirectImplementationIndicatorExecutionsById(Long indicatorExecutionId) {
-        IndicatorType generalType = IndicatorType.GENERAL;
         String jpql = IndicatorExecutionDao.jpqlDirectImplementationIndicators +
                 " WHERE o.id =:indicatorExecutionId " +
                 " and o.project is null ";
