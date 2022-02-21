@@ -6,8 +6,8 @@ public enum RoleType implements EnumInterface {
 
     SUPER_ADMINISTRADOR("Super Administrador", 1),
     ADMINISTRADOR("Administrador", 2),
-    MONITOR_DE_PROGRAMAS("Monitor de Programas", 3),
-    EJECUTOR_DE_PROGRAMAS("Ejecutor de Programas", 4),
+    // MONITOR_DE_PROGRAMAS("Monitor de Programas", 3),
+    // EJECUTOR_DE_PROGRAMAS("Ejecutor de Programas", 4),
     EJECUTOR_PROYECTOS("Ejecutar de Proyectos", 5),
     MONITOR_PROYECTOS("Monitor de Proyectos", 6),
     EJECUTOR_ID("Ejecutor Implementación Directa", 7),
