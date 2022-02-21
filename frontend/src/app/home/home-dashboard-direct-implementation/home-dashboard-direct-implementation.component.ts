@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {MessageService, SelectItem} from 'primeng/api';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {PeriodService} from '../../shared/services/period.service';
@@ -9,9 +9,10 @@ import {EnumsService} from '../../shared/services/enums.service';
 import {AreaService} from '../../shared/services/area.service';
 import {UserPipe} from '../../shared/pipes/user.pipe';
 import {OfficeOrganizationPipe} from '../../shared/pipes/officeOrganization.pipe';
-import {Period} from '../../shared/model/OsmosysModel';
+import {IndicatorExecution, Month, Period, Quarter} from '../../shared/model/OsmosysModel';
 import {EnumsState, EnumsType} from '../../shared/model/UtilsModel';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
+import {IndicatorPipe} from '../../shared/pipes/indicator.pipe';
 
 @Component({
     selector: 'app-home-dashboard-direct-implementation',
@@ -27,6 +28,14 @@ export class HomeDashboardDirectImplementationComponent implements OnInit {
     periodOptions: SelectItem[];
     indicatorExecutionOptions: SelectItem[];
     queryForm: FormGroup;
+    indicatorExecutions: IndicatorExecution[];
+
+    countPerformanceIndicators = 0;
+    countPerformanceIndicatorsLate = 0;
+    selectedPerformanceIndicator: IndicatorExecution;
+    chartPerformanceMonths: any;
+    chartMonthsOptions: any;
+    chartPerformanceTotal: any;
 
     constructor(private fb: FormBuilder,
                 private periodService: PeriodService,
@@ -38,7 +47,9 @@ export class HomeDashboardDirectImplementationComponent implements OnInit {
                 private areaService: AreaService,
                 private userPipe: UserPipe,
                 private officeOrganizationPipe: OfficeOrganizationPipe,
-                private indicatorExecutionService: IndicatorExecutionService
+                private indicatorPipe: IndicatorPipe,
+                private indicatorExecutionService: IndicatorExecutionService,
+                private changeDetectorRef: ChangeDetectorRef
     ) {
     }
 
@@ -74,7 +85,8 @@ export class HomeDashboardDirectImplementationComponent implements OnInit {
             const currentUser = this.userService.getLogedUsername();
             this.queryForm.get('period').patchValue(selectedPeriod);
             this.queryForm.get('user').patchValue(currentUser);
-            this.queryForm.get('roles').patchValue(this.roleOptions.filter(value1 => value1.value === 'supervisorUser' || value1.value === 'assignedUser').map(value1 => value1.value));
+            this.queryForm.get('roles').patchValue(this.roleOptions.map(value1 => value1.value));
+            this.loadIndicatorExecutions();
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -83,6 +95,49 @@ export class HomeDashboardDirectImplementationComponent implements OnInit {
                 life: 3000
             });
         });
+    }
+
+    loadIndicatorExecutions() {
+        const {
+            period,
+            office,
+            roles,
+            user,
+        } = this.queryForm.value;
+        const rolesF = roles as string[];
+        const responsible = rolesF.includes('assignedUser');
+        const responsibleBackup = rolesF.includes('assignedUserBackup');
+        const supervisor = rolesF.includes('supervisorUser');
+        this.indicatorExecutionService.getDirectImplementationIndicatorByPeriodIdResponsableIdSupervisorIdAndOfficeId(
+            user ? user.id : null,
+            period ? period.id : null,
+            office ? office.id : null, supervisor, responsible, responsibleBackup
+        ).subscribe(value => {
+            this.indicatorExecutions = value;
+            this.countPerformanceIndicators = this.indicatorExecutions.length;
+            this.countPerformanceIndicatorsLate = this.indicatorExecutions.filter(value1 => value1.late).length;
+            this.indicatorExecutionOptions = this.indicatorExecutions
+                .map(value1 => {
+                    return {
+                        label: this.indicatorPipe.transform(value1.indicator),
+                        value: value1
+                    };
+                });
+            if (this.indicatorExecutionOptions.length > 0) {
+                this.selectedPerformanceIndicator = this.indicatorExecutionOptions[0].value;
+                this.loadPerformanceIndicator(this.selectedPerformanceIndicator);
+            } else {
+                this.selectedPerformanceIndicator = null;
+            }
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error en carga de indicadores',
+                detail: error.error.message,
+                life: 3000
+            });
+        });
+
     }
 
     loadOptions() {
@@ -134,35 +189,99 @@ export class HomeDashboardDirectImplementationComponent implements OnInit {
         this.roleOptions.push({label: 'Supervisor', value: 'supervisorUser'});
     }
 
-    search() {
-        const {
-            period,
-            office,
-            roles,
-            user,
-        } = this.queryForm.value;
-        const rolesF = roles as string[];
-        const responsible = rolesF.includes('assignedUser');
-        const responsibleBackup = rolesF.includes('assignedUserBackup');
-        const supervisor = rolesF.includes('supervisorUser');
-        this.indicatorExecutionService
-            .getDirectImplementationIndicatorByPeriodIdResponsableIdSupervisorIdAndOfficeId(
-                user.id, period.id, office.id, supervisor, responsible, responsibleBackup)
-            .subscribe(value => {
-                this.indicatorExecutionOptions = value.map(value1 => {
-                    return {
-                        label: value1.id + '',
-                        value: value1
-                    };
-                });
-            }, error => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error al cargar los indicadores',
-                    detail: error.error.message,
-                    life: 3000
-                });
+
+    loadPerformanceIndicator(indicatorExecution: IndicatorExecution) {
+        this.selectedPerformanceIndicator = indicatorExecution;
+        this.createIndicatorTargetChart(indicatorExecution.quarters);
+        let months: Month[] = [];
+        indicatorExecution.quarters.forEach(value => {
+            value.months.forEach(value1 => {
+                months.push(value1);
             });
+        });
+        months = months.sort((a, b) => a.order - b.order);
+        this.createMonthPerformanceChart(months);
+    }
+
+    createMonthPerformanceChart(months: Month[]) {
+        months = months.sort((a, b) => a.order - b.order);
+        this.chartMonthsOptions = {
+            responsive: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#495057'
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: '#495057'
+                    },
+                    grid: {
+                        color: '#ebedef'
+                    }
+                },
+                y: {
+                    min: 0,
+                    ticks: {
+                        color: '#495057'
+                    },
+                    grid: {
+                        color: '#ebedef'
+                    }
+                }
+            }
+        };
+        const monthsLabels: string[] = [];
+        const monthsExecution: number[] = [];
+        let monthsExecutionAcumulatedTmp = 0;
+        months.forEach(value => {
+            monthsLabels.push(value.month);
+            monthsExecution.push(value.totalExecution ? value.totalExecution : 0);
+            monthsExecutionAcumulatedTmp += value.totalExecution;
+        });
+        this.chartPerformanceMonths = {
+            labels: monthsLabels,
+            datasets: [
+                {
+                    label: 'Ejecución Mensual',
+                    type: 'bar',
+                    data: monthsExecution,
+                    backgroundColor: '#42A5F5',
+                    tension: .4
+                }]
+        };
+        this.changeDetectorRef.detectChanges();
+        // this.chartBeneficiarios.reinit();
+
+    }
+
+    createIndicatorTargetChart(quarters: Quarter[]) {
+        quarters = quarters.sort((a, b) => a.order - b.order);
+
+        const quartersLabels: string[] = [];
+        const quartersExecution: number[] = [];
+        let monthsExecutionAcumulatedTmp = 0;
+        quarters.forEach(value => {
+            quartersLabels.push(value.quarter + '-' + value.year);
+            quartersExecution.push(value.totalExecution ? value.totalExecution : 0);
+            monthsExecutionAcumulatedTmp += value.totalExecution;
+        });
+        this.chartPerformanceTotal = {
+            labels: quartersLabels,
+            datasets: [
+                {
+                    label: 'Ejecución trimestral',
+                    type: 'bar',
+                    data: quartersExecution,
+                    backgroundColor: '#42A5F5',
+                    tension: .4
+                }
+            ]
+        };
+        this.changeDetectorRef.detectChanges();
     }
 
 }
