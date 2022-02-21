@@ -690,7 +690,7 @@ public class IndicatorExecutionService {
 
     @SuppressWarnings("DuplicatedCode")
     public void createIndicatorExecForID(Long periodId) throws GeneralAppException {
-        List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getAllIndicatorDirectImplementation(periodId);
+        List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getAllIndicatorDirectImplementationNoValues(periodId);
         indicatorExecutions = indicatorExecutions
                 .stream()
                 .filter(indicatorExecution -> indicatorExecution.getQuarters().size() < 1)
