@@ -171,8 +171,6 @@ public class UserService implements Serializable {
     public UserWeb authenticateRest(String username, String password) {
         User user = this.verifyUsernamePassword(username, password);
         if (user != null) {
-
-
             return this.userToUserWeb(user);
         } else {
             throw new AuthorizationException(
@@ -277,7 +275,7 @@ public class UserService implements Serializable {
         List<Long> projectsIds = this.userDao.findProjectsFocalPoints(user.getId());
         if (CollectionUtils.isNotEmpty(projectsIds)) {
             RoleWeb fpr = new RoleWeb();
-            fpr.setId(0l);
+            fpr.setId(0L);
             fpr.setName(RoleType.PUNTO_FOCAL.name());
             fpr.setState(State.ACTIVO);
             userWeb.getRoles().add(fpr);
@@ -298,7 +296,8 @@ public class UserService implements Serializable {
         if (userWeb != null) {
             Date now = new Date();
 
-            String token = Jwts.builder()
+            // LOGGER.debug(token);
+            return Jwts.builder()
                     // .serializeToJsonWith(serializer)// (1)
                     .setSubject(userWeb.getUsername()) // (2)
                     .setIssuedAt(now)
@@ -312,8 +311,6 @@ public class UserService implements Serializable {
                     .claim("office", userWeb.getOffice())
                     .claim("focalPointProjects", userWeb.getFocalPointProjects())
                     .signWith(getSecretKey()).compact();
-            // LOGGER.debug(token);
-            return token;
         }
         throw new AccessDeniedException("usuario no encontrado");
     }
@@ -381,9 +378,11 @@ public class UserService implements Serializable {
             user.setUsername(jws.getBody().getSubject());
             user.setEmail((String) jws.getBody().get("email"));
             //noinspection unchecked
+            @SuppressWarnings("rawtypes")
             List<HashMap> rolesMaps = (List<HashMap>) jws.getBody().get("roles");
             // LOGGER.info(rolesMaps);
             List<RoleWeb> rolesWeb = new ArrayList<>();
+            //noinspection unchecked
             for (Map<String, Object> rolesS : rolesMaps) {
                 RoleWeb roleWeb = new RoleWeb();
                 Integer roleId = (Integer) rolesS.get("id");
@@ -397,6 +396,7 @@ public class UserService implements Serializable {
             user.setRoles(rolesWeb);
             user.setName((String) jws.getBody().get("name"));
 
+            @SuppressWarnings("rawtypes")
             LinkedHashMap organizationMap = (LinkedHashMap) jws.getBody().get("organization");
             if (organizationMap != null && organizationMap.size() > 0) {
                 OrganizationWeb organizationWeb = new OrganizationWeb();
@@ -407,6 +407,7 @@ public class UserService implements Serializable {
                 organizationWeb.setAcronym((String) organizationMap.get("acronym"));
                 user.setOrganization(organizationWeb);
             }
+            @SuppressWarnings("rawtypes")
             LinkedHashMap officeMap = (LinkedHashMap) jws.getBody().get("office");
             if (officeMap != null && officeMap.size() > 0) {
                 OfficeWeb officeWeb = new OfficeWeb();
@@ -417,6 +418,7 @@ public class UserService implements Serializable {
                 officeWeb.setAcronym((String) officeMap.get("acronym"));
                 user.setOffice(officeWeb);
             }
+            @SuppressWarnings("unchecked")
             List<Long> focalPointProjectsMap = (List<Long>) jws.getBody().get("focalPointProjects");
             if (focalPointProjectsMap != null && focalPointProjectsMap.size() > 0) {
                 user.setFocalPointProjects(focalPointProjectsMap);
@@ -436,6 +438,9 @@ public class UserService implements Serializable {
 
     public User getById(Long id) {
         return this.userDao.find(id);
+    }
+    public UserWeb getWebById(Long id) {
+        return this.userToUserWeb(this.getById(id));
     }
 
     public List<UserWeb> getAllUsers() {
@@ -460,7 +465,7 @@ public class UserService implements Serializable {
         for (RoleWeb roleWeb : userWeb.getRoles()) {
             try {
                 RoleType roleType = RoleType.valueOf(roleWeb.getName());
-                if(roleType.equals(RoleType.PUNTO_FOCAL)){
+                if (roleType.equals(RoleType.PUNTO_FOCAL)) {
                     continue;
                 }
                 Role role = this.roleService.findByRoleType(roleType);
@@ -474,9 +479,7 @@ public class UserService implements Serializable {
             }
 
         }
-        user.getRoleAssigments().forEach(roleAssigment -> {
-            this.roleAssigmentDao.saveOrUpdate(roleAssigment);
-        });
+        user.getRoleAssigments().forEach(roleAssigment -> this.roleAssigmentDao.saveOrUpdate(roleAssigment));
         return user.getId();
     }
 
@@ -485,7 +488,7 @@ public class UserService implements Serializable {
         if (user == null) {
             throw new GeneralAppException("Usuario no encontrado", Response.Status.NOT_FOUND.getStatusCode());
         } else {
-            if(user.getState().equals(State.INACTIVO)){
+            if (user.getState().equals(State.INACTIVO)) {
                 throw new GeneralAppException("Usuario desactivado, comuníquese con el administrador del sistema", Response.Status.NOT_FOUND.getStatusCode());
             }
 

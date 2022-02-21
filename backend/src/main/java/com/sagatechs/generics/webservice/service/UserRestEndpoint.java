@@ -4,7 +4,6 @@ import com.sagatechs.generics.exceptions.AccessDeniedException;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
-import com.sagatechs.generics.security.servicio.RoleService;
 import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.webservice.webModel.ChangePasswordSimple;
 import com.sagatechs.generics.webservice.webModel.CredentialsWeb;
@@ -30,7 +29,22 @@ public class UserRestEndpoint {
     UserService userService;
 
     /**
+     * get  user
+     *
+     * @param appCode
+     * @return
+     * @throws GeneralAppException
+     */
+    @Path("/users/{userId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public UserWeb getUserById(@HeaderParam("appCode") String appCode, @PathParam("userId") Long userId) {
+        return this.userService.getWebById(userId);
+    }
+
+    /**
      * creates new user
+     *
      * @param appCode
      * @param user
      * @throws GeneralAppException
@@ -44,6 +58,7 @@ public class UserRestEndpoint {
 
     /**
      * update CurrentUser
+     *
      * @param user
      * @throws GeneralAppException
      */
@@ -58,7 +73,7 @@ public class UserRestEndpoint {
     @Path("/users")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<UserWeb> getAllUsers(@HeaderParam("appCode") String appCode) throws GeneralAppException {
+    public List<UserWeb> getAllUsers(@HeaderParam("appCode") String appCode) {
         return this.userService.getAllUsers();
     }
 
@@ -95,6 +110,7 @@ public class UserRestEndpoint {
     public void recoverPasswordSimple(ChangePasswordSimple changePasswordSimple) throws GeneralAppException {
         this.userService.recoverPassword(changePasswordSimple.getNewPassword());
     }
+
     /**
      * cambio contraseña
      *
