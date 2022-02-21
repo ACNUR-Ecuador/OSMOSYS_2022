@@ -12,7 +12,14 @@ import {
     SelectItemWithOrder
 } from '../model/UtilsModel';
 import {EnumsService} from './enums.service';
-import {Canton, CustomDissagregationValues, IndicatorExecution, IndicatorValue, Period} from '../model/OsmosysModel';
+import {
+    Canton,
+    CustomDissagregationValues,
+    IndicatorExecution,
+    IndicatorValue,
+    IndicatorValueCustomDissagregationWeb,
+    Period
+} from '../model/OsmosysModel';
 import {HttpResponse} from '@angular/common/http';
 import {TableColumnProperties} from 'exceljs';
 
@@ -440,7 +447,7 @@ export class UtilsService {
 
     }
 
-    getTotalIndicatorValuesArray(indicatorValues: IndicatorValue[]) {
+    getTotalIndicatorValuesArray(indicatorValues: IndicatorValue[] | IndicatorValueCustomDissagregationWeb[]) {
         return indicatorValues.map(value => value.value).reduce((previousValue, currentValue) => previousValue + currentValue, 0);
     }
 
@@ -452,8 +459,9 @@ export class UtilsService {
             .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
     }
 
-    getTotalIndicatorValuesArrayArray(indicatorValues: IndicatorValue[][]) {
-        return indicatorValues.reduce((previousValue, currentValue) => previousValue.concat(currentValue), [])
+    getTotalIndicatorValuesArrayArray(indicatorValues: Array<Array<IndicatorValue|IndicatorValueCustomDissagregationWeb>>) {
+        return indicatorValues
+            .reduce((previousValue, currentValue) => previousValue.concat(currentValue), [])
             .map(value => value.value)
             .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
     }
