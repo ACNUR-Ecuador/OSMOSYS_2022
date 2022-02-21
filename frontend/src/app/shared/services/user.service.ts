@@ -43,7 +43,7 @@ export class UserService {
     public login(user: User, remember: boolean = false) {
         return this.http.post(`${mainServiceUrl}/login`, user)
             .pipe(
-                tap(resp => {
+                tap(() => {
                     const userF = this.setUser();
                     this.setRemember(remember, userF);
                 })
@@ -123,6 +123,10 @@ export class UserService {
         return this.http.get<User[]>(`${mainServiceUrl}/users`);
     }
 
+    public getById(userId: number) {
+        return this.http.get<User>(`${mainServiceUrl}/users/${userId}`);
+    }
+
     public createUser(user: User): Observable<number> {
         return this.http.post<number>(`${mainServiceUrl}/users`, user);
     }
@@ -187,10 +191,6 @@ export class UserService {
 
     public isUNHCRUser(): boolean {
         const user = this.currentUserSubject.value;
-        if (user.organization === null || user.organization.acronym === 'ACNUR' || user.organization.acronym === 'UNHCR') {
-            return true;
-        } else {
-            return false;
-        }
+        return user.organization === null || user.organization.acronym === 'ACNUR' || user.organization.acronym === 'UNHCR';
     }
 }

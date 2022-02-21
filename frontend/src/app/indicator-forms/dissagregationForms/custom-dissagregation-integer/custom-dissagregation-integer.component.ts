@@ -3,7 +3,6 @@ import {SelectItemWithOrder} from '../../../shared/model/UtilsModel';
 import {
     CustomDissagregation, IndicatorValueCustomDissagregationWeb
 } from '../../../shared/model/OsmosysModel';
-import {MessageService} from 'primeng/api';
 import {UtilsService} from '../../../shared/services/utils.service';
 
 @Component({
@@ -49,7 +48,7 @@ export class CustomDissagregationIntegerComponent implements OnInit {
     createTwoDimentionsGrid() {
         // ordeno
         // clasifico por cada uno de las opciones
-
+        this.rows = [];
         this.rows = new Array<Array<IndicatorValueCustomDissagregationWeb>>();
         this.dissagregationOptionsRows.forEach(value => {
             const row = this.values.filter(value1 => {

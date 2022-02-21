@@ -41,6 +41,23 @@
                     </div>
                 </div>
                 <div class="p-field p-grid">
+                    <label for="officeI" class="p-col-fixed" style="width:200px">Oficina</label>
+                    <div class="p-col">
+                        <p-dropdown id="officeI"
+                                    formControlName="office"
+                                    [options]="offices"
+                                    placeholder="Selecciona..."
+                                    filter="true"
+                                    dataKey="id"
+                        >
+                        </p-dropdown>
+
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('office',userForm)">
+                            {{utilsService.getErrorMessageForm('office', userForm)}}
+                        </small>
+                    </div>
+                </div>
+                <div class="p-field p-grid">
                     <label for="rolesI" class="p-col-fixed" style="width:200px">Permisos asignados</label>
                     <div class="p-col" style="width:600px">
                         <input style="width:600px" id="rolesI" type="text" pInputText formControlName="roles">

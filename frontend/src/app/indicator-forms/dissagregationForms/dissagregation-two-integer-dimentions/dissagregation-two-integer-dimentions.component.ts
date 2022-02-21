@@ -41,6 +41,7 @@ export class DissagregationTwoIntegerDimentionsComponent implements OnInit, OnCh
     }
 
     processDissagregationValues() {
+        this.rows = [];
         // ontengo los tipos de desagregación horizontal y vertical
         const enumTypesRyC: EnumsType[] =
             this.utilsService.getEnymTypesByDissagregationTypes(this.dissagregationType);

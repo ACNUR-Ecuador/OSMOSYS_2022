@@ -59,29 +59,40 @@ export class UserProfileComponent implements OnInit {
     }
 
     private loadUser() {
-        const currentUser = this.userService.getLogedUsername();
-        this.userForm.get('id').patchValue(currentUser.id);
-        this.userForm.get('name').patchValue(currentUser.name, Validators.required);
-        this.userForm.get('username').patchValue(currentUser.username,
-            [Validators.required, Validators.maxLength(50), Validators.minLength(3)]);
-        this.userForm.get('email').patchValue(currentUser.email, [Validators.required, Validators.maxLength(255), Validators.email]);
-        this.userForm.get('organization').patchValue(currentUser.organization.acronym);
-        if (!currentUser.organization || currentUser.organization.acronym === 'ACNUR') {
-            // ES ACNUR
-            this.userForm.get('office').patchValue(currentUser.office);
-            this.userForm.get('office').enable();
-        } else {
-            this.userForm.get('office').disable();
-        }
-        const roles = currentUser.roles.filter(value => {
-            return value.state === EnumsState.ACTIVE;
-        }).map(value => {
-            return value.name;
-        }).map(value => {
-            return this.enumsService.resolveLabel(EnumsType.RoleType, value);
-        }).join(' - ');
-        this.userForm.get('roles').patchValue(roles);
-        this.userForm.get('roles').disable();
+        this.userService.getById(this.userService.getLogedUsername().id).subscribe(value => {
+            const currentUser = value;
+            this.userForm.get('id').patchValue(currentUser.id);
+            this.userForm.get('name').patchValue(currentUser.name, Validators.required);
+            this.userForm.get('username').patchValue(currentUser.username,
+                [Validators.required, Validators.maxLength(50), Validators.minLength(3)]);
+            this.userForm.get('email').patchValue(currentUser.email, [Validators.required, Validators.maxLength(255), Validators.email]);
+            this.userForm.get('organization').patchValue(currentUser.organization.acronym);
+            if (!currentUser.organization || currentUser.organization.acronym === 'ACNUR') {
+                // ES ACNUR
+                this.userForm.get('office').patchValue(currentUser.office);
+                this.userForm.get('office').enable();
+            } else {
+                this.userForm.get('office').disable();
+            }
+            const roles = currentUser.roles.filter(value1 => {
+                return value1.state === EnumsState.ACTIVE;
+            }).map(value1 => {
+                return value1.name;
+            }).map(value1 => {
+                return this.enumsService.resolveLabel(EnumsType.RoleType, value1);
+            }).join(' - ');
+            this.userForm.get('roles').patchValue(roles);
+            this.userForm.get('roles').disable();
+            console.log(this.userForm.value);
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al cargar el usuario',
+                detail: error.error.message,
+                life: 3000
+            });
+        });
+
     }
 
     private createForm() {
@@ -108,7 +119,7 @@ export class UserProfileComponent implements OnInit {
         user.email = email;
         user.office = office;
         user.state = EnumsState.ACTIVE;
-        this.userService.updateUser(user).subscribe(value => {
+        this.userService.updateUser(user).subscribe(() => {
             this.messageService.add({
                 severity: 'success',
                 summary: 'Usuario actualizado correctamente',
