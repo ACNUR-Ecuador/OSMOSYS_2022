@@ -128,25 +128,33 @@
         </div>
     </div>
     <ng-template pTemplate="footer">
-        <form [formGroup]="indicatorForm" (ngSubmit)="search()">
-            <div class="p-fluid p-formgrid p-grid">
-                <div class="p-field p-col-3 p-md-3">
-                    <label for="periodI">Buscador de indicadores</label>
-                    <p-dropdown id="indicatorI"
-                                formControlName="indicator"
-                                [options]="indicatorOptions"
-                                placeholder="Selecciona..."
-                                filter="true"
-                                appendTo="body"
-                                dataKey="id"
-                                (onChange)="highlightIndicator($event.value)"
-                                (onClear)="highlightIndicator(null)"
-                                showClear="true"
-                    >
-                    </p-dropdown>
+        <div class="p-d-flex p-jc-between">
+            <form [formGroup]="indicatorForm" (ngSubmit)="search()">
+
+                <div class="p-fluid">
+                    <div class="p-field">
+                        <label for="periodI">Buscador de indicadores</label>
+                        <p-dropdown id="indicatorI"
+                                    formControlName="indicator"
+                                    [options]="indicatorOptions"
+                                    placeholder="Selecciona..."
+                                    filter="true"
+                                    appendTo="body"
+                                    dataKey="id"
+                                    (onChange)="highlightIndicator($event.value)"
+                                    (onClear)="highlightIndicator(null)"
+                                    showClear="true"
+                                    [style]="{'width':'300px'}"
+                        >
+                        </p-dropdown>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+            <button pButton type="button" pRipple label="Ver Todos" icon="pi pi-window-maximize" class="p-button-success"
+                    (click)="viewAll()"></button>
+        </div>
+
+
     </ng-template>
 </p-card>
 

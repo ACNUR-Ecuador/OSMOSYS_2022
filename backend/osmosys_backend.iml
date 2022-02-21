@@ -6,14 +6,11 @@
         <option name="ideModuleStorage">
           <map>
             <entry key="com.zeroturnaround.jrebel.FormatVersion" value="7.0.0" />
-            <entry key="com.zeroturnaround.jrebel.remoting.DeleteUnindexedFiles" value="false" />
-            <entry key="com.zeroturnaround.jrebel.remoting.ModuleRemoteServerSelection" value="off" />
             <entry key="jrebelEnabled" value="true" />
-            <entry key="lastExternalPluginCheckTime" value="1644933246622" />
-            <entry key="rebelXmlGenerationType" value="ide" />
+            <entry key="lastExternalPluginCheckTime" value="1645450842144" />
           </map>
         </option>
-        <option name="version" value="38" />
+        <option name="version" value="3" />
       </configuration>
     </facet>
     <facet type="web" name="Web">
@@ -30,9 +27,7 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
-        <datasource-mapping>
-          <factory-entry name="main-persistence-unit" value="6dd8122c-7780-4f4a-afa6-ad4a322c2c6f" />
-        </datasource-mapping>
+        <datasource-mapping />
         <naming-strategy-map />
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
       </configuration>

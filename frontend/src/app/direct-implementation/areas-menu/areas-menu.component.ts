@@ -20,7 +20,6 @@ import {Router} from '@angular/router';
     styleUrls: ['./areas-menu.component.scss']
 })
 export class AreasMenuComponent implements OnInit {
-    numbers: number[];
 
     stateOptions: SelectItem[];
     officeOptions: SelectItem[];
@@ -47,7 +46,6 @@ export class AreasMenuComponent implements OnInit {
                 private indicatorPipe: IndicatorPipe,
                 private router: Router
     ) {
-        this.numbers = Array(21).fill(0).map((x, i) => i + 1);
     }
 
     ngOnInit(): void {
@@ -85,8 +83,8 @@ export class AreasMenuComponent implements OnInit {
             const currentUser = this.userService.getLogedUsername();
             this.queryForm.get('period').patchValue(selectedPeriod);
             this.queryForm.get('user').patchValue(currentUser);
-            this.queryForm.get('roles').patchValue(this.roleOptions.filter(value1 => value1.value === 'supervisorUser' || value1.value === 'assignedUser').map(value1 => value1.value));
-            this.loadAreas(currentUser.id, selectedPeriod.id, null, true, true, false);
+            this.queryForm.get('roles').patchValue(this.roleOptions.map(value1 => value1.value));
+            this.loadAreas(currentUser.id, selectedPeriod.id, null, true, true, true);
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -206,6 +204,16 @@ export class AreasMenuComponent implements OnInit {
     goToArea(area: AreaResume) {
         this.router.navigateByUrl('/directImplementation/indicatorLists',
             {state: {indicatorExecutionIds: area.indicatorExecutionIds}});
+
+    }
+
+    viewAll() {
+        const indicatorExecutionsIds: number[] =
+            this.areas
+                .map(value => value.indicatorExecutionIds)
+                .reduce((previousValue, currentValue) => previousValue.concat(currentValue), []);
+        this.router.navigateByUrl('/directImplementation/indicatorLists',
+            {state: {indicatorExecutionIds: indicatorExecutionsIds}});
 
     }
 
