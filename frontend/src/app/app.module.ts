@@ -103,6 +103,7 @@ import {AdministrationModule} from './administration/administration.module';
 import es from '@angular/common/locales/es';
 import {registerLocaleData} from '@angular/common';
 import {LoaderInterceptor} from './shared/interceptors/loader.interceptor';
+import {NgxPrintModule} from 'ngx-print';
 
 registerLocaleData(es);
 FullCalendarModule.registerPlugins([
@@ -197,6 +198,7 @@ FullCalendarModule.registerPlugins([
         TreeModule,
         TreeTableModule,
         VirtualScrollerModule,
+        NgxPrintModule,
         // routing
         AppRoutingModule,
         // permisos

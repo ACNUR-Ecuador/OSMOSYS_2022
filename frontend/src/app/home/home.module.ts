@@ -13,6 +13,7 @@ import {MultiSelectModule} from 'primeng/multiselect';
 import {MessagesModule} from 'primeng/messages';
 import {ToastModule} from 'primeng/toast';
 import {ButtonModule} from 'primeng/button';
+import {NgxPrintModule} from 'ngx-print';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import {ButtonModule} from 'primeng/button';
         MultiSelectModule,
         MessagesModule,
         ToastModule,
-        ButtonModule
+        ButtonModule,
+        NgxPrintModule
     ]
 })
 export class HomeModule { }
