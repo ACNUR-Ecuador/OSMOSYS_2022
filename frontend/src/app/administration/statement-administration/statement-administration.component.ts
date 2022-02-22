@@ -13,6 +13,7 @@ import {CodeShortDescriptionPipe} from '../../shared/pipes/code-short-descriptio
 import {PeriodService} from '../../shared/services/period.service';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {Table} from 'primeng/table';
+import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
 
 
 @Component({
@@ -51,7 +52,8 @@ export class StatementAdministrationComponent implements OnInit {
         private pillarService: PillarService,
         private situationService: SituationService,
         private periodService: PeriodService,
-        private codeShortDescriptionPipe: CodeShortDescriptionPipe
+        private codeShortDescriptionPipe: CodeShortDescriptionPipe,
+        private codeDescriptionPipe: CodeDescriptionPipe
     ) {
     }
 
@@ -63,7 +65,7 @@ export class StatementAdministrationComponent implements OnInit {
             {field: 'productCode', header: 'Código de Producto', type: ColumnDataType.text},
             {field: 'description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
-            {field: 'parentStatement', header: 'Declaración Padre', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},
+            {field: 'parentStatement', header: 'Declaración Padre', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
             {field: 'area', header: 'Área', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},
             {field: 'pillar', header: 'Pillar', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},
             {field: 'situation', header: 'Situación', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},
@@ -75,11 +77,10 @@ export class StatementAdministrationComponent implements OnInit {
             id: new FormControl(''),
             code: new FormControl('', Validators.required),
             productCode: new FormControl('', [Validators.maxLength(20)]),
-            shortDescription: new FormControl('', Validators.required),
             description: new FormControl(''),
             state: new FormControl('', Validators.required),
             parentStatement: new FormControl(''),
-            area: new FormControl('', Validators.required),
+            area: new FormControl(''),
             pillar: new FormControl('', Validators.required),
             situation: new FormControl('', Validators.required),
             periods: new FormControl('', Validators.required),
@@ -92,9 +93,13 @@ export class StatementAdministrationComponent implements OnInit {
         });
 
     }
+
     private registerFilters() {
         this.filterService.register('objectIdFilter', (value, filter): boolean => {
             return this.filterUtilsService.objectFilterId(value, filter);
+        });
+        this.filterService.register('parentStatementFilter', (value, filter): boolean => {
+            return this.filterUtilsService.generalFilter(value, ['description', 'code'], filter);
         });
     }
 
@@ -103,8 +108,8 @@ export class StatementAdministrationComponent implements OnInit {
             this.items = value;
             this.parentStatementsItems = this.items.map(value1 => {
                 return {
-                    label: value1.code + ' - ' + value1.description,
-                    value
+                    label: this.codeDescriptionPipe.transform(value1),
+                    value: value1
                 };
             });
             this.loadAreas();
@@ -253,7 +258,6 @@ export class StatementAdministrationComponent implements OnInit {
             id,
             code,
             productCode,
-            shortDescription,
             description,
             areaType,
             state,
@@ -296,6 +300,7 @@ export class StatementAdministrationComponent implements OnInit {
             }
         }
         statement.periodStatementAsignations = periodStatementAsignationsCasted;
+        // noinspection DuplicatedCode
         if (statement.id) {
             // tslint:disable-next-line:no-shadowed-variable
             this.statementService.update(statement).subscribe(() => {

@@ -109,20 +109,10 @@
                                     </p-dropdown>
                                 </ng-template>
                             </p-columnFilter>
-                            <p-columnFilter *ngSwitchCase="'parentStatement'" type="equals" [field]="col.field"
-                                            [showMenu]="false" [matchMode]="'objectIdFilter'"
-                            >
-                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                    <p-dropdown [ngModel]="value" [options]="parentStatementsItems"
-                                                (onChange)="filter($event.value)"
-                                                filter="true"
-                                                placeholder="Selecciona..." [showClear]="true">
-                                        <ng-template let-option pTemplate="item">
-                                            <span
-                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
-                                        </ng-template>
-                                    </p-dropdown>
-                                </ng-template>
+                            <p-columnFilter *ngSwitchCase="'parentStatement'"
+                                            type="text"
+                                            [field]="col.field" [showMenu]="false"
+                                            [matchMode]="'parentStatementFilter'">
                             </p-columnFilter>
                         </th>
                         <th>
@@ -165,6 +155,8 @@
                                     [options]="parentStatementsItems"
                                     placeholder="Selecciona..."
                                     filter="true"
+                                    appendTo="body"
+                                    dataKey="id"
                         >
                         </p-dropdown>
 
@@ -180,13 +172,6 @@
                                 obligatorio.</small>
                         </div>
 
-                        <div class="p-field p-col-9 p-md-9 p-sm-12">
-                            <label for="shortDescriptionI">Descripción Corta</label>
-                            <input type="text" pInputText id="shortDescriptionI"
-                                   formControlName="shortDescription"/>
-                            <small class="p-error" *ngIf="utilsService.showErrorForm('shortDescription',formItem)">Campo
-                                obligatorio.</small>
-                        </div>
 
                         <div class="p-field p-col-12 p-md-12 p-sm-12">
                             <label for="descriptionI">Descripción Completa</label>
