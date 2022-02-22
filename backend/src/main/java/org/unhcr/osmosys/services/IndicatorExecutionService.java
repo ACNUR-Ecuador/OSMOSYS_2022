@@ -22,7 +22,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Stateless
 public class IndicatorExecutionService {
@@ -126,7 +125,7 @@ public class IndicatorExecutionService {
         });
 
         List<CustomDissagregation> customDissagregations = new ArrayList<>();
-        Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, customDissagregations, cantones);
+        @SuppressWarnings("DuplicatedCode") Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, customDissagregations, cantones);
         this.validateLocationsSegregationsAndCantons(dissagregationTypes, cantones);
         List<Quarter> qsl = setOrderInQuartersAndMonths(qs);
         for (Quarter quarter : qsl) {
@@ -154,14 +153,15 @@ public class IndicatorExecutionService {
             throw new GeneralAppException("Proyecto no encontrado " + indicatorExecutionWeb.getProject().getId(), Response.Status.BAD_REQUEST);
         }
         ie.setPeriod(project.getPeriod());
+        @SuppressWarnings("DuplicatedCode")
         List<DissagregationAssignationToIndicatorExecution> dissagregationAssignations = indicator.getDissagregationsAssignationToIndicator().stream().filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.getState().equals(State.ACTIVO) && dissagregationAssignationToIndicator.getPeriod().getId().equals(ie.getPeriod().getId())).map(dissagregationAssignationToIndicator -> {
             DissagregationAssignationToIndicatorExecution da = new DissagregationAssignationToIndicatorExecution();
             da.setState(State.ACTIVO);
             da.setDissagregationType(dissagregationAssignationToIndicator.getDissagregationType());
             return da;
         }).collect(Collectors.toList());
+        //noinspection DuplicatedCode
         dissagregationAssignations.forEach(ie::addDissagregationAssignationToIndicatorExecution);
-
         List<CustomDissagregationAssignationToIndicatorExecution> customDissagregationsAssignations = indicator.getCustomDissagregationAssignationToIndicators().stream().filter(customDissagregationAssignationToIndicator -> customDissagregationAssignationToIndicator.getState().equals(State.ACTIVO) && customDissagregationAssignationToIndicator.getPeriod().getId().equals(ie.getPeriod().getId())).map(customDissagregationAssignationToIndicator -> {
             CustomDissagregationAssignationToIndicatorExecution da = new CustomDissagregationAssignationToIndicatorExecution();
             da.setCustomDissagregation(customDissagregationAssignationToIndicator.getCustomDissagregation());
@@ -243,7 +243,7 @@ public class IndicatorExecutionService {
         return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(ies, true);
     }
 
-    public List<IndicatorExecutionWeb> getGeneralIndicatorExecutionsByProjectId(Long projectId, State state) throws GeneralAppException {
+    public List<IndicatorExecutionWeb> getGeneralIndicatorExecutionsByProjectIdAndState(Long projectId, State state) throws GeneralAppException {
         List<IndicatorExecution> ies = this.indicatorExecutionDao.getGeneralIndicatorExecutionsByProjectIdAndState(projectId, state);
         return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(ies, true);
     }
@@ -254,7 +254,7 @@ public class IndicatorExecutionService {
     }
 
     public void updateTargets(TargetUpdateDTOWeb targetUpdateDTOWeb) throws GeneralAppException {
-        IndicatorExecution ie = this.indicatorExecutionDao.getByIdWithValues(targetUpdateDTOWeb.getIndicatorExecutionId());
+        IndicatorExecution ie = this.indicatorExecutionDao.getByIdWithIndicatorValues(targetUpdateDTOWeb.getIndicatorExecutionId());
         if (ie.getIndicatorType().equals(IndicatorType.GENERAL)) {
             ie.setTarget(targetUpdateDTOWeb.getTotalTarget());
         } else {
@@ -308,7 +308,9 @@ public class IndicatorExecutionService {
             indicatorExecution.setTotalExecution(null);
             indicatorExecution.setExecutionPercentage(null);
         } else {
+            @SuppressWarnings("DuplicatedCode")
             BigDecimal totalExecution;
+            //noinspection DuplicatedCode
             switch (totalIndicatorCalculationType) {
                 //TODO revisar otros valores desde mes
                 case SUMA:
@@ -347,6 +349,7 @@ public class IndicatorExecutionService {
     }
 
     public void validatePerformanceIndicatorAssignationToProject(IndicatorExecutionAssigmentWeb indicatorExecutionWeb) throws GeneralAppException {
+        //noinspection DuplicatedCode
         if (indicatorExecutionWeb == null) {
             throw new GeneralAppException("La asignación es obligatorio", Response.Status.BAD_REQUEST);
         }
@@ -371,7 +374,7 @@ public class IndicatorExecutionService {
 
     public Long updateMonthValues(Long indicatorExecutionId, MonthValuesWeb monthValuesWeb) throws GeneralAppException {
         // get indicator execution id
-        IndicatorExecution indicatorExecution = this.indicatorExecutionDao.getByIdWithValues(indicatorExecutionId);
+        IndicatorExecution indicatorExecution = this.indicatorExecutionDao.getByIdWithIndicatorValues(indicatorExecutionId);
         if (monthValuesWeb.getMonth() == null || monthValuesWeb.getMonth().getId() == null) {
             throw new GeneralAppException("Llamada mal estructurada (month es nulo)", Response.Status.BAD_REQUEST);
         }
@@ -445,7 +448,7 @@ public class IndicatorExecutionService {
 
 
     public void updateIndicatorExecutionProjectDates(Project project, LocalDate newStartDate, LocalDate newEndDate) throws GeneralAppException {
-        List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getGeneralAndPerformanceIndicatorExecutionsByProjectId(project.getId());
+        List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getIndicatorExecutionsByProjectId(project.getId());
         List<Canton> cantones = project.getProjectLocationAssigments().stream().filter(projectLocationAssigment -> projectLocationAssigment.getState().equals(State.ACTIVO)).map(ProjectLocationAssigment::getLocation).collect(Collectors.toList());
 
         for (IndicatorExecution indicatorExecution : indicatorExecutions) {
@@ -652,6 +655,7 @@ public class IndicatorExecutionService {
             List<Canton> cantones = project.getProjectLocationAssigments().stream().map(ProjectLocationAssigment::getLocation).collect(Collectors.toList());
             List<IndicatorExecution> iepi = this.indicatorExecutionDao.getPerformanceIndicatorExecutionsByProjectIdAndState(project.getId(), State.ACTIVO);
             for (IndicatorExecution indicatorExecution : iepi) {
+//noinspection DuplicatedCode
                 Indicator indicator = indicatorExecution.getIndicator();
 
                 List<DissagregationAssignationToIndicatorExecution> dissagregationAssignations = indicator.getDissagregationsAssignationToIndicator().stream().filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.getState().equals(State.ACTIVO) && dissagregationAssignationToIndicator.getPeriod().getId().equals(indicatorExecution.getPeriod().getId())).map(dissagregationAssignationToIndicator -> {
@@ -740,176 +744,14 @@ public class IndicatorExecutionService {
         }
     }
 
-    public List<IndicatorExecution> getLateIndicatorExecutionByProjectId(Long projectId) throws GeneralAppException {
-        LocalDate today = LocalDate.now();
-        int todayMonth = today.getMonth().getValue();
-        QuarterEnum todayQuarter = MonthEnum.getQuarterByMonthNumber(todayMonth);
-        int todayYear = today.getYear();
-        List<MonthEnum> monthsToControl = Arrays.stream(MonthEnum.values()).filter(monthEnum -> monthEnum.getOrder() < todayMonth).collect(Collectors.toList());
-        List<QuarterEnum> quartersToControl = Arrays.stream(QuarterEnum.values()).filter(quarterEnum -> quarterEnum.getOrder() < todayQuarter.getOrder()).collect(Collectors.toList());
-        // generals
-        List<IndicatorExecution> generalsLate = this.indicatorExecutionDao.getLateIndicatorExecutionGeneralByProjectIdMonthly(projectId, todayYear, monthsToControl);
-        // monthly indicator
-        List<IndicatorExecution> performancesLateMonthly = this.indicatorExecutionDao.getLateIndicatorExecutionPerformanceByProjectIdMonthly(projectId, todayYear, monthsToControl);
-        // quarterlyIndicator
-        List<IndicatorExecution> performancesLateQuarterly = this.indicatorExecutionDao.getLateIndicatorExecutionPerformanceByProjectIdQuarterly(projectId, todayYear, quartersToControl);
-        // biAnnualIndicator
-        List<QuarterEnum> quartersToControlBiannual;
-        if (todayMonth > 6) {
-            quartersToControlBiannual = Arrays.stream(QuarterEnum.values()).filter(quarterEnum -> quarterEnum.getOrder() < 7).collect(Collectors.toList());
-        } else {
-            quartersToControlBiannual = new ArrayList<>();
-        }
-        List<IndicatorExecution> performancesLateBiannualy = this.indicatorExecutionDao.getLateIndicatorExecutionPerformanceByProjectIdBiannual(projectId, todayYear, quartersToControlBiannual);
-        // anual
-        List<IndicatorExecution> performancesLateAnnualy = this.indicatorExecutionDao.getLateIndicatorExecutionPerformanceByProjectIdAnnual(projectId, todayYear);
-
-        return Stream.of(generalsLate, performancesLateMonthly, performancesLateQuarterly, performancesLateBiannualy, performancesLateAnnualy)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-    }
 
     public List<IndicatorExecutionWeb> getAllDirectImplementationIndicatorByPeriodId(Long periodId) throws
             GeneralAppException {
-        List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getAllDirectImplementationIndicatorByPeriodId(periodId);
+        List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getDirectImplementationIndicatorByPeriodId(periodId);
         return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(indicatorExecutions, false);
     }
 
-    /*public List<Month> isLateIndicatorExecution(IndicatorExecution indicatorExecution) throws GeneralAppException {
-        LocalDate today = LocalDate.now();
-        int todayMonth = today.getMonth().getValue();
-        int todayYear = today.getYear();
-        QuarterEnum todayQuarter = MonthEnum.getQuarterByMonthNumber(todayMonth);
-
-        // obtengo los meses
-        List<Month> monthList = indicatorExecution.getQuarters().stream()
-                .filter(quarter -> quarter.getState().equals(State.ACTIVO))
-                .map(quarter -> {
-                    return new ArrayList<>(quarter.getMonths());
-                })
-                .flatMap(Collection::stream)
-                .filter(month -> month.getState().equals(State.ACTIVO))
-                .sorted(Comparator.comparingInt(Month::getOrder))
-                .collect(Collectors.toList());
-        // busco todos lo mese anteriores a hoy y que no esten reportados
-        Frecuency frecuency;
-        if (indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)) {
-            frecuency = Frecuency.MENSUAL;
-        } else {
-            frecuency = indicatorExecution.getIndicator().getFrecuency();
-        }
-        if (frecuency.equals(Frecuency.MENSUAL)) {
-            List<Month> lateMonths = monthList.stream()
-                    // lo que no esten reportados
-                    .filter(month -> month.getTotalExecution() == null)
-                    .filter(month -> {
-                        if (month.getYear().compareTo(todayYear) < 0) {
-                            return true;
-                        }
-                        if (month.getYear().compareTo(todayYear) == 0
-                                && month.getMonth().getOrder() < todayMonth
-                        ) {
-                            return true;
-                        }
-                        return false;
-                    }).collect(Collectors.toList());
-            if (CollectionUtils.isNotEmpty(lateMonths)) {
-                return lateMonths;
-            } else {
-                return new ArrayList<>();
-            }
-        }
-        if (frecuency.equals(Frecuency.TRIMESTRAL)) {
-            // las month of last quarter
-            QuarterEnum previousQuarter = null;
-            if (todayQuarter.getOrder() > 1) {
-                previousQuarter = QuarterEnum.getByQuarterNumber(todayQuarter.getOrder() - 1);
-            }
-            MonthEnum previousMonth;
-            if (previousQuarter != null) {
-                List<MonthEnum> monthtsTmp = MonthEnum.getMonthsByQuarter(previousQuarter);
-                previousMonth = monthtsTmp.stream()
-                        .sorted(Comparator.comparingInt(MonthEnum::getOrder).reversed())
-                        .findFirst().get();
-            } else {
-                previousMonth = null;
-            }
-
-
-            List<Month> lateMonths = monthList.stream()
-                    // lo que no esten reportados
-                    .filter(month -> month.getTotalExecution() == null)
-                    .filter(month -> {
-                        if (month.getYear().compareTo(todayYear) < 0) {
-                            return true;
-                        }
-                        if (month.getYear().compareTo(todayYear) == 0
-                                && previousMonth != null
-                                && month.getMonth().getOrder() <= previousMonth.getOrder()
-                        ) {
-                            return true;
-                        }
-                        return false;
-                    }).collect(Collectors.toList());
-
-            if (CollectionUtils.isNotEmpty(lateMonths)) {
-                return lateMonths;
-            } else {
-                return new ArrayList<>();
-            }
-        }
-
-        if (frecuency.equals(Frecuency.SEMESTRAL)) {
-            // las month of last quarter
-            MonthEnum previousMonth;
-            if (todayMonth > 6) {
-                previousMonth = MonthEnum.JUNIO;
-            } else {
-                previousMonth = null;
-            }
-            List<Month> lateMonths = monthList.stream()
-                    // lo que no esten reportados
-                    .filter(month -> month.getTotalExecution() == null)
-                    .filter(month -> {
-                        if (month.getYear().compareTo(todayYear) < 0) {
-                            return true;
-                        }
-                        if (month.getYear().compareTo(todayYear) == 0
-                                && previousMonth != null
-                                && month.getMonth().getOrder() <= previousMonth.getOrder()
-                        ) {
-                            return true;
-                        }
-                        return false;
-                    }).collect(Collectors.toList());
-
-            if (CollectionUtils.isNotEmpty(lateMonths)) {
-                return lateMonths;
-            } else {
-                return new ArrayList<>();
-            }
-        }
-        if (frecuency.equals(Frecuency.ANUAL)) {
-            // las month of last quarter
-            List<Month> lateMonths = monthList.stream()
-                    // lo que no esten reportados
-                    .filter(month -> month.getTotalExecution() == null)
-                    .filter(month -> {
-                        if (month.getYear().compareTo(todayYear) < 0) {
-                            return true;
-                        }
-                        return false;
-                    }).collect(Collectors.toList());
-
-            if (CollectionUtils.isNotEmpty(lateMonths)) {
-                return lateMonths;
-            } else {
-                return new ArrayList<>();
-            }
-        }
-        return new ArrayList<>();
-    }*/
-
+    @SuppressWarnings("DuplicatedCode")
     public Long assignPerformanceIndicatoDirectImplementation(IndicatorExecutionAssigmentWeb
                                                                       indicatorExecutionAssigmentWeb) throws GeneralAppException {
         this.validatePerformanceIndicatorAssignationDirectImplementation(indicatorExecutionAssigmentWeb);
@@ -933,6 +775,7 @@ public class IndicatorExecutionService {
         if (office == null) {
             throw new GeneralAppException("Oficina no encontrada " + indicatorExecutionAssigmentWeb.getReportingOffice().getId(), Response.Status.BAD_REQUEST);
         }
+        @SuppressWarnings("DuplicatedCode")
         User assignedUser = this.userService.getById(indicatorExecutionAssigmentWeb.getAssignedUser().getId());
         if (assignedUser == null) {
             throw new GeneralAppException("Usuario responsable no encontrado " + indicatorExecutionAssigmentWeb.getAssignedUser().getId(), Response.Status.BAD_REQUEST);
@@ -1013,6 +856,7 @@ public class IndicatorExecutionService {
 
         indicatorExecution.setState(indicatorExecutionAssigmentWeb.getState());
         User assignedUser = this.userService.getById(indicatorExecutionAssigmentWeb.getAssignedUser().getId());
+        //noinspection DuplicatedCode
         if (assignedUser == null) {
             throw new GeneralAppException("Usuario responsable no encontrado " + indicatorExecutionAssigmentWeb.getAssignedUser().getId(), Response.Status.BAD_REQUEST);
         }
@@ -1036,6 +880,7 @@ public class IndicatorExecutionService {
     }
 
 
+    @SuppressWarnings("DuplicatedCode")
     public void validatePerformanceIndicatorAssignationDirectImplementation(IndicatorExecutionAssigmentWeb
                                                                                     indicatorExecutionWeb) throws GeneralAppException {
         if (indicatorExecutionWeb == null) {
@@ -1083,15 +928,15 @@ public class IndicatorExecutionService {
     }
 
     public List<IndicatorExecutionWeb> getActiveProjectIndicatorExecutionsByPeriodId(Long periodId) throws GeneralAppException {
-        List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getActiveProjectIndicatorExecutionsByPeriodId(periodId);
+        List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getActivePartnersIndicatorExecutionsByPeriodId(periodId);
         return this.modelWebTransformationService
                 .indicatorExecutionsToIndicatorExecutionsWeb(indicatorExecutions, true);
     }
 
-    public List<IndicatorExecutionWeb> getDirectImplementationIndicatorExecutionsByIds(List<Long> indicatorExecutionIds) throws GeneralAppException {
+    public List<IndicatorExecutionWeb> getDirectImplementationIndicatorExecutionsByIds(List<Long> indicatorExecutionIds, State state) throws GeneralAppException {
         return this.modelWebTransformationService
                 .indicatorExecutionsToIndicatorExecutionsWeb(
-                        this.indicatorExecutionDao.getDirectImplementationIndicatorExecutionsByIds(indicatorExecutionIds), false);
+                        this.indicatorExecutionDao.getDirectImplementationIndicatorExecutionsByIdsAndState(indicatorExecutionIds, state), false);
     }
 
     public Long updateDirectImplementationIndicatorExecutionLocationAssigment(Long indicatorExecutionId, List<CantonWeb> cantonesWeb) throws GeneralAppException {
@@ -1145,9 +990,9 @@ public class IndicatorExecutionService {
 
         // debo crear los iv para la todos los q sean locations
         List<Canton> cantonesToCreate;
-        if(CollectionUtils.isEmpty(cantonesIdsToCreate)){
+        if (CollectionUtils.isEmpty(cantonesIdsToCreate)) {
             cantonesToCreate = new ArrayList<>();
-        }else {
+        } else {
             cantonesToCreate = this.cantonService.getByIds(cantonesIdsToCreate);
         }
 
@@ -1192,6 +1037,14 @@ public class IndicatorExecutionService {
         this.updateIndicatorExecutionTotals(ie);
         this.saveOrUpdate(ie);
         return ie.getId();
+    }
+
+    public List<IndicatorExecutionWeb> getActiveProjectIndicatorExecutionsByPeriodYear(Integer year) throws GeneralAppException {
+        Period period = this.periodService.getByYear(year);
+        if (period == null) {
+            throw new GeneralAppException("Periodo no encontrado", Response.Status.NOT_FOUND);
+        }
+        return this.getActiveProjectIndicatorExecutionsByPeriodId(period.getId());
     }
 }
 

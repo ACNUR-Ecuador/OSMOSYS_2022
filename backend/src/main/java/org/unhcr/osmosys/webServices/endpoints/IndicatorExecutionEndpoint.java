@@ -37,7 +37,7 @@ public class IndicatorExecutionEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public List<IndicatorExecutionWeb> getGeneralIndicatorExecutionsByProjectId(@PathParam("projectId") Long projectId) throws GeneralAppException {
-        return this.indicatorExecutionService.getGeneralIndicatorExecutionsByProjectId(projectId, State.ACTIVO);
+        return this.indicatorExecutionService.getGeneralIndicatorExecutionsByProjectIdAndState(projectId, State.ACTIVO);
     }
 
     @Path("/performanceAdminByProject/{projectId}")
@@ -116,6 +116,7 @@ public class IndicatorExecutionEndpoint {
 
     }
 
+    // todo para que uso?
     @Path("/getResumeAdministrationPerformanceIndicatorById")
     @POST
     @Secured
@@ -140,7 +141,7 @@ public class IndicatorExecutionEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public List<IndicatorExecutionWeb> getDirectImplementationIndicatorExecutionsByIds(List<Long> indicatorExecutionIds) throws GeneralAppException {
         LOGGER.error(indicatorExecutionIds);
-        return this.indicatorExecutionService.getDirectImplementationIndicatorExecutionsByIds(indicatorExecutionIds);
+        return this.indicatorExecutionService.getDirectImplementationIndicatorExecutionsByIds(indicatorExecutionIds, State.ACTIVO);
     }
 
     @Path("/updateDirectImplementationIndicatorExecutionLocationAssigment/{indicatorExecutionId}")

@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 @SuppressWarnings("unchecked")
 @Stateless
 public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Long> {
@@ -74,7 +73,10 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                     " left join fetch aub.organization auborg " +
                     " left join fetch aub.office aubofff ";
 
-    public List<IndicatorExecution> getGeneralAndPerformanceIndicatorExecutionsByProjectId(Long projectId) {
+    /**
+     * partners
+     ***/
+    public List<IndicatorExecution> getIndicatorExecutionsByProjectId(Long projectId) {
 
         String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
                 " WHERE pr.id = :projectId";
@@ -85,14 +87,12 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
 
     public List<IndicatorExecution> getGeneralIndicatorExecutionsByProjectId(Long projectId) {
         IndicatorType indicatorType = IndicatorType.GENERAL;
-        State active = State.ACTIVO;
         String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
                 " WHERE pr.id = :projectId" +
                 " and o.indicatorType = :generalType ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("projectId", projectId);
         q.setParameter("generalType", indicatorType);
-        q.setParameter("active", active);
         return q.getResultList();
     }
 
@@ -100,13 +100,25 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         IndicatorType indicatorType = IndicatorType.GENERAL;
         String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
                 " WHERE pr.id = :projectId" +
-                " and o.state = :state " +
-                " and o.indicatorType =: generalType ";
+                " and o.indicatorType =: generalType " +
+                " and o.state = :state ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("projectId", projectId);
         q.setParameter("generalType", indicatorType);
         q.setParameter("state", state);
 
+        return q.getResultList();
+    }
+
+    public List<IndicatorExecution> getPerformanceIndicatorExecutionsByProjectId(Long projectId) {
+        IndicatorType indicatorType = IndicatorType.GENERAL;
+        String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
+                " WHERE pr.id = :projectId" +
+                " and o.indicatorType <>: generalType ";
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("projectId", projectId);
+        q.setParameter("generalType", indicatorType);
+        q.setParameter("state", State.ACTIVO);
         return q.getResultList();
     }
 
@@ -124,188 +136,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         return q.getResultList();
     }
 
-    public List<IndicatorExecution> getPerformanceIndicatorExecutionsByProjectId(Long projectId) {
-        IndicatorType indicatorType = IndicatorType.GENERAL;
-        String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
-                " WHERE pr.id = :projectId" +
-                " and o.indicatorType <>: generalType ";
-        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
-        q.setParameter("projectId", projectId);
-        q.setParameter("generalType", indicatorType);
-        q.setParameter("state", State.ACTIVO);
-        return q.getResultList();
-    }
-
-    public IndicatorExecution getPerformanceIndicatorExecutionById(Long id) {
-        IndicatorType indicatorType = IndicatorType.GENERAL;
-        String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
-                " WHERE o.id = :id" +
-                " and o.indicatorType <>: generalType ";
-        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
-        q.setParameter("id", id);
-        q.setParameter("generalType", indicatorType);
-        return (IndicatorExecution) q.getSingleResult();
-    }
-
-    // todo
-    public IndicatorExecution getByIdWithValues(Long id) {
-
-        String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
-                " left join fetch o.indicator ind " +
-                " left join fetch o.quarters q " +
-                " left join fetch q.months m " +
-                " left join fetch m.sources " +
-                " left join fetch  m.indicatorValues " +
-                " left join fetch  m.indicatorValuesIndicatorValueCustomDissagregations " +
-                " WHERE o.id = :id";
-        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
-        q.setParameter("id", id);
-        return (IndicatorExecution) q.getSingleResult();
-    }
-
-    public List<IndicatorExecution> getLateIndicatorExecutionGeneralByProjectIdMonthly(Long id, Integer yearToControl, List<MonthEnum> monthsToControl) {
-
-        IndicatorType generalType = IndicatorType.GENERAL;
-        State stateActive = State.ACTIVO;
-        Frecuency frecuency = Frecuency.MENSUAL;
-        String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
-                " WHERE " +
-                " o.id = :id " +
-                " and o.indicator.frecuency = :frecuency " +
-                " and o.state = :stateActive " +
-                " and m.state = :stateActive " +
-                " and o.indicatorType = :generalType " +
-                " and m.totalExecution is null " +
-                " and ( m.year < :year or (m.year =:year and m.month in (:monthsToControl))) ";
-
-        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
-        q.setParameter("id", id);
-        q.setParameter("frecuency", frecuency);
-        q.setParameter("stateActive", stateActive);
-        q.setParameter("generalType", generalType);
-        q.setParameter("monthsToControl", monthsToControl);
-        q.setParameter("year", yearToControl);
-        return q.getResultList();
-    }
-
-    // todo
-    public List<IndicatorExecution> getLateIndicatorExecutionPerformanceByProjectIdMonthly(Long id, Integer yearToControl, List<MonthEnum> monthsToControl) {
-        if (CollectionUtils.isEmpty(monthsToControl)) {
-            return new ArrayList<>();
-        }
-        IndicatorType generalType = IndicatorType.GENERAL;
-        State stateActive = State.ACTIVO;
-        Frecuency frecuency = Frecuency.MENSUAL;
-        String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
-                " WHERE " +
-                " o.id = :id " +
-                " and o.indicator.frecuency = :frecuency " +
-                " and o.state = :stateActive " +
-                " and m.state = :stateActive " +
-                " and o.indicatorType <> :generalType " +
-                " and m.totalExecution is null " +
-                " and ( m.year < :year or (m.year =:year and m.month in (:monthsToControl))) ";
-
-        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
-        q.setParameter("id", id);
-        q.setParameter("frecuency", frecuency);
-        q.setParameter("stateActive", stateActive);
-        q.setParameter("generalType", generalType);
-        q.setParameter("monthsToControl", monthsToControl);
-        q.setParameter("year", yearToControl);
-        return q.getResultList();
-    }
-
-    public List<IndicatorExecution> getLateIndicatorExecutionPerformanceByProjectIdQuarterly(Long id, Integer yearToControl, List<QuarterEnum> quartersToControl) {
-
-        IndicatorType generalType = IndicatorType.GENERAL;
-        State stateActive = State.ACTIVO;
-        Frecuency frecuency = Frecuency.TRIMESTRAL;
-        String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
-                " WHERE " +
-                " o.id = :id " +
-                " and o.indicator.frecuency = :frecuency " +
-                " and o.state = :stateActive " +
-                " and m.state = :stateActive " +
-                " and o.indicatorType <> :generalType " +
-                " and m.totalExecution is null ";
-
-        if (CollectionUtils.isNotEmpty(quartersToControl)) {
-            jpql += " and ( m.year < :year or (m.year =:year and q.quarter in (:quartersToControl))) ";
-        } else {
-            jpql += " and ( m.year < :year )) ";
-        }
-
-        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
-        q.setParameter("id", id);
-        q.setParameter("frecuency", frecuency);
-        q.setParameter("stateActive", stateActive);
-        q.setParameter("generalType", generalType);
-
-        q.setParameter("year", yearToControl);
-        if (CollectionUtils.isNotEmpty(quartersToControl)) {
-            q.setParameter("quartersToControl", quartersToControl);
-        }
-        return q.getResultList();
-    }
-
-    public List<IndicatorExecution> getLateIndicatorExecutionPerformanceByProjectIdBiannual(Long id, Integer yearToControl, List<QuarterEnum> quartersToControl) {
-
-        IndicatorType generalType = IndicatorType.GENERAL;
-        State stateActive = State.ACTIVO;
-        Frecuency frecuency = Frecuency.SEMESTRAL;
-        String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
-                " WHERE " +
-                " o.id = :id " +
-                " and o.indicator.frecuency = :frecuency " +
-                " and o.state = :stateActive " +
-                " and m.state = :stateActive " +
-                " and o.indicatorType <> :generalType " +
-                " and m.totalExecution is null ";
-        if (CollectionUtils.isEmpty(quartersToControl)) {
-            jpql = jpql + " and m.year < :year  ";
-        } else {
-            jpql = jpql + " and ( m.year < :year or (m.year =:year and q.quarter in (:quartersToControl))) ";
-        }
-
-
-        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
-        q.setParameter("id", id);
-        q.setParameter("frecuency", frecuency);
-        q.setParameter("stateActive", stateActive);
-        q.setParameter("generalType", generalType);
-
-        q.setParameter("year", yearToControl);
-        if (CollectionUtils.isEmpty(quartersToControl)) {
-            q.setParameter("quartersToControl", quartersToControl);
-        }
-        return q.getResultList();
-    }
-
-    public List<IndicatorExecution> getLateIndicatorExecutionPerformanceByProjectIdAnnual(Long id, Integer yearToControl) {
-        IndicatorType generalType = IndicatorType.GENERAL;
-        State stateActive = State.ACTIVO;
-        Frecuency frecuency = Frecuency.ANUAL;
-        String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
-                " WHERE " +
-                " o.id = :id " +
-                " and o.indicator.frecuency = :frecuency " +
-                " and o.state = :stateActive " +
-                " and m.state = :stateActive " +
-                " and o.indicatorType <> :generalType " +
-                " and m.totalExecution is null " +
-                " and m.year < :year ";
-
-        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
-        q.setParameter("id", id);
-        q.setParameter("frecuency", frecuency);
-        q.setParameter("stateActive", stateActive);
-        q.setParameter("generalType", generalType);
-        q.setParameter("year", yearToControl);
-        return q.getResultList();
-    }
-
-    public List<IndicatorExecution> getActiveProjectIndicatorExecutionsByPeriodId(Long periodId) {
+    public List<IndicatorExecution> getActivePartnersIndicatorExecutionsByPeriodId(Long periodId) {
         String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
                 " left join fetch fpu.organization fpuorg " +
                 " left join fetch pr.projectLocationAssigments pla" +
@@ -327,7 +158,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
 
 
     /*** direct implementation**********/
-    public List<IndicatorExecution> getAllDirectImplementationIndicatorByPeriodId(Long periodId) {
+    public List<IndicatorExecution> getDirectImplementationIndicatorByPeriodId(Long periodId) {
         IndicatorType generalType = IndicatorType.GENERAL;
         String jpql = IndicatorExecutionDao.jpqlDirectImplementationIndicators +
                 " WHERE p.id = :periodId " +
@@ -339,9 +170,16 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         return q.getResultList();
     }
 
+    /**
+     * for validation, without related data
+     *
+     * @param indicatorId
+     * @param reportingOfficeId
+     * @return
+     */
     public IndicatorExecution getByIndicatorIdAndOfficeId(Long indicatorId, Long reportingOfficeId) {
 
-        String jpql = IndicatorExecutionDao.jpqlDirectImplementationIndicators +
+        String jpql = "select o from IndicatorExecution o " +
                 " WHERE o.indicator.id = :indicatorId and o.reportingOffice.id = :reportingOfficeId";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("indicatorId", indicatorId);
@@ -404,21 +242,12 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         return q.getResultList();
     }
 
-    public List<IndicatorExecution> getAllIndicatorDirectImplementation(Long periodId) {
-        IndicatorType generalType = IndicatorType.GENERAL;
-        String jpql = IndicatorExecutionDao.jpqlDirectImplementationIndicators +
-                " WHERE p.id = :periodId " +
-                " and o.indicatorType <> :generalType " +
-                " and o.project is null " +
-                " and o.state =:state ";
-
-        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
-        q.setParameter("periodId", periodId);
-        q.setParameter("generalType", generalType);
-        q.setParameter("state", State.ACTIVO);
-        return q.getResultList();
-    }
-
+    /**
+     * for values quartes and month creation
+     *
+     * @param periodId
+     * @return
+     */
     public List<IndicatorExecution> getAllIndicatorDirectImplementationNoValues(Long periodId) {
         IndicatorType generalType = IndicatorType.GENERAL;
         String jpql = IndicatorExecutionDao.jpqlDirectImplementationIndicators +
@@ -433,17 +262,17 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         return q.getResultList();
     }
 
-    public List<IndicatorExecution> getDirectImplementationIndicatorExecutionsByIds(List<Long> indicatorExecutionIds) {
+    public List<IndicatorExecution> getDirectImplementationIndicatorExecutionsByIdsAndState(List<Long> indicatorExecutionIds, State state) {
 
         IndicatorType generalType = IndicatorType.GENERAL;
         String jpql = IndicatorExecutionDao.jpqlDirectImplementationIndicators +
                 " WHERE o.id in (:indicatorExecutionIds) " +
+                " and o.project is null " +
                 " and o.state=:state " +
-                " and o.indicatorType <> :generalType " +
-                " and o.project is null ";
+                " and o.indicatorType <> :generalType ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("generalType", generalType);
-        q.setParameter("state", State.ACTIVO);
+        q.setParameter("state", state);
         q.setParameter("indicatorExecutionIds", indicatorExecutionIds);
         return q.getResultList();
     }
@@ -460,4 +289,57 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
             return null;
         }
     }
+
+    /**** partners and direct implementation*****/
+    public IndicatorExecution getPerformanceIndicatorExecutionById(Long id) {
+        IndicatorType indicatorType = IndicatorType.GENERAL;
+        String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
+                " WHERE o.id = :id" +
+                " and o.indicatorType <>: generalType ";
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("id", id);
+        q.setParameter("generalType", indicatorType);
+        return (IndicatorExecution) q.getSingleResult();
+    }
+
+    public IndicatorExecution getByIdWithIndicatorValues(Long id) {
+
+        String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
+                " left join fetch o.indicator ind " +
+                " left join fetch o.quarters q " +
+                " left join fetch q.months m " +
+                " left join fetch m.sources " +
+                " left join fetch  m.indicatorValues " +
+                " left join fetch  m.indicatorValuesIndicatorValueCustomDissagregations " +
+                " WHERE o.id = :id";
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("id", id);
+        return (IndicatorExecution) q.getSingleResult();
+    }
+
+    public List<IndicatorExecution> getLateIndicatorExecutionGeneralByProjectIdMonthly(Long id, Integer yearToControl, List<MonthEnum> monthsToControl) {
+
+        IndicatorType generalType = IndicatorType.GENERAL;
+        State stateActive = State.ACTIVO;
+        Frecuency frecuency = Frecuency.MENSUAL;
+        String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
+                " WHERE " +
+                " o.id = :id " +
+                " and o.indicator.frecuency = :frecuency " +
+                " and o.state = :stateActive " +
+                " and m.state = :stateActive " +
+                " and o.indicatorType = :generalType " +
+                " and m.totalExecution is null " +
+                " and ( m.year < :year or (m.year =:year and m.month in (:monthsToControl))) ";
+
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("id", id);
+        q.setParameter("frecuency", frecuency);
+        q.setParameter("stateActive", stateActive);
+        q.setParameter("generalType", generalType);
+        q.setParameter("monthsToControl", monthsToControl);
+        q.setParameter("year", yearToControl);
+        return q.getResultList();
+    }
+
 }

@@ -28,7 +28,7 @@ public class PeriodDao extends GenericDaoJpa<Period, Long> {
         return q.getResultList();
     }
 
-    public Period getByYear(Integer year) throws GeneralAppException {
+    public Period getByYear(Integer year) {
 
         String jpql = "SELECT DISTINCT o FROM Period o " +
                 " WHERE o.year = :year";
@@ -38,8 +38,6 @@ public class PeriodDao extends GenericDaoJpa<Period, Long> {
             return (Period) q.getSingleResult();
         } catch (NoResultException e) {
             return null;
-        } catch (NonUniqueResultException e) {
-            throw new GeneralAppException("Se encontró más de un item con el año " + year, Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 
