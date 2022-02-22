@@ -205,7 +205,6 @@ export class MenuService {
 
         menuItems.forEach(menuItem => {
             // si tiene roles asignados los verifico
-            console.log(menuItem.label);
             if (menuItem.roles && menuItem.roles.length > 0) {
                 // verifico con los roles q tiene, si puede mostrar
                 this.ngxPermissionsService.hasPermission(menuItem.roles).then(value => {
