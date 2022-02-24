@@ -35,7 +35,6 @@
         "jwt-decode": "^3.1.2",
         "ngx-permissions": "^8.1.1",
         "ngx-print": "^1.2.1",
-        "plotly.js-dist-min": "^2.9.0",
         "primeflex": "2.0.0",
         "primeicons": "4.1.0",
         "primeng": "12.2.2",

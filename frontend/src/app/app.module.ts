@@ -104,9 +104,10 @@ import es from '@angular/common/locales/es';
 import {registerLocaleData} from '@angular/common';
 import {LoaderInterceptor} from './shared/interceptors/loader.interceptor';
 import {NgxPrintModule} from 'ngx-print';
-import * as PlotlyJS from 'plotly.js-dist-min';
-import { PlotlyModule } from 'angular-plotly.js';
-PlotlyModule.plotlyjs = PlotlyJS;
+// import * as PlotlyJS from 'plotly.js-dist-min';
+// import { PlotlyModule } from 'angular-plotly.js';
+import {PlotlyViaCDNModule} from 'angular-plotly.js';
+// PlotlyModule.plotlyjs = PlotlyJS;
 
 registerLocaleData(es);
 FullCalendarModule.registerPlugins([
@@ -114,6 +115,13 @@ FullCalendarModule.registerPlugins([
     timeGridPlugin,
     interactionPlugin
 ]);
+
+
+PlotlyViaCDNModule.setPlotlyVersion('2.9.0');
+// can be `latest` or any version number (i.e.: '1.40.0')
+PlotlyViaCDNModule.setPlotlyBundle(null);
+
+// optional: can be null (for full) or 'basic', 'cartesian', 'geo', 'gl3d', 'gl2d', 'mapbox' or 'finance'
 
 @NgModule({
     imports: [
@@ -212,7 +220,7 @@ FullCalendarModule.registerPlugins([
         HomeModule,
         AuthenticationModule,
         AdministrationModule,
-        PlotlyModule
+        PlotlyViaCDNModule
 
 
     ],
