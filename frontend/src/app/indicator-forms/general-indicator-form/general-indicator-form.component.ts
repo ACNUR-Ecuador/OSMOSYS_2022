@@ -97,6 +97,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
             this.monthValuesMap = value.indicatorValuesMap;
             this.formItem.get('commentary').patchValue(this.month.commentary);
             this.formItem.get('sources').patchValue(this.month.sources);
+            this.formItem.get('checked').patchValue(this.month.checked);
             if (this.isProjectFocalPoint) {
                 this.formItem.get('checked').enable();
             } else {
