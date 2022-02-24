@@ -118,7 +118,6 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("projectId", projectId);
         q.setParameter("generalType", indicatorType);
-        q.setParameter("state", State.ACTIVO);
         return q.getResultList();
     }
 
@@ -167,6 +166,20 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("periodId", periodId);
         q.setParameter("generalType", generalType);
+        return q.getResultList();
+    }
+    public List<IndicatorExecution> getDirectImplementationIndicatorByPeriodIdAndState(Long periodId, State state) {
+        IndicatorType generalType = IndicatorType.GENERAL;
+        String jpql = IndicatorExecutionDao.jpqlDirectImplementationIndicators +
+                " WHERE p.id = :periodId " +
+                " and o.indicatorType <> :generalType " +
+                " and o.project.id is null " +
+                " and o.state=:state ";
+
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("periodId", periodId);
+        q.setParameter("generalType", generalType);
+        q.setParameter("state", state);
         return q.getResultList();
     }
 

@@ -4755,4 +4755,14 @@
   color: #0072bc;
 }
 
+/*****powerbi********/
+/**powerbiBirder*/
+.powerbi-total-hidde {
+  position: absolute;
+  height: 90%;
+  width: 100%;
+  border: none;
+  clip-path: polygon(0% 0%, 0% calc(100% - 36px), 100% calc(100% - 36px), 100% 0%);
+}
+
 /*# sourceMappingURL=styles.css.map */

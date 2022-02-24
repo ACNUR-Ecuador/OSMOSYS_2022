@@ -36,13 +36,16 @@ public class Month extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private MonthEnum month;
 
+    @Column(name = "month_year_order", nullable = true) // TODO poner not null
+    private Integer monthYearOrder;
+
     @Column(name = "year", nullable = false)
     private Integer year;
 
     @Column(name = "order_", nullable = false)
     private Integer order;
 
-    @ElementCollection(targetClass = SourceType.class,fetch = FetchType.LAZY)
+    @ElementCollection(targetClass = SourceType.class, fetch = FetchType.LAZY)
     @CollectionTable(name = "month_source", schema = "osmosys",
             joinColumns = @JoinColumn(name = "month_id"))
     @Column(name = "source_type")
@@ -89,8 +92,13 @@ public class Month extends BaseEntity<Long> {
         return month;
     }
 
-    public void setMonth(MonthEnum month) {
-        this.month = month;
+    public void setMonth(MonthEnum monthEnum) {
+        if (monthEnum != null) {
+            this.monthYearOrder = monthEnum.getOrder();
+        } else {
+            this.monthYearOrder = null;
+        }
+        this.month = monthEnum;
     }
 
     public String getCommentary() {
@@ -149,6 +157,7 @@ public class Month extends BaseEntity<Long> {
     public void setIndicatorValuesIndicatorValueCustomDissagregations(Set<IndicatorValueCustomDissagregation> indicatorValuesIndicatorValueCustomDissagregations) {
         this.indicatorValuesIndicatorValueCustomDissagregations = indicatorValuesIndicatorValueCustomDissagregations;
     }
+
     public void addIndicatorValueCustomDissagregation(IndicatorValueCustomDissagregation indicatorValue) {
         indicatorValue.setMonth(this);
         indicatorValue.setMonthEnum(this.getMonth());
@@ -157,6 +166,7 @@ public class Month extends BaseEntity<Long> {
             this.indicatorValuesIndicatorValueCustomDissagregations.add(indicatorValue);
         }
     }
+
     public State getState() {
         return state;
     }
@@ -180,10 +190,12 @@ public class Month extends BaseEntity<Long> {
     public void setSources(Set<SourceType> sources) {
         this.sources = sources;
     }
-    public void addSource(SourceType sourceType){
+
+    public void addSource(SourceType sourceType) {
         this.sources.add(sourceType);
     }
-    public void removeSource(SourceType sourceType){
+
+    public void removeSource(SourceType sourceType) {
         this.sources.remove(sourceType);
     }
 
@@ -201,6 +213,14 @@ public class Month extends BaseEntity<Long> {
 
     public void setChecked(Boolean checked) {
         this.checked = checked;
+    }
+
+    public Integer getMonthYearOrder() {
+        return monthYearOrder;
+    }
+
+    public void setMonthYearOrder(Integer monthYearOrder) {
+        this.monthYearOrder = monthYearOrder;
     }
 
     @Override

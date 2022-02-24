@@ -38,6 +38,9 @@ public class Quarter extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private QuarterEnum quarter;
 
+    @Column(name = "quarter_year_order", nullable = true) // TODO poner not null
+    private Integer quarterYearOrder;
+
     @Column(name = "commentary", columnDefinition = "text")
     private String commentary;
 
@@ -81,6 +84,12 @@ public class Quarter extends BaseEntity<Long> {
     }
 
     public void setQuarter(QuarterEnum quarter) {
+        if(quarter!=null){
+            this.quarterYearOrder=quarter.getOrder();
+        }else {
+            this.quarterYearOrder=null;
+        }
+
         this.quarter = quarter;
     }
 
@@ -162,6 +171,14 @@ public class Quarter extends BaseEntity<Long> {
 
     public void setExecutionPercentage(BigDecimal executionPercentage) {
         this.executionPercentage = executionPercentage;
+    }
+
+    public Integer getQuarterYearOrder() {
+        return quarterYearOrder;
+    }
+
+    public void setQuarterYearOrder(Integer quarterYearOrder) {
+        this.quarterYearOrder = quarterYearOrder;
     }
 
     @Override

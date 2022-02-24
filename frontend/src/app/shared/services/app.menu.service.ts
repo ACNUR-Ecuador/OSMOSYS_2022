@@ -147,6 +147,12 @@ export class MenuService {
                             routerLink: ['/reports/allProjectsState'],
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL'],
                         },
+                        {
+                            label: 'Tablero Control Reporte de Proyectos',
+                            icon: 'pi pi-fw book',
+                            routerLink: ['/reports/reportControlPartners'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL'],
+                        },
                     ]
                 }
             ]
@@ -168,6 +174,19 @@ export class MenuService {
                     routerLink: ['/home/homeDashboardDirectImplementation'],
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID'],
                 },
+                {
+                    label: 'Reportes',
+                    icon: 'pi pi-users',
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID'],
+                    items: [
+                        {
+                            label: 'Tablero Control Reporte de ID',
+                            icon: 'pi pi-fw book',
+                            routerLink: ['/reports/reportControlDirectImplementation'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID'],
+                        },
+                    ]
+                }
             ]
         },
         {separator: true},

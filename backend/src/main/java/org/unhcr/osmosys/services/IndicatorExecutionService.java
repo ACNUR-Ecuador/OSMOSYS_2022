@@ -1046,6 +1046,18 @@ public class IndicatorExecutionService {
         }
         return this.getActiveProjectIndicatorExecutionsByPeriodId(period.getId());
     }
+
+    public List<IndicatorExecutionWeb> getActiveDirectImplementationIndicatorExecutionsByPeriodYear(Integer year) throws GeneralAppException {
+
+        Period period = this.periodService.getByYear(year);
+        if (period == null) {
+            throw new GeneralAppException("Periodo no encontrado", Response.Status.NOT_FOUND);
+        }
+        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(
+                this.indicatorExecutionDao.getDirectImplementationIndicatorByPeriodIdAndState(period.getId(), State.ACTIVO), false
+        );
+
+    }
 }
 
 

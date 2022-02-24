@@ -9,11 +9,18 @@ import {DropdownModule} from 'primeng/dropdown';
 import {MessagesModule} from 'primeng/messages';
 import {ToastModule} from 'primeng/toast';
 import {ButtonModule} from 'primeng/button';
+import { TestPlotyComponent } from './test-ploty/test-ploty.component';
+import {PlotlyModule} from 'angular-plotly.js';
+import { ReportControlPartnersComponent } from './report-control-partners/report-control-partners.component';
+import { ReportControlDirectImplementationComponent } from './report-control-direct-implementation/report-control-direct-implementation.component';
 
 
 @NgModule({
   declarations: [
-    AllProjectsStateComponent
+    AllProjectsStateComponent,
+    TestPlotyComponent,
+    ReportControlPartnersComponent,
+    ReportControlDirectImplementationComponent
   ],
     imports: [
         CommonModule,
@@ -23,7 +30,8 @@ import {ButtonModule} from 'primeng/button';
         DropdownModule,
         MessagesModule,
         ToastModule,
-        ButtonModule
+        ButtonModule,
+        PlotlyModule
     ]
 })
 export class ReportsModule { }

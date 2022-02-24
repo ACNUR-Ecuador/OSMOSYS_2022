@@ -29,7 +29,7 @@ public class Canton extends BaseEntity<Long> {
     @JoinColumn(name = "provincia_id", foreignKey = @ForeignKey(name = "fk_cantones_provincias"))
     private Provincia provincia;
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "office_id", foreignKey = @ForeignKey(name = "fk_cantones_offices"))
     private Office office;
 
@@ -70,6 +70,7 @@ public class Canton extends BaseEntity<Long> {
         return provincia;
     }
 
+    @SuppressWarnings("unused")
     public void setProvincia(Provincia provincia) {
         this.provincia = provincia;
     }

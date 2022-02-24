@@ -37,5 +37,12 @@ public class DataPortEndpoint {
         return this.indicatorExecutionService.getActiveProjectIndicatorExecutionsByPeriodYear(year);
     }
 
+    @Path("directImplementation/{year}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<IndicatorExecutionWeb> getActiveDirectImplementationIndicatorExecutionsByPeriodYear(@PathParam("year") Integer year) throws GeneralAppException {
+        return this.indicatorExecutionService.getActiveDirectImplementationIndicatorExecutionsByPeriodYear(year);
+    }
+
 }
 

@@ -29,6 +29,9 @@ public class IndicatorValueCustomDissagregation extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private MonthEnum monthEnum;
 
+    @Column(name = "month_year_order", nullable = true) // TODO poner not null
+    private Integer monthYearOrder;
+
 
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "custom_dissagregation_option", foreignKey = @ForeignKey(name = "fk_indicator_values_custom_dissagregation_option"))
@@ -74,6 +77,12 @@ public class IndicatorValueCustomDissagregation extends BaseEntity<Long> {
     }
 
     public void setMonthEnum(MonthEnum monthEnum) {
+
+        if(monthEnum !=null){
+            this.monthYearOrder=monthEnum.getOrder();
+        } else {
+            this.monthYearOrder = null;
+        }
         this.monthEnum = monthEnum;
     }
 
@@ -107,5 +116,13 @@ public class IndicatorValueCustomDissagregation extends BaseEntity<Long> {
 
     public void setNumeratorValue(BigDecimal numeratorValue) {
         this.numeratorValue = numeratorValue;
+    }
+
+    public Integer getMonthYearOrder() {
+        return monthYearOrder;
+    }
+
+    public void setMonthYearOrder(Integer monthYearOrder) {
+        this.monthYearOrder = monthYearOrder;
     }
 }

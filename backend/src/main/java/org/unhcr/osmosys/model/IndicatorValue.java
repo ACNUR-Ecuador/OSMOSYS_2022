@@ -2,8 +2,6 @@ package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.*;
 
 import javax.persistence.*;
@@ -25,39 +23,42 @@ public class IndicatorValue extends BaseEntity<Long> {
     private Month month;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "state", nullable = false, length = 12, unique = false)
+    @Column(name = "state", nullable = false, length = 12)
     private State state;
 
     @Column(name = "month", nullable = false)
     @Enumerated(EnumType.STRING)
     private MonthEnum monthEnum;
 
+    @Column(name = "month_year_order", nullable = true) // TODO poner not null
+    private Integer monthYearOrder;
+
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "dissagregation_type", nullable = false, length = 50, unique = false)
+    @Column(name = "dissagregation_type", nullable = false, length = 50)
     private DissagregationType dissagregationType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "population_type", nullable = true, length = 50, unique = false)
+    @Column(name = "population_type", length = 50)
     private PopulationType populationType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "country_of_origin", nullable = true, length = 50, unique = false)
+    @Column(name = "country_of_origin", length = 50)
     private CountryOfOrigin countryOfOrigin;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender_type", nullable = true, length = 50, unique = false)
+    @Column(name = "gender_type", length = 50)
     private GenderType genderType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "age_type", nullable = true, length = 50, unique = false)
+    @Column(name = "age_type", length = 50)
     private AgeType ageType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "diversity_type", nullable = true, length = 50, unique = false)
+    @Column(name = "diversity_type", length = 50)
     private DiversityType diversityType;
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "canton_id", foreignKey = @ForeignKey(name = "fk_indicator_values_cantones"))
     private Canton location;
 
@@ -104,6 +105,11 @@ public class IndicatorValue extends BaseEntity<Long> {
     }
 
     public void setMonthEnum(MonthEnum monthEnum) {
+        if(monthEnum !=null){
+            this.monthYearOrder=monthEnum.getOrder();
+        } else {
+            this.monthYearOrder = null;
+        }
         this.monthEnum = monthEnum;
     }
 
@@ -193,6 +199,14 @@ public class IndicatorValue extends BaseEntity<Long> {
 
     public void setLocation(Canton location) {
         this.location = location;
+    }
+
+    public Integer getMonthYearOrder() {
+        return monthYearOrder;
+    }
+
+    public void setMonthYearOrder(Integer monthYearOrder) {
+        this.monthYearOrder = monthYearOrder;
     }
 
     @Override

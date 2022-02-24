@@ -104,6 +104,9 @@ import es from '@angular/common/locales/es';
 import {registerLocaleData} from '@angular/common';
 import {LoaderInterceptor} from './shared/interceptors/loader.interceptor';
 import {NgxPrintModule} from 'ngx-print';
+import * as PlotlyJS from 'plotly.js-dist-min';
+import { PlotlyModule } from 'angular-plotly.js';
+PlotlyModule.plotlyjs = PlotlyJS;
 
 registerLocaleData(es);
 FullCalendarModule.registerPlugins([
@@ -208,7 +211,8 @@ FullCalendarModule.registerPlugins([
         SharedModule,
         HomeModule,
         AuthenticationModule,
-        AdministrationModule
+        AdministrationModule,
+        PlotlyModule
 
 
     ],
