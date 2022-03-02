@@ -636,8 +636,14 @@ public class IndicatorExecutionService {
                         .getLocations().stream().filter(cantonWeb -> cantonWeb.getId().equals(currentCanton.getId())).findFirst();
                 if (exitsCanton.isPresent()) {
                     currentIndicatorValuesCantons.stream().filter(indicatorValue -> indicatorValue.getLocation().getId().equals(currentCanton.getId())).forEach(indicatorValue -> indicatorValue.setState(State.ACTIVO));
+                    indicatorExecution.getIndicatorExecutionLocationAssigments()
+                            .stream().filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(currentCanton.getId()))
+                            .forEach(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.setState(State.ACTIVO));
                 } else {
                     currentIndicatorValuesCantons.stream().filter(indicatorValue -> indicatorValue.getLocation().getId().equals(currentCanton.getId())).forEach(indicatorValue -> indicatorValue.setState(State.INACTIVO));
+                    indicatorExecution.getIndicatorExecutionLocationAssigments()
+                            .stream().filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(currentCanton.getId()))
+                            .forEach(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.setState(State.INACTIVO));
                 }
             }
 
