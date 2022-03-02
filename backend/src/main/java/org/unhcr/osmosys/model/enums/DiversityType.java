@@ -2,7 +2,7 @@ package org.unhcr.osmosys.model.enums;
 
 public enum DiversityType implements EnumInterface {
     LGBTI("LGBTIQ+", 1),
-    DISCAPACITADOS("Discapacitados", 2),
+    DISCAPACITADOS("Personas con Discapacidad", 2),
     INDIGENAS("Indígenas", 3),
     AFRODESCENDIENTES("Afrodescendientes", 4);
 
