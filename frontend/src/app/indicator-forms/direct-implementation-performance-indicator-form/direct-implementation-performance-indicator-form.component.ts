@@ -82,7 +82,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             value: true
         });
         this.chekedOptions.push({
-            label: 'Requiere correcciones por parte del socio',
+            label: 'Requiere correcciones',
             value: false
         });
         this.formLocations = this.fb.group({
