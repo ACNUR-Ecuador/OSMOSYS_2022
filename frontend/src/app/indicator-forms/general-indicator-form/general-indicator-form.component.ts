@@ -135,6 +135,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
             this.showErrorResume = true;
             this.totalsValidation = totalsValidation;
         } else {
+            this.messageService.clear();
             this.totalsValidation = null;
             this.sendMonthValue();
         }

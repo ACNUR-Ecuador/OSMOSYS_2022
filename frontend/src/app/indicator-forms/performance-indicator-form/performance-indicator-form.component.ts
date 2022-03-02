@@ -103,6 +103,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
             this.monthCustomDissagregatoinValues = value.customDissagregationValues;
             this.formItem.get('commentary').patchValue(this.month.commentary);
             this.formItem.get('sources').patchValue(this.month.sources);
+            this.formItem.get('checked').patchValue(this.month.checked);
             if (this.isProjectFocalPoint) {
                 this.formItem.get('checked').enable();
             } else {
@@ -139,6 +140,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
             this.showErrorResume = true;
             this.totalsValidation = totalsValidation;
         } else {
+            this.messageService.clear();
             this.totalsValidation = null;
             this.sendMonthValue();
         }
