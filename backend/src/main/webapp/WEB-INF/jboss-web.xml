@@ -5,6 +5,6 @@
       http://www.jboss.com/xml/ns/javaee
       http://www.jboss.org/j2ee/schema/7.1" version="7.1">
     <context-root>osmosys</context-root>
-    <security-domain>jaspitest</security-domain>
+    <security-domain>other</security-domain>
 
 </jboss-web>
