@@ -98,14 +98,14 @@ public class ReportService {
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 
-    public ByteArrayOutputStream getAllImplementationsMonthlylyByPeriodId(Long periodId) throws GeneralAppException {
+    public ByteArrayOutputStream getAllImplementationsMonthlyByPeriodId(Long periodId) throws GeneralAppException {
         String jrxmlFile = "all_implementations_monthly_by_period_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 
-    public ByteArrayOutputStream getAllImplementationsDetailedlyByPeriodId(Long periodId) throws GeneralAppException {
+    public ByteArrayOutputStream getAllImplementationsDetailedByPeriodId(Long periodId) throws GeneralAppException {
         String jrxmlFile = "all_implementations_detailed_by_period_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
@@ -113,7 +113,7 @@ public class ReportService {
     }
 
     /***********total pi****************/
-    public ByteArrayOutputStream getAllImplementationsPerformanceIndicatorsAnualByPeriodId(Long periodId) throws GeneralAppException {
+    public ByteArrayOutputStream getAllImplementationsPerformanceIndicatorsAnnualByPeriodId(Long periodId) throws GeneralAppException {
         String jrxmlFile = "all_implementations_pi_anual_by_period_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
@@ -142,7 +142,7 @@ public class ReportService {
     }
 
     /*******************partners*****************/
-    public ByteArrayOutputStream getPartnersAnualByPeriodId(Long periodId) throws GeneralAppException {
+    public ByteArrayOutputStream getPartnersAnnualByPeriodId(Long periodId) throws GeneralAppException {
         String jrxmlFile = "partners_anual_by_period_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
@@ -170,7 +170,7 @@ public class ReportService {
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 
-    public ByteArrayOutputStream getPartnersGeneralIndicatorsAnualByPeriodId(Long periodId) throws GeneralAppException {
+    public ByteArrayOutputStream getPartnersGeneralIndicatorsAnnualByPeriodId(Long periodId) throws GeneralAppException {
         String jrxmlFile = "partners_general_anual_by_period_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
@@ -191,7 +191,7 @@ public class ReportService {
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 
-    public ByteArrayOutputStream getPartnersPerformanceIndicatorsAnualByPeriodId(Long periodId) throws GeneralAppException {
+    public ByteArrayOutputStream getPartnersPerformanceIndicatorsAnnualByPeriodId(Long periodId) throws GeneralAppException {
         String jrxmlFile = "partners_pi_anual_by_period_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
@@ -222,7 +222,7 @@ public class ReportService {
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 
-    public ByteArrayOutputStream getPartnerAnualByProjectId(Long periodId) throws GeneralAppException {
+    public ByteArrayOutputStream getPartnerAnnualByProjectId(Long periodId) throws GeneralAppException {
         String jrxmlFile = "partner_anual_by_project_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
@@ -253,7 +253,7 @@ public class ReportService {
 
     /*************direct implementation ************/
 
-    public ByteArrayOutputStream getDirectImplementationPerformanceIndicatorsAnualByPeriodId(Long periodId) throws GeneralAppException {
+    public ByteArrayOutputStream getDirectImplementationPerformanceIndicatorsAnnualByPeriodId(Long periodId) throws GeneralAppException {
         String jrxmlFile = "direct_implementation_anual_by_period_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);

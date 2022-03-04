@@ -100,40 +100,40 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
-    @Path("/getAllImplementationsMonthlylyByPeriodId/{periodId}")
+    @Path("/getAllImplementationsMonthlyByPeriodId/{periodId}")
     @GET
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public Response getAllImplementationsMonthlylyByPeriodId(
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
 
-        ByteArrayOutputStream r = this.reportService.getAllImplementationsMonthlylyByPeriodId(periodId);
+        ByteArrayOutputStream r = this.reportService.getAllImplementationsMonthlyByPeriodId(periodId);
 
         String filename = "Exportacion_datos_total_mensual" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
-    @Path("/getAllImplementationsDetailedlyByPeriodId/{periodId}")
+    @Path("/getAllImplementationsDetailedByPeriodId/{periodId}")
     @GET
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    public Response getAllImplementationsDetailedlyByPeriodId(
+    public Response getAllImplementationsDetailedByPeriodId(
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
 
-        ByteArrayOutputStream r = this.reportService.getAllImplementationsDetailedlyByPeriodId(periodId);
+        ByteArrayOutputStream r = this.reportService.getAllImplementationsDetailedByPeriodId(periodId);
 
         String filename = "Exportacion_datos_total_adetallado" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
-    @Path("/getAllImplementationsPerformanceIndicatorsAnualByPeriodId/{periodId}")
+    @Path("/getAllImplementationsPerformanceIndicatorsAnnualByPeriodId/{periodId}")
     @GET
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    public Response getAllImplementationsPerformanceIndicatorsAnualByPeriodId(
+    public Response getAllImplementationsPerformanceIndicatorsAnnualByPeriodId(
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
 
-        ByteArrayOutputStream r = this.reportService.getAllImplementationsPerformanceIndicatorsAnualByPeriodId(periodId);
+        ByteArrayOutputStream r = this.reportService.getAllImplementationsPerformanceIndicatorsAnnualByPeriodId(periodId);
 
         String filename = "Exportacion_datos_indicadores_producto_anual" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
@@ -181,14 +181,14 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
-    @Path("/getPartnersAnualByPeriodId/{periodId}")
+    @Path("/getPartnersAnnualByPeriodId/{periodId}")
     @GET
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    public Response getPartnersAnualByPeriodId(
+    public Response getPartnersAnnualByPeriodId(
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
 
-        ByteArrayOutputStream r = this.reportService.getPartnersAnualByPeriodId(periodId);
+        ByteArrayOutputStream r = this.reportService.getPartnersAnnualByPeriodId(periodId);
 
         String filename = "Exportacion_datos_socios_anual" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
@@ -231,14 +231,14 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
-    @Path("/getPartnersGeneralIndicatorsAnualByPeriodId/{periodId}")
+    @Path("/getPartnersGeneralIndicatorsAnnualByPeriodId/{periodId}")
     @GET
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    public Response getPartnersGeneralIndicatorsAnualByPeriodId(
+    public Response getPartnersGeneralIndicatorsAnnualByPeriodId(
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
 
-        ByteArrayOutputStream r = this.reportService.getPartnersGeneralIndicatorsAnualByPeriodId(periodId);
+        ByteArrayOutputStream r = this.reportService.getPartnersGeneralIndicatorsAnnualByPeriodId(periodId);
 
         String filename = "Exportacion_datos_socios_igeneral_anual" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
@@ -272,14 +272,14 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
-    @Path("/getPartnersPerformanceIndicatorsAnualByPeriodId/{periodId}")
+    @Path("/getPartnersPerformanceIndicatorsAnnualByPeriodId/{periodId}")
     @GET
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    public Response getPartnersPerformanceIndicatorsAnualByPeriodId(
+    public Response getPartnersPerformanceIndicatorsAnnualByPeriodId(
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
 
-        ByteArrayOutputStream r = this.reportService.getPartnersPerformanceIndicatorsAnualByPeriodId(periodId);
+        ByteArrayOutputStream r = this.reportService.getPartnersPerformanceIndicatorsAnnualByPeriodId(periodId);
 
         String filename = "Exportacion_datos_socios_iproducto_anual" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
@@ -321,14 +321,14 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
-    @Path("/getPartnerAnualByProjectId/{projectId}")
+    @Path("/getPartnerAnnualByProjectId/{projectId}")
     @GET
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    public Response getPartnerAnualByProjectId(
+    public Response getPartnerAnnualByProjectId(
             @PathParam("projectId") Long projectId
     ) throws GeneralAppException {
 
-        ByteArrayOutputStream r = this.reportService.getPartnerAnualByProjectId(projectId);
+        ByteArrayOutputStream r = this.reportService.getPartnerAnnualByProjectId(projectId);
 
         String filename = "Exportacion_datos_socio_anual" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
@@ -373,14 +373,14 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
-    @Path("/getDirectImplementationPerformanceIndicatorsAnualByPeriodId/{periodId}")
+    @Path("/getDirectImplementationPerformanceIndicatorsAnnualByPeriodId/{periodId}")
     @GET
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    public Response getDirectImplementationPerformanceIndicatorsAnualByPeriodId(
+    public Response getDirectImplementationPerformanceIndicatorsAnnualByPeriodId(
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
 
-        ByteArrayOutputStream r = this.reportService.getDirectImplementationPerformanceIndicatorsAnualByPeriodId(periodId);
+        ByteArrayOutputStream r = this.reportService.getDirectImplementationPerformanceIndicatorsAnnualByPeriodId(periodId);
 
         String filename = "Exportacion_datos_implementacion_directa_anual" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();

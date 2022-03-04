@@ -190,6 +190,19 @@ export class MenuService {
             ]
         },
         {separator: true},
+        {
+            label: 'Reportes',
+            icon: 'pi pi-file-o',
+            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'],
+            items: [
+                {
+                    label: 'Exportación de Datos',
+                    icon: 'pi pi-fw pi-file-excel',
+                    routerLink: ['/reports/dataExport'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'],
+                },
+            ]
+        },
         {separator: true},
     ];
 

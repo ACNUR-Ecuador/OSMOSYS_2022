@@ -13,6 +13,10 @@ import { TestPlotyComponent } from './test-ploty/test-ploty.component';
 import {PlotlyViaCDNModule} from 'angular-plotly.js';
 import { ReportControlPartnersComponent } from './report-control-partners/report-control-partners.component';
 import { ReportControlDirectImplementationComponent } from './report-control-direct-implementation/report-control-direct-implementation.component';
+import { DataExportComponent } from './data-export/data-export.component';
+import {ToolbarModule} from 'primeng/toolbar';
+import {FieldsetModule} from 'primeng/fieldset';
+import {SplitButtonModule} from 'primeng/splitbutton';
 
 
 @NgModule({
@@ -20,7 +24,8 @@ import { ReportControlDirectImplementationComponent } from './report-control-dir
     AllProjectsStateComponent,
     TestPlotyComponent,
     ReportControlPartnersComponent,
-    ReportControlDirectImplementationComponent
+    ReportControlDirectImplementationComponent,
+    DataExportComponent
   ],
     imports: [
         CommonModule,
@@ -31,7 +36,10 @@ import { ReportControlDirectImplementationComponent } from './report-control-dir
         MessagesModule,
         ToastModule,
         ButtonModule,
-        PlotlyViaCDNModule
+        PlotlyViaCDNModule,
+        ToolbarModule,
+        FieldsetModule,
+        SplitButtonModule
     ]
 })
 export class ReportsModule { }
