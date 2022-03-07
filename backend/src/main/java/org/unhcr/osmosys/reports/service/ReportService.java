@@ -222,31 +222,31 @@ public class ReportService {
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 
-    public ByteArrayOutputStream getPartnerAnnualByProjectId(Long periodId) throws GeneralAppException {
+    public ByteArrayOutputStream getPartnerAnnualByProjectId(Long projectId) throws GeneralAppException {
         String jrxmlFile = "partner_anual_by_project_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("periodId", periodId);
+        parameters.put("projectId", projectId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 
-    public ByteArrayOutputStream getPartnerQuarterlyByProjectId(Long periodId) throws GeneralAppException {
+    public ByteArrayOutputStream getPartnerQuarterlyByProjectId(Long projectId) throws GeneralAppException {
         String jrxmlFile = "partner_quarterly_by_project_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("periodId", periodId);
+        parameters.put("projectId", projectId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 
-    public ByteArrayOutputStream getPartnerMonthlyByProjectId(Long periodId) throws GeneralAppException {
+    public ByteArrayOutputStream getPartnerMonthlyByProjectId(Long projectId) throws GeneralAppException {
         String jrxmlFile = "partner_monthly_by_project_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("periodId", periodId);
+        parameters.put("projectId", projectId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 
-    public ByteArrayOutputStream getPartnerDetailedByProjectId(Long periodId) throws GeneralAppException {
+    public ByteArrayOutputStream getPartnerDetailedByProjectId(Long projectId) throws GeneralAppException {
         String jrxmlFile = "partner_detailed_by_project_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("periodId", periodId);
+        parameters.put("projectId", projectId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 

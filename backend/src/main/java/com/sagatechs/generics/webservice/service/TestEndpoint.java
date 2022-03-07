@@ -135,28 +135,30 @@ public class TestEndpoint {
     public void testAmazonEmail() throws GeneralAppException, UnsupportedEncodingException, MessagingException {
         // Replace sender@example.com with your "From" address.
         // This address must be verified.
-        final String FROM = "ses-smtp-imecuador@imecuador.unhcr.org";
-        final String FROMNAME = "Tester";
+        final String FROM = "noreply@imecuador.unhcr.org";
+        final String FROMNAME = "noreply@imecuador.unhcr.org";
 
         // Replace recipient@example.com with a "To" address. If your account
         // is still in the sandbox, this address must be verified.
         final String TO = "salazart@unhcr.org";
 
         // Replace smtp_username with your Amazon SES SMTP user name.
+
         final String SMTP_USERNAME = "AKIAUDY3XMXWWVOMXJLU";
 
         // Replace smtp_password with your Amazon SES SMTP password.
+
         final String SMTP_PASSWORD = "BI5H+kwvGjPLfieVHRZNb0YBw1LBDQ1LikYI9fm0RNzF";
 
         // The name of the Configuration Set to use for this message.
         // If you comment out or remove this variable, you will also need to
         // comment out or remove the header below.
-       //  final String CONFIGSET = "ConfigSet";
+        // final String CONFIGSET = "ConfigSet";
 
         // Amazon SES SMTP host name. This example uses the US West (Oregon) region.
         // See https://docs.aws.amazon.com/ses/latest/DeveloperGuide/regions.html#region-endpoints
         // for more information.
-        final String HOST = "email-smtp.us-west-1.amazonaws.com";
+        final String HOST = "email-smtp.eu-west-1.amazonaws.com";
 
         // The port you will connect to on the Amazon SES SMTP endpoint.
         final int PORT = 587;
@@ -166,16 +168,16 @@ public class TestEndpoint {
         final String BODY = String.join(
                 System.getProperty("line.separator"),
                 "<h1>Amazon SES SMTP Email Test</h1>",
-                "<p>This email was sent with Amazon SES using the ",
-                "<a href='https://github.com/javaee/javamail'>Javamail Package</a>",
-                " for <a href='https://www.java.com'>Java</a>."
+                "<p>This email was sent by ",
+                "OSMOSYS",
+                " ."
         );
 
 
         // Create a Properties object to contain connection configuration information.
         Properties props = System.getProperties();
         props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.port", PORT);
+        props.put("mail.smtp.port", 587);
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.auth", "true");
 
