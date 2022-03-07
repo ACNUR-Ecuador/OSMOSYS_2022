@@ -32,6 +32,7 @@ export class AreasMenuComponent implements OnInit {
     highlightArea: Area;
     queryForm: FormGroup;
     indicatorForm: FormGroup;
+    viewAllDisabled = true;
 
     constructor(private fb: FormBuilder,
                 private periodService: PeriodService,
@@ -183,6 +184,17 @@ export class AreasMenuComponent implements OnInit {
                     label: this.indicatorPipe.transform(indicator)
                 } as SelectItem;
             });
+        if (this.indicatorOptions.length < 1) {
+            this.viewAllDisabled = true;
+            this.messageService.clear();
+            this.messageService.add({
+                severity: 'warn',
+                summary: 'No se encontraron indicadores, prueba con los filtros',
+                life: 3000
+            });
+        } else {
+            this.viewAllDisabled = false;
+        }
     }
 
     search() {
