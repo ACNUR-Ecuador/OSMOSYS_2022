@@ -16,6 +16,7 @@ public class IndicatorWeb implements Serializable {
     private String code;
     private String description;
     private String category;
+    private String qualitativeInstructions;
     private State state;
     private IndicatorType indicatorType;
     private MeasureType measureType;
@@ -176,6 +177,14 @@ public class IndicatorWeb implements Serializable {
 
     public void setUnit(UnitType unit) {
         this.unit = unit;
+    }
+
+    public String getQualitativeInstructions() {
+        return qualitativeInstructions;
+    }
+
+    public void setQualitativeInstructions(String qualitativeInstructions) {
+        this.qualitativeInstructions = qualitativeInstructions;
     }
 
     @Override

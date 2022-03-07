@@ -23,12 +23,14 @@ public class Indicator extends BaseEntity<Long> {
     private String code;
 
 
-
     @Column(name = "description", nullable = false)
     private String description;
 
     @Column(name = "category")
     private String category;
+
+    @Column(name = "qualitative_instructions", columnDefinition = "text")
+    private String qualitativeInstructions;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "statement_id", foreignKey = @ForeignKey(name = "fk_indicator_statement"))
@@ -277,6 +279,14 @@ public class Indicator extends BaseEntity<Long> {
 
     public void setUnit(UnitType unit) {
         this.unit = unit;
+    }
+
+    public String getQualitativeInstructions() {
+        return qualitativeInstructions;
+    }
+
+    public void setQualitativeInstructions(String qualitativeInstructions) {
+        this.qualitativeInstructions = qualitativeInstructions;
     }
 
     @Override

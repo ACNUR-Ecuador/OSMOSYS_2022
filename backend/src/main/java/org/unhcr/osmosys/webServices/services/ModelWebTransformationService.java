@@ -324,6 +324,7 @@ public class ModelWebTransformationService {
         indicatorWeb.setCode(indicator.getCode());
         indicatorWeb.setDescription(indicator.getDescription());
         indicatorWeb.setCategory(indicator.getCategory());
+        indicatorWeb.setQualitativeInstructions(indicator.getQualitativeInstructions());
         indicatorWeb.setState(indicator.getState());
         indicatorWeb.setIndicatorType(indicator.getIndicatorType());
         indicatorWeb.setMeasureType(indicator.getMeasureType());
