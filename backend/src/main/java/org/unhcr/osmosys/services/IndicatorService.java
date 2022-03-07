@@ -84,6 +84,7 @@ public class IndicatorService {
         indicator.setCode(indicatorWeb.getCode());
         indicator.setDescription(indicatorWeb.getDescription());
         indicator.setCategory(indicatorWeb.getCategory());
+        indicator.setQualitativeInstructions(indicatorWeb.getQualitativeInstructions());
         indicator.setState(indicatorWeb.getState());
         indicator.setIndicatorType(indicatorWeb.getIndicatorType());
         indicator.setMeasureType(indicatorWeb.getMeasureType());
@@ -163,6 +164,7 @@ public class IndicatorService {
             }
         });
 
+        indicator.setQualitativeInstructions(indicatorWeb.getQualitativeInstructions());
         this.saveOrUpdate(indicator);
         return indicator.getId();
     }
