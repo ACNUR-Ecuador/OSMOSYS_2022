@@ -17,8 +17,7 @@ import {
     CustomDissagregationValues,
     IndicatorExecution,
     IndicatorValue,
-    IndicatorValueCustomDissagregationWeb,
-    Period
+    IndicatorValueCustomDissagregationWeb, Period, QuarterMonthResume
 } from '../model/OsmosysModel';
 import {HttpResponse} from '@angular/common/http';
 import {TableColumnProperties} from 'exceljs';
@@ -186,33 +185,28 @@ export class UtilsService {
         return result;
     }
 
-    valueToBadgeStatusAlert(value: number, month: MonthType, year: number): string {
-        const now: Date = new Date();
-        now.setHours(0, 0, 0, 0);
-        // const monthNow = now.getMonth();
-        // const yearNow = now.getFullYear();
-        const monthValue = this.enumsService.monthTypeToNumber(month);
-
-        const dateValueFirstDay = this.addMonths(new Date(year, monthValue - 1, 1), 1);
-        const dateValueDayExpiration = this.addMonths(new Date(year, monthValue - 1, UtilsService.daysToReport), 1);
+    valueToBadgeStatusAlertv2(quarterMonthResume: QuarterMonthResume, indicatorExecution: IndicatorExecution): string {
         let result: string;
-        if (value) {
-            // fecha ya expiró es correcto
-            if (dateValueDayExpiration.getTime() < now.getTime()) {
+        const monthInLates = indicatorExecution.lateMonths ? indicatorExecution.lateMonths.filter(month => {
+            return month.id === quarterMonthResume.monthId;
+        }) : [];
+        if (monthInLates.length > 0) {
+            result = 'error';
+        } else {
+            const now: Date = new Date();
+            now.setHours(0, 0, 0, 0);
+            const todayMonth = now.getMonth() + 1;
+            const monthValue = this.enumsService.monthTypeToNumber(quarterMonthResume.monthMonth as MonthType);
+            if (monthValue === todayMonth) {
+                result = 'alert';
+            } else if (monthValue < todayMonth) {
                 result = 'correct';
             } else {
-                result = 'white';
+                result = '';
             }
-        } else {
-            // si ya esat pasado el mes
-            if (now.getTime() > dateValueFirstDay.getTime() && now.getTime() <= dateValueDayExpiration.getTime()) {
-                result = 'alert';
-            } else if (now.getTime() > dateValueDayExpiration.getTime()) {
-                result = 'error';
-            } else {
-                result = 'white';
-            }
+
         }
+        console.log(quarterMonthResume.monthMonth + '' + result);
         return result;
     }
 
@@ -225,7 +219,7 @@ export class UtilsService {
         const dateValueFirstDay = this.addMonths(new Date(year, monthValue - 1, 1), 1);
         const dateValueDayExpiration = this.addMonths(new Date(year, monthValue - 1, UtilsService.daysToReport), 1);
 
-        if (value) {
+        if (value || value === 0) {
             return value.toString();
         } else {
             // si ya esat pasado el mes
@@ -459,7 +453,7 @@ export class UtilsService {
             .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
     }
 
-    getTotalIndicatorValuesArrayArray(indicatorValues: Array<Array<IndicatorValue|IndicatorValueCustomDissagregationWeb>>) {
+    getTotalIndicatorValuesArrayArray(indicatorValues: Array<Array<IndicatorValue | IndicatorValueCustomDissagregationWeb>>) {
         return indicatorValues
             .reduce((previousValue, currentValue) => previousValue.concat(currentValue), [])
             .map(value => value.value)
