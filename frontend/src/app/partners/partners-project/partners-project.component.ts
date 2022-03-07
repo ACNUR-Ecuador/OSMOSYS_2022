@@ -181,22 +181,18 @@ export class PartnersProjectComponent implements OnInit {
     }
 
     private getReportAnnual() {
-        console.log('Annual');
         this.getReport('Annual');
     }
 
     private getReportQuarterly() {
-        console.log('Quarterly');
         this.getReport('Quarterly');
     }
 
     private getReportMonthly() {
-        console.log('Monthly');
         this.getReport('Monthly');
     }
 
     private getReportDetailed() {
-        console.log('Detailed');
         this.getReport('Detailed');
     }
 
@@ -204,11 +200,7 @@ export class PartnersProjectComponent implements OnInit {
     public getReport(type: string) {
         const reportName = 'getPartnerXXXByProjectId';
         this.messageService.clear();
-        console.log(reportName);
-        console.log(this.project.id);
-        console.log(type);
         const report: string = reportName.replace('XXX', type);
-        console.log(report);
         let reportObservable = null;
         switch (report) {
             case 'getPartnerAnnualByProjectId':

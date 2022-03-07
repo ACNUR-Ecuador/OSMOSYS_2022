@@ -61,11 +61,7 @@ export class DataExportComponent implements OnInit {
 
     public getReport(period: Period, reportName: string, type: string) {
         this.messageService.clear();
-        console.log(reportName);
-        console.log(period);
-        console.log(type);
         const report: string = reportName.replace('XXX', type);
-        console.log(report);
         let reportObservable = null;
         switch (report) {
             case 'getAllImplementationsAnnualByPeriodId':
@@ -221,22 +217,18 @@ export class DataExportComponent implements OnInit {
     }
 
     private getReportAnnual() {
-        console.log('Annual');
         this.getReport(this.periodForm.get('selectedPeriod').value as Period, this.periodForm.get('selectedReport').value as string, 'Annual');
     }
 
     private getReportQuarterly() {
-        console.log('Quarterly');
         this.getReport(this.periodForm.get('selectedPeriod').value as Period, this.periodForm.get('selectedReport').value as string, 'Quarterly');
     }
 
     private getReportMonthly() {
-        console.log('Monthly');
         this.getReport(this.periodForm.get('selectedPeriod').value as Period, this.periodForm.get('selectedReport').value as string, 'Monthly');
     }
 
     private getReportDetailed() {
-        console.log('Detailed');
         this.getReport(this.periodForm.get('selectedPeriod').value as Period, this.periodForm.get('selectedReport').value as string, 'Detailed');
     }
 

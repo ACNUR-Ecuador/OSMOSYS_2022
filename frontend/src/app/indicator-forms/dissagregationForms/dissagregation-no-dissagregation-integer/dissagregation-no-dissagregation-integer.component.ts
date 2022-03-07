@@ -33,7 +33,6 @@ export class DissagregationNoDissagregationIntegerComponent implements OnInit, O
     processDissagregationValues() {
         this.rows = [];
         this.rows.push(this.values);
-        console.log(this.rows);
 
     }
 

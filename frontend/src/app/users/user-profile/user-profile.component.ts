@@ -83,7 +83,6 @@ export class UserProfileComponent implements OnInit {
             }).join(' - ');
             this.userForm.get('roles').patchValue(roles);
             this.userForm.get('roles').disable();
-            console.log(this.userForm.value);
         }, error => {
             this.messageService.add({
                 severity: 'error',

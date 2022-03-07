@@ -206,7 +206,6 @@ export class UtilsService {
             }
 
         }
-        console.log(quarterMonthResume.monthMonth + '' + result);
         return result;
     }
 
@@ -657,7 +656,6 @@ export class UtilsService {
 
 
     public getLateClass(late: string) {
-        console.log(late);
         if (late === 'WARNING') {
             return 'p-button-warning';
         } else if (late === 'LATE') {

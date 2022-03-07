@@ -62,7 +62,6 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
 
     ngOnInit(): void {
         this.indicatorExecution = this.config.data.indicatorExecution;
-        console.log(this.indicatorExecution);
         this.monthId = this.config.data.monthId;
         this.getUserRoles();
         this.formItem = this.fb.group({
@@ -128,7 +127,6 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             this.validateSegregations();
             this.getHasLocationDissagregation();
             this.cd.detectChanges();
-            console.log(this.oneDimentionDissagregations);
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -162,7 +160,6 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
                     life: 3000
                 });
                 this.disableSave = true;
-                console.log(this.formItem);
             }
         });
     }
@@ -311,7 +308,6 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     }
 
     cancelLocations() {
-        console.log(this.formLocations.get('locationsSelected').value);
         this.showLocationsDialog = false;
     }
 }

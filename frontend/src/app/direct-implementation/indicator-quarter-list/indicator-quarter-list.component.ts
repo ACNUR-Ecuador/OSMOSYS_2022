@@ -25,8 +25,6 @@ export class IndicatorQuarterListComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        console.log('qaurters');
-        console.log(this.quarters);
         this.quarters = this.quarters.filter(value => {
             return value.state === EnumsState.ACTIVE;
         })

@@ -171,7 +171,8 @@ export class Indicator {
     public id: number;
     public code: string;
     public description: string;
-    public category: string;
+    public category: string; // todo quiar opcionañ
+    public qualitativeInstructions?: string;
     public state: string;
     public indicatorType: string;
     public measureType: string;

@@ -279,7 +279,6 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             assignedUser,
             assignedUserBackup
         };
-        console.log(assigment);
         if (assigment.id) {
             this.indicatorExecutionService
                 .updateAssignPerformanceIndicatorDirectImplementation(assigment)
@@ -389,6 +388,5 @@ export class DirectImplementationAdministrationComponent implements OnInit {
         this.itemForm.get('indicator').disable();
         this.showItemDialog = true;
         this.onChangeIndicator(indicator);
-        console.log(this.itemForm.value);
     }
 }
