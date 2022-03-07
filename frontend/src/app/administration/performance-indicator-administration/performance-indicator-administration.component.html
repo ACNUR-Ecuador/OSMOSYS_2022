@@ -280,6 +280,16 @@
                                    *ngIf="utilsService.showErrorForm('state',formItem)">{{utilsService.getErrorMessageForm('state', formItem)}}</small>
                         </div>
                         <div class="p-field p-col-12 p-md-12">
+                            <label for="qualitativeInstructionsI">Instrucciones para Información Cualitativa</label>
+                            <textarea pInputTextarea id="qualitativeInstructionsI"
+                                      formControlName="qualitativeInstructions"
+                                      autoResize="autoResize">
+                            </textarea>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('qualitativeInstructions',formItem)">
+                                {{utilsService.getErrorMessageForm('qualitativeInstructions', formItem)}}</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-12">
                             <ng-template pTemplate="header">
                                 <label for="stateI">Segregaciones</label>
                             </ng-template>
