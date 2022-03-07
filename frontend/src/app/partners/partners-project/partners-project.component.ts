@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormGroup} from '@angular/forms';
-import {FilterService, MessageService, SelectItem} from 'primeng/api';
+import {FilterService, MenuItem, MessageService, SelectItem} from 'primeng/api';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {UtilsService} from '../../shared/services/utils.service';
 import {ProjectService} from '../../shared/services/project.service';
@@ -15,6 +15,8 @@ import {DialogService} from 'primeng/dynamicdialog';
 import {GeneralIndicatorFormComponent} from '../../indicator-forms/general-indicator-form/general-indicator-form.component';
 import {PerformanceIndicatorFormComponent} from '../../indicator-forms/performance-indicator-form/performance-indicator-form.component';
 import {IndicatorPipe} from '../../shared/pipes/indicator.pipe';
+import {ReportsService} from '../../shared/services/reports.service';
+import {HttpResponse} from '@angular/common/http';
 
 @Component({
     selector: 'app-partners-project',
@@ -46,6 +48,8 @@ export class PartnersProjectComponent implements OnInit {
     // tslint:disable-next-line:variable-name
     _selectedColumnsGeneralIndicators: ColumnTable[];
     colsGeneralIndicators: ColumnTable[];
+    itemsReportTypeFull: MenuItem[];
+    public projectType: string = null;
 
     constructor(
         public dialogService: DialogService,
@@ -58,7 +62,8 @@ export class PartnersProjectComponent implements OnInit {
         private codeDescriptionPipe: CodeDescriptionPipe,
         private enumValuesToLabelPipe: EnumValuesToLabelPipe,
         private indicatorPipe: IndicatorPipe,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private reportsService: ReportsService
     ) {
         this.idProjectParam = this.route.snapshot.paramMap.get('projectId');
         if (this.idProjectParam === 'null') {
@@ -69,7 +74,7 @@ export class PartnersProjectComponent implements OnInit {
 
     ngOnInit(): void {
         this.loadProject(this.idProjectParam);
-
+        this.generateItemsReportType();
 
     }
 
@@ -147,6 +152,98 @@ export class PartnersProjectComponent implements OnInit {
             this.loadProject(this.idProjectParam);
         }, error => {
             this.loadProject(this.idProjectParam);
+        });
+    }
+
+    private generateItemsReportType() {
+        this.itemsReportTypeFull = [
+            {
+                label: 'Total', icon: 'pi pi-file-excel', command: () => {
+                    this.getReportAnnual();
+                }
+            },
+            {
+                label: 'Trimestral', icon: 'pi pi-file-excel', command: () => {
+                    this.getReportQuarterly();
+                }
+            },
+            {
+                label: 'Mensual', icon: 'pi pi-file-excel', command: () => {
+                    this.getReportMonthly();
+                }
+            },
+            {
+                label: 'Con Desagregaciones', icon: 'pi pi-file-excel', command: () => {
+                    this.getReportDetailed();
+                }
+            }
+        ];
+    }
+
+    private getReportAnnual() {
+        console.log('Annual');
+        this.getReport('Annual');
+    }
+
+    private getReportQuarterly() {
+        console.log('Quarterly');
+        this.getReport('Quarterly');
+    }
+
+    private getReportMonthly() {
+        console.log('Monthly');
+        this.getReport('Monthly');
+    }
+
+    private getReportDetailed() {
+        console.log('Detailed');
+        this.getReport('Detailed');
+    }
+
+
+    public getReport(type: string) {
+        const reportName = 'getPartnerXXXByProjectId';
+        this.messageService.clear();
+        console.log(reportName);
+        console.log(this.project.id);
+        console.log(type);
+        const report: string = reportName.replace('XXX', type);
+        console.log(report);
+        let reportObservable = null;
+        switch (report) {
+            case 'getPartnerAnnualByProjectId':
+                reportObservable = this.reportsService.getPartnerAnnualByProjectId(this.project.id);
+                break;
+            case 'getPartnerQuarterlyByProjectId':
+                reportObservable = this.reportsService.getPartnerQuarterlyByProjectId(this.project.id);
+                break;
+
+            case 'getPartnerMonthlyByProjectId':
+                reportObservable = this.reportsService.getPartnerMonthlyByProjectId(this.project.id);
+                break;
+
+            case 'getPartnerDetailedByProjectId':
+                reportObservable = this.reportsService.getPartnerDetailedByProjectId(this.project.id);
+                break;
+            default: {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Reporte no implementado',
+                    detail: report,
+                    life: 3000
+                });
+                return;
+            }
+        }
+        reportObservable.subscribe((response: HttpResponse<Blob>) => {
+            this.utilsService.downloadFileResponse(response);
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al Generar el Reporte',
+                detail: error.error.message,
+                life: 3000
+            });
         });
     }
 }

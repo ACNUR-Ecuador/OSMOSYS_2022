@@ -29,6 +29,7 @@ import {PartnersProjectPerformanceIndicatorListComponent} from './partners-proje
 import {IndicatorPipe} from '../shared/pipes/indicator.pipe';
 import {MonthPipe} from '../shared/pipes/month.pipe';
 import { PartnersGeneralIndicatorQuarterListComponent } from './partners-general-indicator-quarter-list/partners-general-indicator-quarter-list.component';
+import {SplitButtonModule} from 'primeng/splitbutton';
 
 
 @NgModule({
@@ -59,7 +60,8 @@ import { PartnersGeneralIndicatorQuarterListComponent } from './partners-general
         TabViewModule,
         CardModule,
         OverlayPanelModule,
-        IndicatorFormsModule
+        IndicatorFormsModule,
+        SplitButtonModule
     ],
     providers: [
         EnumValuesToLabelPipe,

@@ -53,11 +53,16 @@
                                value="{{project.endDate | date:'longDate'  }}"
                         />
                     </div>
-                </div>
-                <div class="p-field p-col-12 p-md-12">
-                    <p-messages></p-messages>
-                </div>
 
+                    <div class="p-col-4 border_div">
+                        <p-splitButton label="Generar Reporte del Proyecto" icon="pi pi-file-excel"
+                                       [model]="itemsReportTypeFull"
+                                       styleClass="p-button-success p-mb-2"></p-splitButton>
+                    </div>
+                    <div class="p-field p-col-5 p-md-5">
+                        <p-messages></p-messages>
+                    </div>
+                </div>
             </div>
             <p-card>
                 <p-tabView>

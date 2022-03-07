@@ -124,6 +124,7 @@ export class ReportsService {
             responseType: 'blob' as 'json'
         });
     }
+
     public getPartnersPerformanceIndicatorsAnnualByPeriodId(periodId: number) {
         return this.http.get(`${mainServiceUrl}/getPartnersPerformanceIndicatorsAnnualByPeriodId/${periodId}`, {
             observe: 'response',
@@ -144,6 +145,37 @@ export class ReportsService {
             responseType: 'blob' as 'json'
         });
     }
+
+    public getPartnerAnnualByProjectId(projectId: number) {
+        return this.http.get(`${mainServiceUrl}/getPartnerAnnualByProjectId/${projectId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+
+    public getPartnerQuarterlyByProjectId(projectId: number) {
+        return this.http.get(`${mainServiceUrl}/getPartnerQuarterlyByProjectId/${projectId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+
+    public getPartnerMonthlyByProjectId(projectId: number) {
+        return this.http.get(`${mainServiceUrl}/getPartnerMonthlyByProjectId/${projectId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+
+    public getPartnerDetailedByProjectId(projectId: number) {
+        return this.http.get(`${mainServiceUrl}/getPartnerDetailedByProjectId/${projectId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+
+
+
     public getPartnersPerformanceIndicatorsDetailedByPeriodId(periodId: number) {
         return this.http.get(`${mainServiceUrl}/getPartnersPerformanceIndicatorsDetailedByPeriodId/${periodId}`, {
             observe: 'response',
@@ -171,6 +203,7 @@ export class ReportsService {
             responseType: 'blob' as 'json'
         });
     }
+
     public getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(periodId: number) {
         return this.http.get(`${mainServiceUrl}/getDirectImplementationPerformanceIndicatorsDetailedByPeriodId/${periodId}`, {
             observe: 'response',
