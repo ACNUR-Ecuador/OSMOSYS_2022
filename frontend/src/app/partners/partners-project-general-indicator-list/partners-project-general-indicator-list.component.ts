@@ -137,4 +137,5 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnC
     }
 
 
+
 }

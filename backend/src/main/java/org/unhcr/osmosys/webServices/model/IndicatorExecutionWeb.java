@@ -26,7 +26,7 @@ public class IndicatorExecutionWeb implements Serializable {
     private MonthWeb lastReportedMonth;
 
     private List<QuarterWeb> quarters = new ArrayList<>();
-    private Boolean late;
+    private LateType late;
     private List<MonthWeb> lateMonths;
 
     /******socios*****/
@@ -195,11 +195,11 @@ public class IndicatorExecutionWeb implements Serializable {
         this.locations = locations;
     }
 
-    public Boolean getLate() {
+    public LateType getLate() {
         return late;
     }
 
-    public void setLate(Boolean late) {
+    public void setLate(LateType late) {
         this.late = late;
     }
 

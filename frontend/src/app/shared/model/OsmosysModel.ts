@@ -332,7 +332,7 @@ export class IndicatorExecution {
     public lastReportedQuarter: Quarter;
     public lastReportedMonth: Month;
     public quarters: Quarter[];
-    public late: boolean;
+    public late: string;
     public lateMonths: Month[];
     public project: Project;
     public projectStatement: Statement;

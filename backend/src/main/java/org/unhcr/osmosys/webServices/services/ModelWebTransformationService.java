@@ -1,5 +1,6 @@
 package org.unhcr.osmosys.webServices.services;
 
+import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
@@ -25,6 +26,9 @@ public class ModelWebTransformationService {
 
     @Inject
     StatementDao statementDao;
+
+    @Inject
+    AppConfigurationService appConfigurationService;
 
 
     //<editor-fold desc="Areas">
@@ -106,7 +110,7 @@ public class ModelWebTransformationService {
             for (IndicatorExecutionWeb indicatorExecutionWeb : indicatorExecutionsArea) {
                 indicators.add(indicatorExecutionWeb.getIndicator());
                 arw.getIndicatorExecutionIds().add(indicatorExecutionWeb.getId());
-                if (indicatorExecutionWeb.getLate()) {
+                if (indicatorExecutionWeb.getLate().equals(LateType.LATE)) {
                     lateCount++;
                 }
             }
@@ -1035,6 +1039,9 @@ public class ModelWebTransformationService {
 
     public IndicatorExecutionWeb indicatorExecutionToIndicatorExecutionWeb(IndicatorExecution ie, boolean getProject) throws GeneralAppException {
 
+        if(ie.getIndicator()!=null && ie.getIndicator().getCode().equals("ME0K3")){
+            LOGGER.error("es este");
+        }
         IndicatorExecutionWeb iw = new IndicatorExecutionWeb();
         iw.setId(ie.getId());
         iw.setActivityDescription(ie.getActivityDescription());
@@ -1070,24 +1077,24 @@ public class ModelWebTransformationService {
         iw.setQuarters(this.quartersToQuarterWeb(ie.getQuarters()));
         Optional<Quarter> lastReportedQuarter = ie.getQuarters().stream()
                 .filter(quarter -> quarter.getState().equals(State.ACTIVO))
-                .filter(quarter -> quarter.getTotalExecution() != null).min(Comparator.comparingInt(Quarter::getOrder));
+                .filter(quarter -> quarter.getTotalExecution() != null)
+                .max(Comparator.comparingInt(Quarter::getOrder));
         if (lastReportedQuarter.isPresent()) {
             iw.setLastReportedQuarter(this.quarterToQuarterWeb(lastReportedQuarter.get()));
             Optional<Month> lastReportedMonth = lastReportedQuarter.get().getMonths()
                     .stream()
                     .filter(month -> month.getState().equals(State.ACTIVO))
                     .filter(month -> month.getTotalExecution() != null)
-                    .min(Comparator.comparingInt(Month::getOrder));
+                    .max(Comparator.comparingInt(Month::getOrder));
             lastReportedMonth.ifPresent(month -> iw.setLastReportedMonth(this.monthToMonthWeb(month)));
         }
 
         List<MonthWeb> lateMonths = this.getLateIndicatorExecutionMonths(iw);
         if (CollectionUtils.isNotEmpty(lateMonths)) {
             iw.setLateMonths(lateMonths);
-            iw.setLate(true);
-        } else {
-            iw.setLate(false);
+
         }
+        iw.setLate(this.getLateForIndicatorExecution(ie, lateMonths));
 
         List<Canton> activeCantons = ie.getIndicatorExecutionLocationAssigments()
                 .stream()
@@ -1100,10 +1107,49 @@ public class ModelWebTransformationService {
 
     }
 
+    private LateType getLateForIndicatorExecution(IndicatorExecution indicatorExecution, List<MonthWeb> lateMonths) throws GeneralAppException {
+        if (CollectionUtils.isNotEmpty(lateMonths)) {
+            return LateType.LATE;
+
+        } else {
+            Integer alertDays = this.appConfigurationService.getAlertDays();
+            LocalDate today = LocalDate.now();
+
+            int todayYear = today.getYear();
+            int todayDay = today.getDayOfMonth();
+            int todayMonth = today.getMonth().getValue();
+            QuarterEnum todayQuarter = MonthEnum.getQuarterByMonthNumber(todayMonth);
+            // obtengo los meses
+            List<Month> monthList = indicatorExecution.getQuarters().stream()
+                    .filter(quarter -> quarter.getState().equals(State.ACTIVO))
+                    .map(quarter -> new ArrayList<>(quarter.getMonths()))
+                    .flatMap(Collection::stream)
+                    .filter(month ->
+                            month.getYear().equals(todayYear)
+                                    && month.getMonthYearOrder().equals(todayMonth)
+                                    && month.getTotalExecution() == null
+                    )
+                    .collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(monthList)) {
+                return LateType.WARNING;
+            } else {
+                return LateType.ON_TIME;
+            }
+        }
+    }
+
     public List<MonthWeb> getLateIndicatorExecutionMonths(IndicatorExecutionWeb indicatorExecution) throws GeneralAppException {
+        Integer alertDays = this.appConfigurationService.getAlertDays();
         LocalDate today = LocalDate.now();
-        int todayMonth = today.getMonth().getValue();
+
         int todayYear = today.getYear();
+        int todayDay = today.getDayOfMonth();
+        int todayMonth;
+        if (alertDays < todayDay) {
+            todayMonth = today.getMonth().getValue() - 1;
+        } else {
+            todayMonth = today.getMonth().getValue();
+        }
         QuarterEnum todayQuarter = MonthEnum.getQuarterByMonthNumber(todayMonth);
 
         // obtengo los meses
@@ -1131,7 +1177,7 @@ public class ModelWebTransformationService {
                         }
                         //noinspection RedundantIfStatement
                         if (month.getYear().compareTo(todayYear) == 0
-                                && month.getMonth().getOrder() < todayMonth
+                                && month.getMonth().getOrder() <= todayMonth
                         ) {
                             return true;
                         }

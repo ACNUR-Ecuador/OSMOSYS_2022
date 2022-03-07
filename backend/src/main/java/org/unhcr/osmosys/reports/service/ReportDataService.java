@@ -6,6 +6,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
 import org.unhcr.osmosys.webServices.model.IndicatorExecutionWeb;
+import org.unhcr.osmosys.webServices.model.LateType;
 import org.unhcr.osmosys.webServices.model.MonthWeb;
 
 import javax.ejb.Stateless;
@@ -39,9 +40,9 @@ public class ReportDataService {
             map.put("target", ie.getTarget());
             map.put("totalExecution", ie.getTotalExecution());
             map.put("executionPercentage", ie.getExecutionPercentage());
-            map.put("late", ie.getLate() ? "Si" : "No");
+            map.put("late", ie.getLate().equals(LateType.LATE) ? "Si" : "No");
             // late months
-            if (ie.getLate() && CollectionUtils.isNotEmpty(ie.getLateMonths())) {
+           /* if (ie.getLate() && CollectionUtils.isNotEmpty(ie.getLateMonths())) {
                 List<String> months = ie.getLateMonths()
                         .stream()
                         .filter(monthWeb -> monthWeb.getState().equals(State.ACTIVO))
@@ -51,7 +52,7 @@ public class ReportDataService {
                 if (CollectionUtils.isNotEmpty(months)) {
                     map.put("lateMonths", String.join("; ", months));
                 }
-            }
+            }*/
             r.add(map);
         }
 

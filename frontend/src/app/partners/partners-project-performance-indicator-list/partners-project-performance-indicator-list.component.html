@@ -84,9 +84,11 @@
             </td>
 
             <td>
-                <button type="button" pButton label="ver valores" (click)="op.toggle($event)"  ></button>
+                <button type="button" pButton label="ver valores" (click)="op.toggle($event)"
+                        [ngClass]="this.utilsService.getLateClass(rowData.late)"
+                ></button>
                 <p-overlayPanel #op (onShow)="selectedIndicatorSet(rowData)" (onHide)="clearIndicator()">
-                    <ng-template pTemplate >
+                    <ng-template pTemplate>
                         <app-partners-indicator-quarter-list
                             [quarters]="rowData.quarters"
                             (callMonth)="callMonth($event, op)"

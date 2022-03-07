@@ -71,7 +71,7 @@ public class AppConfigurationService {
     }
 
     @SuppressWarnings("unused")
-    private String crearMensajeProblemaValorConfiguracion(AppConfigurationKey clave, String valor) {
+    public String crearMensajeProblemaValorConfiguracion(AppConfigurationKey clave, String valor) {
         StringBuilder sb = new StringBuilder();
         sb.append("El valor de configuración ");
 
@@ -82,7 +82,7 @@ public class AppConfigurationService {
 
     }
 
-    private Integer getAlertDays() {
+    public Integer getAlertDays() {
         String valusS = this.findValorByClave(AppConfigurationKey.ALERT_DAYS);
         if(StringUtils.isBlank(valusS)){
             return null;

@@ -88,7 +88,7 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
         this.indicatorExecutionService.getGeneralIndicatorResume(projectId).subscribe(value => {
             if (value && value.length > 0) {
                 this.generalIndicator = value[0];
-                this.generalIndicatorLate = this.generalIndicator.late;
+                this.generalIndicatorLate = this.generalIndicator.late === 'LATE';
             }
             this.loadGeneralIndicatorMonths(projectId, this.generalIndicator.id);
             this.createGeneralTargetChart(this.generalIndicator);
