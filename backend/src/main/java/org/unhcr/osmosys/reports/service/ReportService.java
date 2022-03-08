@@ -64,7 +64,7 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream indicatorsCatalogByPeriodId(Long periodId) throws GeneralAppException {
-        String jrxmlFile = "catalogIndicators.jrxml";
+        String jrxmlFile = "indicatorCatalog.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
