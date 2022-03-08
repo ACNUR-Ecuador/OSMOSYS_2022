@@ -140,7 +140,7 @@ public class TestEndpoint {
 
         // Replace recipient@example.com with a "To" address. If your account
         // is still in the sandbox, this address must be verified.
-        final String TO = "godoya@unhcr.org";
+        final String TO = "salazart@unhcr.org";
 
         // Replace smtp_username with your Amazon SES SMTP user name.
 

@@ -17,6 +17,7 @@ import { DataExportComponent } from './data-export/data-export.component';
 import {ToolbarModule} from 'primeng/toolbar';
 import {FieldsetModule} from 'primeng/fieldset';
 import {SplitButtonModule} from 'primeng/splitbutton';
+import { IndicatorCatalogReportsComponent } from './indicator-catalog-reports/indicator-catalog-reports.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import {SplitButtonModule} from 'primeng/splitbutton';
     TestPlotyComponent,
     ReportControlPartnersComponent,
     ReportControlDirectImplementationComponent,
-    DataExportComponent
+    DataExportComponent,
+    IndicatorCatalogReportsComponent
   ],
     imports: [
         CommonModule,

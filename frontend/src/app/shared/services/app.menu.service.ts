@@ -193,13 +193,18 @@ export class MenuService {
         {
             label: 'Reportes',
             icon: 'pi pi-file-o',
-            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'],
+            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS'],
             items: [
                 {
+                    label: 'Catálogo de Indicadores',
+                    icon: 'pi pi-fw pi-file-excel',
+                    routerLink: ['/reports/indicatorsCatalog'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS'],
+                }, {
                     label: 'Exportación de Datos',
                     icon: 'pi pi-fw pi-file-excel',
                     routerLink: ['/reports/dataExport'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS'],
                 },
             ]
         },

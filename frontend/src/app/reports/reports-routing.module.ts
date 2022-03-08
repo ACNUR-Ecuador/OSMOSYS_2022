@@ -5,6 +5,7 @@ import {TestPlotyComponent} from './test-ploty/test-ploty.component';
 import {ReportControlPartnersComponent} from './report-control-partners/report-control-partners.component';
 import {ReportControlDirectImplementationComponent} from './report-control-direct-implementation/report-control-direct-implementation.component';
 import {DataExportComponent} from './data-export/data-export.component';
+import {IndicatorCatalogReportsComponent} from './indicator-catalog-reports/indicator-catalog-reports.component';
 
 const routes: Routes = [{
     path: '',
@@ -13,6 +14,7 @@ const routes: Routes = [{
         {path: 'reportControlPartners', component: ReportControlPartnersComponent},
         {path: 'reportControlDirectImplementation', component: ReportControlDirectImplementationComponent},
         {path: 'dataExport', component: DataExportComponent},
+        {path: 'indicatorsCatalog', component: IndicatorCatalogReportsComponent},
         {path: 'testPloty', component: TestPlotyComponent}
     ]
 }];

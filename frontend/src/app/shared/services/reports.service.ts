@@ -212,4 +212,24 @@ export class ReportsService {
     }
 
 
+    /****************indicators catalog***********/
+    public getIndicatorsCatalogByPeriodId(periodId: number) {
+        return this.http.get(`${mainServiceUrl}/indicatorsCatalogByPeriodId/${periodId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+
+    public getIndicatorsCatalogWithImplementersSimple(periodId: number) {
+        return this.http.get(`${mainServiceUrl}/indicatorsCatalogWithImplementersSimple/${periodId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+    public getIndicatorsCatalogWithImplementersDetailed(periodId: number) {
+        return this.http.get(`${mainServiceUrl}/indicatorsCatalogWithImplementersDetailed/${periodId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
 }
