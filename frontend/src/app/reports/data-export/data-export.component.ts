@@ -190,12 +190,12 @@ export class DataExportComponent implements OnInit {
                 label: 'Mensual', icon: 'pi pi-file-excel', command: () => {
                     this.getReportMonthly();
                 }
-            },
+            }/*,
             {
                 label: 'Con Desagregaciones', icon: 'pi pi-file-excel', command: () => {
                     this.getReportDetailed();
                 }
-            }
+            }*/
         ];
         this.itemsReportTypeAnualMonthlyDetailed = [
             {
@@ -207,12 +207,12 @@ export class DataExportComponent implements OnInit {
                 label: 'Mensual', icon: 'pi pi-file-excel', command: () => {
                     this.getReportMonthly();
                 }
-            },
+            }/*,
             {
                 label: 'Con Desagregaciones', icon: 'pi pi-file-excel', command: () => {
                     this.getReportDetailed();
                 }
-            }
+            }*/
         ];
     }
 

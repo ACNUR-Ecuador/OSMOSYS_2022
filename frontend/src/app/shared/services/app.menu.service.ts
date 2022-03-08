@@ -135,25 +135,6 @@ export class MenuService {
                     icon: 'pi pi-fw pi-home',
                     routerLink: ['/partners/partnersProjectList'],
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'PUNTO_FOCAL']
-                },
-                {
-                    label: 'Reportes',
-                    icon: 'pi pi-users',
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'PUNTO_FOCAL'],
-                    items: [
-                        {
-                            label: 'Estado de Reporte de Proyectos',
-                            icon: 'pi pi-fw book',
-                            routerLink: ['/reports/allProjectsState'],
-                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL'],
-                        },
-                        {
-                            label: 'Tablero Control Reporte de Proyectos',
-                            icon: 'pi pi-fw book',
-                            routerLink: ['/reports/reportControlPartners'],
-                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL'],
-                        },
-                    ]
                 }
             ]
         },
@@ -174,26 +155,13 @@ export class MenuService {
                     routerLink: ['/home/homeDashboardDirectImplementation'],
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID'],
                 },
-                {
-                    label: 'Reportes',
-                    icon: 'pi pi-users',
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID'],
-                    items: [
-                        {
-                            label: 'Tablero Control Reporte de ID',
-                            icon: 'pi pi-fw book',
-                            routerLink: ['/reports/reportControlDirectImplementation'],
-                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID'],
-                        },
-                    ]
-                }
             ]
         },
         {separator: true},
         {
             label: 'Reportes',
             icon: 'pi pi-file-o',
-            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS'],
+            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'PUNTO_FOCAL'],
             items: [
                 {
                     label: 'Catálogo de Indicadores',
@@ -206,6 +174,31 @@ export class MenuService {
                     routerLink: ['/reports/dataExport'],
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS'],
                 },
+                {
+                    label: 'Control de Reportes',
+                    icon: 'pi pi-users',
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID'],
+                    items: [
+                        {
+                            label: 'Tablero Control Reporte de Socios',
+                            icon: 'pi pi-fw book',
+                            routerLink: ['/reports/reportControlPartners'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL'],
+                        },
+                        {
+                            label: 'Tablero Control Reporte de ID',
+                            icon: 'pi pi-fw book',
+                            routerLink: ['/reports/reportControlDirectImplementation'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID'],
+                        },
+                        {
+                            label: 'Reporte de Estado de Reporte de Proyectos',
+                            icon: 'pi pi-fw book',
+                            routerLink: ['/reports/allProjectsState'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL'],
+                        },
+                    ]
+                }
             ]
         },
         {separator: true},
