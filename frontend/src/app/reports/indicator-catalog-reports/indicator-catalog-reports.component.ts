@@ -6,6 +6,7 @@ import {PeriodService} from '../../shared/services/period.service';
 import {UtilsService} from '../../shared/services/utils.service';
 import {ReportsService} from '../../shared/services/reports.service';
 import {HttpResponse} from '@angular/common/http';
+import {UserService} from '../../shared/services/user.service';
 
 @Component({
     selector: 'app-indicator-catalog-reports',
@@ -15,17 +16,20 @@ import {HttpResponse} from '@angular/common/http';
 export class IndicatorCatalogReportsComponent implements OnInit {
     periodForm: FormGroup;
     periods: Period[];
+    enableReport = false;
 
     constructor(private fb: FormBuilder,
                 private periodService: PeriodService,
                 private messageService: MessageService,
                 public utilsService: UtilsService,
-                private reportsService: ReportsService) {
+                private reportsService: ReportsService,
+                private userService: UserService) {
     }
 
     ngOnInit(): void {
         this.loadPeriods();
         this.createForms();
+        this.enableReport = this.userService.getLogedUsername().organization.id === 1;
     }
 
     loadPeriods() {
