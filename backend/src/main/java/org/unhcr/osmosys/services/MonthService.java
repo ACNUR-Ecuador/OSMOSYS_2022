@@ -121,7 +121,7 @@ public class MonthService {
         DissagregationType dissagregationTypeToCalculate;
         Optional<DissagregationType> dissagregationTypeOptional =
                 dissagregationsTypes.stream()
-                        .filter(dissagregationType1 -> !dissagregationType1.equals(DissagregationType.DIVERSIDAD))
+                        .filter(dissagregationType1 -> !dissagregationType1.equals(DissagregationType.DIVERSIDAD) && !dissagregationType1.equals(DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD))
                         .findFirst();
         dissagregationTypeToCalculate = dissagregationTypeOptional.orElseGet(() -> dissagregationsTypes.iterator().next());
         DissagregationType finalDissagregationTypeToCalculate = dissagregationTypeToCalculate;
