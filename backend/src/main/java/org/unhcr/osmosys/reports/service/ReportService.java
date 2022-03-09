@@ -9,6 +9,7 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jboss.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -19,6 +20,7 @@ import javax.sql.DataSource;
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -45,22 +47,26 @@ public class ReportService {
             parameters.put("DataParameter", dataSource);
 
             JasperPrint jasperprint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
-            JRXlsxExporter xlsxExporter = new JRXlsxExporter();
-            xlsxExporter.setExporterInput(new SimpleExporterInput(jasperprint));
-            ByteArrayOutputStream finalReport = new ByteArrayOutputStream();
-            OutputStreamExporterOutput output = new SimpleOutputStreamExporterOutput(finalReport);
-            xlsxExporter.setExporterOutput(output);
-            SimpleXlsxReportConfiguration xlsReportConfiguration = new SimpleXlsxReportConfiguration();
-            xlsReportConfiguration.setOnePagePerSheet(true);
-            xlsReportConfiguration.setRemoveEmptySpaceBetweenRows(false);
-            xlsReportConfiguration.setDetectCellType(true);
-            xlsReportConfiguration.setWhitePageBackground(false);
-            xlsxExporter.setConfiguration(xlsReportConfiguration);
-            xlsxExporter.exportReport();
-            return finalReport;
+            return getByteArrayOutputStreamFromJasperPrint(jasperprint);
         } catch (JRException e) {
             throw new GeneralAppException("Error al generar el reporte", Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
         }
+    }
+
+    private ByteArrayOutputStream getByteArrayOutputStreamFromJasperPrint(JasperPrint jasperprint) throws JRException {
+        JRXlsxExporter xlsxExporter = new JRXlsxExporter();
+        xlsxExporter.setExporterInput(new SimpleExporterInput(jasperprint));
+        ByteArrayOutputStream finalReport = new ByteArrayOutputStream();
+        OutputStreamExporterOutput output = new SimpleOutputStreamExporterOutput(finalReport);
+        xlsxExporter.setExporterOutput(output);
+        SimpleXlsxReportConfiguration xlsReportConfiguration = new SimpleXlsxReportConfiguration();
+        xlsReportConfiguration.setOnePagePerSheet(true);
+        xlsReportConfiguration.setRemoveEmptySpaceBetweenRows(false);
+        xlsReportConfiguration.setDetectCellType(true);
+        xlsReportConfiguration.setWhitePageBackground(false);
+        xlsxExporter.setConfiguration(xlsReportConfiguration);
+        xlsxExporter.exportReport();
+        return finalReport;
     }
 
     public ByteArrayOutputStream indicatorsCatalogByPeriodId(Long periodId) throws GeneralAppException {
@@ -105,11 +111,13 @@ public class ReportService {
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 
+
     public ByteArrayOutputStream getAllImplementationsDetailedByPeriodId(Long periodId) throws GeneralAppException {
-        String jrxmlFile = "all_implementations_detailed_by_period_id.jrxml";
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("periodId", periodId);
-        return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
+
+        XSSFWorkbook workbook = this.reportDataService.getAllImplementationsDetailedByPeriodId(periodId);
+
+        return getByteArrayOutputStreamFromWorkbook(workbook);
+
     }
 
     /***********total pi****************/
@@ -135,10 +143,27 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream getAllImplementationsPerformanceIndicatorsDetailedByPeriodId(Long periodId) throws GeneralAppException {
-        String jrxmlFile = "all_implementations_pi_detailed_by_period_id.jrxml";
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("periodId", periodId);
-        return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
+
+        XSSFWorkbook workbook = this.reportDataService.getAllImplementationsPerformanceIndicatorsDetailedByPeriodId(periodId);
+
+        return getByteArrayOutputStreamFromWorkbook(workbook);
+
+    }
+
+    private ByteArrayOutputStream getByteArrayOutputStreamFromWorkbook(XSSFWorkbook workbook) throws GeneralAppException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+            workbook.write(bos);
+            return bos;
+        } catch (IOException e) {
+            throw new GeneralAppException("Error al Generar el reporte", Response.Status.INTERNAL_SERVER_ERROR);
+        } finally {
+            try {
+                bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /*******************partners*****************/
@@ -164,10 +189,9 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream getPartnersDetailedByPeriodId(Long periodId) throws GeneralAppException {
-        String jrxmlFile = "partners_detailed_by_period_id.jrxml";
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("periodId", periodId);
-        return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
+        XSSFWorkbook workbook = this.reportDataService.getPartnersIndicatorsExecutionsDetailedByPeriodId(periodId);
+
+        return getByteArrayOutputStreamFromWorkbook(workbook);
     }
 
     public ByteArrayOutputStream getPartnersGeneralIndicatorsAnnualByPeriodId(Long periodId) throws GeneralAppException {
@@ -185,10 +209,9 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream getPartnersGeneralIndicatorsDetailedByPeriodId(Long periodId) throws GeneralAppException {
-        String jrxmlFile = "partners_general_detailed_by_period_id.jrxml";
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("periodId", periodId);
-        return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
+        XSSFWorkbook workbook = this.reportDataService.getPartnersGeneralIndicatorsDetailedByPeriodId(periodId);
+
+        return getByteArrayOutputStreamFromWorkbook(workbook);
     }
 
     public ByteArrayOutputStream getPartnersPerformanceIndicatorsAnnualByPeriodId(Long periodId) throws GeneralAppException {
@@ -216,10 +239,9 @@ public class ReportService {
 
 
     public ByteArrayOutputStream getPartnersPerformanceIndicatorsDetailedByPeriodId(Long periodId) throws GeneralAppException {
-        String jrxmlFile = "partners_pi_detailed_by_period_id.jrxml";
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("periodId", periodId);
-        return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
+        XSSFWorkbook workbook = this.reportDataService.getPartnersPerformanceIndicatorsDetailedByPeriodId(periodId);
+
+        return getByteArrayOutputStreamFromWorkbook(workbook);
     }
 
     public ByteArrayOutputStream getPartnerAnnualByProjectId(Long projectId) throws GeneralAppException {
@@ -275,10 +297,9 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(Long periodId) throws GeneralAppException {
-        String jrxmlFile = "direct_implementation_detailed_by_period_id.jrxml";
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("periodId", periodId);
-        return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
+        XSSFWorkbook workbook = this.reportDataService.getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(periodId);
+
+        return getByteArrayOutputStreamFromWorkbook(workbook);
     }
 
 
@@ -309,19 +330,7 @@ public class ReportService {
             JasperReport jasperReport = JasperCompileManager.compileReport(file);
             Connection con = this.getConexion();
             JasperPrint jasperprint = JasperFillManager.fillReport(jasperReport, parameters, con);
-            JRXlsxExporter xlsxExporter = new JRXlsxExporter();
-            xlsxExporter.setExporterInput(new SimpleExporterInput(jasperprint));
-            ByteArrayOutputStream finalReport = new ByteArrayOutputStream();
-            OutputStreamExporterOutput output = new SimpleOutputStreamExporterOutput(finalReport);
-            xlsxExporter.setExporterOutput(output);
-            SimpleXlsxReportConfiguration xlsReportConfiguration = new SimpleXlsxReportConfiguration();
-            xlsReportConfiguration.setOnePagePerSheet(true);
-            xlsReportConfiguration.setRemoveEmptySpaceBetweenRows(false);
-            xlsReportConfiguration.setDetectCellType(true);
-            xlsReportConfiguration.setWhitePageBackground(false);
-            xlsxExporter.setConfiguration(xlsReportConfiguration);
-            xlsxExporter.exportReport();
-            return finalReport;
+            return getByteArrayOutputStreamFromJasperPrint(jasperprint);
         } catch (JRException e) {
             throw new GeneralAppException("Error al generar el reporte", Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
         }

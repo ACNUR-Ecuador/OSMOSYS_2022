@@ -6,6 +6,7 @@ import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.utils.DateUtils;
 import org.jboss.logging.Logger;
+import org.unhcr.osmosys.daos.ReportDao;
 import org.unhcr.osmosys.model.Project;
 import org.unhcr.osmosys.model.enums.AreaType;
 import org.unhcr.osmosys.reports.service.ReportService;
@@ -25,9 +26,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 
@@ -50,6 +57,9 @@ public class TestEndpoint {
 
     @Inject
     ReportService reportService;
+
+    @Inject
+    ReportDao reportDao;
 
     @Inject
     DateUtils dateUtils;
@@ -124,9 +134,15 @@ public class TestEndpoint {
 
     @Path("testreport")
     @GET
-    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
-    public void testReport() throws GeneralAppException {
-        this.reportService.indicatorExecutionsToLateProjectsReportsByPeriodYear(1L);
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response testReport() throws GeneralAppException, IOException {
+        // List<IndicatorExecutionDetailedDTO> r = this.reportService.getAllIndicatorExecutionDetailed(1l);
+        LOGGER.error("start");
+        ByteArrayOutputStream r = this.reportService.getAllImplementationsDetailedByPeriodId(1l);
+
+        String filename = "Catalogo_indicadores_" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        LOGGER.error("end");
+        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
     @Path("testAmazonEmail")
