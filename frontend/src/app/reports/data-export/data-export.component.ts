@@ -79,32 +79,32 @@ export class DataExportComponent implements OnInit {
                 reportObservable = this.reportsService.getAllImplementationsDetailedByPeriodId(period.id);
                 break;
             case 'getAllImplementationsPerformanceIndicatorsAnnualByPeriodId':
-                reportObservable = this.reportsService.getAllImplementationsAnnualByPeriodId(period.id);
+                reportObservable = this.reportsService.getAllImplementationsPerformanceIndicatorsAnnualByPeriodId(period.id);
                 break;
             case 'getAllImplementationsPerformanceIndicatorsQuarterlyByPeriodId':
-                reportObservable = this.reportsService.getAllImplementationsQuarterlyByPeriodId(period.id);
+                reportObservable = this.reportsService.getAllImplementationsPerformanceIndicatorsQuarterlyByPeriodId(period.id);
                 break;
 
             case 'getAllImplementationsPerformanceIndicatorsMonthlyByPeriodId':
-                reportObservable = this.reportsService.getAllImplementationsMonthlyByPeriodId(period.id);
+                reportObservable = this.reportsService.getAllImplementationsPerformanceIndicatorsMonthlyByPeriodId(period.id);
                 break;
 
             case 'getAllImplementationsPerformanceIndicatorsDetailedByPeriodId':
-                reportObservable = this.reportsService.getAllImplementationsDetailedByPeriodId(period.id);
+                reportObservable = this.reportsService.getAllImplementationsPerformanceIndicatorsDetailedByPeriodId(period.id);
                 break;
             case 'getPartnersAnnualByPeriodId':
-                reportObservable = this.reportsService.getAllImplementationsAnnualByPeriodId(period.id);
+                reportObservable = this.reportsService.getPartnersAnnualByPeriodId(period.id);
                 break;
             case 'getPartnersQuarterlyByPeriodId':
-                reportObservable = this.reportsService.getAllImplementationsQuarterlyByPeriodId(period.id);
+                reportObservable = this.reportsService.getPartnersQuarterlyByPeriodId(period.id);
                 break;
 
             case 'getPartnersMonthlyByPeriodId':
-                reportObservable = this.reportsService.getAllImplementationsMonthlyByPeriodId(period.id);
+                reportObservable = this.reportsService.getPartnersMonthlyByPeriodId(period.id);
                 break;
 
             case 'getPartnersDetailedByPeriodId':
-                reportObservable = this.reportsService.getAllImplementationsDetailedByPeriodId(period.id);
+                reportObservable = this.reportsService.getPartnersDetailedByPeriodId(period.id);
                 break;
             case 'getPartnersGeneralIndicatorsAnnualByPeriodId':
                 reportObservable = this.reportsService.getPartnersGeneralIndicatorsAnnualByPeriodId(period.id);
@@ -190,12 +190,12 @@ export class DataExportComponent implements OnInit {
                 label: 'Mensual', icon: 'pi pi-file-excel', command: () => {
                     this.getReportMonthly();
                 }
-            }/*,
+            },
             {
                 label: 'Con Desagregaciones', icon: 'pi pi-file-excel', command: () => {
                     this.getReportDetailed();
                 }
-            }*/
+            }
         ];
         this.itemsReportTypeAnualMonthlyDetailed = [
             {
@@ -207,12 +207,12 @@ export class DataExportComponent implements OnInit {
                 label: 'Mensual', icon: 'pi pi-file-excel', command: () => {
                     this.getReportMonthly();
                 }
-            }/*,
+            },
             {
                 label: 'Con Desagregaciones', icon: 'pi pi-file-excel', command: () => {
                     this.getReportDetailed();
                 }
-            }*/
+            }
         ];
     }
 
