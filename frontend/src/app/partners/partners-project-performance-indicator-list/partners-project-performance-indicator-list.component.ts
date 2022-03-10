@@ -71,7 +71,7 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
             }, error => {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Error al cargar indicadores generales',
+                    summary: 'Error al cargar indicadores',
                     detail: error.error.message,
                     life: 3000
                 });
