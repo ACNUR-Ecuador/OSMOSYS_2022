@@ -144,7 +144,8 @@
                         <p-dropdown id="areaTypeI"
                                     formControlName="areaType"
                                     [options]="areaTypes"
-                                    placeholder="Selecciona...">
+                                    placeholder="Selecciona..."
+                                    appendTo="body">
                         </p-dropdown>
 
                         <small class="p-error" *ngIf="utilsService.showErrorForm('areaType',formItem)">Campo

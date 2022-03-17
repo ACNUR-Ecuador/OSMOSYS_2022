@@ -51,7 +51,8 @@
                             <p-dropdown id="organizationI"
                                         formControlName="organization"
                                         [options]="organizations"
-                                        placeholder="Selecciona...">
+                                        placeholder="Selecciona..."
+                                        appendTo="body">
                             </p-dropdown>
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('organization',formItem)">{{utilsService.getErrorMessageForm('organization', formItem)}}</small>
@@ -64,7 +65,8 @@
                                         formControlName="period"
                                         [options]="periods"
                                         optionLabel="year"
-                                        placeholder="Selecciona...">
+                                        placeholder="Selecciona..."
+                                        appendTo="body">
                             </p-dropdown>
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('period',formItem)">{{utilsService.getErrorMessageForm('period', formItem)}}</small>
@@ -97,6 +99,7 @@
                             <p-dropdown id="focalPointI" formControlName="focalPoint" [options]="focalPoints"
                                         placeholder="Selecciona..." [showClear]="true"
                                         [filter]="true" filterBy="name"
+                                        appendTo="body"
                             >
                                 <ng-template pTemplate="item" let-item>
                                     {{item.name + ' ' + item.organization.acronym}}
@@ -537,6 +540,7 @@
                                 placeholder="Selecciona..."
                                 filter="true"
                                 (onChange)="onChangePerformanceIndicator($event.value)"
+                                appendTo="body"
                     >
                     </p-dropdown>
 
@@ -576,6 +580,7 @@
                                 [filter]="true"
                                 placeholder="Selecciona .."
                                 [autoDisplayFirst]="false"
+
                     >
                     </p-dropdown>
                     <small class="p-error"

@@ -112,7 +112,8 @@
                     </div>
                     <div class="p-field p-col-12 p-md-12">
                         <label for="checkedI">Verificación Punto Focal</label>
-                        <p-dropdown id="checkedI" [options]="chekedOptions" formControlName="checked"></p-dropdown>
+                        <p-dropdown id="checkedI" [options]="chekedOptions" formControlName="checked"
+                                    appendTo="body"></p-dropdown>
                         <small class="p-error"
                                *ngIf="utilsService.showErrorForm('checked',formItem)">
                             {{utilsService.getErrorMessageForm('checked', formItem)}}

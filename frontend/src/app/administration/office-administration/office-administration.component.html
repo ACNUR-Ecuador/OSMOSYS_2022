@@ -144,7 +144,8 @@
                         <p-dropdown id="officeTypeI"
                                     formControlName="type"
                                     [options]="officeTypes"
-                                    placeholder="Selecciona...">
+                                    placeholder="Selecciona..."
+                                    appendTo="body">
                         </p-dropdown>
 
                         <small class="p-error" *ngIf="utilsService.showErrorForm('type',formItem)">Campo
@@ -157,7 +158,8 @@
                                     filter="true"
                                     formControlName="parentOffice"
                                     [options]="parenteOffices"
-                                    placeholder="Selecciona...">
+                                    placeholder="Selecciona..."
+                                    appendTo="body">
                         </p-dropdown>
 
                         <small class="p-error" *ngIf="utilsService.showErrorForm('type',formItem)">Campo

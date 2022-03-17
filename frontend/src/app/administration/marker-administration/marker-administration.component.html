@@ -131,7 +131,8 @@
                         <p-dropdown id="typeI"
                                     formControlName="type"
                                     [options]="types"
-                                    placeholder="Selecciona...">
+                                    placeholder="Selecciona..."
+                                    appendTo="body">
                         </p-dropdown>
                         <small class="p-error" *ngIf="utilsService.showErrorForm('type',formItem)">Campo
                             obligatorio.</small>
@@ -143,7 +144,8 @@
                                     formControlName="subType"
                                     [options]="subTypes"
                                     editable="true"
-                                    placeholder="Selecciona o escribe...">
+                                    placeholder="Selecciona o escribe..."
+                                    appendTo="body">
                         </p-dropdown>
                         <small class="p-error" *ngIf="utilsService.showErrorForm('subType',formItem)">Campo
                             obligatorio.</small>

@@ -7,7 +7,8 @@
 
 
             <p-toolbar styleClass="p-mb-4">
-                <div class="p-toolbar-group-left" *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRATOR'])">
+                <div class="p-toolbar-group-left"
+                     *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRATOR'])">
                     <button pButton pRipple label="Crear Proyecto" icon="pi pi-plus"
                             class="p-button-success p-mr-2 p-mb-2"
                             (click)="createItem()"></button>
@@ -18,7 +19,8 @@
                         <label for="periodI" class="p-col-fixed" style="width:100px; color: white;">Periodo:</label>
                         <div class="p-col">
                             <p-dropdown id="periodI" [options]="periods" optionLabel="year"
-                                        (onChange)="onPeriodChange($event.value)"></p-dropdown>
+                                        (onChange)="onPeriodChange($event.value)"
+                                        appendTo="body"></p-dropdown>
                         </div>
 
                     </div>
@@ -109,7 +111,8 @@
                             {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
                         </td>
                         <td>
-                            <button pButton pRipple icon="pi pi-pencil" label="Editar" class="p-button-rounded p-button-success p-mr-2"
+                            <button pButton pRipple icon="pi pi-pencil" label="Editar"
+                                    class="p-button-rounded p-button-success p-mr-2"
                                     (click)="editItem(rowData.id)"></button>
                         </td>
                     </tr>
