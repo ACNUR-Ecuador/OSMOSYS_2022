@@ -136,6 +136,9 @@
             <logger category="net.sf.jasperreports.engine.query.JRJdbcQueryExecuter">
                 <level name="ERROR"/>
             </logger>
+            <logger category="net.sf.jasperreports">
+                <level name="DEBUG"/>
+            </logger>
             <logger category="sun.rmi">
                 <level name="WARN"/>
             </logger>

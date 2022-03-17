@@ -468,3 +468,16 @@ export class IndicatorValue {
     public denominatorValue: number;
     public numeratorValue: number;
 }
+
+export class VersionModel {
+
+    constructor(version: number, loaderTime: number, loaderCounter: number) {
+        this.version = version;
+        this.loaderTime = loaderTime;
+        this.loaderCounter = loaderCounter;
+    }
+
+    public version: number;
+    public loaderTime: number;
+    public loaderCounter: number;
+}

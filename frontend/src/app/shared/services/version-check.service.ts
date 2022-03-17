@@ -1,14 +1,22 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {VersionModel} from '../model/OsmosysModel';
 
 @Injectable({
     providedIn: 'root'
 })
 export class VersionCheckService {
-    // this will be replaced by actual hash post-build.js
-    private currentHash = '{{POST_BUILD_ENTERS_HASH_HERE}}';
+
 
     constructor(private http: HttpClient) {
+    }
+    // this will be replaced by actual hash post-build.js
+    private currentHash = '1646857276487';
+
+    private counter = 0;
+
+    private static dateDifference(d1: number) {
+        return Math.floor((new Date().getTime() - d1) / (3600 * 1000));
     }
 
     /**
@@ -35,6 +43,8 @@ export class VersionCheckService {
         headers.append('Access-Control-Allow-Credentials', 'true');
         headers.append('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS, POST, PUT');
 
+        this.counter++;
+        console.log(this.counter);
 
         this.http.get(url + '?t=' + new Date().getTime(), {headers})
             .subscribe(
@@ -43,17 +53,30 @@ export class VersionCheckService {
                     console.error('hash: ' + hash);
                     console.error('currenthash: ' + this.currentHash);
                     const hashChanged = this.hasHashChanged(this.currentHash, hash);
-// If new version, do something
+                    // If new version, do something
                     console.error('has changed: ' + hashChanged);
-                    if (hashChanged) {
+                    this.currentHash = hash;
+                    let version: VersionModel;
+                    if (!window.localStorage.getItem('version')) {
+                        version = new VersionModel(Number(this.currentHash), new Date().getTime(), 0);
+                    } else {
+                        version = JSON.parse(window.localStorage.getItem('version'));
+                        version.loaderCounter = version.loaderCounter + 1;
+                    }
+                    window.localStorage.setItem('version', JSON.stringify(version));
+                    if (hashChanged && version.loaderCounter < 5) {
                         console.error('reloading');
                         window.location.reload();
-// ENTER YOUR CODE TO DO SOMETHING UPON VERSION CHANGE
-// for an example: location.reload();
+                        // ENTER YOUR CODE TO DO SOMETHING UPON VERSION CHANGE
+                        // for an example: location.reload();
+                    } else if (version.loaderCounter > 4 && VersionCheckService.dateDifference(version.loaderTime) > 24) {
+                        version.loaderCounter = 1;
+                        version.loaderTime = new Date().getTime();
+                        window.localStorage.setItem('version', JSON.stringify(version));
                     }
 // store the new hash so we wouldn't trigger versionChange again
 // only necessary in case you did not force refresh
-                    this.currentHash = hash;
+
                 },
                 (err) => {
                     console.error(err, 'Could not get version');
