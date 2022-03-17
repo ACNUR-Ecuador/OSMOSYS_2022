@@ -11,7 +11,7 @@ export class VersionCheckService {
     constructor(private http: HttpClient) {
     }
     // this will be replaced by actual hash post-build.js
-    private currentHash = '1646857276487';
+    private currentHash = '{{POST_BUILD_ENTERS_HASH_HERE}}';
 
     private counter = 0;
 
