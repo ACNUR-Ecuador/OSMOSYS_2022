@@ -271,6 +271,11 @@ export class UtilsService {
             case DissagregationType.SIN_DESAGREGACION: {
                 return result;
             }
+            case DissagregationType.GENERO_Y_EDAD: {
+                result.push(EnumsType.AgeType);
+                result.push(EnumsType.GenderType);
+                return result;
+            }
             case DissagregationType.TIPO_POBLACION_Y_GENERO: {
                 result.push(EnumsType.GenderType);
                 result.push(EnumsType.PopulationType);
@@ -312,6 +317,7 @@ export class UtilsService {
                 return 1;
             case DissagregationType.SIN_DESAGREGACION:
                 return 0;
+            case DissagregationType.GENERO_Y_EDAD:
             case DissagregationType.TIPO_POBLACION_Y_GENERO:
             case DissagregationType.TIPO_POBLACION_Y_EDAD:
             case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD:
@@ -350,6 +356,7 @@ export class UtilsService {
             case DissagregationType.PAIS_ORIGEN:
             case DissagregationType.DIVERSIDAD:
             case DissagregationType.SIN_DESAGREGACION:
+            case DissagregationType.GENERO_Y_EDAD:
             case DissagregationType.TIPO_POBLACION_Y_GENERO:
             case DissagregationType.TIPO_POBLACION_Y_EDAD:
             case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD:
@@ -360,6 +367,7 @@ export class UtilsService {
 
     getTwoDimentionsDissagregationTypes(): DissagregationType[] {
         const result: DissagregationType[] = [];
+        result.push(DissagregationType.GENERO_Y_EDAD);
         result.push(DissagregationType.TIPO_POBLACION_Y_EDAD);
         result.push(DissagregationType.TIPO_POBLACION_Y_GENERO);
         result.push(DissagregationType.TIPO_POBLACION_Y_LUGAR);
@@ -380,6 +388,11 @@ export class UtilsService {
             case DissagregationType.DIVERSIDAD:
             case DissagregationType.SIN_DESAGREGACION: {
                 result.push(dissagregationTypeE);
+                return result;
+            }
+            case DissagregationType.GENERO_Y_EDAD: {
+                result.push(DissagregationType.EDAD);
+                result.push(DissagregationType.GENERO);
                 return result;
             }
             case DissagregationType.TIPO_POBLACION_Y_GENERO: {
@@ -535,6 +548,7 @@ export class UtilsService {
             case DissagregationType.GENERO:
             case DissagregationType.LUGAR:
             case DissagregationType.PAIS_ORIGEN:
+            case DissagregationType.GENERO_Y_EDAD:
             case DissagregationType.TIPO_POBLACION_Y_GENERO:
             case DissagregationType.TIPO_POBLACION_Y_EDAD:
             case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN:
