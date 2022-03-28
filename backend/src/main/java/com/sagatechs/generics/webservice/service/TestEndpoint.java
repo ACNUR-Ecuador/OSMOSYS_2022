@@ -6,13 +6,16 @@ import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.utils.DateUtils;
 import org.jboss.logging.Logger;
+import org.unhcr.osmosys.daos.IndicatorDao;
 import org.unhcr.osmosys.daos.ReportDao;
+import org.unhcr.osmosys.model.Indicator;
+import org.unhcr.osmosys.model.Period;
 import org.unhcr.osmosys.model.Project;
+import org.unhcr.osmosys.model.cubeDTOs.FactDTO;
 import org.unhcr.osmosys.model.enums.AreaType;
+import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.reports.service.ReportService;
-import org.unhcr.osmosys.services.IndicatorExecutionService;
-import org.unhcr.osmosys.services.PeriodService;
-import org.unhcr.osmosys.services.ProjectService;
+import org.unhcr.osmosys.services.*;
 
 import javax.inject.Inject;
 import javax.mail.Message;
@@ -35,6 +38,8 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -47,7 +52,7 @@ public class TestEndpoint {
     UserService userService;
 
     @Inject
-    IndicatorExecutionService indicatorExecutionService;
+    IndicatorService indicatorService;
 
     @Inject
     PeriodService periodService;
@@ -64,6 +69,8 @@ public class TestEndpoint {
     @Inject
     DateUtils dateUtils;
 
+    @Inject
+    CubeService cubeService;
 
     @Path("test")
     @GET
@@ -85,7 +92,7 @@ public class TestEndpoint {
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
     public String createperformanceindicators() throws GeneralAppException {
-        this.indicatorExecutionService.createIndicatorExecForProjects(1l);
+        //this.indicatorExecutionService.createIndicatorExecForProjects(1l);
         return "ya";
     }
 
@@ -93,7 +100,7 @@ public class TestEndpoint {
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
     public String createperformanceindicatorsID() throws GeneralAppException {
-        this.indicatorExecutionService.createIndicatorExecForID(1l);
+        // this.indicatorExecutionService.createIndicatorExecForID(1l);
         return "ya";
     }
 
@@ -127,15 +134,15 @@ public class TestEndpoint {
         p.setName("test123");
         p.setState(State.ACTIVO);
         p.setPeriod(this.periodService.find(1L));
-        this.indicatorExecutionService.createGeneralIndicatorForProject(p);
+        // this.indicatorExecutionService.createGeneralIndicatorForProject(p);
 
 
     }
 
     @Path("testreport")
     @GET
-    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    public Response testReport() throws GeneralAppException, IOException {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response testcube() throws GeneralAppException, IOException {
         // List<IndicatorExecutionDetailedDTO> r = this.reportService.getAllIndicatorExecutionDetailed(1l);
         LOGGER.error("start");
         ByteArrayOutputStream r = this.reportService.getAllImplementationsDetailedByPeriodId(1l);
@@ -143,6 +150,13 @@ public class TestEndpoint {
         String filename = "Catalogo_indicadores_" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
         LOGGER.error("end");
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+    }
+
+    @Path("testcube")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<FactDTO> testReport() throws GeneralAppException, IOException {
+        return this.cubeService.getFactTableByPeriodYear(2022);
     }
 
     @Path("testAmazonEmail")
@@ -231,6 +245,179 @@ public class TestEndpoint {
             // Close and terminate the connection.
             transport.close();
         }
+    }
+
+    @Path("updatedissagregations")
+    @GET
+    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    public void addDissagregations() throws GeneralAppException, UnsupportedEncodingException, MessagingException {
+        List<String> codes = new ArrayList<>();
+        codes.add("AE011");
+        codes.add("AE0I1");
+        codes.add("BE021");
+        codes.add("BE031");
+        codes.add("DE0A1");
+        codes.add("DE0A2");
+        codes.add("DE0A3");
+        codes.add("DE0A4");
+        codes.add("DE0A5");
+        codes.add("DE0B2");
+        codes.add("EE0D1");
+        codes.add("EE0D2");
+        codes.add("EE0D3");
+        codes.add("EE0D4");
+        codes.add("EE0D7");
+        codes.add("EE0F2");
+        codes.add("FE061");
+        codes.add("FE062");
+        codes.add("FE065");
+        codes.add("FE068");
+        codes.add("GE0R5");
+        codes.add("GE0R6");
+        codes.add("HE071");
+        codes.add("HE074");
+        codes.add("HE081");
+        codes.add("HE082");
+        codes.add("HE083");
+        codes.add("HE084");
+        codes.add("HE085");
+        codes.add("HE087");
+        codes.add("HE091");
+        codes.add("HE0X1");
+        codes.add("IE0G1");
+        codes.add("IE0G5");
+        codes.add("IE0G8");
+        codes.add("IE0H4");
+        codes.add("IE0H7");
+        codes.add("IE0H8");
+        codes.add("JE0V2");
+        codes.add("JE0V4");
+        codes.add("KE0O1");
+        codes.add("KE0O2");
+        codes.add("KE0O3");
+        codes.add("KE0O4");
+        codes.add("KE0P1");
+        codes.add("KE0P3");
+        codes.add("ME0K1");
+        codes.add("ME0K10");
+        codes.add("ME0K13");
+        codes.add("ME0K14");
+        codes.add("ME0K15");
+        codes.add("ME0K2");
+        codes.add("ME0K3");
+        codes.add("ME0K4");
+        codes.add("ME0K7");
+        codes.add("ME0K9");
+        codes.add("ME0L1");
+        codes.add("ME0L2");
+        codes.add("ME0L3");
+        codes.add("ME0M1");
+        codes.add("ME0M2");
+        codes.add("ME0M3");
+        codes.add("OE131");
+        codes.add("OE141");
+        codes.add("OE142");
+        codes.add("PE051");
+        codes.add("PE052");
+        codes.add("PE053");
+
+        List<Indicator> indicators = this.indicatorService.getByCodeList(codes);
+        Period period = this.periodService.find(1L);
+        LOGGER.info(indicators.size());
+        for (Indicator indicator : indicators) {
+            LOGGER.debug(indicator.getDissagregationsAssignationToIndicator().size());
+            this.indicatorService.addDissagregationToIndicator(indicator,period, DissagregationType.GENERO_Y_EDAD);
+        }
+
+    }
+
+
+    @Path("dissableDissagregations")
+    @GET
+    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    public void dissableDissagregations() throws GeneralAppException, UnsupportedEncodingException, MessagingException {
+        List<String> codes = new ArrayList<>();
+        codes.add("AE011");
+        codes.add("AE0I1");
+        codes.add("BE021");
+        codes.add("BE031");
+        codes.add("DE0A1");
+        codes.add("DE0A2");
+        codes.add("DE0A3");
+        codes.add("DE0A4");
+        codes.add("DE0A5");
+        codes.add("DE0B2");
+        codes.add("EE0D1");
+        codes.add("EE0D2");
+        codes.add("EE0D3");
+        codes.add("EE0D4");
+        codes.add("EE0D7");
+        codes.add("EE0F2");
+        codes.add("FE061");
+        codes.add("FE062");
+        codes.add("FE065");
+        codes.add("FE068");
+        codes.add("GE0R5");
+        codes.add("GE0R6");
+        codes.add("HE071");
+        codes.add("HE074");
+        codes.add("HE081");
+        codes.add("HE082");
+        codes.add("HE083");
+        codes.add("HE084");
+        codes.add("HE085");
+        codes.add("HE087");
+        codes.add("HE091");
+        codes.add("HE0X1");
+        codes.add("IE0G1");
+        codes.add("IE0G5");
+        codes.add("IE0G8");
+        codes.add("IE0H4");
+        codes.add("IE0H7");
+        codes.add("IE0H8");
+        codes.add("JE0V2");
+        codes.add("JE0V4");
+        codes.add("KE0O1");
+        codes.add("KE0O2");
+        codes.add("KE0O3");
+        codes.add("KE0O4");
+        codes.add("KE0P1");
+        codes.add("KE0P3");
+        codes.add("ME0K1");
+        codes.add("ME0K10");
+        codes.add("ME0K13");
+        codes.add("ME0K14");
+        codes.add("ME0K15");
+        codes.add("ME0K2");
+        codes.add("ME0K3");
+        codes.add("ME0K4");
+        codes.add("ME0K7");
+        codes.add("ME0K9");
+        codes.add("ME0L1");
+        codes.add("ME0L2");
+        codes.add("ME0L3");
+        codes.add("ME0M1");
+        codes.add("ME0M2");
+        codes.add("ME0M3");
+        codes.add("OE131");
+        codes.add("OE141");
+        codes.add("OE142");
+        codes.add("PE051");
+        codes.add("PE052");
+        codes.add("PE053");
+
+        List<Indicator> indicators = this.indicatorService.getByCodeList(codes);
+        Period period = this.periodService.find(1L);
+        LOGGER.info(indicators.size());
+        List<DissagregationType> toDisable = new ArrayList<>();
+        toDisable.add(DissagregationType.GENERO);
+        toDisable.add(DissagregationType.EDAD);
+        for (Indicator indicator : indicators) {
+            LOGGER.debug(indicator.getDissagregationsAssignationToIndicator().size());
+
+            this.indicatorService.dissableDissagregationsToIndicator(indicator,period, toDisable);
+        }
+
     }
 }
 

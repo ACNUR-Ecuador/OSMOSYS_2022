@@ -168,6 +168,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         q.setParameter("generalType", generalType);
         return q.getResultList();
     }
+
     public List<IndicatorExecution> getDirectImplementationIndicatorByPeriodIdAndState(Long periodId, State state) {
         IndicatorType generalType = IndicatorType.GENERAL;
         String jpql = IndicatorExecutionDao.jpqlDirectImplementationIndicators +
@@ -328,6 +329,21 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("id", id);
         return (IndicatorExecution) q.getSingleResult();
+    }
+
+    public List<IndicatorExecution> getByPeriodIdAndIndicatorId(Long periodId, Long indicatorId) {
+        String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
+                " left join fetch o.period per " +
+                " left join fetch o.indicator i " +
+                " left join fetch o.quarters q " +
+                " left join fetch  q.months mo " +
+                " left join fetch mo.indicatorValues iv " +
+                " left join fetch mo.indicatorValuesIndicatorValueCustomDissagregations ivc " +
+                " WHERE per.id = :periodId and i.id=:indicatorId ";
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("periodId", periodId);
+        q.setParameter("indicatorId", indicatorId);
+        return q.getResultList();
     }
 
     public List<IndicatorExecution> getLateIndicatorExecutionGeneralByProjectIdMonthly(Long id, Integer yearToControl, List<MonthEnum> monthsToControl) {

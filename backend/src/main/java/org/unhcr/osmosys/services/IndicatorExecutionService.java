@@ -8,6 +8,7 @@ import com.sagatechs.generics.utils.DateUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.threeten.extra.YearQuarter;
+import org.unhcr.osmosys.daos.IndicatorDao;
 import org.unhcr.osmosys.daos.IndicatorExecutionDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.*;
@@ -22,6 +23,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Stateless
 public class IndicatorExecutionService {
@@ -39,7 +41,7 @@ public class IndicatorExecutionService {
     MonthService monthService;
 
     @Inject
-    IndicatorService indicatorService;
+    IndicatorDao indicatorDao;
 
     @Inject
     ProjectService projectService;
@@ -138,7 +140,7 @@ public class IndicatorExecutionService {
     public IndicatorExecution assignPerformanceIndicatoToProject(IndicatorExecutionAssigmentWeb indicatorExecutionWeb) throws GeneralAppException {
         this.validatePerformanceIndicatorAssignationToProject(indicatorExecutionWeb);
         IndicatorExecution ie = new IndicatorExecution();
-        Indicator indicator = this.indicatorService.getById(indicatorExecutionWeb.getIndicator().getId());
+        Indicator indicator = this.indicatorDao.find(indicatorExecutionWeb.getIndicator().getId());
         if (indicator == null) {
             throw new GeneralAppException("Indicador no encontrado " + indicatorExecutionWeb.getIndicator().getId(), Response.Status.BAD_REQUEST);
         }
@@ -763,7 +765,7 @@ public class IndicatorExecutionService {
         this.validatePerformanceIndicatorAssignationDirectImplementation(indicatorExecutionAssigmentWeb);
 
         IndicatorExecution ie = new IndicatorExecution();
-        Indicator indicator = this.indicatorService.getById(indicatorExecutionAssigmentWeb.getIndicator().getId());
+        Indicator indicator = this.indicatorDao.find(indicatorExecutionAssigmentWeb.getIndicator().getId());
         if (indicator == null) {
             throw new GeneralAppException("Indicador no encontrado " + indicatorExecutionAssigmentWeb.getIndicator().getId(), Response.Status.BAD_REQUEST);
         }
@@ -1063,6 +1065,78 @@ public class IndicatorExecutionService {
                 this.indicatorExecutionDao.getDirectImplementationIndicatorByPeriodIdAndState(period.getId(), State.ACTIVO), false
         );
 
+    }
+
+    public void updateIndicatorExecutionsDissagregations(
+            List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToEnable,
+            List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToDisable,
+            List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToCreate
+    ) throws GeneralAppException {
+        List<IndicatorExecution> iesToUpdateTotals = new ArrayList<>();
+        for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicatorsToEnable) {
+            List<IndicatorExecution> iesToEnable = this.indicatorExecutionDao.getByPeriodIdAndIndicatorId(dissagregationAssignationToIndicator.getPeriod().getId(), dissagregationAssignationToIndicator.getIndicator().getId());
+            iesToUpdateTotals.addAll(iesToEnable);
+            for (IndicatorExecution indicatorExecution : iesToEnable) {
+                indicatorExecution.getDissagregationsAssignationsToIndicatorExecutions()
+                        .stream()
+                        .filter(dissagregationAssignationToIndicatorExecution ->
+                                dissagregationAssignationToIndicatorExecution.getDissagregationType()
+                                        .equals(dissagregationAssignationToIndicator.getDissagregationType()))
+                        .findFirst()
+                        .ifPresent(dissagregationAssignationToIndicatorExecution -> {
+                            dissagregationAssignationToIndicatorExecution.setState(State.ACTIVO);
+                            indicatorExecution.getQuarters()
+                                    .stream().flatMap(quarter -> quarter.getMonths().stream())
+                                    .flatMap(month -> month.getIndicatorValues().stream())
+                                    .filter(indicatorValue -> indicatorValue.getDissagregationType().equals(dissagregationAssignationToIndicator.getDissagregationType()))
+                                    .forEach(indicatorValue -> indicatorValue.setState(State.ACTIVO));
+                        });
+            }
+
+        }
+        for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicatorsToDisable) {
+            List<IndicatorExecution> iesToDisable = this.indicatorExecutionDao.getByPeriodIdAndIndicatorId(dissagregationAssignationToIndicator.getPeriod().getId(), dissagregationAssignationToIndicator.getIndicator().getId());
+            iesToUpdateTotals.addAll(iesToDisable);
+            for (IndicatorExecution indicatorExecution : iesToDisable) {
+                indicatorExecution.getDissagregationsAssignationsToIndicatorExecutions()
+                        .stream()
+                        .filter(dissagregationAssignationToIndicatorExecution ->
+                                dissagregationAssignationToIndicatorExecution.getDissagregationType()
+                                        .equals(dissagregationAssignationToIndicator.getDissagregationType()))
+                        .findFirst()
+                        .ifPresent(dissagregationAssignationToIndicatorExecution -> {
+                            dissagregationAssignationToIndicatorExecution.setState(State.INACTIVO);
+                            indicatorExecution.getQuarters()
+                                    .stream().flatMap(quarter -> quarter.getMonths().stream())
+                                    .flatMap(month -> month.getIndicatorValues().stream())
+                                    .filter(indicatorValue -> indicatorValue.getDissagregationType().equals(dissagregationAssignationToIndicator.getDissagregationType()))
+                                    .forEach(indicatorValue -> indicatorValue.setState(State.INACTIVO));
+                        });
+            }
+        }
+
+        for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicatorsToCreate) {
+            List<IndicatorExecution> iesToCreate = this.indicatorExecutionDao.getByPeriodIdAndIndicatorId(dissagregationAssignationToIndicator.getPeriod().getId(), dissagregationAssignationToIndicator.getIndicator().getId());
+            iesToUpdateTotals.addAll(iesToCreate);
+            for (IndicatorExecution indicatorExecution : iesToCreate) {
+                DissagregationAssignationToIndicatorExecution dissagregationAssignationToIndicatorExecution= new DissagregationAssignationToIndicatorExecution();
+                dissagregationAssignationToIndicatorExecution.setState(State.ACTIVO);
+                dissagregationAssignationToIndicatorExecution.setDissagregationType(dissagregationAssignationToIndicator.getDissagregationType());
+                indicatorExecution.addDissagregationAssignationToIndicatorExecution(dissagregationAssignationToIndicatorExecution);
+                List<Month> months = iesToCreate.stream().flatMap(indicatorExecution1 -> indicatorExecution1.getQuarters().stream()).flatMap(quarter -> quarter.getMonths().stream()).collect(Collectors.toList());
+                for (Month month : months) {
+                    List<IndicatorValue> ivs = this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(dissagregationAssignationToIndicator.getDissagregationType(), new ArrayList<>());
+                    for (IndicatorValue iv : ivs) {
+                        month.addIndicatorValue(iv);
+                    }
+                }
+            }
+        }
+
+        for (IndicatorExecution ieToUpdateTotal : iesToUpdateTotals) {
+            this.updateIndicatorExecutionTotals(ieToUpdateTotal);
+            this.saveOrUpdate(ieToUpdateTotal);
+        }
     }
 }
 

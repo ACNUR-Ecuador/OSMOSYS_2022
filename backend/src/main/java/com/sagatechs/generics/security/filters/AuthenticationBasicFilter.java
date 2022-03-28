@@ -32,6 +32,8 @@ public class AuthenticationBasicFilter implements ContainerRequestFilter {
 
 	private static final String USERNAME_KEY = "username";
 	private static final String PASSWORD_KEY = "password";
+	private static final String USERNAME = "osmosys_im";
+	private static final String PASSWORD = "A1a2a3a4$";
 
 	@SuppressWarnings({"unused", "CdiInjectionPointsInspection"})
 	@Inject
@@ -66,12 +68,11 @@ public class AuthenticationBasicFilter implements ContainerRequestFilter {
 			String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
 			Map<String, String> mapa = decodeAuthorizacionHeader(authorizationHeader);
-			/*if (this.integrationUser.equals(mapa.get(USERNAME_KEY))
-					&& this.integrationPassword.equals(mapa.get(PASSWORD_KEY))) {
-				return;
+			if (USERNAME.equals(mapa.get(USERNAME_KEY))
+					&& PASSWORD.equals(mapa.get(PASSWORD_KEY))) {
 			} else {
 				abortWithUnauthorized(requestContext);
-			}*/
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();

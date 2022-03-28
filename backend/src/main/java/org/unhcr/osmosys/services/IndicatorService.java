@@ -6,10 +6,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.IndicatorDao;
-import org.unhcr.osmosys.model.CustomDissagregationAssignationToIndicator;
-import org.unhcr.osmosys.model.DissagregationAssignationToIndicator;
-import org.unhcr.osmosys.model.Indicator;
-import org.unhcr.osmosys.model.Marker;
+import org.unhcr.osmosys.model.*;
+import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.webServices.model.IndicatorWeb;
 import org.unhcr.osmosys.webServices.model.MarkerWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
@@ -17,8 +15,10 @@ import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 public class IndicatorService {
@@ -38,6 +38,8 @@ public class IndicatorService {
     @Inject
     ModelWebTransformationService modelWebTransformationService;
 
+    @Inject
+    IndicatorExecutionService indicatorExecutionService;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(IndicatorService.class);
@@ -131,14 +133,27 @@ public class IndicatorService {
             }
         });
         // statements
-        indicator.setStatement(this.statementService.find(indicatorWeb.getId()));
+        indicator.setStatement(this.statementService.find(indicatorWeb.getStatement().getId()));
         // todo actualizacion en valores y demás
         // dissagregationAssiment
         //
+        List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToEnable = new ArrayList<>();
+        List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToDisable = new ArrayList<>();
+        List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToCreate = new ArrayList<>();
         indicatorWeb.getDissagregationsAssignationToIndicator().forEach(dissagregationAssignationToIndicatorWeb -> {
             if (dissagregationAssignationToIndicatorWeb.getId() != null) {
                 Optional<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorOp = indicator.getDissagregationsAssignationToIndicator().stream().filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicatorWeb.getId().equals(dissagregationAssignationToIndicator.getId())).findFirst();
-                dissagregationAssignationToIndicatorOp.ifPresent(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.setState(dissagregationAssignationToIndicatorWeb.getState()));
+                dissagregationAssignationToIndicatorOp.ifPresent(dissagregationAssignationToIndicator ->
+                {
+                    if (!dissagregationAssignationToIndicator.getState().equals(dissagregationAssignationToIndicatorWeb.getState())) {
+                        if (dissagregationAssignationToIndicatorWeb.getState().equals(State.ACTIVO)) {
+                            dissagregationAssignationToIndicatorsToEnable.add(dissagregationAssignationToIndicator);
+                        } else {
+                            dissagregationAssignationToIndicatorsToDisable.add(dissagregationAssignationToIndicator);
+                        }
+                    }
+                    dissagregationAssignationToIndicator.setState(dissagregationAssignationToIndicatorWeb.getState());
+                });
             } else {
                 // es nuevo
                 DissagregationAssignationToIndicator da = new DissagregationAssignationToIndicator();
@@ -146,14 +161,29 @@ public class IndicatorService {
                 da.setPeriod(this.modelWebTransformationService.periodWebToPeriod(dissagregationAssignationToIndicatorWeb.getPeriod()));
                 da.setDissagregationType(dissagregationAssignationToIndicatorWeb.getDissagregationType());
                 indicator.addDissagregationAssignationToIndicator(da);
+                dissagregationAssignationToIndicatorsToCreate.add(da);
             }
         });
         // customdissagregationAssiment
         //
+        List<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicatorsToEnable = new ArrayList<>();
+        List<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicatorsToDisable = new ArrayList<>();
+        List<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicatorsToCreate = new ArrayList<>();
+
         indicatorWeb.getCustomDissagregationAssignationToIndicators().forEach(dissagregationAssignationToIndicatorWeb -> {
             if (dissagregationAssignationToIndicatorWeb.getId() != null) {
                 Optional<CustomDissagregationAssignationToIndicator> dissagregationAssignationToIndicatorOp = indicator.getCustomDissagregationAssignationToIndicators().stream().filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicatorWeb.getId().equals(dissagregationAssignationToIndicator.getId())).findFirst();
-                dissagregationAssignationToIndicatorOp.ifPresent(customDissagregationAssignationToIndicator -> customDissagregationAssignationToIndicator.setState(dissagregationAssignationToIndicatorWeb.getState()));
+                dissagregationAssignationToIndicatorOp.ifPresent(customDissagregationAssignationToIndicator -> {
+                    if (!customDissagregationAssignationToIndicator.getState().equals(dissagregationAssignationToIndicatorWeb.getState())) {
+                        if (dissagregationAssignationToIndicatorWeb.getState().equals(State.ACTIVO)) {
+                            customDissagregationAssignationToIndicatorsToEnable.add(customDissagregationAssignationToIndicator);
+                        } else {
+                            customDissagregationAssignationToIndicatorsToDisable.add(customDissagregationAssignationToIndicator);
+                        }
+                    }
+                    customDissagregationAssignationToIndicator.setState(dissagregationAssignationToIndicatorWeb.getState());
+
+                });
             } else {
                 // es nuevo
                 CustomDissagregationAssignationToIndicator da = new CustomDissagregationAssignationToIndicator();
@@ -161,11 +191,14 @@ public class IndicatorService {
                 da.setPeriod(this.modelWebTransformationService.periodWebToPeriod(dissagregationAssignationToIndicatorWeb.getPeriod()));
                 da.setCustomDissagregation(this.modelWebTransformationService.customDissagregationWebToCustomDissagregation(dissagregationAssignationToIndicatorWeb.getCustomDissagregation()));
                 indicator.addCustomDissagregationAssignationToIndicator(da);
+                customDissagregationAssignationToIndicatorsToCreate.add(da);
             }
         });
 
         indicator.setQualitativeInstructions(indicatorWeb.getQualitativeInstructions());
         this.saveOrUpdate(indicator);
+        //update dissagregations in ie
+        this.indicatorExecutionService.updateIndicatorExecutionsDissagregations(dissagregationAssignationToIndicatorsToEnable, dissagregationAssignationToIndicatorsToDisable, dissagregationAssignationToIndicatorsToCreate);
         return indicator.getId();
     }
 
@@ -223,5 +256,60 @@ public class IndicatorService {
 
     public List<IndicatorWeb> getByPeriodAssignmentAndState(Long periodId, State state) {
         return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getByPeriodAssignmentAndState(periodId, state), true, true, true);
+    }
+
+    public List<Indicator> getByCodeList(List<String> codeList) {
+        return this.indicatorDao.getByCodeList(codeList);
+    }
+
+    public void addDissagregationToIndicator(Indicator indicator, Period period, DissagregationType dissagregationType) throws GeneralAppException {
+        DissagregationAssignationToIndicator dissagregationAssignationToIndicator = new DissagregationAssignationToIndicator();
+        dissagregationAssignationToIndicator.setState(State.ACTIVO);
+        dissagregationAssignationToIndicator.setDissagregationType(dissagregationType);
+        dissagregationAssignationToIndicator.setPeriod(period);
+        indicator.addDissagregationAssignationToIndicator(dissagregationAssignationToIndicator);
+        this.saveOrUpdate(indicator);
+        List<DissagregationAssignationToIndicator> toDisable = new ArrayList<>();
+        List<DissagregationAssignationToIndicator> toEnable = new ArrayList<>();
+        List<DissagregationAssignationToIndicator> toCreate = new ArrayList<>();
+        toCreate.add(dissagregationAssignationToIndicator);
+        this.indicatorExecutionService.updateIndicatorExecutionsDissagregations(
+                toEnable, toDisable, toCreate);
+
+    }
+    public void dissableDissagregationsToIndicator(Indicator indicator, Period period, List<DissagregationType> dissagregationTypes) throws GeneralAppException {
+        List<DissagregationAssignationToIndicator> toDisable = indicator.getDissagregationsAssignationToIndicator()
+                .stream()
+                .filter(dissagregationAssignationToIndicator -> dissagregationTypes.contains(dissagregationAssignationToIndicator.getDissagregationType()))
+                .collect(Collectors.toList());
+        this.saveOrUpdate(indicator);
+        // List<DissagregationAssignationToIndicator> toDisable = new ArrayList<>();
+        List<DissagregationAssignationToIndicator> toEnable = new ArrayList<>();
+        List<DissagregationAssignationToIndicator> toCreate = new ArrayList<>();
+        this.indicatorExecutionService.updateIndicatorExecutionsDissagregations(
+                toEnable, toDisable, toCreate);
+
+    }
+
+
+    public void removeDissagregationToIndicator(Indicator indicator, Period period, DissagregationType dissagregationType) throws GeneralAppException {
+        Optional<DissagregationAssignationToIndicator> dissa = indicator.getDissagregationsAssignationToIndicator()
+                .stream()
+                .filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.getDissagregationType().equals(dissagregationType))
+                .findFirst();
+        if(dissa.isPresent()){
+            DissagregationAssignationToIndicator d = dissa.get();
+            d.setState(State.INACTIVO);
+            this.saveOrUpdate(indicator);
+            List<DissagregationAssignationToIndicator> toDisable = new ArrayList<>();
+            List<DissagregationAssignationToIndicator> toEnable = new ArrayList<>();
+            List<DissagregationAssignationToIndicator> toCreate = new ArrayList<>();
+
+            toDisable.add(d);
+            this.indicatorExecutionService.updateIndicatorExecutionsDissagregations(
+                    toEnable, toDisable, toCreate);
+
+        }
+
     }
 }

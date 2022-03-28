@@ -62,6 +62,8 @@ public class IndicatorValueService {
             case TIPO_POBLACION:
                 return this.createIndicatorValueDissagregationStandardForMonthPopulationType();
 
+            case GENERO_Y_EDAD:
+                return this.createIndicatorValueDissagregationStandardForGenderAndAge();
             case TIPO_POBLACION_Y_DIVERSIDAD:
                 return this.createIndicatorValueDissagregationStandardForPopulationTypeAndDiversity();
             case TIPO_POBLACION_Y_EDAD:
@@ -187,6 +189,24 @@ public class IndicatorValueService {
         return r;
     }
 
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForGenderAndAge() {
+        List<IndicatorValue> r = new ArrayList<>();
+        DissagregationType dt = DissagregationType.GENERO_Y_EDAD;
+        for (GenderType genderType : GenderType.values()) {
+            for (AgeType ageType : AgeType.values()) {
+                IndicatorValue iv = new IndicatorValue();
+                iv.setState(State.ACTIVO);
+                iv.setDissagregationType(dt);
+                iv.setGenderType(genderType);
+                iv.setAgeType(ageType);
+                iv.setShowValue(true);
+                r.add(iv);
+            }
+
+        }
+        return r;
+    }
+
     private List<IndicatorValue> createIndicatorValueDissagregationStandardForPopulationTypeAndDiversity() {
         List<IndicatorValue> r = new ArrayList<>();
         DissagregationType dt = DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD;
@@ -285,5 +305,8 @@ public class IndicatorValueService {
 
     public List<IndicatorValue> getIndicatorValuesByMonthId(Long monthId, State state) {
         return this.indicatorValueDao.getIndicatorValuesByMonthIdAndState(monthId, state);
+    }
+    public void updateStateByPeriodIdIndicatorIdAndDissagregationType(List<Long> indicatorExecutionIds, DissagregationType dissagregationType, State state) {
+        this.indicatorValueDao.updateStateByPeriodIdIndicatorIdAndDissagregationType(indicatorExecutionIds,dissagregationType,state);
     }
 }

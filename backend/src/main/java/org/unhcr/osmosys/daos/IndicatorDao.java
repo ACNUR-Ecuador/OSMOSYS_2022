@@ -86,4 +86,23 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
         Query q = getEntityManager().createQuery(IndicatorDao.indicatorJpql, Indicator.class);
         return q.getResultList();
     }
+
+    public List<Indicator> getByCodeList(List<String> codeList) {
+        String jpql =" SELECT DISTINCT o" +
+                " FROM Indicator o " +
+                " left outer join fetch o.statement sta " +
+                " left join fetch  sta.periodStatementAsignations psa " +
+                " left outer join fetch o.customDissagregationAssignationToIndicators cda " +
+                " left outer join fetch cda.customDissagregation " +
+                " left outer join fetch cda.customDissagregationFilterIndicators " +
+                " left outer join fetch o.dissagregationsAssignationToIndicator da " +
+                " left outer join fetch da.dissagregationFilterIndicators " +
+                " left join fetch psa.period p " +
+                " left outer join fetch o.markers " +
+                " WHERE o.code in (:codeList)";
+        Query q = getEntityManager().createQuery(jpql, Indicator.class);
+        q.setParameter("codeList", codeList);
+        return q.getResultList();
+
+    }
 }

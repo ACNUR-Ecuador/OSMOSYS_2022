@@ -11,11 +11,12 @@ public enum DissagregationType implements EnumInterface {
     PAIS_ORIGEN("País de Origen", 5),
     DIVERSIDAD("Diversidad", 6),
     SIN_DESAGREGACION("Sin Desagregación", 7),
-    TIPO_POBLACION_Y_GENERO("Tipo de población	y género", 8),
-    TIPO_POBLACION_Y_EDAD("Tipo de población y edad", 9),
-    TIPO_POBLACION_Y_DIVERSIDAD("Tipo de población y diversidad", 10),
-    TIPO_POBLACION_Y_PAIS_ORIGEN("Tipo de población y país de origen", 11),
-    TIPO_POBLACION_Y_LUGAR("Tipo de población y sitio/cantón", 11),
+    GENERO_Y_EDAD("Género y edad", 8),
+    TIPO_POBLACION_Y_GENERO("Tipo de población	y género", 9),
+    TIPO_POBLACION_Y_EDAD("Tipo de población y edad", 10),
+    TIPO_POBLACION_Y_DIVERSIDAD("Tipo de población y diversidad", 11),
+    TIPO_POBLACION_Y_PAIS_ORIGEN("Tipo de población y país de origen", 12),
+    TIPO_POBLACION_Y_LUGAR("Tipo de población y sitio/cantón", 13),
     ;
 
     public static List<DissagregationType> getLocationDissagregationTypes() {
@@ -26,9 +27,9 @@ public enum DissagregationType implements EnumInterface {
     }
 
     private String label;
-    private int order;
+    private final int order;
 
-    private DissagregationType(String label, int order) {
+    DissagregationType(String label, int order) {
         this.label = label;
         this.order = order;
     }
