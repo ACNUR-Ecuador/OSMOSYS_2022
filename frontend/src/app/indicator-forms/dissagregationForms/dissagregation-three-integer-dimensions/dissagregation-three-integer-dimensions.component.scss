@@ -1,0 +1,67 @@
+:host ::ng-deep .p-accordion-empty .p-accordion-header .p-accordion-header-link {
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    color: red !important;
+    background: #ffff99 !important;
+    font-weight: bolder;
+    border-radius: 4px;
+    transition: box-shadow 0.2s;
+}
+
+:host ::ng-deep .p-accordion-filled .p-accordion-header .p-accordion-header-link {
+    padding: 1rem;
+    border: 1px solid #dee2e6 ;
+    color: green !important;
+    background: #99d8c9 !important;
+    font-weight: bolder;
+    border-radius: 4px;
+    transition: box-shadow 0.2s;
+}
+
+:host ::ng-deep .p-accordion-empty .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link {
+    color: red !important;
+    background: #ffff99 !important;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+:host ::ng-deep .p-accordion-filled .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link {
+    color: green !important;
+    background: #99d8c9 !important;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+:host ::ng-deep .p-accordion-empty-parent .p-accordion-header .p-accordion-header-link {
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    color: red;
+    background: #ffff99;
+    font-weight: bolder;
+    border-radius: 4px;
+    transition: box-shadow 0.2s;
+}
+
+:host ::ng-deep .p-accordion-filled-parent .p-accordion-header .p-accordion-header-link {
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    color: green;
+    background: #99d8c9;
+    font-weight: bolder;
+    border-radius: 4px;
+    transition: box-shadow 0.2s;
+}
+
+:host ::ng-deep .p-accordion-empty-parent .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link {
+    color: red;
+    background: #ffff99;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+:host ::ng-deep .p-accordion-filled-parent .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link {
+    color: green;
+    background: #99d8c9;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}

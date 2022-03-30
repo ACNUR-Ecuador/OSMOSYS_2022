@@ -22,14 +22,13 @@ export class DissagregationThreeIntegerDimensionsComponent implements OnInit {
     dissagregationGroupsType: DissagregationType;
     dissagregationRowsType: DissagregationType;
     dissagregationColumnsType: DissagregationType;
-    enumTypedissagregationGroups: EnumsType;
-    enumTypedissagregationRows: EnumsType;
-    enumTypedissagregationColumns: EnumsType;
-    dissagregationOptionsGroups: SelectItemWithOrder<any>[];
-    dissagregationOptionsColumns: SelectItemWithOrder<any>[];
-    dissagregationOptionsRows: SelectItemWithOrder<any>[];
 
-    valuesGroupRowsMap: Map<SelectItemWithOrder<any>, IndicatorValue[][]>;
+
+    dissagregationOptionsGroups: SelectItemWithOrder<string | Canton>[];
+    dissagregationOptionsColumns: SelectItemWithOrder<string | Canton>[];
+    dissagregationOptionsRows: SelectItemWithOrder<string | Canton>[];
+
+    valuesGroupRowsMap: Map<SelectItemWithOrder<string | Canton>, IndicatorValue[][]>;
 
     constructor(
         public utilsService: UtilsService,
@@ -39,16 +38,9 @@ export class DissagregationThreeIntegerDimensionsComponent implements OnInit {
 
     ngOnInit(): void {
         this.processDissagregationValues();
-
     }
 
     processDissagregationValues() {
-        // ontengo los tipos de desagregación horizontal y vertical
-        const enumTypesRyC: EnumsType[] =
-            this.utilsService.getEnymTypesByDissagregationTypes(this.dissagregationType);
-        this.enumTypedissagregationGroups = enumTypesRyC[0];
-        this.enumTypedissagregationRows = enumTypesRyC[1];
-        this.enumTypedissagregationColumns = enumTypesRyC[2];
         const dissagregationsTypesRyC: DissagregationType[] =
             this.utilsService.getDissagregationTypesByDissagregationType(this.dissagregationType);
         this.dissagregationGroupsType = dissagregationsTypesRyC[0];
@@ -58,26 +50,20 @@ export class DissagregationThreeIntegerDimensionsComponent implements OnInit {
         const dissagregationOptionsGroupsObj = this.getOptions(this.dissagregationGroupsType);
         const dissagregationOptionsRowsObj = this.getOptions(this.dissagregationRowsType);
         const dissagregationOptionsColumnsObj = this.getOptions(this.dissagregationColumnsType);
-        // veo los grupos
-        forkJoin([dissagregationOptionsGroupsObj, dissagregationOptionsRowsObj, dissagregationOptionsColumnsObj])
+        forkJoin([dissagregationOptionsGroupsObj,
+            dissagregationOptionsRowsObj, dissagregationOptionsColumnsObj])
             .subscribe(results => {
-                this.dissagregationOptionsGroups = results[0];
-                this.dissagregationOptionsRows = results[1];
-                this.dissagregationOptionsColumns = results[2];
-                console.log(this.dissagregationOptionsGroups);
-                console.log(this.dissagregationOptionsRows);
-                console.log(this.dissagregationOptionsColumns);
+                this.dissagregationOptionsGroups = results[0] as SelectItemWithOrder<any>[];
+                this.dissagregationOptionsRows = results[1] as SelectItemWithOrder<any>[];
+                this.dissagregationOptionsColumns = results[2] as SelectItemWithOrder<any>[];
                 this.valuesGroupRowsMap = new Map<SelectItemWithOrder<any>, IndicatorValue[][]>();
-                this.dissagregationOptionsGroups.forEach(value => {
-                    const rows = this.getRowsByGroup(value);
-                    this.valuesGroupRowsMap.set(value, rows);
-
+                this.dissagregationOptionsGroups.forEach(itemL1 => {
+                    const rows = this.getRowsByGroups(itemL1);
+                    this.valuesGroupRowsMap.set(itemL1, rows);
                 });
-
-
+                console.log('------------------------------');
+                console.log(this.valuesGroupRowsMap);
             });
-
-
     }
 
     getOptions(dissagregationType: DissagregationType): Observable<SelectItemWithOrder<any>[]> {
@@ -100,61 +86,82 @@ export class DissagregationThreeIntegerDimensionsComponent implements OnInit {
             return of(locations);
 
         }
-
     }
 
-    getRowsByGroup(item: SelectItemWithOrder<any>): Array<Array<IndicatorValue>> {
-        const rows = new Array<Array<IndicatorValue>>();
-        const groupValues: IndicatorValue[] = this.values.filter(value => {
-            if (this.dissagregationGroupsType !== DissagregationType.LUGAR) {
-                const valueOption = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationGroupsType, value);
-                return valueOption === item.value;
+    getRowsByGroups(itemL1: SelectItemWithOrder<any>): Array<Array<IndicatorValue>> {
+        console.log('getrows');
+        console.log(itemL1);
+        let indicatorValues: IndicatorValue[];
+        indicatorValues = this.getValuesByDissagregationValues(this.values, this.dissagregationGroupsType, itemL1.value);
+        // ordeno y clasifico
+        return this.getRowsByValues(this.dissagregationOptionsRows, this.dissagregationOptionsColumns, indicatorValues);
+    }
+
+    getValuesByDissagregationValues(values: IndicatorValue[], dissagregationType: DissagregationType, value: string | Canton) {
+        return values.filter(indicatorValue => {
+            if (dissagregationType === DissagregationType.LUGAR) {
+                value = value as Canton;
+                const valueOption = this.utilsService.getIndicatorValueByDissagregationType(dissagregationType, indicatorValue) as Canton;
+                return valueOption.id === value.id;
             } else {
-                const valueOption = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationGroupsType, value) as Canton;
-                return valueOption.id === item.value.id;
+                const valueOption = this.utilsService.getIndicatorValueByDissagregationType(dissagregationType, indicatorValue) as string;
+                return valueOption === value;
             }
         });
+    }
+
+    getRowsByValues(dissagregationOptionsRows: SelectItemWithOrder<any>[],
+                    dissagregationOptionsColumns: SelectItemWithOrder<any>[],
+                    indicatorValues: IndicatorValue[]): IndicatorValue[][] {
+        const rows = new Array<Array<IndicatorValue>>();
         if (this.dissagregationRowsType !== DissagregationType.LUGAR) {
-            this.dissagregationOptionsRows.forEach(dissagregationOption => {
-                const row = this.values.filter(value => {
-                    const valueOption = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationRowsType, value);
-                    return valueOption === dissagregationOption.value;
+            dissagregationOptionsRows.forEach(option => {
+                const row: IndicatorValue[] = indicatorValues.filter(indicatorValue => {
+                    const value = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationRowsType, indicatorValue);
+                    return value === option.value;
                 });
                 // ordeno las columnas
-                row.sort((a, b) => {
-                    const optionA = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationColumnsType, a);
-                    const optionB = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationColumnsType, b);
-                    if (typeof optionA === 'string' || optionA instanceof String) {
-                        // @ts-ignore
-                        const orderA = this.utilsService.getOrderByDissagregationOption(optionA, this.dissagregationOptionsColumns);
-                        // @ts-ignore
-                        const orderB = this.utilsService.getOrderByDissagregationOption(optionB, this.dissagregationOptionsColumns);
-                        return orderA - orderB;
-                    } else {
-                        // todo canton
-                        return 1;
-                    }
-
-                });
+                this.sortRow(row);
                 rows.push(row);
             });
         } else {
-            this.dissagregationOptionsRows.forEach(dissagregationOption => {
-                const row = this.values.filter(value => {
-                    const valueOption =
-                        (this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationRowsType, value)) as Canton;
-                    return valueOption.id === dissagregationOption.value.id;
-
+            this.dissagregationOptionsRows.forEach(option => {
+                const row = indicatorValues.filter(indicatorValue => {
+                    const value = this.utilsService
+                        .getIndicatorValueByDissagregationType(this.dissagregationRowsType, indicatorValue) as Canton;
+                    return value.id === (option.value as Canton).id;
                 });
+                this.sortRow(row);
                 rows.push(row);
             });
         }
-        console.log('item');
-        console.log(item);
-        console.log(groupValues);
         return rows;
-
     }
 
+    sortRow(row: IndicatorValue[]) {
+        row.sort((a, b) => {
+            const valueA = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationColumnsType, a);
+            const valueB = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationColumnsType, b);
+            if (typeof valueA === 'string' || typeof valueB === 'string') {
+                const orderA = this.utilsService.getOrderByDissagregationOption(valueA as string,
+                    this.dissagregationOptionsColumns);
+                const orderB = this.utilsService.getOrderByDissagregationOption(valueB as string,
+                    this.dissagregationOptionsColumns);
+                return orderA - orderB;
+            } else {
+                const orderA = (valueA as Canton).code;
+                const orderB = (valueB as Canton).code;
+                return orderA > orderB ? -1 : 1;
+            }
+        });
+    }
+
+    getTotalIndicatorValuesMap(map: Map<SelectItemWithOrder<string | Canton>, IndicatorValue[][]>) {
+        let total = 0;
+        map.forEach(value => {
+            total += this.utilsService.getTotalIndicatorValuesArrayArray(value);
+        });
+        return total;
+    }
 
 }
