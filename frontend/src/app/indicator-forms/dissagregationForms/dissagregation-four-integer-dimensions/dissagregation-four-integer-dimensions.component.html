@@ -3,21 +3,26 @@
         Desagregación por Lugar, Tipo de Población, Edad y Género
     </ng-template>
     <p-accordion>
-        <p-accordionTab *ngFor="let groupL1 of dissagregationOptionsGroupsL1">
+        <p-accordionTab *ngFor="let groupL1 of dissagregationOptionsGroupsL1"
+                        [ngClass]="getTotalIndicatorValuesMap(valuesGroupRowsMap.get(groupL1))>0?'p-accordion-filled-parent':'p-accordion-empty-parent'"
+        >
             <ng-template pTemplate="header">
-                <div class="p-grid p-jc-between" style="width:100%; border: solid #4caf50;">
-                    <div class="p-col-6">{{groupL1.label}}</div>
-                    <div class="p-col-3">{{groupL1.label}}</div>
+                <div class="p-grid p-jc-between" style="width:100%;">
+                    <div class="p-col-9">{{groupL1.label}}</div>
+                    <div class="p-col-3" style="text-align: end;">
+                        Total: {{getTotalIndicatorValuesMap(valuesGroupRowsMap.get(groupL1))}}</div>
                 </div>
             </ng-template>
             <ng-template pTemplate="content">
                 <p-accordion>
-                    <p-accordionTab *ngFor="let groupL2 of dissagregationOptionsGroupsL2">
+                    <p-accordionTab *ngFor="let groupL2 of dissagregationOptionsGroupsL2"
+                                    [ngClass]="this.utilsService.getTotalIndicatorValuesArrayArray(valuesGroupRowsMap.get(groupL1).get(groupL2))>0?'p-accordion-filled':'p-accordion-empty'"
+                    >
                         <ng-template pTemplate="header">
-                            <div class="p-grid p-jc-between" style="width:100%; border: solid #4caf50;">
-                                <div class="p-col-6">{{groupL2.label}}</div>
-                                <div class="p-col-3" style="text-align: end;">
-                                    {{this.utilsService.getTotalIndicatorValuesArrayArray(valuesGroupRowsMap.get(groupL1).get(groupL2))}}
+                            <div class="p-grid p-jc-between" style="width:100%;">
+                                <div class="p-col-9">{{groupL2.label}}</div>
+                                <div class="p-col-3">
+                                    Total: {{this.utilsService.getTotalIndicatorValuesArrayArray(valuesGroupRowsMap.get(groupL1).get(groupL2))}}
                                 </div>
                             </div>
                         </ng-template>

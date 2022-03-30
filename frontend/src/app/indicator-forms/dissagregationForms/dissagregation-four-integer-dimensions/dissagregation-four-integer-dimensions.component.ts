@@ -177,5 +177,12 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit {
         });
     }
 
+    getTotalIndicatorValuesMap(map: Map<SelectItemWithOrder<string | Canton>, IndicatorValue[][]>) {
+        let total = 0;
+        map.forEach(value => {
+            total += this.utilsService.getTotalIndicatorValuesArrayArray(value);
+        });
+        return total;
+    }
 
 }
