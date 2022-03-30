@@ -25,6 +25,10 @@ import {DropdownModule} from 'primeng/dropdown';
 import { DirectImplementationPerformanceIndicatorFormComponent } from './direct-implementation-performance-indicator-form/direct-implementation-performance-indicator-form.component';
 import {RippleModule} from 'primeng/ripple';
 import {PickListModule} from 'primeng/picklist';
+import { DissagregationThreeIntegerDimensionsComponent } from './dissagregationForms/dissagregation-three-integer-dimensions/dissagregation-three-integer-dimensions.component';
+import {PanelModule} from 'primeng/panel';
+import {AccordionModule} from 'primeng/accordion';
+import { DissagregationFourIntegerDimensionsComponent } from './dissagregationForms/dissagregation-four-integer-dimensions/dissagregation-four-integer-dimensions.component';
 
 
 @NgModule({
@@ -36,7 +40,9 @@ import {PickListModule} from 'primeng/picklist';
         PerformanceIndicatorFormComponent,
         ChartIndicatorExecutionComponent,
         CustomDissagregationIntegerComponent,
-        DirectImplementationPerformanceIndicatorFormComponent
+        DirectImplementationPerformanceIndicatorFormComponent,
+        DissagregationThreeIntegerDimensionsComponent,
+        DissagregationFourIntegerDimensionsComponent
     ],
     imports: [
         CommonModule,
@@ -57,7 +63,9 @@ import {PickListModule} from 'primeng/picklist';
         ToggleButtonModule,
         DropdownModule,
         RippleModule,
-        PickListModule
+        PickListModule,
+        PanelModule,
+        AccordionModule
     ]
 })
 export class IndicatorFormsModule {

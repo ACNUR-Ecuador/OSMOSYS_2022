@@ -618,8 +618,9 @@ public class IndicatorExecutionService {
         // actualizo locations
         if (CollectionUtils.isNotEmpty(
                 indicatorExecution.getDissagregationsAssignationsToIndicatorExecutions().stream()
-                        .filter(dissagregationAssignationToIndicatorExecution -> dissagregationAssignationToIndicatorExecution.getDissagregationType().equals(DissagregationType.LUGAR)
-                                || dissagregationAssignationToIndicatorExecution.getDissagregationType().equals(DissagregationType.TIPO_POBLACION_Y_LUGAR)).collect(Collectors.toSet())
+                        .filter(dissagregationAssignationToIndicatorExecution ->
+                                DissagregationType.getLocationDissagregationTypes().contains(dissagregationAssignationToIndicatorExecution.getDissagregationType())
+                        ).collect(Collectors.toSet())
         )) {
             // busco las que ya no existen
 
@@ -628,8 +629,9 @@ public class IndicatorExecutionService {
                             .flatMap(quarter -> quarter.getMonths().stream())
                             .filter(month -> month.getState().equals(State.ACTIVO))
                             .flatMap(month -> month.getIndicatorValues().stream())
-                            .filter(indicatorValue -> indicatorValue.getDissagregationType().equals(DissagregationType.LUGAR)
-                                    || indicatorValue.getDissagregationType().equals(DissagregationType.TIPO_POBLACION_Y_LUGAR))
+                            .filter(indicatorValue ->
+                                    DissagregationType.getLocationDissagregationTypes().contains(indicatorValue.getDissagregationType())
+                            )
                             .collect(Collectors.toList());
             List<Canton> currentCantons = currentIndicatorValuesCantons.stream().map(IndicatorValue::getLocation).distinct()
                     .collect(Collectors.toList());
@@ -1119,7 +1121,7 @@ public class IndicatorExecutionService {
             List<IndicatorExecution> iesToCreate = this.indicatorExecutionDao.getByPeriodIdAndIndicatorId(dissagregationAssignationToIndicator.getPeriod().getId(), dissagregationAssignationToIndicator.getIndicator().getId());
             iesToUpdateTotals.addAll(iesToCreate);
             for (IndicatorExecution indicatorExecution : iesToCreate) {
-                DissagregationAssignationToIndicatorExecution dissagregationAssignationToIndicatorExecution= new DissagregationAssignationToIndicatorExecution();
+                DissagregationAssignationToIndicatorExecution dissagregationAssignationToIndicatorExecution = new DissagregationAssignationToIndicatorExecution();
                 dissagregationAssignationToIndicatorExecution.setState(State.ACTIVO);
                 dissagregationAssignationToIndicatorExecution.setDissagregationType(dissagregationAssignationToIndicator.getDissagregationType());
                 indicatorExecution.addDissagregationAssignationToIndicatorExecution(dissagregationAssignationToIndicatorExecution);

@@ -106,14 +106,14 @@ export class DissagregationTwoIntegerDimentionsComponent implements OnInit, OnCh
         if (this.dissagregationTypeRows !== DissagregationType.LUGAR) {
             this.dissagregationOptionsRows.forEach(dissagregationOption => {
                 const row = this.values.filter(value => {
-                    const valueOption = this.utilsService.getOptionValueByDissagregationType(this.dissagregationTypeRows, value);
+                    const valueOption = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationTypeRows, value);
                     return valueOption === dissagregationOption.value;
 
                 });
                 // ordeno las columnas
                 row.sort((a, b) => {
-                    const optionA = this.utilsService.getOptionValueByDissagregationType(this.dissagregationTypeColumns, a);
-                    const optionB = this.utilsService.getOptionValueByDissagregationType(this.dissagregationTypeColumns, b);
+                    const optionA = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationTypeColumns, a);
+                    const optionB = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationTypeColumns, b);
                     if (typeof optionA === 'string' || optionA instanceof String) {
                         // @ts-ignore
                         const orderA = this.utilsService.getOrderByDissagregationOption(optionA, this.dissagregationOptionsColumns);
@@ -132,7 +132,7 @@ export class DissagregationTwoIntegerDimentionsComponent implements OnInit, OnCh
             this.dissagregationOptionsRows.forEach(dissagregationOption => {
                 const row = this.values.filter(value => {
                     const valueOption =
-                        (this.utilsService.getOptionValueByDissagregationType(this.dissagregationTypeRows, value)) as Canton;
+                        (this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationTypeRows, value)) as Canton;
                     return valueOption.id === dissagregationOption.value.id;
 
                 });

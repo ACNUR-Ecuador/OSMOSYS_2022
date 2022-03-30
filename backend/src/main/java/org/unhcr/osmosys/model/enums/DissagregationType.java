@@ -17,12 +17,16 @@ public enum DissagregationType implements EnumInterface {
     TIPO_POBLACION_Y_DIVERSIDAD("Tipo de población y diversidad", 11),
     TIPO_POBLACION_Y_PAIS_ORIGEN("Tipo de población y país de origen", 12),
     TIPO_POBLACION_Y_LUGAR("Tipo de población y sitio/cantón", 13),
+    LUGAR_EDAD_Y_GENERO("Lugar, género y edad", 14),
+    TIPO_POBLACION_LUGAR_EDAD_Y_GENERO("Tipo de población,lugar, género y edad", 15),
     ;
 
     public static List<DissagregationType> getLocationDissagregationTypes() {
         List<DissagregationType> r = new ArrayList<>();
         r.add(TIPO_POBLACION_Y_LUGAR);
         r.add(LUGAR);
+        r.add(LUGAR_EDAD_Y_GENERO);
+        r.add(TIPO_POBLACION_LUGAR_EDAD_Y_GENERO);
         return r;
     }
 

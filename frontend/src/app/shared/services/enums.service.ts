@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {EMPTY, Observable} from 'rxjs';
-import {EnumsType, MonthType, SelectItemWithOrder} from '../model/UtilsModel';
+import {DissagregationType, EnumsType, MonthType, SelectItemWithOrder} from '../model/UtilsModel';
 import {HttpClient} from '@angular/common/http';
 import {catchError, shareReplay} from 'rxjs/operators';
 
@@ -24,10 +24,30 @@ export class EnumsService {
         } else {
             return this.cacheMap[type] = this.getByTypeFromServer(type).pipe(
                 shareReplay(1),
-                catchError(err => {
+                catchError(() => {
                     delete this.cacheMap[type];
                     return EMPTY;
                 }));
+        }
+    }
+
+    public getByDissagregationType(dissagregationType: DissagregationType): Observable<SelectItemWithOrder<any>[]> {
+        if (!dissagregationType) {
+            return null;
+        }
+        switch (dissagregationType) {
+            case DissagregationType.EDAD:
+                return this.getByType(EnumsType.AgeType);
+            case DissagregationType.GENERO:
+                return this.getByType(EnumsType.GenderType);
+            case DissagregationType.DIVERSIDAD:
+                return this.getByType(EnumsType.DiversityType);
+            case DissagregationType.TIPO_POBLACION:
+                return this.getByType(EnumsType.PopulationType);
+            case DissagregationType.PAIS_ORIGEN:
+                return this.getByType(EnumsType.CountryOfOrigin);
+            default:
+                return null;
         }
     }
 

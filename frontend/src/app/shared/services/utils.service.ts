@@ -17,7 +17,9 @@ import {
     CustomDissagregationValues,
     IndicatorExecution,
     IndicatorValue,
-    IndicatorValueCustomDissagregationWeb, Period, QuarterMonthResume
+    IndicatorValueCustomDissagregationWeb,
+    Period,
+    QuarterMonthResume
 } from '../model/OsmosysModel';
 import {HttpResponse} from '@angular/common/http';
 import {TableColumnProperties} from 'exceljs';
@@ -33,14 +35,6 @@ export class UtilsService {
     ) {
     }
 
-    saveAsExcelFile(buffer: any, fileName: string): void {
-        const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-        const EXCEL_EXTENSION = '.xlsx';
-        const data: Blob = new Blob([buffer], {
-            type: EXCEL_TYPE
-        });
-        FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
-    }
 
     exportTableAsExcel(selectedColumns: ColumnTable[], items: any[], filename: string) {
         // noinspection DuplicatedCode
@@ -301,6 +295,19 @@ export class UtilsService {
                 result.push(EnumsType.PopulationType);
                 return result;
             }
+            case DissagregationType.LUGAR_EDAD_Y_GENERO: {
+                result.push(null);
+                result.push(EnumsType.AgeType);
+                result.push(EnumsType.GenderType);
+                return result;
+            }
+            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO: {
+                result.push(EnumsType.PopulationType);
+                result.push(null);
+                result.push(EnumsType.AgeType);
+                result.push(EnumsType.GenderType);
+                return result;
+            }
         }
     }
 
@@ -324,6 +331,10 @@ export class UtilsService {
             case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN:
             case DissagregationType.TIPO_POBLACION_Y_LUGAR:
                 return 2;
+            case DissagregationType.LUGAR_EDAD_Y_GENERO:
+                return 3;
+            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO:
+                return 4;
         }
     }
 
@@ -349,6 +360,8 @@ export class UtilsService {
         switch (dissagregationTypeE) {
             case DissagregationType.LUGAR:
             case DissagregationType.TIPO_POBLACION_Y_LUGAR:
+            case DissagregationType.LUGAR_EDAD_Y_GENERO:
+            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO:
                 return true;
             case DissagregationType.TIPO_POBLACION:
             case DissagregationType.EDAD:
@@ -373,6 +386,18 @@ export class UtilsService {
         result.push(DissagregationType.TIPO_POBLACION_Y_LUGAR);
         result.push(DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN);
         result.push(DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD);
+        return result;
+    }
+
+    getThreeDimentionsDissagregationTypes(): DissagregationType[] {
+        const result: DissagregationType[] = [];
+        result.push(DissagregationType.LUGAR_EDAD_Y_GENERO);
+        return result;
+    }
+
+    getFourDimentionsDissagregationTypes(): DissagregationType[] {
+        const result: DissagregationType[] = [];
+        result.push(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO);
         return result;
     }
 
@@ -420,11 +445,24 @@ export class UtilsService {
                 result.push(DissagregationType.TIPO_POBLACION);
                 return result;
             }
+            case DissagregationType.LUGAR_EDAD_Y_GENERO: {
+                result.push(DissagregationType.LUGAR);
+                result.push(DissagregationType.EDAD);
+                result.push(DissagregationType.GENERO);
+                return result;
+            }
+            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO: {
+                result.push(DissagregationType.LUGAR);
+                result.push(DissagregationType.TIPO_POBLACION);
+                result.push(DissagregationType.EDAD);
+                result.push(DissagregationType.GENERO);
+                return result;
+            }
         }
     }
 
 
-    getOptionValueByDissagregationType(dissagregationType: DissagregationType, value: IndicatorValue) {
+    getIndicatorValueByDissagregationType(dissagregationType: DissagregationType, value: IndicatorValue): string | Canton {
         const dissagregationTypeE = DissagregationType[dissagregationType];
         switch (dissagregationTypeE) {
             case DissagregationType.TIPO_POBLACION:
@@ -554,6 +592,8 @@ export class UtilsService {
             case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN:
             case DissagregationType.TIPO_POBLACION_Y_LUGAR:
             case DissagregationType.SIN_DESAGREGACION:
+            case DissagregationType.LUGAR_EDAD_Y_GENERO:
+            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO:
                 return true;
             case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD:
             case DissagregationType.DIVERSIDAD:
@@ -588,17 +628,6 @@ export class UtilsService {
         const today = new Date();
         const mm = today.getMonth() + 1; // January is 0!
         return this.enumsService.numberToMonthType(mm);
-    }
-
-    getCurrentMonthNumber(): number {
-        const today = new Date();
-        // January is 0!
-        return today.getMonth() + 1;
-    }
-
-    getCurrentYear(): number {
-        const today = new Date();
-        return today.getFullYear();
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -678,6 +707,27 @@ export class UtilsService {
             return 'p-button-success';
         }
     }
+
+    public enumTypeToDissagregationType(enumType: EnumsType): DissagregationType {
+        if (!enumType) {
+            return null;
+        }
+        switch (enumType) {
+            case EnumsType.PopulationType:
+                return DissagregationType.TIPO_POBLACION;
+            case EnumsType.AgeType:
+                return DissagregationType.EDAD;
+            case EnumsType.GenderType:
+                return DissagregationType.GENERO;
+            case EnumsType.CountryOfOrigin:
+                return DissagregationType.PAIS_ORIGEN;
+            case EnumsType.DiversityType:
+                return DissagregationType.DIVERSIDAD;
+            default:
+                return null;
+        }
+    }
+
 }
 
 

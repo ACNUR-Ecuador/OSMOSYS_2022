@@ -86,7 +86,7 @@ export class DissagregationOneIntegerDimentionsComponent implements OnInit, OnCh
         if (this.dissagregationTypeRows !== DissagregationType.LUGAR) {
             this.dissagregationOptionsRows.forEach(dissagregationOption => {
                 const row = this.values.filter(value => {
-                    const valueOption = this.utilsService.getOptionValueByDissagregationType(this.dissagregationTypeRows, value);
+                    const valueOption = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationTypeRows, value);
                     return valueOption === dissagregationOption.value;
 
                 });
@@ -96,7 +96,7 @@ export class DissagregationOneIntegerDimentionsComponent implements OnInit, OnCh
             this.dissagregationOptionsRows.forEach(dissagregationOption => {
                 const row = this.values.filter(value => {
                     const valueOption =
-                        (this.utilsService.getOptionValueByDissagregationType(this.dissagregationTypeRows, value)) as Canton;
+                        (this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationTypeRows, value)) as Canton;
                     return valueOption.id === dissagregationOption.value.id;
 
                 });

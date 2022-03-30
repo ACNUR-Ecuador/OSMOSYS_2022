@@ -28,6 +28,8 @@ export class PerformanceIndicatorFormComponent implements OnInit {
 
     oneDimentionDissagregations: DissagregationType[] = [];
     twoDimentionDissagregations: DissagregationType[] = [];
+    threeDimentionDissagregations: DissagregationType[] = [];
+    fourDimentionDissagregations: DissagregationType[] = [];
     noDimentionDissagregations: DissagregationType[] = [];
 
     sourceTypes: SelectItemWithOrder<any>[];
@@ -166,6 +168,8 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     setDimentionsDissagregations(): void {
         const totalOneDimentions = this.utilsService.getOneDimentionsDissagregationTypes();
         const totalTwoDimentions = this.utilsService.getTwoDimentionsDissagregationTypes();
+        const totalThreeDimentions = this.utilsService.getThreeDimentionsDissagregationTypes();
+        const totalFourDimentions = this.utilsService.getFourDimentionsDissagregationTypes();
         const totalNoDimentions = this.utilsService.getNoDimentionsDissagregationTypes();
         this.monthValuesMap.forEach((value, key) => {
             if (value && value.length > 0) {
@@ -176,6 +180,10 @@ export class PerformanceIndicatorFormComponent implements OnInit {
                     this.twoDimentionDissagregations.push(dissagregationType);
                 } else if (totalNoDimentions.indexOf(dissagregationType) >= 0) {
                     this.noDimentionDissagregations.push(dissagregationType);
+                }else if (totalThreeDimentions.indexOf(dissagregationType) >= 0) {
+                    this.threeDimentionDissagregations.push(dissagregationType);
+                }else if (totalFourDimentions.indexOf(dissagregationType) >= 0) {
+                    this.fourDimentionDissagregations.push(dissagregationType);
                 }
             }
         });
