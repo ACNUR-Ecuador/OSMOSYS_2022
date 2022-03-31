@@ -130,7 +130,6 @@ public class ReportDao {
     }
 
     public List<IndicatorExecutionDetailedDTO> getAllPerformanceIndicatorsIndicatorExecutionDetailed(Long periodId) {
-
         String sql = ReportDao.detailedIndicatorExecutions
                 + " AND ie.performance_indicator_id is not null "
                 + " AND ie.period_id= :periodId ";

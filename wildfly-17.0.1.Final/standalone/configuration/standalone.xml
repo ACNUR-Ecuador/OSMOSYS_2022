@@ -432,7 +432,7 @@
             </cache-container>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:io:3.0">
-            <worker name="default"/>
+            <worker name="default" io-threads="100" task-core-threads="50" task-max-threads="100"/>
             <buffer-pool name="default"/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:jaxrs:1.0"/>

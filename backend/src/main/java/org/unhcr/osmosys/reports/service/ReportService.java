@@ -9,7 +9,7 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.jboss.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -20,7 +20,6 @@ import javax.sql.DataSource;
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -36,7 +35,12 @@ public class ReportService {
     @Inject
     ReportDataService reportDataService;
 
+    final static Boolean dissableJasperReport = Boolean.TRUE;
+
     public ByteArrayOutputStream indicatorExecutionsToLateProjectsReportsByPeriodYear(Long periodId) throws GeneralAppException {
+        if (ReportService.dissableJasperReport) {
+            throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
+        }
         String jrxmlFile = "AllProjectStateReport.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         InputStream file = this.getReportFile(jrxmlFile);
@@ -77,6 +81,7 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream indicatorsCatalogWithImplementersSimpleByPeriodId(Long periodId) throws GeneralAppException {
+
         String jrxmlFile = "indicatorsCatalogWithImplementersSimple.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
@@ -114,7 +119,7 @@ public class ReportService {
 
     public ByteArrayOutputStream getAllImplementationsDetailedByPeriodId(Long periodId) throws GeneralAppException {
 
-        XSSFWorkbook workbook = this.reportDataService.getAllImplementationsDetailedByPeriodId(periodId);
+        SXSSFWorkbook workbook = this.reportDataService.getAllImplementationsDetailedByPeriodId(periodId);
 
         return getByteArrayOutputStreamFromWorkbook(workbook);
 
@@ -122,6 +127,9 @@ public class ReportService {
 
     /***********total pi****************/
     public ByteArrayOutputStream getAllImplementationsPerformanceIndicatorsAnnualByPeriodId(Long periodId) throws GeneralAppException {
+        if (ReportService.dissableJasperReport) {
+            throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
+        }
         String jrxmlFile = "all_implementations_pi_anual_by_period_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
@@ -129,6 +137,9 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream getAllImplementationsPerformanceIndicatorsQuarterlyByPeriodId(Long periodId) throws GeneralAppException {
+        if (ReportService.dissableJasperReport) {
+            throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
+        }
         String jrxmlFile = "all_implementations_pi_quarterly_by_period_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
@@ -136,6 +147,9 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream getAllImplementationsPerformanceIndicatorsMonthlyByPeriodId(Long periodId) throws GeneralAppException {
+        if (ReportService.dissableJasperReport) {
+            throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
+        }
         String jrxmlFile = "all_implementations_pi_monthly_by_period_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
@@ -144,23 +158,25 @@ public class ReportService {
 
     public ByteArrayOutputStream getAllImplementationsPerformanceIndicatorsDetailedByPeriodId(Long periodId) throws GeneralAppException {
 
-        XSSFWorkbook workbook = this.reportDataService.getAllImplementationsPerformanceIndicatorsDetailedByPeriodId(periodId);
+        SXSSFWorkbook workbook = this.reportDataService.getAllImplementationsPerformanceIndicatorsDetailedByPeriodId(periodId);
 
         return getByteArrayOutputStreamFromWorkbook(workbook);
 
     }
 
-    private ByteArrayOutputStream getByteArrayOutputStreamFromWorkbook(XSSFWorkbook workbook) throws GeneralAppException {
+    private ByteArrayOutputStream getByteArrayOutputStreamFromWorkbook(SXSSFWorkbook workbook) throws GeneralAppException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
             workbook.write(bos);
+
             return bos;
-        } catch (IOException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             throw new GeneralAppException("Error al Generar el reporte", Response.Status.INTERNAL_SERVER_ERROR);
         } finally {
             try {
                 bos.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -168,6 +184,9 @@ public class ReportService {
 
     /*******************partners*****************/
     public ByteArrayOutputStream getPartnersAnnualByPeriodId(Long periodId) throws GeneralAppException {
+        if (ReportService.dissableJasperReport) {
+            throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
+        }
         String jrxmlFile = "partners_anual_by_period_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
@@ -175,6 +194,9 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream getPartnersQuarterlyByPeriodId(Long periodId) throws GeneralAppException {
+        if (ReportService.dissableJasperReport) {
+            throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
+        }
         String jrxmlFile = "partners_quarterly_by_period_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
@@ -182,6 +204,9 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream getPartnersMonthlyByPeriodId(Long periodId) throws GeneralAppException {
+        if (ReportService.dissableJasperReport) {
+            throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
+        }
         String jrxmlFile = "partners_monthly_by_period_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
@@ -189,12 +214,13 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream getPartnersDetailedByPeriodId(Long periodId) throws GeneralAppException {
-        XSSFWorkbook workbook = this.reportDataService.getPartnersIndicatorsExecutionsDetailedByPeriodId(periodId);
+        SXSSFWorkbook workbook = this.reportDataService.getPartnersIndicatorsExecutionsDetailedByPeriodId(periodId);
 
         return getByteArrayOutputStreamFromWorkbook(workbook);
     }
 
     public ByteArrayOutputStream getPartnersGeneralIndicatorsAnnualByPeriodId(Long periodId) throws GeneralAppException {
+
         String jrxmlFile = "partners_general_anual_by_period_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
@@ -209,7 +235,7 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream getPartnersGeneralIndicatorsDetailedByPeriodId(Long periodId) throws GeneralAppException {
-        XSSFWorkbook workbook = this.reportDataService.getPartnersGeneralIndicatorsDetailedByPeriodId(periodId);
+        SXSSFWorkbook workbook = this.reportDataService.getPartnersGeneralIndicatorsDetailedByPeriodId(periodId);
 
         return getByteArrayOutputStreamFromWorkbook(workbook);
     }
@@ -239,12 +265,15 @@ public class ReportService {
 
 
     public ByteArrayOutputStream getPartnersPerformanceIndicatorsDetailedByPeriodId(Long periodId) throws GeneralAppException {
-        XSSFWorkbook workbook = this.reportDataService.getPartnersPerformanceIndicatorsDetailedByPeriodId(periodId);
+        SXSSFWorkbook workbook = this.reportDataService.getPartnersPerformanceIndicatorsDetailedByPeriodId(periodId);
 
         return getByteArrayOutputStreamFromWorkbook(workbook);
     }
 
     public ByteArrayOutputStream getPartnerAnnualByProjectId(Long projectId) throws GeneralAppException {
+        if (ReportService.dissableJasperReport) {
+            throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
+        }
         String jrxmlFile = "partner_anual_by_project_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("projectId", projectId);
@@ -252,6 +281,9 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream getPartnerQuarterlyByProjectId(Long projectId) throws GeneralAppException {
+        if (ReportService.dissableJasperReport) {
+            throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
+        }
         String jrxmlFile = "partner_quarterly_by_project_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("projectId", projectId);
@@ -259,6 +291,9 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream getPartnerMonthlyByProjectId(Long projectId) throws GeneralAppException {
+        if (ReportService.dissableJasperReport) {
+            throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
+        }
         String jrxmlFile = "partner_monthly_by_project_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("projectId", projectId);
@@ -266,6 +301,9 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream getPartnerDetailedByProjectId(Long projectId) throws GeneralAppException {
+        if (ReportService.dissableJasperReport) {
+            throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
+        }
         String jrxmlFile = "partner_detailed_by_project_id.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("projectId", projectId);
@@ -297,7 +335,7 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(Long periodId) throws GeneralAppException {
-        XSSFWorkbook workbook = this.reportDataService.getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(periodId);
+        SXSSFWorkbook workbook = this.reportDataService.getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(periodId);
 
         return getByteArrayOutputStreamFromWorkbook(workbook);
     }

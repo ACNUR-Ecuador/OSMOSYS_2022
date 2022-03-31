@@ -3,14 +3,16 @@ package org.unhcr.osmosys.reports.service;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
-
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.AreaReference;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xssf.usermodel.*;
-import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTAutoFilter;
+import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.ReportDao;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedDTO;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
@@ -24,7 +26,7 @@ import java.util.*;
 @SuppressWarnings({"unchecked", "rawtypes"})
 @Stateless
 public class ReportDataService {
-
+    private static final Logger LOGGER = Logger.getLogger(ReportDataService.class);
     @Inject
     IndicatorExecutionService indicatorExecutionService;
 
@@ -59,10 +61,12 @@ public class ReportDataService {
     }
 
 
-    public XSSFWorkbook getAllImplementationsDetailedByPeriodId(Long projectId) {
+    public SXSSFWorkbook getAllImplementationsDetailedByPeriodId(Long projectId) {
 
-
+        long lStartTime = System.nanoTime();
         List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getAllIndicatorExecutionDetailed(projectId);
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds:(query))" + (lEndTime - lStartTime) / 1000000000);
         List<String> titles = new ArrayList<>(
                 Arrays.asList("Tipo de Implementacion", "Area", "Declaracion", "Declaracion de Proyecto", "Tipo de Indicador",
                         "Indicador", "Frecuencia", "Implementador", "Ejecucion Total", "Meta Total",
@@ -78,32 +82,18 @@ public class ReportDataService {
                         2000, 2000, 5000, 5000, 5000,
                         2000));
 
-        XSSFWorkbook wb = new XSSFWorkbook();
-        XSSFSheet sheet = wb.createSheet();
+        SXSSFWorkbook wb = new SXSSFWorkbook();
+        SXSSFSheet sheet = wb.createSheet();
         // Set which area the table should be placed in
         int NB_ROWS = resultData.size();
-        int NB_COLS = titles.size()-1;
+        int NB_COLS = titles.size() - 1;
         AreaReference reference = wb.getCreationHelper()
                 .createAreaReference(
                         new CellReference(0, 0),
                         new CellReference(NB_ROWS, NB_COLS));
         // title rows
+        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
         // Create
-        XSSFTable table = sheet.createTable(reference);
-        table.setName("data_export");
-        table.setDisplayName("data_export");
-        // For now, create the initial style in a low-level way
-        table.getCTTable().addNewTableStyleInfo();
-        table.getCTTable().getTableStyleInfo().setName("TableStyleMedium2");
-        table.getCTTable().setAutoFilter(CTAutoFilter.Factory.newInstance());
-        // Style the table
-        XSSFTableStyleInfo style = (XSSFTableStyleInfo) table.getStyle();
-        style.setName("TableStyleMedium2");
-        style.setShowColumnStripes(false);
-        style.setShowRowStripes(true);
-        style.setFirstColumn(false);
-        style.setLastColumn(false);
-
         DataFormat format = wb.createDataFormat();
         CellStyle cellStylePercentage;
         cellStylePercentage = wb.createCellStyle();
@@ -118,8 +108,9 @@ public class ReportDataService {
         }
 
         Cell cell;
+        long lStartTime2 = System.nanoTime();
         for (int i = 0; i < resultData.size(); i++) {
-            XSSFRow rowData = sheet.createRow(i + 1);
+            SXSSFRow rowData = sheet.createRow(i + 1);
             IndicatorExecutionDetailedDTO ie = resultData.get(i);
 
             cell = rowData.createCell(0);
@@ -183,13 +174,15 @@ public class ReportDataService {
                 cell.setCellValue(ie.getValue().intValue());
             }
         }
-
+        long lEndTime2 = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds(excel construction): " + (lEndTime2 - lStartTime2) / 1000000000);
         return wb;
 
     }
 
 
-    public XSSFWorkbook getPartnersIndicatorsExecutionsDetailedByPeriodId(Long projectId) {
+
+    public SXSSFWorkbook getPartnersIndicatorsExecutionsDetailedByPeriodId(Long projectId) {
 
 
         List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getPartnersIndicatorsExecutionsDetailedByPeriodId(projectId);
@@ -208,31 +201,17 @@ public class ReportDataService {
                         2000, 2000, 5000, 5000, 5000,
                         2000));
 
-        XSSFWorkbook wb = new XSSFWorkbook();
-        XSSFSheet sheet = wb.createSheet();
+        SXSSFWorkbook wb = new SXSSFWorkbook();
+        SXSSFSheet sheet = wb.createSheet();
         // Set which area the table should be placed in
         int NB_ROWS = resultData.size();
-        int NB_COLS = titles.size()-1;
+        int NB_COLS = titles.size() - 1;
         AreaReference reference = wb.getCreationHelper()
                 .createAreaReference(
                         new CellReference(0, 0),
                         new CellReference(NB_ROWS, NB_COLS));
+        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
         // title rows
-        // Create
-        XSSFTable table = sheet.createTable(reference);
-        table.setName("data_export");
-        table.setDisplayName("data_export");
-        // For now, create the initial style in a low-level way
-        table.getCTTable().addNewTableStyleInfo();
-        table.getCTTable().getTableStyleInfo().setName("TableStyleMedium2");
-        table.getCTTable().setAutoFilter(CTAutoFilter.Factory.newInstance());
-        // Style the table
-        XSSFTableStyleInfo style = (XSSFTableStyleInfo) table.getStyle();
-        style.setName("TableStyleMedium2");
-        style.setShowColumnStripes(false);
-        style.setShowRowStripes(true);
-        style.setFirstColumn(false);
-        style.setLastColumn(false);
 
         DataFormat format = wb.createDataFormat();
         CellStyle cellStylePercentage;
@@ -249,7 +228,7 @@ public class ReportDataService {
 
         Cell cell;
         for (int i = 0; i < resultData.size(); i++) {
-            XSSFRow rowData = sheet.createRow(i + 1);
+            SXSSFRow rowData = sheet.createRow(i + 1);
             IndicatorExecutionDetailedDTO ie = resultData.get(i);
 
             cell = rowData.createCell(0);
@@ -317,7 +296,8 @@ public class ReportDataService {
         return wb;
 
     }
-    public XSSFWorkbook getAllImplementationsPerformanceIndicatorsDetailedByPeriodId(Long projectId) {
+
+    public SXSSFWorkbook getAllImplementationsPerformanceIndicatorsDetailedByPeriodId(Long projectId) {
 
 
         List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getAllPerformanceIndicatorsIndicatorExecutionDetailed(projectId);
@@ -336,31 +316,17 @@ public class ReportDataService {
                         2000, 2000, 5000, 5000, 5000,
                         2000));
 
-        XSSFWorkbook wb = new XSSFWorkbook();
-        XSSFSheet sheet = wb.createSheet();
+        SXSSFWorkbook wb = new SXSSFWorkbook();
+        SXSSFSheet sheet = wb.createSheet();
         // Set which area the table should be placed in
         int NB_ROWS = resultData.size();
-        int NB_COLS = titles.size()-1;
+        int NB_COLS = titles.size() - 1;
         AreaReference reference = wb.getCreationHelper()
                 .createAreaReference(
                         new CellReference(0, 0),
                         new CellReference(NB_ROWS, NB_COLS));
+        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
         // title rows
-        // Create
-        XSSFTable table = sheet.createTable(reference);
-        table.setName("data_export");
-        table.setDisplayName("data_export");
-        // For now, create the initial style in a low-level way
-        table.getCTTable().addNewTableStyleInfo();
-        table.getCTTable().getTableStyleInfo().setName("TableStyleMedium2");
-        table.getCTTable().setAutoFilter(CTAutoFilter.Factory.newInstance());
-        // Style the table
-        XSSFTableStyleInfo style = (XSSFTableStyleInfo) table.getStyle();
-        style.setName("TableStyleMedium2");
-        style.setShowColumnStripes(false);
-        style.setShowRowStripes(true);
-        style.setFirstColumn(false);
-        style.setLastColumn(false);
 
         DataFormat format = wb.createDataFormat();
         CellStyle cellStylePercentage;
@@ -377,7 +343,7 @@ public class ReportDataService {
 
         Cell cell;
         for (int i = 0; i < resultData.size(); i++) {
-            XSSFRow rowData = sheet.createRow(i + 1);
+            SXSSFRow rowData = sheet.createRow(i + 1);
             IndicatorExecutionDetailedDTO ie = resultData.get(i);
 
             cell = rowData.createCell(0);
@@ -445,7 +411,8 @@ public class ReportDataService {
         return wb;
 
     }
-    public XSSFWorkbook getPartnersGeneralIndicatorsDetailedByPeriodId(Long projectId) {
+
+    public SXSSFWorkbook getPartnersGeneralIndicatorsDetailedByPeriodId(Long projectId) {
 
 
         List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getPartnersGeneralIndicatorsDetailedByPeriodId(projectId);
@@ -464,31 +431,17 @@ public class ReportDataService {
                         2000, 2000, 5000, 5000, 5000,
                         2000));
 
-        XSSFWorkbook wb = new XSSFWorkbook();
-        XSSFSheet sheet = wb.createSheet();
+        SXSSFWorkbook wb = new SXSSFWorkbook();
+        SXSSFSheet sheet = wb.createSheet();
         // Set which area the table should be placed in
         int NB_ROWS = resultData.size();
-        int NB_COLS = titles.size()-1;
+        int NB_COLS = titles.size() - 1;
         AreaReference reference = wb.getCreationHelper()
                 .createAreaReference(
                         new CellReference(0, 0),
                         new CellReference(NB_ROWS, NB_COLS));
+        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
         // title rows
-        // Create
-        XSSFTable table = sheet.createTable(reference);
-        table.setName("data_export");
-        table.setDisplayName("data_export");
-        // For now, create the initial style in a low-level way
-        table.getCTTable().addNewTableStyleInfo();
-        table.getCTTable().getTableStyleInfo().setName("TableStyleMedium2");
-        table.getCTTable().setAutoFilter(CTAutoFilter.Factory.newInstance());
-        // Style the table
-        XSSFTableStyleInfo style = (XSSFTableStyleInfo) table.getStyle();
-        style.setName("TableStyleMedium2");
-        style.setShowColumnStripes(false);
-        style.setShowRowStripes(true);
-        style.setFirstColumn(false);
-        style.setLastColumn(false);
 
         DataFormat format = wb.createDataFormat();
         CellStyle cellStylePercentage;
@@ -505,7 +458,7 @@ public class ReportDataService {
 
         Cell cell;
         for (int i = 0; i < resultData.size(); i++) {
-            XSSFRow rowData = sheet.createRow(i + 1);
+            SXSSFRow rowData = sheet.createRow(i + 1);
             IndicatorExecutionDetailedDTO ie = resultData.get(i);
 
             cell = rowData.createCell(0);
@@ -573,7 +526,8 @@ public class ReportDataService {
         return wb;
 
     }
-    public XSSFWorkbook getPartnersPerformanceIndicatorsDetailedByPeriodId(Long projectId) {
+
+    public SXSSFWorkbook getPartnersPerformanceIndicatorsDetailedByPeriodId(Long projectId) {
 
 
         List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getPartnersPerformanceIndicatorsDetailedByPeriodId(projectId);
@@ -592,31 +546,17 @@ public class ReportDataService {
                         2000, 2000, 5000, 5000, 5000,
                         2000));
 
-        XSSFWorkbook wb = new XSSFWorkbook();
-        XSSFSheet sheet = wb.createSheet();
+        SXSSFWorkbook wb = new SXSSFWorkbook();
+        SXSSFSheet sheet = wb.createSheet();
         // Set which area the table should be placed in
         int NB_ROWS = resultData.size();
-        int NB_COLS = titles.size()-1;
+        int NB_COLS = titles.size() - 1;
         AreaReference reference = wb.getCreationHelper()
                 .createAreaReference(
                         new CellReference(0, 0),
                         new CellReference(NB_ROWS, NB_COLS));
+        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
         // title rows
-        // Create
-        XSSFTable table = sheet.createTable(reference);
-        table.setName("data_export");
-        table.setDisplayName("data_export");
-        // For now, create the initial style in a low-level way
-        table.getCTTable().addNewTableStyleInfo();
-        table.getCTTable().getTableStyleInfo().setName("TableStyleMedium2");
-        table.getCTTable().setAutoFilter(CTAutoFilter.Factory.newInstance());
-        // Style the table
-        XSSFTableStyleInfo style = (XSSFTableStyleInfo) table.getStyle();
-        style.setName("TableStyleMedium2");
-        style.setShowColumnStripes(false);
-        style.setShowRowStripes(true);
-        style.setFirstColumn(false);
-        style.setLastColumn(false);
 
         DataFormat format = wb.createDataFormat();
         CellStyle cellStylePercentage;
@@ -633,7 +573,7 @@ public class ReportDataService {
 
         Cell cell;
         for (int i = 0; i < resultData.size(); i++) {
-            XSSFRow rowData = sheet.createRow(i + 1);
+            SXSSFRow rowData = sheet.createRow(i + 1);
             IndicatorExecutionDetailedDTO ie = resultData.get(i);
 
             cell = rowData.createCell(0);
@@ -701,10 +641,14 @@ public class ReportDataService {
         return wb;
 
     }
-    public XSSFWorkbook getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(Long projectId) {
+
+    public SXSSFWorkbook getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(Long projectId) {
 
 
+        long lStartTime = System.nanoTime();
         List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(projectId);
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds (query): " + (lEndTime - lStartTime) / 1000000000);
         List<String> titles = new ArrayList<>(
                 Arrays.asList("Tipo de Implementacion", "Area", "Declaracion", "Declaracion de Proyecto", "Tipo de Indicador",
                         "Indicador", "Frecuencia", "Implementador", "Ejecucion Total", //"Meta Total",
@@ -720,32 +664,17 @@ public class ReportDataService {
                         2000, 2000, 5000, 5000, 5000,
                         2000));
 
-        XSSFWorkbook wb = new XSSFWorkbook();
-        XSSFSheet sheet = wb.createSheet();
+        SXSSFWorkbook wb = new SXSSFWorkbook();
+        SXSSFSheet sheet = wb.createSheet();
         // Set which area the table should be placed in
         int NB_ROWS = resultData.size();
-        int NB_COLS = titles.size()-1;
+        int NB_COLS = titles.size() - 1;
         AreaReference reference = wb.getCreationHelper()
                 .createAreaReference(
                         new CellReference(0, 0),
                         new CellReference(NB_ROWS, NB_COLS));
+        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
         // title rows
-        // Create
-        XSSFTable table = sheet.createTable(reference);
-        table.setName("data_export");
-        table.setDisplayName("data_export");
-        // For now, create the initial style in a low-level way
-        table.getCTTable().addNewTableStyleInfo();
-        table.getCTTable().getTableStyleInfo().setName("TableStyleMedium2");
-        table.getCTTable().setAutoFilter(CTAutoFilter.Factory.newInstance());
-        // Style the table
-        XSSFTableStyleInfo style = (XSSFTableStyleInfo) table.getStyle();
-        style.setName("TableStyleMedium2");
-        style.setShowColumnStripes(false);
-        style.setShowRowStripes(true);
-        style.setFirstColumn(false);
-        style.setLastColumn(false);
-
         DataFormat format = wb.createDataFormat();
         CellStyle cellStylePercentage;
         cellStylePercentage = wb.createCellStyle();
@@ -761,7 +690,7 @@ public class ReportDataService {
 
         Cell cell;
         for (int i = 0; i < resultData.size(); i++) {
-            XSSFRow rowData = sheet.createRow(i + 1);
+            SXSSFRow rowData = sheet.createRow(i + 1);
             IndicatorExecutionDetailedDTO ie = resultData.get(i);
 
             cell = rowData.createCell(0);
@@ -784,30 +713,13 @@ public class ReportDataService {
             if (ie.getTotal_execution() != null) {
                 cell.setCellValue(ie.getTotal_execution().intValue());
             }
-           /* cell = rowData.createCell(9);
-            if (ie.getTarget() != null) {
-                cell.setCellValue(ie.getTarget().intValue());
-            }*/
-           /* cell = rowData.createCell(10);
-            if (ie.getExecution_percentage() != null) {
-                cell.setCellValue(ie.getExecution_percentage().intValue());
-                cell.setCellStyle(cellStylePercentage);
-            }*/
+
             cell = rowData.createCell(9);
             cell.setCellValue(ie.getQuarter());
             cell = rowData.createCell(10);
             if (ie.getQuarter_execution() != null) {
                 cell.setCellValue(ie.getQuarter_execution().intValue());
             }
-           /* cell = rowData.createCell(13);
-            if (ie.getQuarter_target() != null) {
-                cell.setCellValue(ie.getQuarter_target().intValue());
-            }
-            cell = rowData.createCell(14);
-            if (ie.getQuarter_percentage() != null) {
-                cell.setCellValue(ie.getQuarter_percentage().floatValue());
-                cell.setCellStyle(cellStylePercentage);
-            }*/
             cell = rowData.createCell(11);
             cell.setCellValue(ie.getMonth());
             cell = rowData.createCell(12);

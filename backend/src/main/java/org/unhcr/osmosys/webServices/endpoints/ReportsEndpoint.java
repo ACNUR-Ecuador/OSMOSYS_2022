@@ -45,7 +45,8 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
-    @Path("/indicatorsCatalogByPeriodId/{periodId}")
+    @Path("" +
+            "/indicatorsCatalogByPeriodId/{periodId}")
     @GET
     @Secured
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
@@ -54,7 +55,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("Catalogo_indicadores_:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.indicatorsCatalogByPeriodId(periodId);
         long lEndTime = System.nanoTime();

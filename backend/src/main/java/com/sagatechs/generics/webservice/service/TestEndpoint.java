@@ -145,11 +145,8 @@ public class TestEndpoint {
     public Response testcube() throws GeneralAppException, IOException {
         // List<IndicatorExecutionDetailedDTO> r = this.reportService.getAllIndicatorExecutionDetailed(1l);
         LOGGER.error("start");
-        ByteArrayOutputStream r = this.reportService.getAllImplementationsDetailedByPeriodId(1l);
 
-        String filename = "Catalogo_indicadores_" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
-        LOGGER.error("end");
-        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+        return null;//Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
     @Path("testcube")
