@@ -21,6 +21,7 @@ public class MonthWeb implements Serializable {
     private Set<SourceType> sources;
     private String sourceOther;
     private Boolean checked;
+    private BigDecimal usedBudget;
 
 
     public Long getId() {
@@ -102,5 +103,13 @@ public class MonthWeb implements Serializable {
 
     public void setChecked(Boolean checked) {
         this.checked = checked;
+    }
+
+    public BigDecimal getUsedBudget() {
+        return usedBudget;
+    }
+
+    public void setUsedBudget(BigDecimal usedBudget) {
+        this.usedBudget = usedBudget;
     }
 }

@@ -45,6 +45,9 @@ public class Month extends BaseEntity<Long> {
     @Column(name = "order_", nullable = false)
     private Integer order;
 
+    @Column(name = "used_budget")
+    private BigDecimal usedBudget;
+
     @ElementCollection(targetClass = SourceType.class, fetch = FetchType.LAZY)
     @CollectionTable(name = "month_source", schema = "osmosys",
             joinColumns = @JoinColumn(name = "month_id"))
@@ -221,6 +224,14 @@ public class Month extends BaseEntity<Long> {
 
     public void setMonthYearOrder(Integer monthYearOrder) {
         this.monthYearOrder = monthYearOrder;
+    }
+
+    public BigDecimal getUsedBudget() {
+        return usedBudget;
+    }
+
+    public void setUsedBudget(BigDecimal usedBudget) {
+        this.usedBudget = usedBudget;
     }
 
     @Override

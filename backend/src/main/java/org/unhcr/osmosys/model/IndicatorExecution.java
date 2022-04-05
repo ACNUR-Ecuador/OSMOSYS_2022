@@ -100,6 +100,18 @@ public class IndicatorExecution extends BaseEntity<Long> {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "indicatorExecution", cascade = CascadeType.ALL)
     private Set<IndicatorExecutionLocationAssigment> indicatorExecutionLocationAssigments = new HashSet<>();
 
+    @Column(name = "keep_budget")
+    private Boolean keepBudget;
+
+    @Column(name = "assigned_budget")
+    private BigDecimal assignedBudget;
+
+    @Column(name = "available_budget")
+    private BigDecimal availableBudget;
+
+    @Column(name = "total_used_budget")
+    private BigDecimal totalUsedBudget;
+
     @Override
     public Long getId() {
         return id;
@@ -329,5 +341,35 @@ public class IndicatorExecution extends BaseEntity<Long> {
                 '}';
     }
 
+    public Boolean getKeepBudget() {
+        return keepBudget;
+    }
 
+    public void setKeepBudget(Boolean keepBudget) {
+        this.keepBudget = keepBudget;
+    }
+
+    public BigDecimal getAssignedBudget() {
+        return assignedBudget;
+    }
+
+    public void setAssignedBudget(BigDecimal assignedBudget) {
+        this.assignedBudget = assignedBudget;
+    }
+
+    public BigDecimal getAvailableBudget() {
+        return availableBudget;
+    }
+
+    public void setAvailableBudget(BigDecimal availableBudget) {
+        this.availableBudget = availableBudget;
+    }
+
+    public BigDecimal getTotalUsedBudget() {
+        return totalUsedBudget;
+    }
+
+    public void setTotalUsedBudget(BigDecimal totalUsedBudget) {
+        this.totalUsedBudget = totalUsedBudget;
+    }
 }

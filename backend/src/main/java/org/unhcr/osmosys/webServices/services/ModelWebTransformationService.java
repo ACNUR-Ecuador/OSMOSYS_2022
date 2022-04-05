@@ -9,7 +9,10 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.StatementDao;
 import org.unhcr.osmosys.model.*;
-import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.model.enums.Frecuency;
+import org.unhcr.osmosys.model.enums.IndicatorType;
+import org.unhcr.osmosys.model.enums.MonthEnum;
+import org.unhcr.osmosys.model.enums.QuarterEnum;
 import org.unhcr.osmosys.webServices.model.*;
 
 import javax.ejb.Stateless;
@@ -1040,9 +1043,6 @@ public class ModelWebTransformationService {
 
     public IndicatorExecutionWeb indicatorExecutionToIndicatorExecutionWeb(IndicatorExecution ie, boolean getProject) throws GeneralAppException {
 
-        if(ie.getIndicator()!=null && ie.getIndicator().getCode().equals("ME0K3")){
-            LOGGER.error("es este");
-        }
         IndicatorExecutionWeb iw = new IndicatorExecutionWeb();
         iw.setId(ie.getId());
         iw.setActivityDescription(ie.getActivityDescription());
@@ -1052,6 +1052,10 @@ public class ModelWebTransformationService {
         iw.setTotalExecution(ie.getTotalExecution());
         iw.setProjectStatement(this.statementToStatementWeb(ie.getProjectStatement(), false, true, true, true, false));
         iw.setPeriod(this.periodToPeriodWeb(ie.getPeriod()));
+        iw.setKeepBudget(ie.getKeepBudget());
+        iw.setAssignedBudget(ie.getAssignedBudget());
+        iw.setAvailableBudget(ie.getAvailableBudget());
+        iw.setTotalUsedBudget(ie.getTotalUsedBudget());
         if (getProject) {
             iw.setProject(this.projectToProjectWeb(ie.getProject()));
         }
@@ -1103,6 +1107,8 @@ public class ModelWebTransformationService {
                 .map(IndicatorExecutionLocationAssigment::getLocation)
                 .collect(Collectors.toList());
         iw.setLocations(this.cantonsToCantonsWeb(activeCantons));
+
+
         return iw;
 
 
@@ -1331,6 +1337,7 @@ public class ModelWebTransformationService {
         q.setSources(mo.getSources());
         q.setSourceOther(mo.getSourceOther());
         q.setChecked(mo.getChecked());
+        q.setUsedBudget(mo.getUsedBudget());
         return q;
     }
 

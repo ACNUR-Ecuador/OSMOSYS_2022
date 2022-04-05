@@ -23,7 +23,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Stateless
 public class IndicatorExecutionService {
@@ -343,6 +342,24 @@ public class IndicatorExecutionService {
                 indicatorExecution.setExecutionPercentage(null);
             }
         }
+        this.updateIndicatorExecutionBudget(indicatorExecution);
+    }
+
+    private void updateIndicatorExecutionBudget(IndicatorExecution indicatorExecution){
+        if (indicatorExecution.getKeepBudget()) {
+            Optional<BigDecimal> totalExecutedOpt = indicatorExecution
+                    .getQuarters().stream().
+                    flatMap(quarter -> quarter.getMonths().stream())
+                    .filter(month -> month.getState().equals(State.ACTIVO) && month.getUsedBudget() != null)
+                    .map(Month::getUsedBudget)
+                    .reduce(BigDecimal::add);
+            BigDecimal totalExecuted = totalExecutedOpt.orElse(BigDecimal.ZERO);
+            BigDecimal assignedBudget = indicatorExecution.getAssignedBudget() != null ? indicatorExecution.getAssignedBudget() : BigDecimal.ZERO;
+            BigDecimal result = assignedBudget.subtract(totalExecuted).setScale(2, RoundingMode.HALF_UP);
+            indicatorExecution.setAvailableBudget(result);
+            indicatorExecution.setTotalUsedBudget(totalExecuted);
+
+        }
     }
 
     public List<IndicatorExecutionWeb> getPerformanceIndicatorExecutionsAdministrationByProjectId(Long projectId) throws GeneralAppException {
@@ -404,6 +421,7 @@ public class IndicatorExecutionService {
         monthToUpdate.setChecked(monthValuesWeb.getMonth().getChecked());
         monthToUpdate.setSourceOther(monthValuesWeb.getMonth().getSourceOther());
         monthToUpdate.setSources(new HashSet<>());
+        monthToUpdate.setUsedBudget(monthValuesWeb.month.getUsedBudget());
         if (CollectionUtils.isNotEmpty(monthValuesWeb.getMonth().getSources())) {
 
             for (SourceType source : monthValuesWeb.getMonth().getSources()) {
@@ -615,6 +633,8 @@ public class IndicatorExecutionService {
 
         indicatorExecution.setProjectStatement(this.statementService.getById(indicatorExecutionAssigmentWeb.getProjectStatement().getId()));
         indicatorExecution.setActivityDescription(indicatorExecutionAssigmentWeb.getActivityDescription());
+        indicatorExecution.setKeepBudget(indicatorExecutionAssigmentWeb.getKeepBudget());
+        indicatorExecution.setAssignedBudget(indicatorExecutionAssigmentWeb.getAssignedBudget());
         // actualizo locations
         if (CollectionUtils.isNotEmpty(
                 indicatorExecution.getDissagregationsAssignationsToIndicatorExecutions().stream()
@@ -885,6 +905,10 @@ public class IndicatorExecutionService {
             }
             indicatorExecution.setSupervisorUser(supervisorUser);
         }
+        /**************budget**********/
+        indicatorExecution.setKeepBudget(indicatorExecutionAssigmentWeb.getKeepBudget());
+        indicatorExecution.setAssignedBudget(indicatorExecutionAssigmentWeb.getAssignedBudget());
+
         this.saveOrUpdate(indicatorExecution);
         return indicatorExecution.getId();
     }

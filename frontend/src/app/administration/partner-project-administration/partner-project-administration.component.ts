@@ -42,6 +42,7 @@ import {StatementService} from '../../shared/services/statement.service';
 import {IndicatorPipe} from '../../shared/pipes/indicator.pipe';
 import {Table} from 'primeng/table';
 
+// noinspection DuplicatedCode
 @Component({
     selector: 'app-partner-project-administration',
     templateUrl: './partner-project-administration.component.html',
@@ -401,7 +402,9 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             projectStatement: new FormControl('', Validators.required),
             state: new FormControl('', Validators.required),
             project: new FormControl(''),
-            locations: new FormControl('')
+            locations: new FormControl(''),
+            keepBudget: new FormControl(''),
+            assignedBudget: new FormControl(''),
         });
 
 
@@ -766,6 +769,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             canton.enabled = true;
         });
         this.formPerformanceIndicator.get('locations').patchValue(locations);
+        this.formPerformanceIndicator.get('keepBudget').patchValue(false);
+        this.setUpAssignedBudget(this.formPerformanceIndicator.get('keepBudget').value);
     }
 
     exportExcelPerformancceIndicators(table: Table) {
@@ -787,6 +792,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             isBorrowedStatement,
             projectStatement,
             state,
+            keepBudget,
+            assignedBudget
         } = this.formPerformanceIndicator.value;
         const indicatorExecution: IndicatorExecutionAssigment = new IndicatorExecutionAssigment();
         const indicator = this.formPerformanceIndicator.get('indicator').value;
@@ -796,6 +803,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         indicatorExecution.project.id = this.formItem.get('id').value;
         indicatorExecution.indicator = indicator;
         indicatorExecution.activityDescription = activityDescription;
+        indicatorExecution.keepBudget = keepBudget;
+        indicatorExecution.assignedBudget = assignedBudget;
         if (state) {
             indicatorExecution.state = EnumsState.ACTIVE;
         } else {
@@ -953,6 +962,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             .map(value => {
                 return value.value;
             }).filter(value => value.id === indicatorExecution.indicator.id).pop();
+        editinItem.keepBudget = indicatorExecution.keepBudget;
+        editinItem.assignedBudget = indicatorExecution.assignedBudget;
         if (indicatorExecution.projectStatement) {
             editinItem.projectStatement =
                 this.statementsOptions
@@ -996,7 +1007,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             this.formPerformanceIndicator.get('projectStatement').enable();
         }
         this.showPerformanceIndicatorDialog = true;
-
+        this.setUpAssignedBudget(this.formPerformanceIndicator.get('keepBudget').value);
     }
 
     indicatorHasLocationDissagregation(indicator: Indicator): boolean {
@@ -1029,5 +1040,24 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         this.filterService.register('statementFilter', (value, filter): boolean => {
             return this.filterUtilsService.generalFilter(value, ['code', 'description'], filter);
         });
+    }
+
+    onKeepBudgetChange(event: any) {
+        if (event.checked) {
+            this.setUpAssignedBudget(true);
+        } else {
+            this.setUpAssignedBudget(false);
+        }
+    }
+
+    setUpAssignedBudget(active: boolean) {
+        if (active) {
+            this.formPerformanceIndicator.get('assignedBudget').setValidators(Validators.required);
+            this.formPerformanceIndicator.get('assignedBudget').enable();
+        } else {
+            this.formPerformanceIndicator.get('assignedBudget').clearValidators();
+            this.formPerformanceIndicator.get('assignedBudget').disable();
+            this.formPerformanceIndicator.get('assignedBudget').patchValue(null);
+        }
     }
 }

@@ -342,6 +342,10 @@ export class IndicatorExecution {
     public assignedUser: User;
     public assignedUserBackup: User;
     public locations: Canton[];
+    public keepBudget: boolean;
+    public assignedBudget: number;
+    public availableBudget: number;
+    public totalUsedBudget: number;
 
 }
 
@@ -369,6 +373,7 @@ export class Month {
     public sources: string[];
     public sourceOther: string;
     public checked: boolean;
+    public usedBudget: number;
 }
 
 /********usado en pantalla*****/
@@ -422,6 +427,8 @@ export class IndicatorExecutionAssigment {
     public supervisorUser?: User;
     public assignedUser?: User;
     public assignedUserBackup?: User;
+    public keepBudget: boolean;
+    public assignedBudget: number;
 }
 
 export class StartEndDatesWeb {

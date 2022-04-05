@@ -597,6 +597,35 @@
                         {{utilsService.getErrorMessageForm('activityDescription', formItem)}}
                     </small>
                 </div>
+                <div class="p-field p-col-6 p-md-6">
+                    <label for="keepBudgetI">Controlar presupuesto</label>
+                    <div>
+                        <p-inputSwitch id="keepBudgetI"
+                                       formControlName="keepBudget"
+                                       (onChange)="onKeepBudgetChange($event)"
+                        >
+                        </p-inputSwitch>
+                    </div>
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('keepBudget',formPerformanceIndicator)">
+                        {{utilsService.getErrorMessageForm('keepBudget', formPerformanceIndicator)}}
+                    </small>
+                </div>
+                <div class="p-field p-col-6 p-md-6">
+                    <label for="assignedBudgetI">Presupuesto asignado</label>
+                    <p-inputNumber
+                        id="assignedBudgetI"
+                        formControlName="assignedBudget"
+                        mode="currency"
+                        currency="USD"
+                        locale="en-US"
+                    ></p-inputNumber>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('assignedBudget',formPerformanceIndicator)">
+                        {{utilsService.getErrorMessageForm('assignedBudget', formPerformanceIndicator)}}
+                    </small>
+                </div>
                 <div class="p-field p-col-12 p-md-2">
                     <label for="statePII">Estado</label>
 

@@ -62,6 +62,32 @@
             </div>
             <div class="card p-col-12">
                 <div class="p-fluid p-formgrid p-grid">
+
+                    <div class="p-field p-col-12 p-md-8" *ngIf="indicatorExecution.keepBudget">
+                        <label for="assignedBudgetI">Presupuesto</label>
+                        <div class="p-field p-col-12 p-md-8">
+                            <label for="assignedBudgetI">Presupuesto Asignado: </label>
+                            <label for="assignedBudgetI">{{indicatorExecution.assignedBudget | currency:'USD':true:'1.2-2'}}</label>
+                        </div>
+                        <div class="p-field p-col-12 p-md-8">
+                            <label for="assignedBudgetI">Presupuesto Ejecutado: </label>
+                            <label for="assignedBudgetI">{{indicatorExecution.availableBudget| currency:'USD':true:'1.2-2'}}</label>
+                        </div>
+                        <div class="p-field p-col-12 p-md-8">
+                            <label for="assignedBudgetI">Presupuesto Gastado este Mes: </label>
+                            <p-inputNumber
+                                id="assignedBudgetI"
+                                formControlName="usedBudget"
+                                mode="currency"
+                                currency="USD"
+                                locale="en-US"
+                            ></p-inputNumber>
+                        </div>
+                        <small class="p-error"
+                               *ngIf="utilsService.showErrorForm('usedBudget',formItem)">
+                            {{utilsService.getErrorMessageForm('usedBudget', formItem)}}
+                        </small>
+                    </div>
                     <div class="p-field p-col-12 p-md-8">
                         <label for="sourcesI">Fuente de Verificación</label>
                         <p-multiSelect id="sourcesI"

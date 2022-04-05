@@ -4,6 +4,7 @@ import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.unhcr.osmosys.model.enums.IndicatorType;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -38,7 +39,11 @@ public class IndicatorExecutionWeb implements Serializable {
     private UserWeb assignedUser;
     private UserWeb assignedUserBackup;
 
-
+    /**************budget**********/
+    private Boolean keepBudget;
+    private BigDecimal assignedBudget;
+    private BigDecimal availableBudget;
+    private BigDecimal totalUsedBudget;
 
     /**************administration*********/
     private List<CantonWeb> locations;
@@ -217,5 +222,37 @@ public class IndicatorExecutionWeb implements Serializable {
 
     public void setSupervisorUser(UserWeb supervisorUser) {
         this.supervisorUser = supervisorUser;
+    }
+
+    public Boolean getKeepBudget() {
+        return keepBudget;
+    }
+
+    public void setKeepBudget(Boolean keepBudget) {
+        this.keepBudget = keepBudget;
+    }
+
+    public BigDecimal getAssignedBudget() {
+        return assignedBudget;
+    }
+
+    public void setAssignedBudget(BigDecimal assignedBudget) {
+        this.assignedBudget = assignedBudget;
+    }
+
+    public BigDecimal getAvailableBudget() {
+        return availableBudget;
+    }
+
+    public void setAvailableBudget(BigDecimal availableBudget) {
+        this.availableBudget = availableBudget;
+    }
+
+    public BigDecimal getTotalUsedBudget() {
+        return totalUsedBudget;
+    }
+
+    public void setTotalUsedBudget(BigDecimal totalUsedBudget) {
+        this.totalUsedBudget = totalUsedBudget;
     }
 }

@@ -60,10 +60,13 @@ export class IndicatorCatalogReportsComponent implements OnInit {
 
     getIndicatorCatalogReport() {
         const period = this.periodForm.get('selectedPeriod').value as Period;
+        this.messageService.clear();
         if (period) {
             this.reportsService.getIndicatorsCatalogByPeriodId(period.id).subscribe((response: HttpResponse<Blob>) => {
                 this.utilsService.downloadFileResponse(response);
             }, error => {
+                console.log(error);
+                console.log(error.error);
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Error al Generar el Reporte',
@@ -82,6 +85,7 @@ export class IndicatorCatalogReportsComponent implements OnInit {
 
     getIndicatorsCatalogWithImplementersSimple() {
         const period = this.periodForm.get('selectedPeriod').value as Period;
+        this.messageService.clear();
         if (period) {
             this.reportsService.getIndicatorsCatalogWithImplementersSimple(period.id).subscribe((response: HttpResponse<Blob>) => {
                 this.utilsService.downloadFileResponse(response);
@@ -104,6 +108,7 @@ export class IndicatorCatalogReportsComponent implements OnInit {
 
     getIndicatorsCatalogWithImplementersDetailed() {
         const period = this.periodForm.get('selectedPeriod').value as Period;
+        this.messageService.clear();
         if (period) {
             this.reportsService.getIndicatorsCatalogWithImplementersDetailed(period.id).subscribe((response: HttpResponse<Blob>) => {
                 this.utilsService.downloadFileResponse(response);

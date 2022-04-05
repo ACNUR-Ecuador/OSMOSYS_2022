@@ -66,6 +66,7 @@ import { DirectImplementationAdministrationComponent } from './direct-implementa
 import {UserPipe} from '../shared/pipes/user.pipe';
 import {MonthPipe} from '../shared/pipes/month.pipe';
 import {MonthListPipe} from '../shared/pipes/month-list.pipe';
+import {InputSwitchModule} from 'primeng/inputswitch';
 
 
 @NgModule({
@@ -120,7 +121,8 @@ import {MonthListPipe} from '../shared/pipes/month-list.pipe';
         SharedModule,
         CheckboxModule,
         AccordionModule,
-        RippleModule
+        RippleModule,
+        InputSwitchModule
     ],
     providers: [
         ConfirmationService,

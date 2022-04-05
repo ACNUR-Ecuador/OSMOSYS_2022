@@ -63,6 +63,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
             sources: new FormControl('', Validators.required),
             sourceOther: new FormControl(''),
             checked: new FormControl(''),
+            usedBudget: new FormControl(''),
         });
         this.loadMonthValues(this.monthId);
         this.chekedOptions = [];
@@ -106,6 +107,12 @@ export class PerformanceIndicatorFormComponent implements OnInit {
             this.formItem.get('commentary').patchValue(this.month.commentary);
             this.formItem.get('sources').patchValue(this.month.sources);
             this.formItem.get('checked').patchValue(this.month.checked);
+            if (this.indicatorExecution.keepBudget) {
+                this.formItem.get('usedBudget').patchValue(this.month.usedBudget);
+                this.formItem.get('usedBudget').setValidators(Validators.required);
+            }else {
+                this.formItem.get('usedBudget').clearValidators();
+            }
             if (this.isProjectFocalPoint) {
                 this.formItem.get('checked').enable();
             } else {
@@ -133,6 +140,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         this.monthValues.month.commentary = this.formItem.get('commentary').value;
         this.monthValues.month.sources = this.formItem.get('sources').value;
         this.monthValues.month.sourceOther = this.formItem.get('sourceOther').value;
+        this.monthValues.month.usedBudget = this.formItem.get('usedBudget').value;
         if (!this.formItem.get('checked').value || this.formItem.get('checked').value === '') {
             this.monthValues.month.checked = null;
         } else {

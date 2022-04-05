@@ -195,6 +195,8 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             supervisorUser: new FormControl('', Validators.required),
             assignedUser: new FormControl('', Validators.required),
             assignedUserBackup: new FormControl(''),
+            keepBudget: new FormControl('', Validators.required),
+            assignedBudget: new FormControl(''),
         });
 
 
@@ -226,6 +228,8 @@ export class DirectImplementationAdministrationComponent implements OnInit {
         this.itemForm.get('indicator').enable();
         this.itemForm.get('state').patchValue(EnumsState.ACTIVE);
         this.itemForm.get('period').patchValue(period);
+        this.itemForm.get('keepBudget').patchValue(false);
+        this.setUpAssignedBudget(this.itemForm.get('keepBudget').value);
     }
 
     onPeriodChange(period: Period) {
@@ -258,7 +262,9 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             indicator,
             supervisorUser,
             assignedUser,
-            assignedUserBackup
+            assignedUserBackup,
+            keepBudget,
+            assignedBudget
         } = this.itemForm.getRawValue();
         if (assignedUserBackup && assignedUser.id === assignedUserBackup.id) {
             this.messageService.add({
@@ -277,7 +283,9 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             reportingOffice,
             supervisorUser,
             assignedUser,
-            assignedUserBackup
+            assignedUserBackup,
+            keepBudget,
+            assignedBudget
         };
         if (assigment.id) {
             this.indicatorExecutionService
@@ -371,6 +379,8 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             supervisorUser,
             assignedUser,
             assignedUserBackup,
+            keepBudget,
+            assignedBudget
         } = indicatorExecution;
         const assigment: IndicatorExecutionAssigment = {
             id,
@@ -381,6 +391,8 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             supervisorUser,
             assignedUser,
             assignedUserBackup,
+            keepBudget,
+            assignedBudget
         };
         this.messageService.clear();
         this.utilsService.resetForm(this.itemForm);
@@ -388,5 +400,25 @@ export class DirectImplementationAdministrationComponent implements OnInit {
         this.itemForm.get('indicator').disable();
         this.showItemDialog = true;
         this.onChangeIndicator(indicator);
+        this.setUpAssignedBudget(this.itemForm.get('keepBudget').value);
+    }
+
+    onKeepBudgetChange(event: any) {
+        if (event.checked) {
+            this.setUpAssignedBudget(true);
+        }else {
+            this.setUpAssignedBudget(false);
+        }
+    }
+
+    setUpAssignedBudget(active: boolean) {
+        if (active) {
+            this.itemForm.get('assignedBudget').setValidators(Validators.required);
+            this.itemForm.get('assignedBudget').enable();
+        }else {
+            this.itemForm.get('assignedBudget').clearValidators();
+            this.itemForm.get('assignedBudget').disable();
+            this.itemForm.get('assignedBudget').patchValue(null);
+        }
     }
 }

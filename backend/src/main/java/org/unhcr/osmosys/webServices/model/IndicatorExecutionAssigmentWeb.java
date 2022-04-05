@@ -3,6 +3,7 @@ package org.unhcr.osmosys.webServices.model;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,9 @@ public class IndicatorExecutionAssigmentWeb implements Serializable {
     private UserWeb assignedUser;
     private UserWeb supervisorUser;
     private UserWeb assignedUserBackup;
-
+    /**************budget**********/
+    private Boolean keepBudget;
+    private BigDecimal assignedBudget;
 
     public Long getId() {
         return id;
@@ -120,5 +123,21 @@ public class IndicatorExecutionAssigmentWeb implements Serializable {
 
     public void setSupervisorUser(UserWeb supervisorUser) {
         this.supervisorUser = supervisorUser;
+    }
+
+    public Boolean getKeepBudget() {
+        return keepBudget;
+    }
+
+    public void setKeepBudget(Boolean keepBudget) {
+        this.keepBudget = keepBudget;
+    }
+
+    public BigDecimal getAssignedBudget() {
+        return assignedBudget;
+    }
+
+    public void setAssignedBudget(BigDecimal assignedBudget) {
+        this.assignedBudget = assignedBudget;
     }
 }
