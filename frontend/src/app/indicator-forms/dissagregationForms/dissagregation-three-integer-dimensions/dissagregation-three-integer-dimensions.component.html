@@ -9,8 +9,14 @@
             <ng-template pTemplate="header">
                 <div class="p-grid p-jc-between" style="width:100%;">
                     <div class="p-col-9">{{group.label}}</div>
-                    <div class="p-col-3">
-                        Total: {{this.utilsService.getTotalIndicatorValuesArrayArray(valuesGroupRowsMap.get(group))}}
+                    <div class="p-grid p-col-3 p-jc-sm-end ">
+                        <div class="p-grid p-m-2 p-p-2 p-col-6" style="color: black;"
+                             [style.background]="this.utilsService.getTotalIndicatorValuesArrayArray(valuesGroupRowsMap.get(group))>0?'#C8E6C9':'#FEEDAF'"
+                        >
+                            <div class="p-col-6 p-p-0">Total:</div>
+                            <div class="p-col-6 p-p-0"
+                                 style="text-align: right">{{this.utilsService.getTotalIndicatorValuesArrayArray(valuesGroupRowsMap.get(group)) | number:'1.0-0'}}</div>
+                        </div>
                     </div>
                 </div>
             </ng-template>
