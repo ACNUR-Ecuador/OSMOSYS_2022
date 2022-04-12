@@ -909,7 +909,7 @@ public class IndicatorExecutionService {
             }
             indicatorExecution.setSupervisorUser(supervisorUser);
         }
-        /* *************budget**********/
+        /*  *************budget**********/
         indicatorExecution.setKeepBudget(indicatorExecutionAssigmentWeb.getKeepBudget());
         indicatorExecution.setAssignedBudget(indicatorExecutionAssigmentWeb.getAssignedBudget());
 
