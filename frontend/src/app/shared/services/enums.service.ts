@@ -38,6 +38,10 @@ export class EnumsService {
         switch (dissagregationType) {
             case DissagregationType.EDAD:
                 return this.getByType(EnumsType.AgeType);
+            case DissagregationType.EDAD_EDUCACION_PRIMARIA:
+                return this.getByType(EnumsType.AgePrimaryEducationType);
+            case DissagregationType.EDAD_EDUCACION_TERCIARIA:
+                return this.getByType(EnumsType.AgeTertiaryEducationType);
             case DissagregationType.GENERO:
                 return this.getByType(EnumsType.GenderType);
             case DissagregationType.DIVERSIDAD:

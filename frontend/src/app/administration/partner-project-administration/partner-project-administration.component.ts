@@ -593,7 +593,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
     set selectedColumnsPerformanceIndicators(val: any[]) {
         // restore original order
-        this._selectedColumnsPerformanceIndicators = this.cols.filter(col => val.includes(col));
+        this._selectedColumnsPerformanceIndicators = this.colsPerformancelIndicators.filter(col => val.includes(col));
     }
 
     private createTables() {

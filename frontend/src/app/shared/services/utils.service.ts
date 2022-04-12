@@ -247,6 +247,14 @@ export class UtilsService {
                 result.push(EnumsType.AgeType);
                 return result;
             }
+            case DissagregationType.EDAD_EDUCACION_PRIMARIA: {
+                result.push(EnumsType.AgePrimaryEducationType);
+                return result;
+            }
+            case DissagregationType.EDAD_EDUCACION_TERCIARIA: {
+                result.push(EnumsType.AgeTertiaryEducationType);
+                return result;
+            }
             case DissagregationType.GENERO: {
                 result.push(EnumsType.GenderType);
                 return result;
@@ -267,6 +275,11 @@ export class UtilsService {
             }
             case DissagregationType.GENERO_Y_EDAD: {
                 result.push(EnumsType.AgeType);
+                result.push(EnumsType.GenderType);
+                return result;
+            }
+            case DissagregationType.GENERO_Y_DIVERSIDAD: {
+                result.push(EnumsType.DiversityType);
                 result.push(EnumsType.GenderType);
                 return result;
             }
@@ -308,6 +321,20 @@ export class UtilsService {
                 result.push(EnumsType.GenderType);
                 return result;
             }
+            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
+                result.push(EnumsType.PopulationType);
+                result.push(null);
+                result.push(EnumsType.AgePrimaryEducationType);
+                result.push(EnumsType.GenderType);
+                return result;
+            }
+            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO: {
+                result.push(EnumsType.PopulationType);
+                result.push(null);
+                result.push(EnumsType.AgeTertiaryEducationType);
+                result.push(EnumsType.GenderType);
+                return result;
+            }
         }
     }
 
@@ -317,6 +344,8 @@ export class UtilsService {
         switch (dissagregationTypeE) {
             case DissagregationType.TIPO_POBLACION:
             case DissagregationType.EDAD:
+            case DissagregationType.EDAD_EDUCACION_PRIMARIA:
+            case DissagregationType.EDAD_EDUCACION_TERCIARIA:
             case DissagregationType.GENERO:
             case DissagregationType.LUGAR:
             case DissagregationType.PAIS_ORIGEN:
@@ -325,6 +354,7 @@ export class UtilsService {
             case DissagregationType.SIN_DESAGREGACION:
                 return 0;
             case DissagregationType.GENERO_Y_EDAD:
+            case DissagregationType.GENERO_Y_DIVERSIDAD:
             case DissagregationType.TIPO_POBLACION_Y_GENERO:
             case DissagregationType.TIPO_POBLACION_Y_EDAD:
             case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD:
@@ -334,6 +364,8 @@ export class UtilsService {
             case DissagregationType.LUGAR_EDAD_Y_GENERO:
                 return 3;
             case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO:
+            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
+            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
                 return 4;
         }
     }
@@ -362,14 +394,19 @@ export class UtilsService {
             case DissagregationType.TIPO_POBLACION_Y_LUGAR:
             case DissagregationType.LUGAR_EDAD_Y_GENERO:
             case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO:
+            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
+            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
                 return true;
             case DissagregationType.TIPO_POBLACION:
             case DissagregationType.EDAD:
+            case DissagregationType.EDAD_EDUCACION_PRIMARIA:
+            case DissagregationType.EDAD_EDUCACION_TERCIARIA:
             case DissagregationType.GENERO:
             case DissagregationType.PAIS_ORIGEN:
             case DissagregationType.DIVERSIDAD:
             case DissagregationType.SIN_DESAGREGACION:
             case DissagregationType.GENERO_Y_EDAD:
+            case DissagregationType.GENERO_Y_DIVERSIDAD:
             case DissagregationType.TIPO_POBLACION_Y_GENERO:
             case DissagregationType.TIPO_POBLACION_Y_EDAD:
             case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD:
@@ -381,6 +418,7 @@ export class UtilsService {
     getTwoDimentionsDissagregationTypes(): DissagregationType[] {
         const result: DissagregationType[] = [];
         result.push(DissagregationType.GENERO_Y_EDAD);
+        result.push(DissagregationType.GENERO_Y_DIVERSIDAD);
         result.push(DissagregationType.TIPO_POBLACION_Y_EDAD);
         result.push(DissagregationType.TIPO_POBLACION_Y_GENERO);
         result.push(DissagregationType.TIPO_POBLACION_Y_LUGAR);
@@ -398,6 +436,8 @@ export class UtilsService {
     getFourDimentionsDissagregationTypes(): DissagregationType[] {
         const result: DissagregationType[] = [];
         result.push(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO);
+        result.push(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO);
+        result.push(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO);
         return result;
     }
 
@@ -407,6 +447,8 @@ export class UtilsService {
         switch (dissagregationTypeE) {
             case DissagregationType.TIPO_POBLACION:
             case DissagregationType.EDAD:
+            case DissagregationType.EDAD_EDUCACION_PRIMARIA:
+            case DissagregationType.EDAD_EDUCACION_TERCIARIA:
             case DissagregationType.GENERO:
             case DissagregationType.LUGAR:
             case DissagregationType.PAIS_ORIGEN:
@@ -417,6 +459,11 @@ export class UtilsService {
             }
             case DissagregationType.GENERO_Y_EDAD: {
                 result.push(DissagregationType.EDAD);
+                result.push(DissagregationType.GENERO);
+                return result;
+            }
+            case DissagregationType.GENERO_Y_DIVERSIDAD: {
+                result.push(DissagregationType.DIVERSIDAD);
                 result.push(DissagregationType.GENERO);
                 return result;
             }
@@ -458,6 +505,20 @@ export class UtilsService {
                 result.push(DissagregationType.GENERO);
                 return result;
             }
+            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
+                result.push(DissagregationType.LUGAR);
+                result.push(DissagregationType.TIPO_POBLACION);
+                result.push(DissagregationType.EDAD_EDUCACION_PRIMARIA);
+                result.push(DissagregationType.GENERO);
+                return result;
+            }
+            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO: {
+                result.push(DissagregationType.LUGAR);
+                result.push(DissagregationType.TIPO_POBLACION);
+                result.push(DissagregationType.EDAD_EDUCACION_TERCIARIA);
+                result.push(DissagregationType.GENERO);
+                return result;
+            }
         }
     }
 
@@ -469,6 +530,10 @@ export class UtilsService {
                 return value.populationType;
             case DissagregationType.EDAD:
                 return value.ageType;
+            case DissagregationType.EDAD_EDUCACION_PRIMARIA:
+                return value.agePrimaryEducationType;
+            case DissagregationType.EDAD_EDUCACION_TERCIARIA:
+                return value.ageTertiaryEducationType;
             case DissagregationType.GENERO:
                 return value.genderType;
             case DissagregationType.LUGAR:
@@ -583,6 +648,8 @@ export class UtilsService {
         switch (dissagregationTypeE) {
             case DissagregationType.TIPO_POBLACION:
             case DissagregationType.EDAD:
+            case DissagregationType.EDAD_EDUCACION_PRIMARIA:
+            case DissagregationType.EDAD_EDUCACION_TERCIARIA:
             case DissagregationType.GENERO:
             case DissagregationType.LUGAR:
             case DissagregationType.PAIS_ORIGEN:
@@ -594,9 +661,12 @@ export class UtilsService {
             case DissagregationType.SIN_DESAGREGACION:
             case DissagregationType.LUGAR_EDAD_Y_GENERO:
             case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO:
+            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
+            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
                 return true;
             case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD:
             case DissagregationType.DIVERSIDAD:
+            case DissagregationType.GENERO_Y_DIVERSIDAD:
                 return false;
         }
     }

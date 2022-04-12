@@ -468,6 +468,8 @@ export class IndicatorValue {
     public countryOfOrigin: string;
     public genderType: string;
     public ageType: string;
+    public agePrimaryEducationType: string;
+    public ageTertiaryEducationType: string;
     public diversityType: string;
     public location: Canton;
     public showValue: boolean;

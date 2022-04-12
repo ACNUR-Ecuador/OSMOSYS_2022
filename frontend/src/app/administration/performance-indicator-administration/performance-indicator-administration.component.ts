@@ -275,6 +275,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         const newItem = new Indicator();
         this.formItem.patchValue(newItem);
         this.formItem.get('statement').disable();
+        this.formItem.get('statement').disable();
         this.formItem.get('dissagregations').patchValue([]);
         this.formItem.get('customDissagregations').patchValue([]);
         this.loadMarkers([]);
@@ -498,6 +499,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this._selectedColumns = this.cols.filter(col => val.includes(col));
     }
 
+    // noinspection DuplicatedCode
     private loadMarkers(markersToRemove: Marker[]) {
         this.markerService.getByState(EnumsState.ACTIVE).subscribe(value => {
 

@@ -1,6 +1,6 @@
 <p-panel>
     <ng-template pTemplate="header">
-        Desagregación por Lugar, Edad y Género
+        Desagregación por {{this.enumsService.resolveLabel('DissagregationType', dissagregationType)}}
     </ng-template>
     <p-accordion>
         <p-accordionTab *ngFor="let group of dissagregationOptionsGroups"

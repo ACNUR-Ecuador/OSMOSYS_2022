@@ -211,7 +211,8 @@
                                 <span class="p-input-icon-left">
                         </span>
                                 <p-multiSelect [options]="colsGeneralIndicators"
-                                               [(ngModel)]="selectedColumnsGeneralIndicators" optionLabel="header"
+                                               [(ngModel)]="selectedColumnsGeneralIndicators"
+                                               optionLabel="header"
                                                selectedItemsLabel="{0} columnas seleccionadas"
                                                [style]="{minWidth: '200px',color:'#6c757d'}"
                                                placeholder="Seleccione las columnas"></p-multiSelect>
@@ -295,11 +296,11 @@
 
                     <ng-template pTemplate="right">
                         <button type="button" pButton pRipple icon="pi pi-file-excel"
-                                (click)="exportExcelPerformancceIndicators(dt)"
+                                (click)="exportExcelPerformancceIndicators(dt2)"
                                 class="p-button-success p-mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
                     </ng-template>
                 </p-toolbar>
-                <p-table #dt [value]="performanceIndicators" [columns]="_selectedColumnsPerformanceIndicators"
+                <p-table #dt2 [value]="performanceIndicators" [columns]="selectedColumnsPerformanceIndicators"
                          [rowHover]="true" dataKey="id"
                          styleClass="p-datatable-customers"
                          currentPageReportTemplate=" {first} a {last} de {totalRecords} "
@@ -312,11 +313,12 @@
 
                                 <span class="p-input-icon-left">
                         </span>
-                            <p-multiSelect [options]="colsGeneralIndicators"
-                                           [(ngModel)]="selectedColumnsGeneralIndicators" optionLabel="header"
+                            <p-multiSelect [options]="colsPerformancelIndicators"
+                                           [(ngModel)]="selectedColumnsPerformanceIndicators"
+                                           optionLabel="header"
                                            selectedItemsLabel="{0} columnas seleccionadas"
                                            [style]="{minWidth: '200px',color:'#6c757d'}"
-                                           placeholder="Seleccione las columnas"></p-multiSelect>
+                                           placeholder="Seleccione las columnass"></p-multiSelect>
                         </div>
 
                     </ng-template>
