@@ -30,12 +30,12 @@ public class IndicatorValue extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private MonthEnum monthEnum;
 
-    @Column(name = "month_year_order", nullable = true) // TODO poner not null
+    @Column(name = "month_year_order", nullable = false)
     private Integer monthYearOrder;
 
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "dissagregation_type", nullable = false, length = 50)
+    @Column(name = "dissagregation_type", nullable = false, length = 60)
     private DissagregationType dissagregationType;
 
     @Enumerated(EnumType.STRING)
@@ -51,8 +51,16 @@ public class IndicatorValue extends BaseEntity<Long> {
     private GenderType genderType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "age_type", length = 50)
+    @Column(name = "age_type", length = 60)
     private AgeType ageType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "age_primary_education_type", length = 50)
+    private AgePrimaryEducationType agePrimaryEducationType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "age_tertiary_education_type", length = 50)
+    private AgeTertiaryEducationType ageTertiaryEducationType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "diversity_type", length = 50)
@@ -207,6 +215,22 @@ public class IndicatorValue extends BaseEntity<Long> {
 
     public void setMonthYearOrder(Integer monthYearOrder) {
         this.monthYearOrder = monthYearOrder;
+    }
+
+    public AgePrimaryEducationType getAgePrimaryEducationType() {
+        return agePrimaryEducationType;
+    }
+
+    public void setAgePrimaryEducationType(AgePrimaryEducationType agePrimaryEducationType) {
+        this.agePrimaryEducationType = agePrimaryEducationType;
+    }
+
+    public AgeTertiaryEducationType getAgeTertiaryEducationType() {
+        return ageTertiaryEducationType;
+    }
+
+    public void setAgeTertiaryEducationType(AgeTertiaryEducationType ageTertiaryEducationType) {
+        this.ageTertiaryEducationType = ageTertiaryEducationType;
     }
 
     @Override

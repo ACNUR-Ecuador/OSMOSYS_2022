@@ -22,7 +22,7 @@ public class DissagregationFilterIndicator extends BaseEntity<Long> {
     private State state;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "dissagregation_type", nullable = false, length = 50)
+    @Column(name = "dissagregation_type", nullable = false, length = 60)
     private DissagregationType dissagregationType;
 
     @Enumerated(EnumType.STRING)

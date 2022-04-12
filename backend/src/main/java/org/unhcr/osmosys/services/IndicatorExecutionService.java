@@ -149,6 +149,8 @@ public class IndicatorExecutionService {
         ie.setState(indicatorExecutionWeb.getState());
         ie.setActivityDescription(indicatorExecutionWeb.getActivityDescription());
         ie.setProjectStatement(this.statementService.getById(indicatorExecutionWeb.getProjectStatement().getId()));
+        ie.setKeepBudget(indicatorExecutionWeb.getKeepBudget());
+        ie.setAssignedBudget(indicatorExecutionWeb.getAssignedBudget());
         Project project = this.projectService.getById(indicatorExecutionWeb.getProject().getId());
         if (project == null) {
             throw new GeneralAppException("Proyecto no encontrado " + indicatorExecutionWeb.getProject().getId(), Response.Status.BAD_REQUEST);
@@ -800,6 +802,8 @@ public class IndicatorExecutionService {
         ie.setIndicatorType(indicator.getIndicatorType());
         ie.setState(indicatorExecutionAssigmentWeb.getState());
         ie.setPeriod(period);
+        ie.setKeepBudget(indicatorExecutionAssigmentWeb.getKeepBudget());
+        ie.setAssignedBudget(indicatorExecutionAssigmentWeb.getAssignedBudget());
         Office office = this.officeService.getById(indicatorExecutionAssigmentWeb.getReportingOffice().getId());
         ie.setReportingOffice(office);
         if (office == null) {
@@ -905,7 +909,7 @@ public class IndicatorExecutionService {
             }
             indicatorExecution.setSupervisorUser(supervisorUser);
         }
-        /**************budget**********/
+        /* *************budget**********/
         indicatorExecution.setKeepBudget(indicatorExecutionAssigmentWeb.getKeepBudget());
         indicatorExecution.setAssignedBudget(indicatorExecutionAssigmentWeb.getAssignedBudget());
 

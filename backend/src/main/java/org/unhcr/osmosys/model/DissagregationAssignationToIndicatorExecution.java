@@ -22,11 +22,11 @@ public class DissagregationAssignationToIndicatorExecution extends BaseEntity<Lo
     private IndicatorExecution indicatorExecution;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "state", nullable = false, length = 12, unique = false)
+    @Column(name = "state", nullable = false, length = 12)
     private State state;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "dissagregation_type", nullable = false, length = 50, unique = false)
+    @Column(name = "dissagregation_type", nullable = false, length = 60)
     private DissagregationType dissagregationType;
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "dissagregationAssignationToIndicatorExecution")

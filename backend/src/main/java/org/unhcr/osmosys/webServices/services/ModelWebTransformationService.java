@@ -1363,6 +1363,8 @@ public class ModelWebTransformationService {
         q.setGenderType(indicatorValue.getGenderType());
         q.setDiversityType(indicatorValue.getDiversityType());
         q.setAgeType(indicatorValue.getAgeType());
+        q.setAgePrimaryEducationType(indicatorValue.getAgePrimaryEducationType());
+        q.setAgeTertiaryEducationType(indicatorValue.getAgeTertiaryEducationType());
         q.setLocation(this.cantonToCantonWeb(indicatorValue.getLocation()));
         q.setShowValue(indicatorValue.getShowValue());
         q.setValue(indicatorValue.getValue());

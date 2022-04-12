@@ -21,6 +21,8 @@ public class IndicatorValueWeb implements Serializable {
     private CountryOfOrigin countryOfOrigin;
     private GenderType genderType;
     private AgeType ageType;
+    private AgePrimaryEducationType agePrimaryEducationType;
+    private AgeTertiaryEducationType ageTertiaryEducationType;
     private DiversityType diversityType;
     private CantonWeb location;
     private Boolean showValue;
@@ -138,5 +140,21 @@ public class IndicatorValueWeb implements Serializable {
 
     public void setNumeratorValue(BigDecimal numeratorValue) {
         this.numeratorValue = numeratorValue;
+    }
+
+    public AgePrimaryEducationType getAgePrimaryEducationType() {
+        return agePrimaryEducationType;
+    }
+
+    public void setAgePrimaryEducationType(AgePrimaryEducationType agePrimaryEducationType) {
+        this.agePrimaryEducationType = agePrimaryEducationType;
+    }
+
+    public AgeTertiaryEducationType getAgeTertiaryEducationType() {
+        return ageTertiaryEducationType;
+    }
+
+    public void setAgeTertiaryEducationType(AgeTertiaryEducationType ageTertiaryEducationType) {
+        this.ageTertiaryEducationType = ageTertiaryEducationType;
     }
 }

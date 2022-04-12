@@ -63,8 +63,11 @@ public class EnumsEndpoint {
                 return this.EnumsToEnumsWeb(SourceType.values());
             case "UnitType":
                 return this.EnumsToEnumsWeb(UnitType.values());
+            case "AgePrimaryEducationType":
+                return this.EnumsToEnumsWeb(AgePrimaryEducationType.values());
+            case "AgeTertiaryEducationType":
+                return this.EnumsToEnumsWeb(AgeTertiaryEducationType.values());
         }
-
         throw new GeneralAppException("Enumerador no soportado " + type, Response.Status.BAD_GATEWAY);
     }
 

@@ -2,12 +2,11 @@ package org.unhcr.osmosys.services;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
-import org.apache.commons.collections.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.IndicatorValueDao;
-import org.unhcr.osmosys.model.*;
+import org.unhcr.osmosys.model.Canton;
+import org.unhcr.osmosys.model.IndicatorValue;
 import org.unhcr.osmosys.model.enums.*;
-import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -21,8 +20,6 @@ public class IndicatorValueService {
     @Inject
     IndicatorValueDao indicatorValueDao;
 
-    @Inject
-    ModelWebTransformationService modelWebTransformationService;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(IndicatorValueService.class);
@@ -48,6 +45,10 @@ public class IndicatorValueService {
         switch (dissagregationType) {
             case EDAD:
                 return this.createIndicatorValueDissagregationStandardAge();
+            case EDAD_EDUCACION_PRIMARIA:
+                return this.createIndicatorValueDissagregationStandardAgePrimaryEducation();
+            case EDAD_EDUCACION_TERCIARIA:
+                return this.createIndicatorValueDissagregationStandardAgeTertiaryEducation();
 
             case DIVERSIDAD:
                 return this.createIndicatorValueDissagregationStandardForMonthDiversity();
@@ -63,6 +64,8 @@ public class IndicatorValueService {
                 return this.createIndicatorValueDissagregationStandardForMonthPopulationType();
             case GENERO_Y_EDAD:
                 return this.createIndicatorValueDissagregationStandardForGenderAndAge();
+            case GENERO_Y_DIVERSIDAD:
+                return this.createIndicatorValueDissagregationStandardForGenderAndDiversity();
             case TIPO_POBLACION_Y_DIVERSIDAD:
                 return this.createIndicatorValueDissagregationStandardForPopulationTypeAndDiversity();
             case TIPO_POBLACION_Y_EDAD:
@@ -77,6 +80,10 @@ public class IndicatorValueService {
                 return this.createIndicatorValueDissagregationStandardForLocationAgeAndGender(cantones);
             case TIPO_POBLACION_LUGAR_EDAD_Y_GENERO:
                 return this.createIndicatorValueDissagregationStandardForPopulationTypeLocationAgeAndGender(cantones);
+            case TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
+                return this.createIndicatorValueDissagregationStandardForPopulationTypeLocationAgePrimaryEducationAndGender(cantones);
+            case TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
+                return this.createIndicatorValueDissagregationStandardForPopulationTypeLocationAgeTertiaryEducationAndGender(cantones);
             case SIN_DESAGREGACION:
                 return this.createIndicatorValueDissagregationStandardForNoDissagregation();
             default: {
@@ -93,6 +100,35 @@ public class IndicatorValueService {
             iv.setState(State.ACTIVO);
             iv.setDissagregationType(dt);
             iv.setAgeType(ageType);
+            iv.setShowValue(true);
+            r.add(iv);
+        }
+        return r;
+    }
+
+
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardAgePrimaryEducation() {
+        List<IndicatorValue> r = new ArrayList<>();
+        DissagregationType dt = DissagregationType.EDAD;
+        for (AgePrimaryEducationType agePrimaryEducationType : AgePrimaryEducationType.values()) {
+            IndicatorValue iv = new IndicatorValue();
+            iv.setState(State.ACTIVO);
+            iv.setDissagregationType(dt);
+            iv.setAgePrimaryEducationType(agePrimaryEducationType);
+            iv.setShowValue(true);
+            r.add(iv);
+        }
+        return r;
+    }
+
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardAgeTertiaryEducation() {
+        List<IndicatorValue> r = new ArrayList<>();
+        DissagregationType dt = DissagregationType.EDAD;
+        for (AgeTertiaryEducationType ageageTertiaryEducationType : AgeTertiaryEducationType.values()) {
+            IndicatorValue iv = new IndicatorValue();
+            iv.setState(State.ACTIVO);
+            iv.setDissagregationType(dt);
+            iv.setAgeTertiaryEducationType(ageageTertiaryEducationType);
             iv.setShowValue(true);
             r.add(iv);
         }
@@ -179,6 +215,23 @@ public class IndicatorValueService {
                 iv.setDissagregationType(dt);
                 iv.setGenderType(genderType);
                 iv.setAgeType(ageType);
+                iv.setShowValue(true);
+                r.add(iv);
+            }
+
+        }
+        return r;
+    }
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForGenderAndDiversity() {
+        List<IndicatorValue> r = new ArrayList<>();
+        DissagregationType dt = DissagregationType.GENERO_Y_DIVERSIDAD;
+        for (GenderType genderType : GenderType.values()) {
+            for (DiversityType diversityType : DiversityType.values()) {
+                IndicatorValue iv = new IndicatorValue();
+                iv.setState(State.ACTIVO);
+                iv.setDissagregationType(dt);
+                iv.setGenderType(genderType);
+                iv.setDiversityType(diversityType);
                 iv.setShowValue(true);
                 r.add(iv);
             }
@@ -316,6 +369,52 @@ public class IndicatorValueService {
                         iv.setDissagregationType(dt);
                         iv.setGenderType(genderType);
                         iv.setAgeType(ageType);
+                        iv.setLocation(canton);
+                        iv.setPopulationType(populationType);
+                        iv.setShowValue(true);
+                        r.add(iv);
+                    }
+                }
+            }
+        }
+        return r;
+    }
+
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForPopulationTypeLocationAgePrimaryEducationAndGender(List<Canton> cantones) {
+        List<IndicatorValue> r = new ArrayList<>();
+        DissagregationType dt = DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO;
+        for (PopulationType populationType : PopulationType.values()) {
+            for (Canton canton : cantones) {
+                for (GenderType genderType : GenderType.values()) {
+                    for (AgePrimaryEducationType ageType : AgePrimaryEducationType.values()) {
+                        IndicatorValue iv = new IndicatorValue();
+                        iv.setState(State.ACTIVO);
+                        iv.setDissagregationType(dt);
+                        iv.setGenderType(genderType);
+                        iv.setAgePrimaryEducationType(ageType);
+                        iv.setLocation(canton);
+                        iv.setPopulationType(populationType);
+                        iv.setShowValue(true);
+                        r.add(iv);
+                    }
+                }
+            }
+        }
+        return r;
+    }
+
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForPopulationTypeLocationAgeTertiaryEducationAndGender(List<Canton> cantones) {
+        List<IndicatorValue> r = new ArrayList<>();
+        DissagregationType dt = DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO;
+        for (PopulationType populationType : PopulationType.values()) {
+            for (Canton canton : cantones) {
+                for (GenderType genderType : GenderType.values()) {
+                    for (AgeTertiaryEducationType ageType : AgeTertiaryEducationType.values()) {
+                        IndicatorValue iv = new IndicatorValue();
+                        iv.setState(State.ACTIVO);
+                        iv.setDissagregationType(dt);
+                        iv.setGenderType(genderType);
+                        iv.setAgeTertiaryEducationType(ageType);
                         iv.setLocation(canton);
                         iv.setPopulationType(populationType);
                         iv.setShowValue(true);
