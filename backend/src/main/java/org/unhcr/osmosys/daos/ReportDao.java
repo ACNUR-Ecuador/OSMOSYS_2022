@@ -171,7 +171,6 @@ public class ReportDao {
         return q.getResultList();
     }
     public List<IndicatorExecutionDetailedDTO> getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(Long periodId) {
-
         String sql = ReportDao.detailedIndicatorExecutions
                 + " AND ie.project_id is null "
                 + " AND ie.performance_indicator_id is not null "
