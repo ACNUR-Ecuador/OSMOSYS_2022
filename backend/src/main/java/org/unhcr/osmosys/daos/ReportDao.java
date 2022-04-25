@@ -98,8 +98,8 @@ public class ReportDao {
                     "iv.id as iv_id, " +
                     "null as ivc_id, " +
                     "iv.dissagregation_type, " +
-                    "COALESCE(can.description,COALESCE(iv.population_type,COALESCE(iv.diversity_type,COALESCE(iv.gender_type,COALESCE(iv.age_type,iv.country_of_origin))))) as dissagregation_level1, " +
-                    "prov.description as dissagregation_level2, " +
+                    "COALESCE(can.code||'-'||can.description,COALESCE(iv.population_type,COALESCE(iv.diversity_type,COALESCE(iv.gender_type,COALESCE(iv.age_type,iv.country_of_origin))))) as dissagregation_level1, " +
+                    "prov.code||'-'||prov.description as dissagregation_level2, " +
                     "iv.value as value " +
                     "FROM " +
                     "osmosys.indicator_executions ie " +

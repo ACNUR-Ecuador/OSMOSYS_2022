@@ -35,7 +35,7 @@ public class ReportService {
     @Inject
     ReportDataService reportDataService;
 
-    final static Boolean dissableJasperReport = Boolean.TRUE;
+    final static Boolean dissableJasperReport = Boolean.FALSE;
 
     public ByteArrayOutputStream indicatorExecutionsToLateProjectsReportsByPeriodYear(Long periodId) throws GeneralAppException {
         if (ReportService.dissableJasperReport) {
