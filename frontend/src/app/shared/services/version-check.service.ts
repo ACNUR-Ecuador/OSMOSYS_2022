@@ -44,8 +44,6 @@ export class VersionCheckService {
         headers.append('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS, POST, PUT');
 
         this.counter++;
-        console.log(this.counter);
-
         this.http.get(url + '?t=' + new Date().getTime(), {headers})
             .subscribe(
                 (response: any) => {

@@ -65,8 +65,6 @@ export class IndicatorCatalogReportsComponent implements OnInit {
             this.reportsService.getIndicatorsCatalogByPeriodId(period.id).subscribe((response: HttpResponse<Blob>) => {
                 this.utilsService.downloadFileResponse(response);
             }, error => {
-                console.log(error);
-                console.log(error.error);
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Error al Generar el Reporte',

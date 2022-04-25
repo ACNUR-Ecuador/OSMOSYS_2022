@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {DissagregationType, EnumsType, SelectItemWithOrder} from '../../../shared/model/UtilsModel';
+import {DissagregationType, SelectItemWithOrder} from '../../../shared/model/UtilsModel';
 import {Canton, IndicatorValue} from '../../../shared/model/OsmosysModel';
 import {UtilsService} from '../../../shared/services/utils.service';
 import {EnumsService} from '../../../shared/services/enums.service';
@@ -61,8 +61,6 @@ export class DissagregationThreeIntegerDimensionsComponent implements OnInit {
                     const rows = this.getRowsByGroups(itemL1);
                     this.valuesGroupRowsMap.set(itemL1, rows);
                 });
-                console.log('------------------------------');
-                console.log(this.valuesGroupRowsMap);
             });
     }
 
@@ -89,8 +87,6 @@ export class DissagregationThreeIntegerDimensionsComponent implements OnInit {
     }
 
     getRowsByGroups(itemL1: SelectItemWithOrder<any>): Array<Array<IndicatorValue>> {
-        console.log('getrows');
-        console.log(itemL1);
         let indicatorValues: IndicatorValue[];
         indicatorValues = this.getValuesByDissagregationValues(this.values, this.dissagregationGroupsType, itemL1.value);
         // ordeno y clasifico

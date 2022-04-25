@@ -61,25 +61,16 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit {
                 this.dissagregationOptionsGroupsL2 = results[1] as SelectItemWithOrder<any>[];
                 this.dissagregationOptionsRows = results[2] as SelectItemWithOrder<any>[];
                 this.dissagregationOptionsColumns = results[3] as SelectItemWithOrder<any>[];
-                console.log(this.dissagregationOptionsGroupsL1);
-                console.log(this.dissagregationOptionsGroupsL2);
-                console.log(this.dissagregationOptionsRows);
-                console.log(this.dissagregationOptionsColumns);
                 this.valuesGroupRowsMap = new Map<SelectItemWithOrder<any>, Map<SelectItemWithOrder<any>, IndicatorValue[][]>>();
                 this.dissagregationOptionsGroupsL1.forEach(itemL1 => {
                     const groupL2Map: Map<SelectItemWithOrder<any>, IndicatorValue[][]> =
                         new Map<SelectItemWithOrder<any>, IndicatorValue[][]>();
                     this.dissagregationOptionsGroupsL2.forEach(itemL2 => {
                         const rows = this.getRowsByGroups(itemL1, itemL2);
-                        console.log('------------------------------');
-                        console.log(rows);
-                        console.log('------------------------------');
                         groupL2Map.set(itemL2, rows);
                     });
                     this.valuesGroupRowsMap.set(itemL1, groupL2Map);
                 });
-                console.log('------------------------------');
-                console.log(this.valuesGroupRowsMap);
             });
     }
 
@@ -106,9 +97,6 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit {
     }
 
     getRowsByGroups(itemL1: SelectItemWithOrder<any>, itemL2: SelectItemWithOrder<any>): Array<Array<IndicatorValue>> {
-        console.log('getrows');
-        console.log(itemL1);
-        console.log(itemL2);
         let indicatorValues: IndicatorValue[];
         // level 1
         indicatorValues = this.getValuesByDissagregationValues(this.values, this.dissagregationGroupsL1Type, itemL1.value);
