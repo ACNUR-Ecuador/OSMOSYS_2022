@@ -887,6 +887,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     });
                     this.indicatorExecutionService.getResumeAdministrationPerformanceIndicatorById(value)
                         .subscribe(value1 => {
+                            this.showPerformanceIndicatorDialog = false;
                             this.updateTargets(value1);
                         }, error => {
                             this.messageService.add({
