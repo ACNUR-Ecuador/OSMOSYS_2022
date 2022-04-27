@@ -29,6 +29,26 @@
 
                 </div>
             </ng-template>
+            <div class="p-grid p-m-2" *ngIf="render">
+                <div class="p-col-12" *ngFor="let dissagregation of fourDimentionDissagregations">
+                    <app-dissagregation-four-integer-dimensions
+                        *ngIf="monthValuesMap.get(dissagregation)"
+                        [dissagregationType]="dissagregation"
+                        [values]="monthValuesMap.get(dissagregation)"
+                        [editable]="editable"
+                    ></app-dissagregation-four-integer-dimensions>
+                </div>
+            </div>
+            <div class="p-grid p-m-2" *ngIf="render">
+                <div class="p-col-12" *ngFor="let dissagregation of threeDimentionDissagregations">
+                    <app-dissagregation-three-integer-dimensions
+                        *ngIf="monthValuesMap.get(dissagregation)"
+                        [dissagregationType]="dissagregation"
+                        [values]="monthValuesMap.get(dissagregation)"
+                        [editable]="editable"
+                    ></app-dissagregation-three-integer-dimensions>
+                </div>
+            </div>
             <div class="p-grid" *ngIf="render">
                 <div class="p-col-12 p-m-2" *ngFor="let dissagregation of noDimentionDissagregations">
                     <app-dissagregation-no-dissagregation-integer
