@@ -7,7 +7,6 @@ import org.unhcr.osmosys.model.Project;
 import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityGraph;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
@@ -21,8 +20,8 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         super(Project.class, Long.class);
     }
 
-    @SuppressWarnings("JpaQlInspection")
-    private String projectResumeWebQuery = "SELECT pr.id, " +
+
+    private final String projectResumeWebQuery = "SELECT pr.id, " +
             "pr.code, " +
             "pr.name, " +
             "pr.state, " +
@@ -78,7 +77,7 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         }
     }
 
-    public List<ProjectResumeWeb> getProjectResumenWebByPeriodId(Long periodId) throws GeneralAppException {
+    public List<ProjectResumeWeb> getProjectResumenWebByPeriodId(Long periodId) {
 
         String sql = this.projectResumeWebQuery + " WHERE pe.id =:periodId";
         Query q = getEntityManager().createNativeQuery(sql, "ProjectResumeWebMapping");
@@ -86,7 +85,7 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         return q.getResultList();
     }
 
-    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndFocalPointId(Long periodId, Long focalPointId) throws GeneralAppException {
+    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndFocalPointId(Long periodId, Long focalPointId) {
 
         String sql = this.projectResumeWebQuery + " WHERE pe.id =:periodId and pr.focal_point_id =:focalPointId";
         Query q = getEntityManager().createNativeQuery(sql, "ProjectResumeWebMapping");
@@ -95,7 +94,7 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         return q.getResultList();
     }
 
-    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndOrganizationId(Long periodId, Long organizationId) throws GeneralAppException {
+    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndOrganizationId(Long periodId, Long organizationId) {
 
         String sql = this.projectResumeWebQuery + " WHERE pe.id =:periodId and pr.organization_id =:organizationId ";
         Query q = getEntityManager().createNativeQuery(sql, "ProjectResumeWebMapping");
@@ -115,6 +114,18 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
     public List<Project> getByPeriodId(Long periodId) {
         String jpql = "SELECT DISTINCT o FROM Project o " +
                 " WHERE o.period.id =:periodId";
+        Query q = getEntityManager().createQuery(jpql, Project.class);
+        q.setParameter("periodId", periodId);
+        return q.getResultList();
+    }
+    public List<Project> getByPeriodIdWithDataToUpdateGeneralIndicator(Long periodId) {
+        String jpql = "SELECT DISTINCT o FROM Project o " +
+                " left join fetch o.indicatorExecutions ie " +
+                " left join fetch ie.quarters q " +
+                " left join fetch q.months mon " +
+                " left join fetch mon.indicatorValues iv " +
+                " left join fetch mon.indicatorValuesIndicatorValueCustomDissagregations ivc " +
+                "  WHERE o.period.id =:periodId";
         Query q = getEntityManager().createQuery(jpql, Project.class);
         q.setParameter("periodId", periodId);
         return q.getResultList();

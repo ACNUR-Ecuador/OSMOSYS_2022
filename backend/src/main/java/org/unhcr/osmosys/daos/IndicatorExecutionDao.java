@@ -95,6 +95,20 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         q.setParameter("generalType", indicatorType);
         return q.getResultList();
     }
+    public List<IndicatorExecution> getGeneralIndicatorExecutionsByPeriodId(Long periodId) {
+        IndicatorType indicatorType = IndicatorType.GENERAL;
+        String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
+                " left join fetch o.period per " +
+                " left join fetch o.quarters q " +
+                " left join fetch  q.months mo " +
+                " left join fetch mo.indicatorValues iv " +
+                " left join fetch mo.indicatorValuesIndicatorValueCustomDissagregations ivc " +
+                " WHERE per.id = :periodId and o.indicatorType=:indicatorType ";
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("periodId", periodId);
+        q.setParameter("indicatorType", indicatorType);
+        return q.getResultList();
+    }
 
     public List<IndicatorExecution> getGeneralIndicatorExecutionsByProjectIdAndState(Long projectId, State state) {
         IndicatorType indicatorType = IndicatorType.GENERAL;

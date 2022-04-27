@@ -337,15 +337,15 @@ public class ProjectService {
     }
 
 
-    public List<ProjectResumeWeb> getProjectResumenWebByPeriodId(Long periodId) throws GeneralAppException {
+    public List<ProjectResumeWeb> getProjectResumenWebByPeriodId(Long periodId) {
         return this.projectDao.getProjectResumenWebByPeriodId(periodId);
     }
 
-    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndOrganizationId(Long periodId, Long organizationId) throws GeneralAppException {
+    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndOrganizationId(Long periodId, Long organizationId)  {
         return this.projectDao.getProjectResumenWebByPeriodIdAndOrganizationId(periodId, organizationId);
     }
 
-    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndFocalPointId(Long periodId, Long focalPointId) throws GeneralAppException {
+    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndFocalPointId(Long periodId, Long focalPointId)  {
         return this.projectDao.getProjectResumenWebByPeriodIdAndFocalPointId(periodId, focalPointId);
     }
 
@@ -368,5 +368,9 @@ public class ProjectService {
             IndicatorExecution ieg = this.indicatorExecutionService.createGeneralIndicatorForProject(project);
             this.indicatorExecutionService.saveOrUpdate(ieg);
         }
+    }
+
+    public List<Project> getByPeriodIdWithDataToUpdateGeneralIndicator(Long periodId) {
+        return this.projectDao.getByPeriodIdWithDataToUpdateGeneralIndicator(periodId);
     }
 }

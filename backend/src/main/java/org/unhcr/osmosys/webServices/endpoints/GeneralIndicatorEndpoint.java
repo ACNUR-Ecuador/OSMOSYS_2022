@@ -57,6 +57,6 @@ public class GeneralIndicatorEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public GeneralIndicatorWeb getByState(@PathParam("periodId") Long periodId) throws GeneralAppException {
-        return this.generalIndicatorService.getByPeriodId(periodId);
+        return this.generalIndicatorService.getWebByPeriodId(periodId);
     }
 }

@@ -42,6 +42,19 @@ public class GeneralIndicatorDao extends GenericDaoJpa<GeneralIndicator, Long> {
         }
 
     }
+    public GeneralIndicator getById(Long periodId) {
+
+        String jpql = "SELECT DISTINCT o FROM GeneralIndicator o left join fetch o.dissagregationAssignationsToGeneralIndicator dissa " +
+                "WHERE o.period.id =:periodId ";
+        Query q = getEntityManager().createQuery(jpql, GeneralIndicator.class);
+        q.setParameter("periodId", periodId);
+        try {
+            return (GeneralIndicator) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+
+    }
 
     public GeneralIndicator getByPeriodId(Long periodId) throws GeneralAppException {
 

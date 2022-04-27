@@ -4,6 +4,7 @@ import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.IndicatorValue;
 import org.unhcr.osmosys.model.enums.DissagregationType;
+import org.unhcr.osmosys.model.enums.IndicatorType;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;
@@ -66,6 +67,29 @@ public class IndicatorValueDao extends GenericDaoJpa<IndicatorValue, Long> {
         Query q = getEntityManager().createNativeQuery(sql);
         q.setParameter("dissagregationType", dissagregationType.getStringValue());
         q.setParameter("indicatorExecutionIds", indicatorExecutionIds);
+        q.setParameter("state", state.getStringValue());
+        q.executeUpdate();
+    }
+
+    public void updateGeneralIndicatorStateByPeriodIdAndDissagregationType(Long periodId, DissagregationType dissagregationType, State state) {
+        String sql=" UPDATE " +
+                " osmosys.indicator_values " +
+                " SET state=:state " +
+                " FROM " +
+                " ( " +
+                " SELECT " +
+                " iv.id as iv_id " +
+                " FROM " +
+                " osmosys.indicator_values iv " +
+                " INNER JOIN osmosys.months mo on iv.month_id=mo.id " +
+                " INNER JOIN osmosys.quarters q on mo.quarter_id=q.id " +
+                " INNER JOIN osmosys.indicator_executions ie on q.indicator_execution_id=ie.id " +
+                " WHERE ie.indicator_type=:generalType AND iv.dissagregation_type=:dissagregationType and ie.period_id" +
+                " ) AS s " +
+                " WHERE osmosys.indicator_values.id=s.iv_id ";
+        Query q = getEntityManager().createNativeQuery(sql);
+        q.setParameter("dissagregationType", dissagregationType.getStringValue());
+        q.setParameter("generalType", IndicatorType.GENERAL.getStringValue());
         q.setParameter("state", state.getStringValue());
         q.executeUpdate();
     }

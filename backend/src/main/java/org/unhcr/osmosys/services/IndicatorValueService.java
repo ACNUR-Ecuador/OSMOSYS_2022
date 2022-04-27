@@ -224,6 +224,7 @@ public class IndicatorValueService {
         }
         return r;
     }
+
     private List<IndicatorValue> createIndicatorValueDissagregationStandardForGenderAndDiversity() {
         List<IndicatorValue> r = new ArrayList<>();
         DissagregationType dt = DissagregationType.GENERO_Y_DIVERSIDAD;
@@ -358,6 +359,7 @@ public class IndicatorValueService {
         }
         return r;
     }
+
     private List<IndicatorValue> createIndicatorValueDissagregationStandardForDiversityAgeAndGender() {
         List<IndicatorValue> r = new ArrayList<>();
         DissagregationType dt = DissagregationType.DIVERSIDAD_EDAD_Y_GENERO;
@@ -453,5 +455,9 @@ public class IndicatorValueService {
 
     public void updateStateByPeriodIdIndicatorIdAndDissagregationType(List<Long> indicatorExecutionIds, DissagregationType dissagregationType, State state) {
         this.indicatorValueDao.updateStateByPeriodIdIndicatorIdAndDissagregationType(indicatorExecutionIds, dissagregationType, state);
+    }
+
+    public void updateGeneralIndicatorStateByPeriodIdAndDissagregationType(Long periodId, DissagregationType dissagregationType, State state) {
+        this.indicatorValueDao.updateGeneralIndicatorStateByPeriodIdAndDissagregationType(periodId, dissagregationType, state);
     }
 }
