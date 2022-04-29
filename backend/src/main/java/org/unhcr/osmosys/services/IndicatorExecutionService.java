@@ -347,7 +347,7 @@ public class IndicatorExecutionService {
         this.updateIndicatorExecutionBudget(indicatorExecution);
     }
 
-    private void updateIndicatorExecutionBudget(IndicatorExecution indicatorExecution){
+    private void updateIndicatorExecutionBudget(IndicatorExecution indicatorExecution) {
         if (indicatorExecution.getKeepBudget()) {
             Optional<BigDecimal> totalExecutedOpt = indicatorExecution
                     .getQuarters().stream().
@@ -1153,10 +1153,24 @@ public class IndicatorExecutionService {
                 dissagregationAssignationToIndicatorExecution.setState(State.ACTIVO);
                 dissagregationAssignationToIndicatorExecution.setDissagregationType(dissagregationAssignationToIndicator.getDissagregationType());
                 indicatorExecution.addDissagregationAssignationToIndicatorExecution(dissagregationAssignationToIndicatorExecution);
-                List<Month> months = iesToCreate.stream().flatMap(indicatorExecution1 -> indicatorExecution1.getQuarters().stream()).flatMap(quarter -> quarter.getMonths().stream()).collect(Collectors.toList());
+                List<Month> months = indicatorExecution.getQuarters().stream().flatMap(quarter -> quarter.getMonths().stream()).collect(Collectors.toList());
+                // iesToCreate.stream().flatMap(indicatorExecution1 -> indicatorExecution1.getQuarters().stream()).flatMap(quarter -> quarter.getMonths().stream()).collect(Collectors.toList());
                 for (Month month : months) {
-                    List<IndicatorValue> ivs = this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(dissagregationAssignationToIndicator.getDissagregationType(), new ArrayList<>());
+                    List<Canton> cantones = indicatorExecution.getIndicatorExecutionLocationAssigments()
+                            .stream()
+                            .map(IndicatorExecutionLocationAssigment::getLocation)
+                            .distinct()
+                            .collect(Collectors.toList());
+                    List<IndicatorValue> ivs = this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(
+                            dissagregationAssignationToIndicator.getDissagregationType(),
+                            cantones);
                     for (IndicatorValue iv : ivs) {
+                        if(iv.getLocation()!=null){
+                            indicatorExecution.getIndicatorExecutionLocationAssigments()
+                                    .stream()
+                                    .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(iv.getLocation().getId()))
+                                    .findFirst().ifPresent(indicatorExecutionLocationAssigment -> iv.setState(indicatorExecutionLocationAssigment.getState()));
+                        }
                         month.addIndicatorValue(iv);
                     }
                 }
@@ -1221,10 +1235,23 @@ public class IndicatorExecutionService {
                 dissagregationAssignationToIndicatorExecution.setState(State.ACTIVO);
                 dissagregationAssignationToIndicatorExecution.setDissagregationType(dissagregationAssignationToIndicator.getDissagregationType());
                 indicatorExecution.addDissagregationAssignationToIndicatorExecution(dissagregationAssignationToIndicatorExecution);
-                List<Month> months = iesToUpdate.stream().flatMap(indicatorExecution1 -> indicatorExecution1.getQuarters().stream()).flatMap(quarter -> quarter.getMonths().stream()).collect(Collectors.toList());
+                List<Month> months = indicatorExecution.getQuarters().stream().flatMap(quarter -> quarter.getMonths().stream()).collect(Collectors.toList());
                 for (Month month : months) {
-                    List<IndicatorValue> ivs = this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(dissagregationAssignationToIndicator.getDissagregationType(), new ArrayList<>());
+                    List<Canton> cantones = indicatorExecution.getIndicatorExecutionLocationAssigments()
+                            .stream()
+                            .map(IndicatorExecutionLocationAssigment::getLocation)
+                            .distinct()
+                            .collect(Collectors.toList());
+                    List<IndicatorValue> ivs = this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(dissagregationAssignationToIndicator.getDissagregationType(),
+                            cantones);
                     for (IndicatorValue iv : ivs) {
+                        // veo q esten activos o inactivos los locations asigmentes
+                        if(iv.getLocation()!=null){
+                            indicatorExecution.getIndicatorExecutionLocationAssigments()
+                                    .stream()
+                                    .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(iv.getLocation().getId()))
+                                    .findFirst().ifPresent(indicatorExecutionLocationAssigment -> iv.setState(indicatorExecutionLocationAssigment.getState()));
+                        }
                         month.addIndicatorValue(iv);
                     }
                 }

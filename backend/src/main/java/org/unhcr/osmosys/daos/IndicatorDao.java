@@ -91,6 +91,7 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
         String jpql =" SELECT DISTINCT o" +
                 " FROM Indicator o " +
                 " left outer join fetch o.statement sta " +
+                " left outer join fetch  sta.area " +
                 " left join fetch  sta.periodStatementAsignations psa " +
                 " left outer join fetch o.customDissagregationAssignationToIndicators cda " +
                 " left outer join fetch cda.customDissagregation " +

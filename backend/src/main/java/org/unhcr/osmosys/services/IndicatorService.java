@@ -198,7 +198,11 @@ public class IndicatorService {
         indicator.setQualitativeInstructions(indicatorWeb.getQualitativeInstructions());
         this.saveOrUpdate(indicator);
         //update dissagregations in ie
-        this.indicatorExecutionService.updateIndicatorExecutionsDissagregations(dissagregationAssignationToIndicatorsToEnable, dissagregationAssignationToIndicatorsToDisable, dissagregationAssignationToIndicatorsToCreate);
+        this.indicatorExecutionService
+                .updateIndicatorExecutionsDissagregations(
+                        dissagregationAssignationToIndicatorsToEnable,
+                        dissagregationAssignationToIndicatorsToDisable,
+                        dissagregationAssignationToIndicatorsToCreate);
         return indicator.getId();
     }
 

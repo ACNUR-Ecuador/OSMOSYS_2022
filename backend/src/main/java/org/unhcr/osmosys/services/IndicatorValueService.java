@@ -383,17 +383,17 @@ public class IndicatorValueService {
     private List<IndicatorValue> createIndicatorValueDissagregationStandardForPopulationTypeLocationAgeAndGender(List<Canton> cantones) {
         List<IndicatorValue> r = new ArrayList<>();
         DissagregationType dt = DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO;
-        for (PopulationType populationType : PopulationType.values()) {
-            for (Canton canton : cantones) {
+        for (Canton canton : cantones) {
+            for (PopulationType populationType : PopulationType.values()) {
                 for (GenderType genderType : GenderType.values()) {
                     for (AgeType ageType : AgeType.values()) {
                         IndicatorValue iv = new IndicatorValue();
                         iv.setState(State.ACTIVO);
                         iv.setDissagregationType(dt);
-                        iv.setGenderType(genderType);
-                        iv.setAgeType(ageType);
                         iv.setLocation(canton);
                         iv.setPopulationType(populationType);
+                        iv.setGenderType(genderType);
+                        iv.setAgeType(ageType);
                         iv.setShowValue(true);
                         r.add(iv);
                     }

@@ -6,7 +6,6 @@ import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.utils.DateUtils;
 import org.jboss.logging.Logger;
-import org.unhcr.osmosys.daos.IndicatorDao;
 import org.unhcr.osmosys.daos.ReportDao;
 import org.unhcr.osmosys.model.Indicator;
 import org.unhcr.osmosys.model.Period;
@@ -16,6 +15,8 @@ import org.unhcr.osmosys.model.enums.AreaType;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.reports.service.ReportService;
 import org.unhcr.osmosys.services.*;
+import org.unhcr.osmosys.webServices.model.*;
+import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.inject.Inject;
 import javax.mail.Message;
@@ -30,16 +31,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 
@@ -71,6 +69,12 @@ public class TestEndpoint {
 
     @Inject
     CubeService cubeService;
+
+    @Inject
+    GeneralIndicatorService generalIndicatorService;
+
+    @Inject
+    ModelWebTransformationService modelWebTransformationService;
 
     @Path("test")
     @GET
@@ -323,7 +327,7 @@ public class TestEndpoint {
         LOGGER.info(indicators.size());
         for (Indicator indicator : indicators) {
             LOGGER.debug(indicator.getDissagregationsAssignationToIndicator().size());
-            this.indicatorService.addDissagregationToIndicator(indicator,period, DissagregationType.GENERO_Y_EDAD);
+            this.indicatorService.addDissagregationToIndicator(indicator, period, DissagregationType.GENERO_Y_EDAD);
         }
 
     }
@@ -333,6 +337,7 @@ public class TestEndpoint {
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
     public void dissableDissagregations() throws GeneralAppException, UnsupportedEncodingException, MessagingException {
+
         List<String> codes = new ArrayList<>();
         codes.add("AE011");
         codes.add("AE0I1");
@@ -412,10 +417,269 @@ public class TestEndpoint {
         for (Indicator indicator : indicators) {
             LOGGER.debug(indicator.getDissagregationsAssignationToIndicator().size());
 
-            this.indicatorService.dissableDissagregationsToIndicator(indicator,period, toDisable);
+            this.indicatorService.dissableDissagregationsToIndicator(indicator, period, toDisable);
         }
 
     }
-}
 
+
+    @Path("updateGeneralIndicators")
+    @GET
+    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    public String updateGeneralIndicators() throws GeneralAppException {
+        GeneralIndicatorWeb generalIndicators = this.generalIndicatorService.getWebByPeriodId(1l);
+        generalIndicators.getDissagregationAssignationsToGeneralIndicator()
+                .forEach(dissagregationAssignationToGeneralIndicatorWeb -> {
+                    dissagregationAssignationToGeneralIndicatorWeb.setState(State.INACTIVO);
+                });
+        DissagregationAssignationToGeneralIndicatorWeb dc = new DissagregationAssignationToGeneralIndicatorWeb();
+        dc.setState(State.ACTIVO);
+        dc.setDissagregationType(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO);
+        generalIndicators.getDissagregationAssignationsToGeneralIndicator().add(dc);
+        DissagregationAssignationToGeneralIndicatorWeb dd = new DissagregationAssignationToGeneralIndicatorWeb();
+        dd.setState(State.ACTIVO);
+        dd.setDissagregationType(DissagregationType.DIVERSIDAD);
+        generalIndicators.getDissagregationAssignationsToGeneralIndicator().add(dd);
+        DissagregationAssignationToGeneralIndicatorWeb po = new DissagregationAssignationToGeneralIndicatorWeb();
+        po.setState(State.ACTIVO);
+        po.setDissagregationType(DissagregationType.PAIS_ORIGEN);
+        generalIndicators.getDissagregationAssignationsToGeneralIndicator().add(po);
+        this.generalIndicatorService.update(generalIndicators);
+        return "terminado";
+    }
+
+    @Path("updateProductIndicatorsD1")
+    @GET
+    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    public String updateProductIndicatorsD1() throws GeneralAppException {
+        List<String> codes = new ArrayList<>();
+
+        codes.add("AE011");
+        codes.add("AE0I1");
+        codes.add("BE021");
+        codes.add("BE031");
+        codes.add("DE0A1");
+        codes.add("DE0A2");
+        codes.add("DE0A3");
+        codes.add("DE0A4");
+        codes.add("DE0A5");
+        codes.add("DE0B2");
+        codes.add("EE0D1");
+        codes.add("EE0D2");
+        codes.add("EE0D3");
+        codes.add("EE0D4");
+        codes.add("EE0D7");
+        codes.add("EE0F2");
+        codes.add("FE061");
+        codes.add("FE062");
+        codes.add("FE065");
+        codes.add("FE068");
+        codes.add("GE0R2");
+        codes.add("GE0R5");
+        codes.add("GE0R6");
+        codes.add("HE071");
+        codes.add("HE074");
+        codes.add("HE081");
+        codes.add("HE082");
+        codes.add("HE083");
+        codes.add("HE084");
+        codes.add("HE085");
+        codes.add("HE087");
+        codes.add("HE091");
+        codes.add("HE0X1");
+        codes.add("IE0G1");
+        codes.add("IE0G5");
+        codes.add("IE0G8");
+        codes.add("IE0H4");
+        codes.add("IE0H7");
+        codes.add("IE0H8");
+        codes.add("JE0V2");
+        codes.add("JE0V4");
+        codes.add("KE0O4");
+        codes.add("KE0P3");
+        codes.add("ME0K1");
+        codes.add("ME0K10");
+        codes.add("ME0K13");
+        codes.add("ME0K14");
+        codes.add("ME0K15");
+        codes.add("ME0K2");
+        codes.add("ME0K3");
+        codes.add("ME0K4");
+        codes.add("ME0K7");
+        codes.add("ME0K9");
+        codes.add("ME0L1");
+        codes.add("ME0L2");
+        codes.add("ME0L3");
+        codes.add("OE131");
+        codes.add("OE141");
+        codes.add("OE142");
+        codes.add("PE051");
+        codes.add("PE052");
+        codes.add("PE053");
+
+        PeriodWeb period = this.modelWebTransformationService.periodToPeriodWeb(this.periodService.find(1L));
+        List<Indicator> indicatorsToUpdate = this.indicatorService.getByCodeList(codes);
+        List<IndicatorWeb> indicatorsToUpdateWeb = this.modelWebTransformationService.indicatorsToIndicatorsWeb(indicatorsToUpdate, true, true, true);
+
+        for (IndicatorWeb indicatorWeb : indicatorsToUpdateWeb) {
+            LOGGER.debug(indicatorWeb.getCode());
+            indicatorWeb.getDissagregationsAssignationToIndicator().stream().filter(dissagregationAssignationToIndicatorWeb -> {
+                return !dissagregationAssignationToIndicatorWeb.getDissagregationType().equals(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO)
+                        && !dissagregationAssignationToIndicatorWeb.getDissagregationType().equals(DissagregationType.DIVERSIDAD)
+                        && !dissagregationAssignationToIndicatorWeb.getDissagregationType().equals(DissagregationType.PAIS_ORIGEN);
+            }).forEach(dissagregationAssignationToIndicatorWeb -> dissagregationAssignationToIndicatorWeb.setState(State.INACTIVO));
+
+            DissagregationAssignationToIndicatorWeb dd1 = new DissagregationAssignationToIndicatorWeb();
+            dd1.setState(State.ACTIVO);
+            dd1.setDissagregationType(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO);
+            dd1.setPeriod(period);
+            indicatorWeb.getDissagregationsAssignationToIndicator().add(dd1);
+
+            Optional<DissagregationAssignationToIndicatorWeb> ddf = indicatorWeb.getDissagregationsAssignationToIndicator()
+                    .stream()
+                    .filter(dissagregationAssignationToIndicatorWeb ->
+                            dissagregationAssignationToIndicatorWeb.getDissagregationType().equals(DissagregationType.DIVERSIDAD))
+                    .findFirst();
+            if(ddf.isPresent()){
+                ddf.get().setState(State.ACTIVO);
+            }else {
+                DissagregationAssignationToIndicatorWeb dd = new DissagregationAssignationToIndicatorWeb();
+                dd.setState(State.ACTIVO);
+                dd.setDissagregationType(DissagregationType.DIVERSIDAD);
+                dd.setPeriod(period);
+                indicatorWeb.getDissagregationsAssignationToIndicator().add(dd);
+            }
+
+
+            Optional<DissagregationAssignationToIndicatorWeb> dpf = indicatorWeb.getDissagregationsAssignationToIndicator()
+                    .stream()
+                    .filter(dissagregationAssignationToIndicatorWeb ->
+                            dissagregationAssignationToIndicatorWeb.getDissagregationType().equals(DissagregationType.PAIS_ORIGEN))
+                    .findFirst();
+            if(dpf.isPresent()){
+                dpf.get().setState(State.ACTIVO);
+            }else {
+                DissagregationAssignationToIndicatorWeb dp = new DissagregationAssignationToIndicatorWeb();
+                dp.setState(State.ACTIVO);
+                dp.setDissagregationType(DissagregationType.PAIS_ORIGEN);
+                dp.setPeriod(period);
+                indicatorWeb.getDissagregationsAssignationToIndicator().add(dp);
+            }
+
+            this.indicatorService.update(indicatorWeb);
+        }
+        return "terminado";
+    }
+    @Path("updateProductIndicatorsD2")
+    @GET
+    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    public String updateProductIndicatorsD2() throws GeneralAppException {
+        PeriodWeb period = this.modelWebTransformationService.periodToPeriodWeb(this.periodService.find(1L));
+        List<String> codes = new ArrayList<>();
+        codes.add("KE0O1");
+        codes.add("KE0O2");
+        codes.add("KE0O3");
+        codes.add("KE0O7");
+        codes.add("KE0P1");
+
+        List<Indicator> indicatorsToUpdate = this.indicatorService.getByCodeList(codes);
+        List<IndicatorWeb> indicatorsToUpdateWeb = this.modelWebTransformationService.indicatorsToIndicatorsWeb(indicatorsToUpdate, true, true, true);
+
+        for (IndicatorWeb indicatorWeb : indicatorsToUpdateWeb) {
+            LOGGER.debug(indicatorWeb.getCode());
+            indicatorWeb.getDissagregationsAssignationToIndicator().stream().filter(dissagregationAssignationToIndicatorWeb -> {
+                return !dissagregationAssignationToIndicatorWeb.getDissagregationType().equals(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO)
+                        && !dissagregationAssignationToIndicatorWeb.getDissagregationType().equals(DissagregationType.DIVERSIDAD_EDAD_Y_GENERO);
+            }).forEach(dissagregationAssignationToIndicatorWeb -> dissagregationAssignationToIndicatorWeb.setState(State.INACTIVO));
+
+            DissagregationAssignationToIndicatorWeb dd1 = new DissagregationAssignationToIndicatorWeb();
+            dd1.setState(State.ACTIVO);
+            dd1.setDissagregationType(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO);
+            dd1.setPeriod(period);
+            indicatorWeb.getDissagregationsAssignationToIndicator().add(dd1);
+
+            Optional<DissagregationAssignationToIndicatorWeb> ddf = indicatorWeb.getDissagregationsAssignationToIndicator()
+                    .stream()
+                    .filter(dissagregationAssignationToIndicatorWeb ->
+                            dissagregationAssignationToIndicatorWeb.getDissagregationType().equals(DissagregationType.DIVERSIDAD_EDAD_Y_GENERO))
+                    .findFirst();
+            if(ddf.isPresent()){
+                ddf.get().setState(State.ACTIVO);
+            }else {
+                DissagregationAssignationToIndicatorWeb dd = new DissagregationAssignationToIndicatorWeb();
+                dd.setState(State.ACTIVO);
+                dd.setDissagregationType(DissagregationType.DIVERSIDAD_EDAD_Y_GENERO);
+                dd.setPeriod(period);
+                indicatorWeb.getDissagregationsAssignationToIndicator().add(dd);
+            }
+            this.indicatorService.update(indicatorWeb);
+        }
+        return "terminado";
+    }
+
+
+    @Path("updateProductIndicatorsD3")
+    @GET
+    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    public String updateProductIndicatorsD3() throws GeneralAppException {
+        List<String> codes = new ArrayList<>();
+        codes.add("ME0M1");
+        codes.add("ME0M2");
+        codes.add("ME0M3");
+
+        PeriodWeb period = this.modelWebTransformationService.periodToPeriodWeb(this.periodService.find(1L));
+
+        List<Indicator> indicatorsToUpdate = this.indicatorService.getByCodeList(codes);
+        List<IndicatorWeb> indicatorsToUpdateWeb = this.modelWebTransformationService.indicatorsToIndicatorsWeb(indicatorsToUpdate, true, true, true);
+
+        for (IndicatorWeb indicatorWeb : indicatorsToUpdateWeb) {
+            LOGGER.debug(indicatorWeb.getCode());
+            indicatorWeb.getDissagregationsAssignationToIndicator().stream().filter(dissagregationAssignationToIndicatorWeb -> {
+                return !dissagregationAssignationToIndicatorWeb.getDissagregationType().equals(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO)
+                        && !dissagregationAssignationToIndicatorWeb.getDissagregationType().equals(DissagregationType.DIVERSIDAD)
+                        && !dissagregationAssignationToIndicatorWeb.getDissagregationType().equals(DissagregationType.PAIS_ORIGEN);
+            }).forEach(dissagregationAssignationToIndicatorWeb -> dissagregationAssignationToIndicatorWeb.setState(State.INACTIVO));
+
+            DissagregationAssignationToIndicatorWeb dd1 = new DissagregationAssignationToIndicatorWeb();
+            dd1.setState(State.ACTIVO);
+            dd1.setDissagregationType(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO);
+            dd1.setPeriod(period);
+            indicatorWeb.getDissagregationsAssignationToIndicator().add(dd1);
+
+            Optional<DissagregationAssignationToIndicatorWeb> ddf = indicatorWeb.getDissagregationsAssignationToIndicator()
+                    .stream()
+                    .filter(dissagregationAssignationToIndicatorWeb ->
+                            dissagregationAssignationToIndicatorWeb.getDissagregationType().equals(DissagregationType.DIVERSIDAD))
+                    .findFirst();
+            if(ddf.isPresent()){
+                ddf.get().setState(State.ACTIVO);
+            }else {
+                DissagregationAssignationToIndicatorWeb dd = new DissagregationAssignationToIndicatorWeb();
+                dd.setState(State.ACTIVO);
+                dd.setDissagregationType(DissagregationType.DIVERSIDAD);
+                dd.setPeriod(period);
+                indicatorWeb.getDissagregationsAssignationToIndicator().add(dd);
+            }
+
+
+            Optional<DissagregationAssignationToIndicatorWeb> dpf = indicatorWeb.getDissagregationsAssignationToIndicator()
+                    .stream()
+                    .filter(dissagregationAssignationToIndicatorWeb ->
+                            dissagregationAssignationToIndicatorWeb.getDissagregationType().equals(DissagregationType.PAIS_ORIGEN))
+                    .findFirst();
+            if(dpf.isPresent()){
+                dpf.get().setState(State.ACTIVO);
+            }else {
+                DissagregationAssignationToIndicatorWeb dp = new DissagregationAssignationToIndicatorWeb();
+                dp.setState(State.ACTIVO);
+                dp.setDissagregationType(DissagregationType.PAIS_ORIGEN);
+                dp.setPeriod(period);
+                indicatorWeb.getDissagregationsAssignationToIndicator().add(dp);
+            }
+
+            this.indicatorService.update(indicatorWeb);
+        }
+        return "terminado";
+    }
+}
 
