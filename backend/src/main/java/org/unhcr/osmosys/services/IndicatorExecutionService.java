@@ -1165,7 +1165,7 @@ public class IndicatorExecutionService {
                             dissagregationAssignationToIndicator.getDissagregationType(),
                             cantones);
                     for (IndicatorValue iv : ivs) {
-                        if(iv.getLocation()!=null){
+                        if (iv.getLocation() != null) {
                             indicatorExecution.getIndicatorExecutionLocationAssigments()
                                     .stream()
                                     .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(iv.getLocation().getId()))
@@ -1246,7 +1246,7 @@ public class IndicatorExecutionService {
                             cantones);
                     for (IndicatorValue iv : ivs) {
                         // veo q esten activos o inactivos los locations asigmentes
-                        if(iv.getLocation()!=null){
+                        if (iv.getLocation() != null) {
                             indicatorExecution.getIndicatorExecutionLocationAssigments()
                                     .stream()
                                     .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(iv.getLocation().getId()))
@@ -1261,6 +1261,27 @@ public class IndicatorExecutionService {
         for (IndicatorExecution ieToUpdateTotal : iesToUpdateTotals) {
             this.updateIndicatorExecutionTotals(ieToUpdateTotal);
             this.saveOrUpdate(ieToUpdateTotal);
+        }
+    }
+
+    public void updateAllPartnersTotals(Long periodId) throws GeneralAppException {
+        List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getActivePartnersIndicatorExecutionsByPeriodId(periodId);
+        for (IndicatorExecution indicatorExecution : indicatorExecutions) {
+            this.updateIndicatorExecutionTotals(indicatorExecution);
+            this.saveOrUpdate(indicatorExecution);
+        }
+    }
+
+
+    public void updateAllDirectImplementationTotals(Long periodId) throws GeneralAppException {
+        List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getDirectImplementationActiveByPeriodId(periodId);
+        int conteo=0;
+        int total = indicatorExecutions.size();
+        for (IndicatorExecution indicatorExecution : indicatorExecutions) {
+            conteo=conteo+1;
+            LOGGER.debug(conteo+":"+total);
+            this.updateIndicatorExecutionTotals(indicatorExecution);
+            this.saveOrUpdate(indicatorExecution);
         }
     }
 }

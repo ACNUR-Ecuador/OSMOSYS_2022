@@ -76,6 +76,9 @@ public class TestEndpoint {
     @Inject
     ModelWebTransformationService modelWebTransformationService;
 
+    @Inject
+    IndicatorExecutionService indicatorExecutionService;
+
     @Path("test")
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
@@ -681,5 +684,21 @@ public class TestEndpoint {
         }
         return "terminado";
     }
+    @Path("updateAllPartnersTotals")
+    @GET
+    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    public String updateAllPartnersTotals() throws GeneralAppException {
+        this.indicatorExecutionService.updateAllPartnersTotals(1l);
+        return "terimnado generales";
+    }
+
+    @Path("updateAllDirectImplementationTotals")
+    @GET
+    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    public String updateAllDirectImplementationTotals() throws GeneralAppException {
+        this.indicatorExecutionService.updateAllDirectImplementationTotals(1l);
+        return "terimnado generales";
+    }
+
 }
 
