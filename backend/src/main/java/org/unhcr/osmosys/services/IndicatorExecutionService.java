@@ -96,6 +96,7 @@ public class IndicatorExecutionService {
         ie.setTarget(null);
         ie.setPeriod(project.getPeriod());
         ie.setState(State.ACTIVO);
+        ie.setKeepBudget(false);
 
 
         List<Canton> cantones = project.getProjectLocationAssigments().stream().filter(projectLocationAssigment -> projectLocationAssigment.getState().equals(State.ACTIVO)).map(ProjectLocationAssigment::getLocation).collect(Collectors.toList());
