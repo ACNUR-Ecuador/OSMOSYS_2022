@@ -19,6 +19,26 @@
 
             </ng-template>
             <div class="p-grid p-m-2" *ngIf="render">
+                <div class="p-col-12" *ngFor="let dissagregation of fourDimentionDissagregations">
+                    <app-dissagregation-four-integer-dimensions
+                        *ngIf="monthValuesMap.get(dissagregation)"
+                        [dissagregationType]="dissagregation"
+                        [values]="monthValuesMap.get(dissagregation)"
+                        [editable]="editable"
+                    ></app-dissagregation-four-integer-dimensions>
+                </div>
+            </div>
+            <div class="p-grid p-m-2" *ngIf="render">
+                <div class="p-col-12" *ngFor="let dissagregation of threeDimentionDissagregations">
+                    <app-dissagregation-three-integer-dimensions
+                        *ngIf="monthValuesMap.get(dissagregation)"
+                        [dissagregationType]="dissagregation"
+                        [values]="monthValuesMap.get(dissagregation)"
+                        [editable]="editable"
+                    ></app-dissagregation-three-integer-dimensions>
+                </div>
+            </div>
+            <div class="p-grid p-m-2" *ngIf="render">
                 <div class="p-col-12" *ngFor="let dissagregation of noDimentionDissagregations">
                     <app-dissagregation-no-dissagregation-integer
                         *ngIf="monthValuesMap.get(dissagregation)"
@@ -50,6 +70,7 @@
                     ></app-dissagregation-two-integer-dimentions>
                 </div>
             </div>
+
             <div class="p-grid p-m-2"
                  *ngIf="render && monthCustomDissagregatoinValues!== null && monthCustomDissagregatoinValues.length>0">
                 <div class="p-col-6" *ngFor="let monthCustomDissagregatoinValue of monthCustomDissagregatoinValues">

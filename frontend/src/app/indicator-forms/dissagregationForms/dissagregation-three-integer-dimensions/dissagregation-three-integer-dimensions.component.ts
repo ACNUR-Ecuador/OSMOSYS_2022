@@ -160,4 +160,15 @@ export class DissagregationThreeIntegerDimensionsComponent implements OnInit {
         return total;
     }
 
+    getTotalIndicator(map: Map<SelectItemWithOrder<string | Canton>, IndicatorValue[][]>) {
+        if (!map) {
+            return null;
+        }
+        let total = 0;
+        map.forEach(value => {
+            total += this.utilsService.getTotalIndicatorValuesArrayArray(value);
+        });
+        return total;
+    }
+
 }

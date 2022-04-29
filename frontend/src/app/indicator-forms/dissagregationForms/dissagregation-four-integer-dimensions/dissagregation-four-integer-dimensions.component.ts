@@ -173,4 +173,17 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit {
         return total;
     }
 
+    getTotalIndicator(map: Map<SelectItemWithOrder<string | Canton>, Map<SelectItemWithOrder<string | Canton>, IndicatorValue[][]>>) {
+        if (!map) {
+            return null;
+        }
+        let total = 0;
+        map.forEach(valueMap => {
+            valueMap.forEach(value => {
+                total += this.utilsService.getTotalIndicatorValuesArrayArray(value);
+            });
+        });
+        return total;
+    }
+
 }

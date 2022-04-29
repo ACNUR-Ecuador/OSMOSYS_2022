@@ -29,6 +29,8 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
 
     oneDimentionDissagregations: DissagregationType[] = [];
     twoDimentionDissagregations: DissagregationType[] = [];
+    threeDimentionDissagregations: DissagregationType[] = [];
+    fourDimentionDissagregations: DissagregationType[] = [];
     noDimentionDissagregations: DissagregationType[] = [];
 
     sourceTypes: SelectItemWithOrder<any>[];
@@ -174,12 +176,11 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     setDimentionsDissagregations(): void {
         const totalOneDimentions = this.utilsService.getOneDimentionsDissagregationTypes();
         const totalTwoDimentions = this.utilsService.getTwoDimentionsDissagregationTypes();
+        const totalThreeDimentions = this.utilsService.getThreeDimentionsDissagregationTypes();
+        const totalFourDimentions = this.utilsService.getFourDimentionsDissagregationTypes();
         const totalNoDimentions = this.utilsService.getNoDimentionsDissagregationTypes();
-        this.oneDimentionDissagregations = [];
-        this.twoDimentionDissagregations = [];
-        this.noDimentionDissagregations = [];
         this.monthValuesMap.forEach((value, key) => {
-            if (value) {
+            if (value && value.length > 0) {
                 const dissagregationType: DissagregationType = DissagregationType[key];
                 if (totalOneDimentions.indexOf(dissagregationType) >= 0) {
                     this.oneDimentionDissagregations.push(dissagregationType);
@@ -187,6 +188,10 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
                     this.twoDimentionDissagregations.push(dissagregationType);
                 } else if (totalNoDimentions.indexOf(dissagregationType) >= 0) {
                     this.noDimentionDissagregations.push(dissagregationType);
+                }else if (totalThreeDimentions.indexOf(dissagregationType) >= 0) {
+                    this.threeDimentionDissagregations.push(dissagregationType);
+                }else if (totalFourDimentions.indexOf(dissagregationType) >= 0) {
+                    this.fourDimentionDissagregations.push(dissagregationType);
                 }
             }
         });
