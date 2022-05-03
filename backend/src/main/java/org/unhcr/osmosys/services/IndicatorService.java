@@ -195,6 +195,7 @@ public class IndicatorService {
             }
         });
 
+        indicator.setDescription(indicatorWeb.getDescription());
         indicator.setQualitativeInstructions(indicatorWeb.getQualitativeInstructions());
         this.saveOrUpdate(indicator);
         //update dissagregations in ie
