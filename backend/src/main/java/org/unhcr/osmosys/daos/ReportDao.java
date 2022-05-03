@@ -30,7 +30,8 @@ public class ReportDao {
                     "END as indicator_type, " +
                     "CASE " +
                     "  WHEN i.id is null THEN gi.description " +
-                    "  WHEN i.id is not null THEN i.code || ' - '|| i.description  " +
+                    "  WHEN i.id is not null and i.category is null THEN i.code || ' - '|| i.description  " +
+                    "  WHEN i.id is not null and i.category is not null THEN i.code || ' - '|| i.description || ' (Categoría: '||i.category||')'  " +
                     "END as indicator, " +
                     "i.category, " +
                     "i.frecuency, " +

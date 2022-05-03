@@ -197,6 +197,7 @@ public class IndicatorService {
 
         indicator.setDescription(indicatorWeb.getDescription());
         indicator.setQualitativeInstructions(indicatorWeb.getQualitativeInstructions());
+        indicator.setCategory(indicatorWeb.getCategory());
         this.saveOrUpdate(indicator);
         //update dissagregations in ie
         this.indicatorExecutionService
