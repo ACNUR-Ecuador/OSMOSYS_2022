@@ -1,4 +1,8 @@
 package com.sagatechs.generics.exceptions;
+
+import javax.ejb.ApplicationException;
+
+@ApplicationException(rollback=true)
 public class AuthorizationException extends RuntimeException {
 
     /**
