@@ -36,6 +36,8 @@ public class MonthService {
     @Inject
     IndicatorValueCustomDissagregationService indicatorValueCustomDissagregationService;
 
+    @Inject
+    UtilsService utilsService;
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(MonthService.class);
 
@@ -133,24 +135,7 @@ public class MonthService {
         List<BigDecimal> numeratorsList = ivs.stream().map(IndicatorValue::getNumeratorValue).filter(Objects::nonNull).collect(Collectors.toList());
         List<BigDecimal> denominatorsList = ivs.stream().map(IndicatorValue::getDenominatorValue).filter(Objects::nonNull).collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(valuesList) && CollectionUtils.isEmpty(numeratorsList) && CollectionUtils.isEmpty(denominatorsList)) {
-            BigDecimal totalExecution;
-            switch (totalIndicatorCalculationType) {
-                case SUMA:
-                    totalExecution = valuesList.stream().reduce(BigDecimal::add).get();
-                    break;
-                case PROMEDIO:
-                    BigDecimal total = valuesList.stream().reduce(BigDecimal::add).get();
-                    totalExecution = total.divide(new BigDecimal(valuesList.size()), RoundingMode.HALF_UP);
-                    break;
-                case MAXIMO:
-                    totalExecution = valuesList.stream().reduce(BigDecimal::max).get();
-                    break;
-                case MINIMO:
-                    totalExecution = valuesList.stream().reduce(BigDecimal::min).get();
-                    break;
-                default:
-                    throw new GeneralAppException("Tipo de calculo no soportado, por favor comuniquese con el administrador del sistema", Response.Status.INTERNAL_SERVER_ERROR);
-            }
+            BigDecimal totalExecution = this.utilsService.calculetTotalExecution(totalIndicatorCalculationType, valuesList);
             month.setTotalExecution(totalExecution);
         } else if (CollectionUtils.isNotEmpty(numeratorsList) && CollectionUtils.isNotEmpty(denominatorsList)) {
 
@@ -274,6 +259,7 @@ public class MonthService {
         List<Month> months = this.monthDao.getMonthsIndicatorExecutionId(indicatorExecutionId, state);
         return this.modelWebTransformationService.monthsToMonthsWeb(new HashSet<>(months));
     }
+
     public List<Month> getMonthsIndicatorExecutionId(Long indicatorExecutionId) {
         return this.monthDao.getMonthsIndicatorExecutionId(indicatorExecutionId);
     }
