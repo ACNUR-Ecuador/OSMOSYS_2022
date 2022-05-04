@@ -1,6 +1,5 @@
 package org.unhcr.osmosys.services;
 
-import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.IndicatorValueCustomDissagregationDao;

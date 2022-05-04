@@ -9,9 +9,7 @@ import org.hibernate.type.LocalDateType;
 import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 

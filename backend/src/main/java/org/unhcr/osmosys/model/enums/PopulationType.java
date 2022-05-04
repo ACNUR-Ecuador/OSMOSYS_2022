@@ -10,9 +10,9 @@ public enum PopulationType implements EnumInterface {
 
 
     private String label;
-    private int order;
+    private final int order;
 
-    private PopulationType(String label, int order) {
+    PopulationType(String label, int order) {
         this.label = label;
         this.order = order;
     }

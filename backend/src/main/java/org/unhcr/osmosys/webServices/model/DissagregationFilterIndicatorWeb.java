@@ -1,15 +1,9 @@
 package org.unhcr.osmosys.webServices.model;
 
 import com.sagatechs.generics.persistence.model.State;
-import org.unhcr.osmosys.model.DissagregationAssignationToIndicator;
-import org.unhcr.osmosys.model.DissagregationFilterIndicator;
-import org.unhcr.osmosys.model.Indicator;
 import org.unhcr.osmosys.model.enums.*;
 
-import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 
 public class DissagregationFilterIndicatorWeb implements Serializable {

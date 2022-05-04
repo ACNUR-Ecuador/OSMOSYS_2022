@@ -11,9 +11,9 @@ public enum LateType implements EnumInterface {
 
 
     private String label;
-    private int order;
+    private final int order;
 
-    private LateType(String label, int order) {
+    LateType(String label, int order) {
         this.label = label;
         this.order = order;
     }

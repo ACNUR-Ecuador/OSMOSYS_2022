@@ -3,10 +3,7 @@ package org.unhcr.osmosys.webServices.model;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.unhcr.osmosys.model.Office;
-import org.unhcr.osmosys.model.Provincia;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
 

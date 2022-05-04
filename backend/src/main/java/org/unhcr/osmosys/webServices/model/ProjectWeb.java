@@ -1,10 +1,8 @@
 package org.unhcr.osmosys.webServices.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.sagatechs.generics.persistence.model.State;
-import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.webservice.jsonSerializers.LocalDateDeserializer;
 import com.sagatechs.generics.webservice.jsonSerializers.LocalDateSerializer;
 import com.sagatechs.generics.webservice.webModel.UserWeb;

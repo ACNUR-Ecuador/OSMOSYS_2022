@@ -2,7 +2,6 @@ package org.unhcr.osmosys.model.geometries;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.vividsolutions.jts.geom.Polygon;
-import org.unhcr.osmosys.model.Canton;
 import org.unhcr.osmosys.model.Provincia;
 
 import javax.persistence.*;
@@ -19,6 +18,7 @@ public class ProvinciaPolygon extends BaseEntity<Long> {
     @JoinColumn(name = "id")
     private Provincia provincia;
 
+    @SuppressWarnings("UnsupportedTypeWithoutConverterInspection")
     @Column(name = "geometry", columnDefinition = "geometry(Multipolygon,4326)")
     private Polygon geometry;
 

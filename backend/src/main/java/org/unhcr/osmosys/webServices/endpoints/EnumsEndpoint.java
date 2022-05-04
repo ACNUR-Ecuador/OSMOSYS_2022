@@ -2,20 +2,19 @@ package org.unhcr.osmosys.webServices.endpoints;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
-import com.sagatechs.generics.security.annotations.Secured;
-import com.sagatechs.generics.security.model.Role;
 import com.sagatechs.generics.security.model.RoleType;
-import org.apache.poi.ss.formula.functions.T;
 import org.unhcr.osmosys.model.enums.*;
 import org.unhcr.osmosys.webServices.model.EnumWeb;
 
 import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
 

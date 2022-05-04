@@ -127,7 +127,7 @@ public class IndicatorExecutionService {
         });
 
         List<CustomDissagregation> customDissagregations = new ArrayList<>();
-        @SuppressWarnings("DuplicatedCode") Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, customDissagregations, cantones);
+        Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, customDissagregations, cantones);
         this.validateLocationsSegregationsAndCantons(dissagregationTypes, cantones);
         List<Quarter> qsl = setOrderInQuartersAndMonths(qs);
         for (Quarter quarter : qsl) {
@@ -312,7 +312,6 @@ public class IndicatorExecutionService {
             indicatorExecution.setTotalExecution(null);
             indicatorExecution.setExecutionPercentage(null);
         } else {
-            @SuppressWarnings("DuplicatedCode")
             BigDecimal totalExecution;
             //noinspection DuplicatedCode
             switch (totalIndicatorCalculationType) {
@@ -810,7 +809,6 @@ public class IndicatorExecutionService {
         if (office == null) {
             throw new GeneralAppException("Oficina no encontrada " + indicatorExecutionAssigmentWeb.getReportingOffice().getId(), Response.Status.BAD_REQUEST);
         }
-        @SuppressWarnings("DuplicatedCode")
         User assignedUser = this.userService.getById(indicatorExecutionAssigmentWeb.getAssignedUser().getId());
         if (assignedUser == null) {
             throw new GeneralAppException("Usuario responsable no encontrado " + indicatorExecutionAssigmentWeb.getAssignedUser().getId(), Response.Status.BAD_REQUEST);

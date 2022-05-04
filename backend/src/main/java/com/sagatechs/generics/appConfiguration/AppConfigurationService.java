@@ -21,7 +21,7 @@ public class AppConfigurationService {
     @Inject
     AppConfigurationDao appConfigurationDao;
 
-    private EnumMap<AppConfigurationKey, AppConfiguration> appConfigurationCache = new EnumMap<>(
+    private final EnumMap<AppConfigurationKey, AppConfiguration> appConfigurationCache = new EnumMap<>(
             AppConfigurationKey.class);
 
     @PostConstruct
@@ -103,8 +103,6 @@ public class AppConfigurationService {
         if (valuesString == null || valuesString.length < 1) {
             return result;
         }
-        return Arrays.stream(valuesString).map(s -> {
-            return Integer.parseInt(s);
-        }).collect(Collectors.toList());
+        return Arrays.stream(valuesString).map(Integer::parseInt).collect(Collectors.toList());
     }
 }

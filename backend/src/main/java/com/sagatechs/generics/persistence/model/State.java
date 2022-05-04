@@ -6,9 +6,9 @@ public enum State implements EnumInterface {
     ACTIVO("Activo",1), INACTIVO("Inactivo",2);
 
     private String label;
-    private int order;
+    private final int order;
 
-    private State(String label, int order) {
+    State(String label, int order) {
         this.label = label;
         this.order = order;
     }

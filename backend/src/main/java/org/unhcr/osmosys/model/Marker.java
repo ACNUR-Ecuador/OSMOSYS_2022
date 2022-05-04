@@ -4,7 +4,6 @@ import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.unhcr.osmosys.model.enums.AreaType;
 import org.unhcr.osmosys.model.enums.MarkerType;
 
 import javax.persistence.*;
@@ -15,7 +14,7 @@ import java.util.Set;
 @Entity
 @Table(schema = "osmosys", name = "markers",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_marker_unique", columnNames = {"type","subType","short_description"})
+                @UniqueConstraint(name = "uk_marker_unique", columnNames = {"type", "subType", "short_description"})
         })
 public class Marker extends BaseEntity<Long> {
 
@@ -25,27 +24,27 @@ public class Marker extends BaseEntity<Long> {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "state", nullable = false, length = 12, unique = false)
+    @Column(name = "state", nullable = false, length = 12)
     private State state;
 
-    @Column(name = "type", nullable = false, length = 50, unique = false)
+    @Column(name = "type", nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private MarkerType type;
 
-    @Column(name = "subtype", nullable = true, length = 255, unique = false)
+    @Column(name = "subtype")
     private String subType;
 
-    @Column(name = "short_description", unique = false)
+    @Column(name = "short_description")
     private String shortDescription;
 
 
-    @Column(name = "description", columnDefinition = "text", unique = false)
+    @Column(name = "description", columnDefinition = "text")
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "markers")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "markers")
     private Set<CustomDissagregationOption> customDissagregationOptions = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "markers")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "markers")
     private Set<Indicator> indicators = new HashSet<>();
 
     @Override

@@ -41,14 +41,6 @@ public class IndicatorValueDao extends GenericDaoJpa<IndicatorValue, Long> {
     }
 
     public void updateStateByPeriodIdIndicatorIdAndDissagregationType(List<Long> indicatorExecutionIds, DissagregationType dissagregationType, State state) {
-        /*String jpql = "UPDATE IndicatorValue iv " +
-                " SET iv.state=:state " +
-                " where iv.id in ( " +
-                " select o.id from IndicatorValue o where " +
-                "  o.month.quarter.indicatorExecution.id in (:indicatorExecutionIds) " +
-                " and iv.dissagregationType=:dissagregationType " +
-                " ) ";
-        Query q = getEntityManager().createQuery(jpql);*/
         String sql=" UPDATE " +
                 " osmosys.indicator_values " +
                 " SET state=:state " +

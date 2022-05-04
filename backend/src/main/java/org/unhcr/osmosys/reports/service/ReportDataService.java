@@ -463,19 +463,11 @@ public class ReportDataService {
 
             cell = rowData.createCell(0);
             cell.setCellValue(ie.getImplementation_type());
-           /* cell = rowData.createCell(1);
-            cell.setCellValue(ie.getArea());
-            cell = rowData.createCell(2);
-            cell.setCellValue(ie.getStatement());
-            cell = rowData.createCell(3);
-            cell.setCellValue(ie.getStatement_project());*/
             cell = rowData.createCell(1);
             cell.setCellValue(ie.getIndicator_type());
             cell = rowData.createCell(2);
             cell.setCellValue(ie.getIndicator());
             cell = rowData.createCell(3);
-           /* cell.setCellValue(ie.getFrecuency());
-            cell = rowData.createCell(7);*/
             cell.setCellValue(ie.getImplementers());
             cell = rowData.createCell(4);
             if (ie.getTotal_execution() != null) {

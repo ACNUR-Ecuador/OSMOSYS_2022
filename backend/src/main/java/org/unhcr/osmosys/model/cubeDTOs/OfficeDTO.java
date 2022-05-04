@@ -1,7 +1,5 @@
 package org.unhcr.osmosys.model.cubeDTOs;
 
-import java.util.List;
-
 public class OfficeDTO {
 
     public OfficeDTO(Long office_id, String acronym, String description, Long parent_office_id, String parent_acronym, String parent_description) {

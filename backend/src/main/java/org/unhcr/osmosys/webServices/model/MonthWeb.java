@@ -2,7 +2,6 @@ package org.unhcr.osmosys.webServices.model;
 
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.enums.MonthEnum;
-import org.unhcr.osmosys.model.enums.QuarterEnum;
 import org.unhcr.osmosys.model.enums.SourceType;
 
 import java.io.Serializable;

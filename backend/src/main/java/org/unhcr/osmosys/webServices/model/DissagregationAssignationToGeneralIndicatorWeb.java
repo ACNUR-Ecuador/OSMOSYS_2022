@@ -6,8 +6,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class DissagregationAssignationToGeneralIndicatorWeb implements Serializable {

@@ -1,15 +1,12 @@
 package org.unhcr.osmosys.daos;
 
-import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.Period;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
-import javax.ws.rs.core.Response;
 import java.util.List;
 
 @SuppressWarnings("unchecked")

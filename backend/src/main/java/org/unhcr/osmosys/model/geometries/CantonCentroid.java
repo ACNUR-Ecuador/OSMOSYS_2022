@@ -1,7 +1,6 @@
 package org.unhcr.osmosys.model.geometries;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
-import com.vividsolutions.jts.geom.Polygon;
 import org.unhcr.osmosys.model.Canton;
 
 import javax.persistence.*;
@@ -19,6 +18,7 @@ public class CantonCentroid extends BaseEntity<Long> {
     @JoinColumn(name = "id")
     private Canton canton;
 
+    @SuppressWarnings("UnsupportedTypeWithoutConverterInspection")
     @Column(name = "geometry", columnDefinition = "geometry(Point,4326)")
     private Point geometry;
 

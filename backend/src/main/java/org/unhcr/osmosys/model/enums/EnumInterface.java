@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 public interface EnumInterface extends Serializable {
 
-    public abstract String getStringValue();
+    String getStringValue();
 
-    public abstract String getLabel();
+    String getLabel();
 
-    public abstract int getOrder();
+    int getOrder();
 
 }

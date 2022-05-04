@@ -10,7 +10,7 @@ public enum IndicatorType  implements EnumInterface{
     ;
 
     private String label;
-    private int order;
+    private final int order;
 
     IndicatorType(String label, int order) {
         this.label = label;

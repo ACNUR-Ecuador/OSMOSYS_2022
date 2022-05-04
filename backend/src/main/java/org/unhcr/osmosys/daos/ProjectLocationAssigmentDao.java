@@ -6,10 +6,7 @@ import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.ProjectLocationAssigment;
 
 import javax.ejb.Stateless;
-import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
-import javax.ws.rs.core.Response;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
@@ -29,7 +26,7 @@ public class ProjectLocationAssigmentDao extends GenericDaoJpa<ProjectLocationAs
         return q.getResultList();
     }
 
-    public List<ProjectLocationAssigment> getByProjectId(Long projectId) throws GeneralAppException {
+    public List<ProjectLocationAssigment> getByProjectId(Long projectId) {
 
         String jpql = "SELECT DISTINCT o FROM ProjectLocationAssigment o " +
                 "WHERE o.project.id = :projectId";

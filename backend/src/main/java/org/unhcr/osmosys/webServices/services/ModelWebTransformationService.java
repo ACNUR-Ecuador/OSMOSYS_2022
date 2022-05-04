@@ -780,8 +780,6 @@ public class ModelWebTransformationService {
             statement.setParentStatement(this.statementWebToStatement(statementWeb.getParentStatement()));
             statement.setArea(this.areaToAreaWeb(statementWeb.getArea()));
             statement.getArea().addStatement(statement);
-            statement.setPillar(this.pillarWebToPillar(statementWeb.getPillar()));
-            statement.setSituation(this.situationWebToSituation(statementWeb.getSituation()));
 
         } else {
             statement = this.statementDao.find(statementWeb.getId());
@@ -794,9 +792,9 @@ public class ModelWebTransformationService {
             }
             statement.setParentStatement(this.statementWebToStatement(statementWeb.getParentStatement()));
             statement.setArea(this.areaToAreaWeb(statementWeb.getArea()));
-            statement.setPillar(this.pillarWebToPillar(statementWeb.getPillar()));
-            statement.setSituation(this.situationWebToSituation(statementWeb.getSituation()));
         }
+        statement.setPillar(this.pillarWebToPillar(statementWeb.getPillar()));
+        statement.setSituation(this.situationWebToSituation(statementWeb.getSituation()));
 
         statement.getPeriodStatementAsignations().forEach(periodStatementAsignation -> periodStatementAsignation.setState(State.INACTIVO));
         for (PeriodStatementAsignationWeb periodStatementAsignationWeb : statementWeb.getPeriodStatementAsignations()) {

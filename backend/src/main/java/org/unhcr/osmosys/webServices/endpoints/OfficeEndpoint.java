@@ -4,7 +4,6 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
 import org.unhcr.osmosys.services.OfficeService;
-import org.unhcr.osmosys.webServices.model.AreaWeb;
 import org.unhcr.osmosys.webServices.model.OfficeWeb;
 
 import javax.enterprise.context.RequestScoped;

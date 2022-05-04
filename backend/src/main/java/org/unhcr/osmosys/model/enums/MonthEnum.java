@@ -101,7 +101,7 @@ public enum MonthEnum implements EnumInterface {
             case 4:
             case 5:
             case 6:
-                return QuarterEnum.III;
+                return QuarterEnum.II;
             case 7:
             case 8:
             case 9:
@@ -117,8 +117,6 @@ public enum MonthEnum implements EnumInterface {
     }
 
     public static List<MonthEnum> getMonthsByQuarter(QuarterEnum quarterEnum) {
-        return Arrays.stream(MonthEnum.values()).filter(monthEnum -> {
-            return monthEnum.getQuarterEnum().equals(quarterEnum);
-        }).sorted(Comparator.comparingInt(MonthEnum::getOrder)).collect(Collectors.toList());
+        return Arrays.stream(MonthEnum.values()).filter(monthEnum -> monthEnum.getQuarterEnum().equals(quarterEnum)).sorted(Comparator.comparingInt(MonthEnum::getOrder)).collect(Collectors.toList());
     }
 }

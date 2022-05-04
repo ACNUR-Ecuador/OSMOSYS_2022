@@ -1,7 +1,6 @@
 package org.unhcr.osmosys.webServices.model;
 
 import com.sagatechs.generics.persistence.model.State;
-import org.unhcr.osmosys.model.enums.AreaType;
 
 import java.io.Serializable;
 

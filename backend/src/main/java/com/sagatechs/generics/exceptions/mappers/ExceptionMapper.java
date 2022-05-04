@@ -1,7 +1,6 @@
 package com.sagatechs.generics.exceptions.mappers;
 
 
-import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.model.ExceptionModelWs;
 
 import javax.ws.rs.core.MediaType;

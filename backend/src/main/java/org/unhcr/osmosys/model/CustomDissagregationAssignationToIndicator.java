@@ -2,9 +2,6 @@ package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.unhcr.osmosys.model.enums.DissagregationType;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -33,7 +30,7 @@ public class CustomDissagregationAssignationToIndicator extends BaseEntity<Long>
 
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "state", nullable = false, length = 12, unique = false)
+    @Column(name = "state", nullable = false, length = 12)
     private State state;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

@@ -9,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
-import javax.ws.rs.core.Response;
 import java.util.List;
 
 @SuppressWarnings("unchecked")

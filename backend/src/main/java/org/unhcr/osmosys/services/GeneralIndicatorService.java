@@ -6,9 +6,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.GeneralIndicatorDao;
-import org.unhcr.osmosys.model.*;
-import org.unhcr.osmosys.model.enums.DissagregationType;
-import org.unhcr.osmosys.model.enums.IndicatorType;
+import org.unhcr.osmosys.model.DissagregationAssignationToGeneralIndicator;
+import org.unhcr.osmosys.model.GeneralIndicator;
 import org.unhcr.osmosys.webServices.model.DissagregationAssignationToGeneralIndicatorWeb;
 import org.unhcr.osmosys.webServices.model.GeneralIndicatorWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
@@ -19,7 +18,6 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Stateless
 public class GeneralIndicatorService {

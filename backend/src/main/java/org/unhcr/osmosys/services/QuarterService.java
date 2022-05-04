@@ -104,32 +104,28 @@ public class QuarterService {
             this.monthService.updateMonthTotals(month1, totalIndicatorCalculationType);
         }
 
-        List<Month> months = quarter.getMonths().stream().filter(month -> {
-            return month.getState().equals(State.ACTIVO);
-        }).collect(Collectors.toList());
+        List<Month> months = quarter.getMonths().stream().filter(month -> month.getState().equals(State.ACTIVO)).collect(Collectors.toList());
 
-        List<BigDecimal> totalMonthValues = months.stream().filter(month -> {
-            return month.getState().equals(State.ACTIVO);
-        }).map(Month::getTotalExecution).filter(Objects::nonNull).collect(Collectors.toList());
+        List<BigDecimal> totalMonthValues = months.stream().filter(month -> month.getState().equals(State.ACTIVO)).map(Month::getTotalExecution).filter(Objects::nonNull).collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(totalMonthValues)) {
             quarter.setTotalExecution(null);
             quarter.setExecutionPercentage(null);
         } else {
-            BigDecimal totalExecution = null;
+            BigDecimal totalExecution;
             switch (totalIndicatorCalculationType) {
                 case SUMA:
-                    totalExecution = totalMonthValues.stream().reduce(BigDecimal::add).get();
+                    totalExecution = totalMonthValues.stream().reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
                     break;
                 case PROMEDIO:
-                    BigDecimal total = totalMonthValues.stream().reduce(BigDecimal::add).get();
+                    BigDecimal total = totalMonthValues.stream().reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
                     totalExecution = total.divide(new BigDecimal(totalMonthValues.size()), RoundingMode.HALF_UP);
                     break;
                 case MAXIMO:
-                    totalExecution = totalMonthValues.stream().reduce(BigDecimal::max).get();
+                    totalExecution = totalMonthValues.stream().reduce(BigDecimal::max).orElse(BigDecimal.ZERO);
                     break;
                 case MINIMO:
-                    totalExecution = totalMonthValues.stream().reduce(BigDecimal::min).get();
+                    totalExecution = totalMonthValues.stream().reduce(BigDecimal::min).orElse(BigDecimal.ZERO);
                     break;
                 default:
                     throw new GeneralAppException("Tipo de calculo no soportado, por favor comuniquese con el administrador del sistema", Response.Status.INTERNAL_SERVER_ERROR);

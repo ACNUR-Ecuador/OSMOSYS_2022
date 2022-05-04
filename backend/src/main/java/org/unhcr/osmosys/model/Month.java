@@ -5,13 +5,11 @@ import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.MonthEnum;
-import org.unhcr.osmosys.model.enums.QuarterEnum;
 import org.unhcr.osmosys.model.enums.SourceType;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -36,7 +34,7 @@ public class Month extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private MonthEnum month;
 
-    @Column(name = "month_year_order", nullable = true) // TODO poner not null
+    @Column(name = "month_year_order", nullable = false)
     private Integer monthYearOrder;
 
     @Column(name = "year", nullable = false)
@@ -62,7 +60,7 @@ public class Month extends BaseEntity<Long> {
     private Boolean checked;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "state", nullable = false, length = 12, unique = false)
+    @Column(name = "state", nullable = false, length = 12)
     private State state;
 
     @Column(name = "commentary", columnDefinition = "text")
@@ -149,7 +147,6 @@ public class Month extends BaseEntity<Long> {
         indicatorValue.setMonthEnum(this.getMonth());
         if (!this.indicatorValues.add(indicatorValue)) {
             this.indicatorValues.add(indicatorValue);
-            this.indicatorValues.add(indicatorValue);
         }
     }
 
@@ -165,7 +162,6 @@ public class Month extends BaseEntity<Long> {
         indicatorValue.setMonth(this);
         indicatorValue.setMonthEnum(this.getMonth());
         if (!this.indicatorValuesIndicatorValueCustomDissagregations.add(indicatorValue)) {
-            this.indicatorValuesIndicatorValueCustomDissagregations.add(indicatorValue);
             this.indicatorValuesIndicatorValueCustomDissagregations.add(indicatorValue);
         }
     }

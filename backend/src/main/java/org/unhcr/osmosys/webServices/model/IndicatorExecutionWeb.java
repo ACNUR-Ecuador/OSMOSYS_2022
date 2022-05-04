@@ -4,7 +4,6 @@ import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.unhcr.osmosys.model.enums.IndicatorType;
 
-import javax.persistence.Column;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;

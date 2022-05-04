@@ -3,7 +3,6 @@ package com.sagatechs.generics.exceptions.mappers;
 
 import com.sagatechs.generics.exceptions.AuthorizationException;
 import com.sagatechs.generics.model.ExceptionModelWs;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;

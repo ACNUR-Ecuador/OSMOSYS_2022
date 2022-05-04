@@ -1,7 +1,6 @@
 package org.unhcr.osmosys.model.geometries;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
-import org.unhcr.osmosys.model.Canton;
 import org.unhcr.osmosys.model.Provincia;
 
 import javax.persistence.*;
@@ -19,6 +18,7 @@ public class ProvinciaCentroid extends BaseEntity<Long> {
     @JoinColumn(name = "id")
     private Provincia provincia;
 
+    @SuppressWarnings("UnsupportedTypeWithoutConverterInspection")
     @Column(name = "geometry", columnDefinition = "geometry(Point,4326)")
     private Point geometry;
 

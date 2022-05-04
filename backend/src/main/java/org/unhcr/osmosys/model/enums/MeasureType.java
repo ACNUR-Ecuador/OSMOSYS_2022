@@ -8,9 +8,9 @@ public enum MeasureType implements EnumInterface {
 
 
     private String label;
-    private int order;
+    private final int order;
 
-    private MeasureType(String label, int order) {
+    MeasureType(String label, int order) {
         this.label = label;
         this.order = order;
     }

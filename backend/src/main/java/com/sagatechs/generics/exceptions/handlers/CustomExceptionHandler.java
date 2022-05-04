@@ -39,7 +39,7 @@ import static com.sagatechs.generics.utils.Assert.has;
 public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 
 	private static final Logger logger = Logger.getLogger(CustomExceptionHandler.class.getName());
-	private ExceptionHandler wrapped;
+	private final ExceptionHandler wrapped;
 
 	public CustomExceptionHandler(ExceptionHandler exceptionHandler) {
 		this.wrapped = exceptionHandler;

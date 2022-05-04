@@ -4,7 +4,6 @@ import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.unhcr.osmosys.model.enums.AreaType;
 
 import javax.persistence.*;
 
@@ -19,7 +18,7 @@ public class Situation extends BaseEntity<Long> {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "state", nullable = false, length = 12, unique = false)
+    @Column(name = "state", nullable = false, length = 12)
     private State state;
 
     @Column(name = "code", unique = true)

@@ -21,11 +21,11 @@ public class Statement extends BaseEntity<Long> {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "state", nullable = false, length = 12, unique = false)
+    @Column(name = "state", nullable = false, length = 12)
     private State state;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "area_type", nullable = false, length = 12, unique = false)
+    @Column(name = "area_type", nullable = false, length = 12)
     private AreaType areaType;
 
 
@@ -44,7 +44,7 @@ public class Statement extends BaseEntity<Long> {
     @JoinColumn(name = "parent_statement_id", foreignKey = @ForeignKey(name = "fk_statemet_statement_parent"))
     private Statement parentStatement;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "area_id", foreignKey = @ForeignKey(name = "fk_statement_area"))
     private Area area;
 

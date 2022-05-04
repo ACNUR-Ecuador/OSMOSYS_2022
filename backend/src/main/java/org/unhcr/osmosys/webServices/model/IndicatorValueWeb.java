@@ -1,11 +1,8 @@
 package org.unhcr.osmosys.webServices.model;
 
 import com.sagatechs.generics.persistence.model.State;
-import org.unhcr.osmosys.model.Canton;
-import org.unhcr.osmosys.model.Month;
 import org.unhcr.osmosys.model.enums.*;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 

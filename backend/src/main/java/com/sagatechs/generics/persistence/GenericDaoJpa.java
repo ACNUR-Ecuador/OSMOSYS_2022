@@ -16,6 +16,7 @@ import java.util.List;
  * @param <T>
  * @param <PK>
  */
+@SuppressWarnings("rawtypes")
 public abstract class GenericDaoJpa<T extends BaseEntity, PK extends Serializable> {
 
     @PersistenceContext(unitName = "main-persistence-unit")
@@ -111,10 +112,8 @@ public abstract class GenericDaoJpa<T extends BaseEntity, PK extends Serializabl
         // Check whether @Table annotation is present on the class.
         Table t = entityClass.getAnnotation(Table.class);
 
-        String tableName = (t == null) ? entityType.getName().toUpperCase() : t.name();
 
-
-        return tableName;
+        return (t == null) ? entityType.getName().toUpperCase() : t.name();
     }
 
     /**
@@ -133,10 +132,8 @@ public abstract class GenericDaoJpa<T extends BaseEntity, PK extends Serializabl
         // Check whether @Table annotation is present on the class.
         Table t = entityClass.getAnnotation(Table.class);
 
-        String tableName = (t == null) ? null : t.schema();
 
-
-        return tableName;
+        return (t == null) ? null : t.schema();
     }
 
 }

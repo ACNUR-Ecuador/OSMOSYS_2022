@@ -2,10 +2,8 @@ package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
-import com.sagatechs.generics.security.model.User;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.unhcr.osmosys.model.enums.IndicatorType;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
 
 import javax.persistence.*;
@@ -38,7 +36,7 @@ public class Quarter extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private QuarterEnum quarter;
 
-    @Column(name = "quarter_year_order", nullable = true) // TODO poner not null
+    @Column(name = "quarter_year_order", nullable = false)
     private Integer quarterYearOrder;
 
     @Column(name = "commentary", columnDefinition = "text")
@@ -67,7 +65,7 @@ public class Quarter extends BaseEntity<Long> {
     private BigDecimal executionPercentage;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "state", nullable = false, length = 12, unique = false)
+    @Column(name = "state", nullable = false, length = 12)
     private State state;
 
     @Override

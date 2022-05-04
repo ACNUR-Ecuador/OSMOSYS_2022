@@ -19,6 +19,7 @@ public class OfficeDao extends GenericDaoJpa<Office, Long> {
     }
 
 
+    @SuppressWarnings("unchecked")
     public List<Office> getByState(State state) {
 
         String jpql = "SELECT DISTINCT o FROM Office o " +
@@ -58,6 +59,7 @@ public class OfficeDao extends GenericDaoJpa<Office, Long> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public List<Office> getByNoParent() {
         String jpql = "SELECT DISTINCT o FROM Office o " +
                 "WHERE o.parentOffice is null ";

@@ -19,6 +19,7 @@ public class OrganizationDao extends GenericDaoJpa<Organization, Long> {
     }
 
 
+    @SuppressWarnings("unchecked")
     public List<Organization> getByState(State state) {
 
         String jpql = "SELECT DISTINCT o FROM Organization o " +

@@ -36,7 +36,7 @@ public class StatementDao extends GenericDaoJpa<Statement, Long> {
         return q.getResultList();
     }
 
-    public List<Statement> getByAreaType(AreaType areaType) throws GeneralAppException {
+    public List<Statement> getByAreaType(AreaType areaType) {
 
         String jpql = "SELECT DISTINCT o FROM Statement o " +
                 "WHERE o.areaType = :areaType ";
@@ -47,20 +47,6 @@ public class StatementDao extends GenericDaoJpa<Statement, Long> {
 
     }
 
-    public Statement getByShortDescription(String shortDescription) throws GeneralAppException {
-
-        String jpql = "SELECT DISTINCT o FROM Statement o " +
-                "WHERE lower(o.shortDescription) = lower(:shortDescription)";
-        Query q = getEntityManager().createQuery(jpql, Statement.class);
-        q.setParameter("shortDescription", shortDescription);
-        try {
-            return (Statement) q.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        } catch (NonUniqueResultException e) {
-            throw new GeneralAppException("Se encontró más de un item con la descripción corta " + shortDescription, Response.Status.INTERNAL_SERVER_ERROR);
-        }
-    }
 
     public Statement getByDescription(String description) throws GeneralAppException {
 

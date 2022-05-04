@@ -5,15 +5,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.webservice.jsonSerializers.LocalDateDeserializer;
 import com.sagatechs.generics.webservice.jsonSerializers.LocalDateSerializer;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.type.LocalDateType;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 
 public class ProjectResumeWeb implements Serializable {

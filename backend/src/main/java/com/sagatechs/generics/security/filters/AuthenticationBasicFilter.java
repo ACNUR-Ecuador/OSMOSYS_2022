@@ -39,8 +39,6 @@ public class AuthenticationBasicFilter implements ContainerRequestFilter {
 	@Inject
 	private SecurityContext securityContext;
 
-	/*@Inject
-	UserSecurityService userSecurityService;*/
 
 	@Context
 	private HttpServletRequest httpRequest;
@@ -70,6 +68,7 @@ public class AuthenticationBasicFilter implements ContainerRequestFilter {
 			Map<String, String> mapa = decodeAuthorizacionHeader(authorizationHeader);
 			if (USERNAME.equals(mapa.get(USERNAME_KEY))
 					&& PASSWORD.equals(mapa.get(PASSWORD_KEY))) {
+				LOGGER.info("Autenticación Básica autorizado: " +USERNAME);
 			} else {
 				abortWithUnauthorized(requestContext);
 			}
