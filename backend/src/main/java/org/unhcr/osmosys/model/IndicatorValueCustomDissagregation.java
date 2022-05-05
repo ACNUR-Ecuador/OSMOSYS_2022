@@ -22,14 +22,14 @@ public class IndicatorValueCustomDissagregation extends BaseEntity<Long> {
 
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "state", nullable = false, length = 12, unique = false)
+    @Column(name = "state", nullable = false, length = 12)
     private State state;
 
     @Column(name = "month", nullable = false)
     @Enumerated(EnumType.STRING)
     private MonthEnum monthEnum;
 
-    @Column(name = "month_year_order", nullable = true) // TODO poner not null
+    @Column(name = "month_year_order", nullable = false)
     private Integer monthYearOrder;
 
 

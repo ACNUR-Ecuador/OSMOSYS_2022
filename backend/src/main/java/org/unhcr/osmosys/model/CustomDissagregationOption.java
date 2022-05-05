@@ -25,7 +25,7 @@ public class CustomDissagregationOption extends BaseEntity<Long> {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "state", nullable = false, length = 12, unique = false)
+    @Column(name = "state", nullable = false, length = 12)
     private State state;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -21,11 +21,11 @@ public class Area extends BaseEntity<Long> {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "state", nullable = false, length = 12, unique = false)
+    @Column(name = "state", nullable = false, length = 12)
     private State state;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "area_type", nullable = false, length = 12, unique = false)
+    @Column(name = "area_type", nullable = false, length = 12)
     private AreaType areaType;
 
     @Column(name = "code", unique = true, nullable = false)

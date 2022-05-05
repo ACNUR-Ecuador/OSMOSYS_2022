@@ -26,8 +26,6 @@ public class AppDataConfigLlenadoAutomatico {
     @Inject
     RoleDao roleDao;
 
-    private Role roleSuperAdministrador;
-
     @PostConstruct
     private void init() {
         LOGGER.debug("Iniciando llenado automatico");
@@ -49,7 +47,7 @@ public class AppDataConfigLlenadoAutomatico {
 
     private void cargarRoles() {
 
-        this.roleSuperAdministrador = new Role(RoleType.SUPER_ADMINISTRADOR, State.ACTIVO);
+        Role roleSuperAdministrador = new Role(RoleType.SUPER_ADMINISTRADOR, State.ACTIVO);
         this.instantiateRole(roleSuperAdministrador);
 
     }
@@ -101,6 +99,7 @@ public class AppDataConfigLlenadoAutomatico {
         }
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     private Role instantiateRole(Role role) {
         Role roleTmp = this.roleDao.findByRoleType(role.getRoleType());
         if (roleTmp == null) {

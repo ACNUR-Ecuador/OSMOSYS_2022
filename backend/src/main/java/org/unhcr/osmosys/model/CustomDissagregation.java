@@ -26,7 +26,7 @@ public class CustomDissagregation extends BaseEntity<Long> {
     private Boolean controlTotalValue;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "state", nullable = false, length = 12, unique = false)
+    @Column(name = "state", nullable = false, length = 12)
     private State state;
 
     @OneToMany(mappedBy = "customDissagregation",fetch = FetchType.LAZY, cascade = CascadeType.ALL)

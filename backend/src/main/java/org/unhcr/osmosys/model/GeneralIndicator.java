@@ -22,7 +22,7 @@ public class GeneralIndicator extends BaseEntity<Long> {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "measure_type", nullable = true)
+    @Column(name = "measure_type")
     @Enumerated(EnumType.STRING)
     private MeasureType measureType;
 

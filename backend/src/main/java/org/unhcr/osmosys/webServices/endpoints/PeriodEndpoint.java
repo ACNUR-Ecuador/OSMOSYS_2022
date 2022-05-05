@@ -71,7 +71,7 @@ public class PeriodEndpoint {
     @GET
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
-    public PeriodWeb getWithGeneralIndicatorByid(@PathParam("id") Long id) throws GeneralAppException {
+    public PeriodWeb getWithGeneralIndicatorByid(@PathParam("id") Long id) {
         return this.periodService.getWebWithGeneralIndicatorById(id);
     }
 }

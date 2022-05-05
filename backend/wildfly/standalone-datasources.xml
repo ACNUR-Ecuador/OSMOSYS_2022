@@ -1,3 +1,4 @@
+<!--suppress ALL, SyntaxError -->
 <datasource jta="true" jndi-name="java:jboss/datasources/SagaTechs" pool-name="SagaTechs" enabled="true" use-ccm="true" statistics-enabled="true">
 	<connection-url>jdbc:postgresql://localhost:5432/sudaten</connection-url>
 	<driver>postgresql-driver</driver>

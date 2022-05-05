@@ -19,9 +19,9 @@ public class UtilsService {
     private final static Logger LOGGER = Logger.getLogger(UtilsService.class);
 
     public BigDecimal calculetTotalExecution(TotalIndicatorCalculationType totalIndicatorCalculationType, List<BigDecimal> values) throws GeneralAppException {
-        BigDecimal totalExecution = null;
+        BigDecimal totalExecution;
         if (CollectionUtils.isEmpty(values)) {
-            return totalExecution;
+            return null;
 
         } else {
             //noinspection DuplicatedCode

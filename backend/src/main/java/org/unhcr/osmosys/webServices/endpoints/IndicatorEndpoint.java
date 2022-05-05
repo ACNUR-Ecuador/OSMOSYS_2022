@@ -47,7 +47,7 @@ public class IndicatorEndpoint {
     @GET
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
-    public List<IndicatorWeb> getByPeriodAssignmentAndState(@PathParam("periodId") Long periodId) throws GeneralAppException {
+    public List<IndicatorWeb> getByPeriodAssignmentAndState(@PathParam("periodId") Long periodId) {
         return this.indicatorService.getByPeriodAssignmentAndState(periodId, State.ACTIVO);
     }
 }

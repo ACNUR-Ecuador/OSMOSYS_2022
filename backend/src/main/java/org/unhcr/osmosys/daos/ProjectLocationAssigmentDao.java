@@ -1,6 +1,5 @@
 package org.unhcr.osmosys.daos;
 
-import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.ProjectLocationAssigment;

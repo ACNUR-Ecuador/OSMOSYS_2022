@@ -16,7 +16,7 @@ import java.util.List;
  * @param <T>
  * @param <PK>
  */
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"rawtypes", "FieldMayBeFinal"})
 public abstract class GenericDaoJpa<T extends BaseEntity, PK extends Serializable> {
 
     @PersistenceContext(unitName = "main-persistence-unit")
