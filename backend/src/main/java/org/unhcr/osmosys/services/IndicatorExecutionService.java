@@ -1144,6 +1144,54 @@ public class IndicatorExecutionService {
         }
     }
 
+    public void updateIndicatorExecutionLocations(
+            IndicatorExecution indicatorExecution,
+            Set<Canton> locationsToActivate,
+            Set<Canton> locationsToDissable
+    ) throws GeneralAppException {//
+        Set<Canton> locationsToActivateIe = new HashSet<>();
+        Set<Canton> locationsToDissableIe = new HashSet<>();
+
+        locationsToActivate.forEach(cantonToActivate -> {
+            Optional<IndicatorExecutionLocationAssigment> indicatorExecutionLocationAssigmentToActivateOpt =
+                    indicatorExecution.getIndicatorExecutionLocationAssigments()
+                            .stream()
+                            .filter(indicatorExecutionLocationAssigment ->
+                                    cantonToActivate.getId().equals(indicatorExecutionLocationAssigment.getLocation().getId()))
+                            .findFirst();
+            if (indicatorExecutionLocationAssigmentToActivateOpt.isPresent()) {
+                indicatorExecutionLocationAssigmentToActivateOpt.get().setState(State.ACTIVO);
+                locationsToActivateIe.add(indicatorExecutionLocationAssigmentToActivateOpt.get().getLocation());
+            } else {
+                IndicatorExecutionLocationAssigment newIndicatorExecutionLocationAssigment = new IndicatorExecutionLocationAssigment();
+                newIndicatorExecutionLocationAssigment.setLocation(cantonToActivate);
+                newIndicatorExecutionLocationAssigment.setState(State.ACTIVO);
+                indicatorExecution.addIndicatorExecutionLocationAssigment(newIndicatorExecutionLocationAssigment);
+                locationsToActivateIe.add(cantonToActivate);
+
+            }
+        });
+
+        locationsToDissable.forEach(cantonToDissable -> {
+            Optional<IndicatorExecutionLocationAssigment> indicatorExecutionLocationAssigmentToDissableOpt =
+                    indicatorExecution.getIndicatorExecutionLocationAssigments()
+                            .stream()
+                            .filter(indicatorExecutionLocationAssigment -> cantonToDissable.getId().equals(indicatorExecutionLocationAssigment.getLocation().getId()))
+                            .findFirst();
+            if (indicatorExecutionLocationAssigmentToDissableOpt.isPresent()) {
+                indicatorExecutionLocationAssigmentToDissableOpt.get().setState(State.INACTIVO);
+                locationsToDissableIe.add(indicatorExecutionLocationAssigmentToDissableOpt.get().getLocation());
+            }
+        });
+
+      this.indicatorValueService.updateIndicatorValuesLocationsForIndicatorExecution(
+              indicatorExecution, locationsToActivateIe, locationsToDissableIe
+      );
+
+    }
+
+
+
     public void updateIndicatorExecutionsGeneralDissagregations(
             Long periodId,
             List<DissagregationAssignationToGeneralIndicator> dissagregationAssignationToIndicatorsToEnable,

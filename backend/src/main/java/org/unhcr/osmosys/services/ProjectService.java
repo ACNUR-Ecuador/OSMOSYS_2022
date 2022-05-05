@@ -10,8 +10,6 @@ import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.CantonDao;
 import org.unhcr.osmosys.daos.ProjectDao;
 import org.unhcr.osmosys.model.*;
-import org.unhcr.osmosys.model.enums.DissagregationType;
-import org.unhcr.osmosys.model.enums.IndicatorType;
 import org.unhcr.osmosys.webServices.model.CantonWeb;
 import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
 import org.unhcr.osmosys.webServices.model.ProjectWeb;
@@ -20,9 +18,7 @@ import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -135,147 +131,61 @@ public class ProjectService {
             project.setEndDate(projectWeb.getEndDate());
         }
 
-
-        // las localidades
-        updateProjectLocations(projectWeb, project, projectWeb.getUpdateAllLocationsIndicators());
-
-        this.saveOrUpdate(project);
         if (projectDatesChanged) {
             this.indicatorExecutionService.updateIndicatorExecutionProjectDates(project, project.getStartDate(), project.getEndDate());
         }
+        // las localidades
+        this.updateProjectLocations(projectWeb, project, projectWeb.getUpdateAllLocationsIndicators());
+
+        this.saveOrUpdate(project);
+
         return project.getId();
     }
 
 
     private void updateProjectLocations(ProjectWeb projectWeb, Project project, Boolean updateAllLocationsIndicators) throws GeneralAppException {
-        // veo las q ya no están y desactivo
-        List<Long> locationsToActive = new ArrayList<>();
-        List<Long> locationsToDissable = new ArrayList<>();
+        Set<Canton> locationsToActivate = new HashSet<>();
+        Set<Canton> locationsToDissable = new HashSet<>();
 
+        // ***********project location assigments
+        // busco los cantones a desactivar
         project.getProjectLocationAssigments().forEach(projectLocationAssigment -> {
-            Optional<CantonWeb> cantonFound = projectWeb.getLocations().stream()
+            Optional<CantonWeb> cantonWebFound = projectWeb.getLocations().stream()
                     .filter(cantonWeb -> projectLocationAssigment.getLocation().getId().equals(cantonWeb.getId())).findFirst();
-            if (!cantonFound.isPresent()) {
+            if (!cantonWebFound.isPresent()) {
                 projectLocationAssigment.setState(State.INACTIVO);
-                locationsToDissable.add(projectLocationAssigment.getLocation().getId());
+                locationsToDissable.add(projectLocationAssigment.getLocation());
+            } else {
+                projectLocationAssigment.setState(State.ACTIVO);
+                locationsToActivate.add(projectLocationAssigment.getLocation());
             }
         });
-        // veo las nuevas y creo hago update si es el caso
-        List<Canton> cantonesToCreate = new ArrayList<>();
+
+        // busco los cantones a activar
         projectWeb.getLocations().forEach(cantonWeb -> {
-            Optional<ProjectLocationAssigment> assignmentFound = project.getProjectLocationAssigments().stream().filter(projectLocationAssigment -> projectLocationAssigment.getLocation().getId().equals(cantonWeb.getId())).findFirst();
+            Optional<ProjectLocationAssigment> assignmentFound = project.getProjectLocationAssigments()
+                    .stream()
+                    .filter(projectLocationAssigment ->
+                            projectLocationAssigment.getLocation().getId()
+                                    .equals(cantonWeb.getId()))
+                    .findFirst();
             if (assignmentFound.isPresent()) {
                 assignmentFound.get().setState(State.ACTIVO);
-                locationsToActive.add(assignmentFound.get().getLocation().getId());
+                locationsToActivate.add(assignmentFound.get().getLocation());
             } else {
                 Canton canton = this.cantonDao.find(cantonWeb.getId());
                 ProjectLocationAssigment projectLocationAssigment = new ProjectLocationAssigment();
                 projectLocationAssigment.setLocation(canton);
                 projectLocationAssigment.setState(State.ACTIVO);
                 project.addProjectLocationAssigment(projectLocationAssigment);
-                cantonesToCreate.add(canton);
-                locationsToActive.add(canton.getId());
+                locationsToActivate.add(canton);
             }
         });
-
-        List<Long> cantonesToCreateIds = cantonesToCreate.stream().map(Canton::getId).collect(Collectors.toList());
         for (IndicatorExecution indicatorExecution : project.getIndicatorExecutions()) {
-            for (Canton canton : cantonesToCreate) {
-                IndicatorExecutionLocationAssigment iela = new IndicatorExecutionLocationAssigment();
-                iela.setLocation(canton);
-                iela.setState(State.ACTIVO);
-                indicatorExecution.addIndicatorExecutionLocationAssigment(iela);
-            }
-            for (Long cantonId : locationsToDissable) {
-                indicatorExecution.getIndicatorExecutionLocationAssigments()
-                        .stream()
-                        .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(cantonId))
-                        .findFirst()
-                        .ifPresent(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.setState(State.INACTIVO));
-            }
-            if (CollectionUtils.isNotEmpty(cantonesToCreate)) {
-                this.indicatorExecutionService.updateIndicatorExecutionLocationsByAssignation(indicatorExecution, cantonesToCreate);
-            }
-            // tengo q activar y desactivar
-            // si es general siempre activo y desactivo
-            if (indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)) {
-                for (Long cantonId : locationsToActive) {
-                    indicatorExecution.getIndicatorExecutionLocationAssigments()
-                            .stream()
-                            .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(cantonId))
-                            .findFirst()
-                            .ifPresent(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.setState(State.ACTIVO));
-                }
-                for (Long cantonId : locationsToDissable) {
-                    indicatorExecution.getIndicatorExecutionLocationAssigments()
-                            .stream()
-                            .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(cantonId))
-                            .findFirst()
-                            .ifPresent(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.setState(State.INACTIVO));
-                }
-                indicatorExecution.getQuarters()
-                        .forEach(quarter -> quarter.getMonths().
-                                forEach(month -> month.getIndicatorValues()
-                                        .forEach(indicatorValue -> {
-                                            if (DissagregationType.getLocationDissagregationTypes().contains(indicatorValue.getDissagregationType())) {
-                                                // busco para activar
-                                                if (locationsToActive.contains(indicatorValue.getLocation().getId())) {
-                                                    indicatorValue.setState(State.ACTIVO);
-                                                } else if (locationsToDissable.contains(indicatorValue.getLocation().getId())) {
-                                                    indicatorValue.setState(State.INACTIVO);
-                                                }
-                                            }
-                                        })));
-            } else {
-                // si es rendimiento siempre desactivo desactivo y activo solo si updateAllLocationsIndicators
-                for (Long cantonId : locationsToActive) {
-                    indicatorExecution.getIndicatorExecutionLocationAssigments()
-                            .stream()
-                            .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(cantonId))
-                            .findFirst()
-                            .ifPresent(indicatorExecutionLocationAssigment ->
-                            {
-                                if (updateAllLocationsIndicators) {
-                                    indicatorExecutionLocationAssigment.setState(State.ACTIVO);
-                                } else if (cantonesToCreateIds.contains(indicatorExecutionLocationAssigment.getLocation().getId())) {
-                                    indicatorExecutionLocationAssigment.setState(State.INACTIVO);
-                                } else {
-                                    indicatorExecutionLocationAssigment.setState(State.ACTIVO);
-                                }
-
-                            });
-                }
-                for (Long cantonId : locationsToActive) {
-                    indicatorExecution.getIndicatorExecutionLocationAssigments()
-                            .stream()
-                            .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(cantonId))
-                            .findFirst()
-                            .ifPresent(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.setState(State.ACTIVO));
-                }
-                for (Long cantonId : locationsToDissable) {
-                    indicatorExecution.getIndicatorExecutionLocationAssigments()
-                            .stream()
-                            .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(cantonId))
-                            .findFirst()
-                            .ifPresent(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.setState(State.INACTIVO));
-                }
-                indicatorExecution.getQuarters()
-                        .forEach(quarter -> quarter.getMonths().forEach(month -> month.getIndicatorValues().forEach(indicatorValue -> {
-                            if (DissagregationType.getLocationDissagregationTypes().contains(indicatorValue.getDissagregationType())) {
-                                // busco para activar
-                                if (locationsToActive.contains(indicatorValue.getLocation().getId())) {
-                                    if (updateAllLocationsIndicators) {
-                                        indicatorValue.setState(State.ACTIVO);
-                                    } else if (cantonesToCreateIds.contains(indicatorValue.getLocation().getId())) {
-                                        indicatorValue.setState(State.INACTIVO);
-                                    } else {
-                                        indicatorValue.setState(State.ACTIVO);
-                                    }
-                                }
-                            }
-                        })));
-            }
+            this.indicatorExecutionService.updateIndicatorExecutionLocations(indicatorExecution, locationsToActivate, locationsToDissable);
         }
+
+
     }
 
 
@@ -341,11 +251,11 @@ public class ProjectService {
         return this.projectDao.getProjectResumenWebByPeriodId(periodId);
     }
 
-    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndOrganizationId(Long periodId, Long organizationId)  {
+    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndOrganizationId(Long periodId, Long organizationId) {
         return this.projectDao.getProjectResumenWebByPeriodIdAndOrganizationId(periodId, organizationId);
     }
 
-    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndFocalPointId(Long periodId, Long focalPointId)  {
+    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndFocalPointId(Long periodId, Long focalPointId) {
         return this.projectDao.getProjectResumenWebByPeriodIdAndFocalPointId(periodId, focalPointId);
     }
 

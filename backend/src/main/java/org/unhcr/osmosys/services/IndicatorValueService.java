@@ -2,17 +2,17 @@ package org.unhcr.osmosys.services;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.IndicatorValueDao;
-import org.unhcr.osmosys.model.Canton;
-import org.unhcr.osmosys.model.IndicatorValue;
+import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Stateless
 public class IndicatorValueService {
@@ -459,5 +459,74 @@ public class IndicatorValueService {
 
     public void updateGeneralIndicatorStateByPeriodIdAndDissagregationType(Long periodId, DissagregationType dissagregationType, State state) {
         this.indicatorValueDao.updateGeneralIndicatorStateByPeriodIdAndDissagregationType(periodId, dissagregationType, state);
+    }
+
+    public void updateIndicatorValuesLocationsForIndicatorExecution(
+            IndicatorExecution indicatorExecution,
+            Set<Canton> locationsToActivateIe,
+            Set<Canton> locationsToDissableIe
+    ) throws GeneralAppException {
+        Set<DissagregationAssignationToIndicatorExecution> dissagregationAssigments = indicatorExecution.getDissagregationsAssignationsToIndicatorExecutions();
+
+        List<IndicatorValue> indicatorValues =
+                indicatorExecution.getQuarters().stream()
+                        .flatMap(quarter -> quarter.getMonths().stream())
+                        .flatMap(month -> month.getIndicatorValues().stream())
+                        .collect(Collectors.toList());
+        // voy por cada dessagregacion
+        for (DissagregationAssignationToIndicatorExecution dissagregationAssignationToIndicatorExecution : dissagregationAssigments) {
+
+            DissagregationType dissagregationType
+                    = dissagregationAssignationToIndicatorExecution.getDissagregationType();
+            State dissagregationState
+                    = dissagregationAssignationToIndicatorExecution.getState();
+            if (DissagregationType.getLocationDissagregationTypes().contains(dissagregationType)) {
+                // solo los indicadores de localtion
+                List<IndicatorValue> indicatorValuesDissagregation = indicatorValues
+                        .stream().filter(indicatorValue ->
+                                indicatorValue.getDissagregationType().equals(dissagregationType))
+                        .collect(Collectors.toList());
+                List<Canton> existingCantons = indicatorValuesDissagregation.stream()
+                        .map(IndicatorValue::getLocation)
+                        .distinct()
+                        .collect(Collectors.toList());
+                // creo o activo
+                for (Canton cantonToActivate : locationsToActivateIe) {
+                    List<IndicatorValue> indicatorValuesToActivateLocation = indicatorValuesDissagregation.stream()
+                            .filter(indicatorValue ->
+                                    cantonToActivate.getId().equals(indicatorValue.getLocation().getId()))
+                            .collect(Collectors.toList());
+                    if (CollectionUtils.isNotEmpty(indicatorValuesToActivateLocation)) {
+                        // debo activar
+                        indicatorValuesToActivateLocation.forEach(indicatorValue -> indicatorValue.setState(State.ACTIVO));
+                    } else {
+                        // debo crear
+                        List<Month> months = indicatorExecution.getQuarters()
+                                .stream().
+                                flatMap(quarter -> quarter.getMonths().stream())
+                                .collect(Collectors.toList());
+                        List<Canton> cantones = new ArrayList<>();
+                        cantones.add(cantonToActivate);
+                        for (Month month : months) {
+                            List<IndicatorValue> newIndicatorValues =
+                                    this.createIndicatorValueDissagregationStandardForMonth(dissagregationType, cantones);
+                            newIndicatorValues.forEach(month::addIndicatorValue);
+                        }
+                    }
+
+                }
+                // desactivo
+                for (Canton cantonToDissable : locationsToDissableIe) {
+                    indicatorValuesDissagregation.stream()
+                            .filter(indicatorValue ->
+                                    cantonToDissable.getId().equals(indicatorValue.getLocation().getId()))
+                            .forEach(indicatorValue -> indicatorValue.setState(State.INACTIVO));
+                }
+                // activo o desactivo segun estado de desagregacion
+                indicatorValuesDissagregation
+                        .forEach(indicatorValue -> indicatorValue.setState(dissagregationState));
+            }
+
+        }
     }
 }

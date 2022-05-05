@@ -91,13 +91,13 @@ public class Canton extends BaseEntity<Long> {
 
         Canton canton = (Canton) o;
 
-        return new EqualsBuilder()
-                .appendSuper(super.equals(o))
-                .append(id, canton.id)
-                .append(code, canton.code)
-                .append(description, canton.description)
-                .append(state, canton.state)
-                .isEquals();
+        if (id != null && canton.getId() != null) {
+            return id.equals(canton.getId());
+        }else {
+            return new EqualsBuilder()
+                    .append(code, canton.code)
+                    .isEquals();
+        }
     }
 
     @Override
