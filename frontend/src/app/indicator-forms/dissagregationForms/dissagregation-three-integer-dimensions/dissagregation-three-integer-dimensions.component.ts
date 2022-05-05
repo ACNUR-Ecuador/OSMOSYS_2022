@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {DissagregationType, SelectItemWithOrder} from '../../../shared/model/UtilsModel';
 import {Canton, IndicatorValue} from '../../../shared/model/OsmosysModel';
 import {UtilsService} from '../../../shared/services/utils.service';
@@ -10,7 +10,7 @@ import {forkJoin, Observable, of} from 'rxjs';
     templateUrl: './dissagregation-three-integer-dimensions.component.html',
     styleUrls: ['./dissagregation-three-integer-dimensions.component.scss']
 })
-export class DissagregationThreeIntegerDimensionsComponent implements OnInit {
+export class DissagregationThreeIntegerDimensionsComponent implements OnInit, OnChanges {
 
     @Input()
     dissagregationType: DissagregationType;
@@ -37,6 +37,9 @@ export class DissagregationThreeIntegerDimensionsComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.processDissagregationValues();
+    }
+    ngOnChanges(changes: SimpleChanges): void {
         this.processDissagregationValues();
     }
 

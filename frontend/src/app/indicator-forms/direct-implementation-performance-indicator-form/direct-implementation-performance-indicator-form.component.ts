@@ -119,7 +119,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             if (this.indicatorExecution.keepBudget) {
                 this.formItem.get('usedBudget').patchValue(this.month.usedBudget);
                 this.formItem.get('usedBudget').setValidators(Validators.required);
-            }else {
+            } else {
                 this.formItem.get('usedBudget').clearValidators();
             }
             if (this.isSupervisor) {
@@ -174,6 +174,12 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     }
 
     setDimentionsDissagregations(): void {
+        this.render = false;
+        this.oneDimentionDissagregations = [];
+        this.twoDimentionDissagregations = [];
+        this.threeDimentionDissagregations = [];
+        this.fourDimentionDissagregations = [];
+        this.noDimentionDissagregations = [];
         const totalOneDimentions = this.utilsService.getOneDimentionsDissagregationTypes();
         const totalTwoDimentions = this.utilsService.getTwoDimentionsDissagregationTypes();
         const totalThreeDimentions = this.utilsService.getThreeDimentionsDissagregationTypes();
@@ -188,9 +194,9 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
                     this.twoDimentionDissagregations.push(dissagregationType);
                 } else if (totalNoDimentions.indexOf(dissagregationType) >= 0) {
                     this.noDimentionDissagregations.push(dissagregationType);
-                }else if (totalThreeDimentions.indexOf(dissagregationType) >= 0) {
+                } else if (totalThreeDimentions.indexOf(dissagregationType) >= 0) {
                     this.threeDimentionDissagregations.push(dissagregationType);
-                }else if (totalFourDimentions.indexOf(dissagregationType) >= 0) {
+                } else if (totalFourDimentions.indexOf(dissagregationType) >= 0) {
                     this.fourDimentionDissagregations.push(dissagregationType);
                 }
             }
@@ -299,7 +305,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
         if (!cantones || cantones.length < 1) {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Selecciona al menos un cantán',
+                summary: 'Selecciona al menos un cantón',
                 life: 3000
             });
         } else {
@@ -307,7 +313,6 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
                 .updateDirectImplementationIndicatorExecutionLocationAssigment(this.indicatorExecution.id, cantones)
                 .subscribe(() => {
                     this.loadMonthValues(this.monthId);
-                    this.cd.detectChanges();
                     this.showLocationsDialog = false;
                 }, error => {
                     this.messageService.add({
