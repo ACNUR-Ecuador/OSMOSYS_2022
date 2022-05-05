@@ -124,7 +124,6 @@ export class DissagregationTwoIntegerDimentionsComponent implements OnInit, OnCh
                         // todo canton
                         return 1;
                     }
-
                 });
                 this.rows.push(row);
             });
