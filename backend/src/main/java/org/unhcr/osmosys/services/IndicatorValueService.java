@@ -510,7 +510,12 @@ public class IndicatorValueService {
                         for (Month month : months) {
                             List<IndicatorValue> newIndicatorValues =
                                     this.createIndicatorValueDissagregationStandardForMonth(dissagregationType, cantones);
-                            newIndicatorValues.forEach(month::addIndicatorValue);
+                            newIndicatorValues.forEach(indicatorValue -> {
+                                        month.addIndicatorValue(indicatorValue);
+                                        indicatorValuesDissagregation.add(indicatorValue);
+                                    }
+                            );
+
                         }
                     }
 

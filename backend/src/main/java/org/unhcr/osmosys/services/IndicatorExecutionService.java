@@ -950,93 +950,27 @@ public class IndicatorExecutionService {
         if (ie == null) {
             throw new GeneralAppException("No se pudo encontrar el indicador (indicatorExecutionId =" + indicatorExecutionId + ")", Response.Status.BAD_REQUEST);
         }
-
-        Set<IndicatorExecutionLocationAssigment> ielas = ie.getIndicatorExecutionLocationAssigments();
-        List<Long> cantonesIds = cantonesWeb.stream().map(CantonWeb::getId).collect(Collectors.toList());
-        List<Long> cantonesIdsOriginal = ielas.stream().map(IndicatorExecutionLocationAssigment::getLocation).map(Canton::getId).collect(Collectors.toList());
-        List<Long> cantonesIdsToCreate = cantonesIds.stream().filter(cantonId -> !cantonesIdsOriginal.contains(cantonId)).collect(Collectors.toList());
-        List<Long> cantonesIdsToActivate = new ArrayList<>();
-        List<Long> cantonesIdsToDissable = new ArrayList<>();
-
-        for (IndicatorExecutionLocationAssigment indicatorExecutionLocationAssigment : ielas) {
-            if (cantonesIds.contains(indicatorExecutionLocationAssigment.getLocation().getId())) {
-                cantonesIdsToActivate.add(indicatorExecutionLocationAssigment.getLocation().getId());
-            } else {
-                cantonesIdsToDissable.add(indicatorExecutionLocationAssigment.getLocation().getId());
+        // activo todos
+        Set<Canton> cantonesToActivate = new HashSet<>(this.cantonService.getByIds(cantonesWeb.stream().map(CantonWeb::getId).collect(Collectors.toList())));
+        //desactivo los q ya no existen
+        Set<Canton> cantonesToDissable = new HashSet<>();
+        // cantones que ya existent
+        List<Canton> existingCantons = ie.getIndicatorExecutionLocationAssigments()
+                .stream()
+                .map(IndicatorExecutionLocationAssigment::getLocation).collect(Collectors.toList());
+        for (Canton existingCanton : existingCantons) {
+            Optional<CantonWeb> cantonWebFound = cantonesWeb.stream().filter(cantonWeb -> cantonWeb.getId().equals(existingCanton.getId()))
+                    .findFirst();
+            if(!cantonWebFound.isPresent()){
+                cantonesToDissable.add(existingCanton);
             }
         }
+        this.updateIndicatorExecutionLocations(ie,cantonesToActivate, cantonesToDissable);
 
-        // desactivo en ie indicator execution locations assignations
-        for (Long cantonId : cantonesIdsToCreate) {
-            Canton canton = this.cantonService.getById(cantonId);
-            IndicatorExecutionLocationAssigment ielaNew = new IndicatorExecutionLocationAssigment();
-            ielaNew.setLocation(canton);
-            ielaNew.setState(State.ACTIVO);
-            ie.addIndicatorExecutionLocationAssigment(ielaNew);
-        }
-        for (Long cantonId : cantonesIdsToDissable) {
-            ie.getIndicatorExecutionLocationAssigments()
-                    .stream()
-                    .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(cantonId))
-                    .findFirst().ifPresent(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.setState(State.INACTIVO));
-        }
-        for (Long cantonId : cantonesIdsToActivate) {
-            ie.getIndicatorExecutionLocationAssigments()
-                    .stream()
-                    .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(cantonId))
-                    .findFirst().ifPresent(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.setState(State.ACTIVO));
-        }
-
-        // debo crear los iv para la todos los q sean locations
-        List<Canton> cantonesToCreate;
-        if (CollectionUtils.isEmpty(cantonesIdsToCreate)) {
-            cantonesToCreate = new ArrayList<>();
-        } else {
-            cantonesToCreate = this.cantonService.getByIds(cantonesIdsToCreate);
-        }
-
-        List<DissagregationAssignationToIndicatorExecution> dissagregationToUpdate =
-                ie.getDissagregationsAssignationsToIndicatorExecutions()
-                        .stream()
-                        .filter(dissagregationAssignationToIndicatorExecution ->
-                                DissagregationType.getLocationDissagregationTypes().contains(dissagregationAssignationToIndicatorExecution.getDissagregationType()))
-                        .collect(Collectors.toList());
-
-        if (CollectionUtils.isNotEmpty(cantonesToCreate)) {
-            List<Month> monthsToUpdateValues =
-                    ie.getQuarters().stream()
-                            .flatMap(quarter -> quarter.getMonths().stream())
-                            .collect(Collectors.toList());
-            for (Month month : monthsToUpdateValues) {
-                for (DissagregationAssignationToIndicatorExecution dissagregationAssignationToIndicatorExecution : dissagregationToUpdate) {
-
-                    List<IndicatorValue> ivs = this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(dissagregationAssignationToIndicatorExecution.getDissagregationType(), cantonesToCreate);
-                    ivs.forEach(month::addIndicatorValue);
-                }
-            }
-
-        }
-        if (CollectionUtils.isNotEmpty(cantonesIdsToActivate)) {
-            ie.getQuarters().stream()
-                    .flatMap(quarter -> quarter.getMonths().stream())
-                    .flatMap(month -> month.getIndicatorValues().stream())
-                    .filter(indicatorValue -> indicatorValue.getLocation() != null)
-                    .filter(indicatorValue -> cantonesIdsToActivate.contains(indicatorValue.getLocation().getId()))
-                    .forEach(indicatorValue -> indicatorValue.setState(State.ACTIVO));
-        }
-        if (CollectionUtils.isNotEmpty(cantonesIdsToDissable)) {
-            ie.getQuarters().stream()
-                    .flatMap(quarter -> quarter.getMonths().stream())
-                    .flatMap(month -> month.getIndicatorValues().stream())
-                    .filter(indicatorValue -> indicatorValue.getLocation() != null)
-                    .filter(indicatorValue -> cantonesIdsToDissable.contains(indicatorValue.getLocation().getId()))
-                    .forEach(indicatorValue -> indicatorValue.setState(State.INACTIVO));
-        }
-
-        this.updateIndicatorExecutionTotals(ie);
         this.saveOrUpdate(ie);
         return ie.getId();
     }
+
 
     public List<IndicatorExecutionWeb> getActiveProjectIndicatorExecutionsByPeriodYear(Integer year) throws GeneralAppException {
         Period period = this.periodService.getByYear(year);
@@ -1184,12 +1118,11 @@ public class IndicatorExecutionService {
             }
         });
 
-      this.indicatorValueService.updateIndicatorValuesLocationsForIndicatorExecution(
-              indicatorExecution, locationsToActivateIe, locationsToDissableIe
-      );
-
+        this.indicatorValueService.updateIndicatorValuesLocationsForIndicatorExecution(
+                indicatorExecution, locationsToActivateIe, locationsToDissableIe
+        );
+        this.updateIndicatorExecutionTotals(indicatorExecution);
     }
-
 
 
     public void updateIndicatorExecutionsGeneralDissagregations(
