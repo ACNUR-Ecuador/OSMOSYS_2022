@@ -117,6 +117,10 @@ public class IndicatorService {
         }
         this.validate(indicatorWeb);
         Indicator indicator = this.indicatorDao.findWithData(indicatorWeb.getId());
+        indicator.setDescription(indicatorWeb.getDescription());
+        indicator.setQualitativeInstructions(indicatorWeb.getQualitativeInstructions());
+        indicator.setCategory(indicatorWeb.getCategory());
+        indicator.setStatement(this.statementService.find(indicatorWeb.getStatement().getId()));
         // marcadores
         // veo los nuevos
         indicatorWeb.getMarkers().forEach(markerWeb -> {
@@ -132,11 +136,8 @@ public class IndicatorService {
                 indicator.removeMarker(marker);
             }
         });
-        // statements
-        indicator.setStatement(this.statementService.find(indicatorWeb.getStatement().getId()));
-        // todo actualizacion en valores y demás
         // dissagregationAssiment
-        //
+
         List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToEnable = new ArrayList<>();
         List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToDisable = new ArrayList<>();
         List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToCreate = new ArrayList<>();
@@ -165,7 +166,7 @@ public class IndicatorService {
             }
         });
         // customdissagregationAssiment
-        //
+
         List<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicatorsToEnable = new ArrayList<>();
         List<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicatorsToDisable = new ArrayList<>();
         List<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicatorsToCreate = new ArrayList<>();
@@ -195,9 +196,7 @@ public class IndicatorService {
             }
         });
 
-        indicator.setDescription(indicatorWeb.getDescription());
-        indicator.setQualitativeInstructions(indicatorWeb.getQualitativeInstructions());
-        indicator.setCategory(indicatorWeb.getCategory());
+
         this.saveOrUpdate(indicator);
         //update dissagregations in ie
         this.indicatorExecutionService
