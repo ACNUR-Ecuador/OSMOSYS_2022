@@ -34,6 +34,13 @@ public class CubeService {
         return this.cubeDao.getAgeTypeTable();
     }
 
+    public List<AgePrimaryEducationTypeDTO> getAgePrimaryEducationTypeTable() {
+        return this.cubeDao.getAgePrimaryEducationTypeTable();
+    }
+    public List<AgeTertiaryEducationTypeDTO> getAgeTertiaryEducationTypeTable() {
+        return this.cubeDao.getAgeTertiaryEducationTypeTable();
+    }
+
     public List<GenderTypeDTO> getGenderTypeTable() {
         return this.cubeDao.getGenderTypeTable();
     }

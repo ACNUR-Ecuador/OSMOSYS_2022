@@ -60,6 +60,22 @@ public class CubeEndpoint {
         return this.cubeService.getAgeTypeTable();
     }
 
+    @Path("/agePrimaryEducationTypeTable")
+    @GET
+    @BasicSecured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AgePrimaryEducationTypeDTO> getAgePrimaryEducationTypeTable() {
+        return this.cubeService.getAgePrimaryEducationTypeTable();
+    }
+
+    @Path("/ageTertiaryEducationTypeTable")
+    @GET
+    @BasicSecured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AgeTertiaryEducationTypeDTO> getAgeTertiaryEducationTypeTable() {
+        return this.cubeService.getAgeTertiaryEducationTypeTable();
+    }
+
     @Path("/genderTypeTable")
     @GET
     @BasicSecured

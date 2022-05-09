@@ -34,6 +34,14 @@ public class CubeDao {
             "* " +
             "from  " +
             "cube.age_type t";
+    private static final String AgePrimaryEducationTypeTable = "SELECT " +
+            "* " +
+            "from  " +
+            "cube.age_primary_education_type t";
+    private static final String AgeTertiaryEducationTable = "SELECT " +
+            "* " +
+            "from  " +
+            "cube.age_tertiary_education_type t";
     private static final String GenderTypeTable = "SELECT " +
             "* " +
             "from  " +
@@ -122,6 +130,14 @@ public class CubeDao {
 
     public List<AgeTypeDTO> getAgeTypeTable() {
         Query q = this.entityManager.createNativeQuery(CubeDao.AgeTypeTable, "AgeTypeDTOMapping");
+        return q.getResultList();
+    }
+    public List<AgePrimaryEducationTypeDTO> getAgePrimaryEducationTypeTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.AgePrimaryEducationTypeTable, "AgePrimaryEducationTypeDTOMapping");
+        return q.getResultList();
+    }
+    public List<AgeTertiaryEducationTypeDTO> getAgeTertiaryEducationTypeTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.AgeTertiaryEducationTable, "AgeTertiaryEducationTypeDTOMapping");
         return q.getResultList();
     }
 

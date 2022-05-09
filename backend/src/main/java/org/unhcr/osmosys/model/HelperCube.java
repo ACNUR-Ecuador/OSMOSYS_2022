@@ -34,6 +34,8 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "month_id", type = Long.class),
                                 @ColumnResult(name = "dissagregation_type", type = String.class),
                                 @ColumnResult(name = "age_type", type = String.class),
+                                @ColumnResult(name = "age_primary_education_type", type = String.class),
+                                @ColumnResult(name = "age_tertiary_education_type", type = String.class),
                                 @ColumnResult(name = "gender_type", type = String.class),
                                 @ColumnResult(name = "country_of_origin", type = String.class),
                                 @ColumnResult(name = "population_type", type = String.class),
@@ -87,6 +89,22 @@ import java.math.BigDecimal;
                         targetClass = AgeTypeDTO.class,
                         columns = {
                                 @ColumnResult(name = "age_type", type = String.class),
+                        })})
+@SqlResultSetMapping(
+        name = "AgePrimaryEducationTypeDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = AgePrimaryEducationTypeDTO.class,
+                        columns = {
+                                @ColumnResult(name = "age_primary_education_type", type = String.class),
+                        })})
+@SqlResultSetMapping(
+        name = "AgeTertiaryEducationTypeDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = AgeTertiaryEducationTypeDTO.class,
+                        columns = {
+                                @ColumnResult(name = "age_tertiary_education_type", type = String.class),
                         })})
 @SqlResultSetMapping(
         name = "GenderTypeDTOMapping",

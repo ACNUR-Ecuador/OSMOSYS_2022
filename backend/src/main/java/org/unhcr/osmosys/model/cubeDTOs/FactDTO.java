@@ -3,7 +3,7 @@ package org.unhcr.osmosys.model.cubeDTOs;
 import java.math.BigDecimal;
 
 public class FactDTO {
-    public FactDTO(Long id, Long ie_id, Long period_id, Integer period_year, String implementation_type, Long assigned_user_id, Long assigned_user_backup_id, Long indicator_id, Long statement_id, Long project_statement_id, String indicator_type, Long organization_id, Long supervisor_id, Long office_id, Long project_id, String month_year_id, Long month_id, String dissagregation_type, String age_type, String gender_type, String country_of_origin, String population_type, String diversity_type, Long canton_id, BigDecimal total_execution, BigDecimal total_target, BigDecimal total_execution_percentage, BigDecimal quarter_execution, BigDecimal quarter_target, BigDecimal quarter_execution_percentage, BigDecimal month_execution, BigDecimal value) {
+    public FactDTO(Long id, Long ie_id, Long period_id, Integer period_year, String implementation_type, Long assigned_user_id, Long assigned_user_backup_id, Long indicator_id, Long statement_id, Long project_statement_id, String indicator_type, Long organization_id, Long supervisor_id, Long office_id, Long project_id, String month_year_id, Long month_id, String dissagregation_type, String age_type, String age_primary_education_type, String age_tertiary_education_type, String gender_type, String country_of_origin, String population_type, String diversity_type, Long canton_id, BigDecimal total_execution, BigDecimal total_target, BigDecimal total_execution_percentage, BigDecimal quarter_execution, BigDecimal quarter_target, BigDecimal quarter_execution_percentage, BigDecimal month_execution, BigDecimal value) {
         this.id = id;
         this.ie_id = ie_id;
         this.period_id = period_id;
@@ -23,6 +23,8 @@ public class FactDTO {
         this.month_id = month_id;
         this.dissagregation_type = dissagregation_type;
         this.age_type = age_type;
+        this.age_primary_education_type = age_primary_education_type;
+        this.age_tertiary_education_type = age_tertiary_education_type;
         this.gender_type = gender_type;
         this.country_of_origin = country_of_origin;
         this.population_type = population_type;
@@ -57,6 +59,8 @@ public class FactDTO {
     private Long month_id;
     private String dissagregation_type;
     private String age_type;
+    private String age_primary_education_type;
+    private String age_tertiary_education_type;
     private String gender_type;
     private String country_of_origin;
     private String population_type;
@@ -70,7 +74,6 @@ public class FactDTO {
     private BigDecimal quarter_execution_percentage;
     private BigDecimal month_execution;
     private BigDecimal value;
-
 
     public Long getId() {
         return id;
@@ -102,6 +105,14 @@ public class FactDTO {
 
     public void setPeriod_year(Integer period_year) {
         this.period_year = period_year;
+    }
+
+    public String getImplementation_type() {
+        return implementation_type;
+    }
+
+    public void setImplementation_type(String implementation_type) {
+        this.implementation_type = implementation_type;
     }
 
     public Long getAssigned_user_id() {
@@ -192,6 +203,14 @@ public class FactDTO {
         this.month_year_id = month_year_id;
     }
 
+    public Long getMonth_id() {
+        return month_id;
+    }
+
+    public void setMonth_id(Long month_id) {
+        this.month_id = month_id;
+    }
+
     public String getDissagregation_type() {
         return dissagregation_type;
     }
@@ -206,6 +225,22 @@ public class FactDTO {
 
     public void setAge_type(String age_type) {
         this.age_type = age_type;
+    }
+
+    public String getAge_primary_education_type() {
+        return age_primary_education_type;
+    }
+
+    public void setAge_primary_education_type(String age_primary_education_type) {
+        this.age_primary_education_type = age_primary_education_type;
+    }
+
+    public String getAge_tertiary_education_type() {
+        return age_tertiary_education_type;
+    }
+
+    public void setAge_tertiary_education_type(String age_tertiary_education_type) {
+        this.age_tertiary_education_type = age_tertiary_education_type;
     }
 
     public String getGender_type() {
@@ -310,21 +345,5 @@ public class FactDTO {
 
     public void setValue(BigDecimal value) {
         this.value = value;
-    }
-
-    public Long getMonth_id() {
-        return month_id;
-    }
-
-    public void setMonth_id(Long month_id) {
-        this.month_id = month_id;
-    }
-
-    public String getImplementation_type() {
-        return implementation_type;
-    }
-
-    public void setImplementation_type(String implementation_type) {
-        this.implementation_type = implementation_type;
     }
 }
