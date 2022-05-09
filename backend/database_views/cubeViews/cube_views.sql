@@ -24,7 +24,7 @@ CREATE OR REPLACE VIEW cube.diversity_type
 SELECT
     distinct iv.diversity_type
 FROM osmosys.indicator_values iv
--- WHERE iv.diversity_type is not null
+WHERE iv.diversity_type is not null
 ORDER BY 1 ;
 
 DROP VIEW IF EXISTS  cube.age_type;
@@ -33,7 +33,7 @@ CREATE OR REPLACE VIEW cube.age_type
 SELECT
     distinct iv.age_type
 FROM osmosys.indicator_values iv
--- WHERE iv.age_type is not null
+WHERE iv.age_type is not null
 ORDER BY 1 ;
 
 DROP VIEW IF EXISTS  cube.gender_type;
@@ -42,7 +42,7 @@ CREATE OR REPLACE VIEW cube.gender_type
 SELECT
     distinct iv.gender_type
 FROM osmosys.indicator_values iv
--- WHERE iv.gender_type  is not null
+WHERE iv.gender_type  is not null
 ORDER BY 1 ;
 
 DROP VIEW IF EXISTS  cube.country_of_origin;
@@ -51,7 +51,7 @@ CREATE OR REPLACE VIEW cube.country_of_origin
 SELECT
     distinct iv.country_of_origin
 FROM osmosys.indicator_values iv
--- WHERE iv.country_of_origin is not null
+WHERE iv.country_of_origin is not null
 ORDER BY 1 ;
 
 DROP VIEW IF EXISTS  cube.age_primary_education_type;
@@ -60,7 +60,7 @@ CREATE OR REPLACE VIEW cube.age_primary_education_type
 SELECT
     distinct iv.age_primary_education_type
 FROM osmosys.indicator_values iv
--- WHERE iv.age_primary_education_type is not null
+WHERE iv.age_primary_education_type is not null
 ORDER BY 1 ;
 
 
@@ -70,7 +70,7 @@ CREATE OR REPLACE VIEW cube.age_tertiary_education_type
 SELECT
     distinct iv.age_tertiary_education_type
 FROM osmosys.indicator_values iv
--- WHERE iv.age_tertiary_education_type is not null
+WHERE iv.age_tertiary_education_type is not null
 ORDER BY 1 ;
 
 DROP VIEW IF EXISTS  cube.population_type;
@@ -79,7 +79,7 @@ CREATE OR REPLACE VIEW cube.population_type
 SELECT
     distinct iv.population_type
 FROM osmosys.indicator_values iv
--- WHERE iv.population_type is not null
+WHERE iv.population_type is not null
 ORDER BY 1 ;
 
 DROP VIEW IF EXISTS  cube.cantones_provincias;
@@ -94,7 +94,16 @@ SELECT
 
 FROM osmosys.cantones can
          INNER JOIN osmosys.provincias prov on can.provincia_id=prov."id"
-ORDER BY can.code;
+
+UNION
+SELECT
+    NULL canton_id,
+    'NO APLICA' canton_code,
+    'NO APLICA' canton,
+    'NO APLICA' provincia_code,
+    'NO APLICA' provincia
+ORDER BY canton_code
+;
 
 
 -- indicator_type
@@ -114,7 +123,9 @@ CREATE OR REPLACE VIEW cube.users
 SELECT
     distinct u.id, u.name
 FROM "security"."user" u
-ORDER BY 1
+UNION
+SELECT null as id, 'No asignado' as name
+ORDER BY 1 DESC
 ;
 
 -- periods
@@ -134,6 +145,11 @@ CREATE OR REPLACE VIEW cube.projects
 SELECT
     distinct u.id project_id, u."name"
 FROM osmosys.projects u
+UNION
+SELECT
+    null AS project_id, 'NO APLICA' AS name
+FROM osmosys.projects u
+
 ORDER BY 1
 ;
 
@@ -143,6 +159,10 @@ CREATE OR REPLACE VIEW cube.organizations
     AS
 SELECT
     distinct u."id" organization_id, u.acronym, u.description
+FROM osmosys.organizations u
+UNION
+SELECT
+    NULL organization_id, 'NO APLICA' acronym, 'NO APLICA' description
 FROM osmosys.organizations u
 ORDER BY 1
 ;
@@ -178,6 +198,13 @@ DROP VIEW IF EXISTS  cube.statements;
 CREATE OR REPLACE VIEW cube.statements
     AS
 SELECT
+    NULL area_impact_id, 'NO ASIGNADO' area_impact_code,'NO ASIGNADO' area_impact,
+    NULL statement_impact_id, 'NO ASIGNADO' statement_impact_code,'NO ASIGNADO' statement_impact,
+    NULL area_outcome_id, 'NO ASIGNADO' area_outcome_code,'NO ASIGNADO' area_outcome,
+    NULL statement_outcome_id, 'NO ASIGNADO' statement_outcome_code,'NO ASIGNADO' statement_outcome,
+    NULL statement_output_id, 'NO ASIGNADO' statement_output_code,'NO ASIGNADO' statement_output_product_code,'NO ASIGNADO' statement_output
+UNION
+SELECT
     ai."id" area_impact_id, ai.code area_impact_code,ai.short_description area_impact,
     sti.id statement_impact_id, sti.code statement_impact_code,sti.description statement_impact,
     ar."id" area_outcome_id, ar.code area_outcome_code,ar.short_description area_outcome,
@@ -189,7 +216,10 @@ FROM
         INNER JOIN osmosys.statements str on sti.id =str.parent_statement_id and sti.area_type='IMPACTO'
         INNER JOIN osmosys.areas ar on str.area_id =ar.id
         INNER JOIN osmosys.statements stp on str.id =stp.parent_statement_id and str.area_type IN ('RESULTADO','APOYO')
-order by ai.id, sti.id, ar.id, str.id, stp.id;
+order by area_impact_id, statement_impact_id, area_outcome_id, statement_outcome_id, statement_output_id;
+
+
+
 
 DROP VIEW IF EXISTS  cube.month_source;
 CREATE OR REPLACE VIEW cube.month_source
@@ -258,7 +288,7 @@ SELECT
     ie.project_statement_id,
     ie.indicator_type,
     COALESCE(pr.organization_id,1) as organization_id,
-    COALESCE(pr.id,ie.supervisor_user_id) as supervisor_id,
+    COALESCE(pr.focal_point_id,ie.supervisor_user_id) as supervisor_id,
     ie.reporting_office_id office_id,
     ie.project_id,
     q."year" ||'-'|| mo.month_year_order month_year_id,
