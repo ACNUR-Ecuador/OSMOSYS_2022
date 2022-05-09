@@ -74,49 +74,7 @@ public class ReportDataService {
                 )
         );
 
-        List<Integer> titlesWidth = this.getTitlesWidthIndicatorExecutionDetailedDTO(columnsToRemove);
-
-
-        List<String> titles = this.getTitlesIndicatorExecutionDetailedDTO(columnsToRemove);
-
-        SXSSFWorkbook wb = new SXSSFWorkbook();
-        SXSSFSheet sheet = wb.createSheet();
-        // Set which area the table should be placed in
-        int NB_ROWS = resultData.size();
-        int NB_COLS = titles.size() - 1;
-        AreaReference reference = wb.getCreationHelper()
-                .createAreaReference(
-                        new CellReference(0, 0),
-                        new CellReference(NB_ROWS, NB_COLS));
-        // title rows
-        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
-        // Create
-        DataFormat format = wb.createDataFormat();
-        CellStyle cellStylePercentage;
-        cellStylePercentage = wb.createCellStyle();
-        cellStylePercentage.setDataFormat(format.getFormat("0%"));
-        // Set the values for the table
-
-        Row rowTitle = sheet.createRow(0);
-        for (int i = 0; i < titles.size(); i++) {
-            Cell cell = rowTitle.createCell(i);
-            cell.setCellValue(titles.get(i));
-            sheet.setColumnWidth(i, titlesWidth.get(i));
-        }
-
-        long lStartTime2 = System.nanoTime();
-        for (int i = 0; i < resultData.size(); i++) {
-            SXSSFRow rowData = sheet.createRow(i + 1);
-            IndicatorExecutionDetailedDTO ie = resultData.get(i);
-            for (int t = 0; t < titles.size(); t++) {
-                Cell cell = rowData.createCell(t);
-                this.setDataFromIndicatorExecutionDetailedDTO(wb, titles.get(t), cell, ie, cellStylePercentage);
-            }
-
-        }
-        long lEndTime2 = System.nanoTime();
-        LOGGER.info("Elapsed time in seconds(excel construction): " + (lEndTime2 - lStartTime2) / 1000000000);
-        return wb;
+        return getReportFromIndicatorExecutionDetailedDTO(resultData, columnsToRemove);
 
     }
 
@@ -131,6 +89,10 @@ public class ReportDataService {
         );
 
 
+        return getReportFromIndicatorExecutionDetailedDTO(resultData, columnsToRemove);
+    }
+
+    private SXSSFWorkbook getReportFromIndicatorExecutionDetailedDTO(List<IndicatorExecutionDetailedDTO> resultData, List<Integer> columnsToRemove) {
         List<Integer> titlesWidth = this.getTitlesWidthIndicatorExecutionDetailedDTO(columnsToRemove);
 
 
@@ -175,6 +137,7 @@ public class ReportDataService {
         LOGGER.info("Elapsed time in seconds(excel construction): " + (lEndTime2 - lStartTime2) / 1000000000);
         return wb;
     }
+
     public SXSSFWorkbook getPartnersIndicatorsExecutionsDetailedByPeriodId(Long projectId) {
 
 
@@ -186,51 +149,10 @@ public class ReportDataService {
         );
 
 
-        List<Integer> titlesWidth = this.getTitlesWidthIndicatorExecutionDetailedDTO(columnsToRemove);
-
-
-        List<String> titles = this.getTitlesIndicatorExecutionDetailedDTO(columnsToRemove);
-
-        SXSSFWorkbook wb = new SXSSFWorkbook();
-        SXSSFSheet sheet = wb.createSheet();
-        // Set which area the table should be placed in
-        int NB_ROWS = resultData.size();
-        int NB_COLS = titles.size() - 1;
-        AreaReference reference = wb.getCreationHelper()
-                .createAreaReference(
-                        new CellReference(0, 0),
-                        new CellReference(NB_ROWS, NB_COLS));
-        // title rows
-        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
-        // Create
-        DataFormat format = wb.createDataFormat();
-        CellStyle cellStylePercentage;
-        cellStylePercentage = wb.createCellStyle();
-        cellStylePercentage.setDataFormat(format.getFormat("0%"));
-        // Set the values for the table
-
-        Row rowTitle = sheet.createRow(0);
-        for (int i = 0; i < titles.size(); i++) {
-            Cell cell = rowTitle.createCell(i);
-            cell.setCellValue(titles.get(i));
-            sheet.setColumnWidth(i, titlesWidth.get(i));
-        }
-
-        long lStartTime2 = System.nanoTime();
-        for (int i = 0; i < resultData.size(); i++) {
-            SXSSFRow rowData = sheet.createRow(i + 1);
-            IndicatorExecutionDetailedDTO ie = resultData.get(i);
-            for (int t = 0; t < titles.size(); t++) {
-                Cell cell = rowData.createCell(t);
-                this.setDataFromIndicatorExecutionDetailedDTO(wb, titles.get(t), cell, ie, cellStylePercentage);
-            }
-
-        }
-        long lEndTime2 = System.nanoTime();
-        LOGGER.info("Elapsed time in seconds(excel construction): " + (lEndTime2 - lStartTime2) / 1000000000);
-        return wb;
+        return getReportFromIndicatorExecutionDetailedDTO(resultData, columnsToRemove);
 
     }
+
     public SXSSFWorkbook getPartnersGeneralIndicatorsDetailedByPeriodId(Long projectId) {
 
         long lStartTime = System.nanoTime();
@@ -244,49 +166,7 @@ public class ReportDataService {
                 )
         );
 
-        List<Integer> titlesWidth = this.getTitlesWidthIndicatorExecutionDetailedDTO(columnsToRemove);
-
-
-        List<String> titles = this.getTitlesIndicatorExecutionDetailedDTO(columnsToRemove);
-
-        SXSSFWorkbook wb = new SXSSFWorkbook();
-        SXSSFSheet sheet = wb.createSheet();
-        // Set which area the table should be placed in
-        int NB_ROWS = resultData.size();
-        int NB_COLS = titles.size() - 1;
-        AreaReference reference = wb.getCreationHelper()
-                .createAreaReference(
-                        new CellReference(0, 0),
-                        new CellReference(NB_ROWS, NB_COLS));
-        // title rows
-        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
-        // Create
-        DataFormat format = wb.createDataFormat();
-        CellStyle cellStylePercentage;
-        cellStylePercentage = wb.createCellStyle();
-        cellStylePercentage.setDataFormat(format.getFormat("0%"));
-        // Set the values for the table
-
-        Row rowTitle = sheet.createRow(0);
-        for (int i = 0; i < titles.size(); i++) {
-            Cell cell = rowTitle.createCell(i);
-            cell.setCellValue(titles.get(i));
-            sheet.setColumnWidth(i, titlesWidth.get(i));
-        }
-
-        long lStartTime2 = System.nanoTime();
-        for (int i = 0; i < resultData.size(); i++) {
-            SXSSFRow rowData = sheet.createRow(i + 1);
-            IndicatorExecutionDetailedDTO ie = resultData.get(i);
-            for (int t = 0; t < titles.size(); t++) {
-                Cell cell = rowData.createCell(t);
-                this.setDataFromIndicatorExecutionDetailedDTO(wb, titles.get(t), cell, ie, cellStylePercentage);
-            }
-
-        }
-        long lEndTime2 = System.nanoTime();
-        LOGGER.info("Elapsed time in seconds(excel construction): " + (lEndTime2 - lStartTime2) / 1000000000);
-        return wb;
+        return getReportFromIndicatorExecutionDetailedDTO(resultData, columnsToRemove);
 
     }
 
@@ -303,49 +183,7 @@ public class ReportDataService {
                 )
         );
 
-        List<Integer> titlesWidth = this.getTitlesWidthIndicatorExecutionDetailedDTO(columnsToRemove);
-
-
-        List<String> titles = this.getTitlesIndicatorExecutionDetailedDTO(columnsToRemove);
-
-        SXSSFWorkbook wb = new SXSSFWorkbook();
-        SXSSFSheet sheet = wb.createSheet();
-        // Set which area the table should be placed in
-        int NB_ROWS = resultData.size();
-        int NB_COLS = titles.size() - 1;
-        AreaReference reference = wb.getCreationHelper()
-                .createAreaReference(
-                        new CellReference(0, 0),
-                        new CellReference(NB_ROWS, NB_COLS));
-        // title rows
-        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
-        // Create
-        DataFormat format = wb.createDataFormat();
-        CellStyle cellStylePercentage;
-        cellStylePercentage = wb.createCellStyle();
-        cellStylePercentage.setDataFormat(format.getFormat("0%"));
-        // Set the values for the table
-
-        Row rowTitle = sheet.createRow(0);
-        for (int i = 0; i < titles.size(); i++) {
-            Cell cell = rowTitle.createCell(i);
-            cell.setCellValue(titles.get(i));
-            sheet.setColumnWidth(i, titlesWidth.get(i));
-        }
-
-        long lStartTime2 = System.nanoTime();
-        for (int i = 0; i < resultData.size(); i++) {
-            SXSSFRow rowData = sheet.createRow(i + 1);
-            IndicatorExecutionDetailedDTO ie = resultData.get(i);
-            for (int t = 0; t < titles.size(); t++) {
-                Cell cell = rowData.createCell(t);
-                this.setDataFromIndicatorExecutionDetailedDTO(wb, titles.get(t), cell, ie, cellStylePercentage);
-            }
-
-        }
-        long lEndTime2 = System.nanoTime();
-        LOGGER.info("Elapsed time in seconds(excel construction): " + (lEndTime2 - lStartTime2) / 1000000000);
-        return wb;
+        return getReportFromIndicatorExecutionDetailedDTO(resultData, columnsToRemove);
 
 
     }
@@ -364,49 +202,7 @@ public class ReportDataService {
                 )
         );
 
-        List<Integer> titlesWidth = this.getTitlesWidthIndicatorExecutionDetailedDTO(columnsToRemove);
-
-
-        List<String> titles = this.getTitlesIndicatorExecutionDetailedDTO(columnsToRemove);
-
-        SXSSFWorkbook wb = new SXSSFWorkbook();
-        SXSSFSheet sheet = wb.createSheet();
-        // Set which area the table should be placed in
-        int NB_ROWS = resultData.size();
-        int NB_COLS = titles.size() - 1;
-        AreaReference reference = wb.getCreationHelper()
-                .createAreaReference(
-                        new CellReference(0, 0),
-                        new CellReference(NB_ROWS, NB_COLS));
-        // title rows
-        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
-        // Create
-        DataFormat format = wb.createDataFormat();
-        CellStyle cellStylePercentage;
-        cellStylePercentage = wb.createCellStyle();
-        cellStylePercentage.setDataFormat(format.getFormat("0%"));
-        // Set the values for the table
-
-        Row rowTitle = sheet.createRow(0);
-        for (int i = 0; i < titles.size(); i++) {
-            Cell cell = rowTitle.createCell(i);
-            cell.setCellValue(titles.get(i));
-            sheet.setColumnWidth(i, titlesWidth.get(i));
-        }
-
-        long lStartTime2 = System.nanoTime();
-        for (int i = 0; i < resultData.size(); i++) {
-            SXSSFRow rowData = sheet.createRow(i + 1);
-            IndicatorExecutionDetailedDTO ie = resultData.get(i);
-            for (int t = 0; t < titles.size(); t++) {
-                Cell cell = rowData.createCell(t);
-                this.setDataFromIndicatorExecutionDetailedDTO(wb, titles.get(t), cell, ie, cellStylePercentage);
-            }
-
-        }
-        long lEndTime2 = System.nanoTime();
-        LOGGER.info("Elapsed time in seconds(excel construction): " + (lEndTime2 - lStartTime2) / 1000000000);
-        return wb;
+        return getReportFromIndicatorExecutionDetailedDTO(resultData, columnsToRemove);
 
     }
 
@@ -422,50 +218,9 @@ public class ReportDataService {
                 )
         );
 
-        List<Integer> titlesWidth = this.getTitlesWidthIndicatorExecutionDetailedDTO(columnsToRemove);
-
-
-        List<String> titles = this.getTitlesIndicatorExecutionDetailedDTO(columnsToRemove);
-
-        SXSSFWorkbook wb = new SXSSFWorkbook();
-        SXSSFSheet sheet = wb.createSheet();
-        // Set which area the table should be placed in
-        int NB_ROWS = resultData.size();
-        int NB_COLS = titles.size() - 1;
-        AreaReference reference = wb.getCreationHelper()
-                .createAreaReference(
-                        new CellReference(0, 0),
-                        new CellReference(NB_ROWS, NB_COLS));
-        // title rows
-        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
-        // Create
-        DataFormat format = wb.createDataFormat();
-        CellStyle cellStylePercentage;
-        cellStylePercentage = wb.createCellStyle();
-        cellStylePercentage.setDataFormat(format.getFormat("0%"));
-        // Set the values for the table
-
-        Row rowTitle = sheet.createRow(0);
-        for (int i = 0; i < titles.size(); i++) {
-            Cell cell = rowTitle.createCell(i);
-            cell.setCellValue(titles.get(i));
-            sheet.setColumnWidth(i, titlesWidth.get(i));
-        }
-
-        long lStartTime2 = System.nanoTime();
-        for (int i = 0; i < resultData.size(); i++) {
-            SXSSFRow rowData = sheet.createRow(i + 1);
-            IndicatorExecutionDetailedDTO ie = resultData.get(i);
-            for (int t = 0; t < titles.size(); t++) {
-                Cell cell = rowData.createCell(t);
-                this.setDataFromIndicatorExecutionDetailedDTO(wb, titles.get(t), cell, ie, cellStylePercentage);
-            }
-
-        }
-        long lEndTime2 = System.nanoTime();
-        LOGGER.info("Elapsed time in seconds(excel construction): " + (lEndTime2 - lStartTime2) / 1000000000);
-        return wb;
+        return getReportFromIndicatorExecutionDetailedDTO(resultData, columnsToRemove);
     }
+
     private void setDataFromIndicatorExecutionDetailedDTO(SXSSFWorkbook wb, String title, Cell cell, IndicatorExecutionDetailedDTO ie, CellStyle cellStylePercentage) {
 
         switch (title) {
