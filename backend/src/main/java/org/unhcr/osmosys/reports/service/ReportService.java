@@ -233,7 +233,6 @@ public class ReportService {
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
-
     public ByteArrayOutputStream getPartnersGeneralIndicatorsDetailedByPeriodId(Long periodId) throws GeneralAppException {
         SXSSFWorkbook workbook = this.reportDataService.getPartnersGeneralIndicatorsDetailedByPeriodId(periodId);
 
@@ -262,7 +261,6 @@ public class ReportService {
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
-
 
     public ByteArrayOutputStream getPartnersPerformanceIndicatorsDetailedByPeriodId(Long periodId) throws GeneralAppException {
         SXSSFWorkbook workbook = this.reportDataService.getPartnersPerformanceIndicatorsDetailedByPeriodId(periodId);
@@ -301,14 +299,11 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream getPartnerDetailedByProjectId(Long projectId) throws GeneralAppException {
-        if (ReportService.dissableJasperReport) {
-            throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
-        }
-        String jrxmlFile = "partner_detailed_by_project_id.jrxml";
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("projectId", projectId);
-        return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
+        SXSSFWorkbook workbook = this.reportDataService.getPartnerDetailedByProjectId(projectId);
+
+        return getByteArrayOutputStreamFromWorkbook(workbook);
     }
+
 
 
     /*************direct implementation ************/
@@ -333,7 +328,6 @@ public class ReportService {
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
-
     public ByteArrayOutputStream getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(Long periodId) throws GeneralAppException {
         SXSSFWorkbook workbook = this.reportDataService.getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(periodId);
 

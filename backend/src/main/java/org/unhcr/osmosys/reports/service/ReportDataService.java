@@ -67,20 +67,17 @@ public class ReportDataService {
         List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getAllIndicatorExecutionDetailed(projectId);
         long lEndTime = System.nanoTime();
         LOGGER.info("Elapsed time in seconds:(query))" + (lEndTime - lStartTime) / 1000000000);
-        List<String> titles = new ArrayList<>(
-                Arrays.asList("Tipo de Implementacion", "Area", "Declaracion", "Declaracion de Proyecto", "Tipo de Indicador",
-                        "Indicador", "Frecuencia", "Implementador", "Ejecucion Total", "Meta Total",
-                        "% de Ejecucion Total", "Trimestre", "Ejecucion Trimestral", "Meta Trimestral", "% de Ejecucion Trimestral",
-                        "Mes", "Ejecucion Mensual", "Tipo de Desagregacion", "Desagregacion Nivel 1", "Desagregacion Nivel 2",
-                        "Valor Reportado"));
 
-        List<Integer> titlesWidth = new ArrayList<>(
+        List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        5000, 5000, 10000, 10000, 5000,
-                        10000, 3000, 3000, 2000, 2000,
-                        2000, 2000, 2000, 2000, 2000,
-                        2000, 2000, 5000, 5000, 5000,
-                        2000));
+                        0, 1, 2, 3, 4, 5, 27, 28
+                )
+        );
+
+        List<Integer> titlesWidth = this.getTitlesWidthIndicatorExecutionDetailedDTO(columnsToRemove);
+
+
+        List<String> titles = this.getTitlesIndicatorExecutionDetailedDTO(columnsToRemove);
 
         SXSSFWorkbook wb = new SXSSFWorkbook();
         SXSSFSheet sheet = wb.createSheet();
@@ -107,192 +104,18 @@ public class ReportDataService {
             sheet.setColumnWidth(i, titlesWidth.get(i));
         }
 
-        Cell cell;
         long lStartTime2 = System.nanoTime();
         for (int i = 0; i < resultData.size(); i++) {
             SXSSFRow rowData = sheet.createRow(i + 1);
             IndicatorExecutionDetailedDTO ie = resultData.get(i);
+            for (int t = 0; t < titles.size(); t++) {
+                Cell cell = rowData.createCell(t);
+                this.setDataFromIndicatorExecutionDetailedDTO(wb, titles.get(t), cell, ie, cellStylePercentage);
+            }
 
-            cell = rowData.createCell(0);
-            cell.setCellValue(ie.getImplementation_type());
-            cell = rowData.createCell(1);
-            cell.setCellValue(ie.getArea());
-            cell = rowData.createCell(2);
-            cell.setCellValue(ie.getStatement());
-            cell = rowData.createCell(3);
-            cell.setCellValue(ie.getStatement_project());
-            cell = rowData.createCell(4);
-            cell.setCellValue(ie.getIndicator_type());
-            cell = rowData.createCell(5);
-            cell.setCellValue(ie.getIndicator());
-            cell = rowData.createCell(6);
-            cell.setCellValue(ie.getFrecuency());
-            cell = rowData.createCell(7);
-            cell.setCellValue(ie.getImplementers());
-            cell = rowData.createCell(8);
-            if (ie.getTotal_execution() != null) {
-                cell.setCellValue(ie.getTotal_execution().intValue());
-            }
-            cell = rowData.createCell(9);
-            if (ie.getTarget() != null) {
-                cell.setCellValue(ie.getTarget().intValue());
-            }
-            cell = rowData.createCell(10);
-            if (ie.getExecution_percentage() != null) {
-                cell.setCellValue(ie.getExecution_percentage().intValue());
-                cell.setCellStyle(cellStylePercentage);
-            }
-            cell = rowData.createCell(11);
-            cell.setCellValue(ie.getQuarter());
-            cell = rowData.createCell(12);
-            if (ie.getQuarter_execution() != null) {
-                cell.setCellValue(ie.getQuarter_execution().intValue());
-            }
-            cell = rowData.createCell(13);
-            if (ie.getQuarter_target() != null) {
-                cell.setCellValue(ie.getQuarter_target().intValue());
-            }
-            cell = rowData.createCell(14);
-            if (ie.getQuarter_percentage() != null) {
-                cell.setCellValue(ie.getQuarter_percentage().floatValue());
-                cell.setCellStyle(cellStylePercentage);
-            }
-            cell = rowData.createCell(15);
-            cell.setCellValue(ie.getMonth());
-            cell = rowData.createCell(16);
-            if (ie.getMonth_execution() != null) {
-                cell.setCellValue(ie.getMonth_execution().intValue());
-            }
-            cell = rowData.createCell(17);
-            cell.setCellValue(ie.getDissagregation_type());
-            cell = rowData.createCell(18);
-            cell.setCellValue(ie.getDissagregation_level1());
-            cell = rowData.createCell(19);
-            cell.setCellValue(ie.getDissagregation_level2());
-            cell = rowData.createCell(20);
-            if (ie.getValue() != null) {
-                cell.setCellValue(ie.getValue().intValue());
-            }
         }
         long lEndTime2 = System.nanoTime();
         LOGGER.info("Elapsed time in seconds(excel construction): " + (lEndTime2 - lStartTime2) / 1000000000);
-        return wb;
-
-    }
-
-
-
-    public SXSSFWorkbook getPartnersIndicatorsExecutionsDetailedByPeriodId(Long projectId) {
-
-
-        List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getPartnersIndicatorsExecutionsDetailedByPeriodId(projectId);
-        List<String> titles = new ArrayList<>(
-                Arrays.asList("Tipo de Implementacion", "Area", "Declaracion", "Declaracion de Proyecto", "Tipo de Indicador",
-                        "Indicador", "Frecuencia", "Implementador", "Ejecucion Total", "Meta Total",
-                        "% de Ejecucion Total", "Trimestre", "Ejecucion Trimestral", "Meta Trimestral", "% de Ejecucion Trimestral",
-                        "Mes", "Ejecucion Mensual", "Tipo de Desagregacion", "Desagregacion Nivel 1", "Desagregacion Nivel 2",
-                        "Valor Reportado"));
-
-        List<Integer> titlesWidth = new ArrayList<>(
-                Arrays.asList(
-                        5000, 5000, 10000, 10000, 5000,
-                        10000, 3000, 3000, 2000, 2000,
-                        2000, 2000, 2000, 2000, 2000,
-                        2000, 2000, 5000, 5000, 5000,
-                        2000));
-
-        SXSSFWorkbook wb = new SXSSFWorkbook();
-        SXSSFSheet sheet = wb.createSheet();
-        // Set which area the table should be placed in
-        int NB_ROWS = resultData.size();
-        int NB_COLS = titles.size() - 1;
-        AreaReference reference = wb.getCreationHelper()
-                .createAreaReference(
-                        new CellReference(0, 0),
-                        new CellReference(NB_ROWS, NB_COLS));
-        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
-        // title rows
-
-        DataFormat format = wb.createDataFormat();
-        CellStyle cellStylePercentage;
-        cellStylePercentage = wb.createCellStyle();
-        cellStylePercentage.setDataFormat(format.getFormat("0%"));
-        // Set the values for the table
-
-        Row rowTitle = sheet.createRow(0);
-        for (int i = 0; i < titles.size(); i++) {
-            Cell cell = rowTitle.createCell(i);
-            cell.setCellValue(titles.get(i));
-            sheet.setColumnWidth(i, titlesWidth.get(i));
-        }
-
-        Cell cell;
-        for (int i = 0; i < resultData.size(); i++) {
-            SXSSFRow rowData = sheet.createRow(i + 1);
-            IndicatorExecutionDetailedDTO ie = resultData.get(i);
-
-            cell = rowData.createCell(0);
-            cell.setCellValue(ie.getImplementation_type());
-            cell = rowData.createCell(1);
-            cell.setCellValue(ie.getArea());
-            cell = rowData.createCell(2);
-            cell.setCellValue(ie.getStatement());
-            cell = rowData.createCell(3);
-            cell.setCellValue(ie.getStatement_project());
-            cell = rowData.createCell(4);
-            cell.setCellValue(ie.getIndicator_type());
-            cell = rowData.createCell(5);
-            cell.setCellValue(ie.getIndicator());
-            cell = rowData.createCell(6);
-            cell.setCellValue(ie.getFrecuency());
-            cell = rowData.createCell(7);
-            cell.setCellValue(ie.getImplementers());
-            cell = rowData.createCell(8);
-            if (ie.getTotal_execution() != null) {
-                cell.setCellValue(ie.getTotal_execution().intValue());
-            }
-            cell = rowData.createCell(9);
-            if (ie.getTarget() != null) {
-                cell.setCellValue(ie.getTarget().intValue());
-            }
-            cell = rowData.createCell(10);
-            if (ie.getExecution_percentage() != null) {
-                cell.setCellValue(ie.getExecution_percentage().intValue());
-                cell.setCellStyle(cellStylePercentage);
-            }
-            cell = rowData.createCell(11);
-            cell.setCellValue(ie.getQuarter());
-            cell = rowData.createCell(12);
-            if (ie.getQuarter_execution() != null) {
-                cell.setCellValue(ie.getQuarter_execution().intValue());
-            }
-            cell = rowData.createCell(13);
-            if (ie.getQuarter_target() != null) {
-                cell.setCellValue(ie.getQuarter_target().intValue());
-            }
-            cell = rowData.createCell(14);
-            if (ie.getQuarter_percentage() != null) {
-                cell.setCellValue(ie.getQuarter_percentage().floatValue());
-                cell.setCellStyle(cellStylePercentage);
-            }
-            cell = rowData.createCell(15);
-            cell.setCellValue(ie.getMonth());
-            cell = rowData.createCell(16);
-            if (ie.getMonth_execution() != null) {
-                cell.setCellValue(ie.getMonth_execution().intValue());
-            }
-            cell = rowData.createCell(17);
-            cell.setCellValue(ie.getDissagregation_type());
-            cell = rowData.createCell(18);
-            cell.setCellValue(ie.getDissagregation_level1());
-            cell = rowData.createCell(19);
-            cell.setCellValue(ie.getDissagregation_level2());
-            cell = rowData.createCell(20);
-            if (ie.getValue() != null) {
-                cell.setCellValue(ie.getValue().intValue());
-            }
-        }
-
         return wb;
 
     }
@@ -301,20 +124,17 @@ public class ReportDataService {
 
 
         List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getAllPerformanceIndicatorsIndicatorExecutionDetailed(projectId);
-        List<String> titles = new ArrayList<>(
-                Arrays.asList("Tipo de Implementacion", "Area", "Declaracion", "Declaracion de Proyecto", "Tipo de Indicador",
-                        "Indicador", "Frecuencia", "Implementador", "Ejecucion Total", "Meta Total",
-                        "% de Ejecucion Total", "Trimestre", "Ejecucion Trimestral", "Meta Trimestral", "% de Ejecucion Trimestral",
-                        "Mes", "Ejecucion Mensual", "Tipo de Desagregacion", "Desagregacion Nivel 1", "Desagregacion Nivel 2",
-                        "Valor Reportado"));
-
-        List<Integer> titlesWidth = new ArrayList<>(
+        List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        5000, 5000, 10000, 10000, 5000,
-                        10000, 3000, 3000, 2000, 2000,
-                        2000, 2000, 2000, 2000, 2000,
-                        2000, 2000, 5000, 5000, 5000,
-                        2000));
+                        0, 1, 2, 3, 4, 5, 27, 28
+                )
+        );
+
+
+        List<Integer> titlesWidth = this.getTitlesWidthIndicatorExecutionDetailedDTO(columnsToRemove);
+
+
+        List<String> titles = this.getTitlesIndicatorExecutionDetailedDTO(columnsToRemove);
 
         SXSSFWorkbook wb = new SXSSFWorkbook();
         SXSSFSheet sheet = wb.createSheet();
@@ -325,9 +145,9 @@ public class ReportDataService {
                 .createAreaReference(
                         new CellReference(0, 0),
                         new CellReference(NB_ROWS, NB_COLS));
-        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
         // title rows
-
+        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
+        // Create
         DataFormat format = wb.createDataFormat();
         CellStyle cellStylePercentage;
         cellStylePercentage = wb.createCellStyle();
@@ -341,95 +161,93 @@ public class ReportDataService {
             sheet.setColumnWidth(i, titlesWidth.get(i));
         }
 
-        Cell cell;
+        long lStartTime2 = System.nanoTime();
         for (int i = 0; i < resultData.size(); i++) {
             SXSSFRow rowData = sheet.createRow(i + 1);
             IndicatorExecutionDetailedDTO ie = resultData.get(i);
+            for (int t = 0; t < titles.size(); t++) {
+                Cell cell = rowData.createCell(t);
+                this.setDataFromIndicatorExecutionDetailedDTO(wb, titles.get(t), cell, ie, cellStylePercentage);
+            }
 
-            cell = rowData.createCell(0);
-            cell.setCellValue(ie.getImplementation_type());
-            cell = rowData.createCell(1);
-            cell.setCellValue(ie.getArea());
-            cell = rowData.createCell(2);
-            cell.setCellValue(ie.getStatement());
-            cell = rowData.createCell(3);
-            cell.setCellValue(ie.getStatement_project());
-            cell = rowData.createCell(4);
-            cell.setCellValue(ie.getIndicator_type());
-            cell = rowData.createCell(5);
-            cell.setCellValue(ie.getIndicator());
-            cell = rowData.createCell(6);
-            cell.setCellValue(ie.getFrecuency());
-            cell = rowData.createCell(7);
-            cell.setCellValue(ie.getImplementers());
-            cell = rowData.createCell(8);
-            if (ie.getTotal_execution() != null) {
-                cell.setCellValue(ie.getTotal_execution().intValue());
-            }
-            cell = rowData.createCell(9);
-            if (ie.getTarget() != null) {
-                cell.setCellValue(ie.getTarget().intValue());
-            }
-            cell = rowData.createCell(10);
-            if (ie.getExecution_percentage() != null) {
-                cell.setCellValue(ie.getExecution_percentage().intValue());
-                cell.setCellStyle(cellStylePercentage);
-            }
-            cell = rowData.createCell(11);
-            cell.setCellValue(ie.getQuarter());
-            cell = rowData.createCell(12);
-            if (ie.getQuarter_execution() != null) {
-                cell.setCellValue(ie.getQuarter_execution().intValue());
-            }
-            cell = rowData.createCell(13);
-            if (ie.getQuarter_target() != null) {
-                cell.setCellValue(ie.getQuarter_target().intValue());
-            }
-            cell = rowData.createCell(14);
-            if (ie.getQuarter_percentage() != null) {
-                cell.setCellValue(ie.getQuarter_percentage().floatValue());
-                cell.setCellStyle(cellStylePercentage);
-            }
-            cell = rowData.createCell(15);
-            cell.setCellValue(ie.getMonth());
-            cell = rowData.createCell(16);
-            if (ie.getMonth_execution() != null) {
-                cell.setCellValue(ie.getMonth_execution().intValue());
-            }
-            cell = rowData.createCell(17);
-            cell.setCellValue(ie.getDissagregation_type());
-            cell = rowData.createCell(18);
-            cell.setCellValue(ie.getDissagregation_level1());
-            cell = rowData.createCell(19);
-            cell.setCellValue(ie.getDissagregation_level2());
-            cell = rowData.createCell(20);
-            if (ie.getValue() != null) {
-                cell.setCellValue(ie.getValue().intValue());
-            }
+        }
+        long lEndTime2 = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds(excel construction): " + (lEndTime2 - lStartTime2) / 1000000000);
+        return wb;
+    }
+    public SXSSFWorkbook getPartnersIndicatorsExecutionsDetailedByPeriodId(Long projectId) {
+
+
+        List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getPartnersIndicatorsExecutionsDetailedByPeriodId(projectId);
+        List<Integer> columnsToRemove = new ArrayList<>(
+                Arrays.asList(
+                        0, 1, 2, 3, 4, 5, 27, 28
+                )
+        );
+
+
+        List<Integer> titlesWidth = this.getTitlesWidthIndicatorExecutionDetailedDTO(columnsToRemove);
+
+
+        List<String> titles = this.getTitlesIndicatorExecutionDetailedDTO(columnsToRemove);
+
+        SXSSFWorkbook wb = new SXSSFWorkbook();
+        SXSSFSheet sheet = wb.createSheet();
+        // Set which area the table should be placed in
+        int NB_ROWS = resultData.size();
+        int NB_COLS = titles.size() - 1;
+        AreaReference reference = wb.getCreationHelper()
+                .createAreaReference(
+                        new CellReference(0, 0),
+                        new CellReference(NB_ROWS, NB_COLS));
+        // title rows
+        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
+        // Create
+        DataFormat format = wb.createDataFormat();
+        CellStyle cellStylePercentage;
+        cellStylePercentage = wb.createCellStyle();
+        cellStylePercentage.setDataFormat(format.getFormat("0%"));
+        // Set the values for the table
+
+        Row rowTitle = sheet.createRow(0);
+        for (int i = 0; i < titles.size(); i++) {
+            Cell cell = rowTitle.createCell(i);
+            cell.setCellValue(titles.get(i));
+            sheet.setColumnWidth(i, titlesWidth.get(i));
         }
 
+        long lStartTime2 = System.nanoTime();
+        for (int i = 0; i < resultData.size(); i++) {
+            SXSSFRow rowData = sheet.createRow(i + 1);
+            IndicatorExecutionDetailedDTO ie = resultData.get(i);
+            for (int t = 0; t < titles.size(); t++) {
+                Cell cell = rowData.createCell(t);
+                this.setDataFromIndicatorExecutionDetailedDTO(wb, titles.get(t), cell, ie, cellStylePercentage);
+            }
+
+        }
+        long lEndTime2 = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds(excel construction): " + (lEndTime2 - lStartTime2) / 1000000000);
         return wb;
 
     }
-
     public SXSSFWorkbook getPartnersGeneralIndicatorsDetailedByPeriodId(Long projectId) {
 
-
+        long lStartTime = System.nanoTime();
         List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getPartnersGeneralIndicatorsDetailedByPeriodId(projectId);
-        List<String> titles = new ArrayList<>(
-                Arrays.asList("Tipo de Implementacion", /*"Area", "Declaracion", "Declaracion de Proyecto",*/ "Tipo de Indicador",
-                        "Indicador", /*"Frecuencia", */"Implementador", "Ejecucion Total", "Meta Total",
-                        "% de Ejecucion Total", "Trimestre", "Ejecucion Trimestral", "Meta Trimestral", "% de Ejecucion Trimestral",
-                        "Mes", "Ejecucion Mensual", "Tipo de Desagregacion", "Desagregacion Nivel 1", "Desagregacion Nivel 2",
-                        "Valor Reportado"));
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds:(query))" + (lEndTime - lStartTime) / 1000000000);
 
-        List<Integer> titlesWidth = new ArrayList<>(
+        List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        5000, /*5000, 10000, 10000,*/ 5000,
-                        10000,/* 3000, */3000, 2000, 2000,
-                        2000, 2000, 2000, 2000, 2000,
-                        2000, 2000, 5000, 5000, 5000,
-                        2000));
+                        0, 1, 2, 3, 4, 5, 27, 28
+                )
+        );
+
+        List<Integer> titlesWidth = this.getTitlesWidthIndicatorExecutionDetailedDTO(columnsToRemove);
+
+
+        List<String> titles = this.getTitlesIndicatorExecutionDetailedDTO(columnsToRemove);
 
         SXSSFWorkbook wb = new SXSSFWorkbook();
         SXSSFSheet sheet = wb.createSheet();
@@ -440,9 +258,9 @@ public class ReportDataService {
                 .createAreaReference(
                         new CellReference(0, 0),
                         new CellReference(NB_ROWS, NB_COLS));
-        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
         // title rows
-
+        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
+        // Create
         DataFormat format = wb.createDataFormat();
         CellStyle cellStylePercentage;
         cellStylePercentage = wb.createCellStyle();
@@ -456,87 +274,39 @@ public class ReportDataService {
             sheet.setColumnWidth(i, titlesWidth.get(i));
         }
 
-        Cell cell;
+        long lStartTime2 = System.nanoTime();
         for (int i = 0; i < resultData.size(); i++) {
             SXSSFRow rowData = sheet.createRow(i + 1);
             IndicatorExecutionDetailedDTO ie = resultData.get(i);
+            for (int t = 0; t < titles.size(); t++) {
+                Cell cell = rowData.createCell(t);
+                this.setDataFromIndicatorExecutionDetailedDTO(wb, titles.get(t), cell, ie, cellStylePercentage);
+            }
 
-            cell = rowData.createCell(0);
-            cell.setCellValue(ie.getImplementation_type());
-            cell = rowData.createCell(1);
-            cell.setCellValue(ie.getIndicator_type());
-            cell = rowData.createCell(2);
-            cell.setCellValue(ie.getIndicator());
-            cell = rowData.createCell(3);
-            cell.setCellValue(ie.getImplementers());
-            cell = rowData.createCell(4);
-            if (ie.getTotal_execution() != null) {
-                cell.setCellValue(ie.getTotal_execution().intValue());
-            }
-            cell = rowData.createCell(5);
-            if (ie.getTarget() != null) {
-                cell.setCellValue(ie.getTarget().intValue());
-            }
-            cell = rowData.createCell(6);
-            if (ie.getExecution_percentage() != null) {
-                cell.setCellValue(ie.getExecution_percentage().intValue());
-                cell.setCellStyle(cellStylePercentage);
-            }
-            cell = rowData.createCell(7);
-            cell.setCellValue(ie.getQuarter());
-            cell = rowData.createCell(8);
-            if (ie.getQuarter_execution() != null) {
-                cell.setCellValue(ie.getQuarter_execution().intValue());
-            }
-            cell = rowData.createCell(9);
-            if (ie.getQuarter_target() != null) {
-                cell.setCellValue(ie.getQuarter_target().intValue());
-            }
-            cell = rowData.createCell(10);
-            if (ie.getQuarter_percentage() != null) {
-                cell.setCellValue(ie.getQuarter_percentage().floatValue());
-                cell.setCellStyle(cellStylePercentage);
-            }
-            cell = rowData.createCell(11);
-            cell.setCellValue(ie.getMonth());
-            cell = rowData.createCell(12);
-            if (ie.getMonth_execution() != null) {
-                cell.setCellValue(ie.getMonth_execution().intValue());
-            }
-            cell = rowData.createCell(13);
-            cell.setCellValue(ie.getDissagregation_type());
-            cell = rowData.createCell(14);
-            cell.setCellValue(ie.getDissagregation_level1());
-            cell = rowData.createCell(15);
-            cell.setCellValue(ie.getDissagregation_level2());
-            cell = rowData.createCell(16);
-            if (ie.getValue() != null) {
-                cell.setCellValue(ie.getValue().intValue());
-            }
         }
-
+        long lEndTime2 = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds(excel construction): " + (lEndTime2 - lStartTime2) / 1000000000);
         return wb;
 
     }
 
     public SXSSFWorkbook getPartnersPerformanceIndicatorsDetailedByPeriodId(Long projectId) {
 
-
+        long lStartTime = System.nanoTime();
         List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getPartnersPerformanceIndicatorsDetailedByPeriodId(projectId);
-        List<String> titles = new ArrayList<>(
-                Arrays.asList("Tipo de Implementacion", "Area", "Declaracion", "Declaracion de Proyecto", "Tipo de Indicador",
-                        "Indicador", "Frecuencia", "Implementador", "Ejecucion Total", "Meta Total",
-                        "% de Ejecucion Total", "Trimestre", "Ejecucion Trimestral", "Meta Trimestral", "% de Ejecucion Trimestral",
-                        "Mes", "Ejecucion Mensual", "Tipo de Desagregacion", "Desagregacion Nivel 1", "Desagregacion Nivel 2",
-                        "Valor Reportado"));
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds:(query))" + (lEndTime - lStartTime) / 1000000000);
 
-        List<Integer> titlesWidth = new ArrayList<>(
+        List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        5000, 5000, 10000, 10000, 5000,
-                        10000, 3000, 3000, 2000, 2000,
-                        2000, 2000, 2000, 2000, 2000,
-                        2000, 2000, 5000, 5000, 5000,
-                        2000));
+                        0, 1, 2, 3, 4, 5, 27, 28
+                )
+        );
+
+        List<Integer> titlesWidth = this.getTitlesWidthIndicatorExecutionDetailedDTO(columnsToRemove);
+
+
+        List<String> titles = this.getTitlesIndicatorExecutionDetailedDTO(columnsToRemove);
 
         SXSSFWorkbook wb = new SXSSFWorkbook();
         SXSSFSheet sheet = wb.createSheet();
@@ -547,9 +317,9 @@ public class ReportDataService {
                 .createAreaReference(
                         new CellReference(0, 0),
                         new CellReference(NB_ROWS, NB_COLS));
-        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
         // title rows
-
+        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
+        // Create
         DataFormat format = wb.createDataFormat();
         CellStyle cellStylePercentage;
         cellStylePercentage = wb.createCellStyle();
@@ -563,98 +333,41 @@ public class ReportDataService {
             sheet.setColumnWidth(i, titlesWidth.get(i));
         }
 
-        Cell cell;
+        long lStartTime2 = System.nanoTime();
         for (int i = 0; i < resultData.size(); i++) {
             SXSSFRow rowData = sheet.createRow(i + 1);
             IndicatorExecutionDetailedDTO ie = resultData.get(i);
+            for (int t = 0; t < titles.size(); t++) {
+                Cell cell = rowData.createCell(t);
+                this.setDataFromIndicatorExecutionDetailedDTO(wb, titles.get(t), cell, ie, cellStylePercentage);
+            }
 
-            cell = rowData.createCell(0);
-            cell.setCellValue(ie.getImplementation_type());
-            cell = rowData.createCell(1);
-            cell.setCellValue(ie.getArea());
-            cell = rowData.createCell(2);
-            cell.setCellValue(ie.getStatement());
-            cell = rowData.createCell(3);
-            cell.setCellValue(ie.getStatement_project());
-            cell = rowData.createCell(4);
-            cell.setCellValue(ie.getIndicator_type());
-            cell = rowData.createCell(5);
-            cell.setCellValue(ie.getIndicator());
-            cell = rowData.createCell(6);
-            cell.setCellValue(ie.getFrecuency());
-            cell = rowData.createCell(7);
-            cell.setCellValue(ie.getImplementers());
-            cell = rowData.createCell(8);
-            if (ie.getTotal_execution() != null) {
-                cell.setCellValue(ie.getTotal_execution().intValue());
-            }
-            cell = rowData.createCell(9);
-            if (ie.getTarget() != null) {
-                cell.setCellValue(ie.getTarget().intValue());
-            }
-            cell = rowData.createCell(10);
-            if (ie.getExecution_percentage() != null) {
-                cell.setCellValue(ie.getExecution_percentage().intValue());
-                cell.setCellStyle(cellStylePercentage);
-            }
-            cell = rowData.createCell(11);
-            cell.setCellValue(ie.getQuarter());
-            cell = rowData.createCell(12);
-            if (ie.getQuarter_execution() != null) {
-                cell.setCellValue(ie.getQuarter_execution().intValue());
-            }
-            cell = rowData.createCell(13);
-            if (ie.getQuarter_target() != null) {
-                cell.setCellValue(ie.getQuarter_target().intValue());
-            }
-            cell = rowData.createCell(14);
-            if (ie.getQuarter_percentage() != null) {
-                cell.setCellValue(ie.getQuarter_percentage().floatValue());
-                cell.setCellStyle(cellStylePercentage);
-            }
-            cell = rowData.createCell(15);
-            cell.setCellValue(ie.getMonth());
-            cell = rowData.createCell(16);
-            if (ie.getMonth_execution() != null) {
-                cell.setCellValue(ie.getMonth_execution().intValue());
-            }
-            cell = rowData.createCell(17);
-            cell.setCellValue(ie.getDissagregation_type());
-            cell = rowData.createCell(18);
-            cell.setCellValue(ie.getDissagregation_level1());
-            cell = rowData.createCell(19);
-            cell.setCellValue(ie.getDissagregation_level2());
-            cell = rowData.createCell(20);
-            if (ie.getValue() != null) {
-                cell.setCellValue(ie.getValue().intValue());
-            }
         }
-
+        long lEndTime2 = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds(excel construction): " + (lEndTime2 - lStartTime2) / 1000000000);
         return wb;
+
 
     }
 
-    public SXSSFWorkbook getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(Long projectId) {
+    public SXSSFWorkbook getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(Long periodId) {
 
 
         long lStartTime = System.nanoTime();
-        List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(projectId);
+        List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(periodId);
         long lEndTime = System.nanoTime();
-        LOGGER.info("Elapsed time in seconds (query): " + (lEndTime - lStartTime) / 1000000000);
-        List<String> titles = new ArrayList<>(
-                Arrays.asList("Tipo de Implementacion", "Area", "Declaracion", "Declaracion de Proyecto", "Tipo de Indicador",
-                        "Indicador", "Frecuencia", "Implementador", "Ejecucion Total", //"Meta Total",
-                        /*"% de Ejecucion Total",*/ "Trimestre", "Ejecucion Trimestral", /*"Meta Trimestral", "% de Ejecucion Trimestral",*/
-                        "Mes", "Ejecucion Mensual", "Tipo de Desagregacion", "Desagregacion Nivel 1", "Desagregacion Nivel 2",
-                        "Valor Reportado"));
+        LOGGER.info("Elapsed time in seconds:(query))" + (lEndTime - lStartTime) / 1000000000);
 
-        List<Integer> titlesWidth = new ArrayList<>(
+        List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        5000, 5000, 10000, 10000, 5000,
-                        10000, 3000, 3000, 2000, //2000,
-                        /*2000,*/ 2000, 2000, // 2000, 2000,
-                        2000, 2000, 5000, 5000, 5000,
-                        2000));
+                        0, 1, 2, 3, 4, 5, 27, 28
+                )
+        );
+
+        List<Integer> titlesWidth = this.getTitlesWidthIndicatorExecutionDetailedDTO(columnsToRemove);
+
+
+        List<String> titles = this.getTitlesIndicatorExecutionDetailedDTO(columnsToRemove);
 
         SXSSFWorkbook wb = new SXSSFWorkbook();
         SXSSFSheet sheet = wb.createSheet();
@@ -665,8 +378,9 @@ public class ReportDataService {
                 .createAreaReference(
                         new CellReference(0, 0),
                         new CellReference(NB_ROWS, NB_COLS));
-        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
         // title rows
+        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
+        // Create
         DataFormat format = wb.createDataFormat();
         CellStyle cellStylePercentage;
         cellStylePercentage = wb.createCellStyle();
@@ -680,57 +394,344 @@ public class ReportDataService {
             sheet.setColumnWidth(i, titlesWidth.get(i));
         }
 
-        Cell cell;
+        long lStartTime2 = System.nanoTime();
         for (int i = 0; i < resultData.size(); i++) {
             SXSSFRow rowData = sheet.createRow(i + 1);
             IndicatorExecutionDetailedDTO ie = resultData.get(i);
-
-            cell = rowData.createCell(0);
-            cell.setCellValue(ie.getImplementation_type());
-            cell = rowData.createCell(1);
-            cell.setCellValue(ie.getArea());
-            cell = rowData.createCell(2);
-            cell.setCellValue(ie.getStatement());
-            cell = rowData.createCell(3);
-            cell.setCellValue(ie.getStatement_project());
-            cell = rowData.createCell(4);
-            cell.setCellValue(ie.getIndicator_type());
-            cell = rowData.createCell(5);
-            cell.setCellValue(ie.getIndicator());
-            cell = rowData.createCell(6);
-            cell.setCellValue(ie.getFrecuency());
-            cell = rowData.createCell(7);
-            cell.setCellValue(ie.getImplementers());
-            cell = rowData.createCell(8);
-            if (ie.getTotal_execution() != null) {
-                cell.setCellValue(ie.getTotal_execution().intValue());
+            for (int t = 0; t < titles.size(); t++) {
+                Cell cell = rowData.createCell(t);
+                this.setDataFromIndicatorExecutionDetailedDTO(wb, titles.get(t), cell, ie, cellStylePercentage);
             }
 
-            cell = rowData.createCell(9);
-            cell.setCellValue(ie.getQuarter());
-            cell = rowData.createCell(10);
-            if (ie.getQuarter_execution() != null) {
-                cell.setCellValue(ie.getQuarter_execution().intValue());
-            }
-            cell = rowData.createCell(11);
-            cell.setCellValue(ie.getMonth());
-            cell = rowData.createCell(12);
-            if (ie.getMonth_execution() != null) {
-                cell.setCellValue(ie.getMonth_execution().intValue());
-            }
-            cell = rowData.createCell(13);
-            cell.setCellValue(ie.getDissagregation_type());
-            cell = rowData.createCell(14);
-            cell.setCellValue(ie.getDissagregation_level1());
-            cell = rowData.createCell(15);
-            cell.setCellValue(ie.getDissagregation_level2());
-            cell = rowData.createCell(16);
-            if (ie.getValue() != null) {
-                cell.setCellValue(ie.getValue().intValue());
-            }
         }
-
+        long lEndTime2 = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds(excel construction): " + (lEndTime2 - lStartTime2) / 1000000000);
         return wb;
 
     }
+
+    public SXSSFWorkbook getPartnerDetailedByProjectId(Long projectId) {
+        long lStartTime = System.nanoTime();
+        List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getPartnerDetailedByProjectId(projectId);
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds:(query))" + (lEndTime - lStartTime) / 1000000000);
+
+        List<Integer> columnsToRemove = new ArrayList<>(
+                Arrays.asList(
+                        0, 1, 2, 3, 4, 5, 27, 28
+                )
+        );
+
+        List<Integer> titlesWidth = this.getTitlesWidthIndicatorExecutionDetailedDTO(columnsToRemove);
+
+
+        List<String> titles = this.getTitlesIndicatorExecutionDetailedDTO(columnsToRemove);
+
+        SXSSFWorkbook wb = new SXSSFWorkbook();
+        SXSSFSheet sheet = wb.createSheet();
+        // Set which area the table should be placed in
+        int NB_ROWS = resultData.size();
+        int NB_COLS = titles.size() - 1;
+        AreaReference reference = wb.getCreationHelper()
+                .createAreaReference(
+                        new CellReference(0, 0),
+                        new CellReference(NB_ROWS, NB_COLS));
+        // title rows
+        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
+        // Create
+        DataFormat format = wb.createDataFormat();
+        CellStyle cellStylePercentage;
+        cellStylePercentage = wb.createCellStyle();
+        cellStylePercentage.setDataFormat(format.getFormat("0%"));
+        // Set the values for the table
+
+        Row rowTitle = sheet.createRow(0);
+        for (int i = 0; i < titles.size(); i++) {
+            Cell cell = rowTitle.createCell(i);
+            cell.setCellValue(titles.get(i));
+            sheet.setColumnWidth(i, titlesWidth.get(i));
+        }
+
+        long lStartTime2 = System.nanoTime();
+        for (int i = 0; i < resultData.size(); i++) {
+            SXSSFRow rowData = sheet.createRow(i + 1);
+            IndicatorExecutionDetailedDTO ie = resultData.get(i);
+            for (int t = 0; t < titles.size(); t++) {
+                Cell cell = rowData.createCell(t);
+                this.setDataFromIndicatorExecutionDetailedDTO(wb, titles.get(t), cell, ie, cellStylePercentage);
+            }
+
+        }
+        long lEndTime2 = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds(excel construction): " + (lEndTime2 - lStartTime2) / 1000000000);
+        return wb;
+    }
+    private void setDataFromIndicatorExecutionDetailedDTO(SXSSFWorkbook wb, String title, Cell cell, IndicatorExecutionDetailedDTO ie, CellStyle cellStylePercentage) {
+
+        switch (title) {
+            case "Asignacion de Indicador Id":
+                cell.setCellValue(ie.getIe_id());
+                break;
+            case "Periodo Id":
+                cell.setCellValue(ie.getPeriod_id());
+            case "Proyecto Id":
+                if (ie.getProject_id() != null) {
+                    cell.setCellValue(ie.getProject_id());
+                }
+                break;
+            case "Oficina Id":
+                if (ie.getReporting_office_id() != null) {
+                    cell.setCellValue(ie.getReporting_office_id());
+                }
+                break;
+            case "Organización Id":
+                if (ie.getOrganization_id() != null) {
+                    cell.setCellValue(ie.getOrganization_id());
+                }
+                break;
+            case "Tipo de Implementación":
+                cell.setCellValue(ie.getImplementation_type());
+                break;
+            case "Área":
+                cell.setCellValue(ie.getArea());
+                break;
+            case "Declaración":
+                cell.setCellValue(ie.getStatement());
+                break;
+            case "Declaración de Proyecto":
+                cell.setCellValue(ie.getStatement_project());
+                break;
+            case "Tipo de Indicador":
+                cell.setCellValue(ie.getIndicator_type());
+                break;
+            case "Indicador":
+                cell.setCellValue(ie.getIndicator());
+                break;
+            case "Categoría":
+                cell.setCellValue(ie.getCategory());
+                break;
+            case "Frecuencia":
+                cell.setCellValue(ie.getFrecuency());
+                break;
+            case "Proyecto":
+                cell.setCellValue(ie.getProject());
+                break;
+            case "Implementador":
+                cell.setCellValue(ie.getImplementers());
+                break;
+            case "Ejecución Total":
+                if (ie.getTotal_execution() != null) {
+                    cell.setCellValue(ie.getTotal_execution().intValue());
+                }
+                break;
+            case "Meta Total":
+                if (ie.getTarget() != null) {
+                    cell.setCellValue(ie.getTarget().intValue());
+                }
+                break;
+            case "% de Ejecución Total":
+                if (ie.getExecution_percentage() != null) {
+                    cell.setCellValue(ie.getExecution_percentage().intValue());
+                    cell.setCellStyle(cellStylePercentage);
+                }
+
+                break;
+            case "Trimestre Orden":
+                cell.setCellValue(ie.getQuarter_order());
+                break;
+            case "Trimestre":
+                cell.setCellValue(ie.getQuarter());
+                break;
+            case "Ejecucion Trimestral":
+                if (ie.getQuarter_execution() != null) {
+                    cell.setCellValue(ie.getQuarter_execution().intValue());
+                }
+                break;
+            case "Meta Trimestral":
+                if (ie.getQuarter_target() != null) {
+                    cell.setCellValue(ie.getQuarter_target().intValue());
+                }
+                break;
+            case "% de Ejecución Trimestral":
+                if (ie.getQuarter_percentage() != null) {
+                    cell.setCellValue(ie.getQuarter_percentage().intValue());
+                    cell.setCellStyle(cellStylePercentage);
+                }
+                break;
+            case "Mes Orden":
+                cell.setCellValue(ie.getMonth_order());
+                break;
+            case "Mes":
+                cell.setCellValue(ie.getMonth());
+                break;
+            case "Ejecucion Mensual":
+                if (ie.getMonth_execution() != null) {
+                    cell.setCellValue(ie.getMonth_execution().intValue());
+                }
+                break;
+            case "Valor Id":
+                if (ie.getIv_id() != null) {
+                    cell.setCellValue(ie.getIv_id());
+                }
+                break;
+            case "Valor Personalizado Id":
+                if (ie.getIvc_id() != null) {
+                    cell.setCellValue(ie.getIvc_id());
+                }
+                break;
+            case "Tipo de Desagregacion":
+                cell.setCellValue(ie.getDissagregation_type());
+                break;
+            case "Cantón":
+
+                cell.setCellValue(ie.getLugar_canton());
+                break;
+            case "Provincia":
+                cell.setCellValue(ie.getLugar_provincia());
+                break;
+            case "Tipo de Población":
+                cell.setCellValue(ie.getPopulation_type());
+                break;
+            case "Género":
+                cell.setCellValue(ie.getGender_type());
+                break;
+            case "Edad":
+                cell.setCellValue(ie.getAge_type());
+                break;
+            case "País de Origen":
+                cell.setCellValue(ie.getCountry_of_origin());
+                break;
+            case "Diversidad":
+                cell.setCellValue(ie.getDiversity_type());
+                break;
+            case "Edad - Educación Primaria":
+                cell.setCellValue(ie.getAge_primary_education_type());
+                break;
+            case "Edad - Educación Terciaria":
+                cell.setCellValue(ie.getAge_tertiary_education_type());
+                break;
+            case "Desagregación Personalizada":
+                cell.setCellValue(ie.getCustom_dissagregacion());
+                break;
+            case "Valor Reportado":
+                if (ie.getValue() != null) {
+                    cell.setCellValue(ie.getValue().intValue());
+                }
+                break;
+
+
+        }
+    }
+
+    public List<String> getTitlesIndicatorExecutionDetailedDTO(List<Integer> columnsToRemove) {
+
+        Map<Integer, String> titlesMap = new HashMap<>();
+        titlesMap.put(0, "Asignacion de Indicador Id");
+        titlesMap.put(1, "Periodo Id");
+        titlesMap.put(2, "Proyecto Id");
+        titlesMap.put(3, "Oficina Id");
+        titlesMap.put(4, "Organización Id");
+        titlesMap.put(5, "Indicador de Producto Id");
+        titlesMap.put(6, "Tipo de Implementación");
+        titlesMap.put(7, "Área");
+        titlesMap.put(8, "Declaración");
+        titlesMap.put(9, "Declaración de Proyecto");
+        titlesMap.put(10, "Tipo de Indicador");
+        titlesMap.put(11, "Indicador");
+        titlesMap.put(12, "Categoría");
+        titlesMap.put(13, "Frecuencia");
+        titlesMap.put(14, "Proyecto");
+        titlesMap.put(15, "Implementador");
+        titlesMap.put(16, "Ejecución Total");
+        titlesMap.put(17, "Meta Total");
+        titlesMap.put(18, "% de Ejecución Total");
+        titlesMap.put(19, "Trimestre Orden");
+        titlesMap.put(20, "Trimestre");
+        titlesMap.put(21, "Ejecucion Trimestral");
+        titlesMap.put(22, "Meta Trimestral");
+        titlesMap.put(23, "% de Ejecución Trimestral");
+        titlesMap.put(24, "Mes Orden");
+        titlesMap.put(25, "Mes");
+        titlesMap.put(26, "Ejecucion Mensual");
+        titlesMap.put(27, "Valor Id");
+        titlesMap.put(28, "Valor Personalizado Id");
+        titlesMap.put(29, "Tipo de Desagregacion");
+        titlesMap.put(30, "Cantón");
+        titlesMap.put(31, "Provincia");
+        titlesMap.put(32, "Tipo de Población");
+        titlesMap.put(33, "Género");
+        titlesMap.put(34, "Edad");
+        titlesMap.put(35, "País de Origen");
+        titlesMap.put(36, "Diversidad");
+        titlesMap.put(37, "Edad - Educación Primaria");
+        titlesMap.put(38, "Edad - Educación Terciaria");
+        titlesMap.put(39, "Desagregación Personalizada");
+        titlesMap.put(40, "Valor Reportado");
+
+
+        List<String> titles = new ArrayList<>();
+        titlesMap.forEach((order, title) -> {
+            if (!columnsToRemove.contains(order)) {
+                titles.add(title);
+            }
+        });
+        return titles;
+    }
+
+    public List<Integer> getTitlesWidthIndicatorExecutionDetailedDTO(List<Integer> columnsToRemove) {
+
+        Map<Integer, Integer> titlesMap = new HashMap<>();
+        titlesMap.put(0, 3000);// "Asignacion de Indicador Id");
+        titlesMap.put(1, 3000);// "Periodo Id");
+        titlesMap.put(2, 3000);// "Proyecto Id");
+        titlesMap.put(3, 3000);// "Oficina Id");
+        titlesMap.put(4, 3000);// "Indicador de Producto Id");
+        titlesMap.put(5, 3000);// "Organización Id");
+        titlesMap.put(6, 6000);// "Tipo de Implementación");
+        titlesMap.put(7, 4500);// "Área");
+        titlesMap.put(8, 6000);// "Declaración");
+        titlesMap.put(9, 6000);// "Declaración de Proyecto");
+        titlesMap.put(10, 4000);// "Tipo de Indicador");
+        titlesMap.put(11, 7000);// "Indicador");
+        titlesMap.put(12, 6500);// "Categoría");
+        titlesMap.put(13, 5000);// "Frecuencia");
+        titlesMap.put(14, 7000);// "Proyecto");
+        titlesMap.put(15, 5000);// "Implementador");
+        titlesMap.put(16, 5000);// "Ejecución Total");
+        titlesMap.put(17, 5000);// "Meta Total");
+        titlesMap.put(18, 5000);// "% de Ejecución Total");
+        titlesMap.put(19, 5000);// "Trimestre Orden");
+        titlesMap.put(20, 5000);// "Trimestre");
+        titlesMap.put(21, 5000);// "Ejecucion Trimestral");
+        titlesMap.put(22, 5000);// "Meta Trimestral");
+        titlesMap.put(23, 5000);// "% de Ejecución Trimestral");
+        titlesMap.put(24, 5000);// "Mes Orden");
+        titlesMap.put(25, 5000);// "Mes");
+        titlesMap.put(26, 5000);// "Ejecucion Mensual");
+        titlesMap.put(27, 5000);// "Valor Id");
+        titlesMap.put(28, 5000);// "Valor Personalizado Id");
+        titlesMap.put(29, 7000);// "Tipo de Desagregacion");
+        titlesMap.put(30, 5000);// "Cantón");
+        titlesMap.put(31, 5000);// "Provincia");
+        titlesMap.put(32, 6000);// "Tipo de Población");
+        titlesMap.put(33, 5000);// "Género");
+        titlesMap.put(34, 5000);// "Edad");
+        titlesMap.put(35, 5000);// "País de Origen");
+        titlesMap.put(36, 5000);// "Diversidad");
+        titlesMap.put(37, 5000);// "Edad - Educación Primaria");
+        titlesMap.put(38, 5000);// "Edad - Educación Terciaria");
+        titlesMap.put(39, 5000);// "Desagregación Personalizada");
+        titlesMap.put(40, 5000);// "Valor Reportado");
+
+
+        List<Integer> widths = new ArrayList<>();
+        titlesMap.forEach((order, title) -> {
+            if (!columnsToRemove.contains(order)) {
+                widths.add(title);
+            }
+        });
+        return widths;
+    }
+
+
 }

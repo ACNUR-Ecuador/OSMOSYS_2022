@@ -16,6 +16,11 @@ import java.math.BigDecimal;
                         targetClass = IndicatorExecutionDetailedDTO.class,
                         columns = {
                                 @ColumnResult(name = "ie_id", type = Long.class),
+                                @ColumnResult(name = "period_id", type = Long.class),
+                                @ColumnResult(name = "project_id", type = Long.class),
+                                @ColumnResult(name = "reporting_office_id", type = Long.class),
+                                @ColumnResult(name = "organization_id", type = Long.class),
+                                @ColumnResult(name = "performance_indicator_id", type = Long.class),
                                 @ColumnResult(name = "implementation_type", type = String.class),
                                 @ColumnResult(name = "area", type = String.class),
                                 @ColumnResult(name = "statement", type = String.class),
@@ -24,6 +29,7 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "indicator", type = String.class),
                                 @ColumnResult(name = "category", type = String.class),
                                 @ColumnResult(name = "frecuency", type = String.class),
+                                @ColumnResult(name = "project", type = String.class),
                                 @ColumnResult(name = "implementers", type = String.class),
                                 @ColumnResult(name = "total_execution", type = BigDecimal.class),
                                 @ColumnResult(name = "target", type = BigDecimal.class),
@@ -39,9 +45,17 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "iv_id", type = Long.class),
                                 @ColumnResult(name = "ivc_id", type = Long.class),
                                 @ColumnResult(name = "dissagregation_type", type = String.class),
-                                @ColumnResult(name = "dissagregation_level1", type = String.class),
-                                @ColumnResult(name = "dissagregation_level2", type = String.class),
-                                @ColumnResult(name = "value", type = BigDecimal.class),
+                                @ColumnResult(name = "lugar_canton", type = String.class),
+                                @ColumnResult(name = "lugar_provincia", type = String.class),
+                                @ColumnResult(name = "population_type", type = String.class),
+                                @ColumnResult(name = "gender_type", type = String.class),
+                                @ColumnResult(name = "age_type", type = String.class),
+                                @ColumnResult(name = "country_of_origin", type = String.class),
+                                @ColumnResult(name = "diversity_type", type = String.class),
+                                @ColumnResult(name = "age_primary_education_type", type = String.class),
+                                @ColumnResult(name = "age_tertiary_education_type", type = String.class),
+                                @ColumnResult(name = "custom_dissagregacion", type = String.class),
+                                @ColumnResult(name = "value", type = BigDecimal.class)
                         }
                 )
         }

@@ -36,7 +36,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getAllPartnertsStateReport:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.indicatorExecutionsToLateProjectsReportsByPeriodYear(periodId);
         long lEndTime = System.nanoTime();
@@ -55,7 +55,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Catalogo_indicadores_:" + principal.getName());
+        LOGGER.info("indicatorsCatalogByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.indicatorsCatalogByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -73,7 +73,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("indicatorsCatalogWithImplementersSimple:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.indicatorsCatalogWithImplementersSimpleByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -91,7 +91,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("indicatorsCatalogWithImplementersDetailed:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.indicatorsCatalogWithImplementersDetailedByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -109,7 +109,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getAllImplementationsAnnualByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getAllImplementationsAnnualByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -127,7 +127,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getAllImplementationsQuarterlyByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getAllImplementationsQuarterlyByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -145,7 +145,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getAllImplementationsMonthlyByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getAllImplementationsMonthlyByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -156,14 +156,14 @@ public class ReportsEndpoint {
 
     @Path("/getAllImplementationsDetailedByPeriodId/{periodId}")
     @GET
-    @Secured
+    //@Secured
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public Response getAllImplementationsDetailedByPeriodId(
             @Context SecurityContext securityContext,
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        //LOGGER.info("getAllImplementationsDetailedByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getAllImplementationsDetailedByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -181,7 +181,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getAllImplementationsPerformanceIndicatorsAnnualByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getAllImplementationsPerformanceIndicatorsAnnualByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -200,7 +200,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getAllImplementationsPerformanceIndicatorsQuarterlyByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getAllImplementationsPerformanceIndicatorsQuarterlyByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -219,7 +219,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getAllImplementationsPerformanceIndicatorsMonthlyByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getAllImplementationsPerformanceIndicatorsMonthlyByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -228,17 +228,16 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
-
     @Path("/getAllImplementationsPerformanceIndicatorsDetailedByPeriodId/{periodId}")
     @GET
-    @Secured
+    //@Secured
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public Response getAllImplementationsPerformanceIndicatorsDetailedByPeriodId(
             @Context SecurityContext securityContext,
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        //LOGGER.info("getAllImplementationsPerformanceIndicatorsDetailedByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getAllImplementationsPerformanceIndicatorsDetailedByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -256,7 +255,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getPartnersAnnualByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnersAnnualByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -274,7 +273,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getPartnersQuarterlyByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnersQuarterlyByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -292,7 +291,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getPartnersMonthlyByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnersMonthlyByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -300,6 +299,7 @@ public class ReportsEndpoint {
         String filename = "Exportacion_datos_socios_mensual" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
+
 
     @Path("/getPartnersDetailedByPeriodId/{periodId}")
     @GET
@@ -310,7 +310,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getPartnersDetailedByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnersDetailedByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -318,6 +318,7 @@ public class ReportsEndpoint {
         String filename = "Exportacion_datos_socios_detallado" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
+
 
     @Path("/getPartnersGeneralIndicatorsAnnualByPeriodId/{periodId}")
     @GET
@@ -328,7 +329,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getPartnersGeneralIndicatorsAnnualByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnersGeneralIndicatorsAnnualByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -347,7 +348,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getPartnersGeneralIndicatorsMonthlyByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnersGeneralIndicatorsMonthlyByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -355,7 +356,6 @@ public class ReportsEndpoint {
         String filename = "Exportacion_datos_socios_igeneral_mensual" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
-
 
     @Path("/getPartnersGeneralIndicatorsDetailedByPeriodId/{periodId}")
     @GET
@@ -366,7 +366,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getPartnersGeneralIndicatorsDetailedByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnersGeneralIndicatorsDetailedByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -384,7 +384,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getPartnersPerformanceIndicatorsAnnualByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnersPerformanceIndicatorsAnnualByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -402,7 +402,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getPartnersPerformanceIndicatorsQuarterlyByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnersPerformanceIndicatorsQuarterlyByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -420,7 +420,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getPartnersPerformanceIndicatorsMonthlyByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnersPerformanceIndicatorsMonthlyByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -438,7 +438,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getPartnersPerformanceIndicatorsDetailedByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnersPerformanceIndicatorsDetailedByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -456,7 +456,7 @@ public class ReportsEndpoint {
             @PathParam("projectId") Long projectId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getPartnerAnnualByProjectId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnerAnnualByProjectId(projectId);
         long lEndTime = System.nanoTime();
@@ -474,7 +474,7 @@ public class ReportsEndpoint {
             @PathParam("projectId") Long projectId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getPartnerQuarterlyByProjectId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnerQuarterlyByProjectId(projectId);
         long lEndTime = System.nanoTime();
@@ -492,7 +492,7 @@ public class ReportsEndpoint {
             @PathParam("projectId") Long projectId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getPartnerMonthlyByProjectId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnerMonthlyByProjectId(projectId);
         long lEndTime = System.nanoTime();
@@ -510,7 +510,7 @@ public class ReportsEndpoint {
             @PathParam("projectId") Long projectId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getPartnerDetailedByProjectId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnerDetailedByProjectId(projectId);
         long lEndTime = System.nanoTime();
@@ -528,7 +528,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getDirectImplementationPerformanceIndicatorsAnnualByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getDirectImplementationPerformanceIndicatorsAnnualByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -546,7 +546,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getDirectImplementationPerformanceIndicatorsQuarterlyByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getDirectImplementationPerformanceIndicatorsQuarterlyByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -564,7 +564,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getDirectImplementationPerformanceIndicatorsMonthlyByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getDirectImplementationPerformanceIndicatorsMonthlyByPeriodId(periodId);
         long lEndTime = System.nanoTime();
@@ -582,7 +582,7 @@ public class ReportsEndpoint {
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("Reporte_estado_proyectos:" + principal.getName());
+        LOGGER.info("getDirectImplementationPerformanceIndicatorsDetailedByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(periodId);
         long lEndTime = System.nanoTime();
