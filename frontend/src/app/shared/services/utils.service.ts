@@ -320,6 +320,18 @@ export class UtilsService {
                 result.push(EnumsType.GenderType);
                 return result;
             }
+            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
+                result.push(EnumsType.DiversityType);
+                result.push(EnumsType.AgePrimaryEducationType);
+                result.push(EnumsType.GenderType);
+                return result;
+            }
+            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO: {
+                result.push(EnumsType.DiversityType);
+                result.push(EnumsType.AgeTertiaryEducationType);
+                result.push(EnumsType.GenderType);
+                return result;
+            }
             case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO: {
                 result.push(EnumsType.PopulationType);
                 result.push(null);
@@ -369,6 +381,8 @@ export class UtilsService {
                 return 2;
             case DissagregationType.LUGAR_EDAD_Y_GENERO:
             case DissagregationType.DIVERSIDAD_EDAD_Y_GENERO:
+            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
+            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
                 return 3;
             case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO:
             case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
@@ -419,6 +433,8 @@ export class UtilsService {
             case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD:
             case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN:
             case DissagregationType.DIVERSIDAD_EDAD_Y_GENERO:
+            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
+            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
                 return false;
         }
     }
@@ -439,6 +455,8 @@ export class UtilsService {
         const result: DissagregationType[] = [];
         result.push(DissagregationType.LUGAR_EDAD_Y_GENERO);
         result.push(DissagregationType.DIVERSIDAD_EDAD_Y_GENERO);
+        result.push(DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO);
+        result.push(DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO);
         return result;
     }
 
@@ -510,6 +528,18 @@ export class UtilsService {
             case DissagregationType.DIVERSIDAD_EDAD_Y_GENERO: {
                 result.push(DissagregationType.DIVERSIDAD);
                 result.push(DissagregationType.EDAD);
+                result.push(DissagregationType.GENERO);
+                return result;
+            }
+            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
+                result.push(DissagregationType.DIVERSIDAD);
+                result.push(DissagregationType.EDAD_EDUCACION_PRIMARIA);
+                result.push(DissagregationType.GENERO);
+                return result;
+            }
+            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO: {
+                result.push(DissagregationType.DIVERSIDAD);
+                result.push(DissagregationType.EDAD_EDUCACION_TERCIARIA);
                 result.push(DissagregationType.GENERO);
                 return result;
             }
@@ -683,6 +713,8 @@ export class UtilsService {
             case DissagregationType.DIVERSIDAD:
             case DissagregationType.GENERO_Y_DIVERSIDAD:
             case DissagregationType.DIVERSIDAD_EDAD_Y_GENERO:
+            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
+            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
                 return false;
         }
     }
