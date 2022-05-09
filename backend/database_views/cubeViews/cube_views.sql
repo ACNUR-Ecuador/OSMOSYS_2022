@@ -24,7 +24,7 @@ CREATE OR REPLACE VIEW cube.diversity_type
 SELECT
     distinct iv.diversity_type
 FROM osmosys.indicator_values iv
-WHERE iv.diversity_type is not null
+-- WHERE iv.diversity_type is not null
 ORDER BY 1 ;
 
 DROP VIEW IF EXISTS  cube.age_type;
@@ -33,7 +33,7 @@ CREATE OR REPLACE VIEW cube.age_type
 SELECT
     distinct iv.age_type
 FROM osmosys.indicator_values iv
-WHERE iv.age_type is not null
+-- WHERE iv.age_type is not null
 ORDER BY 1 ;
 
 DROP VIEW IF EXISTS  cube.gender_type;
@@ -42,7 +42,7 @@ CREATE OR REPLACE VIEW cube.gender_type
 SELECT
     distinct iv.gender_type
 FROM osmosys.indicator_values iv
-WHERE iv.gender_type  is not null
+-- WHERE iv.gender_type  is not null
 ORDER BY 1 ;
 
 DROP VIEW IF EXISTS  cube.country_of_origin;
@@ -51,7 +51,7 @@ CREATE OR REPLACE VIEW cube.country_of_origin
 SELECT
     distinct iv.country_of_origin
 FROM osmosys.indicator_values iv
-WHERE iv.country_of_origin is not null
+-- WHERE iv.country_of_origin is not null
 ORDER BY 1 ;
 
 DROP VIEW IF EXISTS  cube.age_primary_education_type;
@@ -60,7 +60,7 @@ CREATE OR REPLACE VIEW cube.age_primary_education_type
 SELECT
     distinct iv.age_primary_education_type
 FROM osmosys.indicator_values iv
-WHERE iv.age_primary_education_type is not null
+-- WHERE iv.age_primary_education_type is not null
 ORDER BY 1 ;
 
 
@@ -70,7 +70,7 @@ CREATE OR REPLACE VIEW cube.age_tertiary_education_type
 SELECT
     distinct iv.age_tertiary_education_type
 FROM osmosys.indicator_values iv
-WHERE iv.age_tertiary_education_type is not null
+-- WHERE iv.age_tertiary_education_type is not null
 ORDER BY 1 ;
 
 DROP VIEW IF EXISTS  cube.population_type;
@@ -79,7 +79,7 @@ CREATE OR REPLACE VIEW cube.population_type
 SELECT
     distinct iv.population_type
 FROM osmosys.indicator_values iv
-WHERE iv.population_type is not null
+-- WHERE iv.population_type is not null
 ORDER BY 1 ;
 
 DROP VIEW IF EXISTS  cube.cantones_provincias;
