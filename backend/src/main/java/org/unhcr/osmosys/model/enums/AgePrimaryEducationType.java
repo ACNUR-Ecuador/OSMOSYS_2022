@@ -1,7 +1,7 @@
 package org.unhcr.osmosys.model.enums;
 
 public enum AgePrimaryEducationType implements EnumInterface {
-    INFANTES("Pre Primaria (3-4)", 1),
+    PREPRIMARIA("Pre Primaria (3-4)", 1),
     PRIMARIA("Primaria (5-11)", 2),
     SECUNDARIA("Secundaria (12-17)", 3),
     ADULTOS("Adultos (18-59)", 4),
