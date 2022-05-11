@@ -353,7 +353,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 .map(value1 => {
                     const selectItem: SelectItem = {
                         value: value1,
-                        label: this.codeDescriptionPipe.transform(value1)
+                        label: this.indicatorPipe.transform(value1)
                     };
                     return selectItem;
                 });
