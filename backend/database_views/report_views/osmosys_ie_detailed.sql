@@ -1,4 +1,5 @@
 DROP VIEW IF EXISTS osmosys.ie_detailed;
+
 CREATE VIEW osmosys.ie_detailed AS
 SELECT
     s.ie_id,
