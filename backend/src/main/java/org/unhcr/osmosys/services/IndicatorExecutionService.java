@@ -108,7 +108,6 @@ public class IndicatorExecutionService {
 
         if (generalIndicator != null) {
             Set<DissagregationAssignationToGeneralIndicator> dissagregations = generalIndicator.getDissagregationAssignationsToGeneralIndicator();
-            LOGGER.error(dissagregations.size());
             if (CollectionUtils.isNotEmpty(dissagregations)) {
                 dissagregationTypes = dissagregations.stream()
                         .filter(dissagregationAssignationToGeneralIndicator -> dissagregationAssignationToGeneralIndicator.getState().equals(State.ACTIVO)).map(DissagregationAssignationToGeneralIndicator::getDissagregationType)

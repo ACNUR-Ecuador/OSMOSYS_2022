@@ -140,7 +140,6 @@ public class IndicatorExecutionEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public List<IndicatorExecutionWeb> getDirectImplementationIndicatorExecutionsByIds(List<Long> indicatorExecutionIds) throws GeneralAppException {
-        LOGGER.error(indicatorExecutionIds);
         return this.indicatorExecutionService.getDirectImplementationIndicatorExecutionsByIds(indicatorExecutionIds, State.ACTIVO);
     }
 

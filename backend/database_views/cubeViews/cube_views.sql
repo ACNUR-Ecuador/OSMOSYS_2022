@@ -25,6 +25,8 @@ SELECT
     distinct iv.diversity_type
 FROM osmosys.indicator_values iv
 WHERE iv.diversity_type is not null
+UNION
+SELECT 'NO APLICA' diversity_type
 ORDER BY 1 ;
 
 DROP VIEW IF EXISTS  cube.age_type;
@@ -34,6 +36,8 @@ SELECT
     distinct iv.age_type
 FROM osmosys.indicator_values iv
 WHERE iv.age_type is not null
+UNION
+SELECT 'NO APLICA' age_type
 ORDER BY 1 ;
 
 DROP VIEW IF EXISTS  cube.gender_type;
@@ -43,6 +47,8 @@ SELECT
     distinct iv.gender_type
 FROM osmosys.indicator_values iv
 WHERE iv.gender_type  is not null
+UNION
+SELECT 'NO APLICA' gender_type
 ORDER BY 1 ;
 
 DROP VIEW IF EXISTS  cube.country_of_origin;
@@ -52,6 +58,8 @@ SELECT
     distinct iv.country_of_origin
 FROM osmosys.indicator_values iv
 WHERE iv.country_of_origin is not null
+UNION
+SELECT 'NO APLICA' country_of_origin
 ORDER BY 1 ;
 
 DROP VIEW IF EXISTS  cube.age_primary_education_type;
@@ -61,6 +69,8 @@ SELECT
     distinct iv.age_primary_education_type
 FROM osmosys.indicator_values iv
 WHERE iv.age_primary_education_type is not null
+UNION
+SELECT 'NO APLICA' age_primary_education_type
 ORDER BY 1 ;
 
 
@@ -71,6 +81,8 @@ SELECT
     distinct iv.age_tertiary_education_type
 FROM osmosys.indicator_values iv
 WHERE iv.age_tertiary_education_type is not null
+UNION
+SELECT 'NO APLICA' age_tertiary_education_type
 ORDER BY 1 ;
 
 DROP VIEW IF EXISTS  cube.population_type;
@@ -80,6 +92,8 @@ SELECT
     distinct iv.population_type
 FROM osmosys.indicator_values iv
 WHERE iv.population_type is not null
+UNION
+SELECT 'NO APLICA' population_type
 ORDER BY 1 ;
 
 DROP VIEW IF EXISTS  cube.cantones_provincias;
@@ -97,7 +111,7 @@ FROM osmosys.cantones can
 
 UNION
 SELECT
-    NULL canton_id,
+    0 canton_id,
     'NO APLICA' canton_code,
     'NO APLICA' canton,
     'NO APLICA' provincia_code,
@@ -124,7 +138,7 @@ SELECT
     distinct u.id, u.name
 FROM "security"."user" u
 UNION
-SELECT null as id, 'No asignado' as name
+SELECT 0 as id, 'No asignado' as name
 ORDER BY 1 DESC
 ;
 
@@ -147,7 +161,7 @@ SELECT
 FROM osmosys.projects u
 UNION
 SELECT
-    null AS project_id, 'NO APLICA' AS name
+    0 AS project_id, 'NO APLICA' AS name
 FROM osmosys.projects u
 
 ORDER BY 1
@@ -162,7 +176,7 @@ SELECT
 FROM osmosys.organizations u
 UNION
 SELECT
-    NULL organization_id, 'NO APLICA' acronym, 'NO APLICA' description
+    0 organization_id, 'NO APLICA' acronym, 'NO APLICA' description
 FROM osmosys.organizations u
 ORDER BY 1
 ;
@@ -175,6 +189,9 @@ SELECT
     distinct u."id" office_id, u.acronym, u.description, u."id" parent_office_id, u.acronym parent_acronym , u.description parent_description
 FROM osmosys.offices u
          LEFT JOIN osmosys.offices up on u.parent_office=up."id"
+UNION
+SELECT
+    0 office_id, 'NO APLICA' acronym, 'NO APLICA' AS description, 0 parent_office_id, 'NO APLICA' parent_acronym , 'NO APLICA' parent_description
 ORDER BY 1
 ;
 
@@ -198,11 +215,11 @@ DROP VIEW IF EXISTS  cube.statements;
 CREATE OR REPLACE VIEW cube.statements
     AS
 SELECT
-    NULL area_impact_id, 'NO ASIGNADO' area_impact_code,'NO ASIGNADO' area_impact,
-    NULL statement_impact_id, 'NO ASIGNADO' statement_impact_code,'NO ASIGNADO' statement_impact,
-    NULL area_outcome_id, 'NO ASIGNADO' area_outcome_code,'NO ASIGNADO' area_outcome,
-    NULL statement_outcome_id, 'NO ASIGNADO' statement_outcome_code,'NO ASIGNADO' statement_outcome,
-    NULL statement_output_id, 'NO ASIGNADO' statement_output_code,'NO ASIGNADO' statement_output_product_code,'NO ASIGNADO' statement_output
+    0 area_impact_id, 'NO ASIGNADO' area_impact_code,'NO ASIGNADO' area_impact,
+    0 statement_impact_id, 'NO ASIGNADO' statement_impact_code,'NO ASIGNADO' statement_impact,
+    0 area_outcome_id, 'NO ASIGNADO' area_outcome_code,'NO ASIGNADO' area_outcome,
+    0 statement_outcome_id, 'NO ASIGNADO' statement_outcome_code,'NO ASIGNADO' statement_outcome,
+    0 statement_output_id, 'NO ASIGNADO' statement_output_code,'NO ASIGNADO' statement_output_product_code,'NO ASIGNADO' statement_output
 UNION
 SELECT
     ai."id" area_impact_id, ai.code area_impact_code,ai.short_description area_impact,
@@ -267,6 +284,14 @@ SELECT
     i.unit
 FROM
     osmosys.indicators AS i
+UNION
+SELECT
+    0 indicator_id,
+    'NO APLICA' code,
+    'NO APLICA' description,
+    'NO APLICA' category,
+    'NO APLICA' frecuency,
+    'NO APLICA' unit
 ORDER BY 1;
 
 DROP VIEW IF EXISTS  cube.fact_table;
@@ -281,26 +306,26 @@ SELECT
         WHEN ie.project_id is null THEN 'Implementación Socios'
         ELSE 'Implementación Directa'
         END  as implementation_type,
-    ie.assigned_user_id,
-    ie.assigned_user_backup_id,
+    COALESCE(ie.assigned_user_id,0) assigned_user_id,
+    COALESCE(ie.assigned_user_backup_id,0) assigned_user_backup_id,
     COALESCE(ie.performance_indicator_id,0) as indicator_id,
-    i.statement_id,
-    ie.project_statement_id,
+    COALESCE(i.statement_id,0) statement_id,
+    COALESCE(ie.project_statement_id,0) project_statement_id,
     ie.indicator_type,
     COALESCE(pr.organization_id,1) as organization_id,
     COALESCE(pr.focal_point_id,ie.supervisor_user_id) as supervisor_id,
-    ie.reporting_office_id office_id,
-    ie.project_id,
+    COALESCE(ie.reporting_office_id,0) office_id,
+    COALESCE(ie.project_id,0) project_id,
     q."year" ||'-'|| mo.month_year_order month_year_id,
     iv.dissagregation_type,
-    iv.age_type,
-    iv.age_primary_education_type,
-    iv.age_tertiary_education_type,
-    iv.gender_type,
-    iv.country_of_origin,
-    iv.population_type,
-    iv.diversity_type,
-    iv.canton_id canton_id,
+    COALESCE(iv.age_type,'NO APLICA') age_type,
+    COALESCE(iv.age_primary_education_type,'NO APLICA') age_primary_education_type,
+    COALESCE(iv.age_tertiary_education_type,'NO APLICA') age_tertiary_education_type,
+    COALESCE(iv.gender_type,'NO APLICA') gender_type,
+    COALESCE(iv.country_of_origin,'NO APLICA') country_of_origin,
+    COALESCE(iv.population_type,'NO APLICA') population_type,
+    COALESCE(iv.diversity_type,'NO APLICA') diversity_type,
+    COALESCE(iv.canton_id,0) canton_id,
     ie.total_execution total_execution,
     ie.target total_target,
     ie.execution_percentage total_execution_percentage,
@@ -322,4 +347,5 @@ FROM
 ORDER BY
     q."year",
     mo.month_year_order
+
 ;

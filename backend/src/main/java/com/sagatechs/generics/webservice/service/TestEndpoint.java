@@ -122,7 +122,6 @@ public class TestEndpoint {
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
     public String setPass(@PathParam("username") String username) throws GeneralAppException {
-        LOGGER.error(username);
         this.userService.changePasswordTest(username, "1234");
         return "ya!!!";
     }
@@ -151,7 +150,6 @@ public class TestEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response testcube() throws GeneralAppException, IOException {
         // List<IndicatorExecutionDetailedDTO> r = this.reportService.getAllIndicatorExecutionDetailed(1l);
-        LOGGER.error("start");
 
         return null;//Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
