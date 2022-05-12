@@ -156,14 +156,14 @@ public class ReportsEndpoint {
 
     @Path("/getAllImplementationsDetailedByPeriodId/{periodId}")
     @GET
-    //@Secured
+    @Secured
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public Response getAllImplementationsDetailedByPeriodId(
             @Context SecurityContext securityContext,
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        //LOGGER.info("getAllImplementationsDetailedByPeriodId:" + principal.getName());
+        LOGGER.info("getAllImplementationsDetailedByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getAllImplementationsDetailedByPeriodId(periodId);
         long lEndTime = System.nanoTime();

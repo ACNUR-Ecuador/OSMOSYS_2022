@@ -284,14 +284,6 @@ SELECT
     i.unit
 FROM
     osmosys.indicators AS i
-UNION
-SELECT
-    0 indicator_id,
-    'NO APLICA' code,
-    'NO APLICA' description,
-    'NO APLICA' category,
-    'NO APLICA' frecuency,
-    'NO APLICA' unit
 ORDER BY 1;
 
 DROP VIEW IF EXISTS  cube.fact_table;
