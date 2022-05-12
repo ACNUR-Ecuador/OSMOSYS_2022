@@ -173,7 +173,7 @@ export class PartnersProjectComponent implements OnInit {
                 }
             },
             {
-                label: 'Con Desagregaciones', icon: 'pi pi-file-excel', command: () => {
+                label: 'Con Desagregaciones', tooltip: 'sdfgsdfg', icon: 'pi pi-file-excel', command: () => {
                     this.getReportDetailed();
                 }
             }
