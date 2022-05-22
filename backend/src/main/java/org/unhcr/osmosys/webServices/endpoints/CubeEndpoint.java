@@ -108,6 +108,14 @@ public class CubeEndpoint {
         return this.cubeService.getCantonesProvinciasTable();
     }
 
+    @Path("/cantonesProvinciasCentroidsTable")
+    @GET
+    @BasicSecured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<CantonesProvinciasCentroidsDTO> getCantonesProvinciasCentroidsTable() {
+        return this.cubeService.getCantonesProvinciasCentroidsTable();
+    }
+
     @Path("/indicatorTypeTable")
     @GET
     @BasicSecured
@@ -187,12 +195,21 @@ public class CubeEndpoint {
     public List<MonthCualitativeDataDTO> getMonthCualitativeDataTable(@PathParam("year") Integer year) {
         return this.cubeService.getMonthCualitativeDataTable(year);
     }
+
     @Path("/indicatorsTable")
     @GET
-    @BasicSecured
+    // @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<IndicatorDTO> getIndicatorsTable() {
         return this.cubeService.getIndicatorsTable();
+    }
+
+    @Path("/indicatorExecutionsDissagregationSimpleTable/{year}")
+    @GET
+    // @BasicSecured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<IndicatorExecutionDissagregationSimpleDTO> getIndicatorExecutionsDissagregationSimpleTable(@PathParam("year") Integer year) {
+        return this.cubeService.getIndicatorExecutionsDissagregationSimpleTable(year);
     }
 
 }

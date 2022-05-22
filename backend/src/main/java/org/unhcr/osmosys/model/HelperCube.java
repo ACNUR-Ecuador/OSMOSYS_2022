@@ -142,6 +142,22 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "provincia_code", type = String.class),
                                 @ColumnResult(name = "provincia", type = String.class),
                         })})
+@SqlResultSetMapping(
+        name = "CantonesProvinciasCentroidsDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = CantonesProvinciasCentroidsDTO.class,
+                        columns = {
+                                @ColumnResult(name = "canton_id", type = Long.class),
+                                @ColumnResult(name = "canton_code", type = String.class),
+                                @ColumnResult(name = "canton", type = String.class),
+                                @ColumnResult(name = "canton_long", type = Float.class),
+                                @ColumnResult(name = "canton_lat", type = Float.class),
+                                @ColumnResult(name = "provincia_code", type = String.class),
+                                @ColumnResult(name = "provincia", type = String.class),
+                                @ColumnResult(name = "provincia_long", type = Float.class),
+                                @ColumnResult(name = "provincia_lat", type = Float.class),
+                        })})
 
 @SqlResultSetMapping(
         name = "IndicatorTypeDTOMapping",
@@ -159,6 +175,8 @@ import java.math.BigDecimal;
                         columns = {
                                 @ColumnResult(name = "id", type = Long.class),
                                 @ColumnResult(name = "name", type = String.class),
+                                @ColumnResult(name = "organization", type = String.class),
+                                @ColumnResult(name = "office", type = String.class),
                         })})
 @SqlResultSetMapping(
         name = "PeriodDTOMapping",
@@ -267,6 +285,16 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "category", type = String.class),
                                 @ColumnResult(name = "frecuency", type = String.class),
                                 @ColumnResult(name = "unit", type = String.class),
+                        })})
+@SqlResultSetMapping(
+        name = "IndicatorExecutionsDissagregationSimpleDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = IndicatorExecutionDissagregationSimpleDTO.class,
+                        columns = {
+                                @ColumnResult(name = "ie_id", type = Long.class),
+                                @ColumnResult(name = "year", type = Integer.class),
+                                @ColumnResult(name = "dissagregation_simple", type = String.class)
                         })})
 public class HelperCube extends BaseEntity<Long> {
 

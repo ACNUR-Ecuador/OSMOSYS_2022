@@ -56,6 +56,9 @@ public class CubeService {
     public List<CantonesProvinciasDTO> getCantonesProvinciasTable() {
         return this.cubeDao.getCantonesProvinciasTable();
     }
+    public List<CantonesProvinciasCentroidsDTO> getCantonesProvinciasCentroidsTable() {
+        return this.cubeDao.getCantonesProvinciasCentroidsTable();
+    }
 
     public List<IndicatorTypeDTO> getIndicatorTypeTable() {
         return this.cubeDao.getIndicatorTypeTable();
@@ -94,5 +97,9 @@ public class CubeService {
         indicators.add(generalIndicator);
         indicators.addAll(this.cubeDao.getIndicatorsTable());
         return indicators;
+    }
+
+    public List<IndicatorExecutionDissagregationSimpleDTO> getIndicatorExecutionsDissagregationSimpleTable(Integer year) {
+        return this.cubeDao.getIndicatorExecutionsDissagregationSimpleTable(year);
     }
 }

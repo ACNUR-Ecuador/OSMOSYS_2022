@@ -1,0 +1,7 @@
+{
+"name": "UNHCR template",
+"dataColors": [ "#0072BC", "#000000", "#FAEB00", "#18375F", "#00B398", "#EF4A60", "#4095CD", "#404040","#FBF040", "#526987", "#40C6B2", "#F37788", "#7FB8DD", "#7F7F7F", "#FCF575", "#8B9BAF","#7FD9CB", "#F7A4AF", "#BFDCEE", "#BFBFBF", "#FEFABF", "#C5CDD7", "#BFECE5", "#FBD2D7" ],
+"background":  "#FFFFFF",
+"foreground":  "#000000",
+"tableAccent":  "#0072BC"
+}

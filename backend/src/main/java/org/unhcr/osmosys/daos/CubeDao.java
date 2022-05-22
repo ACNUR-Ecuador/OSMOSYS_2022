@@ -103,6 +103,10 @@ public class CubeDao {
             "* " +
             "from  " +
             "cube.indicators t";
+    private static final String dissagregationSimpleTable = "SELECT " +
+            "* " +
+            "from  " +
+            "cube.indicator_execution_dissagregation_simple t";
 
 
     public List<FactDTO> getFactTableByPeriodYear(Integer year) {
@@ -132,10 +136,12 @@ public class CubeDao {
         Query q = this.entityManager.createNativeQuery(CubeDao.AgeTypeTable, "AgeTypeDTOMapping");
         return q.getResultList();
     }
+
     public List<AgePrimaryEducationTypeDTO> getAgePrimaryEducationTypeTable() {
         Query q = this.entityManager.createNativeQuery(CubeDao.AgePrimaryEducationTypeTable, "AgePrimaryEducationTypeDTOMapping");
         return q.getResultList();
     }
+
     public List<AgeTertiaryEducationTypeDTO> getAgeTertiaryEducationTypeTable() {
         Query q = this.entityManager.createNativeQuery(CubeDao.AgeTertiaryEducationTable, "AgeTertiaryEducationTypeDTOMapping");
         return q.getResultList();
@@ -158,6 +164,11 @@ public class CubeDao {
 
     public List<CantonesProvinciasDTO> getCantonesProvinciasTable() {
         Query q = this.entityManager.createNativeQuery(CubeDao.CantonesProvinciasTable, "CantonesProvinciasDTOMapping");
+        return q.getResultList();
+    }
+
+    public List<CantonesProvinciasCentroidsDTO> getCantonesProvinciasCentroidsTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.CantonesProvinciasTable, "CantonesProvinciasCentroidsDTOMapping");
         return q.getResultList();
     }
 
@@ -203,17 +214,24 @@ public class CubeDao {
 
     public List<MonthSourceDTO> getMonthSouceTable(Integer year) {
         Query q = this.entityManager.createNativeQuery(CubeDao.monthSourceTable + " where t.year =:year ", "MonthSourceDTOMapping");
-        q.setParameter("year",year);
+        q.setParameter("year", year);
         return q.getResultList();
     }
 
     public List<MonthCualitativeDataDTO> getMonthCualitativeDataTable(Integer year) {
         Query q = this.entityManager.createNativeQuery(CubeDao.monthCualitativeDataTable + " where t.year =:year ", "MonthCualitativeDataDTOMapping");
-        q.setParameter("year",year);
+        q.setParameter("year", year);
         return q.getResultList();
     }
+
     public List<IndicatorDTO> getIndicatorsTable() {
         Query q = this.entityManager.createNativeQuery(CubeDao.indicatorsTable, "IndicatorDTOMapping");
+        return q.getResultList();
+    }
+
+    public List<IndicatorExecutionDissagregationSimpleDTO> getIndicatorExecutionsDissagregationSimpleTable(Integer year) {
+        Query q = this.entityManager.createNativeQuery(CubeDao.dissagregationSimpleTable + " where t.year =:year ", "IndicatorExecutionsDissagregationSimpleDTOMapping");
+        q.setParameter("year", year);
         return q.getResultList();
     }
 }
