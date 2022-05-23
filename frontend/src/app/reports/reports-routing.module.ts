@@ -16,6 +16,7 @@ import {LivelihoodsComponent} from './powerbi/livelihoods/livelihoods.component'
 import {ResettlementComponent} from './powerbi/resettlement/resettlement.component';
 import {SpecialNeedsComponent} from './powerbi/special-needs/special-needs.component';
 import {ProductIndicatorsComponent} from './powerbi/product-indicators/product-indicators.component';
+import {RbaIndicatorsComponent} from './powerbi/rba-indicators/rba-indicators.component';
 
 const routes: Routes = [{
     path: '',
@@ -33,7 +34,8 @@ const routes: Routes = [{
         {path: 'livelihoods', component: LivelihoodsComponent},
         {path: 'resettlement', component: ResettlementComponent},
         {path: 'specialNeeds', component: SpecialNeedsComponent},
-        {path: 'productIndicators', component: ProductIndicatorsComponent}
+        {path: 'productIndicators', component: ProductIndicatorsComponent},
+        {path: 'rbaIndicators', component: RbaIndicatorsComponent}
     ]
 }];
 

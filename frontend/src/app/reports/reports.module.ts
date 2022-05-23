@@ -26,6 +26,7 @@ import { CbiComponent } from './powerbi/cbi/cbi.component';
 import { CommunityProtectionComponent } from './powerbi/community-protection/community-protection.component';
 import { SpecialNeedsComponent } from './powerbi/special-needs/special-needs.component';
 import { ProductIndicatorsComponent } from './powerbi/product-indicators/product-indicators.component';
+import { RbaIndicatorsComponent } from './powerbi/rba-indicators/rba-indicators.component';
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import { ProductIndicatorsComponent } from './powerbi/product-indicators/product
     CbiComponent,
     CommunityProtectionComponent,
     SpecialNeedsComponent,
-    ProductIndicatorsComponent
+    ProductIndicatorsComponent,
+    RbaIndicatorsComponent
   ],
     imports: [
         CommonModule,
