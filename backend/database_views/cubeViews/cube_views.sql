@@ -3,7 +3,7 @@ DROP VIEW IF EXISTS cube.month_quarter_year;
 CREATE
 OR REPLACE VIEW cube.month_quarter_year
     AS
-SELECT distinct mo."year" || ' - ' || mo.month_year_order month_year_id,
+SELECT distinct mo."year" || '-' || mo.month_year_order month_year_id,
                 mo."year",
                 q.quarter,
                 q.quarter_year_order,
@@ -145,7 +145,7 @@ OR REPLACE VIEW cube.users
 SELECT distinct u.id,
                 u.name,
                 org.acronym                             as organization,
-                COALESCE(offf.acronym, ' No aplica ') as office
+                COALESCE(offf.acronym, 'No aplica') as office
 FROM "security"."user" u
          LEFT JOIN osmosys.offices offf on u.office_id = offf.id
          LEFT JOIN osmosys.organizations org on u.organization_id = org.id
@@ -230,18 +230,16 @@ SELECT ie.id   ie_id,
            END late
 FROM osmosys.indicator_executions ie
 WHERE ie."state" = 'ACTIVO';
-
-
 DROP VIEW IF EXISTS cube.statements;
 CREATE
 OR REPLACE VIEW cube.statements
     AS
 SELECT 0 area_impact_id,
        'NO ASIGNADO' area_impact_code,'NO ASIGNADO' area_impact,
-    0 statement_impact_id, 'NO ASIGNADO' statement_impact_code,'NO ASIGNADO' statement_impact,
-    0 area_outcome_id, 'NO ASIGNADO' area_outcome_code,'NO ASIGNADO' area_outcome,
-    0 statement_outcome_id, 'NO ASIGNADO' statement_outcome_code,'NO ASIGNADO' statement_outcome,
-    0 statement_output_id, 'NO ASIGNADO' statement_output_code,'NO ASIGNADO' statement_output_product_code,'NO ASIGNADO' statement_output
+       0 statement_impact_id, 'NO ASIGNADO' statement_impact_code,'NO ASIGNADO' statement_impact,
+       0 area_outcome_id, 'NO ASIGNADO' area_outcome_code,'NO ASIGNADO' area_outcome,
+       0 statement_outcome_id, 'NO ASIGNADO' statement_outcome_code,'NO ASIGNADO' statement_outcome,
+       0 statement_output_id, 'NO ASIGNADO' statement_output_code,'NO ASIGNADO' statement_output_product_code,'NO ASIGNADO' statement_output
 UNION
 SELECT ai."id"              area_impact_id,
        ai.code              area_impact_code,
@@ -262,11 +260,10 @@ SELECT ai."id"              area_impact_id,
 FROM osmosys.statements sti
          INNER JOIN osmosys.areas ai on sti.area_id = ai.id
          INNER JOIN osmosys.statements str on sti.id = str.parent_statement_id and sti.area_type = 'IMPACTO'
-        INNER JOIN osmosys.areas ar
-on str.area_id =ar.id
-    INNER JOIN osmosys.statements stp on str.id =stp.parent_statement_id and str.area_type IN (' RESULTADO ',' APOYO ')
+         INNER JOIN osmosys.areas ar
+                    on str.area_id =ar.id
+         INNER JOIN osmosys.statements stp on str.id =stp.parent_statement_id and str.area_type IN ('RESULTADO','APOYO')
 order by area_impact_id, statement_impact_id, area_outcome_id, statement_outcome_id, statement_output_id;
-
 
 
 DROP VIEW IF EXISTS cube.month_source;

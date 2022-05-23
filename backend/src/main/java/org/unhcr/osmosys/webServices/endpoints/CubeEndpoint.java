@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.webServices.endpoints;
 
 import com.sagatechs.generics.security.annotations.BasicSecured;
+import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.cubeDTOs.*;
 import org.unhcr.osmosys.services.CubeService;
 
@@ -19,13 +20,17 @@ public class CubeEndpoint {
 
     @Inject
     CubeService cubeService;
-
+    private static final Logger LOGGER = Logger.getLogger(CubeEndpoint.class);
     @Path("/factTable/{year}")
     @GET
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<FactDTO> getFactTableByPeriodYear(@PathParam("year") Integer year) {
-        return this.cubeService.getFactTableByPeriodYear(year);
+        long lStartTime = System.nanoTime();
+        List<FactDTO> r = this.cubeService.getFactTableByPeriodYear(year);
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds factTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/monthQuarterYearTable")

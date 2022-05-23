@@ -1,5 +1,6 @@
 package org.unhcr.osmosys.services;
 
+import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.CubeDao;
 import org.unhcr.osmosys.model.cubeDTOs.*;
 
@@ -10,12 +11,16 @@ import java.util.List;
 
 @Stateless
 public class CubeService {
-
+    private static final Logger LOGGER = Logger.getLogger(CubeService.class);
     @Inject
     CubeDao cubeDao;
 
     public List<FactDTO> getFactTableByPeriodYear(Integer periodYear) {
-        return this.cubeDao.getFactTableByPeriodYear(periodYear);
+        long lStartTime = System.nanoTime();
+        List<FactDTO> r = this.cubeDao.getFactTableByPeriodYear(periodYear);
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds getFactTableByPeriodYear dao: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     public List<MonthQuarterYearDTO> getMonthQuarterYearTable() {
