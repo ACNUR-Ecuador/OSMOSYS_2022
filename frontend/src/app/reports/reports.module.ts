@@ -18,6 +18,14 @@ import {ToolbarModule} from 'primeng/toolbar';
 import {FieldsetModule} from 'primeng/fieldset';
 import {SplitButtonModule} from 'primeng/splitbutton';
 import { IndicatorCatalogReportsComponent } from './indicator-catalog-reports/indicator-catalog-reports.component';
+import { ShelterComponent } from './powerbi/shelter/shelter.component';
+import { ResettlementComponent } from './powerbi/resettlement/resettlement.component';
+import { HabitabilityComponent } from './powerbi/habitability/habitability.component';
+import { LivelihoodsComponent } from './powerbi/livelihoods/livelihoods.component';
+import { CbiComponent } from './powerbi/cbi/cbi.component';
+import { CommunityProtectionComponent } from './powerbi/community-protection/community-protection.component';
+import { SpecialNeedsComponent } from './powerbi/special-needs/special-needs.component';
+import { ProductIndicatorsComponent } from './powerbi/product-indicators/product-indicators.component';
 
 
 @NgModule({
@@ -27,7 +35,15 @@ import { IndicatorCatalogReportsComponent } from './indicator-catalog-reports/in
     ReportControlPartnersComponent,
     ReportControlDirectImplementationComponent,
     DataExportComponent,
-    IndicatorCatalogReportsComponent
+    IndicatorCatalogReportsComponent,
+    ShelterComponent,
+    ResettlementComponent,
+    HabitabilityComponent,
+    LivelihoodsComponent,
+    CbiComponent,
+    CommunityProtectionComponent,
+    SpecialNeedsComponent,
+    ProductIndicatorsComponent
   ],
     imports: [
         CommonModule,

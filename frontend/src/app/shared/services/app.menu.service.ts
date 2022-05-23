@@ -173,35 +173,85 @@ export class MenuService {
                     icon: 'pi pi-fw pi-file-excel',
                     routerLink: ['/reports/dataExport'],
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS'],
-                },
-                {
-                    label: 'Control de Reportes',
-                    icon: 'pi pi-users',
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID'],
-                    items: [
-                        {
-                            label: 'Tablero Control Reporte de Socios',
-                            icon: 'pi pi-fw book',
-                            routerLink: ['/reports/reportControlPartners'],
-                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL'],
-                        },
-                        {
-                            label: 'Tablero Control Reporte de ID',
-                            icon: 'pi pi-fw book',
-                            routerLink: ['/reports/reportControlDirectImplementation'],
-                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID'],
-                        },
-                        {
-                            label: 'Reporte de Estado de Reporte de Proyectos',
-                            icon: 'pi pi-fw book',
-                            routerLink: ['/reports/allProjectsState'],
-                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL'],
-                        },
-                    ]
                 }
             ]
         },
         {separator: true},
+        {
+            label: 'Tableros de Control',
+            icon: 'pi pi-chart-line',
+            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
+            items: [
+                {
+                    label: 'Reportes Temáticos',
+                    icon: 'pi pi-fw pi-chart-bar',
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
+                    items: [
+                        {
+                            label: 'Albergue de Emergencia',
+                            icon: 'pi pi-fw pi-chart-bar',
+                            routerLink: ['/reports/shelter'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                        },
+                        {
+                            label: 'Transferencias Monetarias',
+                            icon: 'pi pi-fw pi-chart-bar',
+                            routerLink: ['/reports/cbi'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                        }, {
+                            label: 'Protección Comunitaria',
+                            icon: 'pi pi-fw pi-chart-bar',
+                            routerLink: ['/reports/communityProtection'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                        }, {
+                            label: 'Habitabilidad',
+                            icon: 'pi pi-fw pi-chart-bar',
+                            routerLink: ['/reports/habitability'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                        }, {
+                            label: 'Medios de Vida',
+                            icon: 'pi pi-fw pi-chart-bar',
+                            routerLink: ['/reports/livelihoods'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                        }, {
+                            label: 'Reasentamiento',
+                            icon: 'pi pi-fw pi-chart-bar',
+                            routerLink: ['/reports/resettlement'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                        }, {
+                            label: 'Necesidades Especiales',
+                            icon: 'pi pi-fw pi-chart-bar',
+                            routerLink: ['/reports/specialNeeds'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                        }
+                    ]
+                },
+                {
+                    label: 'Indicadores de Producto',
+                    icon: 'pi pi-fw pi-chart-line',
+                    routerLink: ['/reports/productIndicators'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL'],
+                },
+                {
+                    label: 'Tablero Control Reporte de Socios',
+                    icon: 'pi pi-fw book',
+                    routerLink: ['/reports/reportControlPartners'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL'],
+                },
+                {
+                    label: 'Tablero Control Reporte de ID',
+                    icon: 'pi pi-fw book',
+                    routerLink: ['/reports/reportControlDirectImplementation'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID'],
+                },
+                {
+                    label: 'Reporte de Estado de Reporte de Proyectos',
+                    icon: 'pi pi-fw book',
+                    routerLink: ['/reports/allProjectsState'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL'],
+                },
+            ]
+        }
     ];
 
     private menuSource = new Subject<string>();
