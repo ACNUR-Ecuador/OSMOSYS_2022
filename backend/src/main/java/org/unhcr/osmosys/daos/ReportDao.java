@@ -26,7 +26,7 @@ public class ReportDao {
     public List<IndicatorExecutionDetailedDTO> getAllIndicatorExecutionDetailed(Long periodId) {
 
         String sql = ReportDao.detailedIndicatorExecutions
-                + " WHERE period_id= :periodId and value>1 ";
+                + " WHERE period_id= :periodId and value>0 ";
         sql += ReportDao.detailedIndicatorExecutionsOrder;
         Query q = this.entityManager.createNativeQuery(sql, "IndicatorExecutionDetailedMapping");
         q.setParameter("periodId", periodId);
@@ -36,7 +36,7 @@ public class ReportDao {
     public List<IndicatorExecutionDetailedDTO> getAllPerformanceIndicatorsIndicatorExecutionDetailed(Long periodId) {
         String sql = ReportDao.detailedIndicatorExecutions
                 + " WHERE performance_indicator_id is not null "
-                + " AND period_id= :periodId and value>1";
+                + " AND period_id= :periodId and value>0";
         sql += ReportDao.detailedIndicatorExecutionsOrder;
         Query q = this.entityManager.createNativeQuery(sql, "IndicatorExecutionDetailedMapping");
         q.setParameter("periodId", periodId);
@@ -47,7 +47,7 @@ public class ReportDao {
 
         String sql = ReportDao.detailedIndicatorExecutions
                 + " WHERE project_id is not null "
-                + " AND period_id= :periodId and value>1";
+                + " AND period_id= :periodId and value>0";
         sql += ReportDao.detailedIndicatorExecutionsOrder;
         Query q = this.entityManager.createNativeQuery(sql, "IndicatorExecutionDetailedMapping");
         q.setParameter("periodId", periodId);
@@ -60,7 +60,7 @@ public class ReportDao {
                 + " WHERE project_id is not null "
                 + " AND performance_indicator_id is null "
                 + " AND period_id= :periodId " +
-                " and value>1 ";
+                " and value>0 ";
         sql += ReportDao.detailedIndicatorExecutionsOrder;
         Query q = this.entityManager.createNativeQuery(sql, "IndicatorExecutionDetailedMapping");
         q.setParameter("periodId", periodId);
@@ -73,7 +73,7 @@ public class ReportDao {
                 + " WHERE project_id is not null "
                 + " AND performance_indicator_id is not null "
                 + " AND period_id= :periodId" +
-                " and value>1 ";
+                " and value>0 ";
         sql += ReportDao.detailedIndicatorExecutionsOrder;
         Query q = this.entityManager.createNativeQuery(sql, "IndicatorExecutionDetailedMapping");
         q.setParameter("periodId", periodId);
@@ -85,7 +85,7 @@ public class ReportDao {
                 + " WHERE project_id is null "
                 + " AND performance_indicator_id is not null "
                 + " AND period_id= :periodId " +
-                " and value>1";
+                " and value>0";
         sql += ReportDao.detailedIndicatorExecutionsOrder;
         Query q = this.entityManager.createNativeQuery(sql, "IndicatorExecutionDetailedMapping");
         q.setParameter("periodId", periodId);
