@@ -238,6 +238,13 @@ export class MenuService {
                     routerLink: ['/reports/rbaIndicators'],
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL'],
                 },
+
+                {
+                    label: 'Indicadores ActivityInfo',
+                    icon: 'pi pi-fw pi-chart-line',
+                    routerLink: ['/reports/activityInfoIndicators'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL'],
+                },
                 {
                     label: 'Tablero Control Reporte de Socios',
                     icon: 'pi pi-fw book',
