@@ -60,8 +60,8 @@ string_agg(DISTINCT cd.description,', ') custom_dissagregations
 
 FROM
 osmosys.indicators  i 
-LEFT JOIN osmosys.dissagregation_assignation_indicator da on i.id=da.indicator_id
-LEFT JOIN osmosys.custom_dissagregation_assignation_indicator dac on i.id=dac.indicator_id
+LEFT JOIN osmosys.dissagregation_assignation_indicator da on i.id=da.indicator_id and da.state='ACTIVO'
+LEFT JOIN osmosys.custom_dissagregation_assignation_indicator dac on i.id=dac.indicator_id and dac.state='ACTIVO'
 LEFT JOIN osmosys.custom_dissagregations cd on dac.custom_dissagregation_id=cd.id
 LEFT JOIN osmosys.indicator_executions ie  on ie.performance_indicator_id=i.id and ie."state"='ACTIVO' AND IE.performance_indicator_id IS NOT NULL
 LEFT JOIN osmosys.statements st on i.statement_id = st.id
