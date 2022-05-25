@@ -140,7 +140,8 @@ END as indicator,
 i.category,
 i.frecuency,
 COALESCE (offf.acronym, org.acronym) implementers,
-string_agg(DISTINCT da.dissagregation_type,', ') dissagregations,
+pr."name" projects,
+COALESCE(string_agg(DISTINCT da.dissagregation_type,', '),string_agg(DISTINCT dagi.dissagregation_type,', ')) dissagregations,
 string_agg(DISTINCT cd.description,', ') custom_dissagregations,
 ie.total_execution,
 ie.target,
@@ -155,8 +156,8 @@ FROM
 osmosys.indicator_executions ie
 LEFT JOIN osmosys.indicators i on ie.performance_indicator_id=i.id
 LEFT JOIN osmosys.statements stb on ie.project_statement_id= stb.id
-LEFT JOIN osmosys.dissagregation_assignation_indicator da on i.id=da.indicator_id
-LEFT JOIN osmosys.custom_dissagregation_assignation_indicator dac on i.id=dac.indicator_id
+LEFT JOIN osmosys.dissagregation_assignation_indicator da on i.id=da.indicator_id and da."state"='ACTIVO'
+LEFT JOIN osmosys.custom_dissagregation_assignation_indicator dac on i.id=dac.indicator_id and daC."state"='ACTIVO'
 LEFT JOIN osmosys.custom_dissagregations cd on dac.custom_dissagregation_id=cd.id
 LEFT JOIN osmosys.statements st on i.statement_id = st.id
 LEFT JOIN osmosys.areas ar on st.area_id=ar."id"
@@ -165,11 +166,13 @@ LEFT JOIN osmosys.projects pr on ie.project_id=pr."id"
 LEFT JOIN osmosys.organizations org on pr.organization_id=org."id"
 LEFT JOIN osmosys.periods per on ie.period_id=per."id"
 LEFT JOIN osmosys.general_indicators gi on per.id=gi.periodo_id
+LEFT JOIN osmosys.dissagregation_assignation_general_indicator dagi on gi.id=dagi.general_indicator_id and dagi."state"='ACTIVO'
+
 WHERE ie."state"='ACTIVO' 
 AND ie.project_id is not null
 AND ie.period_id= $P{periodId} 
-GROUP BY ar.id,1,2,3,4,5,6,7,8,9,10
-ORDER BY ar.id,1,2,3,4,5,6,7,8,9,10]]>
+GROUP BY 11,ar.id,1,2,3,4,5,6,7,8,9,10
+ORDER BY 11,6,1,2,3,4,5,7,8,9,10]]>
 		</queryString>
 		<field name="ie_id" class="java.lang.Long">
 			<property name="com.jaspersoft.studio.field.name" value="ie_id"/>
@@ -245,6 +248,7 @@ ORDER BY ar.id,1,2,3,4,5,6,7,8,9,10]]>
 			<property name="com.jaspersoft.studio.field.name" value="months_late"/>
 			<property name="com.jaspersoft.studio.field.label" value="months_late"/>
 		</field>
+		<field name="projects" class="java.lang.String"/>
 	</subDataset>
 	<parameter name="periodId" class="java.lang.Long"/>
 	<queryString language="SQL">
@@ -395,8 +399,26 @@ ORDER BY ar.id,1,2,3,4,5,6,7,8,9,10]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="122" uuid="fe863114-4d3a-4249-955f-8e7e8d31814d">
+					<jr:column width="188" uuid="b00735ab-bfe0-4b70-b29f-599c441da98d">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="188" height="30" uuid="1e0fe1af-4168-4c04-a47e-cee5c8143010"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Proyectos]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="188" height="30" uuid="5b5982b9-836c-45cb-a16e-68d3f1491d84"/>
+								<textFieldExpression><![CDATA[$F{projects}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="122" uuid="fe863114-4d3a-4249-955f-8e7e8d31814d">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="122" height="30" uuid="2c0ce02a-4f6f-47a1-87e3-f23c242974d5"/>
@@ -414,7 +436,7 @@ ORDER BY ar.id,1,2,3,4,5,6,7,8,9,10]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="121" uuid="218dc8c3-967d-4778-a1fd-b0f2ada8feac">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="121" height="30" uuid="6c56317b-f386-473c-927a-dfd6b75ff047"/>
@@ -432,7 +454,7 @@ ORDER BY ar.id,1,2,3,4,5,6,7,8,9,10]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="83" uuid="d59f56e7-49ff-43e9-a956-82f7079ef1f4">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="83" height="30" uuid="c7302c3f-99f7-4fd8-9cdb-3d73a323fed0"/>
@@ -451,7 +473,7 @@ ORDER BY ar.id,1,2,3,4,5,6,7,8,9,10]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="91" uuid="26c19022-4669-49a9-b8d6-34c5e394a312">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="91" height="30" uuid="b888929b-03f2-4599-9665-94fc4352e5f0"/>
@@ -470,7 +492,7 @@ ORDER BY ar.id,1,2,3,4,5,6,7,8,9,10]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="82" uuid="7c6b9abc-97b1-4620-8034-d06331707b86">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="82" height="30" uuid="fd9bffce-ebbf-43cb-871d-63f41a3aff1e"/>
@@ -490,7 +512,7 @@ ORDER BY ar.id,1,2,3,4,5,6,7,8,9,10]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="107" uuid="b2192981-beaf-43ba-9856-f0b4422807e9">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="107" height="30" uuid="02373967-2026-441e-9482-ad362f6a2afd"/>
@@ -508,7 +530,7 @@ ORDER BY ar.id,1,2,3,4,5,6,7,8,9,10]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="121" uuid="4e5dd232-41b5-4b41-98c7-f96ad9595971">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="121" height="30" uuid="e4457da9-eea2-4bb5-9903-24f4073e6d14"/>
