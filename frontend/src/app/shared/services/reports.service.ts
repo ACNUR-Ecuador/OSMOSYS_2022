@@ -49,28 +49,28 @@ export class ReportsService {
     }
 
     public getAllImplementationsPerformanceIndicatorsAnnualByPeriodId(periodId: number) {
-        return this.http.get(`${mainServiceUrl}/getAllImplementationsAnnualByPeriodId/${periodId}`, {
+        return this.http.get(`${mainServiceUrl}/getAllImplementationsPerformanceIndicatorsAnnualByPeriodId/${periodId}`, {
             observe: 'response',
             responseType: 'blob' as 'json'
         });
     }
 
     public getAllImplementationsPerformanceIndicatorsQuarterlyByPeriodId(periodId: number) {
-        return this.http.get(`${mainServiceUrl}/getAllImplementationsQuarterlyByPeriodId/${periodId}`, {
+        return this.http.get(`${mainServiceUrl}/getAllImplementationsPerformanceIndicatorsQuarterlyByPeriodId/${periodId}`, {
             observe: 'response',
             responseType: 'blob' as 'json'
         });
     }
 
     public getAllImplementationsPerformanceIndicatorsMonthlyByPeriodId(periodId: number) {
-        return this.http.get(`${mainServiceUrl}/getAllImplementationsMonthlyByPeriodId/${periodId}`, {
+        return this.http.get(`${mainServiceUrl}/getAllImplementationsPerformanceIndicatorsMonthlyByPeriodId/${periodId}`, {
             observe: 'response',
             responseType: 'blob' as 'json'
         });
     }
 
     public getAllImplementationsPerformanceIndicatorsDetailedByPeriodId(periodId: number) {
-        return this.http.get(`${mainServiceUrl}/getAllImplementationsDetailedByPeriodId/${periodId}`, {
+        return this.http.get(`${mainServiceUrl}/getAllImplementationsPerformanceIndicatorsDetailedByPeriodId/${periodId}`, {
             observe: 'response',
             responseType: 'blob' as 'json'
         });
