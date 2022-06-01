@@ -80,19 +80,19 @@ export class MenuService {
                             routerLink: ['/administration/customDissagregation'],
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
                         },
-                    ]
-                },
-                {
-                    label: 'Configuración de indicadores',
-                    icon: 'pi pi-fw pi-cog',
-                    roles: ['SUPER_ADMINISTRADOR'],
-                    items: [
                         {
                             label: 'Organizaciones',
                             icon: 'pi pi-fw pi-cog',
                             routerLink: ['/administration/organizations'],
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
-                        },
+                        }
+                    ]
+                },
+                {
+                    label: 'Configuración de indicadores',
+                    icon: 'pi pi-fw pi-cog',
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'],
+                    items: [
                         {
                             label: 'Marcadores',
                             icon: 'pi pi-fw pi-cog',
