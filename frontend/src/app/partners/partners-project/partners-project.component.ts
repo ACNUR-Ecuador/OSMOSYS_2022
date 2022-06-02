@@ -5,7 +5,7 @@ import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {UtilsService} from '../../shared/services/utils.service';
 import {ProjectService} from '../../shared/services/project.service';
 import {ActivatedRoute} from '@angular/router';
-import {IndicatorExecution, Project} from '../../shared/model/OsmosysModel';
+import {IndicatorExecution, Project, QuarterState} from '../../shared/model/OsmosysModel';
 import {ColumnTable} from '../../shared/model/UtilsModel';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
@@ -17,6 +17,7 @@ import {PerformanceIndicatorFormComponent} from '../../indicator-forms/performan
 import {IndicatorPipe} from '../../shared/pipes/indicator.pipe';
 import {ReportsService} from '../../shared/services/reports.service';
 import {HttpResponse} from '@angular/common/http';
+import {UserService} from '../../shared/services/user.service';
 
 @Component({
     selector: 'app-partners-project',
@@ -43,6 +44,7 @@ export class PartnersProjectComponent implements OnInit {
     public formItem: FormGroup;
     public states: SelectItem[];
     public project: Project;
+    public quarterStates: QuarterState[];
     public generalIndicators: IndicatorExecution[];
 
     // tslint:disable-next-line:variable-name
@@ -50,6 +52,10 @@ export class PartnersProjectComponent implements OnInit {
     colsGeneralIndicators: ColumnTable[];
     itemsReportTypeFull: MenuItem[];
     public projectType: string = null;
+// roles
+    isAdmin = false;
+    isProjectFocalPoint = false;
+    isEjecutor = false;
 
     constructor(
         public dialogService: DialogService,
@@ -63,7 +69,8 @@ export class PartnersProjectComponent implements OnInit {
         private enumValuesToLabelPipe: EnumValuesToLabelPipe,
         private indicatorPipe: IndicatorPipe,
         private route: ActivatedRoute,
-        private reportsService: ReportsService
+        private reportsService: ReportsService,
+        private userService: UserService
     ) {
         this.idProjectParam = this.route.snapshot.paramMap.get('projectId');
         if (this.idProjectParam === 'null') {
@@ -81,6 +88,11 @@ export class PartnersProjectComponent implements OnInit {
     private loadProject(idProject: number) {
         this.projectService.getProjectById(idProject).subscribe(value => {
             this.project = value;
+            this.setRoles();
+            this.projectService.getQuartersStateByProjectId(idProject).subscribe(value1 => {
+                this.quarterStates = value1;
+                console.log(this.quarterStates);
+            });
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -118,7 +130,10 @@ export class PartnersProjectComponent implements OnInit {
                 data: {
                     indicatorExecution,
                     monthId,
-                    projectId: this.project.id
+                    projectId: this.project.id,
+                    isAdmin: this.isAdmin,
+                    isProjectFocalPoint: this.isProjectFocalPoint,
+                    isEjecutor: this.isEjecutor
                 }
             }
         );
@@ -143,7 +158,10 @@ export class PartnersProjectComponent implements OnInit {
                 data: {
                     indicatorExecution,
                     monthId,
-                    projectId: this.project.id
+                    projectId: this.project.id,
+                    isAdmin: this.isAdmin,
+                    isProjectFocalPoint: this.isProjectFocalPoint,
+                    isEjecutor: this.isEjecutor
                 }
             }
         );
@@ -237,5 +255,34 @@ export class PartnersProjectComponent implements OnInit {
                 life: 3000
             });
         });
+    }
+
+    changeQuarterState(quarter, event) {
+        quarter.blockUpdate = !event.checked;
+        console.log('--------------------');
+        console.log(quarter);
+        console.log(event);
+        console.log(this.quarterStates);
+        this.projectService.blockQuarterStateByProjectId(this.project.id, quarter).subscribe(value => {
+            this.quarterStates = value;
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al Actualizar el Trimestre',
+                detail: error.error.message,
+                life: 3000
+            });
+            this.projectService.getQuartersStateByProjectId(this.project.id).subscribe(value => {
+                this.quarterStates = value;
+            });
+        });
+    }
+
+    private setRoles() {
+        const userId = this.userService.getLogedUsername().id;
+        const orgId = this.userService.getLogedUsername().organization.id;
+        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']);
+        this.isProjectFocalPoint = this.project.focalPoint && this.project.focalPoint.id === userId;
+        this.isEjecutor = this.project.organization.id === orgId && this.userService.hasRole('EJECUTOR_PROYECTOS');
     }
 }

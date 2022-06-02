@@ -2,6 +2,8 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {IndicatorExecution, Quarter, QuarterMonthResume} from '../../shared/model/OsmosysModel';
 import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsState} from '../../shared/model/UtilsModel';
+import {MonthService} from '../../shared/services/month.service';
+import {MessageService} from 'primeng/api';
 
 @Component({
     selector: 'app-partners-general-indicator-quarter-list',
@@ -14,13 +16,22 @@ export class PartnersGeneralIndicatorQuarterListComponent implements OnInit {
 
     @Input()
     indicatorExecution: IndicatorExecution;
-
+    // roles
+    @Input()
+    isAdmin = false;
+    @Input()
+    isProjectFocalPoint = false;
     @Output()
     callMonth = new EventEmitter<number>();
+    @Output()
+    refreshData = new EventEmitter<number>();
+
     quarterMonthResumes: QuarterMonthResume[];
     monthsCount = 0;
 
-    constructor(public utilsService: UtilsService) {
+    constructor(public utilsService: UtilsService,
+                private monthService: MonthService,
+                public messageService: MessageService) {
     }
 
     ngOnInit(): void {
@@ -55,6 +66,7 @@ export class PartnersGeneralIndicatorQuarterListComponent implements OnInit {
                 qmr.monthOrder = month.order;
                 qmr.monthYear = month.year;
                 qmr.monthTotalExecution = month.totalExecution;
+                qmr.blockUpdate = month.blockUpdate;
                 // year rowspan
                 if (!yearSpan) {
                     yearSpan = quarter.year;
@@ -92,4 +104,24 @@ export class PartnersGeneralIndicatorQuarterListComponent implements OnInit {
         this.callMonth.emit(monthId);
     }
 
+    changeMonthBlocking(quarterMonthResume: QuarterMonthResume, $event: any) {
+        console.log(quarterMonthResume);
+        console.log($event);
+        this.monthService.changeBlockedState(quarterMonthResume.monthId, $event.checked).subscribe(() => {
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Mes actualizado correctamente',
+                life: 3000
+            });
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al actualizar el mes',
+                detail: error.error.message,
+                life: 3000
+            });
+        }, () => {
+            this.refreshData.emit(quarterMonthResume.monthId);
+        });
+    }
 }

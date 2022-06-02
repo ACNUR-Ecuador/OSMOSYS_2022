@@ -11,6 +11,7 @@
                 <th>Mes</th>
                 <th>Ejecución Mensual</th>
                 <th></th>
+                <th *ngIf="isAdmin || isProjectFocalPoint">Bloqueo Mes</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowdata let-rowIndex="rowIndex" let-rowgroup="rowgroup"
@@ -33,7 +34,7 @@
                 </td>
                 <td>
                     <span class="p-text-bold p-ml-2"
-                          >{{rowdata.monthMonth }}</span>
+                    >{{rowdata.monthMonth }}</span>
                 </td>
                 <td style="text-align: center !important;">
                     <span
@@ -41,7 +42,20 @@
                         class="p-text-bold p-ml-2">{{rowdata.monthTotalExecution | valuesState:rowdata.monthMonth :rowdata.monthYear}}</span>
                 </td>
                 <td>
-                    <button type="button" pButton label="Ver valores" (click)="callMonthInParenth(rowdata.monthId)"></button>
+                    <button type="button" pButton label="Ver valores"
+                            (click)="callMonthInParenth(rowdata.monthId)"></button>
+                </td>
+                <td *ngIf="isAdmin || isProjectFocalPoint">
+                    <p-toggleButton
+                        [ngModelOptions]="{standalone: true}"
+                        [ngModel]="rowdata.blockUpdate"
+                        onLabel="{{' bloqueado'}}"
+                        offLabel="{{' desbloqueado'}}"
+                        onIcon="pi pi-lock"
+                        offIcon="pi pi-lock-open"
+                        pTooltip="{{indicatorExecution.indicator.blockAfterUpdate?'Solo puede ser desbloqueado por el administrador':'Bloqueo de Actualizaciòn' }}"
+                        [disabled]="indicatorExecution.indicator.blockAfterUpdate && !isAdmin"
+                        (onChange)="changeMonthBlocking(rowdata,$event)"></p-toggleButton>
                 </td>
             </tr>
         </ng-template>

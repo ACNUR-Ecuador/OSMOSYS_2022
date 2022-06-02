@@ -8,7 +8,6 @@ import {UtilsService} from '../../shared/services/utils.service';
 import {MessageService, SelectItem} from 'primeng/api';
 import {DissagregationType, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {UserService} from '../../shared/services/user.service';
 
 @Component({
     selector: 'app-performance-indicator-form',
@@ -19,12 +18,14 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     indicatorExecution: IndicatorExecution;
     monthId: number;
     projectId: number;
+    isAdmin = false;
+    isProjectFocalPoint = false;
+    isEjecutor = false;
     monthValues: MonthValues;
     month: Month;
     monthValuesMap: Map<string, IndicatorValue[]>;
     monthCustomDissagregatoinValues: CustomDissagregationValues[];
     formItem: FormGroup;
-    isProjectFocalPoint = false;
 
     oneDimentionDissagregations: DissagregationType[] = [];
     twoDimentionDissagregations: DissagregationType[] = [];
@@ -49,7 +50,6 @@ export class PerformanceIndicatorFormComponent implements OnInit {
                 public utilsService: UtilsService,
                 private messageService: MessageService,
                 private fb: FormBuilder,
-                private userService: UserService
     ) {
     }
 
@@ -57,7 +57,10 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         this.indicatorExecution = this.config.data.indicatorExecution; //
         this.monthId = this.config.data.monthId; //
         this.projectId = this.config.data.projectId; //
-        this.setRoles();
+        this.isAdmin = this.config.data.isAdmin; //
+        this.isProjectFocalPoint = this.config.data.isProjectFocalPoint; //
+        this.isEjecutor = this.config.data.isEjecutor; //
+
         this.formItem = this.fb.group({
             commentary: new FormControl('', [Validators.maxLength(1000)]),
             sources: new FormControl('', Validators.required),
@@ -81,20 +84,20 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         });
     }
 
-    private setRoles() {
-        const userId = this.userService.getLogedUsername().id;
-        const orgId = this.userService.getLogedUsername().organization.id;
-        const isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']);
-        this.isProjectFocalPoint = isAdmin
-            || (this.indicatorExecution.project.focalPoint && this.indicatorExecution.project.focalPoint.id === userId);
-        if (isAdmin ||
-            (this.indicatorExecution.project.focalPoint && this.indicatorExecution.project.focalPoint.id === userId)
-            || (this.indicatorExecution.project.organization.id === orgId && this.userService.hasRole('EJECUTOR_PROYECTOS'))
-
-        ) {
+    private setEditable() {
+        if (this.isAdmin) {
             this.editable = true;
-        } else {
-            this.editable = true;
+        } else { // noinspection RedundantIfStatementJS
+            if (!this.month.blockUpdate &&
+                        (
+                            this.isProjectFocalPoint
+                            || this.isEjecutor
+                        )
+                    ) {
+                        this.editable = true;
+                    } else {
+                        this.editable = false;
+                    }
         }
     }
 
@@ -110,7 +113,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
             if (this.indicatorExecution.keepBudget) {
                 this.formItem.get('usedBudget').patchValue(this.month.usedBudget);
                 this.formItem.get('usedBudget').setValidators(Validators.required);
-            }else {
+            } else {
                 this.formItem.get('usedBudget').clearValidators();
             }
             if (this.isProjectFocalPoint) {
@@ -122,6 +125,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
             this.enumsService.getByType(EnumsType.SourceType).subscribe(value1 => {
                 this.sourceTypes = value1;
             });
+            this.setEditable();
             this.setDimentionsDissagregations();
         }, error => {
             this.messageService.add({
@@ -188,9 +192,9 @@ export class PerformanceIndicatorFormComponent implements OnInit {
                     this.twoDimentionDissagregations.push(dissagregationType);
                 } else if (totalNoDimentions.indexOf(dissagregationType) >= 0) {
                     this.noDimentionDissagregations.push(dissagregationType);
-                }else if (totalThreeDimentions.indexOf(dissagregationType) >= 0) {
+                } else if (totalThreeDimentions.indexOf(dissagregationType) >= 0) {
                     this.threeDimentionDissagregations.push(dissagregationType);
-                }else if (totalFourDimentions.indexOf(dissagregationType) >= 0) {
+                } else if (totalFourDimentions.indexOf(dissagregationType) >= 0) {
                     this.fourDimentionDissagregations.push(dissagregationType);
                 }
             }

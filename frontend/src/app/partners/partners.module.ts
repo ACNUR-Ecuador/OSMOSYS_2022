@@ -30,6 +30,8 @@ import {IndicatorPipe} from '../shared/pipes/indicator.pipe';
 import {MonthPipe} from '../shared/pipes/month.pipe';
 import { PartnersGeneralIndicatorQuarterListComponent } from './partners-general-indicator-quarter-list/partners-general-indicator-quarter-list.component';
 import {SplitButtonModule} from 'primeng/splitbutton';
+import {ToggleButtonModule} from 'primeng/togglebutton';
+import {TooltipModule} from 'primeng/tooltip';
 
 
 @NgModule({
@@ -61,7 +63,9 @@ import {SplitButtonModule} from 'primeng/splitbutton';
         CardModule,
         OverlayPanelModule,
         IndicatorFormsModule,
-        SplitButtonModule
+        SplitButtonModule,
+        ToggleButtonModule,
+        TooltipModule
     ],
     providers: [
         EnumValuesToLabelPipe,

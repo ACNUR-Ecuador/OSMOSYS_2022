@@ -30,4 +30,8 @@ export class MonthService {
     public getMonthsByIndicatorExecutionId(indicatorExecutinId: number): Observable<Month[]> {
         return this.http.get<Month[]>(`${mainServiceUrl}/getMonthsByIndicatorExecutionId/${indicatorExecutinId}`);
     }
+
+    public changeBlockedState(monthId: number, blockingState: boolean): Observable<number> {
+        return this.http.post<number>(`${mainServiceUrl}/changeBlockedState/${monthId}/${blockingState}`, null);
+    }
 }

@@ -20,6 +20,13 @@ import {OverlayPanel} from 'primeng/overlaypanel';
 export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnChanges {
     @Input()
     public project: Project;
+    // roles
+    @Input()
+    isAdmin = false;
+    @Input()
+    isProjectFocalPoint = false;
+    @Input()
+    isEjecutor = false;
     @Output()
     callMonthParent = new EventEmitter<Map<string, number | IndicatorExecution>>();
 
@@ -113,6 +120,11 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnC
         this.callMonthParent.emit(parametersMap);
     }
 
+    // noinspection JSUnusedLocalSymbols
+    refreshData(monthId: number, overlayPanel: OverlayPanel) {
+        this.loadGeneralIndicators(this.project.id);
+    }
+
     selectedIndicatorSet(indicator: IndicatorExecution) {
         this.selectedIndicator = indicator;
     }
@@ -135,7 +147,6 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnC
             return this.filterUtilsService.generalFilter(value, ['month', 'year'], filter);
         });
     }
-
 
 
 }

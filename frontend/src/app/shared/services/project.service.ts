@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Project, ProjectResume} from '../model/OsmosysModel';
+import {Project, ProjectResume, QuarterState} from '../model/OsmosysModel';
 import {EnumsState} from '../model/UtilsModel';
 import {map} from 'rxjs/operators';
 
@@ -54,6 +54,14 @@ export class ProjectService {
                 return value;
             })
         );
+    }
+
+    public getQuartersStateByProjectId(projectId: number): Observable<QuarterState[]> {
+        return this.http.get<QuarterState[]>(`${mainServiceUrl}/getQuartersStateByProjectId/${projectId}`);
+    }
+
+    public blockQuarterStateByProjectId(projectId: number, quarterState: QuarterState): Observable<QuarterState[]> {
+        return this.http.post<QuarterState[]>(`${mainServiceUrl}/blockQuarterStateByProjectId/${projectId}`, quarterState);
     }
 
 }

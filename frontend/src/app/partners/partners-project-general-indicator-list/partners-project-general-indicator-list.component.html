@@ -75,6 +75,9 @@
                             [quarters]="rowData.quarters"
                             (callMonth)="callMonth($event, op)"
                             [indicatorExecution]="rowData"
+                            [isAdmin]="isAdmin"
+                            [isProjectFocalPoint]="isProjectFocalPoint"
+                            (refreshData)="refreshData($event, op)"
                         >
                         </app-partners-general-indicator-quarter-list>
                     </ng-template>

@@ -21,6 +21,14 @@ import {OverlayPanel} from 'primeng/overlaypanel';
 export class PartnersProjectPerformanceIndicatorListComponent implements OnInit, OnChanges {
     @Input()
     public project: Project;
+    // roles
+    @Input()
+    isAdmin = false;
+    @Input()
+    isProjectFocalPoint = false;
+    @Input()
+    isEjecutor = false;
+
     @Output()
     callMonthParent = new EventEmitter<Map<string, number | IndicatorExecution>>();
 
@@ -131,6 +139,11 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
         parametersMap.set('monthId', monthId);
         parametersMap.set('indicator', this.selectedIndicator);
         this.callMonthParent.emit(parametersMap);
+    }
+
+    // noinspection JSUnusedLocalSymbols
+    refreshData(monthId: number, overlayPanel: OverlayPanel) {
+        this.loadPerformanceIndicators(this.project.id);
     }
 
     @Input() get selectedColumnsPerformanceIndicators(): any[] {

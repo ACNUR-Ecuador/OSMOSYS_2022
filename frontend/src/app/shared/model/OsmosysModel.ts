@@ -185,6 +185,7 @@ export class Indicator {
     public compassIndicator: boolean;
     public statement: Statement;
     public unit: string;
+    public blockAfterUpdate: boolean;
     public dissagregationsAssignationToIndicator: DissagregationAssignationToIndicator[];
     public customDissagregationAssignationToIndicators: CustomDissagregationAssignationToIndicator[];
 }
@@ -271,6 +272,13 @@ export class ProjectResume {
     public organizationAcronym: string;
     public periodId: number;
     public periodYear: number;
+}
+
+export class QuarterState {
+    public quarter: string;
+    public year: number;
+    public blockUpdate: boolean;
+    public quarterYearOrder: number;
 }
 
 export class Canton {
@@ -374,6 +382,7 @@ export class Month {
     public sourceOther: string;
     public checked: boolean;
     public usedBudget: number;
+    public blockUpdate: boolean;
 }
 
 /********usado en pantalla*****/
@@ -397,6 +406,8 @@ export class QuarterMonthResume {
 
     public yearSpan: boolean;
     public yearSpanCount: number;
+
+    public blockUpdate: boolean;
 }
 
 

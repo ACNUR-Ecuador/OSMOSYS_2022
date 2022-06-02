@@ -330,7 +330,8 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             dissagregations,
             dissagregationsAssignationToIndicator,
             customDissagregations,
-            customDissagregationAssignationToIndicators
+            customDissagregationAssignationToIndicators,
+            blockAfterUpdate
         }
             = this.formItem.value;
         // todo
@@ -354,7 +355,8 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             statement,
             unit,
             dissagregationsAssignationToIndicator,
-            customDissagregationAssignationToIndicators
+            customDissagregationAssignationToIndicators,
+            blockAfterUpdate
         };
         // process assignation dissagregations
 // desagregaciones

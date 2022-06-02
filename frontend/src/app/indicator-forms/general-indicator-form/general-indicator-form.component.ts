@@ -8,7 +8,6 @@ import {EnumsService} from '../../shared/services/enums.service';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
 import {DissagregationType, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {UserService} from '../../shared/services/user.service';
 
 @Component({
     selector: 'app-general-indicator-form',
@@ -19,11 +18,13 @@ export class GeneralIndicatorFormComponent implements OnInit {
     indicatorExecution: IndicatorExecution;
     monthId: number;
     projectId: number;
+    isAdmin = false;
+    isProjectFocalPoint = false;
+    isEjecutor = false;
     monthValues: MonthValues;
     month: Month;
     monthValuesMap: Map<string, IndicatorValue[]>;
     formItem: FormGroup;
-    isProjectFocalPoint = false;
     editable: boolean;
 
     sourceTypes: SelectItemWithOrder<any>[];
@@ -48,8 +49,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
                 public enumsService: EnumsService,
                 public utilsService: UtilsService,
                 private messageService: MessageService,
-                private fb: FormBuilder,
-                private userService: UserService
+                private fb: FormBuilder
     ) {
     }
 
@@ -57,7 +57,9 @@ export class GeneralIndicatorFormComponent implements OnInit {
         this.indicatorExecution = this.config.data.indicatorExecution; //
         this.monthId = this.config.data.monthId; //
         this.projectId = this.config.data.projectId; //
-        this.setRoles();
+        this.isAdmin = this.config.data.isAdmin; //
+        this.isProjectFocalPoint = this.config.data.isProjectFocalPoint; //
+        this.isEjecutor = this.config.data.isEjecutor; //
         this.formItem = this.fb.group({
             commentary: new FormControl('', [Validators.maxLength(1000)]),
             sources: new FormControl('', Validators.required),
@@ -81,15 +83,21 @@ export class GeneralIndicatorFormComponent implements OnInit {
 
     }
 
-    private setRoles() {
-        const userId = this.userService.getLogedUsername().id;
-        const orgId = this.userService.getLogedUsername().organization.id;
-        const isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']);
-        this.isProjectFocalPoint = isAdmin
-            || (this.indicatorExecution.project.focalPoint && this.indicatorExecution.project.focalPoint.id === userId);
-        this.editable = isAdmin ||
-            (this.indicatorExecution.project.focalPoint && this.indicatorExecution.project.focalPoint.id === userId)
-            || (this.indicatorExecution.project.organization.id === orgId && this.userService.hasRole('EJECUTOR_PROYECTOS'));
+    private setEditable() {
+        if (this.isAdmin) {
+            this.editable = true;
+        } else { // noinspection RedundantIfStatementJS
+            if (!this.month.blockUpdate &&
+                        (
+                            this.isProjectFocalPoint
+                            || this.isEjecutor
+                        )
+                    ) {
+                        this.editable = true;
+                    } else {
+                        this.editable = false;
+                    }
+        }
     }
 
     loadMonthValues(monthId: number) {
@@ -100,7 +108,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
             this.formItem.get('commentary').patchValue(this.month.commentary);
             this.formItem.get('sources').patchValue(this.month.sources);
             this.formItem.get('checked').patchValue(this.month.checked);
-            if (this.isProjectFocalPoint) {
+            if (this.isProjectFocalPoint || this.isAdmin) {
                 this.formItem.get('checked').enable();
             } else {
                 this.formItem.get('checked').disable();
@@ -110,7 +118,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
                 this.sourceTypes = value1;
             });
 
-
+            this.setEditable();
             this.setDimentionsDissagregations();
         }, error => {
             this.messageService.add({
@@ -128,7 +136,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
         this.monthValues.month.commentary = this.formItem.get('commentary').value;
         this.monthValues.month.sources = this.formItem.get('sources').value;
         this.monthValues.month.sourceOther = this.formItem.get('sourceOther').value;
-        if (!this.formItem.get('checked').value || this.formItem.get('checked').value === '') {
+        if (!this.formItem.get('checked').value == null || this.formItem.get('checked').value === '') {
             this.monthValues.month.checked = null;
         } else {
             this.monthValues.month.checked = this.formItem.get('checked').value;
@@ -175,9 +183,9 @@ export class GeneralIndicatorFormComponent implements OnInit {
                     this.twoDimentionDissagregations.push(dissagregationType);
                 } else if (totalNoDimentions.indexOf(dissagregationType) >= 0) {
                     this.noDimentionDissagregations.push(dissagregationType);
-                }else if (totalThreeDimentions.indexOf(dissagregationType) >= 0) {
+                } else if (totalThreeDimentions.indexOf(dissagregationType) >= 0) {
                     this.threeDimentionDissagregations.push(dissagregationType);
-                }else if (totalFourDimentions.indexOf(dissagregationType) >= 0) {
+                } else if (totalFourDimentions.indexOf(dissagregationType) >= 0) {
                     this.fourDimentionDissagregations.push(dissagregationType);
                 }
             }
