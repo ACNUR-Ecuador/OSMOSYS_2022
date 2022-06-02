@@ -338,6 +338,7 @@ public class ModelWebTransformationService {
         indicatorWeb.setTotalIndicatorCalculationType(indicator.getTotalIndicatorCalculationType());
         indicatorWeb.setCompassIndicator(indicator.getCompassIndicator());
         indicatorWeb.setUnit(indicator.getUnit());
+        indicatorWeb.setBlockAfterUpdate(indicator.getBlockAfterUpdate());
         if (getMarkers) {
             List<MarkerWeb> markers = this.markersToMarkersWeb(indicator.getMarkers());
             indicatorWeb.setMarkers(markers);
@@ -869,6 +870,7 @@ public class ModelWebTransformationService {
         for (Canton canton : cantones) {
             w.getLocations().add(this.cantonToCantonWeb(canton));
         }
+
         return w;
     }
 
@@ -1066,6 +1068,7 @@ public class ModelWebTransformationService {
             indicatorWeb.setCompassIndicator(Boolean.FALSE);
             indicatorWeb.setCode("General");
             indicatorWeb.setDescription(ie.getPeriod().getGeneralIndicator().getDescription());
+            indicatorWeb.setBlockAfterUpdate(Boolean.FALSE);
             iw.setIndicator(indicatorWeb);
 
 
@@ -1309,6 +1312,7 @@ public class ModelWebTransformationService {
         q.setState(quarter.getState());
         q.setExecutionPercentage(quarter.getExecutionPercentage());
         q.setMonths(this.monthsToMonthsWeb(quarter.getMonths()));
+        q.setBlockUpdate(quarter.getBlockUpdate());
         return q;
     }
 
@@ -1336,6 +1340,7 @@ public class ModelWebTransformationService {
         q.setSourceOther(mo.getSourceOther());
         q.setChecked(mo.getChecked());
         q.setUsedBudget(mo.getUsedBudget());
+        q.setBlockUpdate(mo.getBlockUpdate());
         return q;
     }
 

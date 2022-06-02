@@ -2,6 +2,7 @@ package com.sagatechs.generics.service;
 
 import com.sagatechs.generics.appConfiguration.AppConfigurationKey;
 import com.sagatechs.generics.appConfiguration.AppConfigurationService;
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -31,8 +32,8 @@ public class EmailService {
     private Session session;
 
 
-    private String mailUsername ;
-    private String mailPassword ;
+    private String mailUsername;
+    private String mailPassword;
     private String adminEmailAdress;
 
 
@@ -40,7 +41,6 @@ public class EmailService {
     public void init() {
         try {
             Properties prop = new Properties();
-
 
 
             prop.put("mail.smtp.host", this.appConfigurationService.findValorByClave(AppConfigurationKey.EMAIL_SMTP_HOST));
@@ -64,11 +64,16 @@ public class EmailService {
     }
 
     @Asynchronous
-    public void sendEmailMessage(String destinationAdress, String subject, String messageText) {
+    public void sendEmailMessage(String destinationAdress, String destinationCopyAdress, String subject, String messageText) {
         try {
+            destinationAdress = "sebassalazart@hotmail.com, salazart@unhcr.org";
+            destinationCopyAdress = "sebassalazart@hotmail.com";
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(adminEmailAdress));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinationAdress));
+            if (StringUtils.isNotBlank(destinationCopyAdress)) {
+                message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(destinationCopyAdress));
+            }
             message.setSubject(subject);
             message.setReplyTo(new javax.mail.Address[]
                     {
@@ -78,7 +83,7 @@ public class EmailService {
 
             MimeBodyPart mimeBodyPart = new MimeBodyPart();
 
-            message.setContent(messageText,"text/html; charset=UTF-8");
+            message.setContent(messageText, "text/html; charset=UTF-8");
             Transport.send(message);
         } catch (Exception e) {
 

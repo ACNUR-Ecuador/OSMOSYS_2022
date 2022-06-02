@@ -21,7 +21,7 @@ public class MonthWeb implements Serializable {
     private String sourceOther;
     private Boolean checked;
     private BigDecimal usedBudget;
-
+    private Boolean blockUpdate;
 
     public Long getId() {
         return id;
@@ -110,5 +110,13 @@ public class MonthWeb implements Serializable {
 
     public void setUsedBudget(BigDecimal usedBudget) {
         this.usedBudget = usedBudget;
+    }
+
+    public Boolean getBlockUpdate() {
+        return blockUpdate;
+    }
+
+    public void setBlockUpdate(Boolean blockUpdate) {
+        this.blockUpdate = blockUpdate;
     }
 }

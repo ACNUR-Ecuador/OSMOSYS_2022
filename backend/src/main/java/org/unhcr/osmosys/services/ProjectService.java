@@ -10,9 +10,11 @@ import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.CantonDao;
 import org.unhcr.osmosys.daos.ProjectDao;
 import org.unhcr.osmosys.model.*;
+import org.unhcr.osmosys.model.enums.QuarterEnum;
 import org.unhcr.osmosys.webServices.model.CantonWeb;
 import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
 import org.unhcr.osmosys.webServices.model.ProjectWeb;
+import org.unhcr.osmosys.webServices.model.QuarterStateWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
@@ -32,6 +34,8 @@ public class ProjectService {
     @Inject
     PeriodService periodService;
 
+    @Inject
+    QuarterService quarterService;
 
     @Inject
     IndicatorExecutionService indicatorExecutionService;
@@ -282,5 +286,14 @@ public class ProjectService {
 
     public List<Project> getByPeriodIdWithDataToUpdateGeneralIndicator(Long periodId) {
         return this.projectDao.getByPeriodIdWithDataToUpdateGeneralIndicator(periodId);
+    }
+
+    public List<QuarterStateWeb> getQuartersStateByProjectId(Long projectId) {
+        return this.projectDao.getQuartersStateByProjectId(projectId);
+    }
+
+    public List<QuarterStateWeb> blockQuarterStateByProjectId(Long projectId, QuarterStateWeb quarterStateWeb) {
+        this.quarterService.blockQuarterStateByProjectId(projectId, QuarterEnum.valueOf(quarterStateWeb.getQuarter()), quarterStateWeb.getYear(), quarterStateWeb.getBlockUpdate());
+        return this.getQuartersStateByProjectId(projectId);
     }
 }

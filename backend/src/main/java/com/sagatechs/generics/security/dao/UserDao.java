@@ -215,4 +215,15 @@ public class UserDao extends GenericDaoJpa<User, Long> {
         query.setParameter("id", id);
         return query.getResultList();
     }
+
+    public List<User> getActivePartnerUsers(Long organizationId) {
+        State state=State.ACTIVO;
+        String jpql = "SELECT DISTINCT o FROM " +
+                "  User o " +
+                " where o.organization.id=:organizationId and o.state=:state ";
+        Query query = getEntityManager().createQuery(jpql, User.class);
+        query.setParameter("organizationId", organizationId);
+        query.setParameter("state",state);
+        return query.getResultList();
+    }
 }

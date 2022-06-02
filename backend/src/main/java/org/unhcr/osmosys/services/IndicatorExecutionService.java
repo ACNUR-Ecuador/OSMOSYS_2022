@@ -4,6 +4,7 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.security.servicio.UserService;
+import com.sagatechs.generics.service.EmailService;
 import com.sagatechs.generics.utils.DateUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
@@ -72,7 +73,8 @@ public class IndicatorExecutionService {
     @Inject
     UtilsService utilsService;
 
-
+    @Inject
+    EmailService emailService;
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(IndicatorExecutionService.class);
 
@@ -393,10 +395,25 @@ public class IndicatorExecutionService {
             throw new GeneralAppException("No se pudo encontrar el mes (monthId:" + monthValuesWeb.getMonth().getId() + ")", Response.Status.BAD_REQUEST);
         }
         monthToUpdate.setCommentary(monthValuesWeb.getMonth().getCommentary());
+        if (indicatorExecution.getIndicator() != null && indicatorExecution.getIndicator().getBlockAfterUpdate()) {
+            monthToUpdate.setBlockUpdate(true);
+        }
+        if (monthValuesWeb.getMonth().getChecked() != null && monthValuesWeb.getMonth().getChecked() != monthToUpdate.getChecked()) {
+            if (!monthValuesWeb.getMonth().getChecked()) {
+                monthToUpdate.setBlockUpdate(false);
+                // send message laertinf parner /responsable
+                this.sendReviewDataAlertEmailMessage(indicatorExecution, monthToUpdate);
+            } else {
+                monthToUpdate.setBlockUpdate(true);
+            }
+
+        }
+
         monthToUpdate.setChecked(monthValuesWeb.getMonth().getChecked());
         monthToUpdate.setSourceOther(monthValuesWeb.getMonth().getSourceOther());
         monthToUpdate.setSources(new HashSet<>());
         monthToUpdate.setUsedBudget(monthValuesWeb.month.getUsedBudget());
+
         if (CollectionUtils.isNotEmpty(monthValuesWeb.getMonth().getSources())) {
 
             for (SourceType source : monthValuesWeb.getMonth().getSources()) {
@@ -439,6 +456,43 @@ public class IndicatorExecutionService {
         this.updateIndicatorExecutionTotals(indicatorExecution);
         this.saveOrUpdate(indicatorExecution);
         return indicatorExecution.getId();
+    }
+
+    private void sendReviewDataAlertEmailMessage(IndicatorExecution indicatorExecution, Month monthToUpdate) {
+        String messageText;
+        String destinationAdress;
+        String destinationCopy;
+        if (indicatorExecution.getProject() != null) {
+            // is for partner
+            // al users partners
+            Long organizationId = indicatorExecution.getProject().getOrganization().getId();
+            List<User> partnerUsers = this.userService.getActivePartnerUsers(organizationId);
+            destinationAdress = partnerUsers.stream().map(User::getEmail).collect(Collectors.joining(", "));
+            destinationCopy = indicatorExecution.getProject().getFocalPoint().getEmail();
+            messageText = "<p>Estimado/a colega:</p> " +
+                    "<p>El punto focal de su proyecto ha solicitado la revisi&oacute;n de los siguientes datos:</p> " +
+                    "<p>Socio: " + indicatorExecution.getProject().getOrganization().getDescription() + "</p> " +
+                    "<p>Proyecto: " + indicatorExecution.getProject().getName() + "</p> " +
+                    "<p>Mes: " + monthToUpdate.getMonth() + "</p> " +
+                    "<p>Indicador: " +
+                    (indicatorExecution.getIndicator() != null ? (indicatorExecution.getIndicator().getCode() + "-" + indicatorExecution.getIndicator().getDescription()) : "Indicador General") + "</p> " +
+                    "<p>Para mayor detalle por favor comun&iacute;quese con el punto focal de su proyecto: <a href=\"mailto:" + indicatorExecution.getProject().getFocalPoint().getEmail() + "\">" + indicatorExecution.getProject().getFocalPoint().getName() + "</a></p> " +
+                    "<p>Nota: Este correo es generado automaticamente por el Sistema OSMOSYS, por favor no contestar a este remitente.</p>";
+
+        } else {
+            destinationAdress = indicatorExecution.getAssignedUser().getEmail();
+            destinationCopy = indicatorExecution.getSupervisorUser().getEmail();
+            messageText = "<p>Estimado/a colega:</p> " +
+                    "<p>Se ha solicitado la revisi&oacute;n de los siguientes datos:</p> " +
+                    "<p>Oficina: " + indicatorExecution.getReportingOffice().getDescription() + "</p> " +
+                    "<p>Mes: " + monthToUpdate.getMonth() + "</p> " +
+                    "<p>Indicador: " +
+                    (indicatorExecution.getIndicator() != null ? (indicatorExecution.getIndicator().getCode() + "-" + indicatorExecution.getIndicator().getDescription()) : "Indicador General") + "</p> " +
+                    "<p>Para mayor detalle por favor comun&iacute;quese con el verificador de este indicador: <a href=\"mailto:" + indicatorExecution.getSupervisorUser().getEmail() + "\">" + indicatorExecution.getSupervisorUser().getName() + "</a></p> " +
+                    "<p>Nota: Este correo es generado automaticamente por el Sistema OSMOSYS, por favor no contestar a este remitente.</p>";
+
+        }
+        this.emailService.sendEmailMessage(destinationAdress, destinationCopy, "Solicitud de Revisiòn de Datos OSMOSYS", messageText);
     }
 
 

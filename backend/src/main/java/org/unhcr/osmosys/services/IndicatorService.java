@@ -82,6 +82,7 @@ public class IndicatorService {
         return indicator.getId();
     }
 
+    @SuppressWarnings("DuplicatedCode")
     private void indicatorWebToIndicator(IndicatorWeb indicatorWeb, Indicator indicator) {
         indicator.setCode(indicatorWeb.getCode());
         indicator.setDescription(indicatorWeb.getDescription());
@@ -98,6 +99,7 @@ public class IndicatorService {
         indicator.setCompassIndicator(indicatorWeb.getCompassIndicator());
         indicator.setUnit(indicatorWeb.getUnit());
         indicator.setStatement(this.statementService.find(indicatorWeb.getStatement().getId()));
+        indicator.setBlockAfterUpdate(indicatorWeb.getBlockAfterUpdate());
     }
 
     public List<IndicatorWeb> getAll() {

@@ -5,6 +5,7 @@ import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
+import org.unhcr.osmosys.webServices.model.QuarterStateWeb;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -16,6 +17,21 @@ import java.util.Set;
         uniqueConstraints = {
                 @UniqueConstraint(name = "uk_ie_quarter_year", columnNames = {"indicator_execution_id", "quarter", "year"}),
                 //@UniqueConstraint(name = "uk_ie_order", columnNames = {"indicator_execution_id", "order_"})
+        }
+)
+@SqlResultSetMapping(
+        name = "QuarterStateWebMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = QuarterStateWeb.class,
+                        columns = {
+                                @ColumnResult(name = "quarter", type = String.class),
+                                @ColumnResult(name = "year", type = Integer.class),
+                                @ColumnResult(name = "block_update", type = Boolean.class),
+                                @ColumnResult(name = "quarter_year_order", type = Integer.class),
+
+                        }
+                )
         }
 )
 public class Quarter extends BaseEntity<Long> {
@@ -67,6 +83,9 @@ public class Quarter extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     @Column(name = "state", nullable = false, length = 12)
     private State state;
+
+    @Column(name = "block_update")
+    private Boolean blockUpdate;
 
     @Override
     public Long getId() {
@@ -177,6 +196,14 @@ public class Quarter extends BaseEntity<Long> {
 
     public void setQuarterYearOrder(Integer quarterYearOrder) {
         this.quarterYearOrder = quarterYearOrder;
+    }
+
+    public Boolean getBlockUpdate() {
+        return blockUpdate;
+    }
+
+    public void setBlockUpdate(Boolean blockUpdate) {
+        this.blockUpdate = blockUpdate;
     }
 
     @Override

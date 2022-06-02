@@ -263,4 +263,11 @@ public class MonthService {
     public List<Month> getMonthsIndicatorExecutionId(Long indicatorExecutionId) {
         return this.monthDao.getMonthsIndicatorExecutionId(indicatorExecutionId);
     }
+
+    public Long changeMonthBlockedState(Long monthId, Boolean blockinState) {
+        Month month = this.monthDao.find(monthId);
+        month.setBlockUpdate(blockinState);
+        this.saveOrUpdate(month);
+        return month.getId();
+    }
 }

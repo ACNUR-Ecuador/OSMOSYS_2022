@@ -35,6 +35,8 @@ public class IndicatorWeb implements Serializable {
     private List<DissagregationAssignationToIndicatorWeb> dissagregationsAssignationToIndicator = new ArrayList<>();
     private List<CustomDissagregationAssignationToIndicatorWeb> customDissagregationAssignationToIndicators = new ArrayList<>();
 
+    private Boolean blockAfterUpdate;
+
     public Long getId() {
         return id;
     }
@@ -185,6 +187,14 @@ public class IndicatorWeb implements Serializable {
 
     public void setQualitativeInstructions(String qualitativeInstructions) {
         this.qualitativeInstructions = qualitativeInstructions;
+    }
+
+    public Boolean getBlockAfterUpdate() {
+        return blockAfterUpdate;
+    }
+
+    public void setBlockAfterUpdate(Boolean blockAfterUpdate) {
+        this.blockAfterUpdate = blockAfterUpdate;
     }
 
     @Override

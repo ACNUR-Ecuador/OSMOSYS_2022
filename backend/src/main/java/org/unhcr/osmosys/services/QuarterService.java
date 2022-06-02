@@ -14,6 +14,7 @@ import org.unhcr.osmosys.model.Quarter;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
 import org.unhcr.osmosys.model.enums.TotalIndicatorCalculationType;
+import org.unhcr.osmosys.webServices.model.QuarterStateWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
@@ -145,6 +146,24 @@ public class QuarterService {
     public void updateQuarterLocationsByAssignation(Quarter quarter, List<Canton> cantonesToCreate, List<DissagregationType> locationDissagregationTypes) throws GeneralAppException {
         for (Month month : quarter.getMonths()) {
             this.monthService.updateMonthLocationsByAssignation(month, cantonesToCreate, locationDissagregationTypes);
+        }
+    }
+
+    public void blockQuarterStateByProjectId(Long projectId, QuarterEnum quarterEnum, Integer year, Boolean blockUpdate) {
+        List<Quarter> quarters= this.quarterDao.getQuarterByProjectIdQuarterEnumAndYear(projectId,quarterEnum,year);
+        for (Quarter quarter : quarters) {
+            quarter.setBlockUpdate(blockUpdate);
+            for (Month month : quarter.getMonths()) {
+                // no activar si es bloqueo automatico
+                if(!(month.getBlockUpdate()
+                        && month.getQuarter().getIndicatorExecution().getIndicator()!=null
+                        && month.getQuarter().getIndicatorExecution().getIndicator().getBlockAfterUpdate()
+                        && month.getTotalExecution()!=null
+                )){
+                    month.setBlockUpdate(blockUpdate);
+                }
+            }
+            this.saveOrUpdate(quarter);
         }
     }
 }

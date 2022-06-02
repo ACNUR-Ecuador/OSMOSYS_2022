@@ -10,6 +10,8 @@ import java.util.List;
 
 
 public class QuarterWeb implements Serializable {
+
+
     private Long id;
     private QuarterEnum quarter;
     private String commentary;
@@ -20,6 +22,7 @@ public class QuarterWeb implements Serializable {
     private BigDecimal executionPercentage;
     private State state;
     private List<MonthWeb> months = new ArrayList<>();
+    private Boolean blockUpdate;
 
     public Long getId() {
         return id;
@@ -99,5 +102,13 @@ public class QuarterWeb implements Serializable {
 
     public void setMonths(List<MonthWeb> months) {
         this.months = months;
+    }
+
+    public Boolean getBlockUpdate() {
+        return blockUpdate;
+    }
+
+    public void setBlockUpdate(Boolean blockUpdate) {
+        this.blockUpdate = blockUpdate;
     }
 }

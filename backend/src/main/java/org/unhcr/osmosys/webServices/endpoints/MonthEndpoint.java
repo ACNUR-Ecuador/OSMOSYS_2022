@@ -35,4 +35,15 @@ public class MonthEndpoint {
     public List<MonthWeb> getMonthsIndicatorExecutionId(@PathParam("indicatorExecutionId") Long indicatorExecutionId) {
         return this.monthService.getMonthsIndicatorExecutionId(indicatorExecutionId, State.ACTIVO);
     }
+
+    @Path("/changeBlockedState/{monthId}/{blockinState}")
+    @POST
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public Long changeMonthBlockedState(
+            @PathParam("monthId") Long monthId,
+            @PathParam("blockinState") Boolean blockinState
+    ) {
+        return this.monthService.changeMonthBlockedState(monthId, blockinState);
+    }
 }

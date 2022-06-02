@@ -35,6 +35,7 @@ public class ProjectWeb implements Serializable {
 
     private Boolean updateAllLocationsIndicators;
 
+
     public Long getId() {
         return id;
     }

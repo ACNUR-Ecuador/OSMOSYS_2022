@@ -82,6 +82,7 @@ public class UserService implements Serializable {
 
     public static final String salt = "NwhZ2MFDH0JDXmUSM8q5JydFiVg";
 
+    @SuppressWarnings("UnusedReturnValue")
     public User createUser(UserWeb userWeb) throws GeneralAppException {
         // primero busco si existe el usuario
 
@@ -150,9 +151,10 @@ public class UserService implements Serializable {
 
         // todo quitar email
         this.emailService.sendEmailMessage(
-                user.getEmail()
+                user.getEmail(), null
                 //"salazart@unhcr.org"
                 , "Bienvenid@ a OSMOSYS ACNUR",
+
                 message
         );
 
@@ -426,7 +428,8 @@ public class UserService implements Serializable {
                 user.setFocalPointProjects(null);
             }
             return user;
-        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
+        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException |
+                 IllegalArgumentException e) {
             e.printStackTrace();
             throw new AccessDeniedException("token invalido");
         }
@@ -439,6 +442,7 @@ public class UserService implements Serializable {
     public User getById(Long id) {
         return this.userDao.find(id);
     }
+
     public UserWeb getWebById(Long id) {
         return this.userToUserWeb(this.getById(id));
     }
@@ -506,8 +510,8 @@ public class UserService implements Serializable {
                     "<p>&nbsp;</p>" +
                     "<p>&nbsp;</p>";
 
-            this.emailService.sendEmailMessage(user.getEmail()
-                    , "Bienvenid@ al Sistema de Monitoreo de Programas.",
+            this.emailService.sendEmailMessage(user.getEmail(), null,
+                    "Bienvenid@ al Sistema de Monitoreo de Programas.",
                     message
             );
         }
@@ -532,6 +536,10 @@ public class UserService implements Serializable {
         byte[] newHashedPass = this.securityUtils.hashPasswordByte(newPassword, UserService.salt);
         user.setPassword(newHashedPass);
         this.userDao.update(user);
+    }
+
+    public List<User> getActivePartnerUsers(Long organizationId) {
+        return this.userDao.getActivePartnerUsers( organizationId);
     }
 }
 

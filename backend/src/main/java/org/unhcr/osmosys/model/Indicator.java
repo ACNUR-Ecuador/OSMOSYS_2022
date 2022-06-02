@@ -77,6 +77,10 @@ public class Indicator extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private UnitType unit;
 
+    @Column(name = "block_after_update")
+    private Boolean blockAfterUpdate;
+
+
     @OneToMany(mappedBy = "indicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<DissagregationAssignationToIndicator> dissagregationsAssignationToIndicator = new HashSet<>();
 
@@ -287,6 +291,14 @@ public class Indicator extends BaseEntity<Long> {
 
     public void setQualitativeInstructions(String qualitativeInstructions) {
         this.qualitativeInstructions = qualitativeInstructions;
+    }
+
+    public Boolean getBlockAfterUpdate() {
+        return blockAfterUpdate;
+    }
+
+    public void setBlockAfterUpdate(Boolean blockAfterUpdate) {
+        this.blockAfterUpdate = blockAfterUpdate;
     }
 
     @Override

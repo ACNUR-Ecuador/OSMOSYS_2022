@@ -70,8 +70,12 @@ public class Month extends BaseEntity<Long> {
     @JoinColumn(name = "quarter_id", foreignKey = @ForeignKey(name = "fk_month_quarter"))
     private Quarter quarter;
 
+    @Column(name = "block_update")
+    private Boolean blockUpdate;
+
     @Column(name = "total_execution")
     private BigDecimal totalExecution;
+
 
     @OneToMany(mappedBy = "month", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<IndicatorValue> indicatorValues = new HashSet<>();
@@ -228,6 +232,14 @@ public class Month extends BaseEntity<Long> {
 
     public void setUsedBudget(BigDecimal usedBudget) {
         this.usedBudget = usedBudget;
+    }
+
+    public Boolean getBlockUpdate() {
+        return blockUpdate;
+    }
+
+    public void setBlockUpdate(Boolean blockUpdate) {
+        this.blockUpdate = blockUpdate;
     }
 
     @Override

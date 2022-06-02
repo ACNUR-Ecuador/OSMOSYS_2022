@@ -5,6 +5,7 @@ import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.Project;
 import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
+import org.unhcr.osmosys.webServices.model.QuarterStateWeb;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
@@ -154,4 +155,25 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
             return null;
         }
     }
+
+    public List<QuarterStateWeb> getQuartersStateByProjectId(Long projectId) {
+
+        String sql = "SELECT DISTINCT " +
+                "	q.quarter, " +
+                "	q.year, " +
+                "	q.block_update, " +
+                "	q.quarter_year_order  " +
+                "FROM " +
+                "	osmosys.indicator_executions ie " +
+                "	INNER JOIN osmosys.quarters q ON ie.id = q.indicator_execution_id  " +
+                "WHERE " +
+                "	ie.project_id = :projectId  " +
+                "	AND q.state = 'ACTIVO'  " +
+                "ORDER BY " +
+                "	q.quarter_year_order";
+        Query q = getEntityManager().createNativeQuery(sql, "QuarterStateWebMapping");
+        q.setParameter("projectId", projectId);
+        return q.getResultList();
+    }
+
 }
