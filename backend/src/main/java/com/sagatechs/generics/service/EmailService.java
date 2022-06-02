@@ -6,7 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.AsyncResult;
 import javax.ejb.Asynchronous;
+import javax.ejb.LocalBean;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.mail.*;
@@ -19,8 +21,10 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 @ApplicationScoped
+@LocalBean
 public class EmailService {
 
     private final static Logger LOGGER = Logger.getLogger(EmailService.class);
@@ -63,7 +67,6 @@ public class EmailService {
         }
     }
 
-    @Asynchronous
     public void sendEmailMessage(String destinationAdress, String destinationCopyAdress, String subject, String messageText) {
         try {
             destinationAdress = "sebassalazart@hotmail.com, salazart@unhcr.org";
@@ -85,10 +88,12 @@ public class EmailService {
 
             message.setContent(messageText, "text/html; charset=UTF-8");
             Transport.send(message);
-        } catch (Exception e) {
+            LOGGER.debug("----------------enviado");
 
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     @SuppressWarnings("unused")

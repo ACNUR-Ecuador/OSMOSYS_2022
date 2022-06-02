@@ -4,7 +4,7 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.security.servicio.UserService;
-import com.sagatechs.generics.service.EmailService;
+import com.sagatechs.generics.service.AsyncService;
 import com.sagatechs.generics.utils.DateUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
@@ -16,6 +16,7 @@ import org.unhcr.osmosys.model.enums.*;
 import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
@@ -73,8 +74,8 @@ public class IndicatorExecutionService {
     @Inject
     UtilsService utilsService;
 
-    @Inject
-    EmailService emailService;
+    @EJB
+    AsyncService asyncService;
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(IndicatorExecutionService.class);
 
@@ -492,7 +493,7 @@ public class IndicatorExecutionService {
                     "<p>Nota: Este correo es generado automaticamente por el Sistema OSMOSYS, por favor no contestar a este remitente.</p>";
 
         }
-        this.emailService.sendEmailMessage(destinationAdress, destinationCopy, "Solicitud de Revisiòn de Datos OSMOSYS", messageText);
+        this.asyncService.sendEmail(destinationAdress, destinationCopy, "Solicitud de Revisiòn de Datos OSMOSYS", messageText);
     }
 
 

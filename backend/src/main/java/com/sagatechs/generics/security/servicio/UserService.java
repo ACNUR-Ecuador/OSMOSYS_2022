@@ -10,7 +10,7 @@ import com.sagatechs.generics.security.model.Role;
 import com.sagatechs.generics.security.model.RoleAssigment;
 import com.sagatechs.generics.security.model.RoleType;
 import com.sagatechs.generics.security.model.User;
-import com.sagatechs.generics.service.EmailService;
+import com.sagatechs.generics.service.AsyncService;
 import com.sagatechs.generics.utils.SecurityUtils;
 import com.sagatechs.generics.webservice.webModel.RoleWeb;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
@@ -32,6 +32,7 @@ import org.unhcr.osmosys.webServices.model.OrganizationWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.crypto.SecretKey;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
@@ -59,8 +60,9 @@ public class UserService implements Serializable {
     @Inject
     SecurityUtils securityUtils;
 
-    @Inject
-    EmailService emailService;
+
+    @EJB
+    AsyncService asyncService;
 
 
     @Inject
@@ -150,7 +152,7 @@ public class UserService implements Serializable {
                 "<p>Si necesitas ayuda por favor cont&aacute;ctate con la Unidad de Gesti&oacute;n de la Informaci&oacute;n con <a href=\"\\&quot;mailto:salazart@unhcr.org\\&quot;\">salazart@unhcr.org.</a></p>";
 
         // todo quitar email
-        this.emailService.sendEmailMessage(
+        this.asyncService.sendEmail(
                 user.getEmail(), null
                 //"salazart@unhcr.org"
                 , "Bienvenid@ a OSMOSYS ACNUR",
@@ -509,12 +511,16 @@ public class UserService implements Serializable {
                     "<p>Contraseña: " + password + "</p>" +
                     "<p>&nbsp;</p>" +
                     "<p>&nbsp;</p>";
-
-            this.emailService.sendEmailMessage(user.getEmail(), null,
+            LOGGER.debug("------------------llamo");
+            /*Future<String> futureMail = this.emailService.sendEmailMessage(user.getEmail(), null,
                     "Bienvenid@ al Sistema de Monitoreo de Programas.",
                     message
-            );
+            );*/
+            this.asyncService.sendEmail(user.getEmail(), null,
+                    "Bienvenid@ al Sistema de Monitoreo de Programas.",
+                    message);
         }
+        LOGGER.debug("------------llamo termino");
     }
 
 
@@ -539,7 +545,7 @@ public class UserService implements Serializable {
     }
 
     public List<User> getActivePartnerUsers(Long organizationId) {
-        return this.userDao.getActivePartnerUsers( organizationId);
+        return this.userDao.getActivePartnerUsers(organizationId);
     }
 }
 
