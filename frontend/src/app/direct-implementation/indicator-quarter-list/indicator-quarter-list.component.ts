@@ -2,6 +2,9 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {IndicatorExecution, Quarter, QuarterMonthResume} from '../../shared/model/OsmosysModel';
 import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsState} from '../../shared/model/UtilsModel';
+import {UserService} from '../../shared/services/user.service';
+import {MonthService} from '../../shared/services/month.service';
+import {MessageService} from 'primeng/api';
 
 @Component({
     selector: 'app-indicator-quarter-list',
@@ -18,13 +21,24 @@ export class IndicatorQuarterListComponent implements OnInit {
 
     @Output()
     callMonth = new EventEmitter<number>();
+    @Output()
+    refreshData = new EventEmitter<number>();
+
     quarterMonthResumes: QuarterMonthResume[];
     monthsCount = 0;
 
-    constructor(public utilsService: UtilsService) {
+    isSupervisor = false;
+    isEjecutor = false;
+    isAdmin = false;
+
+    constructor(public utilsService: UtilsService,
+                private userService: UserService,
+                private monthService: MonthService,
+                public messageService: MessageService) {
     }
 
     ngOnInit(): void {
+        this.setRoles();
         this.quarters = this.quarters.filter(value => {
             return value.state === EnumsState.ACTIVE;
         })
@@ -54,12 +68,47 @@ export class IndicatorQuarterListComponent implements OnInit {
                 qmr.monthOrder = month.order;
                 qmr.monthYear = month.year;
                 qmr.monthTotalExecution = month.totalExecution;
+                qmr.blockUpdate = month.blockUpdate;
                 this.quarterMonthResumes.push(qmr);
             });
         });
     }
 
+    private setRoles() {
+        const userId = this.userService.getLogedUsername().id;
+        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']);
+        this.isSupervisor = this.indicatorExecution.supervisorUser.id === userId;
+        if (this.indicatorExecution.assignedUserBackup) {
+            this.isEjecutor = this.indicatorExecution.assignedUser.id === userId
+                || this.indicatorExecution.assignedUserBackup.id === userId;
+        } else {
+            this.isEjecutor = this.indicatorExecution.assignedUser.id === userId;
+        }
+
+    }
+
     viewValues(monthId: any) {
         this.callMonth.emit(monthId);
+    }
+
+    changeMonthBlocking(quarterMonthResume: QuarterMonthResume, $event: any) {
+        console.log(quarterMonthResume);
+        console.log($event);
+        this.monthService.changeBlockedState(quarterMonthResume.monthId, $event.checked).subscribe(() => {
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Mes actualizado correctamente',
+                life: 3000
+            });
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al actualizar el mes',
+                detail: error.error.message,
+                life: 3000
+            });
+        }, () => {
+            this.refreshData.emit(quarterMonthResume.monthId);
+        });
     }
 }

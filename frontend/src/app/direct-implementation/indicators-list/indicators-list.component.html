@@ -76,6 +76,21 @@
                                     [field]="col.field" [showMenu]="false"
                                     [matchMode]="'monthListFilter'">
                     </p-columnFilter>
+                    <p-columnFilter *ngSwitchCase="'assignedUserBackup'"
+                                    type="text"
+                                    [field]="col.field" [showMenu]="false"
+                                    [matchMode]="'userFilter'">
+                    </p-columnFilter>
+                    <p-columnFilter *ngSwitchCase="'supervisorUser'"
+                                    type="text"
+                                    [field]="col.field" [showMenu]="false"
+                                    [matchMode]="'userFilter'">
+                    </p-columnFilter>
+                    <p-columnFilter *ngSwitchCase="'assignedUser'"
+                                    type="text"
+                                    [field]="col.field" [showMenu]="false"
+                                    [matchMode]="'userFilter'">
+                    </p-columnFilter>
                 </th>
                 <th>
 
@@ -101,6 +116,7 @@
                                 [quarters]="rowData.quarters"
                                 (callMonth)="callMonth($event, op)"
                                 [indicatorExecution]="rowData"
+                                (refreshData)="refreshData($event, op)"
                             ></app-indicator-quarter-list>
                         </ng-template>
                     </p-overlayPanel>

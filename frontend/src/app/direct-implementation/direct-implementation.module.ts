@@ -20,6 +20,7 @@ import {OverlayPanelModule} from 'primeng/overlaypanel';
 import {IndicatorQuarterListComponent} from './indicator-quarter-list/indicator-quarter-list.component';
 import {SharedModule} from '../shared/shared.module';
 import {DialogService} from 'primeng/dynamicdialog';
+import {ToggleButtonModule} from 'primeng/togglebutton';
 
 
 @NgModule({
@@ -45,7 +46,9 @@ import {DialogService} from 'primeng/dynamicdialog';
         RippleModule,
         TooltipModule,
         OverlayPanelModule,
-        SharedModule
+        SharedModule,
+        ToggleButtonModule,
+        TooltipModule
     ],
     providers: [
         DialogService

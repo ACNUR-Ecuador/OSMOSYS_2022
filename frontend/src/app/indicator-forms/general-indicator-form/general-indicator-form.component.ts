@@ -8,6 +8,7 @@ import {EnumsService} from '../../shared/services/enums.service';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
 import {DissagregationType, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {UserService} from '../../shared/services/user.service';
 
 @Component({
     selector: 'app-general-indicator-form',
@@ -48,6 +49,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
                 public monthService: MonthService,
                 public enumsService: EnumsService,
                 public utilsService: UtilsService,
+                public userService: UserService,
                 private messageService: MessageService,
                 private fb: FormBuilder
     ) {
@@ -83,20 +85,31 @@ export class GeneralIndicatorFormComponent implements OnInit {
 
     }
 
+    setRoles() {
+        const userId = this.userService.getLogedUsername().id;
+
+        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
+        if (this.indicatorExecution.project.focalPoint && this.indicatorExecution.project.focalPoint.id === userId) {
+            this.isProjectFocalPoint = true;
+        }
+        this.isEjecutor = this.userService.hasAnyRole(['EJECUTOR_PROYECTOS'])
+            && this.userService.getLogedUsername().organization.id === this.indicatorExecution.project.organization.id;
+        this.setEditable();
+    }
+
     private setEditable() {
         if (this.isAdmin) {
             this.editable = true;
-        } else { // noinspection RedundantIfStatementJS
-            if (!this.month.blockUpdate &&
-                        (
-                            this.isProjectFocalPoint
-                            || this.isEjecutor
-                        )
-                    ) {
-                        this.editable = true;
-                    } else {
-                        this.editable = false;
-                    }
+        } else {
+            if (this.isEjecutor && (this.month.checked === null || this.month.checked === false)) {
+                this.editable = true;
+            }
+        }
+        if (this.editable) {
+            this.formItem.get('sources').enable();
+        } else {
+
+            this.formItem.get('sources').disable();
         }
     }
 
@@ -104,6 +117,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
         this.monthService.getMonthIndicatorValueByMonthId(monthId).subscribe(value => {
             this.monthValues = value as MonthValues;
             this.month = value.month;
+            this.setRoles();
             this.monthValuesMap = value.indicatorValuesMap;
             this.formItem.get('commentary').patchValue(this.month.commentary);
             this.formItem.get('sources').patchValue(this.month.sources);
@@ -118,7 +132,6 @@ export class GeneralIndicatorFormComponent implements OnInit {
                 this.sourceTypes = value1;
             });
 
-            this.setEditable();
             this.setDimentionsDissagregations();
         }, error => {
             this.messageService.add({
@@ -156,6 +169,10 @@ export class GeneralIndicatorFormComponent implements OnInit {
     }
 
     private sendMonthValue() {
+
+        if (this.isEjecutor && this.monthValues.month.checked === false) {
+            this.monthValues.month.checked = null;
+        }
         this.indicatorExecutionService.updateMonthValues(this.indicatorExecution.id, this.monthValues).subscribe(() => {
             this.messageService.add({severity: 'success', summary: 'Guardado con éxito', detail: ''});
             this.ref.close({test: 1});

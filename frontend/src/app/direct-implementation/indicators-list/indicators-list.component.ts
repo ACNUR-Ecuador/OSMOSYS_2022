@@ -16,7 +16,9 @@ import {UtilsService} from '../../shared/services/utils.service';
 import {EnumsService} from '../../shared/services/enums.service';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {DialogService} from 'primeng/dynamicdialog';
-import {DirectImplementationPerformanceIndicatorFormComponent} from '../../indicator-forms/direct-implementation-performance-indicator-form/direct-implementation-performance-indicator-form.component';
+import {
+    DirectImplementationPerformanceIndicatorFormComponent
+} from '../../indicator-forms/direct-implementation-performance-indicator-form/direct-implementation-performance-indicator-form.component';
 import {Table} from 'primeng/table';
 import {UserService} from '../../shared/services/user.service';
 import {OverlayPanel} from 'primeng/overlaypanel';
@@ -124,6 +126,9 @@ export class IndicatorsListComponent implements OnInit {
         this.filterService.register('monthListFilter', (value, filter): boolean => {
             return this.filterUtilsService.generalListFilter(value, ['month', 'year'], filter);
         });
+        this.filterService.register('userFilter', (value, filter): boolean => {
+            return this.filterUtilsService.generalFilter(value, ['name'], filter);
+        });
     }
 
     private loadOptions() {
@@ -206,5 +211,10 @@ export class IndicatorsListComponent implements OnInit {
             header = header + ' (' + roles.join(', ') + ')';
         }
         return header;
+    }
+
+    // noinspection JSUnusedLocalSymbols
+    refreshData(monthId: number, overlayPanel: OverlayPanel) {
+        this.loadIndicatorExecutions();
     }
 }

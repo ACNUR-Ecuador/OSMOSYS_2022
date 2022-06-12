@@ -24,6 +24,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     monthValuesMap: Map<string, IndicatorValue[]>;
     monthCustomDissagregatoinValues: CustomDissagregationValues[];
     formItem: FormGroup;
+    isAdmin = false;
     isSupervisor = false;
     isResponsible = false;
 
@@ -65,7 +66,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     ngOnInit(): void {
         this.indicatorExecution = this.config.data.indicatorExecution;
         this.monthId = this.config.data.monthId;
-        this.getUserRoles();
+
         this.formItem = this.fb.group({
             commentary: new FormControl('', [Validators.maxLength(1000)]),
             sources: new FormControl('', Validators.required),
@@ -74,6 +75,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             usedBudget: new FormControl(''),
         });
         this.loadMonthValues(this.monthId);
+
         this.chekedOptions = [];
         this.chekedOptions.push({
             label: 'No Verificado',
@@ -83,34 +85,58 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             label: 'Valores Verificados',
             value: true
         });
-        this.chekedOptions.push({
-            label: 'Requiere correcciones',
-            value: false
-        });
         this.formLocations = this.fb.group({
             locationsSelected: new FormControl('')
         });
     }
 
-    private getUserRoles() {
+    setRoles() {
         const userId = this.userService.getLogedUsername().id;
-        const isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
-        if (isAdmin || (this.indicatorExecution.supervisorUser && this.indicatorExecution.supervisorUser.id === userId)) {
+        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
+        if (this.indicatorExecution.supervisorUser && this.indicatorExecution.supervisorUser.id === userId) {
             this.isSupervisor = true;
         }
-        if (isAdmin || (this.indicatorExecution.assignedUser && this.indicatorExecution.assignedUser.id === userId)) {
-            this.isSupervisor = true;
+        if (this.indicatorExecution.assignedUser && this.indicatorExecution.assignedUser.id === userId) {
+            this.isResponsible = true;
         }
-        if (isAdmin || (this.indicatorExecution.assignedUserBackup && this.indicatorExecution.assignedUserBackup.id === userId)) {
-            this.isSupervisor = true;
+        if (this.indicatorExecution.assignedUserBackup && this.indicatorExecution.assignedUserBackup.id === userId) {
+            this.isResponsible = true;
         }
-        this.editable = this.isSupervisor || this.isResponsible;
+        this.setEditable();
+    }
+
+    private setEditable() {
+        if (this.isAdmin) {
+            this.editable = true;
+        } else {
+            if (this.month.blockUpdate) {
+                this.editable = false;
+            } else {
+                if (this.isResponsible && (this.month.checked === null || this.month.checked === false)) {
+                    this.editable = true;
+                }
+            }
+        }
+        console.log(this.formItem.controls);
+        if (this.editable) {
+            this.formItem.get('sources').enable();
+        } else {
+
+            this.formItem.get('sources').disable();
+        }
+        if (!this.indicatorExecution.indicator.blockAfterUpdate) {
+            this.chekedOptions.push({
+                label: 'Requiere correcciones por parte del socio',
+                value: false
+            });
+        }
     }
 
     loadMonthValues(monthId: number) {
         this.monthService.getMonthIndicatorValueByMonthId(monthId).subscribe(value => {
             this.monthValues = value as MonthValues;
             this.month = value.month;
+            this.setRoles();
             this.monthValuesMap = value.indicatorValuesMap;
             this.monthCustomDissagregatoinValues = value.customDissagregationValues;
             this.formItem.get('commentary').patchValue(this.month.commentary);
@@ -122,7 +148,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             } else {
                 this.formItem.get('usedBudget').clearValidators();
             }
-            if (this.isSupervisor) {
+            if (this.isSupervisor || this.isAdmin) {
                 this.formItem.get('checked').enable();
             } else {
                 this.formItem.get('checked').disable();
@@ -135,6 +161,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             this.setDimentionsDissagregations();
             this.validateSegregations();
             this.getHasLocationDissagregation();
+
             this.cd.detectChanges();
         }, error => {
             this.messageService.add({
@@ -226,7 +253,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
         this.monthValues.month.sources = this.formItem.get('sources').value;
         this.monthValues.month.sourceOther = this.formItem.get('sourceOther').value;
         this.monthValues.month.usedBudget = this.formItem.get('usedBudget').value;
-        if (!this.formItem.get('checked').value || this.formItem.get('checked').value === '') {
+        if (!this.formItem.get('checked').value === null || this.formItem.get('checked').value === '') {
             this.monthValues.month.checked = null;
         } else {
             this.monthValues.month.checked = this.formItem.get('checked').value;

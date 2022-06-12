@@ -18,145 +18,153 @@
                 ></app-chart-indicator-execution>
 
             </ng-template>
-            <div class="p-grid p-m-2" *ngIf="render">
-                <div class="p-col-12" *ngFor="let dissagregation of fourDimentionDissagregations">
-                    <app-dissagregation-four-integer-dimensions
-                        *ngIf="monthValuesMap.get(dissagregation)"
-                        [dissagregationType]="dissagregation"
-                        [values]="monthValuesMap.get(dissagregation)"
-                        [editable]="editable"
-                    ></app-dissagregation-four-integer-dimensions>
+            <fieldset style="border-style: none; margin: unset; padding: unset" [disabled]="!editable">
+                <div class="p-grid p-m-2" *ngIf="render">
+                    <div class="p-col-12" *ngFor="let dissagregation of fourDimentionDissagregations">
+                        <app-dissagregation-four-integer-dimensions
+                            *ngIf="monthValuesMap.get(dissagregation)"
+                            [dissagregationType]="dissagregation"
+                            [values]="monthValuesMap.get(dissagregation)"
+                            [editable]="editable"
+                        ></app-dissagregation-four-integer-dimensions>
+                    </div>
                 </div>
-            </div>
-            <div class="p-grid p-m-2" *ngIf="render">
-                <div class="p-col-12" *ngFor="let dissagregation of threeDimentionDissagregations">
-                    <app-dissagregation-three-integer-dimensions
-                        *ngIf="monthValuesMap.get(dissagregation)"
-                        [dissagregationType]="dissagregation"
-                        [values]="monthValuesMap.get(dissagregation)"
-                        [editable]="editable"
-                    ></app-dissagregation-three-integer-dimensions>
+                <div class="p-grid p-m-2" *ngIf="render">
+                    <div class="p-col-12" *ngFor="let dissagregation of threeDimentionDissagregations">
+                        <app-dissagregation-three-integer-dimensions
+                            *ngIf="monthValuesMap.get(dissagregation)"
+                            [dissagregationType]="dissagregation"
+                            [values]="monthValuesMap.get(dissagregation)"
+                            [editable]="editable"
+                        ></app-dissagregation-three-integer-dimensions>
+                    </div>
                 </div>
-            </div>
-            <div class="p-grid p-m-2" *ngIf="render">
-                <div class="p-col-12" *ngFor="let dissagregation of noDimentionDissagregations">
-                    <app-dissagregation-no-dissagregation-integer
-                        *ngIf="monthValuesMap.get(dissagregation)"
-                        [month]="month"
-                        [dissagregationType]="dissagregation"
-                        [values]="monthValuesMap.get(dissagregation)"
-                        [editable]="editable"
-                    ></app-dissagregation-no-dissagregation-integer>
+                <div class="p-grid p-m-2" *ngIf="render">
+                    <div class="p-col-12" *ngFor="let dissagregation of noDimentionDissagregations">
+                        <app-dissagregation-no-dissagregation-integer
+                            *ngIf="monthValuesMap.get(dissagregation)"
+                            [month]="month"
+                            [dissagregationType]="dissagregation"
+                            [values]="monthValuesMap.get(dissagregation)"
+                            [editable]="editable"
+                        ></app-dissagregation-no-dissagregation-integer>
+                    </div>
                 </div>
-            </div>
-            <div class="p-grid p-m-2" *ngIf="render">
-                <div class="p-col-4"
-                     *ngFor="let dissagregation of oneDimentionDissagregations ">
-                    <app-dissagregation-one-integer-dimentions
-                        *ngIf="monthValuesMap.get(dissagregation)"
-                        [dissagregationType]="dissagregation"
-                        [values]="monthValuesMap.get(dissagregation)"
-                        [editable]="editable"
-                    ></app-dissagregation-one-integer-dimentions>
+                <div class="p-grid p-m-2" *ngIf="render">
+                    <div class="p-col-4"
+                         *ngFor="let dissagregation of oneDimentionDissagregations ">
+                        <app-dissagregation-one-integer-dimentions
+                            *ngIf="monthValuesMap.get(dissagregation)"
+                            [dissagregationType]="dissagregation"
+                            [values]="monthValuesMap.get(dissagregation)"
+                            [editable]="editable"
+                        ></app-dissagregation-one-integer-dimentions>
+                    </div>
                 </div>
-            </div>
-            <div class="p-grid p-m-2" *ngIf="render">
-                <div class="p-col-6" *ngFor="let dissagregation of twoDimentionDissagregations">
-                    <app-dissagregation-two-integer-dimentions
-                        *ngIf="monthValuesMap.get(dissagregation)"
-                        [dissagregationType]="dissagregation"
-                        [values]="monthValuesMap.get(dissagregation)"
-                        [editable]="editable"
-                    ></app-dissagregation-two-integer-dimentions>
+                <div class="p-grid p-m-2" *ngIf="render">
+                    <div class="p-col-6" *ngFor="let dissagregation of twoDimentionDissagregations">
+                        <app-dissagregation-two-integer-dimentions
+                            *ngIf="monthValuesMap.get(dissagregation)"
+                            [dissagregationType]="dissagregation"
+                            [values]="monthValuesMap.get(dissagregation)"
+                            [editable]="editable"
+                        ></app-dissagregation-two-integer-dimentions>
+                    </div>
                 </div>
-            </div>
 
-            <div class="p-grid p-m-2"
-                 *ngIf="render && monthCustomDissagregatoinValues!== null && monthCustomDissagregatoinValues.length>0">
-                <div class="p-col-6" *ngFor="let monthCustomDissagregatoinValue of monthCustomDissagregatoinValues">
-                    <app-custom-dissagregation-integer
-                        [values]="monthCustomDissagregatoinValue.indicatorValuesCustomDissagregation"
-                        [customDissagregation]="monthCustomDissagregatoinValue.customDissagregation"
-                        [editable]="editable"
-                    ></app-custom-dissagregation-integer>
+                <div class="p-grid p-m-2"
+                     *ngIf="render && monthCustomDissagregatoinValues!== null && monthCustomDissagregatoinValues.length>0">
+                    <div class="p-col-6" *ngFor="let monthCustomDissagregatoinValue of monthCustomDissagregatoinValues">
+                        <app-custom-dissagregation-integer
+                            [values]="monthCustomDissagregatoinValue.indicatorValuesCustomDissagregation"
+                            [customDissagregation]="monthCustomDissagregatoinValue.customDissagregation"
+                            [editable]="editable"
+                        ></app-custom-dissagregation-integer>
+                    </div>
                 </div>
-            </div>
+                <div class="card p-col-12">
+                    <div class="p-fluid p-formgrid p-grid">
+                        <div class="p-field p-col-12 p-md-8" *ngIf="indicatorExecution.keepBudget">
+                            <label for="assignedBudgetI">Presupuesto</label>
+                            <div class="p-field p-grid p-pl-4">
+                                <label for="assignedBudgetI" class="p-col-fixed">Presupuesto Asignado: </label>
+                                <div class="p-col">
+                                    <label
+                                        for="assignedBudgetI">{{indicatorExecution.assignedBudget | currency:'USD':true:'1.2-2'}}</label>
+                                </div>
+                            </div>
+                            <div class="p-field p-grid p-pl-4">
+                                <label for="assignedBudgetI" class="p-col-fixed">Presupuesto Ejecutado: </label>
+                                <div class="p-col">
+                                    <label
+                                        for="assignedBudgetI">{{indicatorExecution.availableBudget| currency:'USD':true:'1.2-2'}}</label>
+                                </div>
+                            </div>
+                            <div class="p-field p-grid p-pl-4">
+                                <label for="assignedBudgetI" class="p-col-fixed">Presupuesto Distribuido este
+                                    Mes: </label>
+                                <div class="p-col">
+                                    <p-inputNumber
+                                        id="assignedBudgetI"
+                                        formControlName="usedBudget"
+                                        mode="currency"
+                                        currency="USD"
+                                        locale="en-US"
+                                    ></p-inputNumber>
+                                </div>
+                            </div>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('usedBudget',formItem)">
+                                {{utilsService.getErrorMessageForm('usedBudget', formItem)}}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="p-fluid p-formgrid p-grid">
+                        <div class="p-field p-col-12 p-md-8">
+                            <label for="sourcesI">Fuente de Verificación</label>
+                            <p-multiSelect id="sourcesI"
+                                           [options]="sourceTypes"
+                                           [filter]="true"
+                                           formControlName="sources"
+                                           (onChange)="setOtherSource($event.value)"
+                            ></p-multiSelect>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('sources',formItem)">
+                                {{utilsService.getErrorMessageForm('sources', formItem)}}
+                            </small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-4" *ngIf="showOtherSource">
+                            <label for="sourceOtherI">Otro</label>
+                            <input id="sourceOtherI" type="text" pInputText formControlName="sourceOther">
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('sourceOther',formItem)">
+                                {{utilsService.getErrorMessageForm('sourceOther', formItem)}}
+                            </small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-12">
+                            <label for="commentaryI">Información Cualitativa</label><br>
+                            <small class="p-col-12">
+                                {{indicatorExecution.indicator.qualitativeInstructions}}
+                            </small>
+                            <textarea id="commentaryI"
+                                      pInputTextarea
+                                      autoResize="true"
+                                      style="width: 100%"
+                                      formControlName="commentary"
+                            ></textarea>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('commentary',formItem)">
+                                {{utilsService.getErrorMessageForm('commentary', formItem)}}
+                            </small>
+                        </div>
+                    </div>
+
+                </div>
+            </fieldset>
             <div class="card p-col-12">
                 <div class="p-fluid p-formgrid p-grid">
-                    <div class="p-field p-col-12 p-md-8" *ngIf="indicatorExecution.keepBudget">
-                        <label for="assignedBudgetI">Presupuesto</label>
-                        <div class="p-field p-grid p-pl-4">
-                            <label for="assignedBudgetI" class="p-col-fixed">Presupuesto Asignado: </label>
-                            <div class="p-col">
-                                <label
-                                    for="assignedBudgetI">{{indicatorExecution.assignedBudget | currency:'USD':true:'1.2-2'}}</label>
-                            </div>
-                        </div>
-                        <div class="p-field p-grid p-pl-4">
-                            <label for="assignedBudgetI" class="p-col-fixed">Presupuesto Ejecutado: </label>
-                            <div class="p-col">
-                                <label
-                                    for="assignedBudgetI">{{indicatorExecution.availableBudget| currency:'USD':true:'1.2-2'}}</label>
-                            </div>
-                        </div>
-                        <div class="p-field p-grid p-pl-4">
-                            <label for="assignedBudgetI" class="p-col-fixed">Presupuesto Distribuido este Mes: </label>
-                            <div class="p-col">
-                                <p-inputNumber
-                                    id="assignedBudgetI"
-                                    formControlName="usedBudget"
-                                    mode="currency"
-                                    currency="USD"
-                                    locale="en-US"
-                                ></p-inputNumber>
-                            </div>
-                        </div>
-                        <small class="p-error"
-                               *ngIf="utilsService.showErrorForm('usedBudget',formItem)">
-                            {{utilsService.getErrorMessageForm('usedBudget', formItem)}}
-                        </small>
-                    </div>
-                </div>
-                <div class="p-fluid p-formgrid p-grid">
-                    <div class="p-field p-col-12 p-md-8">
-                        <label for="sourcesI">Fuente de Verificación</label>
-                        <p-multiSelect id="sourcesI"
-                                       [options]="sourceTypes"
-                                       [filter]="true"
-                                       formControlName="sources"
-                                       (onChange)="setOtherSource($event.value)"
-                        ></p-multiSelect>
-                        <small class="p-error"
-                               *ngIf="utilsService.showErrorForm('sources',formItem)">
-                            {{utilsService.getErrorMessageForm('sources', formItem)}}
-                        </small>
-                    </div>
-                    <div class="p-field p-col-12 p-md-4" *ngIf="showOtherSource">
-                        <label for="sourceOtherI">Otro</label>
-                        <input id="sourceOtherI" type="text" pInputText formControlName="sourceOther">
-                        <small class="p-error"
-                               *ngIf="utilsService.showErrorForm('sourceOther',formItem)">
-                            {{utilsService.getErrorMessageForm('sourceOther', formItem)}}
-                        </small>
-                    </div>
                     <div class="p-field p-col-12 p-md-12">
-                        <label for="commentaryI">Información Cualitativa</label><br>
-                        <small class="p-col-12">
-                            {{indicatorExecution.indicator.qualitativeInstructions}}
-                        </small>
-                        <textarea id="commentaryI"
-                                  pInputTextarea
-                                  autoResize="true"
-                                  style="width: 100%"
-                                  formControlName="commentary"
-                        ></textarea>
-                        <small class="p-error"
-                               *ngIf="utilsService.showErrorForm('commentary',formItem)">
-                            {{utilsService.getErrorMessageForm('commentary', formItem)}}
-                        </small>
-                    </div>
-                    <div class="p-field p-col-12 p-md-12">
-                        <label for="checkedI">Verificación Punto Focal</label>
+                        <label for="checkedI">Verificación Supervisor</label>
                         <p-dropdown id="checkedI" [options]="chekedOptions" formControlName="checked"
                                     appendTo="body"></p-dropdown>
                         <small class="p-error"
@@ -166,13 +174,14 @@
                     </div>
                 </div>
             </div>
-
             <ng-template pTemplate="footer">
                 <div class="p-col-12 p-md-12">
                     <p-messages></p-messages>
                 </div>
-                <div class="p-d-flex p-jc-end" *ngIf="editable">
-
+                <div class="p-d-flex p-jc-end" *ngIf="editable || isAdmin || isSupervisor ">
+                    <p-message severity="warn"
+                               *ngIf="indicatorExecution.indicator.blockAfterUpdate"
+                               text="El indicador se bloqueará despues de guardarlo." styleClass="p-mr-2"></p-message>
                     <button pButton type="submit" class="p-mr-2" [disabled]="disableSave"
                             pRipple label="Guardar" icon="pi pi-check"
                     ></button>
@@ -180,8 +189,8 @@
                             class="p-button-secondary"
                             (click)="cancel()"></button>
                 </div>
-                <div class="p-d-flex p-jc-end" *ngIf="!editable">
-
+                <div class="p-d-flex p-jc-end" *ngIf="!editable && !(isAdmin || isSupervisor)">
+                    <p-message severity="warn" text="Indicador Bloqueado!, si son necesarias correcciones, comuníquese con el supervisor del indicaor" styleClass="p-mr-2"></p-message>
                     <button pButton type="button" pRipple label="Salir" icon="pi pi-times"
                             (click)="cancel()"></button>
                 </div>

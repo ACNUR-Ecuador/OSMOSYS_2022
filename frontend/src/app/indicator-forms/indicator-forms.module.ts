@@ -29,6 +29,7 @@ import { DissagregationThreeIntegerDimensionsComponent } from './dissagregationF
 import {PanelModule} from 'primeng/panel';
 import {AccordionModule} from 'primeng/accordion';
 import { DissagregationFourIntegerDimensionsComponent } from './dissagregationForms/dissagregation-four-integer-dimensions/dissagregation-four-integer-dimensions.component';
+import {MessageModule} from 'primeng/message';
 
 
 @NgModule({
@@ -65,7 +66,8 @@ import { DissagregationFourIntegerDimensionsComponent } from './dissagregationFo
         RippleModule,
         PickListModule,
         PanelModule,
-        AccordionModule
+        AccordionModule,
+        MessageModule
     ]
 })
 export class IndicatorFormsModule {

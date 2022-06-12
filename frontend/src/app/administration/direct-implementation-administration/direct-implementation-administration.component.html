@@ -99,6 +99,21 @@
                                     [field]="col.field" [showMenu]="false"
                                     [matchMode]="'monthListFilter'">
                     </p-columnFilter>
+                    <p-columnFilter *ngSwitchCase="'supervisorUser'"
+                                    type="text"
+                                    [field]="col.field" [showMenu]="false"
+                                    [matchMode]="'userFilter'">
+                    </p-columnFilter>
+                    <p-columnFilter *ngSwitchCase="'assignedUser'"
+                                    type="text"
+                                    [field]="col.field" [showMenu]="false"
+                                    [matchMode]="'userFilter'">
+                    </p-columnFilter>
+                    <p-columnFilter *ngSwitchCase="'assignedUserBackup'"
+                                    type="text"
+                                    [field]="col.field" [showMenu]="false"
+                                    [matchMode]="'userFilter'">
+                    </p-columnFilter>
                 </th>
                 <th>
 

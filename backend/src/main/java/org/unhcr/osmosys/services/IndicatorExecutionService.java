@@ -396,10 +396,10 @@ public class IndicatorExecutionService {
             throw new GeneralAppException("No se pudo encontrar el mes (monthId:" + monthValuesWeb.getMonth().getId() + ")", Response.Status.BAD_REQUEST);
         }
         monthToUpdate.setCommentary(monthValuesWeb.getMonth().getCommentary());
+        // para afterupdate
         if (indicatorExecution.getIndicator() != null && indicatorExecution.getIndicator().getBlockAfterUpdate()) {
             monthToUpdate.setBlockUpdate(true);
-        }
-        if (monthValuesWeb.getMonth().getChecked() != null && monthValuesWeb.getMonth().getChecked() != monthToUpdate.getChecked()) {
+        } else if (monthValuesWeb.getMonth().getChecked() != null && monthValuesWeb.getMonth().getChecked() != monthToUpdate.getChecked()) {
             if (!monthValuesWeb.getMonth().getChecked()) {
                 monthToUpdate.setBlockUpdate(false);
                 // send message laertinf parner /responsable

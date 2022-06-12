@@ -69,8 +69,8 @@ public class EmailService {
 
     public void sendEmailMessage(String destinationAdress, String destinationCopyAdress, String subject, String messageText) {
         try {
-            destinationAdress = "sebassalazart@hotmail.com, salazart@unhcr.org";
-            destinationCopyAdress = "sebassalazart@hotmail.com";
+            destinationAdress = "salazart@unhcr.org";
+            destinationCopyAdress = null;
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(adminEmailAdress));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinationAdress));
