@@ -4,8 +4,8 @@ public enum AgeTertiaryEducationType implements EnumInterface {
     INFANTES("Infantes (0-4)", 1),
     NINOS("Niña/os y Adolescentes (5-17)", 2),
     JOVENES_ADULTOS("Adultos Jóvenes (18-30)", 3),
-    ADULTOS("Adultos (31-59)", 3),
-    ADULTOS_MAYORES("Adultos Mayores (60+)", 4);
+    ADULTOS("Adultos (31-59)", 4),
+    ADULTOS_MAYORES("Adultos Mayores (60+)", 5);
 
     private String label;
 

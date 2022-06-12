@@ -41,6 +41,8 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "population_type", type = String.class),
                                 @ColumnResult(name = "diversity_type", type = String.class),
                                 @ColumnResult(name = "canton_id", type = Long.class),
+                                @ColumnResult(name = "responsable_office_id", type = Long.class),
+                                @ColumnResult(name = "implementer_office_id", type = Long.class),
                                 @ColumnResult(name = "total_execution", type = BigDecimal.class),
                                 @ColumnResult(name = "total_target", type = BigDecimal.class),
                                 @ColumnResult(name = "total_execution_percentage", type = BigDecimal.class),

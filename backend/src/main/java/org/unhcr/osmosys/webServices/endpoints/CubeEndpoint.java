@@ -21,6 +21,7 @@ public class CubeEndpoint {
     @Inject
     CubeService cubeService;
     private static final Logger LOGGER = Logger.getLogger(CubeEndpoint.class);
+
     @Path("/factTable/{year}")
     @GET
     @BasicSecured
@@ -38,7 +39,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<MonthQuarterYearDTO> getMonthQuarterYearTable() {
-        return this.cubeService.getMonthQuarterYearTable();
+        long lStartTime = System.nanoTime();
+        List<MonthQuarterYearDTO> r = this.cubeService.getMonthQuarterYearTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds monthQuarterYearTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/dissagregationTypeTable")
@@ -46,7 +51,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<DissagregationTypeDTO> getDissagregationTypeTable() {
-        return this.cubeService.getDissagregationTypeTable();
+        long lStartTime = System.nanoTime();
+        List<DissagregationTypeDTO> r = this.cubeService.getDissagregationTypeTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds dissagregationTypeTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/diversityTypeTable")
@@ -54,7 +63,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<DiversityTypeDTO> getDiversityTypeTable() {
-        return this.cubeService.getDiversityTypeTable();
+        long lStartTime = System.nanoTime();
+        List<DiversityTypeDTO> r = this.cubeService.getDiversityTypeTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds diversityTypeTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/ageTypeTable")
@@ -62,7 +75,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<AgeTypeDTO> getAgeTypeTable() {
-        return this.cubeService.getAgeTypeTable();
+        long lStartTime = System.nanoTime();
+        List<AgeTypeDTO> r = this.cubeService.getAgeTypeTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds ageTypeTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/agePrimaryEducationTypeTable")
@@ -70,7 +87,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<AgePrimaryEducationTypeDTO> getAgePrimaryEducationTypeTable() {
-        return this.cubeService.getAgePrimaryEducationTypeTable();
+        long lStartTime = System.nanoTime();
+        List<AgePrimaryEducationTypeDTO> r = this.cubeService.getAgePrimaryEducationTypeTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds agePrimaryEducationTypeTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/ageTertiaryEducationTypeTable")
@@ -78,7 +99,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<AgeTertiaryEducationTypeDTO> getAgeTertiaryEducationTypeTable() {
-        return this.cubeService.getAgeTertiaryEducationTypeTable();
+        long lStartTime = System.nanoTime();
+        List<AgeTertiaryEducationTypeDTO> r = this.cubeService.getAgeTertiaryEducationTypeTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds ageTertiaryEducationTypeTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/genderTypeTable")
@@ -86,7 +111,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<GenderTypeDTO> getGenderTypeTable() {
-        return this.cubeService.getGenderTypeTable();
+        long lStartTime = System.nanoTime();
+        List<GenderTypeDTO> r = this.cubeService.getGenderTypeTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds genderTypeTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/countryOfOriginTypeTable")
@@ -94,7 +123,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<CountryOfOriginTypeDTO> getCountryOfOriginTypeTable() {
-        return this.cubeService.getCountryOfOriginTypeTable();
+        long lStartTime = System.nanoTime();
+        List<CountryOfOriginTypeDTO> r = this.cubeService.getCountryOfOriginTypeTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds countryOfOriginTypeTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/populationTypeTable")
@@ -102,7 +135,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<PopulationTypeDTO> getPopulationTypeTable() {
-        return this.cubeService.getPopulationTypeTable();
+        long lStartTime = System.nanoTime();
+        List<PopulationTypeDTO> r = this.cubeService.getPopulationTypeTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds populationTypeTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/cantonesProvinciasTable")
@@ -110,7 +147,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<CantonesProvinciasDTO> getCantonesProvinciasTable() {
-        return this.cubeService.getCantonesProvinciasTable();
+        long lStartTime = System.nanoTime();
+        List<CantonesProvinciasDTO> r = this.cubeService.getCantonesProvinciasTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds cantonesProvinciasTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/cantonesProvinciasCentroidsTable")
@@ -118,7 +159,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<CantonesProvinciasCentroidsDTO> getCantonesProvinciasCentroidsTable() {
-        return this.cubeService.getCantonesProvinciasCentroidsTable();
+        long lStartTime = System.nanoTime();
+        List<CantonesProvinciasCentroidsDTO> r = this.cubeService.getCantonesProvinciasCentroidsTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds cantonesProvinciasCentroidsTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/indicatorTypeTable")
@@ -126,7 +171,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<IndicatorTypeDTO> getIndicatorTypeTable() {
-        return this.cubeService.getIndicatorTypeTable();
+        long lStartTime = System.nanoTime();
+        List<IndicatorTypeDTO> r = this.cubeService.getIndicatorTypeTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds indicatorTypeTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/userTable")
@@ -134,7 +183,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<UserDTO> getUserTable() {
-        return this.cubeService.getUserTable();
+        long lStartTime = System.nanoTime();
+        List<UserDTO> r = this.cubeService.getUserTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds userTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/periodTable")
@@ -142,7 +195,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<PeriodDTO> getPeriodTable() {
-        return this.cubeService.getPeriodTable();
+        long lStartTime = System.nanoTime();
+        List<PeriodDTO> r = this.cubeService.getPeriodTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds periodTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/projectTable")
@@ -150,7 +207,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<ProjectDTO> getProjectTable() {
-        return this.cubeService.getProjectTable();
+        long lStartTime = System.nanoTime();
+        List<ProjectDTO> r = this.cubeService.getProjectTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds projectTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/organizationTable")
@@ -158,7 +219,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<OrganizationDTO> getOrganizationTable() {
-        return this.cubeService.getOrganizationTable();
+        long lStartTime = System.nanoTime();
+        List<OrganizationDTO> r = this.cubeService.getOrganizationTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds organizationTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/officeTable")
@@ -166,7 +231,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<OfficeDTO> getOfficeTable() {
-        return this.cubeService.getOfficeTable();
+        long lStartTime = System.nanoTime();
+        List<OfficeDTO> r = this.cubeService.getOfficeTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds officeTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/reportStateTable")
@@ -174,7 +243,12 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<ReportStateDTO> getReportStateTable() {
-        return this.cubeService.getReportStateTable();
+        long lStartTime = System.nanoTime();
+        List<ReportStateDTO> r = this.cubeService.getReportStateTable();
+
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds reportStateTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/statementTable")
@@ -182,7 +256,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<StatementDTO> getStatementTable() {
-        return this.cubeService.getStatementTable();
+        long lStartTime = System.nanoTime();
+        List<StatementDTO> r = this.cubeService.getStatementTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds statementTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/monthSourceTable/{year}")
@@ -190,7 +268,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<MonthSourceDTO> getMonthSouceTable(@PathParam("year") Integer year) {
-        return this.cubeService.getMonthSouceTable(year);
+        long lStartTime = System.nanoTime();
+        List<MonthSourceDTO> r = this.cubeService.getMonthSouceTable(year);
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds monthSourceTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/monthCualitativeDataTable/{year}")
@@ -198,7 +280,11 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<MonthCualitativeDataDTO> getMonthCualitativeDataTable(@PathParam("year") Integer year) {
-        return this.cubeService.getMonthCualitativeDataTable(year);
+        long lStartTime = System.nanoTime();
+        List<MonthCualitativeDataDTO> r = this.cubeService.getMonthCualitativeDataTable(year);
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds monthCualitativeDataTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/indicatorsTable")
@@ -206,7 +292,11 @@ public class CubeEndpoint {
     // @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<IndicatorDTO> getIndicatorsTable() {
-        return this.cubeService.getIndicatorsTable();
+        long lStartTime = System.nanoTime();
+        List<IndicatorDTO> r = this.cubeService.getIndicatorsTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds indicatorsTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
     @Path("/indicatorExecutionsDissagregationSimpleTable/{year}")
@@ -214,7 +304,11 @@ public class CubeEndpoint {
     // @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<IndicatorExecutionDissagregationSimpleDTO> getIndicatorExecutionsDissagregationSimpleTable(@PathParam("year") Integer year) {
-        return this.cubeService.getIndicatorExecutionsDissagregationSimpleTable(year);
+        long lStartTime = System.nanoTime();
+        List<IndicatorExecutionDissagregationSimpleDTO> r = this.cubeService.getIndicatorExecutionsDissagregationSimpleTable(year);
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds indicatorExecutionsDissagregationSimpleTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
     }
 
 }

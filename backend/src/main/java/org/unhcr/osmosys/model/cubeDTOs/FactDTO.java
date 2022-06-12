@@ -3,7 +3,12 @@ package org.unhcr.osmosys.model.cubeDTOs;
 import java.math.BigDecimal;
 
 public class FactDTO {
-    public FactDTO(Long id, Long ie_id, Long period_id, Integer period_year, String implementation_type, Long assigned_user_id, Long assigned_user_backup_id, Long indicator_id, Long statement_id, Long project_statement_id, String indicator_type, Long organization_id, Long supervisor_id, Long office_id, Long project_id, String month_year_id, Long month_id, String dissagregation_type, String age_type, String age_primary_education_type, String age_tertiary_education_type, String gender_type, String country_of_origin, String population_type, String diversity_type, Long canton_id, BigDecimal total_execution, BigDecimal total_target, BigDecimal total_execution_percentage, BigDecimal quarter_execution, BigDecimal quarter_target, BigDecimal quarter_execution_percentage, BigDecimal month_execution, BigDecimal value) {
+
+
+    public FactDTO() {
+    }
+
+    public FactDTO(Long id, Long ie_id, Long period_id, Integer period_year, String implementation_type, Long assigned_user_id, Long assigned_user_backup_id, Long indicator_id, Long statement_id, Long project_statement_id, String indicator_type, Long organization_id, Long supervisor_id, Long office_id, Long project_id, String month_year_id, Long month_id, String dissagregation_type, String age_type, String age_primary_education_type, String age_tertiary_education_type, String gender_type, String country_of_origin, String population_type, String diversity_type, Long canton_id, Long implementer_office_id, Long responsable_office_id, BigDecimal total_execution, BigDecimal total_target, BigDecimal total_execution_percentage, BigDecimal quarter_execution, BigDecimal quarter_target, BigDecimal quarter_execution_percentage, BigDecimal month_execution, BigDecimal value) {
         this.id = id;
         this.ie_id = ie_id;
         this.period_id = period_id;
@@ -30,6 +35,8 @@ public class FactDTO {
         this.population_type = population_type;
         this.diversity_type = diversity_type;
         this.canton_id = canton_id;
+        this.implementer_office_id = implementer_office_id;
+        this.responsable_office_id = responsable_office_id;
         this.total_execution = total_execution;
         this.total_target = total_target;
         this.total_execution_percentage = total_execution_percentage;
@@ -66,6 +73,11 @@ public class FactDTO {
     private String population_type;
     private String diversity_type;
     private Long canton_id;
+
+    private Long implementer_office_id;
+
+    private Long responsable_office_id;
+
     private BigDecimal total_execution;
     private BigDecimal total_target;
     private BigDecimal total_execution_percentage;
@@ -345,5 +357,21 @@ public class FactDTO {
 
     public void setValue(BigDecimal value) {
         this.value = value;
+    }
+
+    public Long getImplementer_office_id() {
+        return implementer_office_id;
+    }
+
+    public void setImplementer_office_id(Long implementer_office_id) {
+        this.implementer_office_id = implementer_office_id;
+    }
+
+    public Long getResponsable_office_id() {
+        return responsable_office_id;
+    }
+
+    public void setResponsable_office_id(Long responsable_office_id) {
+        this.responsable_office_id = responsable_office_id;
     }
 }
