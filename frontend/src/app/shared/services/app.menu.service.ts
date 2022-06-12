@@ -230,13 +230,13 @@ export class MenuService {
                     label: 'Indicadores de Producto',
                     icon: 'pi pi-fw pi-chart-line',
                     routerLink: ['/reports/productIndicators'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL', 'EJECUTOR_ID', 'MONITOR_ID'],
                 },
                 {
                     label: 'Indicadores RBA',
                     icon: 'pi pi-fw pi-chart-line',
                     routerLink: ['/reports/rbaIndicators'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL', 'EJECUTOR_ID', 'MONITOR_ID'],
                 },
 
                 {
