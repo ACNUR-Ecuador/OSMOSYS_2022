@@ -126,7 +126,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
         }
         if (!this.indicatorExecution.indicator.blockAfterUpdate) {
             this.chekedOptions.push({
-                label: 'Requiere correcciones por parte del socio',
+                label: 'Requiere correcciones',
                 value: false
             });
         }
@@ -273,6 +273,9 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     }
 
     private sendMonthValue() {
+        if (this.isResponsible && this.monthValues.month.checked === false) {
+            this.monthValues.month.checked = null;
+        }
         this.indicatorExecutionService.updateMonthValues(this.indicatorExecution.id, this.monthValues).subscribe(() => {
             this.messageService.add({severity: 'success', summary: 'Guardado con éxito', detail: ''});
             this.ref.close({test: 1});
