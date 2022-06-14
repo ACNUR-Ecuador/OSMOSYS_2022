@@ -591,5 +591,23 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
+    @Path("/getAllIndicatorExecutionDetailedByPeriodIdAndOfficeIdAndOfficeId/{projectId}/{officeId}")
+    @GET
+    @Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getAllIndicatorExecutionDetailedByPeriodIdAndOfficeIdAndOfficeId(
+            @Context SecurityContext securityContext,
+            @PathParam("projectId") Long projectId,
+            @PathParam("officeId") Long officeId
+    ) throws GeneralAppException {
+        Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getPartnerDetailedByProjectId:" + principal.getName());
+        long lStartTime = System.nanoTime();
+        ByteArrayOutputStream r = this.reportService.getAllIndicatorExecutionDetailedByPeriodIdAndOfficeIdAndOffice(projectId, officeId);
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
+        String filename = "Exportacion_datos_socio_detallado" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+    }
 
 }

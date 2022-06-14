@@ -487,6 +487,18 @@ public class ReportDataService {
         });
         return widths;
     }
+    public SXSSFWorkbook getAllIndicatorExecutionDetailedByPeriodIdAndOfficeIdAndOffice(Long projectId, Long officeId) {
 
+        List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getAllIndicatorExecutionDetailedByPeriodIdAndOfficeId(projectId, officeId);
+
+        List<Integer> columnsToRemove = new ArrayList<>(
+                Arrays.asList(
+                        0, 1, 2, 3, 4, 5, 27, 28
+                )
+        );
+
+        return getReportFromIndicatorExecutionDetailedDTO(resultData, columnsToRemove);
+
+    }
 
 }

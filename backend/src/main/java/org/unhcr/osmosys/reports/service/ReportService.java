@@ -367,5 +367,11 @@ public class ReportService {
             throw new GeneralAppException("Error al generar el reporte", Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
         }
     }
+    public ByteArrayOutputStream getAllIndicatorExecutionDetailedByPeriodIdAndOfficeIdAndOffice(Long periodId, Long officeId) throws GeneralAppException {
 
+        SXSSFWorkbook workbook = this.reportDataService.getAllIndicatorExecutionDetailedByPeriodIdAndOfficeIdAndOffice(periodId, officeId);
+
+        return getByteArrayOutputStreamFromWorkbook(workbook);
+
+    }
 }

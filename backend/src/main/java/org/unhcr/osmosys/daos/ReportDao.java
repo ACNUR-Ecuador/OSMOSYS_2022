@@ -19,6 +19,11 @@ public class ReportDao {
             "SELECT * " +
                     "FROM " +
                     "osmosys.ie_detailed ";
+    private static final String detailedIndicatorExecutionsWithOffices =
+            "SELECT * " +
+                    "FROM " +
+                    "osmosys.ie_detailed_with_offices_ids ie ";
+
 
     private static final String detailedIndicatorExecutionsOrder = " ORDER BY 1,2,3,4,5,6,7,8,9,15,16,17,18,19,20,23,24,25 ";
 
@@ -98,6 +103,17 @@ public class ReportDao {
         sql += ReportDao.detailedIndicatorExecutionsOrder;
         Query q = this.entityManager.createNativeQuery(sql, "IndicatorExecutionDetailedMapping");
         q.setParameter("projectId", projectId);
+        return q.getResultList();
+    }
+
+    public List<IndicatorExecutionDetailedDTO> getAllIndicatorExecutionDetailedByPeriodIdAndOfficeId(Long periodId, Long officeId) {
+        String sql = ReportDao.detailedIndicatorExecutionsWithOffices
+                + " WHERE performance_indicator_id is not null "
+                + " AND ie.period_id= :periodId and ie.value>0 and (ie.office_id=:officeId or ie.office_parent_id=:officeId )";
+        sql += ReportDao.detailedIndicatorExecutionsOrder;
+        Query q = this.entityManager.createNativeQuery(sql, "IndicatorExecutionDetailedWithOfficesDTO");
+        q.setParameter("periodId", periodId);
+        q.setParameter("officeId", officeId);
         return q.getResultList();
     }
 }

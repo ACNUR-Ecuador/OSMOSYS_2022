@@ -1026,8 +1026,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     return value.state === EnumsState.ACTIVE;
                 })
                 .filter(value => {
-                    return value.dissagregationType === DissagregationType.LUGAR
-                        || value.dissagregationType === DissagregationType.TIPO_POBLACION_Y_LUGAR;
+                    const dissagregationTypeE = DissagregationType[value.dissagregationType];
+                    return this.utilsService.isLocationDissagregation(dissagregationTypeE);
                 }).length > 0;
         } else {
             return false;
