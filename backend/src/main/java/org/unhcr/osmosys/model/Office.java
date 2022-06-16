@@ -121,8 +121,6 @@ public class Office extends BaseEntity<Long> {
                 ", acronym='" + acronym + '\'' +
                 ", type=" + type +
                 ", state=" + state +
-                ", parentOffice=" + parentOffice +
-                ", childOffices=" + childOffices +
                 '}';
     }
 }

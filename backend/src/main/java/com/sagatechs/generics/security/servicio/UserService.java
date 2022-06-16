@@ -547,5 +547,13 @@ public class UserService implements Serializable {
     public List<User> getActivePartnerUsers(Long organizationId) {
         return this.userDao.getActivePartnerUsers(organizationId);
     }
+
+    public List<User> getActiveResponsableDirectImplementationUsers(Long periodId) {
+        return this.userDao.getActiveResponsableDirectImplementationUsers(periodId);
+    }
+
+    public List<User> getActiveSupervisorsDirectImplementationUsers(Long periodId) {
+        return this.userDao.getActiveSupervisorsDirectImplementationUsers(periodId);
+    }
 }
 

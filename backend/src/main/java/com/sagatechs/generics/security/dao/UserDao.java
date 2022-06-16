@@ -217,13 +217,35 @@ public class UserDao extends GenericDaoJpa<User, Long> {
     }
 
     public List<User> getActivePartnerUsers(Long organizationId) {
-        State state=State.ACTIVO;
+        State state = State.ACTIVO;
         String jpql = "SELECT DISTINCT o FROM " +
                 "  User o " +
                 " where o.organization.id=:organizationId and o.state=:state ";
         Query query = getEntityManager().createQuery(jpql, User.class);
         query.setParameter("organizationId", organizationId);
-        query.setParameter("state",state);
+        query.setParameter("state", state);
+        return query.getResultList();
+    }
+
+    public List<User> getActiveResponsableDirectImplementationUsers(Long periodId) {
+        State state = State.ACTIVO;
+        String jpql = "SELECT DISTINCT o FROM " +
+                " IndicatorExecution  ie inner join ie.assignedUser o " +
+                " where  ie.state=:state and ie.period.id=:periodId ";
+        Query query = getEntityManager().createQuery(jpql, User.class);
+        query.setParameter("periodId", periodId);
+        query.setParameter("state", state);
+        return query.getResultList();
+    }
+
+    public List<User> getActiveSupervisorsDirectImplementationUsers(Long periodId) {
+        State state = State.ACTIVO;
+        String jpql = "SELECT DISTINCT o FROM " +
+                " IndicatorExecution  ie inner join ie.supervisorUser o " +
+                " where  ie.state=:state and ie.period.id=:periodId ";
+        Query query = getEntityManager().createQuery(jpql, User.class);
+        query.setParameter("periodId", periodId);
+        query.setParameter("state", state);
         return query.getResultList();
     }
 }

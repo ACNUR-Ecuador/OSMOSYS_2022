@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Calendar;
 import java.util.List;
 
 @Stateless
@@ -45,5 +46,13 @@ public class UtilsService {
             }
             return totalExecution;
         }
+    }
+
+    public Integer getCurrentYear(){
+        return Calendar.getInstance().get(Calendar.YEAR);
+    }
+
+    public Integer getCurrentMonthYearOrder(){
+        return  Calendar.getInstance().get(Calendar.MONTH)+1;
     }
 }

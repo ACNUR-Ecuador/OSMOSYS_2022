@@ -3,6 +3,7 @@ package org.unhcr.osmosys.model;
 import com.sagatechs.generics.persistence.model.BaseEntity;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedDTO;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedWithOfficesDTO;
+import org.unhcr.osmosys.model.reportDTOs.LaterReportDTO;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -121,6 +122,35 @@ import java.math.BigDecimal;
                 )
         }
 )
+@SqlResultSetMapping(
+        name = "LateReportMappingDTOMappingPartners",
+        classes = {
+                @ConstructorResult(
+                        targetClass = LaterReportDTO.class,
+                        columns = {
+                                @ColumnResult(name = "project", type = String.class),
+                                @ColumnResult(name = "implementer", type = String.class),
+                                @ColumnResult(name = "indicator_code", type = String.class),
+                                @ColumnResult(name = "indicator", type = String.class),
+                                @ColumnResult(name = "indicator_category", type = String.class),
+                                @ColumnResult(name = "late_months", type = String.class),
+                                @ColumnResult(name = "focal_point", type = String.class),
+                        })})
+@SqlResultSetMapping(
+        name = "LateReportMappingDTOMappingDI",
+        classes = {
+                @ConstructorResult(
+                        targetClass = LaterReportDTO.class,
+                        columns = {
+                                @ColumnResult(name = "implementer", type = String.class),
+                                @ColumnResult(name = "indicator_code", type = String.class),
+                                @ColumnResult(name = "indicator", type = String.class),
+                                @ColumnResult(name = "indicator_category", type = String.class),
+                                @ColumnResult(name = "late_months", type = String.class),
+                                @ColumnResult(name = "supervisor", type = String.class),
+                                @ColumnResult(name = "responsible", type = String.class),
+                                @ColumnResult(name = "helper", type = String.class),
+                        })})
 public class Helper extends BaseEntity<Long> {
 
     @Id

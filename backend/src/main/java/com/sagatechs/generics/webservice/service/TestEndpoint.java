@@ -13,6 +13,7 @@ import org.unhcr.osmosys.model.Project;
 import org.unhcr.osmosys.model.cubeDTOs.FactDTO;
 import org.unhcr.osmosys.model.enums.AreaType;
 import org.unhcr.osmosys.model.enums.DissagregationType;
+import org.unhcr.osmosys.reports.service.MessageAlertService;
 import org.unhcr.osmosys.reports.service.ReportService;
 import org.unhcr.osmosys.services.*;
 import org.unhcr.osmosys.webServices.model.*;
@@ -71,6 +72,9 @@ public class TestEndpoint {
     CubeService cubeService;
 
     @Inject
+    MessageAlertService messageAlertService;
+
+    @Inject
     GeneralIndicatorService generalIndicatorService;
 
     @Inject
@@ -83,7 +87,38 @@ public class TestEndpoint {
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
     public String test2() throws GeneralAppException {
-        this.reportService.indicatorsCatalogByPeriodId(1L);
+        this.messageAlertService.sendAlertReviewToDirectImplementation();
+        return "ya";
+    }
+
+    @Path("sendAlertReviewToDirectImplementation")
+    @GET
+    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    public String sendAlertReviewToDirectImplementation() throws GeneralAppException {
+        this.messageAlertService.sendAlertReviewToDirectImplementation();
+        return "ya";
+    }
+
+    @Path("sendAlertReviewToPartnersFocalPoints")
+    @GET
+    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    public String sendAlertReviewToPartnersFocalPoints() throws GeneralAppException {
+        this.messageAlertService.sendAlertReviewToPartnersFocalPoints();
+        return "ya";
+    }
+
+    @Path("sendAlertToPartners")
+    @GET
+    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    public String sendAlertToPartners() throws GeneralAppException {
+        this.messageAlertService.sendAlertToPartners();
+        return "ya";
+    }
+    @Path("sendAlertToDirectImplementation")
+    @GET
+    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    public String sendAlertToDirectImplementation() throws GeneralAppException {
+        this.messageAlertService.sendAlertToDirectImplementation();
         return "ya";
     }
 
@@ -541,9 +576,9 @@ public class TestEndpoint {
                     .filter(dissagregationAssignationToIndicatorWeb ->
                             dissagregationAssignationToIndicatorWeb.getDissagregationType().equals(DissagregationType.DIVERSIDAD))
                     .findFirst();
-            if(ddf.isPresent()){
+            if (ddf.isPresent()) {
                 ddf.get().setState(State.ACTIVO);
-            }else {
+            } else {
                 DissagregationAssignationToIndicatorWeb dd = new DissagregationAssignationToIndicatorWeb();
                 dd.setState(State.ACTIVO);
                 dd.setDissagregationType(DissagregationType.DIVERSIDAD);
@@ -557,9 +592,9 @@ public class TestEndpoint {
                     .filter(dissagregationAssignationToIndicatorWeb ->
                             dissagregationAssignationToIndicatorWeb.getDissagregationType().equals(DissagregationType.PAIS_ORIGEN))
                     .findFirst();
-            if(dpf.isPresent()){
+            if (dpf.isPresent()) {
                 dpf.get().setState(State.ACTIVO);
-            }else {
+            } else {
                 DissagregationAssignationToIndicatorWeb dp = new DissagregationAssignationToIndicatorWeb();
                 dp.setState(State.ACTIVO);
                 dp.setDissagregationType(DissagregationType.PAIS_ORIGEN);
@@ -571,6 +606,7 @@ public class TestEndpoint {
         }
         return "terminado";
     }
+
     @Path("updateProductIndicatorsD2")
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
@@ -604,9 +640,9 @@ public class TestEndpoint {
                     .filter(dissagregationAssignationToIndicatorWeb ->
                             dissagregationAssignationToIndicatorWeb.getDissagregationType().equals(DissagregationType.DIVERSIDAD_EDAD_Y_GENERO))
                     .findFirst();
-            if(ddf.isPresent()){
+            if (ddf.isPresent()) {
                 ddf.get().setState(State.ACTIVO);
-            }else {
+            } else {
                 DissagregationAssignationToIndicatorWeb dd = new DissagregationAssignationToIndicatorWeb();
                 dd.setState(State.ACTIVO);
                 dd.setDissagregationType(DissagregationType.DIVERSIDAD_EDAD_Y_GENERO);
@@ -652,9 +688,9 @@ public class TestEndpoint {
                     .filter(dissagregationAssignationToIndicatorWeb ->
                             dissagregationAssignationToIndicatorWeb.getDissagregationType().equals(DissagregationType.DIVERSIDAD))
                     .findFirst();
-            if(ddf.isPresent()){
+            if (ddf.isPresent()) {
                 ddf.get().setState(State.ACTIVO);
-            }else {
+            } else {
                 DissagregationAssignationToIndicatorWeb dd = new DissagregationAssignationToIndicatorWeb();
                 dd.setState(State.ACTIVO);
                 dd.setDissagregationType(DissagregationType.DIVERSIDAD);
@@ -668,9 +704,9 @@ public class TestEndpoint {
                     .filter(dissagregationAssignationToIndicatorWeb ->
                             dissagregationAssignationToIndicatorWeb.getDissagregationType().equals(DissagregationType.PAIS_ORIGEN))
                     .findFirst();
-            if(dpf.isPresent()){
+            if (dpf.isPresent()) {
                 dpf.get().setState(State.ACTIVO);
-            }else {
+            } else {
                 DissagregationAssignationToIndicatorWeb dp = new DissagregationAssignationToIndicatorWeb();
                 dp.setState(State.ACTIVO);
                 dp.setDissagregationType(DissagregationType.PAIS_ORIGEN);
@@ -682,6 +718,7 @@ public class TestEndpoint {
         }
         return "terminado";
     }
+
     @Path("updateAllPartnersTotals")
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)

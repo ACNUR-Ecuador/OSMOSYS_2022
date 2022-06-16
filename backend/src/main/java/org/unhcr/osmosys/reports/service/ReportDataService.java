@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.reports.service;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -15,12 +16,14 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.ReportDao;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedDTO;
+import org.unhcr.osmosys.model.reportDTOs.LaterReportDTO;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
 import org.unhcr.osmosys.webServices.model.IndicatorExecutionWeb;
 import org.unhcr.osmosys.webServices.model.LateType;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 import java.util.*;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
@@ -487,6 +490,7 @@ public class ReportDataService {
         });
         return widths;
     }
+
     public SXSSFWorkbook getAllIndicatorExecutionDetailedByPeriodIdAndOfficeIdAndOffice(Long projectId, Long officeId) {
 
         List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getAllIndicatorExecutionDetailedByPeriodIdAndOfficeId(projectId, officeId);
@@ -501,4 +505,290 @@ public class ReportDataService {
 
     }
 
+    public SXSSFWorkbook getPartnerLateReportByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
+        List<LaterReportDTO> data = this.reportDao.getPartnerLateReportByProjectId(projectId, currentYear, currentMonth);
+        if (CollectionUtils.isEmpty(data)) {
+            return null;
+        }
+        return this.getLateReport(data, true, false);
+    }
+    public SXSSFWorkbook getPartnerLateReviewByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
+        List<LaterReportDTO> data = this.reportDao.getPartnerLateReviewByProjectId(projectId, currentYear, currentMonth);
+        if (CollectionUtils.isEmpty(data)) {
+            return null;
+        }
+        return this.getLateReport(data, true, true);
+    }
+
+    public SXSSFWorkbook getPartnerLateReportByFocalPointId(Long focalPointId, Integer currentYear, Integer currentMonth) {
+        List<LaterReportDTO> data = this.reportDao.getPartnerLateReportByProjectId(focalPointId, currentYear, currentMonth);
+        if (CollectionUtils.isEmpty(data)) {
+            return null;
+        }
+        return this.getLateReport(data, true, false);
+    }
+
+    public SXSSFWorkbook getPartnerLateReviewReportByFocalPointId(Long focalPointId, Integer currentYear, Integer currentMonth) {
+        List<LaterReportDTO> data = this.reportDao.getPartnerLateReviewReportByFocalPointId(focalPointId, currentYear, currentMonth);
+        if (CollectionUtils.isEmpty(data)) {
+            return null;
+        }
+        return this.getLateReport(data, true, true);
+    }
+
+    public SXSSFWorkbook getPartnerLateReviewReportByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
+        List<LaterReportDTO> data = this.reportDao.getPartnerLateReviewReportByProjectId(projectId, currentYear, currentMonth);
+        if (CollectionUtils.isEmpty(data)) {
+            return null;
+        }
+        return this.getLateReport(data, true, true);
+    }
+
+    public SXSSFWorkbook getLateReport(List<LaterReportDTO> data, Boolean partner, Boolean review) {
+
+
+        List<Integer> titlesWidth = this.getTitlesWidthLateReport(partner, review);
+
+
+        List<String> titles = this.getTitlesLateReport(partner, review);
+        SXSSFWorkbook wb = new SXSSFWorkbook();
+        SXSSFSheet sheet = wb.createSheet();
+        // Set which area the table should be placed in
+        int NB_ROWS = data.size();
+        int NB_COLS = titles.size() - 1;
+        AreaReference reference = wb.getCreationHelper()
+                .createAreaReference(
+                        new CellReference(0, 0),
+                        new CellReference(NB_ROWS, NB_COLS));
+        // title rows
+        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
+
+        Row rowTitle = sheet.createRow(0);
+        for (int i = 0; i < titles.size(); i++) {
+            Cell cell = rowTitle.createCell(i);
+            cell.setCellValue(titles.get(i));
+            sheet.setColumnWidth(i, titlesWidth.get(i));
+        }
+        for (int i = 0; i < data.size(); i++) {
+            SXSSFRow rowData = sheet.createRow(i + 1);
+            LaterReportDTO dataRow = data.get(i);
+
+            for (int t = 0; t < titles.size(); t++) {
+                Cell cell = rowData.createCell(t);
+                this.setDataFromLaterReportDTO(wb, titles.get(t), cell, dataRow);
+            }
+
+        }
+        return wb;
+    }
+
+    private void setDataFromLaterReportDTO(SXSSFWorkbook wb, String title, Cell cell, LaterReportDTO dataRow) {
+        switch (title) {
+            case "Proyecto":
+                cell.setCellValue(dataRow.getProject());
+                break;
+            case "Oficina":
+                cell.setCellValue(dataRow.getImplementer());
+                break;
+            case "Socio":
+                cell.setCellValue(dataRow.getImplementer());
+                break;
+            case "Indicador Código":
+                cell.setCellValue(dataRow.getIndicator_code());
+                break;
+            case "Indicador":
+                cell.setCellValue(dataRow.getIndicator());
+                break;
+            case "Indicador Categoría":
+                cell.setCellValue(dataRow.getIndicator_category());
+                break;
+            case "Meses Sin Verificación":
+                cell.setCellValue(dataRow.getLate_months());
+                break;
+            case "Meses con Retraso":
+                cell.setCellValue(dataRow.getLate_months());
+                break;
+            case "Punto Focal":
+                cell.setCellValue(dataRow.getFocal_point());
+                break;
+            case "Verificador de datos":
+                cell.setCellValue(dataRow.getSupervisor());
+                break;
+            case "Responsable reporte":
+                cell.setCellValue(dataRow.getResponsible());
+                break;
+
+        }
+    }
+
+    public List<String> getTitlesLateReport(Boolean parters, Boolean review) {
+        List<String> titles = new ArrayList<>();
+        if (parters) {
+            titles.add("Proyecto");
+            titles.add("Socio");
+            titles.add("Indicador Código");
+            titles.add("Indicador");
+            titles.add("Indicador Categoría");
+            if (review) {
+                titles.add("Meses Sin Verificación");
+            } else {
+                titles.add("Meses con Retraso");
+            }
+            titles.add("Punto Focal");
+        } else {
+            titles.add("Oficina");
+            titles.add("Indicador Código");
+            titles.add("Indicador");
+            titles.add("Indicador Categoría");
+            if (review) {
+                titles.add("Meses Sin Verificación");
+            } else {
+                titles.add("Meses con Retraso");
+            }
+            titles.add("Verificador de datos");
+            titles.add("Responsable reporte");
+        }
+
+        return titles;
+    }
+
+    public List<Integer> getTitlesWidthLateReport(Boolean parters, Boolean review) {
+
+        List<Integer> titles = new ArrayList<>();
+        if (parters) {
+            titles.add(7000);
+            titles.add(2000);
+            titles.add(2000);
+            titles.add(7000);
+            titles.add(3000);
+            if (review) {
+                titles.add(7000);
+            } else {
+                titles.add(7000);
+            }
+            titles.add(5000);
+        } else {
+            titles.add(4000);
+            titles.add(2000);
+            titles.add(7000);
+            titles.add(3000);
+            if (review) {
+                titles.add(7000);
+            } else {
+                titles.add(7000);
+            }
+            titles.add(5000);
+            titles.add(5000);
+        }
+
+        return titles;
+    }
+
+    private SXSSFWorkbook getLAteReportExcel(List<IndicatorExecutionDetailedDTO> resultData, List<Integer> columnsToRemove) {
+        List<Integer> titlesWidth = this.getTitlesWidthIndicatorExecutionDetailedDTO(columnsToRemove);
+
+
+        List<String> titles = this.getTitlesIndicatorExecutionDetailedDTO(columnsToRemove);
+
+        SXSSFWorkbook wb = new SXSSFWorkbook();
+        SXSSFSheet sheet = wb.createSheet();
+        // Set which area the table should be placed in
+        int NB_ROWS = resultData.size();
+        int NB_COLS = titles.size() - 1;
+        AreaReference reference = wb.getCreationHelper()
+                .createAreaReference(
+                        new CellReference(0, 0),
+                        new CellReference(NB_ROWS, NB_COLS));
+        // title rows
+        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
+        // Create
+        DataFormat format = wb.createDataFormat();
+        CellStyle cellStylePercentage;
+        cellStylePercentage = wb.createCellStyle();
+        cellStylePercentage.setDataFormat(format.getFormat("0%"));
+        // Set the values for the table
+
+        Row rowTitle = sheet.createRow(0);
+        for (int i = 0; i < titles.size(); i++) {
+            Cell cell = rowTitle.createCell(i);
+            cell.setCellValue(titles.get(i));
+            sheet.setColumnWidth(i, titlesWidth.get(i));
+        }
+
+        long lStartTime2 = System.nanoTime();
+        for (int i = 0; i < resultData.size(); i++) {
+            SXSSFRow rowData = sheet.createRow(i + 1);
+            IndicatorExecutionDetailedDTO ie = resultData.get(i);
+            for (int t = 0; t < titles.size(); t++) {
+                Cell cell = rowData.createCell(t);
+                this.setDataFromIndicatorExecutionDetailedDTO(wb, titles.get(t), cell, ie, cellStylePercentage);
+            }
+
+        }
+        long lEndTime2 = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds(excel construction): " + (lEndTime2 - lStartTime2) / 1000000000);
+        return wb;
+    }
+
+    public SXSSFWorkbook getPartnerLateReportByPartnerId(Long partnerId, Integer currentYear, Integer currentMonthYearOrder) throws GeneralAppException {
+
+        List<LaterReportDTO> data = this.reportDao.getPartnerLateReportByPartnerId(partnerId, currentYear, currentMonthYearOrder);
+        if (CollectionUtils.isEmpty(data)) {
+            throw new GeneralAppException("El socio no tiene retrazos ", Response.Status.NOT_FOUND.getStatusCode());
+        }
+        return this.getLateReport(data, true, false);
+
+
+    }
+
+    public SXSSFWorkbook getDirectImplementationLateReportByResponsableId(Long responsableId, Integer currentYear, Integer currentMonthYearOrder) {
+
+        List<LaterReportDTO> data = this.reportDao.getDirectImplementationLateReportByResponsableId(responsableId, currentYear, currentMonthYearOrder);
+        if (CollectionUtils.isEmpty(data)) {
+            return null;
+        }
+        return this.getLateReport(data, false, false);
+    }
+
+    public SXSSFWorkbook getDirectImplementationLateReviewReportBySupervisorId(Long responsableId, Integer currentYear, Integer currentMonthYearOrder) {
+
+        List<LaterReportDTO> data = this.reportDao.getDirectImplementationLateReviewReportBySupervisorId(responsableId, currentYear, currentMonthYearOrder);
+        if (CollectionUtils.isEmpty(data)) {
+            return null;
+        }
+        return this.getLateReport(data, false, true);
+    }
+
+    public SXSSFWorkbook getAllLateReviewReportDirectImplementation(Integer currentYear, Integer currentMonthYearOrder) {
+
+        List<LaterReportDTO> data = this.reportDao.getAllLateReviewReportDirectImplementation( currentYear, currentMonthYearOrder);
+        if (CollectionUtils.isEmpty(data)) {
+            return null;
+        }
+        return this.getLateReport(data, false, true);
+    }
+    public SXSSFWorkbook getAllLateReportDirectImplementation(Integer currentYear, Integer currentMonthYearOrder) {
+
+        List<LaterReportDTO> data = this.reportDao.getAllLateReportDirectImplementation( currentYear, currentMonthYearOrder);
+        if (CollectionUtils.isEmpty(data)) {
+            return null;
+        }
+        return this.getLateReport(data, false, false);
+    }
+    public SXSSFWorkbook getAllLateReportPartners(Integer currentYear, Integer currentMonthYearOrder) {
+
+        List<LaterReportDTO> data = this.reportDao.getAllLateReportPartners( currentYear, currentMonthYearOrder);
+        if (CollectionUtils.isEmpty(data)) {
+            return null;
+        }
+        return this.getLateReport(data, true, false);
+    }
+    public SXSSFWorkbook getAllLateReviewPartners(Integer currentYear, Integer currentMonthYearOrder) {
+
+        List<LaterReportDTO> data = this.reportDao.getAllLateReviewPartners( currentYear, currentMonthYearOrder);
+        if (CollectionUtils.isEmpty(data)) {
+            return null;
+        }
+        return this.getLateReport(data, true, true);
+    }
 }

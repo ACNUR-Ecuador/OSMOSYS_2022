@@ -610,4 +610,213 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
+
+    /************************ late state report****************************/
+    @Path("/getPartnerLateReportByProjectId/{projectId}")
+    @GET
+    //@Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getPartnerLateReportByProjectId(
+            // @Context SecurityContext securityContext,
+            @PathParam("projectId") Long projectId
+    ) throws GeneralAppException {
+        // Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getPartnerLateReportByProjectId:");//) + principal.getName());
+        long lStartTime = System.nanoTime();
+        ByteArrayOutputStream r = this.reportService.getPartnerLateReportByProjectId(projectId);
+        if(r==null){
+            throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
+        }
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
+        String filename = "Reporte_retrasos_socio" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+    }
+
+    @Path("/getPartnerLateReviewByProjectId/{projectId}")
+    @GET
+    //@Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getPartnerLateReviewByProjectId(
+            // @Context SecurityContext securityContext,
+            @PathParam("projectId") Long projectId
+    ) throws GeneralAppException {
+        // Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getPartnerLateReviewByProjectId:");//) + principal.getName());
+        long lStartTime = System.nanoTime();
+        ByteArrayOutputStream r = this.reportService.getPartnerLateReviewByProjectId(projectId);
+        if(r==null){
+            throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
+        }
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
+        String filename = "Reporte_retrasos_verificacion_socio" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+    }
+
+    @Path("/getSupervisorLateReviewReport/{supervisorId}")
+    @GET
+    //@Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getSupervisorLateReviewReport(
+            // @Context SecurityContext securityContext,
+            @PathParam("supervisorId") Long supervisorId
+    ) throws GeneralAppException {
+        // Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getSupervisorLateReviewReport:");//) + principal.getName());
+        long lStartTime = System.nanoTime();
+        ByteArrayOutputStream r = this.reportService.getDirectImplementationLateReviewReportBySupervisorId(supervisorId);
+        if(r==null){
+            throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
+        }
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
+        String filename = "Reporte_retrasos_revision_di" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+    }
+
+    @Path("/getResponsableLateReport/{responsableId}")
+    @GET
+    //@Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getResponsableLateReport(
+            // @Context SecurityContext securityContext,
+            @PathParam("responsableId") Long responsableId
+    ) throws GeneralAppException {
+        // Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getResponsableLateReport:");//) + principal.getName());
+        long lStartTime = System.nanoTime();
+        ByteArrayOutputStream r = this.reportService.getDirectImplementationLateReportByResponsableId(responsableId);
+        if(r==null){
+            throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
+        }
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
+        String filename = "Reporte_retrasos_di" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+    }
+
+    @Path("/getFocalPointLateReport/{focalPointId}")
+    @GET
+    //@Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getFocalPointLateReport(
+            // @Context SecurityContext securityContext,
+            @PathParam("focalPointId") Long focalPointId
+    ) throws GeneralAppException {
+        // Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getFocalPointLateReport:");//) + principal.getName());
+        long lStartTime = System.nanoTime();
+        ByteArrayOutputStream r = this.reportService.getPartnerLateReportByFocalPointId(focalPointId);
+        if(r==null){
+            throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
+        }
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
+        String filename = "Reporte_retrasos_punto_focal" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+    }
+
+    @Path("/getFocalPointLateReviewReport/{focalPointId}")
+    @GET
+    //@Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getFocalPointLateReviewReport(
+            // @Context SecurityContext securityContext,
+            @PathParam("focalPointId") Long focalPointId
+    ) throws GeneralAppException {
+        // Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getFocalPointLateReviewReport:");//) + principal.getName());
+        long lStartTime = System.nanoTime();
+        ByteArrayOutputStream r = this.reportService.getPartnerLateReviewReportByFocalPointId(focalPointId);
+        if(r==null){
+            throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
+        }
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
+        String filename = "Reporte_retrasos_revision_punto_focal" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+    }
+
+    @Path("/getAllLateReviewReportDirectImplementation")
+    @GET
+    //@Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getAllLateReviewReportDirectImplementation(
+            // @Context SecurityContext securityContext,
+    ) throws GeneralAppException {
+        // Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getAllLateReviewReportDirectImplementation:");//) + principal.getName());
+        long lStartTime = System.nanoTime();
+        ByteArrayOutputStream r = this.reportService.getAllLateReviewReportDirectImplementation();
+        if(r==null){
+            throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
+        }
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
+        String filename = "Reporte_retrasos_revision_di" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+    }
+
+    @Path("/getAllLateReportDirectImplementation")
+    @GET
+    //@Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getAllLateReportDirectImplementation(
+            // @Context SecurityContext securityContext,
+    ) throws GeneralAppException {
+        // Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getAllLateReportDirectImplementation:");//) + principal.getName());
+        long lStartTime = System.nanoTime();
+        ByteArrayOutputStream r = this.reportService.getAllLateReportDirectImplementation();
+        if(r==null){
+            throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
+        }
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
+        String filename = "Reporte_retrasos_di" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+    }
+
+    @Path("/getAllLateReportPartners")
+    @GET
+    //@Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getAllLateReportPartners(
+            // @Context SecurityContext securityContext,
+    ) throws GeneralAppException {
+        // Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getAllLateReportPartners:");//) + principal.getName());
+        long lStartTime = System.nanoTime();
+        ByteArrayOutputStream r = this.reportService.getAllLateReportPartners();
+        if(r==null){
+            throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
+        }
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
+        String filename = "Reporte_retrasos_socios" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+    }
+    @Path("/getAllLateReviewPartners")
+    @GET
+    //@Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getAllLateReviewPartners(
+            // @Context SecurityContext securityContext,
+    ) throws GeneralAppException {
+        // Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getAllLateReviewPartners:");//) + principal.getName());
+        long lStartTime = System.nanoTime();
+        ByteArrayOutputStream r = this.reportService.getAllLateReviewPartners();
+        if(r==null){
+            throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
+        }
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
+        String filename = "Reporte_retrasos_verificacion_socios" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+    }
+
+
+
 }

@@ -84,9 +84,9 @@ public class AppDataConfigLlenadoAutomatico {
         instantiateConfigurationValues("alert days to report of month, comma separeted ",
                 "alert days to report of month, comma separeted ",
                 AppConfigurationKey.ALERT_DAYS, "5");
-        instantiateConfigurationValues("warning days of month to report, comma separated",
+        instantiateConfigurationValues("rewiev days of month to report, comma separated",
                 "warning days of month to report, comma separated",
-                AppConfigurationKey.WARNING_DAYS, "10");
+                AppConfigurationKey.REVIEW_DAYS, "13");
     }
 
     @SuppressWarnings("SameParameterValue")

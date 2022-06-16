@@ -5,6 +5,8 @@ import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import javax.annotation.PostConstruct;
 import javax.ejb.AsyncResult;
 import javax.ejb.Asynchronous;
@@ -15,9 +17,13 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -69,8 +75,8 @@ public class EmailService {
 
     public void sendEmailMessage(String destinationAdress, String destinationCopyAdress, String subject, String messageText) {
         try {
-            destinationAdress = "salazart@unhcr.org";
-            destinationCopyAdress = null;
+            //destinationAdress = "salazart@unhcr.org";
+            // destinationCopyAdress = null;
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(adminEmailAdress));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinationAdress));
@@ -80,13 +86,57 @@ public class EmailService {
             message.setSubject(subject);
             message.setReplyTo(new javax.mail.Address[]
                     {
-                            new javax.mail.internet.InternetAddress("salazart@unhcr.org")
+                            new javax.mail.internet.InternetAddress("ecuquosmosys@unhcr.org")
                     });
 
 
             MimeBodyPart mimeBodyPart = new MimeBodyPart();
 
             message.setContent(messageText, "text/html; charset=UTF-8");
+            Transport.send(message);
+            LOGGER.debug("----------------enviado");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+    public void sendEmailMessageWithAttachment(String destinationAdress, String destinationCopyAdress, String subject, String messageText, ByteArrayOutputStream attachment, String filename) {
+        try {
+            //destinationAdress = "salazart@unhcr.org";
+            // destinationCopyAdress = null;
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(adminEmailAdress));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinationAdress));
+            if (StringUtils.isNotBlank(destinationCopyAdress)) {
+                message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(destinationCopyAdress));
+            }
+            message.setSubject(subject);
+            message.setReplyTo(new javax.mail.Address[]
+                    {
+                            new javax.mail.internet.InternetAddress("ecuquosmosys@unhcr.org")
+                    });
+
+
+            MimeBodyPart mimeBodyPart = new MimeBodyPart();
+            messageText= new String(messageText.getBytes(StandardCharsets.UTF_8),StandardCharsets.UTF_8);
+            mimeBodyPart.setText(messageText);
+            mimeBodyPart.setHeader("Content-Type","text/html");
+
+            //message.setContent(messageText, "text/html; charset=UTF-8");
+
+            DataSource aAttachment = new  ByteArrayDataSource(attachment.toByteArray(),"application/octet-stream");
+            MimeBodyPart attachmentPart = new MimeBodyPart();
+            attachmentPart.setDataHandler(new DataHandler(aAttachment));
+            attachmentPart.setHeader("Content-Type","text/plain; charset=\"utf-8\"; name=\""+filename+"\""); // Rewrite Header
+            attachmentPart.setHeader("Content-Disposition", "attachment; filename=\""+filename+"\"");
+            attachmentPart.setHeader("Content-Transfer-Encoding","base64");
+            // Join parts
+            MimeMultipart multipart = new MimeMultipart();
+            multipart.addBodyPart(mimeBodyPart);
+            multipart.addBodyPart(attachmentPart);
+            message.setContent(multipart);
+
             Transport.send(message);
             LOGGER.debug("----------------enviado");
 
