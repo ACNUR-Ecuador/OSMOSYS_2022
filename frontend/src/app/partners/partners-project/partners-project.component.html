@@ -68,6 +68,11 @@
                                             offIcon="pi pi-lock"
                                             [style]="{'width': '10em'}"></p-toggleButton>
                         </div>
+                        <div class="p-col-4 border_div">
+                            <p-button label="Generar Reporte de verificación de indicadores" icon="pi pi-file-excel"
+                                      (onClick)="getPartnerLateReviewByProjectId()"
+                                      styleClass="p-button-success p-mb-2"></p-button>
+                        </div>
                     </div>
 
 
@@ -75,6 +80,11 @@
                         <p-splitButton label="Generar Reporte del Proyecto" icon="pi pi-file-excel"
                                        [model]="itemsReportTypeFull"
                                        styleClass="p-button-success p-mb-2"></p-splitButton>
+                    </div>
+                    <div class="p-col-4 border_div">
+                        <p-button label="Generar reporte de retrazo de indicadores" icon="pi pi-file-excel"
+                                  (onClick)="getPartnerLateReportByProjectId()"
+                                  styleClass="p-button-success p-mb-2"></p-button>
                     </div>
                     <div class="p-field p-col-5 p-md-5">
                         <p-messages></p-messages>

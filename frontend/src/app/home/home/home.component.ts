@@ -12,6 +12,7 @@ import {environment} from '../../../environments/environment';
 export class HomeComponent implements OnInit {
     render = false;
     projectIdsFocalPoint: number[];
+    acnurUser: boolean;
 
     constructor(
         private userService: UserService,
@@ -22,6 +23,7 @@ export class HomeComponent implements OnInit {
 
     ngOnInit(): void {
         this.userService.currentUserSubject.subscribe(value => {
+            this.acnurUser = value.organization.id === 1;
             if (value.roles.filter(value1 => {
                 return value1.name === 'PUNTO_FOCAL';
             }).length > 0) {
@@ -33,7 +35,7 @@ export class HomeComponent implements OnInit {
                         return value2.id;
                     });
                 });
-            }else {
+            } else {
                 this.projectService.getProjectResumenWebByPeriodId(1).subscribe(value1 => {
                     this.projectIdsFocalPoint = value1.map(value2 => {
                         return value2.id;
@@ -43,5 +45,6 @@ export class HomeComponent implements OnInit {
         });
         this.versionCheckService.checkVersion(environment.versionCheckURL);
     }
+
 
 }

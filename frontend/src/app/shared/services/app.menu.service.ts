@@ -173,7 +173,14 @@ export class MenuService {
                     icon: 'pi pi-fw pi-file-excel',
                     routerLink: ['/reports/dataExport'],
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS'],
+                },
+                {
+                    label: 'Reportes de retrazos',
+                    icon: 'pi pi-fw pi-calendar-times',
+                    routerLink: ['/reports/lateReportsComponent'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
                 }
+
             ]
         },
         {separator: true},

@@ -1,0 +1,126 @@
+<p-card>
+    <ng-template pTemplate="header">
+        <h3 class="page-title p-mb-1">Reporte de retrazos</h3>
+        <p-toast></p-toast>
+        <p-messages></p-messages>
+
+        <p-toolbar styleClass="p-mb-4">
+            <form [formGroup]="periodForm">
+                <div class="p-field p-grid">
+
+                    <label for="periodI" class="p-col-fixed" style="width:100px; color: white;">Periodo:</label>
+                    <div class="p-col">
+                        <p-dropdown id="periodI" [options]="periods" optionLabel="year"
+                        ></p-dropdown>
+                    </div>
+
+                </div>
+            </form>
+
+        </p-toolbar>
+
+    </ng-template>
+
+    <p-fieldset>
+        <ng-template pTemplate="header">Retrazos</ng-template>
+        <div class="p-grid">
+            <div class="p-col-4 border_div"><h5>Reporte</h5></div>
+            <div class="p-col-4 border_div"><h5>Descripción</h5></div>
+            <div class="p-col-4 border_div"><h5>Generar</h5></div>
+
+            <div class="p-col-4 border_div">Mis Obligaciones Como Punto Focal-Verificación de Datos</div>
+            <div class="p-col-4 border_div">Este reporte contiene una lista de indicadores que están pendientes de
+                verificar en los proyectos que usted es punto focal
+            </div>
+            <div class="p-col-4 border_div">
+                <p-button label="Generar Reporte" icon="pi pi-file-excel"
+                          (onClick)="getFocalPointLateReviewReport()"
+                          styleClass="p-button-success p-mb-2"></p-button>
+            </div>
+
+            <div class="p-col-4 border_div">Mis Obligaciones Como Punto Focal-Reporte de indicadores socios</div>
+            <div class="p-col-4 border_div">Este reporte contiene una lista de indicadores que están pendientes de
+                reportar para en los proyectos que usted es punto focal. Recuerde que contamos con su ayuda para que los
+                socios mantengan la información al día.
+            </div>
+            <div class="p-col-4 border_div">
+                <p-button label="Generar Reporte" icon="pi pi-file-excel"
+                          (onClick)="getFocalPointLateReport()"
+                          styleClass="p-button-success p-mb-2"></p-button>
+            </div>
+
+            <div class="p-col-4 border_div">Mis Obligaciones Como Responsable de Reporte-Implementación Directa</div>
+            <div class="p-col-4 border_div">Este reporte contiene una lista de indicadores que están pendientes de
+                reportar para los que tú eres responsable. Recuerda que contamos con tu ayuda para mantener la
+                información al día.
+            </div>
+            <div class="p-col-4 border_div">
+                <p-button label="Generar Reporte" icon="pi pi-file-excel"
+                          (onClick)="getResponsableLateReport()"
+                          styleClass="p-button-success p-mb-2"></p-button>
+            </div>
+
+            <div class="p-col-4 border_div">Mis Obligaciones Como Supervisor de Reporte-Implementación Directa</div>
+            <div class="p-col-4 border_div">Este reporte contiene una lista de indicadores que están pendientes de
+                validar para los que tú eres supervisor. Recuerda que contamos con tu ayuda para mantener la información
+                al día y correcta.
+            </div>
+            <div class="p-col-4 border_div">
+                <p-button label="Generar Reporte" icon="pi pi-file-excel"
+                          (onClick)="getSupervisorLateReviewReport()"
+                          styleClass="p-button-success p-mb-2"></p-button>
+            </div>
+
+            <div class="p-col-4 border_div" *ngIf="isAdmin">Reporte total de Verificaciòn de Indicadores-Implementación
+                Directa
+            </div>
+            <div class="p-col-4 border_div" *ngIf="isAdmin">Este reporte contiene una lista de indicadores que están
+                pendientes de
+                validar.
+            </div>
+            <div class="p-col-4 border_div" *ngIf="isAdmin">
+                <p-button label="Generar Reporte" icon="pi pi-file-excel"
+                          (onClick)="getAllLateReviewReportDirectImplementation()"
+                          styleClass="p-button-success p-mb-2"></p-button>
+            </div>
+
+            <div class="p-col-4 border_div" *ngIf="isAdmin">Reporte total de Indicadores-Implementación
+                Directa
+            </div>
+            <div class="p-col-4 border_div" *ngIf="isAdmin">Este reporte contiene una lista de indicadores que están
+                pendientes de reportar.
+            </div>
+            <div class="p-col-4 border_div" *ngIf="isAdmin">
+                <p-button label="Generar Reporte" icon="pi pi-file-excel"
+                          (onClick)="getAllLateReportDirectImplementation()"
+                          styleClass="p-button-success p-mb-2"></p-button>
+            </div>
+
+            <div class="p-col-4 border_div" *ngIf="isAdmin">Reporte total de Indicadores-Socios
+            </div>
+            <div class="p-col-4 border_div" *ngIf="isAdmin">Este reporte contiene una lista de indicadores que están
+                pendientes de reportar por parte de socios.
+            </div>
+            <div class="p-col-4 border_div" *ngIf="isAdmin">
+                <p-button label="Generar Reporte" icon="pi pi-file-excel"
+                          (onClick)="getAllLateReportPartners()"
+                          styleClass="p-button-success p-mb-2"></p-button>
+            </div>
+
+            <div class="p-col-4 border_div" *ngIf="isAdmin">Reporte total de verificaciòn de Indicadores-Socios
+            </div>
+            <div class="p-col-4 border_div" *ngIf="isAdmin">Este reporte contiene una lista de indicadores que están
+                pendientes de verificaciòn  por parte de los puntos focales de socios.
+            </div>
+            <div class="p-col-4 border_div" *ngIf="isAdmin">
+                <p-button label="Generar Reporte" icon="pi pi-file-excel"
+                          (onClick)="getAllLateReviewPartners()"
+                          styleClass="p-button-success p-mb-2"></p-button>
+            </div>
+
+
+        </div>
+
+
+    </p-fieldset>
+</p-card>

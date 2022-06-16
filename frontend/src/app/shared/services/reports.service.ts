@@ -175,7 +175,6 @@ export class ReportsService {
     }
 
 
-
     public getPartnersPerformanceIndicatorsDetailedByPeriodId(periodId: number) {
         return this.http.get(`${mainServiceUrl}/getPartnersPerformanceIndicatorsDetailedByPeriodId/${periodId}`, {
             observe: 'response',
@@ -226,8 +225,79 @@ export class ReportsService {
             responseType: 'blob' as 'json'
         });
     }
+
     public getIndicatorsCatalogWithImplementersDetailed(periodId: number) {
         return this.http.get(`${mainServiceUrl}/indicatorsCatalogWithImplementersDetailed/${periodId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+
+
+    /********************LATE REPORTS******************/
+    public getFocalPointLateReviewReport(focalPointId: number) {
+        return this.http.get(`${mainServiceUrl}/getFocalPointLateReviewReport/${focalPointId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+
+    public getPartnerLateReportByProjectId(projectId: number) {
+        return this.http.get(`${mainServiceUrl}/getPartnerLateReportByProjectId/${projectId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+    public getPartnerLateReviewByProjectId(projectId: number) {
+        return this.http.get(`${mainServiceUrl}/getPartnerLateReviewByProjectId/${projectId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+
+    public getFocalPointLateReport(focalPointId: number) {
+        return this.http.get(`${mainServiceUrl}/getFocalPointLateReport/${focalPointId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+
+    public getResponsableLateReport(responsableId: number) {
+        return this.http.get(`${mainServiceUrl}/getResponsableLateReport/${responsableId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+
+    public getSupervisorLateReviewReport(supervisorId: number) {
+        return this.http.get(`${mainServiceUrl}/getSupervisorLateReviewReport/${supervisorId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+
+    public getAllLateReviewReportDirectImplementation() {
+        return this.http.get(`${mainServiceUrl}/getAllLateReviewReportDirectImplementation`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+
+    public getAllLateReportDirectImplementation() {
+        return this.http.get(`${mainServiceUrl}/getAllLateReportDirectImplementation`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+
+    public getAllLateReportPartners() {
+        return this.http.get(`${mainServiceUrl}/getAllLateReportPartners`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+    public getAllLateReviewPartners() {
+        return this.http.get(`${mainServiceUrl}/getAllLateReviewPartners`, {
             observe: 'response',
             responseType: 'blob' as 'json'
         });

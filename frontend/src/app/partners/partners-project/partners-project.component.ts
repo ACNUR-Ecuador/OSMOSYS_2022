@@ -5,7 +5,7 @@ import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {UtilsService} from '../../shared/services/utils.service';
 import {ProjectService} from '../../shared/services/project.service';
 import {ActivatedRoute} from '@angular/router';
-import {IndicatorExecution, Project, QuarterState} from '../../shared/model/OsmosysModel';
+import {IndicatorExecution, Period, Project, QuarterState} from '../../shared/model/OsmosysModel';
 import {ColumnTable} from '../../shared/model/UtilsModel';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
@@ -284,5 +284,53 @@ export class PartnersProjectComponent implements OnInit {
         this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']);
         this.isProjectFocalPoint = this.project.focalPoint && this.project.focalPoint.id === userId;
         this.isEjecutor = this.project.organization.id === orgId && this.userService.hasRole('EJECUTOR_PROYECTOS');
+    }
+
+
+    getPartnerLateReportByProjectId() {
+        this.messageService.clear();
+
+        this.reportsService.getPartnerLateReportByProjectId(this.project.id).subscribe((response: HttpResponse<Blob>) => {
+            if (response.status === 204) {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'No tienes indicadores pendientes, gracias por tu colaboración',
+                    life: 3000
+                });
+            } else {
+                this.utilsService.downloadFileResponse(response);
+            }
+
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al Generar el Reporte',
+                detail: error.error.message,
+                life: 3000
+            });
+        });
+    }
+    getPartnerLateReviewByProjectId() {
+        this.messageService.clear();
+
+        this.reportsService.getPartnerLateReviewByProjectId(this.project.id).subscribe((response: HttpResponse<Blob>) => {
+            if (response.status === 204) {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'No tienes indicadores pendientes, gracias por tu colaboración',
+                    life: 3000
+                });
+            } else {
+                this.utilsService.downloadFileResponse(response);
+            }
+
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al Generar el Reporte',
+                detail: error.error.message,
+                life: 3000
+            });
+        });
     }
 }
