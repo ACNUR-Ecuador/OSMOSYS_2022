@@ -537,7 +537,7 @@ public class ReportDataService {
     }
 
     public SXSSFWorkbook getPartnerLateReviewReportByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
-        List<LaterReportDTO> data = this.reportDao.getPartnerLateReviewReportByProjectId(projectId, currentYear, currentMonth);
+        List<LaterReportDTO> data = this.reportDao.getPartnerLateReviewByProjectId(projectId, currentYear, currentMonth);
         if (CollectionUtils.isEmpty(data)) {
             return null;
         }

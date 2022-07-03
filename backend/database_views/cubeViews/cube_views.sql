@@ -318,7 +318,7 @@ SELECT iv.id,
        ie.period_id,
        per.year AS period_year,
        CASE
-           WHEN ie.project_id IS NULL THEN 'Implementación Socios'::text
+           WHEN ie.project_id IS NOT NULL THEN 'Implementación Socios'::text
            ELSE 'Implementación Directa'::text
            END AS implementation_type,
        COALESCE(ie.assigned_user_id, pr.focal_point_id) AS assigned_user_id,
@@ -370,7 +370,7 @@ SELECT iv.id,
        ie.period_id,
        per.year AS period_year,
        CASE
-           WHEN ie.project_id IS NULL THEN 'Implementación Socios'::text
+           WHEN ie.project_id IS NOT NULL THEN 'Implementación Socios'::text
            ELSE 'Implementación Directa'::text
            END AS implementation_type,
        COALESCE(ie.assigned_user_id, pr.focal_point_id) AS assigned_user_id,

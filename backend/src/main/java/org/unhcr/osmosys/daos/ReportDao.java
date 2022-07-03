@@ -195,13 +195,13 @@ public class ReportDao {
             "and  (m.checked is null or m.checked=FALSE) ";
 
 
-    public List<LaterReportDTO> getPartnerLateReportByProjectId(Long focalPointId, Integer currentYear, Integer currentMonth) {
+    public List<LaterReportDTO> getPartnerLateReportByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
         String sql = ReportDao.late_months_partners
-                + " and  pr.focal_point_id= :focalPointId ";
+                + " and  pr.id= :projectId ";
         sql += ReportDao.orderGroupLateReportPartners;
         Query q = this.entityManager.createNativeQuery(sql, "LateReportMappingDTOMappingPartners");
 
-        q.setParameter("focalPointId", focalPointId);
+        q.setParameter("projectId", projectId);
         q.setParameter("year", currentYear);
         q.setParameter("month", currentMonth);
         return q.getResultList();
@@ -231,7 +231,7 @@ public class ReportDao {
         return q.getResultList();
     }
 
-    public List<LaterReportDTO> getPartnerLateReviewReportByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
+/*    public List<LaterReportDTO> getPartnerLateReviewReportByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
         String sql = ReportDao.late_months_review_partners
                 + " and  pr.id= :projectId ";
         sql += ReportDao.orderGroupLateReportPartners;
@@ -241,7 +241,7 @@ public class ReportDao {
         q.setParameter("year", currentYear);
         q.setParameter("month", currentMonth);
         return q.getResultList();
-    }
+    }*/
 
     public List<LaterReportDTO> getPartnerLateReportByPartnerId(Long partnerId, Integer currentYear, Integer currentMonthYearOrder) {
         String sql = ReportDao.late_months_partners

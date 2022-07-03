@@ -33,6 +33,7 @@ public class CubeEndpoint {
         List<FactDTO> r = this.cubeService.getFactTableByPeriodYear(year);
         long lEndTime = System.nanoTime();
         LOGGER.info("Elapsed time in seconds factTable: " + (lEndTime - lStartTime) / 1000000000);
+        System.gc();
         return r;
     }
 

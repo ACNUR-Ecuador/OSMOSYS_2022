@@ -103,7 +103,7 @@ public class EmailService {
     }
     public void sendEmailMessageWithAttachment(String destinationAdress, String destinationCopyAdress, String subject, String messageText, ByteArrayOutputStream attachment, String filename) {
         try {
-            //destinationAdress = "salazart@unhcr.org";
+            // destinationAdress = "salazart@unhcr.org";
             // destinationCopyAdress = null;
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(adminEmailAdress));
