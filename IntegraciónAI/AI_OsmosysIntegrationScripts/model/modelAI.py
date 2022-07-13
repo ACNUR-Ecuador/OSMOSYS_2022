@@ -868,3 +868,66 @@ class SubFormS4_01:
     def to_json(self):
         return self.__str__()
 
+
+class SubFormWA1_01:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 covid,
+                 wash_individual,
+                 poblacion_meta,
+                 modalidad_impl,
+                 WA1_01_RM_NA,
+                 WA1_01_RM_NN,
+                 WA1_01_RM_MM,
+                 WA1_01_RM_HH,
+                 WA1_01_CA_NA,
+                 WA1_01_CA_NN,
+                 WA1_01_CA_MM,
+                 WA1_01_CA_HH,
+                 WA1_01_CUAL
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.covid = covid
+        self.wash_individual = wash_individual
+        self.poblacion_meta = poblacion_meta
+        self.modalidad_impl = modalidad_impl
+        self.WA1_01_RM_NA = WA1_01_RM_NA
+        self.WA1_01_RM_NN = WA1_01_RM_NN
+        self.WA1_01_RM_MM = WA1_01_RM_MM
+        self.WA1_01_RM_HH = WA1_01_RM_HH
+        self.WA1_01_CA_NA = WA1_01_CA_NA
+        self.WA1_01_CA_NN = WA1_01_CA_NN
+        self.WA1_01_CA_MM = WA1_01_CA_MM
+        self.WA1_01_CA_HH = WA1_01_CA_HH
+        self.WA1_01_CUAL = WA1_01_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "covid": self.covid,
+            "wash_individual": self.wash_individual,
+            "poblacion_meta": self.poblacion_meta,
+            "modalidad_impl": self.modalidad_impl,
+            "WA1_01_RM_NA": self.WA1_01_RM_NA,
+            "WA1_01_RM_NN": self.WA1_01_RM_NN,
+            "WA1_01_RM_MM": self.WA1_01_RM_MM,
+            "WA1_01_RM_HH": self.WA1_01_RM_HH,
+            "WA1_01_CA_NA": self.WA1_01_CA_NA,
+            "WA1_01_CA_NN": self.WA1_01_CA_NN,
+            "WA1_01_CA_MM": self.WA1_01_CA_MM,
+            "WA1_01_CA_HH": self.WA1_01_CA_HH,
+            "WA1_01_CUAL": self.WA1_01_CUAL
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()

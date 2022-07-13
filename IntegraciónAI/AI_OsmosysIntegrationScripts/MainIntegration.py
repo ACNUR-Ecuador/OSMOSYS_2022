@@ -10,6 +10,7 @@ import importScripts.Subform_PRPI5_03
 import importScripts.Subform_PRVBG4_01
 import importScripts.Subform_PRVBG4_03
 import importScripts.Subform_S4_01
+import importScripts.Subform_WA1_01
 
 print('Integration')
 
@@ -30,5 +31,6 @@ test = True
 # importScripts.Subform_PRPI5_03.importForm(month, month_number, year, test)
 # importScripts.Subform_PRVBG4_01.importForm(month, month_number, year, test)
 # importScripts.Subform_PRVBG4_03.importForm(month, month_number, year, test)
-importScripts.Subform_S4_01.importForm(month, month_number, year, test)
+# importScripts.Subform_S4_01.importForm(month, month_number, year, test)
+importScripts.Subform_WA1_01.importForm(month, month_number, year, test)
 
