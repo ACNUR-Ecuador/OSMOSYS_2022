@@ -931,3 +931,64 @@ class SubFormWA1_01:
 
     def to_json(self):
         return self.__str__()
+
+
+class SubFormWA1_02:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 covid,
+                 wash_individual,
+                 poblacion_meta,
+                 WA1_02_RM_NA,
+                 WA1_02_RM_NN,
+                 WA1_02_RM_MM,
+                 WA1_02_RM_HH,
+                 WA1_02_CA_NA,
+                 WA1_02_CA_NN,
+                 WA1_02_CA_MM,
+                 WA1_02_CA_HH,
+                 WA1_02_CUAL
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.covid = covid
+        self.wash_individual = wash_individual
+        self.poblacion_meta = poblacion_meta
+        self.WA1_02_RM_NA = WA1_02_RM_NA
+        self.WA1_02_RM_NN = WA1_02_RM_NN
+        self.WA1_02_RM_MM = WA1_02_RM_MM
+        self.WA1_02_RM_HH = WA1_02_RM_HH
+        self.WA1_02_CA_NA = WA1_02_CA_NA
+        self.WA1_02_CA_NN = WA1_02_CA_NN
+        self.WA1_02_CA_MM = WA1_02_CA_MM
+        self.WA1_02_CA_HH = WA1_02_CA_HH
+        self.WA1_02_CUAL = WA1_02_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "covid": self.covid,
+            "wash_individual": self.wash_individual,
+            "poblacion_meta": self.poblacion_meta,
+            "WA1_02_RM_NA": self.WA1_02_RM_NA,
+            "WA1_02_RM_NN": self.WA1_02_RM_NN,
+            "WA1_02_RM_MM": self.WA1_02_RM_MM,
+            "WA1_02_RM_HH": self.WA1_02_RM_HH,
+            "WA1_02_CA_NA": self.WA1_02_CA_NA,
+            "WA1_02_CA_NN": self.WA1_02_CA_NN,
+            "WA1_02_CA_MM": self.WA1_02_CA_MM,
+            "WA1_02_CA_HH": self.WA1_02_CA_HH,
+            "WA1_02_CUAL": self.WA1_02_CUAL
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()

@@ -14,7 +14,7 @@ import os.path
 
 def importForm(month, month_number, year, test):
     ## parameters
-    indicatorCodeAI = 'WA1_01'
+    indicatorCodeAI = 'WA1_02'
     print(
         '--------------------------------------' + indicatorCodeAI + '------------------------------------------------------')
 
@@ -51,41 +51,39 @@ def importForm(month, month_number, year, test):
                                           indicatorsIdsOmosys=indicatorIdsOsmosys, cantonCode=cantonCode)
 
         poblacion_meta = ["Refugiados/as y migrantes", "Comunidad de acogida"]
-        modalidad_impl = 'cb53mqwkykwwihkk8',  ## kits
 
-        WA1_01_RM_NA = int(df.loc[df['age_gender'] == 'NINAS'].iloc[0].value_a)
-        WA1_01_RM_NN = int(df.loc[df['age_gender'] == 'NINOS'].iloc[0].value_a)
-        WA1_01_RM_MM = int(df.loc[df['age_gender'] == 'ADULTAS'].iloc[0].value_a)
-        WA1_01_RM_HH = int(df.loc[df['age_gender'] == 'ADULTOS'].iloc[0].value_a)
+        WA1_02_RM_NA = int(df.loc[df['age_gender'] == 'NINAS'].iloc[0].value_a)
+        WA1_02_RM_NN = int(df.loc[df['age_gender'] == 'NINOS'].iloc[0].value_a)
+        WA1_02_RM_MM = int(df.loc[df['age_gender'] == 'ADULTAS'].iloc[0].value_a)
+        WA1_02_RM_HH = int(df.loc[df['age_gender'] == 'ADULTOS'].iloc[0].value_a)
 
         dfCa = osmosys.osmosys.getCAValues(year=year, month=month, orgOsmosys=orgAcron,
                                            indicatorsIdsOmosys=indicatorIdsOsmosys, cantonCode=cantonCode)
-        WA1_01_CA_NA = int(dfCa.loc[df['age_gender'] == 'NINAS'].iloc[0].value_a)
-        WA1_01_CA_NN = int(dfCa.loc[df['age_gender'] == 'NINOS'].iloc[0].value_a)
-        WA1_01_CA_MM = int(dfCa.loc[df['age_gender'] == 'ADULTAS'].iloc[0].value_a)
-        WA1_01_CA_HH = int(dfCa.loc[df['age_gender'] == 'ADULTOS'].iloc[0].value_a)
+        WA1_02_CA_NA = int(dfCa.loc[df['age_gender'] == 'NINAS'].iloc[0].value_a)
+        WA1_02_CA_NN = int(dfCa.loc[df['age_gender'] == 'NINOS'].iloc[0].value_a)
+        WA1_02_CA_MM = int(dfCa.loc[df['age_gender'] == 'ADULTAS'].iloc[0].value_a)
+        WA1_02_CA_HH = int(dfCa.loc[df['age_gender'] == 'ADULTOS'].iloc[0].value_a)
 
         commentary = osmosys.osmosys.getCommentary(year=year, month=month, orgOsmosys=orgAcron,
                                                    indicatorsIdsOmosys=indicatorIdsOsmosys).iloc[
             0].value_a
 
-        subform = model.modelAI.SubFormWA1_01(
+        subform = model.modelAI.SubFormWA1_02(
             mes=month_number,
             colltmgkykvhxgij6=indicatorIdAI,
             rmrp='Si',
             covid='No',
             wash_individual='No',
             poblacion_meta=poblacion_meta,
-            modalidad_impl=modalidad_impl,
-            WA1_01_RM_NA=WA1_01_RM_NA,
-            WA1_01_RM_NN=WA1_01_RM_NN,
-            WA1_01_RM_MM=WA1_01_RM_MM,
-            WA1_01_RM_HH=WA1_01_RM_HH,
-            WA1_01_CA_NA=WA1_01_CA_NA,
-            WA1_01_CA_NN=WA1_01_CA_NN,
-            WA1_01_CA_MM=WA1_01_CA_MM,
-            WA1_01_CA_HH=WA1_01_CA_HH,
-            WA1_01_CUAL=commentary
+            WA1_02_RM_NA=WA1_02_RM_NA,
+            WA1_02_RM_NN=WA1_02_RM_NN,
+            WA1_02_RM_MM=WA1_02_RM_MM,
+            WA1_02_RM_HH=WA1_02_RM_HH,
+            WA1_02_CA_NA=WA1_02_CA_NA,
+            WA1_02_CA_NN=WA1_02_CA_NN,
+            WA1_02_CA_MM=WA1_02_CA_MM,
+            WA1_02_CA_HH=WA1_02_CA_HH,
+            WA1_02_CUAL=commentary
         )
         newId = generate_id()
         newIds.append(newId)
