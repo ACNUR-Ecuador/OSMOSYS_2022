@@ -5,7 +5,7 @@ import configparser
 
 def getToken():
     config = configparser.RawConfigParser()
-    config.read('../config.propierties')
+    config.read('config.propierties')
     details_dict = dict(config.items('ACTIVITYINFO'))
     token = details_dict.get('token')
     return token
@@ -29,7 +29,7 @@ def getOsmosysConnection():
 
 def readParameters():
     config = configparser.RawConfigParser()
-    config.read('../config.propierties')
+    config.read('config.propierties')
     details_dict = dict(config.items('OSMOSYS'))
     return details_dict
 
@@ -195,6 +195,69 @@ def getCommentary(year, month, orgOsmosys, indicatorsIdsOmosys):
                                                                                            orgOsmosys).replace(
         'XXXindicatorIds', indicatorsIdsOmosysStr)
     ## print(queryFormated)
+
+    dbConnection = getOsmosysConnection()
+    dataFrame = pds.read_sql(queryFormated, dbConnection)
+    return dataFrame
+
+def getCBIBudget(year, month, orgOsmosys, indicatorsIdsOmosys, cantonCode):
+    query = '''
+    SELECT
+    COALESCE(sum(v.canton_budget),0) as budget
+    FROM
+    ai_integration.osmosys_budget_canton v
+    WHERE v.year=xxxYear and v.month='xxxMonth' AND v.orgnization ='xxxOrg' AND v.canton_code='XXXCantonCode'AND v.indicator_id_personas in (XXXindicatorIds)
+    '''
+    indicatorsIdsOmosysStr = ','.join(str(x) for x in indicatorsIdsOmosys)
+    queryFormated = query.replace('xxxYear', str(year)).replace('xxxMonth', month).replace('xxxOrg',
+                                                                                           orgOsmosys).replace(
+        'XXXindicatorIds', indicatorsIdsOmosysStr).replace('XXXCantonCode', cantonCode)
+    ## print(queryFormated)
+
+    dbConnection = getOsmosysConnection()
+    dataFrame = pds.read_sql(queryFormated, dbConnection)
+    return dataFrame
+
+def getTotalMonthByCanton(year, month, orgOsmosys, indicatorsIdsOmosys, cantonCode):
+    query = '''
+    SELECT
+    v.acronym, v.year, v.month,  v.canton_code, sum(COALESCE(v.value_a,0)) as value_a
+    FROM
+    ai_integration.ai_total_month_by_canton v
+    WHERE v.year=xxxYear and v.month='xxxMonth' AND v.acronym ='xxxOrg' AND v.canton_code='XXXCantonCode'AND v.indicator_id in (XXXindicatorIds)
+    GROUP BY 
+    v.acronym, v.year, v.month,  v.canton_code
+    '''
+    indicatorsIdsOmosysStr = ','.join(str(x) for x in indicatorsIdsOmosys)
+    queryFormated = query.replace('xxxYear', str(year)).replace('xxxMonth', month).replace('xxxOrg',
+                                                                                           orgOsmosys).replace(
+        'XXXindicatorIds', indicatorsIdsOmosysStr).replace('XXXCantonCode', cantonCode)
+    ## print(queryFormated)
+
+    dbConnection = getOsmosysConnection()
+    dataFrame = pds.read_sql(queryFormated, dbConnection)
+    return dataFrame
+
+def getCAValues(year, month, orgOsmosys, indicatorsIdsOmosys, cantonCode):
+    query = '''
+    SELECT
+    v.ie_id	, ie.performance_indicator_id indicator_osmosys_id,     v.month_id	,v.year	,v.month_year_order	,v.month	,    org.id org_odmodyd_id,org.acronym osmosys_org, v.canton_code	,    v.canton	,v.population_type	,v.age_gender	,    COALESCE(sum(v.value)) value_a
+    FROM
+    ai_integration.ai_adultos_ninos_comunidad_acogida v
+    INNER JOIN osmosys.indicator_executions ie on v.ie_id=ie.id
+    INNER JOIN osmosys.projects pr on ie.project_id=pr.id
+    INNER JOIN osmosys.organizations org on pr.organization_id=org.id
+        WHERE v.year=xxxYear and v.month='xxxMonth' 
+        and org.acronym='xxxOrg'
+        and v.canton_code='XXXcantonCode'
+        and ie.performance_indicator_id in (XXXindicatorIds)
+    GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12
+    ORDER BY 1,2,5, v.age_gender
+    '''
+    indicatorsIdsOmosysStr = ','.join(str(x) for x in indicatorsIdsOmosys)
+    queryFormated = query.replace('xxxYear', str(year)).replace('xxxMonth', month).replace('xxxOrg',
+                                                                                           orgOsmosys).replace(
+        'XXXindicatorIds', indicatorsIdsOmosysStr).replace('XXXcantonCode', cantonCode)
 
     dbConnection = getOsmosysConnection()
     dataFrame = pds.read_sql(queryFormated, dbConnection)
