@@ -74,7 +74,7 @@ def importForm(month, month_number, year, test):
                 dfDiversidad['country_of_origin'] == 'ECUADOR')].iloc[0].value_a)
         PRPI1_01_CA_DS = int(dfDiversidad.loc[(dfDiversidad['diversity_type'] == 'DISCAPACITADOS') & (
                 dfDiversidad['country_of_origin'] == 'ECUADOR')].iloc[0].value_a)
-        PRPI1_01_CUAL = commentary = osmosys.osmosys.getCommentary(year=year, month=month, orgOsmosys=orgAcron,
+        PRPI1_01_CUAL =  osmosys.osmosys.getCommentary(year=year, month=month, orgOsmosys=orgAcron,
                                                                    indicatorsIdsOmosys=indicatorIdsOsmosys35).iloc[
             0].value_a
 
