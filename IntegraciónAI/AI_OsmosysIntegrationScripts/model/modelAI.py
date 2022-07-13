@@ -614,3 +614,39 @@ class SubFormPRPI1_02:
 
     def to_json(self):
         return self.__str__()
+
+
+
+
+class SubFormPRPI5_01:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 covid,
+                 PRPI5_01,
+                 PRPI5_01_CUAL
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.covid = covid
+        self.PRPI5_01 = PRPI5_01
+        self.PRPI5_01_CUAL = PRPI5_01_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "covid": self.covid,
+            "PRPI5_01": self.PRPI5_01,
+            "PRPI5_01_CUAL": self.PRPI5_01_CUAL
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
