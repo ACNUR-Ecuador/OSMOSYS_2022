@@ -992,3 +992,38 @@ class SubFormWA1_02:
 
     def to_json(self):
         return self.__str__()
+
+
+
+class SubFormWA2_02:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 covid,
+                 WA2_02,
+                 WA2_02_CUAL
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.covid = covid
+        self.WA2_02 = WA2_02
+        self.WA2_02_CUAL = WA2_02_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "covid": self.covid,
+            "WA2_02": self.WA2_02,
+            "WA2_02_CUAL": self.WA2_02_CUAL
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
