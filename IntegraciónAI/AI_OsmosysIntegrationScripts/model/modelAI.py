@@ -1400,3 +1400,59 @@ class SubFormAT1_01:
 
     def to_json(self):
         return self.__str__()
+
+
+
+class SubFormAT3_01:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 covid,
+                 poblacion_meta,
+                 modalidad_impl,
+                 AT3_01_RM_NA,
+                 AT3_01_RM_NN,
+                 AT3_01_RM_MM,
+                 AT3_01_RM_HH,
+                 AT3_01_RM_OTR,
+                 AT3_01_RM_LGBT,
+                 AT3_01_CUAL
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.covid = covid
+        self.poblacion_meta = poblacion_meta
+        self.modalidad_impl = modalidad_impl
+        self.AT3_01_RM_NA = AT3_01_RM_NA
+        self.AT3_01_RM_NN = AT3_01_RM_NN
+        self.AT3_01_RM_MM = AT3_01_RM_MM
+        self.AT3_01_RM_HH = AT3_01_RM_HH
+        self.AT3_01_RM_OTR = AT3_01_RM_OTR
+        self.AT3_01_RM_LGBT = AT3_01_RM_LGBT
+        self.AT3_01_CUAL = AT3_01_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "covid": self.covid,
+            "poblacion_meta": self.poblacion_meta,
+            "modalidad_impl": self.modalidad_impl,
+            "AT3_01_RM_NA": self.AT3_01_RM_NA,
+            "AT3_01_RM_NN": self.AT3_01_RM_NN,
+            "AT3_01_RM_MM": self.AT3_01_RM_MM,
+            "AT3_01_RM_HH": self.AT3_01_RM_HH,
+            "AT3_01_RM_OTR": self.AT3_01_RM_OTR,
+            "AT3_01_RM_LGBT": self.AT3_01_RM_LGBT,
+            "AT3_01_CUAL": self.AT3_01_CUAL
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
