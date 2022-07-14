@@ -13,6 +13,11 @@ import importScripts.Subform_S4_01
 import importScripts.Subform_WA1_01
 import importScripts.Subform_WA1_02
 import importScripts.Subform_WA2_02
+import importScripts.Subform_IN4_01
+import importScripts.Subform_IN5_01_O89
+import importScripts.Subform_IN5_01_O88
+import importScripts.Subform_IN5_01_O52_63_66
+import importScripts.Subform_AT1_01
 
 print('Integration')
 
@@ -36,4 +41,9 @@ test = True
 # importScripts.Subform_S4_01.importForm(month, month_number, year, test)
 # importScripts.Subform_WA1_01.importForm(month, month_number, year, test)
 # importScripts.Subform_WA1_02.importForm(month, month_number, year, test)
-importScripts.Subform_WA2_02.importForm(month, month_number, year, test)
+# importScripts.Subform_WA2_02.importForm(month, month_number, year, test)
+# importScripts.Subform_IN4_01.importForm(month, month_number, year, test)
+# importScripts.Subform_IN5_01_O89.importForm(month, month_number, year, test)
+# importScripts.Subform_IN5_01_O88.importForm(month, month_number, year, test)
+# importScripts.Subform_IN5_01_O52_63_66.importForm(month, month_number, year, test)
+importScripts.Subform_AT1_01.importForm(month, month_number, year, test)
