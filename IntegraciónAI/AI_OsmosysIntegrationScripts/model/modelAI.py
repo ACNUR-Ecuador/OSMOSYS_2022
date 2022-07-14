@@ -1456,3 +1456,37 @@ class SubFormAT3_01:
 
     def to_json(self):
         return self.__str__()
+
+
+class SubFormAT4_01:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 covid,
+                 AT4_01,
+                 AT4_01_CUAL
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.covid = covid
+        self.AT4_01 = AT4_01
+        self.AT4_01_CUAL = AT4_01_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "covid": self.covid,
+            "AT4_01": self.AT4_01,
+            "AT4_01_CUAL": self.AT4_01_CUAL
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
