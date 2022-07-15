@@ -17,15 +17,15 @@ importlib.reload(model.modelAI)
 ## parameters
 
 
-asylumPercentage = 0.3
-migrationPercentage = 0.7
+asylumPercentage = 0.53
+migrationPercentage = 0.47
 
 
 def importForm(month, month_number, year, test):
 
     ## parameters
-    asylumPercentage = 0.3
-    migrationPercentage = 0.7
+    asylumPercentage = 0.53
+    migrationPercentage = 0.47
     indicatorCodeAI = 'PR1_01'
     print(
         '--------------------------------------' + indicatorCodeAI + '------------------------------------------------------')
