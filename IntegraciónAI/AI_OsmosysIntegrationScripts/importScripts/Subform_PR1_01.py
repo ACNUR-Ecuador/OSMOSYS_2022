@@ -1,17 +1,15 @@
+import importlib
+import json
 import math
 
-import pandas as pd
+from requests.exceptions import HTTPError
 
-import osmosys.osmosys
 import activityinfo
+import model.modelAI
+import osmosys.osmosys
 from activityinfo import Client
 from activityinfo import FormProcessing
-import importlib
-import model.modelAI
 from activityinfo.id import generate_id
-import json
-from requests.exceptions import HTTPError
-import os.path
 
 importlib.reload(osmosys.osmosys)
 importlib.reload(activityinfo.FormProcessing)
@@ -125,21 +123,9 @@ def importForm(month, month_number, year, test):
     ## creo respaldo
     changes = model.modelAI.Changes(changesList)
     finalJson = json.dumps(changes, default=model.modelAI.default)
-    # open text file
-    try:
-        os.mkdir(month)
-    except Exception:
-        pass
-    text_file = open(os.path.join(month, "data_" + indicatorCodeAI + ".json"), "w")
-    # write string to file
-    n = text_file.write(finalJson)
-
-    # close file
-    text_file.close()
-    print(" creado respaldo: " + text_file.name)
-    newIdsDict = {"newIds": newIds}
-    newIdsDf = pd.DataFrame(newIdsDict)
-    newIdsDf.to_csv(os.path.join(month, "new_ids_" + indicatorCodeAI + ".csv"))
+    ## creo respaldo
+    osmosys.Backups.do_backup(indicatorCodeAI=indicatorCodeAI, indicatorIdsOsmosys=indicatorIdsOsmosys, month=month,
+                              year=year, changesList=changesList, finalJson=finalJson)
     if (test):
         print('--------------------------------------'+indicatorCodeAI+'------------------------------------------------------')
         return

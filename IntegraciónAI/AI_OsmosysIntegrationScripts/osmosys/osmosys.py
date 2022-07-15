@@ -1,6 +1,7 @@
 import pandas as pds
 from urllib import parse
 from sqlalchemy import create_engine
+from sqlalchemy.pool import NullPool
 import configparser
 
 def getToken():
@@ -21,7 +22,8 @@ def getOsmosysConnection():
     )
     # print(conectionString)
     alchemyEngine = create_engine(
-        conectionString
+        conectionString, poolclass=NullPool
+
     )
     # Connect to PostgreSQL server
     return alchemyEngine.connect()
@@ -37,6 +39,7 @@ def readParameters():
 def get_ai_form_level_1():
     dbConnection = getOsmosysConnection()
     dataFrame = pds.read_sql("SELECT * from ai_integration.ai_form_level_1", dbConnection)
+    dbConnection.close()
     return dataFrame
 
 
@@ -58,6 +61,7 @@ def get_ie_by_indicator_code(indicatorOsmosysCode, month):
 
     dbConnection = getOsmosysConnection()
     dataFrame = pds.read_sql(query, dbConnection)
+    dbConnection.close()
     return dataFrame
 
 
@@ -79,6 +83,7 @@ def getIesByIndicatorsIdsOsmosysAndMonth(indicatorOsmosysId, month):
 
     dbConnection = getOsmosysConnection()
     dataFrame = pds.read_sql(query, dbConnection)
+    dbConnection.close()
     return dataFrame
 
 
@@ -90,6 +95,7 @@ def getMatchSubforms(codigoAI):
     queryFormated = query.replace('codigoAI', codigoAI)
     dbConnection = getOsmosysConnection()
     dataFrame = pds.read_sql(queryFormated, dbConnection)
+    dbConnection.close()
     return dataFrame
 
 
@@ -126,6 +132,7 @@ def getIesPartnerCantonsByIndicatorsIdsOsmosysAndMonth(indicatorsIdsOmosys, mont
         .replace('XXXindicatorIds', indicatorsIdsOmosysStr)
     dbConnection = getOsmosysConnection()
     dataFrame = pds.read_sql(query, dbConnection)
+    dbConnection.close()
     return dataFrame
 
 
@@ -155,6 +162,7 @@ def getRefValues(year, month, orgOsmosys, indicatorsIdsOmosys, cantonCode):
 
     dbConnection = getOsmosysConnection()
     dataFrame = pds.read_sql(queryFormated, dbConnection)
+    dbConnection.close()
     return dataFrame
 
 
@@ -175,6 +183,7 @@ def getRefLgbtiDiscapacitadosValues(year, month, orgOsmosys, indicatorsIdsOmosys
 
     dbConnection = getOsmosysConnection()
     dataFrame = pds.read_sql(queryFormated, dbConnection)
+    dbConnection.close()
     return dataFrame
 
 
@@ -198,6 +207,7 @@ def getCommentary(year, month, orgOsmosys, indicatorsIdsOmosys):
 
     dbConnection = getOsmosysConnection()
     dataFrame = pds.read_sql(queryFormated, dbConnection)
+    dbConnection.close()
     return dataFrame
 
 def getCBIBudget(year, month, orgOsmosys, indicatorsIdsOmosys, cantonCode):
@@ -216,6 +226,7 @@ def getCBIBudget(year, month, orgOsmosys, indicatorsIdsOmosys, cantonCode):
 
     dbConnection = getOsmosysConnection()
     dataFrame = pds.read_sql(queryFormated, dbConnection)
+    dbConnection.close()
     return dataFrame
 
 def getTotalMonthByCanton(year, month, orgOsmosys, indicatorsIdsOmosys, cantonCode):
@@ -236,6 +247,7 @@ def getTotalMonthByCanton(year, month, orgOsmosys, indicatorsIdsOmosys, cantonCo
 
     dbConnection = getOsmosysConnection()
     dataFrame = pds.read_sql(queryFormated, dbConnection)
+    dbConnection.close()
     return dataFrame
 
 def getCAValues(year, month, orgOsmosys, indicatorsIdsOmosys, cantonCode):
@@ -261,4 +273,5 @@ def getCAValues(year, month, orgOsmosys, indicatorsIdsOmosys, cantonCode):
 
     dbConnection = getOsmosysConnection()
     dataFrame = pds.read_sql(queryFormated, dbConnection)
+    dbConnection.close()
     return dataFrame

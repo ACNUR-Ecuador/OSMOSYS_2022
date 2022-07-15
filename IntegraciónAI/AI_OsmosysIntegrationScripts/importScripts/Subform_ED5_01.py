@@ -1,16 +1,13 @@
-import pandas as pd
+import json
 
+from requests.exceptions import HTTPError
+
+import model.modelAI
 import osmosys.osmosys
-import activityinfo
 from activityinfo import Client
 from activityinfo import FormProcessing
-import importlib
-import model.modelAI
 from activityinfo.id import generate_id
-import json
-from requests.exceptions import HTTPError
-import os.path
-
+import osmosys.Backups
 
 def importForm(month, month_number, year, test):
     indicatorCodeAI = 'ED5_01'
@@ -90,21 +87,9 @@ def importForm(month, month_number, year, test):
     ## creo respaldo
     changes = model.modelAI.Changes(changesList)
     finalJson = json.dumps(changes, default=model.modelAI.default)
-    # open text file
-    try:
-        os.mkdir(month)
-    except Exception:
-        pass
-    text_file = open(os.path.join(month, "data_" + indicatorCodeAI + ".json"), "w")
-    # write string to file
-    n = text_file.write(finalJson)
-
-    # close file
-    text_file.close()
-    print(" creado respaldo: " + text_file.name)
-    newIdsDict = {"newIds": newIds}
-    newIdsDf = pd.DataFrame(newIdsDict)
-    newIdsDf.to_csv(os.path.join(month, "new_ids_" + indicatorCodeAI + ".csv"))
+    ## creo respaldo
+    osmosys.Backups.do_backup(indicatorCodeAI=indicatorCodeAI, indicatorIdsOsmosys=indicatorIdsOsmosys, month=month,
+                              year=year, changesList=changesList, finalJson=finalJson)
 
     ## envio a AI
     if (test):
