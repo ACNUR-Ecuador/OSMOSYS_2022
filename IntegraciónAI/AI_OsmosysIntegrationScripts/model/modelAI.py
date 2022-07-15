@@ -1900,3 +1900,317 @@ class SubFormED4_03:
 
     def to_json(self):
         return self.__str__()
+
+
+class SubFormED5_01:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 covid,
+                 poblacion_meta,
+                 modalidad_impl,
+                 ED5_01_RM_NA,
+                 ED5_01_RM_NN,
+                 ED5_01_RM_DS,
+                 ED5_01_CA_NA,
+                 ED5_01_CA_NN,
+                 ED5_01_CA_DS,
+                 ED5_01_CUAL
+
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.covid = covid
+        self.poblacion_meta = poblacion_meta
+        self.modalidad_impl = modalidad_impl
+        self.ED5_01_RM_NA = ED5_01_RM_NA
+        self.ED5_01_RM_NN = ED5_01_RM_NN
+        self.ED5_01_RM_DS = ED5_01_RM_DS
+        self.ED5_01_CA_NA = ED5_01_CA_NA
+        self.ED5_01_CA_NN = ED5_01_CA_NN
+        self.ED5_01_CA_DS = ED5_01_CA_DS
+        self.ED5_01_CUAL = ED5_01_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "covid": self.covid,
+            "poblacion_meta": self.poblacion_meta,
+            "modalidad_impl": self.modalidad_impl,
+            "ED5_01_RM_NA": self.ED5_01_RM_NA,
+            "ED5_01_RM_NN": self.ED5_01_RM_NN,
+            "ED5_01_RM_DS": self.ED5_01_RM_DS,
+            "ED5_01_CA_NA": self.ED5_01_CA_NA,
+            "ED5_01_CA_NN": self.ED5_01_CA_NN,
+            "ED5_01_CA_DS": self.ED5_01_CA_DS,
+            "ED5_01_CUAL": self.ED5_01_CUAL
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
+
+
+class SubFormED6_01:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 covid,
+                 poblacion_meta,
+                 modalidad_impl,
+                 ED6_01_RM_NA,
+                 ED6_01_RM_NN,
+                 ED6_01_RM_MM,
+                 ED6_01_RM_HH,
+                 ED6_01_RM_DS,
+                 ED6_01_CA_NA,
+                 ED6_01_CA_NN,
+                 ED6_01_CA_MM,
+                 ED6_01_CA_HH,
+                 ED6_01_CA_DS,
+                 ED6_01_CUAL
+
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.covid = covid
+        self.poblacion_meta = poblacion_meta
+        self.modalidad_impl = modalidad_impl
+        self.ED6_01_RM_NA = ED6_01_RM_NA
+        self.ED6_01_RM_NN = ED6_01_RM_NN
+        self.ED6_01_RM_MM = ED6_01_RM_MM
+        self.ED6_01_RM_HH = ED6_01_RM_HH
+        self.ED6_01_RM_DS = ED6_01_RM_DS
+        self.ED6_01_CA_NA = ED6_01_CA_NA
+        self.ED6_01_CA_NN = ED6_01_CA_NN
+        self.ED6_01_CA_MM = ED6_01_CA_MM
+        self.ED6_01_CA_HH = ED6_01_CA_HH
+        self.ED6_01_CA_DS = ED6_01_CA_DS
+        self.ED6_01_CUAL = ED6_01_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "covid": self.covid,
+            "poblacion_meta": self.poblacion_meta,
+            "modalidad_impl": self.modalidad_impl,
+            "ED6_01_RM_NA": self.ED6_01_RM_NA,
+            "ED6_01_RM_NN": self.ED6_01_RM_NN,
+            "ED6_01_RM_MM": self.ED6_01_RM_MM,
+            "ED6_01_RM_HH": self.ED6_01_RM_HH,
+            "ED6_01_RM_DS": self.ED6_01_RM_DS,
+            "ED6_01_CA_NA": self.ED6_01_CA_NA,
+            "ED6_01_CA_NN": self.ED6_01_CA_NN,
+            "ED6_01_CA_MM": self.ED6_01_CA_MM,
+            "ED6_01_CA_HH": self.ED6_01_CA_HH,
+            "ED6_01_CA_DS": self.ED6_01_CA_DS,
+            "ED6_01_CUAL": self.ED6_01_CUAL
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
+
+
+class SubFormIN1_01:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 covid,
+                 espacion_apoyo,
+                 poblacion_meta,
+                 poblacion_meta_freq,
+                 modalidad_impl,
+                 IN1_01_RM_MM_R,
+                 IN1_01_RM_HH_R,
+                 IN1_01_RM_OTR_R,
+                 IN1_01_RM_LGBT_R,
+                 IN1_01_CA_MM_R,
+                 IN1_01_CA_HH_R,
+                 IN1_01_CA_OTR_R,
+                 IN1_01_CA_LGBT_R,
+                 IN1_01_CUAL
+
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.covid = covid
+        self.espacion_apoyo = espacion_apoyo
+        self.poblacion_meta = poblacion_meta
+        self.poblacion_meta_freq = poblacion_meta_freq
+        self.modalidad_impl = modalidad_impl
+        self.IN1_01_RM_MM_R = IN1_01_RM_MM_R
+        self.IN1_01_RM_HH_R = IN1_01_RM_HH_R
+        self.IN1_01_RM_OTR_R = IN1_01_RM_OTR_R
+        self.IN1_01_RM_LGBT_R = IN1_01_RM_LGBT_R
+        self.IN1_01_CA_MM_R = IN1_01_CA_MM_R
+        self.IN1_01_CA_HH_R = IN1_01_CA_HH_R
+        self.IN1_01_CA_OTR_R = IN1_01_CA_OTR_R
+        self.IN1_01_CA_LGBT_R = IN1_01_CA_LGBT_R
+        self.IN1_01_CUAL = IN1_01_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "covid": self.covid,
+            "espacion_apoyo": self.espacion_apoyo,
+            "poblacion_meta": self.poblacion_meta,
+            "poblacion_meta_freq": self.poblacion_meta_freq,
+            "modalidad_impl": self.modalidad_impl,
+            "IN1_01_RM_MM_R": self.IN1_01_RM_MM_R,
+            "IN1_01_RM_HH_R": self.IN1_01_RM_HH_R,
+            "IN1_01_RM_OTR_R": self.IN1_01_RM_OTR_R,
+            "IN1_01_RM_LGBT_R": self.IN1_01_RM_LGBT_R,
+            "IN1_01_CA_MM_R": self.IN1_01_CA_MM_R,
+            "IN1_01_CA_HH_R": self.IN1_01_CA_HH_R,
+            "IN1_01_CA_OTR_R": self.IN1_01_CA_OTR_R,
+            "IN1_01_CA_LGBT_R": self.IN1_01_CA_LGBT_R,
+            "IN1_01_CUAL": self.IN1_01_CUAL
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
+
+
+class SubFormIN2_01:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 covid,
+                 espacion_apoyo,
+                 poblacion_meta,
+                 modalidad_impl,
+                 IN2_01_RM_MM,
+                 IN2_01_RM_HH,
+                 IN2_01_CA_MM,
+                 IN2_01_CA_HH,
+                 IN2_01_CUAL
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.covid = covid
+        self.espacion_apoyo = espacion_apoyo
+        self.poblacion_meta = poblacion_meta
+        self.modalidad_impl = modalidad_impl
+        self.IN2_01_RM_MM = IN2_01_RM_MM
+        self.IN2_01_RM_HH = IN2_01_RM_HH
+        self.IN2_01_CA_MM = IN2_01_CA_MM
+        self.IN2_01_CA_HH = IN2_01_CA_HH
+        self.IN2_01_CUAL = IN2_01_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "covid": self.covid,
+            "espacion_apoyo": self.espacion_apoyo,
+            "poblacion_meta": self.poblacion_meta,
+            "modalidad_impl": self.modalidad_impl,
+            "IN2_01_RM_MM": self.IN2_01_RM_MM,
+            "IN2_01_RM_HH": self.IN2_01_RM_HH,
+            "IN2_01_CA_MM": self.IN2_01_CA_MM,
+            "IN2_01_CA_HH": self.IN2_01_CA_HH,
+            "IN2_01_CUAL": self.IN2_01_CUAL
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
+
+
+class SubFormIN3_02:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 covid,
+                 IN3_02,
+                 IN3_02_CUAL
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.covid = covid
+        self.IN3_02 = IN3_02
+        self.IN3_02_CUAL = IN3_02_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "covid": self.covid,
+            "IN3_02": self.IN3_02,
+            "IN3_02_CUAL": self.IN3_02_CUAL
+
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
+
+class SubFormIN3_03:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 covid,
+                 IN3_03,
+                 IN3_03_CUAL
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.covid = covid
+        self.IN3_03 = IN3_03
+        self.IN3_03_CUAL = IN3_03_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "covid": self.covid,
+            "IN3_03": self.IN3_03,
+            "IN3_03_CUAL": self.IN3_03_CUAL
+
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
+
