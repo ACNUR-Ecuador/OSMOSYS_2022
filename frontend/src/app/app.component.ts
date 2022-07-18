@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {PrimeNGConfig} from 'primeng/api';
+import {ConfirmationService, PrimeNGConfig} from 'primeng/api';
 import {EnumsService} from './shared/services/enums.service';
 import {environment} from '../environments/environment';
 import {VersionCheckService} from './shared/services/version-check.service';
+import {CheckBrowserService} from './shared/services/check-browser.service';
 
 @Component({
     selector: 'app-root',
@@ -32,17 +33,30 @@ export class AppComponent implements OnInit {
 
     constructor(private primengConfig: PrimeNGConfig,
                 private enumsService: EnumsService,
-                private versionCheckService: VersionCheckService
+                private versionCheckService: VersionCheckService,
+                private checkBrowserService: CheckBrowserService,
+                private confirmationService: ConfirmationService,
     ) {
     }
 
     ngOnInit() {
         this.primengConfig.ripple = true;
         this.ripple = true;
+        if (this.checkBrowserService.getBrowser() !== 'Chrome') {
+            this.confirmationService.confirm({
+                message: 'Por favor usa el Explorador Google Chrome',
+                header: 'Por favor usa el Explorador Google Chrome',
+                icon: 'pi pi-exclamation-triangle',
+                acceptVisible: false,
+                rejectVisible: false,
+                closeOnEscape: false,
+            });
+        }
         this.enumsService.loadcache();
         this.setLocale(this.primengConfig, environment.locale);
         this.versionCheckService.initVersionCheck(environment.versionCheckURL);
         this.versionCheckService.checkVersion(environment.versionCheckURL);
+
     }
 
     /*
@@ -54,6 +68,7 @@ export class AppComponent implements OnInit {
                 // already english
                 const dow: string[] = config.getTranslation('dayNames');
                 if (dow[0] !== 'Sunday') {
+                    // noinspection JSUnusedLocalSymbols
                     const msg = 'Default locale not EN.';
                 }
                 break;
