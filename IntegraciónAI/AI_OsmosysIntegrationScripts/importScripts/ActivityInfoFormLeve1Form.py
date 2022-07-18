@@ -64,19 +64,7 @@ def importForm(month, month_number, year, test):
     changes = model.modelAI.Changes(changesList)
     finalJson = json.dumps(changes, default=model.modelAI.default)
 
-    # open text file
-    try:
-        os.mkdir(month)
-    except Exception:
-        pass
-    text_file = open(os.path.join(month, "form_level_1" + month + ".json"), "w")
-    # write string to file
-    n = text_file.write(finalJson)
-    # close file
-    text_file.close()
-    newIdsDict = {"newIds": newIds}
-    newIdsDf = pd.DataFrame(newIdsDict)
-    newIdsDf.to_csv(os.path.join(month, "new_ids_" + "FormLevel1" + ".csv"))
+    osmosys.Backups.do_backup('form1_canton_org', '', month, 2022, changesList, finalJson)
 
     if(test):
         return
