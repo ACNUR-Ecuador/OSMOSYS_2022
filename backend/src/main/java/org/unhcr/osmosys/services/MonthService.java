@@ -266,6 +266,11 @@ public class MonthService {
 
     public Long changeMonthBlockedState(Long monthId, Boolean blockinState) {
         Month month = this.monthDao.find(monthId);
+        if(!blockinState && month.getBlockUpdate()){
+            month.setChecked(false);
+            // todo send alert email
+        }
+
         month.setBlockUpdate(blockinState);
         this.saveOrUpdate(month);
         return month.getId();
