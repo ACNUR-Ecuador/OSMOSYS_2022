@@ -310,6 +310,7 @@ SELECT i.id indicator_id,
 FROM osmosys.indicators AS i
 ORDER BY 1;
 
+
 DROP VIEW IF EXISTS cube.fact_table;
 CREATE OR REPLACE VIEW cube.fact_table
 AS
@@ -344,6 +345,10 @@ SELECT iv.id,
        NULL as custom_dissagregation_id,
        COALESCE(COALESCE(ie.reporting_office_id,can.office_id),usetfppr.office_id) as responsable_office_id,
        COALESCE(audi.office_id,usetfppr.office_id )as implementer_office_id,
+       CASE
+           WHEN ie.project_id IS NULL THEN 'II-'||pr.organization_id
+           ELSE 'DI-'||ie.reporting_office_id
+           END as implementer_id,
        ie.total_execution,
        ie.target AS total_target,
        ie.execution_percentage AS total_execution_percentage,
@@ -396,6 +401,10 @@ SELECT iv.id,
        cdo.id AS custom_dissagregation_id,
        COALESCE(COALESCE(ie.reporting_office_id,usetfppr.office_id),0) as responsable_office_id,
        COALESCE(audi.office_id,usetfppr.office_id )as implementer_office_id,
+       CASE
+           WHEN ie.project_id IS NOT NULL THEN 'II-'||pr.organization_id
+           ELSE 'DI-'||ie.reporting_office_id
+           END as implementer_id,
        ie.total_execution,
        ie.target AS total_target,
        ie.execution_percentage AS total_execution_percentage,
@@ -415,9 +424,7 @@ FROM osmosys.indicator_values_custom_dissagregation iv
     LEFT JOIN osmosys.projects pr ON ie.project_id = pr.id AND pr.state::text = 'ACTIVO'::text
     LEFT JOIN osmosys.indicators i ON ie.performance_indicator_id = i.id
     LEFT JOIN "security"."user" audi ON ie.assigned_user_id=audi."id"
-    LEFT JOIN "security"."user" usetfppr ON pr.focal_point_id=usetfppr."id"
---ORDER BY q.year, mo.month_year_order
-;
+    LEFT JOIN "security"."user" usetfppr ON pr.focal_point_id=usetfppr."id";
 
 DROP VIEW if EXISTS cube.indicator_execution_dissagregation_simple;
 CREATE VIEW cube.indicator_execution_dissagregation_simple AS
@@ -469,3 +476,33 @@ FROM ( SELECT DISTINCT ie.id AS ie_id,
          CROSS JOIN LATERAL ( VALUES (c.age_type,'age_type'::text), (c.age_primary_education_type,'age_primary_education_type'::text), (c.age_tertiary_education_type,'age_tertiary_education_type'::text), (c.population_type,'population_type'::text), (c.gender_type,'gender_type'::text), (c.canton_id,'canton_id'::text), (c.country_of_origin,'country_of_origin'::text), (c.diversity_type,'diversity_type'::text)) t(dissagregation_simple, field_name)
 WHERE t.dissagregation_simple IS NOT NULL
 ORDER BY c.ie_id, t.dissagregation_simple;
+
+DROP VIEW IF EXISTS cube.implementers;
+CREATE
+OR REPLACE VIEW cube.implementers
+    AS
+
+SELECT distinct
+        'DI-'||u.id        implementer_id,
+        u.acronym		as acronym,
+        u.description  as name,
+        COALESCE(up.acronym, 'BO')     parent_acronym,
+        COALESCE(up.description, 'Oficina Principal') parent_name,
+        'Implementación' as implementation_type
+FROM osmosys.offices u
+         INNER JOIN osmosys.indicator_executions ie on u."id"=ie.reporting_office_id and ie.state='ACTIVO'
+         LEFT JOIN osmosys.offices up on u.parent_office = up."id"
+
+UNION
+
+SELECT distinct 'II-'||u."id" implementer_id,
+                u.acronym as acronym,
+                u.description as name,
+                'Socios' parent_acronym,
+                'Socios' parent_name,
+                'Socios' as implementation_type
+FROM osmosys.organizations u
+         INNER JOIN osmosys.projects pr on u."id"=pr.organization_id and pr.state='ACTIVO'
+         INNER JOIN osmosys.indicator_executions ie on pr."id"=ie.project_id and ie.state='ACTIVO'
+
+ORDER BY 2;

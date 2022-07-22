@@ -107,4 +107,8 @@ public class CubeService {
     public List<IndicatorExecutionDissagregationSimpleDTO> getIndicatorExecutionsDissagregationSimpleTable(Integer year) {
         return this.cubeDao.getIndicatorExecutionsDissagregationSimpleTable(year);
     }
+    public List<ImplementerDTO> getImplementersTable() {
+        return this.cubeDao.getImplementersTable();
+    }
+
 }

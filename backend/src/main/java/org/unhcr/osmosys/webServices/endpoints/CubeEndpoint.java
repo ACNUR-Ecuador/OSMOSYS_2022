@@ -313,5 +313,16 @@ public class CubeEndpoint {
         LOGGER.info("Elapsed time in seconds indicatorExecutionsDissagregationSimpleTable: " + (lEndTime - lStartTime) / 1000000000);
         return r;
     }
+    @Path("/implementersTable")
+    @GET
+    // @BasicSecured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ImplementerDTO> getImplementersTable() {
+        long lStartTime = System.nanoTime();
+        List<ImplementerDTO> r = this.cubeService.getImplementersTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds getImplementersTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
+    }
 
 }

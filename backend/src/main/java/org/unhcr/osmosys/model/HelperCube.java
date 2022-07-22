@@ -43,6 +43,7 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "canton_id", type = Long.class),
                                 @ColumnResult(name = "responsable_office_id", type = Long.class),
                                 @ColumnResult(name = "implementer_office_id", type = Long.class),
+                                @ColumnResult(name = "implementer_id", type = String.class),
                                 @ColumnResult(name = "total_execution", type = BigDecimal.class),
                                 @ColumnResult(name = "total_target", type = BigDecimal.class),
                                 @ColumnResult(name = "total_execution_percentage", type = BigDecimal.class),
@@ -297,6 +298,19 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "ie_id", type = Long.class),
                                 @ColumnResult(name = "year", type = Integer.class),
                                 @ColumnResult(name = "dissagregation_simple", type = String.class)
+                        })})
+@SqlResultSetMapping(
+        name = "ImplementerDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = ImplementerDTO.class,
+                        columns = {
+                                @ColumnResult(name = "implementer_id", type = String.class),
+                                @ColumnResult(name = "acronym", type = String.class),
+                                @ColumnResult(name = "name", type = String.class),
+                                @ColumnResult(name = "parent_acronym", type = String.class),
+                                @ColumnResult(name = "parent_name", type = String.class),
+                                @ColumnResult(name = "implementation_type", type = String.class)
                         })})
 public class HelperCube extends BaseEntity<Long> {
 

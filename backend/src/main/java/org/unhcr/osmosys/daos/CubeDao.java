@@ -108,10 +108,15 @@ public class CubeDao {
             "from  " +
             "cube.indicator_execution_dissagregation_simple t";
 
+    private static final String implementersTable = "SELECT " +
+            "* " +
+            "from  " +
+            "cube.implementers t";
+
 
     public List<FactDTO> getFactTableByPeriodYear(Integer year) {
 
-        String sql = CubeDao.factTable + " where f.period_year =:year";
+        String sql = CubeDao.factTable + " where f.period_year =:year" ;
         Query q = this.entityManager.createNativeQuery(sql, "FactDTOMapping");
         q.setParameter("year", year);
         return q.getResultList();
@@ -232,6 +237,10 @@ public class CubeDao {
     public List<IndicatorExecutionDissagregationSimpleDTO> getIndicatorExecutionsDissagregationSimpleTable(Integer year) {
         Query q = this.entityManager.createNativeQuery(CubeDao.dissagregationSimpleTable + " where t.year =:year ", "IndicatorExecutionsDissagregationSimpleDTOMapping");
         q.setParameter("year", year);
+        return q.getResultList();
+    }
+    public List<ImplementerDTO> getImplementersTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.implementersTable , "ImplementerDTOMapping");
         return q.getResultList();
     }
 }
