@@ -70,6 +70,7 @@ public class QuarterService {
         q.setOrder(0);
         q.setQuarter(QuarterEnum.getByQuarterNumber(yearQuarter.getQuarterValue()));
         q.setState(State.ACTIVO);
+        q.setBlockUpdate(Boolean.FALSE);
         List<Month> ms = this.monthService.createMonthsForQuarter(q, startDate, endDate,
                 dissagregationTypes, customDissagregations
                 , cantones);

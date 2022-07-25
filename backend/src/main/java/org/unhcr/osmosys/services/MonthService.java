@@ -86,6 +86,7 @@ public class MonthService {
         m.setState(State.ACTIVO);
         m.setYear(year);
         m.setMonth(monthEnum);
+        m.setBlockUpdate(Boolean.FALSE);
 
         Set<IndicatorValue> indicatorValues = new HashSet<>();
         for (DissagregationType dissagregationType : dissagregationTypes) {
