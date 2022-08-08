@@ -124,7 +124,14 @@ public class MonthService {
         DissagregationType dissagregationTypeToCalculate;
         Optional<DissagregationType> dissagregationTypeOptional =
                 dissagregationsTypes.stream()
-                        .filter(dissagregationType1 -> !dissagregationType1.equals(DissagregationType.DIVERSIDAD) && !dissagregationType1.equals(DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD))
+                        .filter(dissagregationType1 ->
+                                !dissagregationType1.equals(DissagregationType.DIVERSIDAD)
+                                        && !dissagregationType1.equals(DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD)
+                                        && !dissagregationType1.equals(DissagregationType.DIVERSIDAD_EDAD_Y_GENERO)
+                                        && !dissagregationType1.equals(DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO)
+                                        && !dissagregationType1.equals(DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO)
+                                        && !dissagregationType1.equals(DissagregationType.GENERO_Y_DIVERSIDAD)
+                        )
                         .findFirst();
         dissagregationTypeToCalculate = dissagregationTypeOptional.orElseGet(() -> dissagregationsTypes.iterator().next());
         DissagregationType finalDissagregationTypeToCalculate = dissagregationTypeToCalculate;
@@ -267,7 +274,7 @@ public class MonthService {
 
     public Long changeMonthBlockedState(Long monthId, Boolean blockinState) {
         Month month = this.monthDao.find(monthId);
-        if(!blockinState && month.getBlockUpdate()){
+        if (!blockinState && month.getBlockUpdate()) {
             month.setChecked(false);
             // todo send alert email
         }
