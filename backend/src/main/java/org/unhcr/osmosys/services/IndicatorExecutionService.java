@@ -1220,7 +1220,11 @@ public class IndicatorExecutionService {
 
     public void updateAllPartnersTotals(Long periodId) throws GeneralAppException {
         List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getActivePartnersIndicatorExecutionsByPeriodId(periodId);
+        int conteo = 0;
+        int total = indicatorExecutions.size();
         for (IndicatorExecution indicatorExecution : indicatorExecutions) {
+            conteo = conteo + 1;
+            LOGGER.info(conteo + ":" + total);
             this.updateIndicatorExecutionTotals(indicatorExecution);
             this.saveOrUpdate(indicatorExecution);
         }
@@ -1233,7 +1237,7 @@ public class IndicatorExecutionService {
         int total = indicatorExecutions.size();
         for (IndicatorExecution indicatorExecution : indicatorExecutions) {
             conteo = conteo + 1;
-            LOGGER.debug(conteo + ":" + total);
+            LOGGER.info(conteo + ":" + total);
             this.updateIndicatorExecutionTotals(indicatorExecution);
             this.saveOrUpdate(indicatorExecution);
         }
