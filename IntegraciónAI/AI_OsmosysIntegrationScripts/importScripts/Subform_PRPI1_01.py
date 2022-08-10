@@ -1,5 +1,6 @@
 import json
 
+import numpy as np
 from requests.exceptions import HTTPError
 
 import model.modelAI
@@ -50,6 +51,9 @@ def importForm(month, month_number, year, test):
                                           indicatorsIdsOmosys=indicatorIdsOsmosys35, cantonCode=cantonCode)
 
         poblacion_meta = ['Refugiados/as y migrantes', 'Comunidad de acogida']
+        if df.loc[df['age_gender'] == 'NINAS'].iloc[0].value_a is None or np.isnan(df.loc[df['age_gender'] == 'NINAS'].iloc[0].value_a):
+            print('No value')
+            continue
 
         PRPI1_01_RM_NA = int(df.loc[df['age_gender'] == 'NINAS'].iloc[0].value_a)
         PRPI1_01_RM_NN = int(df.loc[df['age_gender'] == 'NINOS'].iloc[0].value_a)
@@ -110,6 +114,10 @@ def importForm(month, month_number, year, test):
         cantonCode = row.canton_code
         df = osmosys.osmosys.getRefValues(year=year, month=month, orgOsmosys=orgAcron,
                                           indicatorsIdsOmosys=indicatorIdsOsmosys85, cantonCode=cantonCode)
+
+        if df.loc[df['age_gender'] == 'NINAS'].iloc[0].value_a is None or np.isnan(df.loc[df['age_gender'] == 'NINAS'].iloc[0].value_a):
+            print('No value')
+            continue
 
         poblacion_meta = ['Refugiados/as y migrantes', 'Comunidad de acogida']
 

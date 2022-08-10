@@ -1,5 +1,6 @@
 import json
 
+import numpy as np
 from requests.exceptions import HTTPError
 
 import model.modelAI
@@ -49,6 +50,9 @@ def importForm(month, month_number, year, test):
                                           indicatorsIdsOmosys=indicatorIdsOsmosys, cantonCode=cantonCode)
 
         poblacion_meta = ["Refugiados/as y migrantes", "Comunidad de acogida"]
+        if df.loc[df['age_gender'] == 'ADULTAS'].iloc[0].value_a is None or np.isnan(df.loc[df['age_gender'] == 'ADULTAS'].iloc[0].value_a) :
+            print('No value')
+            continue
 
         IN5_01_RM_MM_N = int(df.loc[df['age_gender'] == 'ADULTAS'].iloc[0].value_a)
         IN5_01_RM_HH_N = int(df.loc[df['age_gender'] == 'ADULTOS'].iloc[0].value_a)

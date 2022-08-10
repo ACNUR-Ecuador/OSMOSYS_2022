@@ -131,6 +131,7 @@ def getIesPartnerCantonsByIndicatorsIdsOsmosysAndMonth(indicatorsIdsOmosys, mont
         .replace('xxxMonth', month) \
         .replace('XXXindicatorIds', indicatorsIdsOmosysStr)
     dbConnection = getOsmosysConnection()
+    print(query)
     dataFrame = pds.read_sql(query, dbConnection)
     dbConnection.close()
     return dataFrame
