@@ -57,7 +57,7 @@ public class MessageAlertService {
 
                     String message =
                             "<p style=\"text-align:justify\">Estimado/a colega:</p>" +
-                                    "<p style=\"text-align:justify\">Encuentre adjunto el reporte de indicadores con retraso para el proyecto " + project.getName() + "-" + project.getOrganization().getDescription() + ". Rogamos su ayuda para poner al d&iacute;a los datos del proyecto en el sistema OSMOSYS-ACNUR.</p>" +
+                                    "<p style=\"text-align:justify\">Encuentre adjunto el reporte de indicadores con que deben ser reportados para el proyecto " + project.getName() + "-" + project.getOrganization().getDescription() + " hast el día 10 de este mes. Rogamos su ayuda para poner al d&iacute;a los datos del proyecto en el sistema OSMOSYS-ACNUR.</p>" +
                                     "<p style=\"text-align:justify\">Este reporte ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con su punto focal.</p>";
 
                     LOGGER.info("reporte retrasos socio: " + project.getName() + ":" + project.getOrganization().getAcronym());
@@ -66,7 +66,7 @@ public class MessageAlertService {
                     List<User> parterUsers = this.userService.getActivePartnerUsers(project.getOrganization().getId());
                     String destinationAdress = parterUsers.stream().map(User::getEmail).collect(Collectors.joining(", "));
                     LOGGER.info(destinationAdress);
-                    this.emailService.sendEmailMessageWithAttachment(destinationAdress, copyAddress, "Reporte de retrasos " + project.getOrganization().getAcronym(), message, report, "Reporte_retrasos_socio.xlsx");
+                    this.emailService.sendEmailMessageWithAttachment(destinationAdress, copyAddress, "Solicitud de reporte de indicadores " + project.getOrganization().getAcronym(), message, report, "Reporte_retrasos_socio.xlsx");
                 } else {
                     LOGGER.info("No enviado por no retrasos report de retrasos de socio : ");
                     LOGGER.info("reporte retrasos socio: " + project.getName() + ":" + project.getOrganization().getAcronym());
@@ -139,7 +139,7 @@ public class MessageAlertService {
 
                     String message =
                             "<p style=\"text-align:justify\">Estimado/a colega:</p>" +
-                                    "<p style=\"text-align:justify\">Encuentre adjunto el reporte de indicadores con retraso en OSMOSYS para los que usted es responsable de reporte." +
+                                    "<p style=\"text-align:justify\">Encuentre adjunto el reporte de indicadores en OSMOSYS para los que usted es responsable de reporte que deben ser reportados antes del día 10 de este mes." +
                                     " Rogamos su ayuda para poner al d&iacute;a los datos de su oficina en el sistema OSMOSYS-ACNUR.</p>" +
                                     "<p style=\"text-align:justify\">Este reporte ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con la Unidad de Programas o Gestión de Información .</p>";
 
@@ -148,7 +148,7 @@ public class MessageAlertService {
                     String destinationAdress = responsable.getEmail();
                     LOGGER.info(destinationAdress);
                     this.emailService.sendEmailMessageWithAttachment(destinationAdress, copyAddress,
-                            "Reporte de retrasos " + responsable.getName() + ":" +
+                            "Solicitud de reporte de indicadores " + responsable.getName() + ":" +
                                     (responsable.getOffice() != null ? responsable.getOffice().getAcronym() : ""),
                             message, report, "Reporte_retrasos_di.xlsx");
                 } else {
