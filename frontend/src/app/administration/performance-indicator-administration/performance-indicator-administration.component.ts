@@ -166,7 +166,8 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             dissagregations: new FormControl('', Validators.required),
             dissagregationsAssignationToIndicator: new FormControl(''),
             customDissagregations: new FormControl(''),
-            customDissagregationAssignationToIndicators: new FormControl('')
+            customDissagregationAssignationToIndicators: new FormControl(''),
+            blockAfterUpdate: new FormControl('')
         });
 
 

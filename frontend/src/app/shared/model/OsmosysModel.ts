@@ -166,6 +166,7 @@ export class Indicator {
         this.isCalculated = false;
         this.isMonitored = true;
         this.compassIndicator = false;
+        this.blockAfterUpdate = false;
     }
 
     public id: number;

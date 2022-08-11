@@ -246,7 +246,19 @@
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('compassIndicator',formItem)">{{utilsService.getErrorMessageForm('compassIndicator', formItem)}}</small>
                         </div>
+                        <div class="p-field p-col-12 p-md-2">
+                            <label for="blockAfterUpdateI">Bloqueo automático</label>
 
+                            <p-toggleButton id="blockAfterUpdateI"
+                                            formControlName="blockAfterUpdate"
+                                            onLabel="Bloquear después de guardar" offLabel="No bloquear después de guardar"
+                                            onIcon="pi pi-lock" offIcon="pi pi-lock-open"
+                            >
+                            </p-toggleButton>
+
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('isMonitored',formItem)">{{utilsService.getErrorMessageForm('isMonitored', formItem)}}</small>
+                        </div>
                         <div class="p-field p-col-12 p-md-2">
                             <label for="isMonitoredI">Monitoreo</label>
 
@@ -260,6 +272,7 @@
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('isMonitored',formItem)">{{utilsService.getErrorMessageForm('isMonitored', formItem)}}</small>
                         </div>
+
                         <div class="p-field p-col-12 p-md-2">
                             <label for="isCalculatedI">Calculado</label>
 
