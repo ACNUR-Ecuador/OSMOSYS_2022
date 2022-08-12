@@ -36,7 +36,7 @@ print('Integration')
 month = 'JULIO'
 month_number = '2022-07'
 year = 2022
-test = True
+test = False
 
 ## form level 1
 importScripts.ActivityInfoFormLeve1Form.importForm(month, month_number, year, test)
