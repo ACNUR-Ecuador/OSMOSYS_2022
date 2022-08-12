@@ -123,6 +123,7 @@ public class IndicatorService {
         indicator.setQualitativeInstructions(indicatorWeb.getQualitativeInstructions());
         indicator.setCategory(indicatorWeb.getCategory());
         indicator.setStatement(this.statementService.find(indicatorWeb.getStatement().getId()));
+        indicator.setBlockAfterUpdate(indicatorWeb.getBlockAfterUpdate());
         // marcadores
         // veo los nuevos
         indicatorWeb.getMarkers().forEach(markerWeb -> {
