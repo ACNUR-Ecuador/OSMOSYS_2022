@@ -125,9 +125,6 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         this.monthService.getMonthIndicatorValueByMonthId(monthId).subscribe(value => {
             this.monthValues = value as MonthValues;
             this.month = value.month;
-            console.log('-----------------');
-            console.log(this.month.blockUpdate);
-            console.log(this.month.checked);
             this.setRoles();
             this.monthValuesMap = value.indicatorValuesMap;
             this.monthCustomDissagregatoinValues = value.customDissagregationValues;

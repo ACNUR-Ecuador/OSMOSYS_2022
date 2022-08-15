@@ -44,7 +44,12 @@ export class AppComponent implements OnInit {
         this.ripple = true;
         if (this.checkBrowserService.getBrowser() !== 'Chrome') {
             this.confirmationService.confirm({
-                message: 'Por favor usa el Explorador Google Chrome',
+                message: `<p>Por favor usa el Explorador Google Chrome</p>
+                          <p>
+                            Si no lo tienes puedes descargarlo aquí:
+                            <a href="https://www.google.com/chrome/?brand=YTUH&gclid=EAIaIQobChMIw6i-hNqB-QIVSI9oCR2gKwrZEAAYASAAEgIaSfD_BwE&gclsrc=aw.ds">Google Chrome</a>.
+                          </p>
+                          `,
                 header: 'Por favor usa el Explorador Google Chrome',
                 icon: 'pi pi-exclamation-triangle',
                 acceptVisible: false,

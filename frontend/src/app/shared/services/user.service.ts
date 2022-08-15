@@ -191,6 +191,9 @@ export class UserService {
 
     public isUNHCRUser(): boolean {
         const user = this.currentUserSubject.value;
+        if (!user) {
+            return false;
+        }
         return user.organization === null || user.organization.acronym === 'ACNUR' || user.organization.acronym === 'UNHCR';
     }
 }

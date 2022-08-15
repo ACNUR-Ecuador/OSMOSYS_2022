@@ -117,7 +117,6 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
                 }
             }
         }
-        console.log(this.formItem.controls);
         if (this.editable) {
             this.formItem.get('sources').enable();
         } else {

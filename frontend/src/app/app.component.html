@@ -1,4 +1,4 @@
-<p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"
+<!--<p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"
                  rejectButtonStyleClass="p-button-text"
                  [closable]="false"
 >
@@ -13,6 +13,12 @@
         </p>
 
     </ng-template>
+</p-confirmDialog>-->
+<p-confirmDialog [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}"
+                 [baseZIndex]="10000"
+                 [closable]="false"
+>
+
 </p-confirmDialog>
 <app-loader></app-loader>
 <router-outlet></router-outlet>

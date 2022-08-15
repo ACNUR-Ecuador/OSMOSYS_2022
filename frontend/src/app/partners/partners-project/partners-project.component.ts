@@ -91,7 +91,6 @@ export class PartnersProjectComponent implements OnInit {
             this.setRoles();
             this.projectService.getQuartersStateByProjectId(idProject).subscribe(value1 => {
                 this.quarterStates = value1;
-                console.log(this.quarterStates);
             });
         }, error => {
             this.messageService.add({
@@ -259,10 +258,6 @@ export class PartnersProjectComponent implements OnInit {
 
     changeQuarterState(quarter, event) {
         quarter.blockUpdate = !event.checked;
-        console.log('--------------------');
-        console.log(quarter);
-        console.log(event);
-        console.log(this.quarterStates);
         this.projectService.blockQuarterStateByProjectId(this.project.id, quarter).subscribe(value => {
             this.quarterStates = value;
         }, error => {

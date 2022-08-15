@@ -107,8 +107,6 @@ export class PartnersIndicatorQuarterListComponent implements OnInit {
     }
 
     changeMonthBlocking(quarterMonthResume: QuarterMonthResume, $event: any) {
-        console.log(quarterMonthResume);
-        console.log($event);
         this.monthService.changeBlockedState(quarterMonthResume.monthId, $event.checked).subscribe(() => {
             this.messageService.add({
                 severity: 'success',

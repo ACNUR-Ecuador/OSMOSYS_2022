@@ -249,7 +249,7 @@ PlotlyViaCDNModule.setPlotlyBundle(null);
             provide: HTTP_INTERCEPTORS,
             useClass: AppCodeInterceptor,
             multi: true
-        },
+        }
     ],
     bootstrap: [AppComponent]
 })
