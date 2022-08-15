@@ -201,7 +201,6 @@ export class PartnersProjectComponent implements OnInit {
         } else {
             return '';
         }
-
     }
 
     private generateItemsReportType() {
