@@ -23,7 +23,8 @@ export class PartnersIndicatorQuarterListComponent implements OnInit {
     indicatorExecution: IndicatorExecution;
 
     @Output()
-    callMonth = new EventEmitter<number>();
+    callMonth = new EventEmitter<Map<string, number | string>>();
+
     @Output()
     refreshData = new EventEmitter<number>();
 
@@ -102,8 +103,12 @@ export class PartnersIndicatorQuarterListComponent implements OnInit {
     }
 
 
-    callMonthInParenth(monthId: number) {
-        this.callMonth.emit(monthId);
+    callMonthInParenth(monthId: number, month: string, year: number) {
+        const parametersMap = new Map<string, number | string>();
+        parametersMap.set('monthId', monthId);
+        parametersMap.set('month', month);
+        parametersMap.set('year', year);
+        this.callMonth.emit(parametersMap);
     }
 
     changeMonthBlocking(quarterMonthResume: QuarterMonthResume, $event: any) {

@@ -5,7 +5,7 @@ import {FilterUtilsService} from '../../shared/services/filter-utils.service';
 import {UtilsService} from '../../shared/services/utils.service';
 import {ProjectService} from '../../shared/services/project.service';
 import {ActivatedRoute} from '@angular/router';
-import {IndicatorExecution, Period, Project, QuarterState} from '../../shared/model/OsmosysModel';
+import {IndicatorExecution, Project, QuarterState} from '../../shared/model/OsmosysModel';
 import {ColumnTable} from '../../shared/model/UtilsModel';
 import {IndicatorExecutionService} from '../../shared/services/indicator-execution.service';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
@@ -112,11 +112,17 @@ export class PartnersProjectComponent implements OnInit {
         this._selectedColumnsGeneralIndicators = this.colsGeneralIndicators.filter(col => val.includes(col));
     }
 
-    viewDesagregationGeneralIndicator(parameters: Map<string, number | IndicatorExecution>) {
+    viewDesagregationGeneralIndicator(parameters: Map<string, number | string | IndicatorExecution>) {
         const monthId = parameters.get('monthId') as number;
         const indicatorExecution = parameters.get('indicator') as IndicatorExecution;
+        const month = parameters.get('month') as string;
+        const year = parameters.get('year') as number;
+        let title: string = indicatorExecution.indicator.description;
+        if (month && year) {
+            title = title + ' (' + month + '-' + year + ')';
+        }
         const ref = this.dialogService.open(GeneralIndicatorFormComponent, {
-                header: 'Indicador General: ' + indicatorExecution.indicator.description,
+                header: 'Indicador General: ' + title + this.getRoleTitle(),
                 width: '90%',
                 height: '90%',
                 closeOnEscape: false,
@@ -143,11 +149,17 @@ export class PartnersProjectComponent implements OnInit {
         });
     }
 
-    viewDesagregationPerformanceIndicator(parameters: Map<string, number | IndicatorExecution>) {
+    viewDesagregationPerformanceIndicator(parameters: Map<string, number | string | IndicatorExecution>) {
         const monthId = parameters.get('monthId') as number;
+        const month = parameters.get('month') as string;
+        const year = parameters.get('year') as number;
         const indicatorExecution = parameters.get('indicator') as IndicatorExecution;
+        let title: string = this.indicatorPipe.transform(indicatorExecution.indicator);
+        if (month && year) {
+            title = title + ' (' + month + '-' + year + ')';
+        }
         const ref = this.dialogService.open(PerformanceIndicatorFormComponent, {
-                header: 'Indicador: ' + this.indicatorPipe.transform(indicatorExecution.indicator),
+                header: 'Indicador: ' + title + this.getRoleTitle(),
                 width: '90%',
                 height: '90%',
                 closeOnEscape: false,
@@ -170,6 +182,26 @@ export class PartnersProjectComponent implements OnInit {
         }, error => {
             this.loadProject(this.idProjectParam);
         });
+    }
+
+    private getRoleTitle(): string {
+
+        const roles: string[] = [];
+        if (this.isAdmin) {
+            roles.push('Administrador');
+        }
+        if (this.isProjectFocalPoint) {
+            roles.push('Punto Focal');
+        }
+        if (this.isEjecutor) {
+            roles.push('Ejecutor');
+        }
+        if (roles.length > 0) {
+            return ' (' + roles.join(', ') + ')';
+        } else {
+            return '';
+        }
+
     }
 
     private generateItemsReportType() {
@@ -305,6 +337,7 @@ export class PartnersProjectComponent implements OnInit {
             });
         });
     }
+
     getPartnerLateReviewByProjectId() {
         this.messageService.clear();
 

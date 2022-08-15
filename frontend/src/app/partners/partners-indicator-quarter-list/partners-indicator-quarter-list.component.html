@@ -43,7 +43,7 @@
                 </td>
                 <td>
                     <button type="button" pButton label="Ver valores"
-                            (click)="callMonthInParenth(rowdata.monthId)"></button>
+                            (click)="callMonthInParenth(rowdata.monthId, rowdata.monthMonth, rowdata.monthYear)"></button>
                 </td>
                 <td *ngIf="isAdmin || isProjectFocalPoint">
                     <p-toggleButton

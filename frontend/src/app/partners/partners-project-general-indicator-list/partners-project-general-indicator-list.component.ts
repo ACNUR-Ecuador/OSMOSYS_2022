@@ -28,7 +28,7 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnC
     @Input()
     isEjecutor = false;
     @Output()
-    callMonthParent = new EventEmitter<Map<string, number | IndicatorExecution>>();
+    callMonthParent = new EventEmitter<Map<string, number | string | IndicatorExecution>>();
 
     public generalIndicators: IndicatorExecution[];
     // tslint:disable-next-line:variable-name
@@ -112,10 +112,12 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnC
         });
     }
 
-    callMonth(monthId: number, overlayPanel: OverlayPanel) {
+    callMonth(parameters: Map<string, number | string>, overlayPanel: OverlayPanel) {
         overlayPanel.hide();
-        const parametersMap = new Map<string, number | IndicatorExecution>();
-        parametersMap.set('monthId', monthId);
+        const parametersMap = new Map<string, number | string | IndicatorExecution>();
+        parametersMap.set('monthId', parameters.get('monthId') as number);
+        parametersMap.set('month', parameters.get('month') as string);
+        parametersMap.set('year', parameters.get('year') as number);
         parametersMap.set('indicator', this.selectedIndicator);
         this.callMonthParent.emit(parametersMap);
     }

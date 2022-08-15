@@ -22,7 +22,7 @@ export class PartnersGeneralIndicatorQuarterListComponent implements OnInit {
     @Input()
     isProjectFocalPoint = false;
     @Output()
-    callMonth = new EventEmitter<number>();
+    callMonth = new EventEmitter<Map<string, number | string>>();
     @Output()
     refreshData = new EventEmitter<number>();
 
@@ -100,8 +100,12 @@ export class PartnersGeneralIndicatorQuarterListComponent implements OnInit {
     }
 
 
-    callMonthInParenth(monthId: number) {
-        this.callMonth.emit(monthId);
+    callMonthInParenth(monthId: number, month: string, year: number) {
+        const parameters = new Map<string, number | string>();
+        parameters.set('monthId', monthId);
+        parameters.set('month', month);
+        parameters.set('year', year);
+        this.callMonth.emit(parameters);
     }
 
     changeMonthBlocking(quarterMonthResume: QuarterMonthResume, $event: any) {

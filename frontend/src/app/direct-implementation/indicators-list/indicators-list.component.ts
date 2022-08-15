@@ -196,7 +196,7 @@ export class IndicatorsListComponent implements OnInit {
     private getHeaderIndicatorForm(indicatorExecution: IndicatorExecution) {
         const userId = this.userService.getLogedUsername().id;
         let header = this.indicatorPipe.transform(indicatorExecution.indicator);
-        header += '(' + indicatorExecution.reportingOffice.acronym + ')';
+        header += ' (' + indicatorExecution.reportingOffice.acronym + ')';
         const roles: string[] = [];
         if (indicatorExecution.supervisorUser && indicatorExecution.supervisorUser.id === userId) {
             roles.push('Supervisor');
