@@ -19,6 +19,8 @@ import {ProductIndicatorsComponent} from './powerbi/product-indicators/product-i
 import {RbaIndicatorsComponent} from './powerbi/rba-indicators/rba-indicators.component';
 import {ActivityInfoIndicatorsComponent} from './powerbi/activity-info-indicators/activity-info-indicators.component';
 import {LateReportsComponent} from './late-reports/late-reports.component';
+import {IndicatorComparisonComponent} from './powerbi/indicator-comparison/indicator-comparison.component';
+import {IndicatorTrendsComponent} from './powerbi/indicator-trends/indicator-trends.component';
 
 const routes: Routes = [{
     path: '',
@@ -39,7 +41,9 @@ const routes: Routes = [{
         {path: 'productIndicators', component: ProductIndicatorsComponent},
         {path: 'rbaIndicators', component: RbaIndicatorsComponent},
         {path: 'activityInfoIndicators', component: ActivityInfoIndicatorsComponent},
-        {path: 'lateReportsComponent', component: LateReportsComponent}
+        {path: 'lateReportsComponent', component: LateReportsComponent},
+        {path: 'indicatorComparison', component: IndicatorComparisonComponent},
+        {path: 'indicatorTrends', component: IndicatorTrendsComponent},
     ]
 }];
 

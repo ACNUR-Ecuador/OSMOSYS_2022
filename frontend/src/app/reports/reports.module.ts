@@ -29,6 +29,8 @@ import { ProductIndicatorsComponent } from './powerbi/product-indicators/product
 import { RbaIndicatorsComponent } from './powerbi/rba-indicators/rba-indicators.component';
 import { ActivityInfoIndicatorsComponent } from './powerbi/activity-info-indicators/activity-info-indicators.component';
 import { LateReportsComponent } from './late-reports/late-reports.component';
+import { IndicatorTrendsComponent } from './powerbi/indicator-trends/indicator-trends.component';
+import { IndicatorComparisonComponent } from './powerbi/indicator-comparison/indicator-comparison.component';
 
 
 @NgModule({
@@ -49,7 +51,9 @@ import { LateReportsComponent } from './late-reports/late-reports.component';
     ProductIndicatorsComponent,
     RbaIndicatorsComponent,
     ActivityInfoIndicatorsComponent,
-    LateReportsComponent
+    LateReportsComponent,
+    IndicatorTrendsComponent,
+    IndicatorComparisonComponent
   ],
     imports: [
         CommonModule,
