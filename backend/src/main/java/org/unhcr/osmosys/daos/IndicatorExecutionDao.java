@@ -4,6 +4,7 @@ import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.IndicatorExecution;
+import org.unhcr.osmosys.model.Quarter;
 import org.unhcr.osmosys.model.enums.Frecuency;
 import org.unhcr.osmosys.model.enums.IndicatorType;
 import org.unhcr.osmosys.model.enums.MonthEnum;
@@ -92,6 +93,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         q.setParameter("generalType", indicatorType);
         return q.getResultList();
     }
+
     public List<IndicatorExecution> getGeneralIndicatorExecutionsByPeriodId(Long periodId) {
         IndicatorType indicatorType = IndicatorType.GENERAL;
         String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
@@ -356,6 +358,31 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         return (IndicatorExecution) q.getSingleResult();
     }
 
+    public List<IndicatorExecution> getByIdsWithIndicatorValues(List<Long> ids) {
+
+        String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
+                " left join fetch o.indicator ind " +
+                " left join fetch o.quarters q " +
+                " left join fetch q.months m " +
+                " left join fetch m.sources " +
+                " left join fetch  m.indicatorValues " +
+                " left join fetch  m.indicatorValuesIndicatorValueCustomDissagregations " +
+                " WHERE o.id in (:ids)";
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("ids", ids);
+        return  q.getResultList();
+    }
+
+    public List<Long> getByQuartersIds(List<Long> quartersIds) {
+        String jpql = "SELECT DISTINCT o.id FROM IndicatorExecution o " +
+                " inner join o.quarters q " +
+                " WHERE q.id in (:quartersIds)";
+        Query q = getEntityManager().createQuery(jpql, Long.class);
+        q.setParameter("quartersIds", quartersIds);
+        return q.getResultList();
+    }
+
+
     public List<IndicatorExecution> getByPeriodIdAndIndicatorId(Long periodId, Long indicatorId) {
         String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +
                 " left join fetch o.period per " +
@@ -395,5 +422,6 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         q.setParameter("year", yearToControl);
         return q.getResultList();
     }
+
 
 }

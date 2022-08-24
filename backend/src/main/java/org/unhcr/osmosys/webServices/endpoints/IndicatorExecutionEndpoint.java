@@ -76,6 +76,16 @@ public class IndicatorExecutionEndpoint {
 
     }
 
+    @Path("/quartersTargetUpdate")
+    @PUT
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public void quartersTargetUpdate(List<QuarterWeb> quarterWebs) throws GeneralAppException {
+        LOGGER.debug(quarterWebs);
+        this.indicatorExecutionService.quartersTargetUpdate(quarterWebs);
+
+    }
+
     @Path("/assignPerformanceIndicatoToProject")
     @POST
     @Secured

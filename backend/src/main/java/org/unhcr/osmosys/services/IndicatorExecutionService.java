@@ -1242,6 +1242,30 @@ public class IndicatorExecutionService {
             this.saveOrUpdate(indicatorExecution);
         }
     }
+
+    public void quartersTargetUpdate(List<QuarterWeb> quarterWebs) throws GeneralAppException {
+        List<Long> quartersIds = quarterWebs.stream().map(QuarterWeb::getId).collect(Collectors.toList());
+        List<Long> indicatorsExecutionsIdsToUpdate = this.indicatorExecutionDao.getByQuartersIds(quartersIds);
+        List<IndicatorExecution> indicatorsExecutionsToUpdate = this.indicatorExecutionDao.getByIdsWithIndicatorValues(indicatorsExecutionsIdsToUpdate);
+        List<Quarter> quartersList = indicatorsExecutionsToUpdate.stream()
+                .map(IndicatorExecution::getQuarters)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+        for (QuarterWeb quarterWeb : quarterWebs) {
+            Optional<Quarter> quarterOpt = quartersList.stream().filter(quarter -> quarterWeb.getId().equals(quarter.getId())).findFirst();
+
+            if (quarterOpt.isPresent()) {
+                quarterOpt.get().setTarget(quarterWeb.getTarget());
+            } else {
+                throw new GeneralAppException("No se pudo encontrar el trimestre con id " + quarterWeb.getId(), Response.Status.NOT_FOUND);
+            }
+        }
+
+        for (IndicatorExecution indicatorExecution : indicatorsExecutionsToUpdate) {
+            this.updateIndicatorExecutionTotals(indicatorExecution);
+            this.saveOrUpdate(indicatorExecution);
+        }
+    }
 }
 
 
