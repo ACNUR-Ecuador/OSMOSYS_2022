@@ -5,7 +5,7 @@ import {ConfirmationService, ConfirmEventType, FilterService, MessageService, Se
 import {UtilsService} from '../../shared/services/utils.service';
 import {UserService} from '../../shared/services/user.service';
 import {FilterUtilsService} from '../../shared/services/filter-utils.service';
-import {Location} from '@angular/common';
+import {Location, PercentPipe} from '@angular/common';
 import {
     Canton,
     CantonForList,
@@ -83,6 +83,12 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     messageAlert = '';
     messageAlertArray = [];
     showAlert = false;
+    showTargetsPerformanceIndicatorUpdateDialog = false;
+
+    /* update quarters*/
+    quarterOrders: number[];
+    quarterTitles: string[];
+    quartersToUpdate: Quarter[] = [];
 
     constructor(
         private route: ActivatedRoute,
@@ -105,6 +111,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         public officeOrganizationPipe: OfficeOrganizationPipe,
         private indicatorExecutionService: IndicatorExecutionService,
         private codeDescriptionPipe: CodeDescriptionPipe,
+        private percentPipe: PercentPipe,
         private booleanYesNoPipe: BooleanYesNoPipe,
         private router: Router,
         private statementService: StatementService,
@@ -227,6 +234,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     loadPerformanceIndicators(projectId: number) {
         this.indicatorExecutionService.getPerformanceIndicatorAdministrationResume(projectId).subscribe(value => {
             this.performanceIndicators = value;
+            console.log(value);
             this.showTargetAlerts();
         }, error => {
             this.messageService.add({
@@ -616,7 +624,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             {field: 'indicator.description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'target', header: 'Meta', type: ColumnDataType.text},
             {field: 'totalExecution', header: 'Ejecución actual', type: ColumnDataType.text},
-            {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric},
+            {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric, pipeRef: this.percentPipe, arg1: '1.2'},
             // {field: 'indicatorType', header: 'Estado', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
         ];
@@ -634,7 +642,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             {field: 'indicator', header: 'Descripción', type: ColumnDataType.text, pipeRef: this.indicatorPipe},
             {field: 'target', header: 'Meta', type: ColumnDataType.text},
             {field: 'totalExecution', header: 'Ejecución actual', type: ColumnDataType.text},
-            {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric},
+            {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric, pipeRef: this.percentPipe, arg1: '1.2'},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
         ];
         const hiddenColumns: string[] = ['id', 'indicator.statement'];
@@ -1060,5 +1068,56 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             this.formPerformanceIndicator.get('assignedBudget').disable();
             this.formPerformanceIndicator.get('assignedBudget').patchValue(null);
         }
+    }
+
+    updatePerformanceIndicatorsTargets() {
+        this.showTargetsPerformanceIndicatorUpdateDialog = true;
+        const ieTemporal = this.performanceIndicators.pop();
+        const quarters = ieTemporal.quarters.sort((a, b) => a.order - b.order);
+
+        this.quarterOrders = quarters.map(value => value.order);
+        this.quarterTitles = quarters.map(value => value.quarter + '-' + value.year);
+        this.performanceIndicators.forEach(ie => ie.quarters.sort((a, b) => a.order - b.order));
+        console.log(this.quarterOrders);
+        console.log(this.quarterTitles);
+    }
+
+    getTotalTarget(ie: IndicatorExecution): number {
+        return ie.quarters.reduce<number>(
+            (previousValue, currentValue) =>
+                previousValue + (currentValue.target ? Number(currentValue.target) : 0), 0);
+    }
+
+    onTargetMasiveUpdate(quarter: Quarter) {
+        console.log(quarter);
+        this.quartersToUpdate.push(quarter);
+    }
+
+    saveTargetsUpdate() {
+        console.log('saveTargetsUpdate');
+        console.log(this.quartersToUpdate);
+        this.showTargetsPerformanceIndicatorUpdateDialog = false;
+        this.indicatorExecutionService.quartersTargetUpdate(this.quartersToUpdate).subscribe(() => {
+            this.quartersToUpdate = [];
+            this.showTargetsPerformanceIndicatorUpdateDialog = false;
+            this.loadProject(Number(this.idProjectParam));
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al actualizar las metas',
+                detail: error.error.message,
+                life: 3000
+            });
+            this.quartersToUpdate = [];
+            this.showTargetsPerformanceIndicatorUpdateDialog = false;
+            this.loadProject(Number(this.idProjectParam));
+        });
+    }
+
+    cancelTargetsUpdate() {
+        console.log('cancelTargetsUpdate');
+        this.quartersToUpdate = [];
+        this.showTargetsPerformanceIndicatorUpdateDialog = false;
+        this.loadProject(Number(this.idProjectParam));
     }
 }

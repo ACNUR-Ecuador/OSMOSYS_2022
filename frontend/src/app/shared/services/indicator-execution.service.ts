@@ -3,7 +3,7 @@ import {environment} from '../../../environments/environment';
 import {Observable} from 'rxjs';
 import {
     Canton,
-    IndicatorExecution, IndicatorExecutionAssigment, IndicatorValue, MonthValues,
+    IndicatorExecution, IndicatorExecutionAssigment, IndicatorValue, MonthValues, Quarter,
     TargetUpdateDTOWeb
 } from '../model/OsmosysModel';
 import {HttpClient, HttpParams} from '@angular/common/http';
@@ -40,6 +40,10 @@ export class IndicatorExecutionService {
 
     public updateTargets(targetUpdateDTOWeb: TargetUpdateDTOWeb): Observable<void> {
         return this.http.put<void>(`${mainServiceUrl}/targetsUpdate`, targetUpdateDTOWeb);
+    }
+
+    public quartersTargetUpdate(quarters: Quarter[]): Observable<void> {
+        return this.http.put<void>(`${mainServiceUrl}/quartersTargetUpdate`, quarters);
     }
 
     public assignPerformanceIndicatorDirectImplementation(indicatorExecutionAssigment: IndicatorExecutionAssigment): Observable<number> {

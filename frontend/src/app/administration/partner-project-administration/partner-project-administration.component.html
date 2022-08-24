@@ -292,6 +292,9 @@
                         <button pButton pRipple label="Agregar un indicador" icon="pi pi-plus"
                                 class="p-button-success p-mr-2 p-mb-2"
                                 (click)="assignNewPerformanceIndicator()"></button>
+                        <button pButton pRipple label="Actualizar metas" icon="pi pi-pencil"
+                                class="p-button-success p-mr-2 p-mb-2"
+                                (click)="updatePerformanceIndicatorsTargets()"></button>
                     </ng-template>
 
                     <ng-template pTemplate="right">
@@ -734,3 +737,65 @@
         </ng-template>
     </p-dialog>
 </form>
+
+
+<p-dialog [(visible)]="showTargetsPerformanceIndicatorUpdateDialog" [style]="{width: '90%'}"
+          header="Metas Indicadores de Producto"
+          [modal]="true"
+          [closable]="true">
+
+    <ng-template pTemplate="content">
+        <div class="card">
+            <h5>Cell Editing</h5>
+            <p-table [value]="performanceIndicators" dataKey="id">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Declaración de producto</th>
+                        <th>Indicador</th>
+                        <th *ngFor="let quarterTitle of quarterTitles">
+                            {{quarterTitle}}
+                        </th>
+                        <th>
+                            Meta Total
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-ie>
+                    <tr>
+                        <td>{{ie.indicator.statement | codeDescription}}</td>
+                        <td>{{ie.indicator | indicator}}</td>
+                        <td pEditableColumn *ngFor="let quarterOrder of quarterOrders">
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+
+                                    <p-inputNumber
+                                        [(ngModel)]="ie.quarters[quarterOrder-1].target"
+                                        (ngModelChange)="onTargetMasiveUpdate(ie.quarters[quarterOrder-1])"
+                                    ></p-inputNumber>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{ie.quarters[quarterOrder - 1].target}}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        <td>
+                            {{getTotalTarget(ie)}}
+                        </td>
+                    </tr>
+
+                </ng-template>
+            </p-table>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton type="button"
+                (click)="saveTargetsUpdate()"
+                pRipple label="Guardar" icon="pi pi-check"
+        ></button>
+        <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
+                (click)="cancelTargetsUpdate()"></button>
+    </ng-template>
+
+</p-dialog>
+
+

@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, PercentPipe} from '@angular/common';
 
 import {AdministrationRoutingModule} from './administration-routing.module';
 import {AreasAdministrationComponent} from './areas-administration/areas-administration.component';
@@ -29,9 +29,13 @@ import {OrganizationChartModule} from 'primeng/organizationchart';
 import {StatementAdministrationComponent} from './statement-administration/statement-administration.component';
 import {CodeShortDescriptionPipe} from '../shared/pipes/code-short-description.pipe';
 import {CheckboxModule} from 'primeng/checkbox';
-import {PerformanceIndicatorAdministrationComponent} from './performance-indicator-administration/performance-indicator-administration.component';
+import {
+    PerformanceIndicatorAdministrationComponent
+} from './performance-indicator-administration/performance-indicator-administration.component';
 import {MarkerAdministrationComponent} from './marker-administration/marker-administration.component';
-import {CustomDissagregationAdministrationComponent} from './custom-dissagregation-administration/custom-dissagregation-administration.component';
+import {
+    CustomDissagregationAdministrationComponent
+} from './custom-dissagregation-administration/custom-dissagregation-administration.component';
 import {PickListModule} from 'primeng/picklist';
 import {MarkersListPipe} from '../shared/pipes/markers-list.pipe';
 import {CustomDissagregationOptionsListPipe} from '../shared/pipes/custom-dissagregation-options-list.pipe';
@@ -43,9 +47,11 @@ import {BooleanYesNoPipe} from '../shared/pipes/boolean-yes-no.pipe';
 import {DissagregationsAssignationToIndicatorPipe} from '../shared/pipes/dissagregations-assignation-to-indicator.pipe';
 import {CustomDissagregationsAssignationToIndicatorPipe} from '../shared/pipes/custom-dissagregations-assignation-to-indicator.pipe';
 import {FilterUtilsService} from '../shared/services/filter-utils.service';
-import { PartnerProjectAdministrationComponent } from './partner-project-administration/partner-project-administration.component';
-import { PartnerProjectListAdministrationComponent } from './partner-project-list-administration/partner-project-list-administration.component';
-import { GeneralIndicatorConfigurationComponent } from './general-indicator-configuration/general-indicator-configuration.component';
+import {PartnerProjectAdministrationComponent} from './partner-project-administration/partner-project-administration.component';
+import {
+    PartnerProjectListAdministrationComponent
+} from './partner-project-list-administration/partner-project-list-administration.component';
+import {GeneralIndicatorConfigurationComponent} from './general-indicator-configuration/general-indicator-configuration.component';
 import {CardModule} from 'primeng/card';
 import {CalendarModule} from 'primeng/calendar';
 import {ProjectService} from '../shared/services/project.service';
@@ -56,13 +62,15 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {CodeDescriptionPipe} from '../shared/pipes/code-description.pipe';
 import {QuarterService} from '../shared/services/quarter.service';
 import {SharedModule} from '../shared/shared.module';
-import { UserAdministrationComponent } from './user-administration/user-administration.component';
+import {UserAdministrationComponent} from './user-administration/user-administration.component';
 import {RolesListPipe} from '../shared/pipes/roles-list.pipe';
 import {AccordionModule} from 'primeng/accordion';
 import {CodeDescriptionListPipe} from '../shared/pipes/code-description-list.pipe';
 import {RippleModule} from 'primeng/ripple';
 import {IndicatorPipe} from '../shared/pipes/indicator.pipe';
-import { DirectImplementationAdministrationComponent } from './direct-implementation-administration/direct-implementation-administration.component';
+import {
+    DirectImplementationAdministrationComponent
+} from './direct-implementation-administration/direct-implementation-administration.component';
 import {UserPipe} from '../shared/pipes/user.pipe';
 import {MonthPipe} from '../shared/pipes/month.pipe';
 import {MonthListPipe} from '../shared/pipes/month-list.pipe';
@@ -143,7 +151,8 @@ import {InputSwitchModule} from 'primeng/inputswitch';
         IndicatorPipe,
         UserPipe,
         MonthPipe,
-        MonthListPipe
+        MonthListPipe,
+        PercentPipe
     ]
 })
 export class AdministrationModule {

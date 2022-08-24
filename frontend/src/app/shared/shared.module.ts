@@ -254,7 +254,8 @@ import { MonthListPipe } from './pipes/month-list.pipe';
         EnumValuesToLabelPipe,
         CodeDescriptionPipe,
         ValuesStatePipe,
-        LoaderComponent
+        LoaderComponent,
+        IndicatorPipe
     ]
 })
 export class SharedModule {
