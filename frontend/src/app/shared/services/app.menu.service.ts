@@ -179,18 +179,6 @@ export class MenuService {
                     icon: 'pi pi-fw pi-calendar-times',
                     routerLink: ['/reports/lateReportsComponent'],
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
-                },
-                {
-                    label: 'Reportes de tendencia de indicadores',
-                    icon: 'pi pi-fw pi-calendar-times',
-                    routerLink: ['/reports/indicatorTrends'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
-                },
-                {
-                    label: 'Reportes de comparación de ejecución directa',
-                    icon: 'pi pi-fw pi-calendar-times',
-                    routerLink: ['/reports/indicatorComparison'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
                 }
 
             ]
@@ -282,6 +270,18 @@ export class MenuService {
                     routerLink: ['/reports/allProjectsState'],
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL'],
                 },
+                {
+                    label: 'Reportes de tendencia de indicadores',
+                    icon: 'pi pi-fw pi-calendar-times',
+                    routerLink: ['/reports/indicatorTrends'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
+                },
+                {
+                    label: 'Reportes de comparación de ejecución directa',
+                    icon: 'pi pi-fw pi-calendar-times',
+                    routerLink: ['/reports/indicatorComparison'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
+                }
             ]
         }
     ];
