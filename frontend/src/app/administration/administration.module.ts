@@ -75,6 +75,8 @@ import {UserPipe} from '../shared/pipes/user.pipe';
 import {MonthPipe} from '../shared/pipes/month.pipe';
 import {MonthListPipe} from '../shared/pipes/month-list.pipe';
 import {InputSwitchModule} from 'primeng/inputswitch';
+import {OrderListModule} from 'primeng/orderlist';
+import {TagModule} from 'primeng/tag';
 
 
 @NgModule({
@@ -130,7 +132,9 @@ import {InputSwitchModule} from 'primeng/inputswitch';
         CheckboxModule,
         AccordionModule,
         RippleModule,
-        InputSwitchModule
+        InputSwitchModule,
+        OrderListModule,
+        TagModule
     ],
     providers: [
         ConfirmationService,

@@ -105,7 +105,9 @@
         </div>
         <form [formGroup]="formItem" (ngSubmit)="saveItem()">
             <p-dialog [(visible)]="showDialog" [style]="{width: '90%'}" header="Indicador" [modal]="true"
-                      styleClass="p-fluid" [closable]="false">
+                      styleClass="p-fluid" [closable]="false"
+                      [baseZIndex]=1000
+            >
 
                 <ng-template pTemplate="content">
                     <div class="p-fluid p-formgrid p-grid">
@@ -251,7 +253,8 @@
 
                             <p-toggleButton id="blockAfterUpdateI"
                                             formControlName="blockAfterUpdate"
-                                            onLabel="Bloquear después de guardar" offLabel="No bloquear después de guardar"
+                                            onLabel="Bloquear después de guardar"
+                                            offLabel="No bloquear después de guardar"
                                             onIcon="pi pi-lock" offIcon="pi pi-lock-open"
                             >
                             </p-toggleButton>
@@ -316,28 +319,38 @@
                             <p-card header="Segregaciones">
                                 <p-accordion>
                                     <p-accordionTab header="{{period.year}}" *ngFor="let period of periods">
-                                        <div class="p-d-flex">
+                                        <div class="p-d-flex" id="dissaScroll" #dissaScroll>
                                             <div class="p-field p-col-6 p-md-6 p-p-2">
                                                 <label>Desagregaciones Estándar</label>
                                                 <div class="p-field p-col-12 p-md-12"
                                                      style="border: 1px solid #ced4da;">
-                                                    <p-scrollPanel [style]="{width: '100%', height: '160px'}">
-                                                        <div class="p-formgroup-inline p-pt-2">
-                                                            <div class="p-field-checkbox p-col-12 p-md-3"
-                                                                 *ngFor="let dissagregationTypePeriod of getDissagregationTypeByPeriod(period)">
-                                                                <!--suppress AngularInvalidExpressionResultType -->
-                                                                <p-checkbox name="group1"
-                                                                            [inputId]="dissagregationTypePeriod.value"
-                                                                            [value]="dissagregationTypePeriod.value"
-                                                                            [formControl]="formItem.controls['dissagregations']"
-                                                                >
-                                                                </p-checkbox>
-                                                                <label
-                                                                    [for]="dissagregationTypePeriod.value">{{dissagregationTypePeriod.label}}
-                                                                </label>
-                                                            </div>
-
+                                                    <p-scrollPanel
+                                                        [style]="{width: '100%', height: '160px', border: 'yellow'}">
+                                                        <div>
+                                                            <p-multiSelect
+                                                                [options]="getDissagregationTypeByPeriod(period)"
+                                                                formControlName="dissagregations"
+                                                                defaultLabel="Selecciona al menos una segregación"
+                                                                optionLabel="label"
+                                                                optionValue="value"
+                                                                [maxSelectedLabels]="0"
+                                                                [selectedItemsLabel]="'{0} segregaciones seleccionadas'"
+                                                                [showToggleAll]="false"
+                                                                [style]="{width: '100%'}"
+                                                                [panelStyle]="{width: '100%'}"
+                                                                appendTo="body"
+                                                            >
+                                                            </p-multiSelect>
                                                         </div>
+                                                        <div>
+                                                            <p-tag
+                                                                *ngFor="let dissa of formItem.controls['dissagregations'].value "
+                                                                styleClass="p-m-2"
+                                                                value="{{getDissagregationLabel(dissa)}}">
+                                                            </p-tag>
+                                                        </div>
+
+
                                                     </p-scrollPanel>
                                                 </div>
                                                 <small class="p-error"

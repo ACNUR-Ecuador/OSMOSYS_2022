@@ -560,4 +560,15 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             this.formItem.get('statement').patchValue([]);
         }
     }
+
+
+    getDissagregationLabel(dissa: string | SelectItem): string {
+        if (typeof dissa === 'string' || dissa instanceof String) {
+            return this.dissagregationTypes.filter(value => {
+                return value.value === dissa.split('-')[0];
+            }).map(value => value.label).pop();
+        } else {
+            return dissa.label;
+        }
+    }
 }
