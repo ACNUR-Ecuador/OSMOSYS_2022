@@ -131,6 +131,7 @@ public class MonthService {
                                         && !dissagregationType1.equals(DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO)
                                         && !dissagregationType1.equals(DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO)
                                         && !dissagregationType1.equals(DissagregationType.GENERO_Y_DIVERSIDAD)
+                                        && !dissagregationType1.equals(DissagregationType.LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO)
                         )
                         .findFirst();
         dissagregationTypeToCalculate = dissagregationTypeOptional.orElseGet(() -> dissagregationsTypes.iterator().next());

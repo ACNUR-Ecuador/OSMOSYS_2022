@@ -27,6 +27,7 @@ public enum DissagregationType implements EnumInterface {
     TIPO_POBLACION_LUGAR_EDAD_Y_GENERO("Tipo de población,lugar, género y edad", 21),
     TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO("Tipo de población,lugar, género  y edad educación primaria", 22),
     TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO("Tipo de población,lugar, género y edad educación terciaria", 23),
+    LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO("Lugar, diversidad, género y edad-educación primaria", 24),
     ;
 
     public static List<DissagregationType> getLocationDissagregationTypes() {

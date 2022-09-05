@@ -90,12 +90,37 @@ public class IndicatorValueService {
                 return this.createIndicatorValueDissagregationStandardForPopulationTypeLocationAgePrimaryEducationAndGender(cantones);
             case TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
                 return this.createIndicatorValueDissagregationStandardForPopulationTypeLocationAgeTertiaryEducationAndGender(cantones);
+            case LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
+                return this.createIndicatorValueDissagregationStandardForLocationDiversityAgePrimaryEducationAndGender(cantones);
             case SIN_DESAGREGACION:
                 return this.createIndicatorValueDissagregationStandardForNoDissagregation();
             default: {
                 throw new GeneralAppException(" Desagregación no implementada " + dissagregationType, Response.Status.INTERNAL_SERVER_ERROR);
             }
         }
+    }
+
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForLocationDiversityAgePrimaryEducationAndGender(List<Canton> cantones) {
+        List<IndicatorValue> r = new ArrayList<>();
+        DissagregationType dt = DissagregationType.LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO;
+        for (Canton canton : cantones) {
+            for (DiversityType diversityType : DiversityType.values()) {
+                for (GenderType genderType : GenderType.values()) {
+                    for (AgePrimaryEducationType ageType : AgePrimaryEducationType.values()) {
+                        IndicatorValue iv = new IndicatorValue();
+                        iv.setState(State.ACTIVO);
+                        iv.setDissagregationType(dt);
+                        iv.setGenderType(genderType);
+                        iv.setAgePrimaryEducationType(ageType);
+                        iv.setDiversityType(diversityType);
+                        iv.setLocation(canton);
+                        iv.setShowValue(true);
+                        r.add(iv);
+                    }
+                }
+            }
+        }
+        return r;
     }
 
     private List<IndicatorValue> createIndicatorValueDissagregationStandardAge() {
@@ -403,6 +428,7 @@ public class IndicatorValueService {
         }
         return r;
     }
+
     private List<IndicatorValue> createIndicatorValueDissagregationStandardForDiversityAgeTerciaryEducationAndGender() {
         List<IndicatorValue> r = new ArrayList<>();
         DissagregationType dt = DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO;

@@ -83,11 +83,13 @@ public class TestEndpoint {
     @Inject
     IndicatorExecutionService indicatorExecutionService;
 
+    @Inject
+    ImportService importService;
     @Path("test")
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
     public String test2() throws GeneralAppException {
-        this.messageAlertService.sendAlertReviewToDirectImplementation();
+        this.importService.catalogImport();
         return "ya";
     }
 
