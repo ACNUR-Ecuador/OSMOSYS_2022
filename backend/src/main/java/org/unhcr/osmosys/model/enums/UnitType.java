@@ -4,7 +4,10 @@ public enum UnitType implements EnumInterface {
     PERSONAS_INTERES("Personas de Interés", 1),
     PERSONAS("Personas", 2),
     ORGANIZACIONES_INSTITUCIONES("Organizaciones o Instituciones", 3),
-    TRANSFERENCIAS("Transferencias", 4);
+    TRANSFERENCIAS("Transferencias", 4),
+    OTRO("Otro", 5),
+    HOGARES("Hogares", 6)
+    ;
 
     private String label;
 

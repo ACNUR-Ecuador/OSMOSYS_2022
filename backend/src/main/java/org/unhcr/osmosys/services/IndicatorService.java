@@ -124,6 +124,7 @@ public class IndicatorService {
         indicator.setCategory(indicatorWeb.getCategory());
         indicator.setStatement(this.statementService.find(indicatorWeb.getStatement().getId()));
         indicator.setBlockAfterUpdate(indicatorWeb.getBlockAfterUpdate());
+        indicator.setUnit(indicatorWeb.getUnit());
         // marcadores
         // veo los nuevos
         indicatorWeb.getMarkers().forEach(markerWeb -> {
