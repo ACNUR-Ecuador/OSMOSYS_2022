@@ -10,7 +10,7 @@ from activityinfo.id import generate_id
 import osmosys.Backups
 
 def importForm(month, month_number, year, test):
-    indicatorCodeAI = 'ED5_01'
+    indicatorCodeAI = 'S8_01'
     print(
         '--------------------------------------' + indicatorCodeAI + '------------------------------------------------------')
     # busco matchs
@@ -44,51 +44,55 @@ def importForm(month, month_number, year, test):
                                           indicatorsIdsOmosys=indicatorIdsOsmosys, cantonCode=cantonCode)
 
         poblacion_meta = ["Refugiados/as y migrantes", "Comunidad de acogida"]
-        ED5_01_RM_NA = int(df.loc[df['age_gender'] == 'NINAS'].iloc[0].value_a)
-        ED5_01_RM_NN = int(df.loc[df['age_gender'] == 'NINOS'].iloc[0].value_a)
+
+        S8_01_RM_NA = int(df.loc[df['age_gender'] == 'NINAS'].iloc[0].value_a)
+        S8_01_RM_NN = int(df.loc[df['age_gender'] == 'NINOS'].iloc[0].value_a)
+        S8_01_RM_MM = int(df.loc[df['age_gender'] == 'ADULTAS'].iloc[0].value_a)
+        S8_01_RM_HH = int(df.loc[df['age_gender'] == 'ADULTOS'].iloc[0].value_a)
+        S8_01_RM_OTR = int(df.loc[df['age_gender'] == 'OTRO'].iloc[0].value_a)
 
         dfCa = osmosys.osmosys.getCAValues(year=year, month=month, orgOsmosys=orgAcron,
                                            indicatorsIdsOmosys=indicatorIdsOsmosys, cantonCode=cantonCode)
-        ED5_01_CA_NA = int(dfCa.loc[df['age_gender'] == 'NINAS'].iloc[0].value_a)
-        ED5_01_CA_NN = int(dfCa.loc[df['age_gender'] == 'NINOS'].iloc[0].value_a)
+
+        S8_01_CA_NA = int(dfCa.loc[df['age_gender'] == 'NINAS'].iloc[0].value_a)
+        S8_01_CA_NN = int(dfCa.loc[df['age_gender'] == 'NINOS'].iloc[0].value_a)
+        S8_01_CA_MM = int(dfCa.loc[df['age_gender'] == 'ADULTAS'].iloc[0].value_a)
+        S8_01_CA_HH = int(dfCa.loc[df['age_gender'] == 'ADULTOS'].iloc[0].value_a)
+        S8_01_CA_OTR = int(dfCa.loc[df['age_gender'] == 'OTRO'].iloc[0].value_a)
+
         dfDiversidad = osmosys.osmosys.getRefLgbtiDiscapacitadosValues(year=year, month=month, orgOsmosys=orgAcron,
                                                                        indicatorsIdsOmosys=indicatorIdsOsmosys,
                                                                        cantonCode=cantonCode)
-        if (
-                not (dfDiversidad.loc[(dfDiversidad['diversity_type'] == 'DISCAPACITADOS') & (
-                        dfDiversidad['country_of_origin'] == 'VENEZUELA')]).empty
-        ):
-            ED5_01_RM_DS = int(dfDiversidad.loc[(dfDiversidad['diversity_type'] == 'DISCAPACITADOS') & (
-                    dfDiversidad['country_of_origin'] == 'VENEZUELA')].iloc[0].value_a)
-        else:
-            ED5_01_RM_DS = 0
-        if (
-                not (dfDiversidad.loc[(dfDiversidad['diversity_type'] == 'DISCAPACITADOS') & (
-                        dfDiversidad['country_of_origin'] == 'ECUADOR')]).empty
-        ):
-            ED5_01_CA_DS = int(dfDiversidad.loc[(dfDiversidad['diversity_type'] == 'DISCAPACITADOS') & (
-                    dfDiversidad['country_of_origin'] == 'ECUADOR')].iloc[0].value_a)
-        else:
-            ED5_01_CA_DS = 0
+
+        # print(dfDiversidad)
+        S8_01_RM_LGBT = int(dfDiversidad.loc[(dfDiversidad['diversity_type'] == 'LGBTI') & (
+                dfDiversidad['country_of_origin'] == 'VENEZUELA')].iloc[0].value_a)
+        S8_01_CA_LGBT = int(dfDiversidad.loc[(dfDiversidad['diversity_type'] == 'LGBTI') & (
+                dfDiversidad['country_of_origin'] == 'ECUADOR')].iloc[0].value_a)
 
         commentary = osmosys.osmosys.getCommentary(year=year, month=month, orgOsmosys=orgAcron,
                                                    indicatorsIdsOmosys=indicatorIdsOsmosys).iloc[
             0].value_a
 
-        subform = model.modelAI.SubFormED5_01(
+        subform = model.modelAI.SubFormS8_01(
             mes=month_number,
             colltmgkykvhxgij6=indicatorIdAI,
             rmrp='Si',
             covid='No',
             poblacion_meta=poblacion_meta,
-            modalidad_impl='cb53mqwkykwwihkk8',
-            ED5_01_RM_NA=ED5_01_RM_NA,
-            ED5_01_RM_NN=ED5_01_RM_NN,
-            ED5_01_RM_DS=ED5_01_RM_DS,
-            ED5_01_CA_NA=ED5_01_CA_NA,
-            ED5_01_CA_NN=ED5_01_CA_NN,
-            ED5_01_CA_DS=ED5_01_CA_DS,
-            ED5_01_CUAL=commentary
+            S8_01_RM_NA=S8_01_RM_NA,
+            S8_01_RM_NN=S8_01_RM_NN,
+            S8_01_RM_MM=S8_01_RM_MM,
+            S8_01_RM_HH=S8_01_RM_HH,
+            S8_01_RM_OTR=S8_01_RM_OTR,
+            S8_01_RM_LGBT=S8_01_RM_LGBT,
+            S8_01_CA_NA=S8_01_CA_NA,
+            S8_01_CA_NN=S8_01_CA_NN,
+            S8_01_CA_MM=S8_01_CA_MM,
+            S8_01_CA_HH=S8_01_CA_HH,
+            S8_01_CA_OTR=S8_01_CA_OTR,
+            S8_01_CA_LGBT=S8_01_CA_LGBT,
+            S8_01_CUAL=commentary
         )
         newId = generate_id()
         newIds.append(newId)

@@ -158,7 +158,7 @@ def getRefValues(year, month, orgOsmosys, indicatorsIdsOmosys, cantonCode):
     queryFormated = query.replace('xxxYear', str(year)).replace('xxxMonth', month).replace('xxxOrg',
                                                                                            orgOsmosys).replace(
         'XXXindicatorIds', indicatorsIdsOmosysStr).replace('XXXcantonCode', cantonCode)
-    print(queryFormated)
+    ## print(queryFormated)
 
     dbConnection = getOsmosysConnection()
     dataFrame = pds.read_sql(queryFormated, dbConnection)
