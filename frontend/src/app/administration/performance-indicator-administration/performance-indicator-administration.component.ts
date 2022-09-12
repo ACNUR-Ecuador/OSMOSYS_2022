@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {
     Area,
     CustomDissagregation,
@@ -45,6 +45,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     measureTypes: SelectItem[];
     frecuencies: SelectItem[];
     areaTypes: SelectItem[];
+    unitTypes: SelectItem[];
     totalIndicatorCalculationTypes: SelectItem[];
     statements: Statement[];
     filteredStatements: { labelItem: string, valueItem: Statement }[];
@@ -77,7 +78,8 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         private markerService: MarkerService,
         private filterService: FilterService,
         private filterUtilsService: FilterUtilsService,
-        private periodService: PeriodService
+        private periodService: PeriodService,
+        private ref: ChangeDetectorRef
     ) {
     }
 
@@ -120,6 +122,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             {field: 'compassIndicator', header: 'Indicador Compass', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
             {field: 'isMonitored', header: 'Monitoreado', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
             {field: 'isCalculated', header: 'Calculado', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
+            {field: 'unit', header: 'Unidad', type: ColumnDataType.text, pipeRef: this.enumValuesToLabelPipe, arg1: EnumsType.UnitType},
             {
                 field: 'totalIndicatorCalculationType',
                 header: 'Tipo de Cálculo Total',
@@ -143,7 +146,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             }
         ];
 
-        const hiddenColumns: string[] = ['id', 'guideDirectImplementation', 'markers', 'customDissagregationAssignationToIndicators', 'dissagregationsAssignationToIndicator'];
+        const hiddenColumns: string[] = ['id', 'guideDirectImplementation', 'markers', 'customDissagregationAssignationToIndicators', 'dissagregationsAssignationToIndicator', 'unit'];
         this._selectedColumns = this.cols.filter(value => !hiddenColumns.includes(value.field));
 
         this.formItem = this.fb.group({
@@ -167,7 +170,8 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             dissagregationsAssignationToIndicator: new FormControl(''),
             customDissagregations: new FormControl(''),
             customDissagregationAssignationToIndicators: new FormControl(''),
-            blockAfterUpdate: new FormControl('')
+            blockAfterUpdate: new FormControl(''),
+            unit: new FormControl(''),
         });
 
 
@@ -185,6 +189,9 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         });
         this.enumsService.getByType(EnumsType.AreaType).subscribe(value => {
             this.areaTypes = value;
+        });
+        this.enumsService.getByType(EnumsType.UnitType).subscribe(value => {
+            this.unitTypes = value;
         });
         this.enumsService.getByType(EnumsType.TotalIndicatorCalculationType).subscribe(value => {
             this.totalIndicatorCalculationTypes = value;
@@ -268,6 +275,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
 
     createItem() {
+
         this.messageService.clear();
         this.utilsService.resetForm(this.formItem);
         this.submitted = false;
@@ -275,11 +283,12 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.filteredStatements = [];
         const newItem = new Indicator();
         this.formItem.patchValue(newItem);
-        this.formItem.get('statement').disable();
-        this.formItem.get('statement').disable();
+        this.setDefaultIndicatorValues();
+        this.formItem.get('statement').enable();
         this.formItem.get('dissagregations').patchValue([]);
         this.formItem.get('customDissagregations').patchValue([]);
         this.loadMarkers([]);
+        this.ref.detectChanges();
     }
 
     editItem(indicator: Indicator) {
@@ -306,6 +315,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             });
         this.formItem.get('customDissagregations').patchValue(customDissagregations);
         this.loadMarkers(indicator.markers);
+        this.ref.detectChanges();
     }
 
 
@@ -332,11 +342,10 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             dissagregationsAssignationToIndicator,
             customDissagregations,
             customDissagregationAssignationToIndicators,
-            blockAfterUpdate
+            blockAfterUpdate,
+            unit
         }
             = this.formItem.value;
-        // todo
-        const unit = null;
         const indicator: Indicator = {
             id,
             code,
@@ -461,7 +470,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             });
         }
 
-        // todo check al cerrar actualizacion pantalla
+        this.ref.detectChanges();
     }
 
     dissagregationsItemsValuesToObject(valueS: string): { dissagregationType: string, period: Period } {
@@ -541,8 +550,14 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     }
 
     onChangeArea($event: any) {
-        const areaType = $event.value as AreaType;
+        let areaType;
+        if (typeof $event === 'string') {
+            areaType = $event;
+        } else {
+            areaType = $event.value;
+        }
         this.filterStatementsByAreaType(areaType, true);
+        this.ref.detectChanges();
     }
 
     filterStatementsByAreaType(areaType: AreaType, clearStatements: boolean) {
@@ -570,5 +585,43 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         } else {
             return dissa.label;
         }
+    }
+
+    setDefaultIndicatorValues() {
+        const areaType = this.areaTypes.filter(value => value.value === 'PRODUCTO').pop().value;
+        this.formItem.get('areaType').patchValue(
+            areaType
+        );
+        this.onChangeArea(areaType);
+        const indicatorType = this.indicatorTypes.filter(value => value.value === 'OPERACION').pop().value;
+        this.formItem.get('indicatorType').patchValue(
+            indicatorType
+        );
+
+        const measureType = this.measureTypes.filter(value => value.value === 'NUMERO').pop().value;
+        this.formItem.get('measureType').patchValue(
+            measureType
+        );
+        const totalIndicatorCalculationType = this.totalIndicatorCalculationTypes.filter(value => value.value === 'SUMA').pop().value;
+        this.formItem.get('totalIndicatorCalculationType').patchValue(
+            totalIndicatorCalculationType
+        );
+        const frecuencyType = this.frecuencies.filter(value => value.value === 'MENSUAL').pop().value;
+        this.formItem.get('frecuency').patchValue(
+            frecuencyType
+        );
+        const isCompass = false;
+        this.formItem.get('compassIndicator').patchValue(
+            isCompass
+        );
+        const isMonitored = false;
+        this.formItem.get('isMonitored').patchValue(
+            isMonitored
+        );
+        const isCalculated = false;
+        this.formItem.get('isCalculated').patchValue(
+            isCalculated
+        );
+        this.ref.detectChanges();
     }
 }

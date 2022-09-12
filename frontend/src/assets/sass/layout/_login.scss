@@ -95,13 +95,13 @@
             }
 
             .image-footer {
-                background-color: rgba(255, 255, 255, 0.6);
+                background-color: rgba(255, 255, 255, 0.8);
                 @include flex();
                 @include flex-align-center();
 
                 > p {
-                    font-size: large;
-                    font-weight: 1200;
+                    font-size: xx-large;
+                    font-weight: 2500;
                     margin: 0;
                     color: #000000;
                     margin-right: 20px;

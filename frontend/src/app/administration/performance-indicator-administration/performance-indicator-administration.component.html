@@ -111,7 +111,7 @@
 
                 <ng-template pTemplate="content">
                     <div class="p-fluid p-formgrid p-grid">
-                        <div class="p-field p-col-12 p-md-3">
+                        <!--<div class="p-field p-col-12 p-md-3">
                             <label for="areaTypeI">Tipo de Área</label>
 
                             <p-dropdown id="areaTypeI"
@@ -142,7 +142,7 @@
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('indicatorType',formItem)">{{utilsService.getErrorMessageForm('indicatorType', formItem)}}</small>
                         </div>
-
+-->
                         <div class="p-field p-col-12 p-md-5">
                             <label for="statementI">Declaración</label>
                             <p-dropdown id="statementI"
@@ -151,7 +151,7 @@
                                         appendTo="body"
                                         optionLabel="labelItem"
                                         optionValue="valueItem"
-                                        emptyMessage="Selecciona un tipo de área"
+                                        emptyMessage="Selecciona una declaración"
                                         filter="true"
                                         dataKey="id"
 
@@ -234,20 +234,20 @@
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('frecuency',formItem)">{{utilsService.getErrorMessageForm('frecuency', formItem)}}</small>
                         </div>
+                        <!--
+                                                <div class="p-field p-col-12 p-md-2">
+                                                    <label for="compassIndicatorI">Es indicador Compass</label>
 
-                        <div class="p-field p-col-12 p-md-2">
-                            <label for="compassIndicatorI">Es indicador Compass</label>
+                                                    <p-toggleButton id="compassIndicatorI"
+                                                                    formControlName="compassIndicator"
+                                                                    onLabel="Compass" offLabel="No Compass"
+                                                                    onIcon="pi pi-check" offIcon="pi pi-times"
+                                                    >
+                                                    </p-toggleButton>
 
-                            <p-toggleButton id="compassIndicatorI"
-                                            formControlName="compassIndicator"
-                                            onLabel="Compass" offLabel="No Compass"
-                                            onIcon="pi pi-check" offIcon="pi pi-times"
-                            >
-                            </p-toggleButton>
-
-                            <small class="p-error"
-                                   *ngIf="utilsService.showErrorForm('compassIndicator',formItem)">{{utilsService.getErrorMessageForm('compassIndicator', formItem)}}</small>
-                        </div>
+                                                    <small class="p-error"
+                                                           *ngIf="utilsService.showErrorForm('compassIndicator',formItem)">{{utilsService.getErrorMessageForm('compassIndicator', formItem)}}</small>
+                                                </div>-->
                         <div class="p-field p-col-12 p-md-2">
                             <label for="blockAfterUpdateI">Bloqueo automático</label>
 
@@ -263,32 +263,48 @@
                                    *ngIf="utilsService.showErrorForm('isMonitored',formItem)">{{utilsService.getErrorMessageForm('isMonitored', formItem)}}</small>
                         </div>
                         <div class="p-field p-col-12 p-md-2">
-                            <label for="isMonitoredI">Monitoreo</label>
+                            <label for="unitI">Unidad de Medida</label>
 
-                            <p-toggleButton id="isMonitoredI"
-                                            formControlName="isMonitored"
-                                            onLabel="Monitoreado" offLabel="No Monitoreado"
-                                            onIcon="pi pi-check" offIcon="pi pi-times"
+                            <p-dropdown id="unitI"
+                                        formControlName="unit"
+                                        [options]="unitTypes"
+                                        placeholder="Selecciona..."
+                                        filter="true"
+                                        appendTo="body"
+                                        required="true"
                             >
-                            </p-toggleButton>
+                            </p-dropdown>
 
                             <small class="p-error"
-                                   *ngIf="utilsService.showErrorForm('isMonitored',formItem)">{{utilsService.getErrorMessageForm('isMonitored', formItem)}}</small>
+                                   *ngIf="utilsService.showErrorForm('unit',formItem)">{{utilsService.getErrorMessageForm('unit', formItem)}}</small>
                         </div>
+                        <!-- <div class="p-field p-col-12 p-md-2">
+                             <label for="isMonitoredI">Monitoreo</label>
 
-                        <div class="p-field p-col-12 p-md-2">
-                            <label for="isCalculatedI">Calculado</label>
+                             <p-toggleButton id="isMonitoredI"
+                                             formControlName="isMonitored"
+                                             onLabel="Monitoreado" offLabel="No Monitoreado"
+                                             onIcon="pi pi-check" offIcon="pi pi-times"
+                             >
+                             </p-toggleButton>
 
-                            <p-toggleButton id="isCalculatedI"
-                                            formControlName="isCalculated"
-                                            onLabel="Calculado" offLabel="No Calculado"
-                                            onIcon="pi pi-check" offIcon="pi pi-times"
-                            >
-                            </p-toggleButton>
+                             <small class="p-error"
+                                    *ngIf="utilsService.showErrorForm('isMonitored',formItem)">{{utilsService.getErrorMessageForm('isMonitored', formItem)}}</small>
+                         </div>
+ -->
+                        <!--                        <div class="p-field p-col-12 p-md-2">
+                                                    <label for="isCalculatedI">Calculado</label>
 
-                            <small class="p-error"
-                                   *ngIf="utilsService.showErrorForm('isCalculated',formItem)">{{utilsService.getErrorMessageForm('isCalculated', formItem)}}</small>
-                        </div>
+                                                    <p-toggleButton id="isCalculatedI"
+                                                                    formControlName="isCalculated"
+                                                                    onLabel="Calculado" offLabel="No Calculado"
+                                                                    onIcon="pi pi-check" offIcon="pi pi-times"
+                                                    >
+                                                    </p-toggleButton>
+
+                                                    <small class="p-error"
+                                                           *ngIf="utilsService.showErrorForm('isCalculated',formItem)">{{utilsService.getErrorMessageForm('isCalculated', formItem)}}</small>
+                                                </div>-->
                         <div class="p-field p-col-12 p-md-2">
                             <label for="stateI">Estado</label>
 
