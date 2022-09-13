@@ -2287,7 +2287,7 @@ class SubFormS8_01:
         return self.__str__()
 
 
-class SubFormSWA1_04:
+class SubFormWA1_04:
     def __init__(self,
                  mes,
                  colltmgkykvhxgij6,
@@ -2311,20 +2311,18 @@ class SubFormSWA1_04:
         self.colltmgkykvhxgij6 = colltmgkykvhxgij6
         self.rmrp = rmrp
         self.covid = covid
+        self.wash_individual = wash_individual
         self.poblacion_meta = poblacion_meta
-        self.S8_01_RM_NA = S8_01_RM_NA
-        self.S8_01_RM_NN = S8_01_RM_NN
-        self.S8_01_RM_MM = S8_01_RM_MM
-        self.S8_01_RM_HH = S8_01_RM_HH
-        self.S8_01_RM_OTR = S8_01_RM_OTR
-        self.S8_01_RM_LGBT = S8_01_RM_LGBT
-        self.S8_01_CA_NA = S8_01_CA_NA
-        self.S8_01_CA_NN = S8_01_CA_NN
-        self.S8_01_CA_MM = S8_01_CA_MM
-        self.S8_01_CA_HH = S8_01_CA_HH
-        self.S8_01_CA_OTR = S8_01_CA_OTR
-        self.S8_01_CA_LGBT = S8_01_CA_LGBT
-        self.S8_01_CUAL = S8_01_CUAL
+        self.modalidad_impl = modalidad_impl
+        self.WA1_04_RM_NA = WA1_04_RM_NA
+        self.WA1_04_RM_NN = WA1_04_RM_NN
+        self.WA1_04_RM_MM = WA1_04_RM_MM
+        self.WA1_04_RM_HH = WA1_04_RM_HH
+        self.WA1_04_CA_NA = WA1_04_CA_NA
+        self.WA1_04_CA_NN = WA1_04_CA_NN
+        self.WA1_04_CA_MM = WA1_04_CA_MM
+        self.WA1_04_CA_HH = WA1_04_CA_HH
+        self.WA1_04_CUAL = WA1_04_CUAL
 
     def __str__(self):
         to_return = {
@@ -2332,20 +2330,18 @@ class SubFormSWA1_04:
             "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
             "rmrp": self.rmrp,
             "covid": self.covid,
+            "wash_individual": self.wash_individual,
             "poblacion_meta": self.poblacion_meta,
-            "S8_01_RM_NA": self.S8_01_RM_NA,
-            "S8_01_RM_NN": self.S8_01_RM_NN,
-            "S8_01_RM_MM": self.S8_01_RM_MM,
-            "S8_01_RM_HH": self.S8_01_RM_HH,
-            "S8_01_RM_OTR": self.S8_01_RM_OTR,
-            "S8_01_RM_LGBT": self.S8_01_RM_LGBT,
-            "S8_01_CA_NA": self.S8_01_CA_NA,
-            "S8_01_CA_NN": self.S8_01_CA_NN,
-            "S8_01_CA_MM": self.S8_01_CA_MM,
-            "S8_01_CA_HH": self.S8_01_CA_HH,
-            "S8_01_CA_OTR": self.S8_01_CA_OTR,
-            "S8_01_CA_LGBT": self.S8_01_CA_LGBT,
-            "S8_01_CUAL": self.S8_01_CUAL
+            "modalidad_impl": self.modalidad_impl,
+            "WA1_04_RM_NA": self.WA1_04_RM_NA,
+            "WA1_04_RM_NN": self.WA1_04_RM_NN,
+            "WA1_04_RM_MM": self.WA1_04_RM_MM,
+            "WA1_04_RM_HH": self.WA1_04_RM_HH,
+            "WA1_04_CA_NA": self.WA1_04_CA_NA,
+            "WA1_04_CA_NN": self.WA1_04_CA_NN,
+            "WA1_04_CA_MM": self.WA1_04_CA_MM,
+            "WA1_04_CA_HH": self.WA1_04_CA_HH,
+            "WA1_04_CUAL": self.WA1_04_CUAL
         }
         return to_return
 
