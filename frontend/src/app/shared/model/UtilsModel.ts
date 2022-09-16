@@ -100,6 +100,7 @@ export enum AreaType {
     APOYO = 'APOYO',
 }
 
+// todo volar
 export enum MonthType {
     ENERO = 'Enero',
     FEBRERO = 'Febrero',

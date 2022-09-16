@@ -80,6 +80,7 @@ export class EnumsService {
         }
     }
 
+    // todo
     monthTypeToNumber(month: MonthType): number {
         const monthV = MonthType[month] as MonthType;
         switch (monthV) {
@@ -122,6 +123,7 @@ export class EnumsService {
         }
     }
 
+    // todo pasa a order
     numberToMonthType(monthNumber: number): MonthType {
         switch (monthNumber) {
             case 1: {

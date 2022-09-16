@@ -75,6 +75,7 @@ export class UtilsService {
         for (rowIndex; rowIndex <= worksheet.rowCount; rowIndex++) {
             worksheet.getRow(rowIndex).alignment = {vertical: 'top', horizontal: 'left', wrapText: true};
         }
+        // noinspection JSVoidFunctionReturnValueUsed
         workbook.xlsx.writeBuffer().then(excelData => {
 
             const blob = new Blob([excelData], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
@@ -584,6 +585,53 @@ export class UtilsService {
         }
     }
 
+    setDimentionsDissagregations(
+        monthValuesMap: Map<string, IndicatorValue[]>): Map<number, DissagregationType[]> {
+
+        const oneDimentionDissagregations: DissagregationType[] = [];
+        const twoDimentionDissagregations: DissagregationType[] = [];
+        const threeDimentionDissagregations: DissagregationType[] = [];
+        const fourDimentionDissagregations: DissagregationType[] = [];
+        const noDimentionDissagregations: DissagregationType[] = [];
+
+        const totalOneDimentions = this.getOneDimentionsDissagregationTypes();
+        const totalTwoDimentions = this.getTwoDimentionsDissagregationTypes();
+        const totalThreeDimentions = this.getThreeDimentionsDissagregationTypes();
+        const totalFourDimentions = this.getFourDimentionsDissagregationTypes();
+        const totalNoDimentions = this.getNoDimentionsDissagregationTypes();
+        totalOneDimentions.forEach(key => {
+            if (monthValuesMap.get(key) !== null && monthValuesMap.get(key).length > 0) {
+                oneDimentionDissagregations.push(DissagregationType[key]);
+            }
+        });
+        totalTwoDimentions.forEach(key => {
+            if (monthValuesMap.get(key) !== null && monthValuesMap.get(key).length > 0) {
+                twoDimentionDissagregations.push(DissagregationType[key]);
+            }
+        });
+        totalThreeDimentions.forEach(key => {
+            if (monthValuesMap.get(key) !== null && monthValuesMap.get(key).length > 0) {
+                threeDimentionDissagregations.push(DissagregationType[key]);
+            }
+        });
+        totalFourDimentions.forEach(key => {
+            if (monthValuesMap.get(key) !== null && monthValuesMap.get(key).length > 0) {
+                fourDimentionDissagregations.push(DissagregationType[key]);
+            }
+        });
+        totalNoDimentions.forEach(key => {
+            if (monthValuesMap.get(key) !== null && monthValuesMap.get(key).length > 0) {
+                noDimentionDissagregations.push(DissagregationType[key]);
+            }
+        });
+        const results: Map < number, DissagregationType[] > = new Map<number, DissagregationType[]>();
+        results.set(0, noDimentionDissagregations);
+        results.set(1, oneDimentionDissagregations);
+        results.set(2, twoDimentionDissagregations);
+        results.set(3, threeDimentionDissagregations);
+        results.set(4, fourDimentionDissagregations);
+        return results;
+    }
 
     getIndicatorValueByDissagregationType(dissagregationType: DissagregationType, value: IndicatorValue): string | Canton {
         const dissagregationTypeE = DissagregationType[dissagregationType];
