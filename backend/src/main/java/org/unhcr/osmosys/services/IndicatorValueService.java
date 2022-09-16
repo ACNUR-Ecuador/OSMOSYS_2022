@@ -597,8 +597,13 @@ public class IndicatorValueService {
                             .forEach(indicatorValue -> indicatorValue.setState(State.INACTIVO));
                 }
                 // activo o desactivo segun estado de desagregacion
-                indicatorValuesDissagregation
-                        .forEach(indicatorValue -> indicatorValue.setState(dissagregationState));
+                /*indicatorValuesDissagregation
+                        .forEach(indicatorValue -> indicatorValue.setState(dissagregationState));*/
+
+                if(dissagregationState.equals(State.INACTIVO)){
+                    indicatorValuesDissagregation
+                            .forEach(indicatorValue -> indicatorValue.setState(dissagregationState));
+                }
             }
 
         }

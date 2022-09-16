@@ -994,7 +994,7 @@ public class IndicatorExecutionService {
 
     public Long updateDirectImplementationIndicatorExecutionLocationAssigment(Long indicatorExecutionId, List<CantonWeb> cantonesWeb) throws GeneralAppException {
         if (indicatorExecutionId == null) {
-            throw new GeneralAppException("indicador id es dato obligatorio", Response.Status.BAD_REQUEST);
+            throw new GeneralAppException("indicador execution id es dato obligatorio", Response.Status.BAD_REQUEST);
         }
         if (CollectionUtils.isEmpty(cantonesWeb)) {
             throw new GeneralAppException("Al menos debe haber un cantón", Response.Status.BAD_REQUEST);
