@@ -89,8 +89,17 @@ public class TestEndpoint {
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
     public String test2() throws GeneralAppException {
-        this.importService.catalogImport();
-        return "ya";
+        // this.importService.catalogImport();
+        LOGGER.info("inicio");
+        try {
+            Thread.sleep(120000);
+            LOGGER.info("inicio");
+            return "ya";
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return "fallo";
+        }
+
     }
 
     @Path("sendAlertReviewToDirectImplementation")

@@ -3,9 +3,12 @@ package org.unhcr.osmosys.daos;
 import org.unhcr.osmosys.model.cubeDTOs.*;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.math.BigInteger;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
@@ -16,6 +19,11 @@ public class CubeDao {
 
     private static final String factTable = "SELECT " +
             "* " +
+            "from  " +
+            "cube.fact_table f";
+
+    private static final String factTableCount = "SELECT " +
+            " count(*) " +
             "from  " +
             "cube.fact_table f";
     private static final String monthQuarterYearTable = "SELECT " +
@@ -120,6 +128,26 @@ public class CubeDao {
         Query q = this.entityManager.createNativeQuery(sql, "FactDTOMapping");
         q.setParameter("year", year);
         return q.getResultList();
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public List<FactDTO> getFactTableByPeriodYearPaginated(Integer year, int pageSize, int pageNumber) {
+        //this.entityManager.getTransaction().begin();
+        String sql = CubeDao.factTable + " where f.period_year =:year order by f.id" ;
+        Query q = this.entityManager.createNativeQuery(sql, "FactDTOMapping");
+        q.setFirstResult((pageNumber) * pageSize);
+        q.setMaxResults(pageSize);
+        q.setParameter("year", year);
+        //this.entityManager.getTransaction().commit();
+        return q.getResultList();
+    }
+    public long getFactTableCount(Integer year) {
+
+        String sql = CubeDao.factTableCount + " where f.period_year =:year" ;
+        Query q = this.entityManager.createNativeQuery(sql);
+        q.setParameter("year", year);
+        BigInteger r= (BigInteger) q.getSingleResult();
+        return r.longValue();
     }
 
     public List<MonthQuarterYearDTO> getMonthQuarterYearTable() {

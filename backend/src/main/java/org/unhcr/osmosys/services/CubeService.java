@@ -17,9 +17,34 @@ public class CubeService {
 
     public List<FactDTO> getFactTableByPeriodYear(Integer periodYear) {
         long lStartTime = System.nanoTime();
+        LOGGER.info("start getFactTableByPeriodYear dao: ");
         List<FactDTO> r = this.cubeDao.getFactTableByPeriodYear(periodYear);
+        LOGGER.info("end getFactTableByPeriodYear dao: ");
         long lEndTime = System.nanoTime();
         LOGGER.info("Elapsed time in seconds getFactTableByPeriodYear dao: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
+    }
+
+    public List<FactDTO> getFactTablePaginatedByPeriodYear(Integer periodYear, int pageSize) {
+        List<FactDTO> r = new ArrayList<>();
+        LOGGER.info("start getFactTableByPeriodYear count: ");
+        long countResults = this.cubeDao.getFactTableCount(periodYear);
+        int lastPageNumber = (int) (Math.ceil(countResults / pageSize));
+        LOGGER.info("start getFactTableByPeriodYear count: " + countResults);
+        LOGGER.info("start getFactTableByPeriodYear pages: " + lastPageNumber);
+        long lStartTime = System.nanoTime();
+        LOGGER.info("start getFactTableByPeriodYear dao: ");
+        for (int i = 0; i<=lastPageNumber; i++){
+
+            LOGGER.info("pagen: "+i);
+            List<FactDTO> rp = this.cubeDao.getFactTableByPeriodYearPaginated(periodYear, pageSize, i);
+            r.addAll(rp);
+        }
+
+        LOGGER.info("end getFactTableByPeriodYear dao: ");
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds getFactTableByPeriodYear dao: " + (lEndTime - lStartTime) / 1000000000);
+        LOGGER.info("total result: " +r.size());
         return r;
     }
 
@@ -42,6 +67,7 @@ public class CubeService {
     public List<AgePrimaryEducationTypeDTO> getAgePrimaryEducationTypeTable() {
         return this.cubeDao.getAgePrimaryEducationTypeTable();
     }
+
     public List<AgeTertiaryEducationTypeDTO> getAgeTertiaryEducationTypeTable() {
         return this.cubeDao.getAgeTertiaryEducationTypeTable();
     }
@@ -61,6 +87,7 @@ public class CubeService {
     public List<CantonesProvinciasDTO> getCantonesProvinciasTable() {
         return this.cubeDao.getCantonesProvinciasTable();
     }
+
     public List<CantonesProvinciasCentroidsDTO> getCantonesProvinciasCentroidsTable() {
         return this.cubeDao.getCantonesProvinciasCentroidsTable();
     }
@@ -72,33 +99,42 @@ public class CubeService {
     public List<UserDTO> getUserTable() {
         return this.cubeDao.getUserTable();
     }
+
     public List<PeriodDTO> getPeriodTable() {
         return this.cubeDao.getPeriodTable();
     }
+
     public List<ProjectDTO> getProjectTable() {
         return this.cubeDao.getProjectTable();
     }
+
     public List<OrganizationDTO> getOrganizationTable() {
         return this.cubeDao.getOrganizationTable();
     }
+
     public List<OfficeDTO> getOfficeTable() {
         return this.cubeDao.getOfficeTable();
     }
+
     public List<ReportStateDTO> getReportStateTable() {
         return this.cubeDao.getReportStateTable();
     }
+
     public List<StatementDTO> getStatementTable() {
         return this.cubeDao.getStatementTable();
     }
+
     public List<MonthSourceDTO> getMonthSouceTable(Integer year) {
         return this.cubeDao.getMonthSouceTable(year);
     }
+
     public List<MonthCualitativeDataDTO> getMonthCualitativeDataTable(Integer year) {
         return this.cubeDao.getMonthCualitativeDataTable(year);
     }
+
     public List<IndicatorDTO> getIndicatorsTable() {
         List<IndicatorDTO> indicators = new ArrayList<>();
-        IndicatorDTO generalIndicator = new IndicatorDTO(0L,"000000","# total de beneficiarios",null,"MENSUAL",null);
+        IndicatorDTO generalIndicator = new IndicatorDTO(0L, "000000", "# total de beneficiarios", null, "MENSUAL", null);
         indicators.add(generalIndicator);
         indicators.addAll(this.cubeDao.getIndicatorsTable());
         return indicators;
@@ -107,6 +143,7 @@ public class CubeService {
     public List<IndicatorExecutionDissagregationSimpleDTO> getIndicatorExecutionsDissagregationSimpleTable(Integer year) {
         return this.cubeDao.getIndicatorExecutionsDissagregationSimpleTable(year);
     }
+
     public List<ImplementerDTO> getImplementersTable() {
         return this.cubeDao.getImplementersTable();
     }
