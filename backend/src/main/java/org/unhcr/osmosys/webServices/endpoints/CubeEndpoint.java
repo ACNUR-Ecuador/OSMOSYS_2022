@@ -11,8 +11,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 @Path("/cube")
 @RequestScoped
@@ -21,19 +27,88 @@ public class CubeEndpoint {
     @Inject
     CubeService cubeService;
     private static final Logger LOGGER = Logger.getLogger(CubeEndpoint.class);
+    private LinkedBlockingQueue<AsyncResponse> responses = new LinkedBlockingQueue<>();
+
+    /*@Path("/factTable/{year}")
+    @GET
+    //@Compress
+    @BasicSecured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<FactDTO> getFactTableByPeriodYear(@PathParam("year") Integer year) throws ExecutionException, InterruptedException {
+        long lStartTime = System.nanoTime();
+        List<FactDTO> result = this.cubeService.getFactTablePaginatedByPeriodYearAsync(2022,100000);
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds factTable: " + (lEndTime - lStartTime) / 1000000000);
+        System.gc();
+        return result;
+    }*/
 
     @Path("/factTable/{year}")
     @GET
     //@Compress
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
-    public List<FactDTO> getFactTableByPeriodYear(@PathParam("year") Integer year) {
+    public void getFactTableByPeriodYear(@Suspended final AsyncResponse asyncResponse, @PathParam("year") Integer year) throws ExecutionException, InterruptedException {
         long lStartTime = System.nanoTime();
-        List<FactDTO> r = this.cubeService.getFactTablePaginatedByPeriodYear(year, 100000);
+
+        asyncResponse.setTimeout(1, TimeUnit.SECONDS);
+        asyncResponse.setTimeoutHandler((response) -> {
+            responses.remove(response);
+            LOGGER.info("inicio Fact");
+            List<FactDTO> r = null;
+            try {
+                r = this.cubeService.getFactTablePaginatedByPeriodYearAsync(2022, 100000);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            LOGGER.info("fin: " + r.size());
+
+            response.resume(Response.status(Response.Status.OK).entity(r).build());
+            long lEndTime = System.nanoTime();
+            LOGGER.info("Elapsed time in seconds factTable: " + (lEndTime - lStartTime) / 1000000000);
+            System.gc();
+        });
+
+        responses.put(asyncResponse);
+        LOGGER.info("inicio async fact");
+
+
+    }
+
+    @Path("/factTablePage/{year}/{pageSize}/{page}")
+    @GET
+    //@Compress
+    @BasicSecured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<FactDTO> getFactTablePageByPeriodYear(
+            @PathParam("year") Integer year,
+            @PathParam("pageSize") Integer pageSize,
+            @PathParam("page") Integer page
+    ) throws ExecutionException, InterruptedException {
+        long lStartTime = System.nanoTime();
+        List<FactDTO> result = this.cubeService.getFactTablePageByPeriodYear(year, pageSize, page);
         long lEndTime = System.nanoTime();
         LOGGER.info("Elapsed time in seconds factTable: " + (lEndTime - lStartTime) / 1000000000);
         System.gc();
-        return r;
+        return result;
+    }
+
+    @Path("/factTablePageCount/{year}")
+    @GET
+    //@Compress
+    @BasicSecured
+    @Produces(MediaType.APPLICATION_JSON)
+    public Long getFactTableCountByPeriodYear(
+            @PathParam("year") Integer year
+    ) throws ExecutionException, InterruptedException {
+        long lStartTime = System.nanoTime();
+        Long result = this.cubeService.getFactTableCountByPeriodYear(year);
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds factTable: " + (lEndTime - lStartTime) / 1000000000);
+        System.gc();
+        return result;
     }
 
     @Path("/monthQuarterYearTable")
@@ -312,6 +387,7 @@ public class CubeEndpoint {
         LOGGER.info("Elapsed time in seconds indicatorExecutionsDissagregationSimpleTable: " + (lEndTime - lStartTime) / 1000000000);
         return r;
     }
+
     @Path("/implementersTable")
     @GET
     // @BasicSecured

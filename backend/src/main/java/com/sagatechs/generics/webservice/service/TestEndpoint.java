@@ -85,21 +85,25 @@ public class TestEndpoint {
 
     @Inject
     ImportService importService;
+
+    @Inject
+    TestService testService;
     @Path("test")
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
     public String test2() throws GeneralAppException {
         // this.importService.catalogImport();
         LOGGER.info("inicio");
-        try {
+       /* try {
             Thread.sleep(120000);
             LOGGER.info("inicio");
             return "ya";
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return "fallo";
-        }
+        }*/
 
+        return "ya";
     }
 
     @Path("sendAlertReviewToDirectImplementation")

@@ -4,16 +4,23 @@ import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.CubeDao;
 import org.unhcr.osmosys.model.cubeDTOs.*;
 
+import javax.ejb.AsyncResult;
+import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @Stateless
 public class CubeService {
     private static final Logger LOGGER = Logger.getLogger(CubeService.class);
     @Inject
     CubeDao cubeDao;
+
+    @Inject
+    CubeServiceAsync cubeServiceAsync;
 
     public List<FactDTO> getFactTableByPeriodYear(Integer periodYear) {
         long lStartTime = System.nanoTime();
@@ -34,9 +41,9 @@ public class CubeService {
         LOGGER.info("start getFactTableByPeriodYear pages: " + lastPageNumber);
         long lStartTime = System.nanoTime();
         LOGGER.info("start getFactTableByPeriodYear dao: ");
-        for (int i = 0; i<=lastPageNumber; i++){
+        for (int i = 0; i <= lastPageNumber; i++) {
 
-            LOGGER.info("pagen: "+i);
+            LOGGER.info("pagen: " + i);
             List<FactDTO> rp = this.cubeDao.getFactTableByPeriodYearPaginated(periodYear, pageSize, i);
             r.addAll(rp);
         }
@@ -44,9 +51,81 @@ public class CubeService {
         LOGGER.info("end getFactTableByPeriodYear dao: ");
         long lEndTime = System.nanoTime();
         LOGGER.info("Elapsed time in seconds getFactTableByPeriodYear dao: " + (lEndTime - lStartTime) / 1000000000);
-        LOGGER.info("total result: " +r.size());
+        LOGGER.info("total result: " + r.size());
         return r;
     }
+
+    public List<FactDTO> getFactTablePageByPeriodYear(Integer periodYear, int pageSize, int page) {
+
+        LOGGER.info("page: " + page+" pageSize: "+pageSize );
+        long lStartTime = System.nanoTime();
+        List<FactDTO> rp = this.cubeDao.getFactTableByPeriodYearPaginated(periodYear, pageSize, page);
+
+        long lEndTime = System.nanoTime();
+        LOGGER.info("end getFactTablePAgeByPeriodYear dao: ");
+        LOGGER.info("Elapsed time in seconds getFactTablePageByPeriodYear dao: " + (lEndTime - lStartTime) / 1000000000);
+        LOGGER.info("total result: " + rp.size());
+        return rp;
+    }
+    public Long getFactTableCountByPeriodYear(Integer periodYear) {
+
+        LOGGER.info("count fact year: " + periodYear);
+        long lStartTime = System.nanoTime();
+        Long count = this.cubeDao.getFactTableCount(periodYear);
+
+        long lEndTime = System.nanoTime();
+        LOGGER.info("end getFactTablePAgeByPeriodYear dao: ");
+        LOGGER.info("Elapsed time in seconds getFactTablePageByPeriodYear dao: " + (lEndTime - lStartTime) / 1000000000);
+        LOGGER.info("total result: " + count);
+        return count;
+    }
+
+
+    public List<FactDTO> getFactTablePaginatedByPeriodYearAsync(Integer periodYear, int pageSize) throws ExecutionException, InterruptedException {
+        List<FactDTO> r = new ArrayList<>();
+
+        int threads = 4;
+        LOGGER.info("start getFactTableByPeriodYear count: ");
+        long countResults = this.cubeDao.getFactTableCount(periodYear);
+        int lastPageNumber = (int) (Math.ceil(countResults / pageSize));
+        LOGGER.info("start getFactTableByPeriodYear count: " + countResults);
+        LOGGER.info("start getFactTableByPeriodYear pages: " + lastPageNumber);
+        long lStartTime = System.nanoTime();
+        LOGGER.info("start getFactTableByPeriodYear dao: ");
+        for (int i = 0; i <= lastPageNumber; ) {
+
+            List<Future<List<FactDTO>>> thrds = new ArrayList<>();
+            int th = 0;
+            while (th < threads && i <= lastPageNumber) {
+                Future<List<FactDTO>> thf = this.cubeServiceAsync.getFactTablePageByPeriodYearAsync(periodYear, pageSize, i);
+                thrds.add(thf);
+                th++;
+                i++;
+            }
+
+            while (thrds.stream().filter(listFuture -> !listFuture.isDone()).count() == 0) {
+                try {
+                    Thread.sleep(100);
+                    // LOGGER.info("waiting: "+i);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            for (Future<List<FactDTO>> thrd : thrds) {
+                r.addAll(thrd.get());
+            }
+            LOGGER.info("end getFactTableByPeriodYear dao: " + r.size());
+
+        }
+
+        LOGGER.info("end getFactTableByPeriodYear dao: ");
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds getFactTableByPeriodYear dao: " + (lEndTime - lStartTime) / 1000000000);
+        LOGGER.info("total result: " + r.size());
+        return r;
+    }
+
 
     public List<MonthQuarterYearDTO> getMonthQuarterYearTable() {
         return this.cubeDao.getMonthQuarterYearTable();
