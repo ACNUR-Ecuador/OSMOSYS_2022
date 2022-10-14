@@ -4,6 +4,9 @@ import {EnumsService} from './shared/services/enums.service';
 import {environment} from '../environments/environment';
 import {VersionCheckService} from './shared/services/version-check.service';
 import {CheckBrowserService} from './shared/services/check-browser.service';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {filter} from 'rxjs/operators';
+import {GoogleAnalyticsService} from 'ngx-google-analytics';
 
 @Component({
     selector: 'app-root',
@@ -36,7 +39,29 @@ export class AppComponent implements OnInit {
                 private versionCheckService: VersionCheckService,
                 private checkBrowserService: CheckBrowserService,
                 private confirmationService: ConfirmationService,
+                private router: Router,
+                private activatedRoute: ActivatedRoute,
+                private $gaService: GoogleAnalyticsService
     ) {
+        this.router.events.pipe(
+            filter(event => event instanceof NavigationEnd)
+        ).subscribe((event: NavigationEnd) => {
+            console.log('1');
+            console.log(event);
+            $gaService.pageView(event.urlAfterRedirects);
+            /* gtag('event', 'page_view', {
+                 page_path: event.urlAfterRedirects
+             })*/
+        });
+        /** END : Code to Track Page View  using gtag.js */
+
+        // Add dynamic title for selected pages - Start
+        router.events.subscribe(event => {
+            if (event instanceof NavigationEnd) {
+                console.log('2');
+                console.log(event);
+            }
+        });
     }
 
     ngOnInit() {

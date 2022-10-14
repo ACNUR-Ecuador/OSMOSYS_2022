@@ -107,6 +107,7 @@ import {NgxPrintModule} from 'ngx-print';
 // import * as PlotlyJS from 'plotly.js-dist-min';
 // import { PlotlyModule } from 'angular-plotly.js';
 import {PlotlyViaCDNModule} from 'angular-plotly.js';
+import {NgxGoogleAnalyticsModule, NgxGoogleAnalyticsRouterModule} from 'ngx-google-analytics';
 // PlotlyModule.plotlyjs = PlotlyJS;
 
 registerLocaleData(es);
@@ -220,8 +221,10 @@ PlotlyViaCDNModule.setPlotlyBundle(null);
         HomeModule,
         AuthenticationModule,
         AdministrationModule,
-        PlotlyViaCDNModule
-
+        PlotlyViaCDNModule,
+        NgxGoogleAnalyticsModule.forRoot('G-NKFTNDPF37'),
+        NgxGoogleAnalyticsRouterModule,
+        NgxGoogleAnalyticsRouterModule
 
     ],
     declarations: [

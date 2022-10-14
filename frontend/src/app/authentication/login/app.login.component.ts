@@ -3,6 +3,7 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {MessageService} from 'primeng/api';
 import {UserService} from '../../shared/services/user.service';
+import {GoogleAnalyticsService} from 'ngx-google-analytics';
 
 @Component({
     selector: 'app-login',
@@ -19,7 +20,8 @@ export class AppLoginComponent {
                 private fb: FormBuilder,
                 private userService: UserService,
                 private messageService: MessageService,
-                private cd: ChangeDetectorRef) {
+                private cd: ChangeDetectorRef,
+                private $gaService: GoogleAnalyticsService) {
     }
 
     login() {
@@ -28,7 +30,8 @@ export class AppLoginComponent {
         if (this.loginForm.invalid) {
             return;
         } else {
-            this.userService.login(this.loginForm.value).subscribe(value => {
+            this.userService.login(this.loginForm.value).subscribe(() => {
+                this.$gaService.event('login_success', 'login_success', this.loginForm.get('username').value);
                 this.router.navigateByUrl('/');
             }, error => {
                 if (error.status === 0) {
@@ -37,7 +40,7 @@ export class AppLoginComponent {
                         summary: 'Al momento estamos realizando mantenimiento del sistema. Por favor vuelve a intentar despues de 30 minutos'
                     });
                 } else {
-                    this.messageService.add({ severity: 'error', summary: 'Usuario o contraseña incorrectos'});
+                    this.messageService.add({severity: 'error', summary: 'Usuario o contraseña incorrectos'});
                 }
             });
         }
