@@ -22,7 +22,6 @@ export class AppLoginComponent {
                 private messageService: MessageService,
                 private cd: ChangeDetectorRef,
                 private $gaService: GoogleAnalyticsService) {
-
     }
 
     login() {
