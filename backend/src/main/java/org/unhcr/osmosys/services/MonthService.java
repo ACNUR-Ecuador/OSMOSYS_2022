@@ -109,42 +109,63 @@ public class MonthService {
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     public void updateMonthTotals(Month month, TotalIndicatorCalculationType totalIndicatorCalculationType) throws GeneralAppException {
-        List<IndicatorValue> ivs = month.getIndicatorValues().stream()
+        List<IndicatorValue> ivst = month.getIndicatorValues().stream()
                 .filter(indicatorValue -> indicatorValue.getState().equals(State.ACTIVO))
                 .collect(Collectors.toList());
 
-        Set<DissagregationType> dissagregationsTypes = ivs.stream()
+        List<DissagregationType> dissagregationsTypes = ivst.stream()
+                // no diversidad
+                .filter(indicatorValue -> {
+                    return !indicatorValue.getDissagregationType().getStringValue().contains("DIVERSIDAD");
+                })
+                // solo valores
+                .filter(indicatorValue -> {
+                    return indicatorValue.getValue() != null || indicatorValue.getNumeratorValue() != null || indicatorValue.getDenominatorValue() != null;
+                })
                 .map(IndicatorValue::getDissagregationType)
-                .collect(Collectors.toSet());
+                .distinct()
+                .collect(Collectors.toList());
         if (CollectionUtils.isEmpty(dissagregationsTypes)) {
-            month.setTotalExecution(BigDecimal.ZERO);
+            month.setTotalExecution(null);
             return;
         }
-        // veo cualquiera menos diversidad
         DissagregationType dissagregationTypeToCalculate;
+        /*// veo cualquiera menos diversidad
+
         Optional<DissagregationType> dissagregationTypeOptional =
                 dissagregationsTypes.stream()
                         .filter(dissagregationType1 ->
+                                {
+                                    return !dissagregationType1.getStringValue().contains("DIVERSIDAD");
+                                }
+                                *//*
                                 !dissagregationType1.equals(DissagregationType.DIVERSIDAD)
                                         && !dissagregationType1.equals(DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD)
                                         && !dissagregationType1.equals(DissagregationType.DIVERSIDAD_EDAD_Y_GENERO)
                                         && !dissagregationType1.equals(DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO)
                                         && !dissagregationType1.equals(DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO)
                                         && !dissagregationType1.equals(DissagregationType.GENERO_Y_DIVERSIDAD)
-                                        && !dissagregationType1.equals(DissagregationType.LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO)
+                                        && !dissagregationType1.equals(DissagregationType.LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO)*//*
                         )
-                        .findFirst();
-        dissagregationTypeToCalculate = dissagregationTypeOptional.orElseGet(() -> dissagregationsTypes.iterator().next());
+                        .findFirst();*/
+        dissagregationTypeToCalculate = dissagregationsTypes.iterator().next();
         DissagregationType finalDissagregationTypeToCalculate = dissagregationTypeToCalculate;
-        ivs = ivs.stream()
+        List<IndicatorValue> ivsd = ivst.stream()
                 .filter(indicatorValue -> indicatorValue.getDissagregationType().equals(finalDissagregationTypeToCalculate))
                 .collect(Collectors.toList());
 
-        List<BigDecimal> valuesList = ivs.stream().map(IndicatorValue::getValue).filter(Objects::nonNull).collect(Collectors.toList());
-        List<BigDecimal> numeratorsList = ivs.stream().map(IndicatorValue::getNumeratorValue).filter(Objects::nonNull).collect(Collectors.toList());
-        List<BigDecimal> denominatorsList = ivs.stream().map(IndicatorValue::getDenominatorValue).filter(Objects::nonNull).collect(Collectors.toList());
+        List<BigDecimal> valuesList = ivsd.stream().map(IndicatorValue::getValue).filter(Objects::nonNull).collect(Collectors.toList());
+        List<BigDecimal> numeratorsList = ivsd.stream().map(IndicatorValue::getNumeratorValue).filter(Objects::nonNull).collect(Collectors.toList());
+        List<BigDecimal> denominatorsList = ivsd.stream().map(IndicatorValue::getDenominatorValue).filter(Objects::nonNull).collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(valuesList) && CollectionUtils.isEmpty(numeratorsList) && CollectionUtils.isEmpty(denominatorsList)) {
             BigDecimal totalExecution = this.utilsService.calculetTotalExecution(totalIndicatorCalculationType, valuesList);
+            if (totalExecution != null) {
+                // fill with zero
+                ivst.stream().filter(indicatorValue -> indicatorValue.getState().equals(State.ACTIVO))
+                        .filter(indicatorValue -> indicatorValue.getValue() == null)
+                        .forEach(indicatorValue -> indicatorValue.setValue(BigDecimal.ZERO));
+
+            }
             month.setTotalExecution(totalExecution);
         } else if (CollectionUtils.isNotEmpty(numeratorsList) && CollectionUtils.isNotEmpty(denominatorsList)) {
 
@@ -153,7 +174,7 @@ public class MonthService {
             BigDecimal totalDenominatorExecution;
             switch (totalIndicatorCalculationType) {
                 case SUMA:
-                    totalExecution = ivs.stream().filter(indicatorValue -> indicatorValue.getDenominatorValue() != null
+                    totalExecution = ivsd.stream().filter(indicatorValue -> indicatorValue.getDenominatorValue() != null
                             && indicatorValue.getDenominatorValue().compareTo(BigDecimal.ZERO) != 0
                             && indicatorValue.getNumeratorValue() != null).map(indicatorValue -> indicatorValue.getNumeratorValue().divide(indicatorValue.getDenominatorValue(), RoundingMode.HALF_UP)).reduce(BigDecimal::add).get();
                     break;
@@ -167,12 +188,12 @@ public class MonthService {
                     }
                     break;
                 case MAXIMO:
-                    totalExecution = ivs.stream().filter(indicatorValue -> indicatorValue.getDenominatorValue() != null
+                    totalExecution = ivsd.stream().filter(indicatorValue -> indicatorValue.getDenominatorValue() != null
                             && indicatorValue.getDenominatorValue().compareTo(BigDecimal.ZERO) != 0
                             && indicatorValue.getNumeratorValue() != null).map(indicatorValue -> indicatorValue.getNumeratorValue().divide(indicatorValue.getDenominatorValue(), RoundingMode.HALF_UP)).reduce(BigDecimal::max).get();
                     break;
                 case MINIMO:
-                    totalExecution = ivs.stream().filter(indicatorValue -> indicatorValue.getDenominatorValue() != null
+                    totalExecution = ivsd.stream().filter(indicatorValue -> indicatorValue.getDenominatorValue() != null
                             && indicatorValue.getDenominatorValue().compareTo(BigDecimal.ZERO) != 0
                             && indicatorValue.getNumeratorValue() != null).map(indicatorValue -> indicatorValue.getNumeratorValue().divide(indicatorValue.getDenominatorValue(), RoundingMode.HALF_UP)).reduce(BigDecimal::min).get();
                     break;
