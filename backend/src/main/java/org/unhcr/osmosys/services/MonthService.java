@@ -115,13 +115,9 @@ public class MonthService {
 
         List<DissagregationType> dissagregationsTypes = ivst.stream()
                 // no diversidad
-                .filter(indicatorValue -> {
-                    return !indicatorValue.getDissagregationType().getStringValue().contains("DIVERSIDAD");
-                })
+                .filter(indicatorValue -> !indicatorValue.getDissagregationType().getStringValue().contains("DIVERSIDAD"))
                 // solo valores
-                .filter(indicatorValue -> {
-                    return indicatorValue.getValue() != null || indicatorValue.getNumeratorValue() != null || indicatorValue.getDenominatorValue() != null;
-                })
+                .filter(indicatorValue -> indicatorValue.getValue() != null || indicatorValue.getNumeratorValue() != null || indicatorValue.getDenominatorValue() != null)
                 .map(IndicatorValue::getDissagregationType)
                 .distinct()
                 .collect(Collectors.toList());
@@ -304,5 +300,14 @@ public class MonthService {
         month.setBlockUpdate(blockinState);
         this.saveOrUpdate(month);
         return month.getId();
+    }
+
+    public void getActiveMonthsByProjectIdAndMonthAndYear(Long projectId, MonthEnum month, int year, Boolean blockUpdate) {
+        // get all months active by project
+        List<Month> months = this.monthDao.getActiveMonthsByProjectIdAndMonthAndYear(projectId, month, year);
+        for (Month monthE : months) {
+            monthE.setBlockUpdate(blockUpdate);
+            this.saveOrUpdate(monthE);
+        }
     }
 }

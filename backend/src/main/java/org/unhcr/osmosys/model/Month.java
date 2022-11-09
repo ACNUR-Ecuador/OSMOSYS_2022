@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.model.enums.SourceType;
+import org.unhcr.osmosys.webServices.model.MonthStateWeb;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -17,6 +18,21 @@ import java.util.Set;
         uniqueConstraints = {
                 @UniqueConstraint(name = "uk_month_quarter_year", columnNames = {"quarter_id", "month", "year"}),
                 //@UniqueConstraint(name = "uk_month_quarter_order", columnNames = {"quarter_id", "order_"}),
+        }
+)
+@SqlResultSetMapping(
+        name = "MonthStateWebMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = MonthStateWeb.class,
+                        columns = {
+                                @ColumnResult(name = "year", type = Integer.class),
+                                @ColumnResult(name = "month", type = String.class),
+                                @ColumnResult(name = "order", type = Integer.class),
+                                @ColumnResult(name = "blockupdate", type = Boolean.class),
+
+                        }
+                )
         }
 )
 public class Month extends BaseEntity<Long> {

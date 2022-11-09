@@ -432,7 +432,7 @@ public class UserService implements Serializable {
             return user;
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException |
                  IllegalArgumentException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             throw new AccessDeniedException("token invalido");
         }
     }

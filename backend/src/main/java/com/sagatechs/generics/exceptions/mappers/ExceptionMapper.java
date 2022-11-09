@@ -2,6 +2,8 @@ package com.sagatechs.generics.exceptions.mappers;
 
 
 import com.sagatechs.generics.model.ExceptionModelWs;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.jboss.logging.Logger;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -10,13 +12,16 @@ import javax.ws.rs.ext.Provider;
 
 @Provider
 public class ExceptionMapper implements javax.ws.rs.ext.ExceptionMapper<Exception> {
+    private static final Logger LOGGER = Logger.getLogger(ExceptionMapper.class);
 
     @Override
     public Response toResponse(Exception exception) {
         int code = 500;
         Status statusCode = Status.fromStatusCode(code);
         ExceptionModelWs errorResponse = new ExceptionModelWs(code,
-                "Se produjo un error desconocido, por favor comunícate con el administrador del sistema. "+exception.getMessage());
+                "Se produjo un error desconocido, por favor comunícate con el administrador del sistema. " + exception.getMessage());
+
+        LOGGER.error(ExceptionUtils.getStackTrace(exception));
 
         return Response.status(statusCode).entity(errorResponse).
                 type(MediaType.APPLICATION_JSON).build();

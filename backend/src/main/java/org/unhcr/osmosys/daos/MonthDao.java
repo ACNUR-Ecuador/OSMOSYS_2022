@@ -5,6 +5,7 @@ import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.CustomDissagregationAssignationToIndicatorExecution;
 import org.unhcr.osmosys.model.DissagregationAssignationToIndicatorExecution;
 import org.unhcr.osmosys.model.Month;
+import org.unhcr.osmosys.model.enums.MonthEnum;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
@@ -92,4 +93,22 @@ public class MonthDao extends GenericDaoJpa<Month, Long> {
         return q.getResultList();
     }
 
+    public List<Month> getActiveMonthsByProjectIdAndMonthAndYear(Long projectId, MonthEnum month, int year) {
+        String jpql = "SELECT DISTINCT m " +
+                " FROM Month m" +
+                " inner join m.quarter q " +
+                " inner join q.indicatorExecution ie " +
+                " where ie.project.id = :projectId " +
+                " and m.month = :monthE " +
+                " and m.year = :yearI " +
+                " and ie.state = :state " +
+                " and q.state = :state " +
+                " and m.state = :state ";
+        Query q = getEntityManager().createQuery(jpql, Month.class);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("monthE", month);
+        q.setParameter("yearI", year);
+        q.setParameter("projectId", projectId);
+        return q.getResultList();
+    }
 }

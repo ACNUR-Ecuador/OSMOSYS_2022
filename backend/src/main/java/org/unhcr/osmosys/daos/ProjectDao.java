@@ -4,6 +4,7 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.Project;
+import org.unhcr.osmosys.webServices.model.MonthStateWeb;
 import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
 import org.unhcr.osmosys.webServices.model.QuarterStateWeb;
 
@@ -175,5 +176,22 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         q.setParameter("projectId", projectId);
         return q.getResultList();
     }
+
+    public List<MonthStateWeb> getMonthsStateByProjectId(Long projectId) {
+
+        String sql = "SELECT  " +
+                "mon.year, mon.month, mon.order_ as order, bool_and(mon.block_update) as blockupdate  " +
+                "FROM  " +
+                "osmosys.indicator_executions ie   " +
+                "INNER JOIN osmosys.quarters q on ie.id = q.indicator_execution_id and ie.state='ACTIVO' AND q.state='ACTIVO'  " +
+                "INNER JOIN osmosys.months mon on q.id=mon.quarter_id and mon.state='ACTIVO'  " +
+                "WHERE ie.project_id = :projectId  " +
+                "GROUP BY mon.year, mon.month, mon.order_  " +
+                "ORDER BY mon.order_";
+        Query q = getEntityManager().createNativeQuery(sql, "MonthStateWebMapping");
+        q.setParameter("projectId", projectId);
+        return q.getResultList();
+    }
+
 
 }

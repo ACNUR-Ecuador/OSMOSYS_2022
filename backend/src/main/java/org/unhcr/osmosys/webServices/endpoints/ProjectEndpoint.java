@@ -4,6 +4,7 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
 import org.unhcr.osmosys.services.ProjectService;
+import org.unhcr.osmosys.webServices.model.MonthStateWeb;
 import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
 import org.unhcr.osmosys.webServices.model.ProjectWeb;
 import org.unhcr.osmosys.webServices.model.QuarterStateWeb;
@@ -109,6 +110,16 @@ public class ProjectEndpoint {
         return this.projectService.getQuartersStateByProjectId(projectId);
     }
 
+    @Path("/getMonthsStateByProjectId/{projectId}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<MonthStateWeb> getMonthsStateByProjectId(
+            @PathParam("projectId") Long projectId
+    ) {
+        return this.projectService.getMonthsStateByProjectId(projectId);
+    }
+
     @Path("/blockQuarterStateByProjectId/{projectId}")
     @POST
     @Secured
@@ -116,7 +127,17 @@ public class ProjectEndpoint {
     public List<QuarterStateWeb> blockQuartersStateByProjectId(
             @PathParam("projectId") Long projectId, QuarterStateWeb quarterStateWeb
     ) {
-        return this.projectService.blockQuarterStateByProjectId(projectId,quarterStateWeb);
+        return this.projectService.blockQuarterStateByProjectId(projectId, quarterStateWeb);
+    }
+
+    @Path("/changeMonthStateByProjectId/{projectId}")
+    @POST
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public void changeMonthStateByProjectId(
+            @PathParam("projectId") Long projectId, MonthStateWeb monthStateWeb
+    ) {
+        this.projectService.changeMonthStateByProjectId(projectId, monthStateWeb);
     }
 
 }
