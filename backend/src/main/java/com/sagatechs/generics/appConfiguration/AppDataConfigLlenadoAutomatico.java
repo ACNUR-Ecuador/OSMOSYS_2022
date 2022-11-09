@@ -38,8 +38,6 @@ public class AppDataConfigLlenadoAutomatico {
 
     private void createFileAppConfigs() {
         LOGGER.info("createAppConfigs");
-
-
         instantiateConfigurationValues("Directorio de archivos",
                 "Directio de archivo",
                 AppConfigurationKey.FILE_DIRECTORY, "/opt/fileAttachments/");
