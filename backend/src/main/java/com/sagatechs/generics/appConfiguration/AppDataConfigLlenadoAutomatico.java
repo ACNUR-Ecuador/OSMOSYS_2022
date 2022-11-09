@@ -87,6 +87,9 @@ public class AppDataConfigLlenadoAutomatico {
         instantiateConfigurationValues("rewiev days of month to report, comma separated",
                 "warning days of month to report, comma separated",
                 AppConfigurationKey.REVIEW_DAYS, "13");
+        instantiateConfigurationValues("day limit to report",
+                "día máximo del mes para el reporte de indicadores",
+                AppConfigurationKey.REPORT_LIMIT, "10");
     }
 
     @SuppressWarnings("SameParameterValue")
