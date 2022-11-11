@@ -3,6 +3,7 @@ package org.unhcr.osmosys.webServices.model;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.unhcr.osmosys.model.enums.IndicatorType;
+import org.unhcr.osmosys.model.enums.TimeStateEnum;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -26,8 +27,8 @@ public class IndicatorExecutionWeb implements Serializable {
     private MonthWeb lastReportedMonth;
 
     private List<QuarterWeb> quarters = new ArrayList<>();
-    private LateType late;
-    private List<MonthWeb> lateMonths;
+    private TimeStateEnum late;
+
 
     /******socios*****/
     private ProjectWeb project;
@@ -199,20 +200,12 @@ public class IndicatorExecutionWeb implements Serializable {
         this.locations = locations;
     }
 
-    public LateType getLate() {
+    public TimeStateEnum getLate() {
         return late;
     }
 
-    public void setLate(LateType late) {
+    public void setLate(TimeStateEnum late) {
         this.late = late;
-    }
-
-    public List<MonthWeb> getLateMonths() {
-        return lateMonths;
-    }
-
-    public void setLateMonths(List<MonthWeb> lateMonths) {
-        this.lateMonths = lateMonths;
     }
 
     public UserWeb getSupervisorUser() {

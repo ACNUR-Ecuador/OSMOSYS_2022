@@ -91,6 +91,15 @@ public class AppConfigurationService {
         }
     }
 
+    public Integer getReportLimitDay() {
+        String valusS = this.findValorByClave(AppConfigurationKey.REPORT_LIMIT);
+        if(StringUtils.isBlank(valusS)){
+            return null;
+        }else {
+            return Integer.parseInt(valusS);
+        }
+    }
+
     private List<Integer> getWarningDays() {
         return this.getLisOfNumberFromString(this.findValorByClave(AppConfigurationKey.WARNING_DAYS));
     }

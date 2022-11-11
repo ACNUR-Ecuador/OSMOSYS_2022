@@ -9,10 +9,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.StatementDao;
 import org.unhcr.osmosys.model.*;
-import org.unhcr.osmosys.model.enums.Frecuency;
-import org.unhcr.osmosys.model.enums.IndicatorType;
-import org.unhcr.osmosys.model.enums.MonthEnum;
-import org.unhcr.osmosys.model.enums.QuarterEnum;
+import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.services.UtilsService;
 import org.unhcr.osmosys.webServices.model.*;
 
 import javax.ejb.Stateless;
@@ -33,6 +31,8 @@ public class ModelWebTransformationService {
     @Inject
     AppConfigurationService appConfigurationService;
 
+    @Inject
+    UtilsService utilsService;
 
     //<editor-fold desc="Areas">
     public List<AreaWeb> areasToAreasWeb(List<Area> areas) {
@@ -113,7 +113,7 @@ public class ModelWebTransformationService {
             for (IndicatorExecutionWeb indicatorExecutionWeb : indicatorExecutionsArea) {
                 indicators.add(indicatorExecutionWeb.getIndicator());
                 arw.getIndicatorExecutionIds().add(indicatorExecutionWeb.getId());
-                if (indicatorExecutionWeb.getLate().equals(LateType.LATE)) {
+                if (indicatorExecutionWeb.getLate().equals(TimeStateEnum.LATE)) {
                     lateCount++;
                 }
             }
@@ -1081,6 +1081,11 @@ public class ModelWebTransformationService {
 
         }
         iw.setQuarters(this.quartersToQuarterWeb(ie.getQuarters()));
+        // set late state
+        Frecuency frecuency = ie.getIndicatorType().equals(IndicatorType.GENERAL)?Frecuency.MENSUAL:ie.getIndicator().getFrecuency();
+        TimeStateEnum indicatorExecutionTimeState = this.setQuartersLateState(iw.getQuarters(), frecuency, this.appConfigurationService.getReportLimitDay());
+        iw.setLate(indicatorExecutionTimeState);
+
         Optional<Quarter> lastReportedQuarter = ie.getQuarters().stream()
                 .filter(quarter -> quarter.getState().equals(State.ACTIVO))
                 .filter(quarter -> quarter.getTotalExecution() != null)
@@ -1096,11 +1101,6 @@ public class ModelWebTransformationService {
         }
 
         List<MonthWeb> lateMonths = this.getLateIndicatorExecutionMonths(iw);
-        if (CollectionUtils.isNotEmpty(lateMonths)) {
-            iw.setLateMonths(lateMonths);
-
-        }
-        iw.setLate(this.getLateForIndicatorExecution(ie, lateMonths));
 
         List<Canton> activeCantons = ie.getIndicatorExecutionLocationAssigments()
                 .stream()
@@ -1108,42 +1108,22 @@ public class ModelWebTransformationService {
                 .map(IndicatorExecutionLocationAssigment::getLocation)
                 .collect(Collectors.toList());
         iw.setLocations(this.cantonsToCantonsWeb(activeCantons));
-
-
         return iw;
-
-
     }
 
-    private LateType getLateForIndicatorExecution(IndicatorExecution indicatorExecution, List<MonthWeb> lateMonths) throws GeneralAppException {
-        if (CollectionUtils.isNotEmpty(lateMonths)) {
-            return LateType.LATE;
-
-        } else {
-            Integer alertDays = this.appConfigurationService.getAlertDays();
-            LocalDate today = LocalDate.now();
-
-            int todayYear = today.getYear();
-            int todayDay = today.getDayOfMonth();
-            int todayMonth = today.getMonth().getValue();
-            QuarterEnum todayQuarter = MonthEnum.getQuarterByMonthNumber(todayMonth);
-            // obtengo los meses
-            List<Month> monthList = indicatorExecution.getQuarters().stream()
-                    .filter(quarter -> quarter.getState().equals(State.ACTIVO))
-                    .map(quarter -> new ArrayList<>(quarter.getMonths()))
-                    .flatMap(Collection::stream)
-                    .filter(month ->
-                            month.getYear().equals(todayYear)
-                                    && month.getMonthYearOrder().equals(todayMonth)
-                                    && month.getTotalExecution() == null
-                    )
-                    .collect(Collectors.toList());
-            if (CollectionUtils.isNotEmpty(monthList)) {
-                return LateType.WARNING;
-            } else {
-                return LateType.ON_TIME;
+    private TimeStateEnum setQuartersLateState(List<QuarterWeb> quarters, Frecuency frecuency, Integer reportLimitDay) throws GeneralAppException {
+        TimeStateEnum timeStateTotal = TimeStateEnum.NO_TIME;
+        for (QuarterWeb quarter : quarters) {
+            TimeStateEnum timeStateQuarter = TimeStateEnum.NO_TIME;
+            for (MonthWeb month : quarter.getMonths()) {
+                TimeStateEnum monthState = this.utilsService.getLateStateForMonth(month, frecuency, reportLimitDay);
+                timeStateQuarter = TimeStateEnum.addStates(timeStateQuarter, monthState);
+                month.setLate(monthState);
             }
+            quarter.setLate(timeStateQuarter);
+            timeStateTotal = TimeStateEnum.addStates(timeStateTotal, timeStateQuarter);
         }
+        return timeStateTotal;
     }
 
     public List<MonthWeb> getLateIndicatorExecutionMonths(IndicatorExecutionWeb indicatorExecution) throws GeneralAppException {

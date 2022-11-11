@@ -15,11 +15,11 @@ import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.ReportDao;
+import org.unhcr.osmosys.model.enums.TimeStateEnum;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedDTO;
 import org.unhcr.osmosys.model.reportDTOs.LaterReportDTO;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
 import org.unhcr.osmosys.webServices.model.IndicatorExecutionWeb;
-import org.unhcr.osmosys.webServices.model.LateType;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -55,7 +55,7 @@ public class ReportDataService {
             map.put("target", ie.getTarget());
             map.put("totalExecution", ie.getTotalExecution());
             map.put("executionPercentage", ie.getExecutionPercentage());
-            map.put("late", ie.getLate().equals(LateType.LATE) ? "Si" : "No");
+            map.put("late", ie.getLate().equals(TimeStateEnum.LATE) ? "Si" : "No");
             r.add(map);
         }
 

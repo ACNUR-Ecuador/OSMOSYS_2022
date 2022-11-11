@@ -154,4 +154,8 @@ public class DateUtils {
         return yearMonths;
     }
 
+    public boolean checkBetweenInclusive(LocalDate dateToCheck, LocalDate startDate, LocalDate endDate) {
+        return !dateToCheck.isBefore(startDate) && dateToCheck.isAfter(endDate);
+    }
+
 }

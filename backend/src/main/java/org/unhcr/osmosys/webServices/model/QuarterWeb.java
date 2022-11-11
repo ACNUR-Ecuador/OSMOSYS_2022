@@ -2,6 +2,7 @@ package org.unhcr.osmosys.webServices.model;
 
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
+import org.unhcr.osmosys.model.enums.TimeStateEnum;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -23,6 +24,8 @@ public class QuarterWeb implements Serializable {
     private State state;
     private List<MonthWeb> months = new ArrayList<>();
     private Boolean blockUpdate;
+
+    private TimeStateEnum late;
 
     public Long getId() {
         return id;
@@ -110,5 +113,13 @@ public class QuarterWeb implements Serializable {
 
     public void setBlockUpdate(Boolean blockUpdate) {
         this.blockUpdate = blockUpdate;
+    }
+
+    public TimeStateEnum getLate() {
+        return late;
+    }
+
+    public void setLate(TimeStateEnum late) {
+        this.late = late;
     }
 }
