@@ -6,16 +6,16 @@
 -->
 <application generated-by="intellij" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zeroturnaround.com" xsi:schemaLocation="http://www.zeroturnaround.com http://update.zeroturnaround.com/jrebel/rebel-2_3.xsd">
 
-	<id>osmosys_backend</id>
+	<id>backend</id>
 
 	<classpath>
-		<dir name="D:/proyectos/OSMOSYS_2022/backend/target/classes">
+		<dir name="D:/proyectos/OSMOSYS_2023/backend/target/classes">
 		</dir>
 	</classpath>
 
 	<web>
 		<link target="/">
-			<dir name="D:/proyectos/OSMOSYS_2022/backend/src/main/webapp">
+			<dir name="D:/proyectos/OSMOSYS_2023/backend/src/main/webapp">
 			</dir>
 		</link>
 	</web>
