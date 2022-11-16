@@ -1,0 +1,78 @@
+<div class="grid">
+    <div class="col-12">
+        <p-toast></p-toast>
+        <div class="card px-6 py-6">
+            <h3 class="page-title">Parámetros de configuración globales</h3>
+            <h6 class="page-title">Precaución con el cambio de parámetros!</h6>
+            <div class="card">
+                <p-table [value]="items"
+                         dataKey="id"
+                         editMode="row"
+                >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width:10%">id</th>
+                            <th style="width:15%">Nombre</th>
+                            <th style="width:30%">Descripcion</th>
+                            <th style="width:25%">Clave</th>
+                            <th style="width:20%">Valor</th>
+                        </tr>
+                        <tr>
+                            <th>
+                                <p-columnFilter field="id" [matchMode]="'contains'" [showMenu]="false"></p-columnFilter>
+                            </th>
+                            <th>
+                                <p-columnFilter field="Nombre" [matchMode]="'contains'"
+                                                [showMenu]="false"></p-columnFilter>
+                            </th>
+                            <th>
+                                <p-columnFilter field="Descripcion" [matchMode]="'contains'"
+                                                [showMenu]="false"></p-columnFilter>
+                            </th>
+                            <th>
+                                <p-columnFilter field="Clave" [matchMode]="'contains'"
+                                                [showMenu]="false"></p-columnFilter>
+                            </th>
+                            <th>
+                                <p-columnFilter field="Valor" [matchMode]="'contains'"
+                                                [showMenu]="false"></p-columnFilter>
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-item let-editing="editing">
+                        <tr [pEditableRow]="item">
+                            <td>{{item.id}}</td>
+                            <td>{{item.nombre}}</td>
+                            <td>{{item.descripcion}}</td>
+                            <td>{{item.clave}}</td>
+                            <td>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text" [(ngModel)]="item.valor">
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{item.valor}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td>
+                                <div class="flex align-items-center justify-content-center gap-2">
+                                    <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow
+                                            icon="pi pi-pencil" class="p-button-rounded p-button-text"></button>
+                                    <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow
+                                            icon="pi pi-check" (click)="onRowEditSave(item)"
+                                            class="p-button-rounded p-button-text p-button-success mr-2"></button>
+                                    <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow
+                                            icon="pi pi-times" (click)="onRowEditCancel"
+                                            class="p-button-rounded p-button-text p-button-danger"></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+
+                </p-table>
+
+            </div>
+        </div>
+    </div>
+</div>

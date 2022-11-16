@@ -1,0 +1,126 @@
+<div class="grid col-12">
+    <p-toast></p-toast>
+    <div class="card">
+        <h3 class="page-title">Proyectos</h3>
+        <p-toolbar styleClass="mb-4">
+            <div class="p-toolbar-group-left" *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR'])">
+                <button pButton label="Crear Proyecto" icon="pi pi-plus"
+                        class="p-button-success p-mr-2 p-mb-2"
+                        (click)="createItem()"></button>
+            </div>
+            <form [formGroup]="periodForm">
+                <div class="field grid">
+
+                    <label for="periodI" class="col-fixed" style="width:100px; color: white;">Periodo:</label>
+                    <div class="p-col">
+                        <p-dropdown id="periodI" [options]="periods" optionLabel="year"
+                                    (onChange)="onPeriodChange($event.value)"></p-dropdown>
+                    </div>
+
+                </div>
+            </form>
+            <div class="p-toolbar-group-right">
+
+                <button type="button" pButton icon="pi pi-file-excel" (click)="exportExcel(dt)"
+                        class="p-button-success p-mr-2"></button>
+            </div>
+
+        </p-toolbar>
+        <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true"
+                 [rowHover]="true" dataKey="id"
+                 styleClass="p-datatable-customers"
+                 currentPageReportTemplate=" {first} a {last} de {totalRecords} "
+                 [showCurrentPageReport]="true">
+            <ng-template pTemplate="caption">
+                <div class="flex card-container overflow-hidden">
+                    <div
+                        class="flex-none flex align-items-center justify-content-center m-2 px-5  border-round">
+                        <h5 class="m-0">Proyectos</h5>
+                    </div>
+                    <div
+                        class="flex-grow-1 flex align-items-center justify-content-center px-5  border-round"></div>
+                    <div
+                        class="flex-none flex align-items-center justify-content-center px-5  border-round">
+                        <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
+                                       selectedItemsLabel="{0} columnas seleccionadas"
+                                       [style]="{minWidth: '200px',color:'#6c757d'}"
+                                       placeholder="Seleccione las columnas"
+                                       appendTo="body"></p-multiSelect>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                        {{col.header}}
+                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+
+                <tr>
+                    <th *ngFor="let col of columns" [ngSwitch]="col.field">
+                        <p-columnFilter *ngSwitchDefault [type]="col.type" [field]="col.field"
+                                        [matchMode]="'contains'"
+                                        [showMenu]="false"> matchMode="contains
+                        </p-columnFilter>
+
+                        <p-columnFilter *ngSwitchCase="'areaType'" type="equals" [field]="col.field"
+                                        [showMenu]="false"
+                        >
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <p-dropdown [ngModel]="value" [options]="items"
+                                            (onChange)="filter($event.value)"
+                                            placeholder="Selecciona..." [showClear]="true">
+                                    <ng-template let-option pTemplate="item">
+                                            <span
+                                                [class]="'customer-badge status-' + option">{{option}}</span>
+                                    </ng-template>
+                                </p-dropdown>
+                            </ng-template>
+                        </p-columnFilter>
+                        <p-columnFilter *ngSwitchCase="'state'" type="equals" [field]="col.field"
+                                        [showMenu]="false"
+                        >
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <p-dropdown [ngModel]="value" [options]="states"
+                                            (onChange)="filter($event.value)"
+                                            placeholder="Selecciona..." [showClear]="true">
+                                    <ng-template let-option pTemplate="item">
+                                            <span
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
+                                    </ng-template>
+                                </p-dropdown>
+                            </ng-template>
+                        </p-columnFilter>
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr>
+                    <td *ngFor="let col of columns"
+                        [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
+                    >
+                        {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
+                    </td>
+                    <td>
+                        <button pButton icon="pi pi-pencil" label="Ir al proyecto"
+                                class="p-button-rounded p-button-primary p-mr-2"
+                                (click)="goToProject(rowData.id)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="summary">
+                <div class="p-d-flex p-ai-center p-jc-between">
+                    Total {{items ? items.length : 0 }} proyectos.
+                </div>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+

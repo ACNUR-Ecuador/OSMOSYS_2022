@@ -1,0 +1,258 @@
+<div class="grid">
+    <div class="col-12">
+        <p-toast></p-toast>
+        <div class="card px-6 py-6">
+            <h3 class="page-title">Administración de Usuarios</h3>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Crear" icon="pi pi-plus" class="p-button-success mr-2 mb-2"
+                                (click)="createItem()"></button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel(dt)"
+                            class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                </ng-template>
+            </p-toolbar>
+            <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true"
+                     [rowHover]="true" dataKey="id"
+                     currentPageReportTemplate=" {first} a {last} de {totalRecords} "
+                     [showCurrentPageReport]="true">
+                <ng-template pTemplate="caption">
+                    <div class="flex card-container overflow-hidden">
+                        <div
+                            class="flex-none flex align-items-center justify-content-center m-2 px-5  border-round">
+                            <h5 class="m-0">Usuarios</h5></div>
+                        <div
+                            class="flex-grow-1 flex align-items-center justify-content-center px-5  border-round"></div>
+                        <div
+                            class="flex-none flex align-items-center justify-content-center px-5  border-round">
+                            <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
+                                           selectedItemsLabel="{0} columnas seleccionadas"
+                                           [style]="{minWidth: '200px',color:'#6c757d'}"
+                                           placeholder="Seleccione las columnas"
+                                           appendTo="body"
+                            >
+                            </p-multiSelect>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                            {{col.header}}
+                            <p-sortIcon [field]="col.field"></p-sortIcon>
+                        </th>
+                        <th>
+
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th *ngFor="let col of columns" [ngSwitch]="col.field">
+                            <p-columnFilter *ngSwitchDefault [type]="col.type" [field]="col.field"
+                                            [matchMode]="'contains'"
+                                            [showMenu]="false"> matchMode="contains
+                            </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'state'" type="equals" [field]="col.field"
+                                            [showMenu]="false"
+                            >
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown [ngModel]="value" [options]="states"
+                                                (onChange)="filter($event.value)"
+                                                placeholder="Selecciona..." [showClear]="true">
+                                        <ng-template let-option pTemplate="item">
+                                            <span
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'office'" type="equals" [field]="col.field"
+                                            [showMenu]="false" [matchMode]="'officeOrganizationFilter'"
+                            >
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown [ngModel]="value" [options]="offices"
+                                                (onChange)="filter($event.value)"
+                                                [filter]=true
+                                                placeholder="Selecciona..." [showClear]="true">
+                                        <ng-template let-option pTemplate="item">
+                                            <span
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'organization'" type="equals" [field]="col.field"
+                                            [showMenu]="false" [matchMode]="'officeOrganizationFilter'"
+                            >
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown [ngModel]="value" [options]="organizations"
+                                                (onChange)="filter($event.value)"
+                                                [filter]=true
+                                                placeholder="Selecciona..." [showClear]="true">
+                                        <ng-template let-option pTemplate="item">
+                                            <span
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'roles'" type="equals" [field]="col.field"
+                                            [showMenu]="false" [matchMode]="'rolesFilter'"
+                            >
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-multiSelect [ngModel]="value" [options]="roles"
+                                                   (onChange)="filter($event.value)"
+                                                   [filter]=true
+                                                   placeholder="Selecciona...">
+                                        <ng-template let-option pTemplate="item">
+                                            <span
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
+                                        </ng-template>
+                                    </p-multiSelect>
+                                </ng-template>
+                            </p-columnFilter>
+                        </th>
+                        <th>
+
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <tr>
+                        <td *ngFor="let col of columns"
+                            [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
+                        >
+                            {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
+                        </td>
+                        <td>
+                            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2"
+                                    (click)="editItem(rowData)"></button>
+
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <div class="p-d-flex p-ai-center p-jc-between">
+                        Total {{items ? items.length : 0 }} usuarios.
+                    </div>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+
+<form [formGroup]="formItem" (ngSubmit)="saveItem()">
+    <p-dialog [(visible)]="showDialog" [style]="{width: '70%'}" header="Usuario" [modal]="true"
+              styleClass="p-fluid"
+              [closable]="false">
+
+        <ng-template pTemplate="content">
+            <p-messages></p-messages>
+            <div class="card">
+                <div class="field">
+                    <label for="emailI">Correo Electrónico</label>
+                    <input type="text" pInputText id="emailI"
+                           formControlName="email" autofocus maxlength="255"
+                           (change)="onEmailChange()"
+                    />
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('email',formItem)">
+                        {{utilsService.getErrorMessageForm('email', formItem)}}
+                    </small>
+                </div>
+                <div class="field">
+                    <label for="nameI">Nombre</label>
+                    <input type="text" pInputText id="nameI"
+                           formControlName="name" autofocus maxlength="255"/>
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('name',formItem)">
+                        {{utilsService.getErrorMessageForm('name', formItem)}}
+                    </small>
+                </div>
+
+                <div class="field">
+                    <label for="usernameI">Nombre de Usuario</label>
+                    <input type="text" pInputText id="usernameI"
+                           formControlName="username" autofocus maxlength="255"/>
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('username',formItem)">
+                        {{utilsService.getErrorMessageForm('username', formItem)}}
+                    </small>
+                </div>
+                <div class="field">
+                    <label for="organizationI">Organización</label>
+
+                    <p-dropdown id="organizationI"
+                                formControlName="organization"
+                                [options]="organizationsActive"
+                                placeholder="Selecciona..."
+                                [filter]="true"
+                                appendTo="body"
+                    >
+                    </p-dropdown>
+
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('organization',formItem)">
+                        {{utilsService.getErrorMessageForm('organization', formItem)}}
+                    </small>
+                </div>
+                <div class="field">
+                    <label for="officeI">Oficina</label>
+
+                    <p-dropdown id="officeI"
+                                formControlName="office"
+                                [options]="officesActive"
+                                placeholder="Selecciona..."
+                                [filter]="true"
+                                appendTo="body"
+                    >
+                    </p-dropdown>
+
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('office',formItem)">
+                        {{utilsService.getErrorMessageForm('office', formItem)}}
+                    </small>
+                </div>
+                <div class="field">
+                    <label for="stateI">Estado</label>
+
+                    <p-selectButton id="stateI"
+                                    formControlName="state"
+                                    [options]="states"
+                    >
+                    </p-selectButton>
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('state',formItem)">
+                        {{utilsService.getErrorMessageForm('state', formItem)}}
+                    </small>
+                </div>
+                <div class="field">
+                    <label>Permisos</label>
+                    <div class="field-checkbox col-12 md-2"
+                         *ngFor="let category of roles">
+                        <!--suppress AngularInvalidExpressionResultType -->
+                        <p-checkbox name="group1" [inputId]="category.value"
+                                    [value]="category.value"
+                                    [formControl]='$any(formItem).controls["roleTypes"]'>
+                        </p-checkbox>
+                        <label [for]="category.value">{{category.label}}</label>
+                    </div>
+
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('roleTypes',formItem)">
+                        {{utilsService.getErrorMessageForm('roleTypes', formItem)}}
+                    </small>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <p-messages></p-messages>
+            <button pButton type="submit"
+                    [disabled]="!formItem.valid"
+                    pRipple label="Guardar" icon="pi pi-check"
+            ></button>
+            <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
+                    (click)="cancelDialog()"></button>
+
+        </ng-template>
+    </p-dialog>
+</form>

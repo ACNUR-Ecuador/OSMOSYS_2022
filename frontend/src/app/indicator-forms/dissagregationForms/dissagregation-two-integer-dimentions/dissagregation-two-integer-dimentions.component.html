@@ -1,0 +1,50 @@
+<p-table *ngIf="values" [value]="rows">
+    <ng-template pTemplate="caption">
+        <div class="text-center">
+            Desagregación por {{this.enumsService.resolveLabel($any('DissagregationType'), dissagregationType)}}
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th></th>
+            <th *ngFor="let col of dissagregationOptionsColumns">{{col.label}}</th>
+            <th>Totales</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
+        <tr>
+            <td class="table-title">{{dissagregationOptionsRows[rowIndex].label}}</td>
+            <td pEditableColumn *ngFor="let rowOp of dissagregationOptionsColumns; index as indexColumn"
+                class="text-right">
+                <p-cellEditor *ngIf="editable">
+                    <ng-template pTemplate="input">
+                        <p-inputNumber
+                            name="{{row[indexColumn].id}}"
+                            [min]="0"
+                            [(ngModel)]="row[indexColumn].value"
+                        ></p-inputNumber>
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{row[indexColumn].value}}
+                    </ng-template>
+                </p-cellEditor>
+                <div *ngIf="!editable">
+                    {{row[indexColumn].value}}
+                </div>
+            </td>
+
+            <td class="subtotal_value">{{this.utilsService.getTotalIndicatorValuesArray(row)}}</td>
+        </tr>
+
+
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <tr>
+            <td class="table-title">Totales</td>
+            <td class="subtotal_value" *ngFor="let colOp of dissagregationOptionsColumns; index as indexColumn">
+                {{this.utilsService.getTotalIndicatorValuesColumnArrayArray(rows, indexColumn)}}
+            </td>
+            <td class="total_value">{{this.utilsService.getTotalIndicatorValuesArrayArray(rows)}}</td>
+        </tr>
+    </ng-template>
+</p-table>

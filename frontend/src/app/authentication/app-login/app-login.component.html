@@ -1,0 +1,67 @@
+<div class="flex h-screen">
+    <div class="w-full lg:w-4 h-full text-center px-6 py-6 flex flex-column justify-content-between">
+        <img [src]="'assets/layout/images/logo_osmosys_blue.png'" class="mt-4" alt="osmosys"/>
+
+        <div class="flex flex-column align-items-center gap-4">
+            <div class="mb-3">
+                <h2>Ingresa a tu cuenta</h2>
+                <p>¿Olvidaste tu contraseña? <a class="text-primary hover:underline cursor-pointer font-medium">Haz clic
+                    aquí</a> para recuperarla.</p>
+            </div>
+            <form [formGroup]="loginForm" (ngSubmit)="login()">
+                <input pInputText id="username" placeholder="usuario" formControlName="username" class="w-20rem"/>
+                <p-password id="password" placeholder="Contraseña" [feedback]="true" formControlName="password"
+                            inputStyleClass="w-20rem"></p-password>
+                <button pButton label="Ingresar" class="w-20rem"></button>
+                <p-messages></p-messages>
+            </form>
+        </div>
+
+        <p class="text-color-secondary font-semibold">¿Necesitas ayuda? <a href="mailto:salazart@unhcr.org"
+                                                                           class="text-primary hover:underline cursor-pointer font-medium">Escríbenos</a>.
+        </p>
+    </div>
+    <div
+        class="w-8 hidden lg:flex flex-column justify-content-between align-items-center px-6 py-6 bg-cover bg-norepeat"
+        style="background-image: url('assets/layout/images/unhcr_photo.jpg')">
+        <div class="mt-auto  flex align-content-end flex-wrap">
+            <!--<span class="block text-white text-7xl font-semibold">Access to your <br/>Diamond <br/>Account</span>
+            <span class="block text-white text-3xl mt-4">Lorem ipsum dolor sit amet, consectetur<br/> adipiscing elit. Donec posuere velit nec enim<br/> sodales, nec placerat erat tincidunt. </span>-->
+            <div class="block text-primary text-base p-2" style="background-color: rgba(255, 255, 255, 0.8); ">
+
+                <p style="text-align:justify">ACNUR Ecuador trabaja para brindar protecci&oacute;n y promover la
+                    inclusi&oacute;n de las personas solicitantes de asilo, refugiadas, ap&aacute;tridas y otras que
+                    se vieron obligadas a salir de sus pa&iacute;ses. En el marco de la adopci&oacute;n de un nuevo
+                    enfoque de Gesti&oacute;n Basada en Resultados (RBM, por sus siglas en ingl&eacute;s), la
+                    operaci&oacute;n de ACNUR Ecuador monitorea sus programas y actividades para asegurar los
+                    resultados y efectos de su gesti&oacute;n.</p>
+
+                <p style="text-align:justify">Gracias al trabajo conjunto de m&aacute;s de 23 socios, y las oficinas
+                    de terreno de ACNUR, ACNUR ejecuta y monitorea actividades dispersas en el pa&iacute;s para
+                    asegurar la protecci&oacute;n de las personas refugiadas y solicitantes de asilo, as&iacute;
+                    como para apoyar a las comunidades que las acogen.</p>
+
+                <p style="text-align:justify">Usando este sistema de informaci&oacute;n, OSMOSYS, hecho a medida por
+                    los equipos Programas y Gesti&oacute;n de Informaci&oacute;n, la organizaci&oacute;n monitorea
+                    las actividades ejecutadas por cada organizaci&oacute;n socia y por implementaci&oacute;n
+                    directa de ACNUR. El sistema recoge informaci&oacute;n referente a los resultados de estas
+                    actividades, por ejemplo, personas de inter&eacute;s asistidas en diferentes &aacute;rea de trabajo
+                    como Protecci&oacute;n, Habitabilidad, Necesidades B&aacute;sicas, Informaci&oacute;n P&uacute;blica,
+                    etc. Como resultado, las unidades de Gesti&oacute;n de Informaci&oacute;n y Programas son
+                    capaces de producir informaci&oacute;n oportuna y precisa para monitorear la operaci&oacute;n y
+                    tomar decisiones de planificaci&oacute;n y estrategia.</p>
+            </div>
+
+        </div>
+        <div class="flex w-full justify-content-center flex-wrap card-container text-primary cursor-pointer"
+             style="background-color: rgba(255, 255, 255, 0.8); ">
+            <a href="https://data.unhcr.org/en/country/ecu" target="_blank">
+                <div class="flex align-items-center gap-5 text-primary "
+                     style="background-color: rgba(255, 255, 255, 0.8); ">
+                    <span class="font-semibold">Visita nuestro portal de datos.</span>
+                    <i class="pi pi-chart-bar text-3xl p-1 surface-overlay border-circle cursor-pointer"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>

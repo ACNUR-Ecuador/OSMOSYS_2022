@@ -1,0 +1,137 @@
+<p-panel>
+    <ng-template pTemplate="header">
+        <div class="grid w-full">
+            <div
+                class="col-12 md:col-4 sm:col-12 justify-content-start">
+                Desagregación por {{this.enumsService.resolveLabel($any('DissagregationType'), dissagregationType)}}
+            </div>
+            <div
+                class="col-12 md:col sm:col-12 justify-content-start">
+            </div>
+            <div
+                class="col-12 md:col-2 sm:col-12 flex justify-content-end m-2"
+                style="color: black;"
+                [style.background]="getTotalIndicator(valuesGroupRowsMap)>0?'#C8E6C9':'#FEEDAF'"
+            >
+                <div class="col-6 p-0">Total:</div>
+                <div class="col-6 p-0"
+                     style="text-align: right">{{getTotalIndicator(valuesGroupRowsMap) | number:'1.0-0'}}</div>
+            </div>
+        </div>
+
+    </ng-template>
+    <p-accordion>
+        <p-accordionTab *ngFor="let groupL1 of dissagregationOptionsGroupsL1"
+                        [ngClass]="getTotalIndicatorValuesMap(valuesGroupRowsMap.get(groupL1))>0?'p-accordion-filled-parent':'p-accordion-empty-parent'"
+        >
+            <ng-template pTemplate="header">
+                <div class="grid w-full">
+                    <div
+                        class="col-12 md:col-4 sm:col-12 justify-content-start">
+                        {{groupL1.label}}
+                    </div>
+                    <div
+                        class="col-12 md:col sm:col-12 justify-content-start">
+                    </div>
+                    <div
+                        class="col-12 md:col-2 sm:col-12 flex justify-content-end m-2"
+                        style="color: black;"
+                        [style.background]="getTotalIndicatorValuesMap(valuesGroupRowsMap.get(groupL1))>0?'#C8E6C9':'#FEEDAF'"
+                    >
+                        <div class="col-6 p-0">Total:</div>
+                        <div class="col-6 p-0"
+                             style="text-align: right">{{getTotalIndicatorValuesMap(valuesGroupRowsMap.get(groupL1)) | number:'1.0-0'}}</div>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="content">
+                <p-accordion [multiple]="false">
+                    <p-accordionTab *ngFor="let groupL2 of dissagregationOptionsGroupsL2"
+                    >
+                        <ng-template pTemplate="header">
+                            <div class="grid w-full">
+                                <div
+                                    class="col-12 md:col-4 sm:col-12 justify-content-start">
+                                    {{groupL2.label}}
+                                </div>
+                                <div
+                                    class="col-12 md:col sm:col-12 justify-content-start">
+                                </div>
+                                <div
+                                    class="col-12 md:col-2 sm:col-12 flex justify-content-end m-2"
+                                    style="color: black;"
+                                    [style.background]="this.utilsService.getTotalIndicatorValuesArrayArray(valuesGroupRowsMap.get(groupL1).get(groupL2))>0?'#C8E6C9':'#FEEDAF'"
+                                >
+                                    <div class="col-6 p-0">Total:</div>
+                                    <div class="col-6 p-0" style="text-align: right">
+                                        {{this.utilsService.getTotalIndicatorValuesArrayArray(valuesGroupRowsMap.get(groupL1).get(groupL2)) | number:'1.0-0'}}
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="content">
+                            test1<br>
+                            test2<br>
+                            test3<br>
+                            test4<br>
+                            test5<br>
+                            test6<br>
+                            test7<br>
+                            test8<br>
+                            test9<br>
+                            test10<br>
+                            test12<br>
+                            test13<br>
+                            <!--<p-table *ngIf="values" [value]="valuesGroupRowsMap.get(groupL1).get(groupL2)">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th></th>
+                                        <th *ngFor="let col of dissagregationOptionsColumns">{{col.label}}</th>
+                                        <th>Totales</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
+                                    <tr>
+                                        <td class="table-title">{{dissagregationOptionsRows[rowIndex].label}}</td>
+                                        <td pEditableColumn
+                                            *ngFor="let rowOp of dissagregationOptionsColumns; index as indexColumn"
+                                            class="text-right">
+                                            <p-cellEditor *ngIf="editable">
+                                                <ng-template pTemplate="input">
+                                                    <p-inputNumber
+                                                        name="{{row[indexColumn].id}}"
+                                                        [min]="0"
+                                                        [(ngModel)]="row[indexColumn].value"
+                                                    ></p-inputNumber>
+                                                </ng-template>
+                                                <ng-template pTemplate="output">
+                                                    {{row[indexColumn].value}}
+                                                </ng-template>
+                                            </p-cellEditor>
+                                            <div *ngIf="!editable">
+                                                {{row[indexColumn].value}}
+                                            </div>
+                                        </td>
+
+                                        <td class="subtotal_value">{{this.utilsService.getTotalIndicatorValuesArray(row)}}</td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="footer">
+                                    <tr>
+                                        <td class="table-title">Totales</td>
+                                        <td class="subtotal_value"
+                                            *ngFor="let colOp of dissagregationOptionsColumns; index as indexColumn">
+                                            {{this.utilsService.getTotalIndicatorValuesColumnArrayArray(valuesGroupRowsMap.get(groupL1).get(groupL2), indexColumn)}}
+                                        </td>
+                                        <td class="total_value">{{this.utilsService.getTotalIndicatorValuesArrayArray(valuesGroupRowsMap.get(groupL1).get(groupL2))}}</td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>-->
+                        </ng-template>
+                    </p-accordionTab>
+                </p-accordion>
+            </ng-template>
+
+        </p-accordionTab>
+    </p-accordion>
+</p-panel>

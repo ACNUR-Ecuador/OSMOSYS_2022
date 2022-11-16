@@ -1,0 +1,21 @@
+<div class="grid" >
+    <div class="col-12 md:col-4 sm:col-12">
+        <div class="card">
+            <h5>{{titleQuarter}}</h5>
+            <p-chart type="bar" width="400" [data]="chartDataQuarter" [options]="chartDataOptionsQuarter" [plugins]="$any(plugin)" ></p-chart>
+        </div>
+    </div>
+    <div class="col-12 md:col-4 sm:col-12" >
+        <div class="card">
+            <h5>Ejecución Trimestral</h5>
+            <p-chart type="bar" width="400" [data]="chartDataTrimestal" [options]="chartDataOptions" [plugins]="$any(plugin)" ></p-chart>
+        </div>
+    </div>
+    <div class="col-12 md:col-4 sm:col-12">
+        <div class="card">
+            <h5>Ejecución Anual</h5>
+            <p-chart type="bar" width="400" [data]="chartDataTotal" [options]="chartDataOptions"></p-chart>
+        </div>
+    </div>
+</div>
+

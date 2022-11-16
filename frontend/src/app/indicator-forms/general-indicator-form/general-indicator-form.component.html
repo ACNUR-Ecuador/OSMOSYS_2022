@@ -1,0 +1,213 @@
+<p-card>
+    <ng-template pTemplate="header">
+        <p-toast key="dialogToast" position="top-right"></p-toast>
+        <p-messages></p-messages>
+        <div class="fluid card" *ngIf="render">
+            <div class="field">
+                <p>Para el reporte de este indicador general, recuerde que <b><u>una persona beneficiaria debe
+                    contabilizarse
+                    solamente una vez</u></b>, a pesar de que haya recibido diferentes servicios por parte del proyecto.
+                    <b><u>No se considerarán como parte de la población objetivo del proyecto a funcionarios públicos o
+                        de
+                        instituciones privadas o de la sociedad civil</u></b> que participen en el proyecto en el marco
+                    del
+                    fortalecimiento de capacidades para atender a las necesidades de las personas de interés.
+                </p>
+            </div>
+        </div>
+    </ng-template>
+    <form #myForm="ngForm" [formGroup]="formItem" (ngSubmit)="saveMonth()">
+        <p-card>
+            <ng-template pTemplate="header">
+                <div class="col-12">
+                    <div *ngIf="render">
+                        <app-chart-indicator-execution *ngIf="render"
+                                                       [month]="month"
+                                                       [indicatorExecution]="indicatorExecution"
+                        ></app-chart-indicator-execution>
+                    </div>
+
+                </div>
+            </ng-template>
+            <fieldset style="border-style: none; margin: unset; padding: unset" [disabled]="!editable">
+                <div class="grid m-2" *ngIf="render">
+                    <div class="col-12" *ngFor="let dissagregation of fourDimentionDissagregations">
+                        <app-dissagregation-four-integer-dimensions
+                            *ngIf="monthValuesMap.get(dissagregation)"
+                            [dissagregationType]="dissagregation"
+                            [values]="monthValuesMap.get(dissagregation)"
+                            [editable]="editable"
+                        ></app-dissagregation-four-integer-dimensions>
+                    </div>
+                </div>
+                <div class="grid m-2" *ngIf="render">
+                    <div class="col-12" *ngFor="let dissagregation of threeDimentionDissagregations">
+                        <app-dissagregation-three-integer-dimensions
+                            *ngIf="monthValuesMap.get(dissagregation)"
+                            [dissagregationType]="dissagregation"
+                            [values]="monthValuesMap.get(dissagregation)"
+                            [editable]="editable"
+                        ></app-dissagregation-three-integer-dimensions>
+                    </div>
+                </div>
+                <div class="grid" *ngIf="render">
+                    <div class="col-12 m-2" *ngFor="let dissagregation of noDimentionDissagregations">
+                        <app-dissagregation-no-dissagregation-integer
+                            *ngIf="monthValuesMap.get(dissagregation)"
+                            [month]="month"
+                            [dissagregationType]="dissagregation"
+                            [values]="monthValuesMap.get(dissagregation)"
+                            [editable]="editable"
+                        ></app-dissagregation-no-dissagregation-integer>
+                    </div>
+                </div>
+                <div class="grid m-2" *ngIf="render">
+                    <div class="col-4"
+                         *ngFor="let dissagregation of oneDimentionDissagregations ">
+                        <app-dissagregation-one-integer-dimensions
+                            *ngIf="monthValuesMap.get(dissagregation)"
+                            [dissagregationType]="dissagregation"
+                            [values]="monthValuesMap.get(dissagregation)"
+                            [editable]="editable"
+                        ></app-dissagregation-one-integer-dimensions>
+                    </div>
+                </div>
+                <div class="grid m-2" *ngIf="render">
+                    <div class="col-6"
+                         *ngFor="let dissagregation of twoDimentionDissagregations">
+                        <div *ngIf="monthValuesMap.get(dissagregation)">
+                            <app-dissagregation-two-integer-dimentions
+                                *ngIf="monthValuesMap.get(dissagregation)"
+                                [dissagregationType]="dissagregation"
+                                [values]="monthValuesMap.get(dissagregation)"
+                                [editable]="editable"
+                            ></app-dissagregation-two-integer-dimentions>
+                        </div>
+                    </div>
+                </div>
+                <div class="card col-12">
+                    <div class="fluid p-formgrid grid">
+                        <div class="field col-12 md:col-8">
+                            <label for="sourcesI">Fuente de Verificación</label>
+                            <p-multiSelect id="sourcesI"
+                                           [options]="sourceTypes"
+                                           [filter]="true"
+                                           formControlName="sources"
+                                           (onChange)="setOtherSource($event.value)"
+                            ></p-multiSelect>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('sources',formItem)">
+                                {{utilsService.getErrorMessageForm('sources', formItem)}}
+                            </small>
+                        </div>
+                        <div class="field col-12 md:col-4" *ngIf="showOtherSource">
+                            <label for="sourceOtherI">Otro</label>
+                            <input id="sourceOtherI" type="text" pInputText formControlName="sourceOther">
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('sourceOther',formItem)">
+                                {{utilsService.getErrorMessageForm('sourceOther', formItem)}}
+                            </small>
+                        </div>
+                        <div class="field col-12 md:col-12">
+                            <label for="commentaryI">Información Cualitativa</label><br>
+                            <small class="col-12">
+                                Máximo 1.000 caracteres.
+                                Proporcione un resumen de las principales actividades desarrolladas para el cumplimiento
+                                de
+                                las metas de este indicador.
+                                Adicionalmente, en este espacio se deben registrar las razones por las cuales no se
+                                reporta
+                                avance del indicador o se supera el valor inicial de la meta.
+                                La información que se incluye en este campo podrá ser considerada para la elaboración de
+                                los
+                                reportes narrativos.
+                                Recuerde que una persona beneficiaria debe contabilizarse solamente una vez.
+                            </small>
+                            <textarea id="commentaryI"
+                                      pInputTextarea
+                                      [autoResize]="true"
+                                      style="width: 100%"
+                                      formControlName="commentary"
+                            ></textarea>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('commentary',formItem)">
+                                {{utilsService.getErrorMessageForm('commentary', formItem)}}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="card col-12">
+                <div class="fluid p-formgrid grid">
+                    <div class="field col-12 md:col-12">
+                        <label for="checkedI">Verificación Punto Focal</label>
+                        <p-dropdown id="checkedI" [options]="chekedOptions" formControlName="checked"
+                                    appendTo="body"></p-dropdown>
+                        <small class="p-error"
+                               *ngIf="utilsService.showErrorForm('checked',formItem)">
+                            {{utilsService.getErrorMessageForm('checked', formItem)}}
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <ng-template pTemplate="footer">
+                <div class="col-12 md:col-12">
+                    <p-messages></p-messages>
+                </div>
+                <div class="flex justify-content-end flex-wrap" *ngIf="editable || isAdmin || isProjectFocalPoint">
+
+                    <button pButton type="submit" class="mx-3"
+                            pRipple label="Guardar" icon="pi pi-check"
+                            [disabled]="!formItem.valid"
+                    ></button>
+                    <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times"
+                            class="p-button-secondary"
+                            (click)="cancel()"></button>
+                </div>
+                <div class="p-d-flex p-jc-end" *ngIf="!editable && !(isAdmin || isProjectFocalPoint)">
+                    <p-message severity="warn" text="Indicador Bloqueado!, si son necesarias correcciones, comuníquese con su punto focal " styleClass="p-mr-2"></p-message>
+                    <button pButton type="button" pRipple label="Salir" icon="pi pi-times"
+                            (click)="cancel()"></button>
+                </div>
+            </ng-template>
+        </p-card>
+    </form>
+</p-card>
+<p-dialog [(visible)]="showErrorResume" [closable]="false" [closeOnEscape]="false">
+    <ng-template pTemplate="header">
+        Existen Errores en lo Valores
+    </ng-template>
+    <div *ngIf="showErrorResume">
+        <div class="p-d-flex p-flex-column">
+            <div class="p-mb-2">
+                Existen errores en los valores. Los valores totales de cada segregación en la tabla deberían ser
+                iguales.
+            </div>
+            <div class="p-mb-2">
+                <!--suppress AngularInvalidExpressionResultType -->
+                <p-table [value]="$any(totalsValidation).keys()" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Desagregación</th>
+                            <th>Total</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-dissagregation>
+                        <tr>
+                            <td>{{dissagregation | enumValuesToLabel:'DissagregationType'}}</td>
+                            <td>{{totalsValidation.get(dissagregation)}}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="p-d-flex p-jc-end">
+            <button pButton type="button" pRipple label="Cerrar" icon="pi pi-times"
+                    (click)="closeErrorDialog()"></button>
+        </div>
+    </ng-template>
+</p-dialog>

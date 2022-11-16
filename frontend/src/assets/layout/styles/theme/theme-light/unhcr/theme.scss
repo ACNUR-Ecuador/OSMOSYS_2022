@@ -1,0 +1,153 @@
+$primaryColor: #0072BC;
+$primaryLightColor: scale-color($primaryColor, $lightness: 60%) !default;
+$primaryDarkColor: scale-color($primaryColor, $lightness: -10%) !default;
+$primaryDarkerColor: scale-color($primaryColor, $lightness: -20%) !default;
+$primaryTextColor: #ffffff;
+
+$highlightBg: #E3F2FD;
+$highlightTextColor: #495057;
+
+/*
+.p-datatable-thead > tr > th {
+    text-align: $tableCellContentAlignment;
+    padding: $tableHeaderCellPadding;
+    border: $tableHeaderCellBorder;
+    border-width: $tableHeaderCellBorderWidth;
+    font-weight: $tableHeaderCellFontWeight;
+    color: $tableHeaderCellTextColor;
+    background: $tableHeaderCellBg;
+    transition: $listItemTransition;
+}
+*/
+
+$shade000: #ffffff !default; //surface
+$shade100: scale-color($primaryColor, $lightness: 90%) !default; //header background
+$shade200: scale-color($primaryColor, $lightness: 80%) !default; //hover background
+$shade300: scale-color($primaryColor, $lightness: 70%) !default; //border, divider
+$shade400: scale-color($primaryColor, $lightness: 60%) !default; //input border
+$shade500: scale-color($primaryColor, $lightness: 50%) !default; //input icon
+$shade600: #6c757d !default; //text secondary color
+$shade500: #495057 !default; //text color
+$shade700: #495057; //unused
+$shade800: scale-color($primaryColor, $lightness: 20%) !default; //unused
+$shade900: scale-color($primaryColor, $lightness: 10%) !default; //unused
+// table header
+
+$tableHeaderBorder: 1px solid $shade200 !default;
+$tableHeaderBorderWidth: 1px 0 1px 0 !default;
+$tableHeaderBg: $primaryColor !default;
+$tableHeaderTextColor: $shade000 !default;
+$tableHeaderFontWeight: 600 !default;
+$tableHeaderPadding: 1rem 1rem !default;
+
+$tableHeaderCellPadding: 1rem 1rem !default;
+$tableHeaderCellBg: $primaryColor !default;
+$tableHeaderCellTextColor: $shade000 !default;
+$tableHeaderCellFontWeight: 600 !default;
+$tableHeaderCellBorder: 1px solid $shade200 !default;
+$tableHeaderCellBorderWidth: 0 0 1px 0 !default;
+$tableHeaderCellHoverBg: $shade200 !default;
+$tableHeaderCellTextHoverColor: $shade700 !default;
+$tableHeaderCellIconColor: $shade000 !default;
+$tableHeaderCellIconHoverColor: $shade600 !default;
+$tableHeaderCellHighlightBg: $shade900 !default;
+$tableHeaderCellHighlightTextColor: $shade200 !default;
+$tableHeaderCellHighlightHoverBg: $shade700 !default;
+$tableHeaderCellHighlightTextHoverColor: $shade000 !default;
+$tableSortableColumnBadgeSize: 1.143rem !default;
+
+$tableBodyRowBg: $shade000 !default;
+$tableBodyRowTextColor: #495057 !default;
+$tableBodyRowEvenBg: scale-color($tableBodyRowBg, $lightness: -1%) !default;
+$tableBodyRowHoverBg: $shade200 !default;
+$tableBodyRowTextHoverColor: $shade700 !default;
+$tableBodyCellBorder: 1px solid $shade200 !default;
+$tableBodyCellBorderWidth: 0 0 1px 0 !default;
+$tableBodyCellPadding: 1rem 1rem !default;
+
+$tableFooterBg: $primaryColor !default;
+$tableFooterTextColor: $shade000 !default;
+
+$panelHeaderBorderColor:$primaryColor !default;
+$panelHeaderBorder:1px solid $primaryColor !default;
+$panelHeaderBg:$primaryColor !default;
+$panelHeaderTextColor:$shade000 !default;
+$panelHeaderFontWeight:600 !default;
+$panelHeaderPadding:1rem !default;
+$panelToggleableHeaderPadding:.5rem 1rem !default;
+
+
+//action icons
+$actionIconWidth:2rem !default;
+$actionIconHeight:2rem !default;
+$actionIconBg:$shade800 !default;
+$actionIconBorder:0 none !default;
+$actionIconColor:$shade000 !default;
+$actionIconHoverBg:$shade300 !default;
+$actionIconHoverBorderColor:transparent !default;
+$actionIconHoverColor:$shade700 !default;
+$actionIconBorderRadius:50% !default;
+
+//accordion
+$accordionSpacing:0 !default;
+$accordionHeaderBorder:$panelHeaderBorder !default;
+$accordionHeaderBg:$panelHeaderBg !default;
+$accordionHeaderTextColor:$panelHeaderTextColor !default;
+$accordionHeaderFontWeight:$panelHeaderFontWeight !default;
+$accordionHeaderPadding:$panelHeaderPadding !default;
+
+$accordionHeaderHoverBg:$shade200 !default;
+$accordionHeaderHoverBorderColor:$shade300 !default;
+$accordionHeaderTextHoverColor:$shade000 !default;
+
+$accordionHeaderActiveBg:$panelHeaderBg !default;
+$accordionHeaderActiveBorderColor:$shade300 !default;
+$accordionHeaderTextActiveColor:$shade000 !default;
+
+$accordionHeaderActiveHoverBg:$shade200 !default;
+$accordionHeaderActiveHoverBorderColor:$shade300 !default;
+$accordionHeaderTextActiveHoverColor:$shade700 !default;
+
+
+@import '../_variables';
+@import '../../designer/_components';
+@import '../_extensions';
+
+
+.p-toolbar {
+    background: $primaryColor;
+    //   border: $panelHeaderBorder;
+    //   padding: $panelHeaderPadding;
+    //   border-radius: $borderRadius;
+
+    //   .p-toolbar-separator {
+    //       margin: 0 $inlineSpacing;
+    //   }
+}
+
+.p-dialog .p-dialog-header {
+    border-bottom: 0 none;
+    background: $primaryColor;
+    color: $primaryTextColor;
+    padding: 1.5rem;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+}
+
+.page-title {
+    color: #0072BC;
+}
+
+.osmosys-logo {
+    height: 4rem;
+    margin: 0;
+    padding: 0;
+    display: block;
+    align-items: center;
+}
+
+.layout-wrapper.layout-horizontal .layout-topbar .topbar-menu > li > a .topbar-badge {
+    background: red !important;
+}
+
+

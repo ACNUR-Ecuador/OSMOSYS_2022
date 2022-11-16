@@ -1,0 +1,321 @@
+<div class="grid">
+    <p-toast></p-toast>
+    <div class="col-12">
+        <div class="card">
+            <ng-template pTemplate="header">
+                <h3 class="page-title mb-1">Administración de implementación directa</h3>
+                <h5 class="page-title p-mt-1">Asignación de indicadores a oficinas ACNUR</h5>
+                <p-toast></p-toast>
+                <p-messages></p-messages>
+
+                <p-toolbar styleClass="mb-4">
+                    <div class="p-toolbar-group-left">
+                        <button pButton pRipple label="Asignar nuevo indicador" icon="pi pi-plus"
+                                class="p-button-success mr-2 mb-2"
+                                (click)="createItem()"></button>
+                    </div>
+                    <form [formGroup]="periodForm">
+                        <div class="field grid">
+
+                            <label for="periodI" class="col-fixed" style="width:100px; color: white;">Periodo:</label>
+                            <div class="p-col">
+                                <p-dropdown id="periodI" [options]="periods" optionLabel="year"
+                                            (onChange)="onPeriodChange($event.value)"></p-dropdown>
+                            </div>
+
+                        </div>
+                    </form>
+
+                </p-toolbar>
+
+            </ng-template>
+            <p-table #dtIndicatorExecutions [value]="items"
+                     [columns]="selectedColumns"
+                     [rowHover]="true" dataKey="id"
+                     styleClass="p-datatable-customers"
+                     currentPageReportTemplate=" {first} a {last} de {totalRecords} "
+                     [showCurrentPageReport]="true">
+                <ng-template pTemplate="caption">
+
+                    <div class="flex card-container overflow-hidden">
+                        <div
+                            class="flex-none flex align-items-center justify-content-center m-2 px-5  border-round">
+                            <h5 class="m-0">Indicadores de Producto Implementación Directa</h5>
+                        </div>
+                        <div
+                            class="flex-grow-1 flex align-items-center justify-content-center px-5  border-round"></div>
+                        <div
+                            class="flex-none flex align-items-center justify-content-center px-5  border-round">
+                            <p-multiSelect [options]="cols"
+                                           [(ngModel)]="selectedColumns"
+                                           optionLabel="header"
+                                           selectedItemsLabel="{0} columnas seleccionadas"
+                                           [style]="{minWidth: '200px',color:'#6c757d'}"
+                                           placeholder="Seleccione las columnas"
+                                           appendTo="body"></p-multiSelect>
+                            <button type="button" pButton pRipple icon="pi pi-file-excel"
+                                    (click)="exportExcel(dtIndicatorExecutions)"
+                                    class="p-button-success ml-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                            {{col.header}}
+                            <p-sortIcon [field]="col.field"></p-sortIcon>
+                        </th>
+                        <th>
+
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th *ngFor="let col of columns" [ngSwitch]="col.field">
+                            <p-columnFilter *ngSwitchDefault [type]="col.type" [field]="col.field"
+                                            [matchMode]="'contains'"
+                                            [showMenu]="false"> matchMode="contains
+                            </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'state'" type="equals" [field]="col.field"
+                                            [showMenu]="false">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown [ngModel]="value" [options]="states"
+                                                (onChange)="filter($event.value)"
+                                                placeholder="Selecciona..." [showClear]="true">
+                                        <ng-template let-option pTemplate="item">
+                                            <span
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'indicator'"
+                                            type="text"
+                                            [field]="col.field" [showMenu]="false"
+                                            [matchMode]="'indicatorFilter'">
+                            </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'indicator.statement'"
+                                            type="text"
+                                            [field]="col.field" [showMenu]="false"
+                                            [matchMode]="'statementFilter'">
+                            </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'reportingOffice'"
+                                            type="text"
+                                            [field]="col.field" [showMenu]="false"
+                                            [matchMode]="'officeFilter'">
+                            </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'lateMonths'"
+                                            type="text"
+                                            [field]="col.field" [showMenu]="false"
+                                            [matchMode]="'monthListFilter'">
+                            </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'supervisorUser'"
+                                            type="text"
+                                            [field]="col.field" [showMenu]="false"
+                                            [matchMode]="'userFilter'">
+                            </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'assignedUser'"
+                                            type="text"
+                                            [field]="col.field" [showMenu]="false"
+                                            [matchMode]="'userFilter'">
+                            </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'assignedUserBackup'"
+                                            type="text"
+                                            [field]="col.field" [showMenu]="false"
+                                            [matchMode]="'userFilter'">
+                            </p-columnFilter>
+                        </th>
+                        <th>
+
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <tr>
+
+                        <td *ngFor="let col of columns"
+                            [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
+                        >
+                            {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field)}}
+                        </td>
+
+                        <td>
+                            <button pButton pRipple icon="pi pi-pencil" label="editar indicador"
+                                    class="p-button-rounded p-button-primary mr-2"
+                                    (click)="updateAssigment(rowData)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+
+
+                <ng-template pTemplate="summary">
+                    <div class="p-d-flex p-ai-center p-jc-between">
+                        Total {{items ? items.length : 0 }} indicadores.
+                    </div>
+                </ng-template>
+            </p-table>
+
+        </div>
+    </div>
+</div>
+<form [formGroup]="itemForm" (ngSubmit)="saveItem()">
+    <p-dialog [(visible)]="showItemDialog" [style]="{width: '90%'}" header="Asignación de productos"
+              [modal]="true"
+              styleClass="p-fluid" [closable]="false">
+
+        <ng-template pTemplate="content">
+
+            <div class="p-fluid p-formgrid grid">
+                <div class="field col-12 md-12">
+                    <label for="officeI">Oficina Responsable</label>
+                    <p-dropdown id="officeI"
+                                formControlName="reportingOffice"
+                                [options]="officeOptions"
+                                placeholder="Selecciona..."
+                                [filter]="true"
+                                appendTo="body"
+                    >
+                    </p-dropdown>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('reportingOffice',itemForm)">
+                        {{utilsService.getErrorMessageForm('reportingOffice', itemForm)}}
+                    </small>
+                </div>
+
+                <div class="field col-12 md-12">
+                    <label for="statementI">Declaración de Producto</label>
+                    <input type="text" pInputText id="statementI"
+                           formControlName="statement"/>
+                </div>
+                <div class="field col-12 md-12">
+                    <label for="productI">Código de producto</label>
+                    <input type="text" pInputText id="productI"
+                           formControlName="product"/>
+                </div>
+
+                <div class="field col-12 md-12">
+                    <label for="indicatorI">Indicador</label>
+                    <p-dropdown id="indicatorI"
+                                formControlName="indicator"
+                                [options]="indicatorOptions"
+                                placeholder="Selecciona..."
+                                [filter]="true"
+                                dataKey="id"
+                                (onChange)="onChangeIndicator($event.value)"
+                                appendTo="body"
+                    >
+                    </p-dropdown>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('indicator',itemForm)">
+                        {{utilsService.getErrorMessageForm('indicator', itemForm)}}
+                    </small>
+                </div>
+                <div class="field col-6 md-6">
+                    <label for="keepBudgetI">Controlar presupuesto</label>
+                    <div>
+                        <p-inputSwitch id="keepBudgetI"
+                                       formControlName="keepBudget"
+                                       (onChange)="onKeepBudgetChange($event)"
+                        >
+                        </p-inputSwitch>
+                    </div>
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('keepBudget',itemForm)">
+                        {{utilsService.getErrorMessageForm('keepBudget', itemForm)}}
+                    </small>
+                </div>
+                <div class="field col-6 md-6">
+                    <label for="assignedBudgetI">Presupuesto asignado</label>
+                    <p-inputNumber
+                        id="assignedBudgetI"
+                        formControlName="assignedBudget"
+                        mode="currency"
+                        currency="USD"
+                        locale="en-US"
+                    ></p-inputNumber>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('assignedBudget',itemForm)">
+                        {{utilsService.getErrorMessageForm('assignedBudget', itemForm)}}
+                    </small>
+                </div>
+                <div class="field col-12 md-12">
+                    <label for="supervisorUserI">Supervisor del indicador</label>
+                    <p-dropdown id="supervisorUserI"
+                                formControlName="supervisorUser"
+                                [options]="userOptions"
+                                placeholder="Selecciona..."
+                                [filter]="true"
+                                appendTo="body"
+                                dataKey="id"
+                    >
+                    </p-dropdown>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('supervisorUser',itemForm)">
+                        {{utilsService.getErrorMessageForm('supervisorUser', itemForm)}}
+                    </small>
+                </div>
+                <div class="field col-12 md-12">
+                    <label for="assignedUserI">Responsable de Reporte</label>
+                    <p-dropdown id="assignedUserI"
+                                formControlName="assignedUser"
+                                [options]="userOptions"
+                                placeholder="Selecciona..."
+                                [filter]="true"
+                                appendTo="body"
+                                dataKey="id"
+                    >
+                    </p-dropdown>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('assignedUser',itemForm)">
+                        {{utilsService.getErrorMessageForm('assignedUser', itemForm)}}
+                    </small>
+                </div>
+                <div class="field col-12 md-12">
+                    <label for="assignedUserBackupI">Responsable de Reporte Alterno</label>
+                    <p-dropdown id="assignedUserBackupI"
+                                formControlName="assignedUserBackup"
+                                [options]="userOptions"
+                                placeholder="Selecciona..."
+                                [filter]="true"
+                                appendTo="body"
+                                dataKey="id"
+                    >
+                    </p-dropdown>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('assignedUserBackup',itemForm)">
+                        {{utilsService.getErrorMessageForm('assignedUserBackup', itemForm)}}
+                    </small>
+                </div>
+                <div class="field col-12 md-12">
+                    <label for="stateI">Estado</label>
+                    <p-selectButton id="stateI"
+                                    formControlName="state"
+                                    [options]="states"
+                    >
+                    </p-selectButton>
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('state',itemForm)">
+                        {{utilsService.getErrorMessageForm('state', itemForm)}}
+                    </small>
+
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <button pButton type="submit"
+                    [disabled]="!itemForm.valid"
+                    pRipple label="Guardar" icon="pi pi-check"
+            ></button>
+            <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
+                    (click)="cancelItemDialog()"></button>
+            <p-messages></p-messages>
+        </ng-template>
+    </p-dialog>
+</form>

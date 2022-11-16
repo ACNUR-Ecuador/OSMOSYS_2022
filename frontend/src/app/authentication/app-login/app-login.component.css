@@ -1,0 +1,10 @@
+i {
+  opacity: 0.6;
+  transition-duration: 0.12s;
+  color: #2196F3;
+}
+i:hover {
+  opacity: 1;
+}
+
+/*# sourceMappingURL=app-login.component.css.map */

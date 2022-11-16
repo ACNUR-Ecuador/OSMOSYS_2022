@@ -1,0 +1,87 @@
+$gutter: 1rem; //for primeflex grid system
+
+/* Layout */
+@import "assets/layout/styles/layout/layout.scss";
+
+/* PrimeNG */
+@import "../node_modules/primeng/resources/primeng.min.css";
+@import "../node_modules/primeflex/primeflex.scss";
+@import "../node_modules/primeicons/primeicons.css";
+
+/* Code Highlight */
+@import "../node_modules/prismjs/themes/prism-coy.css";
+
+/* Quill Text Editor for p-editor */
+@import "../node_modules/quill/dist/quill.core.css";
+@import "../node_modules/quill/dist/quill.snow.css";
+
+/* Demos */
+@import "assets/demo/styles/flags/flags.css";
+@import "assets/demo/styles/badges.scss";
+
+
+/***values badge***/
+.values-badge {
+    border-radius: 2px;
+    padding: .25em .5rem;
+    // text-transform: uppercase;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .3px;
+
+    &.status-green {
+        background: #C8E6C9;
+        color: #256029;
+    }
+
+    &.status-red {
+        background: #FFCDD2;
+        color: #C63737;
+    }
+
+    &.status-yellow {
+        background: #FEEDAF;
+        color: #8A5340;
+    }
+    &.status-orange {
+        background: #FEEDAF;
+        color: #8A5340;
+    }
+    &.status-white {
+        background: white;
+        color: #256029;
+        border: 1px solid #0d3c61;
+    }
+}
+/** totals**/
+.subtotal_value{
+    background-color: #CCE3F2 !important;
+    color: #000000 !important;
+    text-align: right !important;
+}
+.total_value {
+    background-color: #66AAD7 !important;
+    color: #000000 !important;
+    text-align: right !important;
+}
+.table-title{
+    text-align: left;
+    padding: 1rem 1rem;
+    border: 1px solid #e9ecef;
+    font-weight: 600;
+    color: #fdfeff !important;
+    background: #338EC9 !important;
+}
+.p-datatable .p-sortable-column.p-highlight {
+    background: rgb(0, 114, 188, 0.4);
+    color: #0072bc;
+}
+/*****powerbi********/
+/**powerbiBirder*/
+.powerbi-total-hidde {
+    position: absolute;
+    height: 90%;
+    width: 100%;
+    border: none;
+    clip-path: polygon(0% 0%, 0% calc(100% - 36px), 100% calc(100% - 36px), 100% 0%);
+}

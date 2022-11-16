@@ -1,0 +1,9 @@
+i {
+    opacity: 0.6;
+    transition-duration: .12s;
+    color: #2196F3;
+
+    &:hover {
+        opacity: 1;
+    }
+}
