@@ -3,22 +3,28 @@
         <a #menubutton tabindex="0" class="menu-button p-trigger" (click)="onMenuButtonClick()">
             <i class="pi pi-chevron-left"></i>
         </a>
-        <img class="horizontal-logo" [routerLink]="['/']" [src]="'assets/layout/images/logo-'+ logo + '.svg'" alt="diamond-layout"/>
+        <img class="horizontal-logo" [routerLink]="['/']" [src]="'assets/layout/images/unhcr_logo_horizontal_white.png'"
+             alt="osmosys"/>
         <span class="topbar-separator"></span>
         <app-breadcrumb></app-breadcrumb>
-        <img class="mobile-logo" [src]="'assets/layout/images/logo-'+ logo + '.svg'" alt="diamond-layout"/>
+        <img class="mobile-logo" [src]="'assets/layout/images/logo-'+ logo + '.svg'" alt="osmosys"/>
     </div>
 
     <app-sidebar></app-sidebar>
     <div class="layout-mask modal-in"></div>
+    <div style="display: flex; align-items: center; flex-grow: 2; justify-content: center;">
+        <img class="osmosys-logo" [routerLink]="['/']" [src]="'assets/layout/images/Logo_osmosys_white.png'"
+             alt="osmosys"/>
+    </div>
 
     <div class="topbar-right">
         <ul class="topbar-menu">
-            <li class="search-item">
+
+            <!--            <li class="search-item">
                 <a tabindex="0" (click)="onSearchClick()" class="p-trigger">
                     <i class="pi pi-search"></i>
                 </a>
-            </li>
+                        </li>-->
             <li class="static sm:relative">
                 <a tabindex="0" pStyleClass="@next" enterClass="hidden" enterActiveClass="scalein" leaveToClass="hidden" leaveActiveClass="fadeout" [hideOnOutsideClick]="true">
                     <i class="pi pi-bell"></i>
@@ -66,8 +72,9 @@
             </li>
 
             <li class="profile-item static sm:relative">
-                <a tabindex="0" pStyleClass="@next" enterClass="hidden" enterActiveClass="scalein" leaveToClass="hidden" leaveActiveClass="fadeout" [hideOnOutsideClick]="true">
-                    <img src="assets/demo/images/avatar/profile.jpg" alt="diamond-layout" class="profile-image"/>
+                <a tabindex="0" pStyleClass="@next" enterClass="hidden" enterActiveClass="scalein" leaveToClass="hidden"
+                   leaveActiveClass="fadeout" [hideOnOutsideClick]="true">
+                    <img src="assets/demo/images/avatar/profile.jpg" alt="osmosys" class="profile-image"/>
                     <span class="profile-name">Amelia Stone</span>
                 </a>
                 <ul class="list-none p-3 m-0 border-round shadow-2 absolute surface-overlay hidden origin-top w-full sm:w-12rem mt-2 left-0 top-auto">
