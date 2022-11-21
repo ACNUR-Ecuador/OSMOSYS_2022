@@ -1,36 +1,32 @@
-<p-card>
-    <ng-template pTemplate="header">
-        <p-toast key="dialogToast" position="top-right"></p-toast>
-        <p-messages></p-messages>
-        <div class="fluid card" *ngIf="render">
-            <div class="field">
-                <p>Para el reporte de este indicador general, recuerde que <b><u>una persona beneficiaria debe
-                    contabilizarse
-                    solamente una vez</u></b>, a pesar de que haya recibido diferentes servicios por parte del proyecto.
-                    <b><u>No se considerarán como parte de la población objetivo del proyecto a funcionarios públicos o
-                        de
-                        instituciones privadas o de la sociedad civil</u></b> que participen en el proyecto en el marco
-                    del
-                    fortalecimiento de capacidades para atender a las necesidades de las personas de interés.
-                </p>
-            </div>
+<div class="card p-0">
+    <p-toast key="dialogToast" position="top-right"></p-toast>
+    <p-messages></p-messages>
+    <div class="fluid card" *ngIf="render">
+        <div class="field">
+            <p>Para el reporte de este indicador general, recuerde que <b><u>una persona beneficiaria debe
+                contabilizarse
+                solamente una vez</u></b>, a pesar de que haya recibido diferentes servicios por parte del proyecto.
+                <b><u>No se considerarán como parte de la población objetivo del proyecto a funcionarios públicos o
+                    de
+                    instituciones privadas o de la sociedad civil</u></b> que participen en el proyecto en el marco
+                del
+                fortalecimiento de capacidades para atender a las necesidades de las personas de interés.
+            </p>
         </div>
-    </ng-template>
+    </div>
+
     <form #myForm="ngForm" [formGroup]="formItem" (ngSubmit)="saveMonth()">
-        <p-card>
-            <ng-template pTemplate="header">
-                <div class="col-12">
+        <div class="card p-0">
                     <div *ngIf="render">
                         <app-chart-indicator-execution *ngIf="render"
                                                        [month]="month"
                                                        [indicatorExecution]="indicatorExecution"
                         ></app-chart-indicator-execution>
                     </div>
-
-                </div>
-            </ng-template>
+        </div>
+        <div class="p-card p-0">
             <fieldset style="border-style: none; margin: unset; padding: unset" [disabled]="!editable">
-                <div class="grid m-2" *ngIf="render">
+                <div class="grid m-0" *ngIf="render">
                     <div class="md:col-6 sm:col-12" *ngFor="let dissagregation of fourDimentionDissagregations">
                         <app-dissagregation-four-integer-dimensions
                             *ngIf="monthValuesMap.get(dissagregation)"
@@ -79,7 +75,7 @@
                 </div>
                 <div class="card">
                     <div class="p-fluid p-formgrid grid">
-                        <div class="field col-12 md:col-12">
+                        <div class="field md:col-12">
                             <label for="sourcesI">Fuente de Verificación</label>
                             <p-multiSelect id="sourcesI"
                                            [options]="sourceTypes"
@@ -92,7 +88,7 @@
                                 {{utilsService.getErrorMessageForm('sources', formItem)}}
                             </small>
                         </div>
-                        <div class="field col-12 md:col-4" *ngIf="showOtherSource">
+                        <div class="field md:col-4" *ngIf="showOtherSource">
                             <label for="sourceOtherI">Otro</label>
                             <input id="sourceOtherI" type="text" pInputText formControlName="sourceOther">
                             <small class="p-error"
@@ -100,7 +96,7 @@
                                 {{utilsService.getErrorMessageForm('sourceOther', formItem)}}
                             </small>
                         </div>
-                        <div class="field col-12 md:col-12">
+                        <div class="field md:col-12">
                             <label for="commentaryI">Información Cualitativa</label><br>
                             <small class="col-12">
                                 Máximo 1.000 caracteres.
@@ -132,7 +128,7 @@
 
             <div class="card">
                 <div class="p-fluid p-formgrid grid">
-                    <div class="field col-12 md:col-12">
+                    <div class="field md:col-12">
                         <label for="checkedI">Verificación Punto Focal</label>
                         <p-dropdown id="checkedI" [options]="chekedOptions" formControlName="checked"
                                     appendTo="body"></p-dropdown>
@@ -144,8 +140,8 @@
                 </div>
             </div>
 
-            <ng-template pTemplate="footer">
-                <div class="col-12 md:col-12">
+            <div class="p-card p-0">
+                <div class="md:col-12">
                     <p-messages></p-messages>
                 </div>
                 <div class="flex justify-content-end flex-wrap" *ngIf="editable || isAdmin || isProjectFocalPoint">
@@ -165,10 +161,10 @@
                     <button pButton type="button" pRipple label="Salir" icon="pi pi-times"
                             (click)="cancel()"></button>
                 </div>
-            </ng-template>
-        </p-card>
+            </div>
+        </div>
     </form>
-</p-card>
+</div>
 <p-dialog [(visible)]="showErrorResume" [closable]="false" [closeOnEscape]="false">
     <ng-template pTemplate="header">
         Existen Errores en lo Valores

@@ -1,46 +1,45 @@
 <p-panel>
     <ng-template pTemplate="header">
-        <div class="grid w-full">
+        <div class="flex w-full">
             <div
-                class="col-12 md:col-4 sm:col-12 justify-content-start">
+                class="flex-grow-1 justify-content-start">
                 Desagregación por {{this.enumsService.resolveLabel($any('DissagregationType'), dissagregationType)}}
             </div>
             <div
-                class="col-12 md:col sm:col-12 justify-content-start">
-            </div>
-            <div
-                class="col-12 md:col-2 sm:col-12 flex justify-content-end m-2"
+                class="flex-auto mx-2 max-w-10rem"
                 style="color: black;"
                 [style.background]="getTotalIndicator(valuesGroupRowsMap)>0?'#C8E6C9':'#FEEDAF'"
             >
-                <div class="col-6 p-0">Total:</div>
-                <div class="col-6 p-0"
-                     style="text-align: right">{{getTotalIndicator(valuesGroupRowsMap) | number:'1.0-0'}}</div>
+                <div class="flex">
+
+                    <div class="flex-auto mx-2">Total:</div>
+                    <div class="flex-auto mx-2"
+                         style="text-align: right">{{getTotalIndicator(valuesGroupRowsMap) | number:'1.0-0'}}</div>
+                </div>
             </div>
         </div>
-
     </ng-template>
     <p-accordion>
         <p-accordionTab *ngFor="let groupL1 of dissagregationOptionsGroupsL1"
                         [ngClass]="getTotalIndicatorValuesMap(valuesGroupRowsMap.get(groupL1))>0?'p-accordion-filled-parent':'p-accordion-empty-parent'"
         >
             <ng-template pTemplate="header">
-                <div class="grid w-full">
+                <div class="flex w-full">
                     <div
-                        class="col-12 md:col-4 sm:col-12 justify-content-start">
+                        class="flex-grow-1 justify-content-start">
                         {{groupL1.label}}
                     </div>
                     <div
-                        class="col-12 md:col sm:col-12 justify-content-start">
-                    </div>
-                    <div
-                        class="col-12 md:col-2 sm:col-12 flex justify-content-end m-2"
+                        class="flex-auto mx-2  max-w-10rem"
                         style="color: black;"
-                        [style.background]="getTotalIndicatorValuesMap(valuesGroupRowsMap.get(groupL1))>0?'#C8E6C9':'#FEEDAF'"
+                        [style.background]="getTotalIndicator(valuesGroupRowsMap)>0?'#C8E6C9':'#FEEDAF'"
                     >
-                        <div class="col-6 p-0">Total:</div>
-                        <div class="col-6 p-0"
-                             style="text-align: right">{{getTotalIndicatorValuesMap(valuesGroupRowsMap.get(groupL1)) | number:'1.0-0'}}</div>
+                        <div class="flex">
+
+                            <div class="flex-auto mx-2">Total:</div>
+                            <div class="flex-auto mx-2"
+                                 style="text-align: right">{{getTotalIndicatorValuesMap(valuesGroupRowsMap.get(groupL1)) | number:'1.0-0'}}</div>
+                        </div>
                     </div>
                 </div>
             </ng-template>
@@ -49,24 +48,29 @@
                     <p-accordionTab *ngFor="let groupL2 of dissagregationOptionsGroupsL2"
                     >
                         <ng-template pTemplate="header">
-                            <div class="grid w-full">
+                            <div class="flex w-full">
                                 <div
-                                    class="col-12 md:col-4 sm:col-12 justify-content-start">
+                                    class="flex-grow-1 justify-content-start">
+                                    Desagregación
+                                    por {{this.enumsService.resolveLabel($any('DissagregationType'), dissagregationType)}}
+
                                     {{groupL2.label}}
                                 </div>
                                 <div
-                                    class="col-12 md:col sm:col-12 justify-content-start">
-                                </div>
-                                <div
-                                    class="col-12 md:col-2 sm:col-12 flex justify-content-end m-2"
+                                    class="flex-auto mx-2 max-w-10rem"
                                     style="color: black;"
                                     [style.background]="this.utilsService.getTotalIndicatorValuesArrayArray(valuesGroupRowsMap.get(groupL1).get(groupL2))>0?'#C8E6C9':'#FEEDAF'"
                                 >
-                                    <div class="col-6 p-0">Total:</div>
-                                    <div class="col-6 p-0" style="text-align: right">
-                                        {{this.utilsService.getTotalIndicatorValuesArrayArray(valuesGroupRowsMap.get(groupL1).get(groupL2)) | number:'1.0-0'}}
+                                    <div class="flex">
+
+                                        <div class="flex-auto mx-2">Total:</div>
+                                        <div class="flex-auto mx-2"
+                                             style="text-align: right">
+                                            {{this.utilsService.getTotalIndicatorValuesArrayArray(valuesGroupRowsMap.get(groupL1).get(groupL2)) | number:'1.0-0'}}
+                                        </div>
                                     </div>
                                 </div>
+
                             </div>
                         </ng-template>
                         <ng-template pTemplate="content">
@@ -119,7 +123,6 @@
                     </p-accordionTab>
                 </p-accordion>
             </ng-template>
-
         </p-accordionTab>
     </p-accordion>
 </p-panel>
