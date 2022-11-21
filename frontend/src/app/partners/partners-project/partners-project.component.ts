@@ -123,8 +123,8 @@ export class PartnersProjectComponent implements OnInit {
         }
         const ref = this.dialogService.open(GeneralIndicatorFormComponent, {
                 header: 'Indicador General: ' + title + this.getRoleTitle(),
-                width: '90%',
-                height: '90%',
+                width: '98%',
+                height: '80%',
                 closeOnEscape: false,
                 autoZIndex: false,
                 closable: false,
