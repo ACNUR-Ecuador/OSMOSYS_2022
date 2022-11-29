@@ -8,6 +8,7 @@ public class AreaResumeWeb implements Serializable {
     AreaWeb area;
     Integer numberOfIndicators;
     Integer numberOfLateIndicators;
+    Integer numberOfSoonReportIndicators;
     List<IndicatorWeb> indicators;
     private List<Long> indicatorExecutionIds;
 
@@ -49,5 +50,13 @@ public class AreaResumeWeb implements Serializable {
 
     public void setIndicatorExecutionIds(List<Long> indicatorExecutionIds) {
         this.indicatorExecutionIds = indicatorExecutionIds;
+    }
+
+    public Integer getNumberOfSoonReportIndicators() {
+        return numberOfSoonReportIndicators;
+    }
+
+    public void setNumberOfSoonReportIndicators(Integer numberOfSoonReportIndicators) {
+        this.numberOfSoonReportIndicators = numberOfSoonReportIndicators;
     }
 }

@@ -12,13 +12,21 @@ import {MessageModule} from "primeng/message";
 import {ButtonModule} from "primeng/button";
 import {BadgeModule} from "primeng/badge";
 import {DialogService} from "primeng/dynamicdialog";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ToastModule} from "primeng/toast";
 import {MessagesModule} from "primeng/messages";
 import {UserPipe} from "../shared/pipes/user.pipe";
 import {OfficeOrganizationPipe} from "../shared/pipes/office-organization.pipe";
 import {IndicatorPipe} from "../shared/pipes/indicator.pipe";
 import {TooltipModule} from "primeng/tooltip";
+import {CodeDescriptionPipe} from "../shared/pipes/code-description.pipe";
+import {MonthPipe} from "../shared/pipes/month.pipe";
+import {MonthListPipe} from "../shared/pipes/month-list.pipe";
+import {BooleanYesNoPipe} from "../shared/pipes/boolean-yes-no.pipe";
+import {TableModule} from "primeng/table";
+import {OverlayPanelModule} from "primeng/overlaypanel";
+import {ToggleButtonModule} from "primeng/togglebutton";
+import {SharedModule} from "../shared/shared.module";
 
 
 @NgModule({
@@ -39,13 +47,22 @@ import {TooltipModule} from "primeng/tooltip";
         BadgeModule,
         ReactiveFormsModule,
         ToastModule,
-        TooltipModule
+        TooltipModule,
+        TableModule,
+        FormsModule,
+        OverlayPanelModule,
+        ToggleButtonModule,
+        SharedModule
     ],
     providers: [
         DialogService,
         UserPipe,
         OfficeOrganizationPipe,
-        IndicatorPipe
+        IndicatorPipe,
+        CodeDescriptionPipe,
+        MonthPipe,
+        MonthListPipe,
+        BooleanYesNoPipe
     ]
 })
 export class DirectImplementationModule {

@@ -109,12 +109,17 @@ public class ModelWebTransformationService {
             arw.setNumberOfLateIndicators(indicatorExecutionsArea.size());
             arw.setIndicatorExecutionIds(new ArrayList<>());
             int lateCount = 0;
+            int soonReportCount = 0;
             List<IndicatorWeb> indicators = new ArrayList<>();
             for (IndicatorExecutionWeb indicatorExecutionWeb : indicatorExecutionsArea) {
                 indicators.add(indicatorExecutionWeb.getIndicator());
                 arw.getIndicatorExecutionIds().add(indicatorExecutionWeb.getId());
+                LOGGER.error(indicatorExecutionWeb.getLate());
                 if (indicatorExecutionWeb.getLate().equals(TimeStateEnum.LATE)) {
                     lateCount++;
+                }
+                if (indicatorExecutionWeb.getLate().equals(TimeStateEnum.SOON_REPORT)) {
+                    soonReportCount++;
                 }
             }
             indicators.sort((o1, o2) -> {
@@ -127,6 +132,7 @@ public class ModelWebTransformationService {
             });
 
             arw.setNumberOfLateIndicators(lateCount);
+            arw.setNumberOfSoonReportIndicators(soonReportCount);
             arw.setNumberOfIndicators(indicators.size());
             arw.setIndicators(indicators);
             r.sort(Comparator.comparing(o -> o.getArea().getId()));

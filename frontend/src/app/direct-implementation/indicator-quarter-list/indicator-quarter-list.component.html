@@ -1,1 +1,43 @@
-<p>indicator-quarter-list works!</p>
+<div class="card">
+    <p-table [value]="quarterMonthResumes" rowGroupMode="rowspan" groupRowsBy="quarterQuarter"
+             sortField="representative.name" sortMode="single" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Mes</th>
+                <th>Ejecución Mensual</th>
+                <th></th>
+                <th *ngIf="isAdmin || isSupervisor">Bloqueo Mes</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowdata let-rowIndex="rowIndex" let-rowgroup="rowgroup"
+                     let-rowspan="rowspan">
+            <tr>
+                <td>
+                    <span class="p-text-bold p-ml-2"
+                    >{{rowdata.monthMonth }}</span>
+                </td>
+                <td style="text-align: center !important;">
+                    <span
+                        [class]="'values-badge status-'+utilsService.valueToBadgeStatusAlert(rowdata.monthLate)"
+                        class="p-text-bold p-ml-2">{{rowdata.monthTotalExecution | valuesState:rowdata.monthMonth :rowdata.monthYear}}</span>
+                </td>
+                <td>
+                    <button pButton label="Ver valores"
+                            (click)="viewValues(rowdata.monthId)"></button>
+                </td>
+                <td *ngIf="isAdmin || isSupervisor">
+                    <p-toggleButton
+                        [ngModelOptions]="{standalone: true}"
+                        [ngModel]="rowdata.blockUpdate"
+                        onLabel="{{' bloqueado'}}"
+                        offLabel="{{' desbloqueado'}}"
+                        onIcon="pi pi-lock"
+                        offIcon="pi pi-lock-open"
+                        pTooltip="{{indicatorExecution.indicator.blockAfterUpdate?'Solo puede ser desbloqueado por el administrador':'Bloqueo de Actualizaciòn' }}"
+                        [disabled]="indicatorExecution.indicator.blockAfterUpdate && !isAdmin"
+                        (onChange)="changeMonthBlocking(rowdata,$event)"></p-toggleButton>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
