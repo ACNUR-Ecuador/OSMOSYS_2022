@@ -1,0 +1,157 @@
+<div class="grid">
+    <div class="card col-12">
+        <h3 class="page-title p-mb-1">Implementación Directa</h3>
+        <h5 class="page-title p-mt-1">Indicadores reportados</h5>
+
+        <form [formGroup]="queryForm" (ngSubmit)="search()">
+            <div class="card p-fluid p-formgrid grid">
+                <div class="field col-12 md:col-3">
+                    <label for="periodI">Periodo</label>
+                    <p-dropdown id="periodI"
+                                formControlName="period"
+                                [options]="periodOptions"
+                                placeholder="Selecciona..."
+                                [filter]="true"
+                                appendTo="body"
+                                dataKey="id"
+                                (onChange)="search()"
+                    >
+                    </p-dropdown>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('period',queryForm)">
+                        {{utilsService.getErrorMessageForm('period', queryForm)}}
+                    </small>
+                </div>
+                <div class="field col-12 md:col-3">
+                    <label for="officeI">Oficina</label>
+                    <p-dropdown id="officeI"
+                                formControlName="office"
+                                [options]="officeOptions"
+                                placeholder="Selecciona..."
+                                [filter]="true"
+                                appendTo="body"
+                                dataKey="id"
+                                [showClear]="true"
+                                (onChange)="search()"
+                    >
+                    </p-dropdown>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('office',queryForm)">
+                        {{utilsService.getErrorMessageForm('office', queryForm)}}
+                    </small>
+                </div>
+                <div class="field col-12 md:col-3">
+                    <label for="officeI">Usuario</label>
+                    <p-dropdown id="userI"
+                                formControlName="user"
+                                [options]="userOptions"
+                                placeholder="Selecciona..."
+                                [filter]="true"
+                                appendTo="body"
+                                dataKey="id"
+                                [showClear]="true"
+                                (onChange)="search()"
+                    >
+                    </p-dropdown>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('user',queryForm)">
+                        {{utilsService.getErrorMessageForm('user', queryForm)}}
+                    </small>
+                </div>
+                <div class="field col-12 md:col-3">
+                    <label for="officeI">Roles</label>
+                    <p-multiSelect id="rolesI"
+                                   formControlName="roles"
+                                   [options]="roleOptions"
+                                   placeholder="Selecciona..."
+                                   [filter]="true"
+                                   appendTo="body"
+                                   (onChange)="search()"
+                    >
+                    </p-multiSelect>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('roles',queryForm)">
+                        {{utilsService.getErrorMessageForm('roles', queryForm)}}
+                    </small>
+                </div>
+            </div>
+        </form>
+
+        <div class="card">
+            <div class="grid">
+                <div class="col-12 md:col-3"
+                     *ngFor="let area of areas">
+                    <p-button
+                        (onClick)="goToArea(area)"
+                        [style]="{'width':'100%','height':'10vh'}"
+                        styleClass="{{getButtonStyles(area)}}"
+                    >
+                        <!--suppress HtmlUnknownTag -->
+                        <ng-template pTemplate="content">
+                            <div
+                                class="grid w-full h-full m-0 align-content-center"
+                            >
+                                <div class="col-3 md:col-3 m-0 p-0 align-self-center">
+                                    <img
+                                        style="max-height: 8vh;"
+                                        alt="logo" src="{{'assets/images/areas_icons/'+area.area.code+'.svg'}}"
+                                    />
+                                </div>
+                                <div class="col-8 md:col-8 m-0 p-0 align-self-center">
+                                    {{area.area.description}}
+                                </div>
+                                <div class="col-1 md:col-1 m-0 p-0 ">
+                                    <p-badge [value]="area.numberOfIndicators+''" severity="info"
+                                             pTooltip="{{area.numberOfIndicators +' indicadores'}}"
+                                             size="large"></p-badge>
+                                    <p-badge *ngIf="(area.numberOfLateIndicators >0)"
+                                             [value]="area.numberOfLateIndicators+''" severity="danger"
+                                             pTooltip="{{area.numberOfLateIndicators +' indicadores atrasados'}}"
+                                    ></p-badge>
+                                    <p-badge *ngIf="(area.numberOfSoonReportIndicators >0)"
+                                             [value]="area.numberOfSoonReportIndicators+''" severity="warning"
+                                             pTooltip="{{area.numberOfSoonReportIndicators +' indicadores por reportar pronto'}}"
+                                    ></p-badge>
+                                </div>
+                            </div>
+
+
+                        </ng-template>
+                    </p-button>
+                </div>
+            </div>
+        </div>
+        <form [formGroup]="indicatorForm" (ngSubmit)="search()">
+            <div class="card p-fluid p-formgrid grid">
+
+                <div class="field col-12 md:col-6">
+
+                    <label for="periodI">Buscador de indicadores</label>
+                    <p-dropdown id="indicatorI"
+                                formControlName="indicator"
+                                [options]="indicatorOptions"
+                                placeholder="Selecciona..."
+                                [filter]="true"
+                                appendTo="body"
+                                dataKey="id"
+                                (onChange)="highlightIndicator($event.value)"
+                                (onClear)="highlightIndicator(null)"
+                                [showClear]="true"
+                                [style]="{'width':'300px'}"
+                    >
+                    </p-dropdown>
+                </div>
+
+                <button pButton type="button" label="Ver Todos los Indicadores" icon="pi pi-window-maximize"
+                        class="p-button-success" [disabled]="viewAllDisabled"
+                        (click)="viewAll()"></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
