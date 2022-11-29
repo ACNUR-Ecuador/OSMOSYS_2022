@@ -77,7 +77,7 @@
                         ></app-custom-dissagregation-integer>
                     </div>
                 </div>
-                <div class="card p-fluid">
+                <div class="card p-fluid" *ngIf="indicatorExecution.keepBudget">
                     <h5>Presupuesto</h5>
                     <div class="field grid">
                         <label class="col-4" for="assignedBudgetI">Presupuesto Asignado: </label>

@@ -1,26 +1,34 @@
-<p-card>
-    <ng-template pTemplate="header">
-        <p-toast key="dialogToast" position="top-right"></p-toast>
-        <p-messages></p-messages>
-        <div class="p-d-flex p-jc-end">
+<div class="card p-0" *ngIf="render">
+    <p-toast key="dialogToast" position="top-right"></p-toast>
+    <p-messages></p-messages>
+    <div class="card p-2" *ngIf="hasLocationDissagregation || indicatorExecution.activityDescription">
+        <div class="flex justify-content-end">
             <button pButton *ngIf="hasLocationDissagregation" type="button" pRipple label="Agregar Cantones"
                     icon="pi pi-plus"
                     (click)="openLocationsDialog()"></button>
         </div>
-    </ng-template>
-    <form [formGroup]="formItem" (ngSubmit)="saveMonth()">
-        <p-card>
-            <ng-template pTemplate="header">
+        <div class="fluid" *ngIf="indicatorExecution.activityDescription">
+            <div class="field">
+                <label>Descripción de la actividad:</label>
+                {{indicatorExecution.activityDescription}}
+            </div>
+        </div>
+    </div>
+    <form #myForm="ngForm" [formGroup]="formItem" (ngSubmit)="saveMonth()">
+        <div class="card p-0">
+            <div *ngIf="render">
 
                 <app-chart-indicator-execution *ngIf="render"
                                                [month]="month"
                                                [indicatorExecution]="indicatorExecution"
                 ></app-chart-indicator-execution>
 
-            </ng-template>
+            </div>
+        </div>
+        <div class="card p-0">
             <fieldset style="border-style: none; margin: unset; padding: unset" [disabled]="!editable">
-                <div class="grid m-2" *ngIf="render">
-                    <div class="col-12" *ngFor="let dissagregation of fourDimentionDissagregations">
+                <div class="grid m-0" *ngIf="render">
+                    <div class="col-12 md:col-6" *ngFor="let dissagregation of fourDimentionDissagregations">
                         <app-dissagregation-four-integer-dimensions
                             *ngIf="monthValuesMap.get(dissagregation)"
                             [dissagregationType]="dissagregation"
@@ -28,9 +36,7 @@
                             [editable]="editable"
                         ></app-dissagregation-four-integer-dimensions>
                     </div>
-                </div>
-                <div class="grid m-2" *ngIf="render">
-                    <div class="col-12" *ngFor="let dissagregation of threeDimentionDissagregations">
+                    <div class="col-12 md:col-6" *ngFor="let dissagregation of threeDimentionDissagregations">
                         <app-dissagregation-three-integer-dimensions
                             *ngIf="monthValuesMap.get(dissagregation)"
                             [dissagregationType]="dissagregation"
@@ -38,9 +44,7 @@
                             [editable]="editable"
                         ></app-dissagregation-three-integer-dimensions>
                     </div>
-                </div>
-                <div class="grid m-2" *ngIf="render">
-                    <div class="col-12" *ngFor="let dissagregation of noDimentionDissagregations">
+                    <div class="col-12 md:col-6" *ngFor="let dissagregation of noDimentionDissagregations">
                         <app-dissagregation-no-dissagregation-integer
                             *ngIf="monthValuesMap.get(dissagregation)"
                             [month]="month"
@@ -49,11 +53,8 @@
                             [editable]="editable"
                         ></app-dissagregation-no-dissagregation-integer>
                     </div>
-                </div>
-                <div class="grid m-2" *ngIf="render">
-                    <div class="col-4"
+                    <div class="col-12 md:col-6"
                          *ngFor="let dissagregation of oneDimentionDissagregations ">
-
                         <app-dissagregation-one-integer-dimensions
                             *ngIf="monthValuesMap.get(dissagregation)"
                             [dissagregationType]="dissagregation"
@@ -61,9 +62,7 @@
                             [editable]="editable"
                         ></app-dissagregation-one-integer-dimensions>
                     </div>
-                </div>
-                <div class="grid m-2" *ngIf="render">
-                    <div class="col-6" *ngFor="let dissagregation of twoDimentionDissagregations">
+                    <div class="col-12 md:col-6" *ngFor="let dissagregation of twoDimentionDissagregations">
                         <app-dissagregation-two-integer-dimentions
                             *ngIf="monthValuesMap.get(dissagregation)"
                             [dissagregationType]="dissagregation"
@@ -71,11 +70,13 @@
                             [editable]="editable"
                         ></app-dissagregation-two-integer-dimentions>
                     </div>
-                </div>
 
-                <div class="grid m-2"
-                     *ngIf="render && monthCustomDissagregatoinValues!== null && monthCustomDissagregatoinValues.length>0">
-                    <div class="col-6" *ngFor="let monthCustomDissagregatoinValue of monthCustomDissagregatoinValues">
+                </div>
+                <div class="grid"
+                     *ngIf="render && monthCustomDissagregatoinValues!== null && monthCustomDissagregatoinValues.length>0"
+                >
+                    <div class="col-12 md:col-6"
+                         *ngFor="let monthCustomDissagregatoinValue of monthCustomDissagregatoinValues">
                         <app-custom-dissagregation-integer
                             [values]="monthCustomDissagregatoinValue.indicatorValuesCustomDissagregation"
                             [customDissagregation]="monthCustomDissagregatoinValue.customDissagregation"
@@ -83,45 +84,45 @@
                         ></app-custom-dissagregation-integer>
                     </div>
                 </div>
-                <div class="card col-12">
-                    <div class="p-fluid p-formgrid grid">
-                        <div class="field col-12 p-md-8" *ngIf="indicatorExecution.keepBudget">
-                            <label for="assignedBudgetI">Presupuesto</label>
-                            <div class="field grid p-pl-4">
-                                <label for="assignedBudgetI" class="col-fixed">Presupuesto Asignado: </label>
-                                <div class="p-col">
-                                    <label
-                                        for="assignedBudgetI">{{indicatorExecution.assignedBudget | currency:'USD':true:'1.2-2'}}</label>
-                                </div>
-                            </div>
-                            <div class="field grid p-pl-4">
-                                <label for="assignedBudgetI" class="col-fixed">Presupuesto Ejecutado: </label>
-                                <div class="p-col">
-                                    <label
-                                        for="assignedBudgetI">{{indicatorExecution.availableBudget| currency:'USD':true:'1.2-2'}}</label>
-                                </div>
-                            </div>
-                            <div class="field grid p-pl-4">
-                                <label for="assignedBudgetI" class="col-fixed">Presupuesto Distribuido este
-                                    Mes: </label>
-                                <div class="p-col">
-                                    <p-inputNumber
-                                        id="assignedBudgetI"
-                                        formControlName="usedBudget"
-                                        mode="currency"
-                                        currency="USD"
-                                        locale="en-US"
-                                    ></p-inputNumber>
-                                </div>
-                            </div>
+                <div class="card fluid" *ngIf="indicatorExecution.keepBudget">
+                    <h5>Presupuesto</h5>
+                    <div class="field grid">
+                        <label class="col-4" for="assignedBudgetI">Presupuesto Asignado: </label>
+                        <div class="col-6">
+                            <label
+                                for="assignedBudgetI">{{indicatorExecution.assignedBudget | currency:'USD':true:'1.2-2'}}</label>
+                        </div>
+                    </div>
+                    <div class="field grid">
+                        <label class="col-4" for="assignedBudgetI">Presupuesto Ejecutado: </label>
+                        <div class="col-6">
+                            <label
+                                for="assignedBudgetI">{{indicatorExecution.availableBudget| currency:'USD':true:'1.2-2'}}</label>
+                        </div>
+
+                    </div>
+                    <div class="field grid" >
+                        <label class="col-4" for="assignedBudgetI">Presupuesto Distribuido este
+                            Mes:: </label>
+                        <div class="col-6">
+                            <p-inputNumber
+                                id="assignedBudgetI"
+                                formControlName="usedBudget"
+                                mode="currency"
+                                currency="USD"
+                                locale="en-US"
+                            ></p-inputNumber>
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('usedBudget',formItem)">
                                 {{utilsService.getErrorMessageForm('usedBudget', formItem)}}
                             </small>
                         </div>
                     </div>
+                </div>
+
+                <div class="card">
                     <div class="p-fluid p-formgrid grid">
-                        <div class="field col-12 p-md-8">
+                        <div class="field cold-12 md:col-7">
                             <label for="sourcesI">Fuente de Verificación</label>
                             <p-multiSelect id="sourcesI"
                                            [options]="sourceTypes"
@@ -134,7 +135,7 @@
                                 {{utilsService.getErrorMessageForm('sources', formItem)}}
                             </small>
                         </div>
-                        <div class="field col-12 p-md-4" *ngIf="showOtherSource">
+                        <div class="field cold-12 md:col-4" *ngIf="showOtherSource">
                             <label for="sourceOtherI">Otro</label>
                             <input id="sourceOtherI" type="text" pInputText formControlName="sourceOther">
                             <small class="p-error"
@@ -142,7 +143,7 @@
                                 {{utilsService.getErrorMessageForm('sourceOther', formItem)}}
                             </small>
                         </div>
-                        <div class="field col-12 p-md-12">
+                        <div class="field md:col-12">
                             <label for="commentaryI">Información Cualitativa</label><br>
                             <small class="col-12">
                                 {{'Máximo 1.000 caracteres. '}}{{indicatorExecution.indicator.qualitativeInstructions}}
@@ -159,57 +160,62 @@
                             </small>
                         </div>
                     </div>
-
                 </div>
             </fieldset>
-            <div class="card col-12">
-                <div class="p-fluid p-formgrid grid">
-                    <div class="field col-12 p-md-12">
-                        <label for="checkedI">Verificación Supervisor</label>
-                        <p-dropdown id="checkedI" [options]="chekedOptions" formControlName="checked"
-                                    appendTo="body"></p-dropdown>
-                        <small class="p-error"
-                               *ngIf="utilsService.showErrorForm('checked',formItem)">
-                            {{utilsService.getErrorMessageForm('checked', formItem)}}
-                        </small>
-                    </div>
+        </div>
+        <div class="card">
+            <div class="p-fluid p-formgrid grid">
+                <div class="field md:col-12">
+                    <label for="checkedI">Verificación Punto Focal</label>
+                    <p-dropdown id="checkedI" [options]="chekedOptions" formControlName="checked"
+                                appendTo="body"></p-dropdown>
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('checked',formItem)">
+                        {{utilsService.getErrorMessageForm('checked', formItem)}}
+                    </small>
                 </div>
             </div>
-            <ng-template pTemplate="footer">
-                <div class="col-12 p-md-12">
-                    <p-messages></p-messages>
-                </div>
-                <div class="p-d-flex p-jc-end" *ngIf="editable || isAdmin || isSupervisor ">
-                    <p-message severity="warn"
-                               *ngIf="indicatorExecution.indicator.blockAfterUpdate"
-                               text="El indicador se bloqueará despues de guardarlo." styleClass="p-mr-2"></p-message>
-                    <button pButton type="submit" class="p-mr-2" [disabled]="disableSave"
-                            pRipple label="Guardar" icon="pi pi-check"
-                    ></button>
-                    <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times"
-                            class="p-button-secondary"
-                            (click)="cancel()"></button>
-                </div>
-                <div class="p-d-flex p-jc-end" *ngIf="!editable && !(isAdmin || isSupervisor)">
-                    <p-message severity="warn" text="Indicador Bloqueado!, si son necesarias correcciones, comuníquese con el supervisor del indicador" styleClass="p-mr-2"></p-message>
-                    <button pButton type="button" pRipple label="Salir" icon="pi pi-times"
-                            (click)="cancel()"></button>
-                </div>
-            </ng-template>
-        </p-card>
+        </div>
+
+
+        <div class="p-card p-0">
+            <div class="md:col-12">
+                <p-messages></p-messages>
+            </div>
+            <div class="flex justify-content-end flex-wrap" *ngIf="editable || isAdmin || isSupervisor">
+                <p-message severity="warn"
+                           *ngIf="indicatorExecution.indicator.blockAfterUpdate"
+                           text="El indicador se bloqueará despues de guardarlo." styleClass="p-mr-2"></p-message>
+                <button pButton type="submit" class="mx-3"
+                        pRipple label="Guardar" icon="pi pi-check"
+                ></button>
+                <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times"
+                        class="p-button-secondary"
+                        (click)="cancel()"></button>
+            </div>
+            <div class="flex justify-content-end " *ngIf="!editable && !(isAdmin || isSupervisor)">
+                <p-message severity="warn"
+                           text="Indicador Bloqueado!, si son necesarias correcciones, comuníquese con su punto focal "
+                           styleClass="p-mr-2"></p-message>
+                <button pButton type="button" pRipple label="Salir" icon="pi pi-times"
+                        (click)="cancel()"></button>
+            </div>
+        </div>
+
     </form>
-</p-card>
+</div>
+
 <p-dialog [(visible)]="showErrorResume" [closable]="false" [closeOnEscape]="false">
     <ng-template pTemplate="header">
         Existen Errores en los Valores
     </ng-template>
     <div *ngIf="showErrorResume">
-        <div class="p-d-flex p-flex-column">
-            <div class="p-mb-2">
+        <div class="grid">
+            <div class="col-12">
                 Existen errores en los valores. Los valores totales de cada segregación en la tabla deberían ser
                 iguales.
             </div>
-            <div class="p-mb-2">
+            <div class="col-12">
                 <!--suppress AngularInvalidExpressionResultType -->
                 <p-table [value]="$any(totalsValidation).keys()" responsiveLayout="scroll">
                     <ng-template pTemplate="header">
@@ -229,7 +235,7 @@
         </div>
     </div>
     <ng-template pTemplate="footer">
-        <div class="p-d-flex p-jc-end">
+        <div class="flex justify-content-end flex-wrap">
             <button pButton type="button" pRipple label="Cerrar" icon="pi pi-times"
                     (click)="closeErrorDialog()"></button>
         </div>
@@ -238,10 +244,10 @@
 <form [formGroup]="formLocations" (ngSubmit)="saveLocations()">
     <p-dialog [(visible)]="showLocationsDialog" [modal]="true" header="Selección de Cantones"
               [style]="{width: '80%', height: '80%'}">
-        <div class="field col-12 p-md-12">
+        <div class="card p-0">
             <p-messages></p-messages>
 
-            <div class="field col-12 p-md-12">
+            <div class="field col-12">
                 <p-pickList [source]="cantonesAvailable" [target]="formLocations.get('locationsSelected').value"
                             sourceHeader="Disponibles" targetHeader="Seleccionados"
                             [dragdrop]="true"
@@ -253,13 +259,14 @@
                             [showSourceControls]="false"
                             [showTargetControls]="false"
                 >
-                    <ng-template let-product pTemplate="item">
-                        <div class="p-d-flex p-jc-between">
+                    <ng-template let-canton pTemplate="item">
+                        <div class="flex justify-content-between flex-wrap ">
                                         <span
-                                            style="font-size:14px;font-weight: 800;vertical-align: middle;">{{product.description}}</span>
+                                            style="font-size:14px;font-weight: 800;vertical-align: middle;">{{canton.description}}
+                                        </span>
 
                             <span style="font-size:10px;font-weight: 600;vertical-align: middle;"><i
-                                class="pi pi-map-marker product-category-icon"></i>{{product.provincia.description}}</span>
+                                class="pi pi-map-marker product-category-icon"></i>{{canton.provincia.description}}</span>
                         </div>
 
                     </ng-template>
