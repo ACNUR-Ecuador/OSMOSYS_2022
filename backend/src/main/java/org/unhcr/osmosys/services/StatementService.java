@@ -8,6 +8,8 @@ import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.StatementDao;
 import org.unhcr.osmosys.model.Statement;
 import org.unhcr.osmosys.model.enums.AreaType;
+import org.unhcr.osmosys.services.dataImport.StatementImportService;
+import org.unhcr.osmosys.webServices.model.ImportFileWeb;
 import org.unhcr.osmosys.webServices.model.PeriodStatementAsignationWeb;
 import org.unhcr.osmosys.webServices.model.StatementWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
@@ -15,10 +17,18 @@ import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 
 @Stateless
 public class StatementService {
+
+    @Inject
+    StatementImportService statementImportService;
+
+    @Inject
+    com.sagatechs.generics.utils.FileUtils fileUtils;
 
     @Inject
     StatementDao statementDao;
@@ -135,5 +145,11 @@ public class StatementService {
 
     public Statement getByCodeAndDescriptionAndAreaType(String code, String description, AreaType areaType) throws GeneralAppException {
         return this.statementDao.getByCodeAndDescriptionAndAreaType(code, description, areaType);
+    }
+
+    public void importCatalog(ImportFileWeb importFileWeb) throws GeneralAppException {
+        byte[] fileContent = this.fileUtils.decodeBase64ToBytes(importFileWeb.getFile());
+        InputStream targetStream = new ByteArrayInputStream(fileContent);
+        this.statementImportService.statementImportV2(importFileWeb.getPeriod(), targetStream);
     }
 }

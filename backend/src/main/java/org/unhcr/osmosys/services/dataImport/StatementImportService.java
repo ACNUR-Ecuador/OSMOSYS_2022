@@ -20,7 +20,7 @@ import org.unhcr.osmosys.webServices.model.PeriodWeb;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.*;
 
 @Stateless
@@ -42,7 +42,7 @@ public class StatementImportService {
     PeriodService periodService;
 
     private final static Logger LOGGER = Logger.getLogger(StatementImportService.class);
-    private static final String FILE_NAME = "C:\\test\\statementsv3.xlsx";
+    // private static final String FILE_NAME = "C:\\test\\statementsv3.xlsx";
 
     private static final String IMPACT_AREA_CODE = "AREA DE IMPACTO CODIGO";
     private static final String IMPACT_AREA = "AREA DE IMPACTO";
@@ -60,7 +60,7 @@ public class StatementImportService {
     private static final String SITUATION = "SITUACION";
 
 
-    public void statementImportV2(PeriodWeb periodWeb) throws GeneralAppException {
+    public void statementImportV2(PeriodWeb periodWeb, InputStream file) throws GeneralAppException {
         LOGGER.info("test import");
         try {
             Period period = this.periodService.getByYear(periodWeb.getYear());
@@ -69,7 +69,7 @@ public class StatementImportService {
 
             }
 
-            FileInputStream file = new FileInputStream(FILE_NAME);
+            //FileInputStream file = new FileInputStream(FILE_NAME);
             //Create Workbook instance holding reference to .xlsx file
             XSSFWorkbook workbook = new XSSFWorkbook(file);
 
@@ -569,7 +569,7 @@ public class StatementImportService {
                 }
             }
 
-            if (titleMaps.values().stream().filter(Objects::isNull).count() < 1) {
+            if (titleMaps.values().stream().noneMatch(Objects::isNull)) {
                 break;
             }
 

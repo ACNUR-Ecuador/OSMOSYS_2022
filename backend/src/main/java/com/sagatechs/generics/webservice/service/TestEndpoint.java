@@ -766,7 +766,7 @@ public class TestEndpoint {
         p2023.setYear(2023);
         periodWebs.add(p2023);
 
-        this.statementImportService.statementImportV2(p2023);
+
         return "terimnado generales";
     }
 
