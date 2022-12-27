@@ -19,6 +19,8 @@ import { ValuesStatePipe } from './pipes/values-state.pipe';
 import {
     CustomDissagregationsAssignationToIndicatorPipe
 } from "./pipes/custom-dissagregations-assignation-to-indicator.pipe";
+import { PeriodsFromIndicatorPipe } from './pipes/periods-from-indicator.pipe';
+import { StatementPeriodStatementAsignationsListPipe } from './pipes/statement-period-statement-asignations-list.pipe';
 
 
 @NgModule({
@@ -39,7 +41,9 @@ import {
         MonthListPipe,
         BooleanYesNoPipe,
         ValuesStatePipe,
-        CustomDissagregationsAssignationToIndicatorPipe
+        CustomDissagregationsAssignationToIndicatorPipe,
+        PeriodsFromIndicatorPipe,
+        StatementPeriodStatementAsignationsListPipe
     ],
     imports: [
         CommonModule

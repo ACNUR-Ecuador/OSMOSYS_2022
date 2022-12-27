@@ -3,11 +3,11 @@ import {UtilsService} from './utils.service';
 import {
     CustomDissagregationAssignationToIndicator, CustomDissagregationOption,
     DissagregationAssignationToIndicator,
-    Marker,
+    Marker, Period, PeriodStatementAsignation,
     Statement
 } from '../shared/model/OsmosysModel';
 import {EnumsService} from './enums.service';
-import {EnumsType} from '../shared/model/UtilsModel';
+import {EnumsState, EnumsType} from '../shared/model/UtilsModel';
 
 @Injectable({
     providedIn: 'root'
@@ -78,6 +78,27 @@ export class FilterUtilsService {
             }
         }
         return false;
+    }
+
+    periodIndicatorFilter(value: DissagregationAssignationToIndicator[], filter): boolean {
+
+        if (filter === undefined || filter === null) {
+            return true;
+        }
+
+        if (value === undefined || value === null || value.length === 0) {
+            return false;
+        }
+        let result = false;
+
+        for (const da of value) {
+            if (da.period.id === filter.id) {
+                return result = true;
+            } else {
+                result = false;
+            }
+        }
+        return result;
     }
 
     dissagregationsAssignationToIndicatorFilter(value: DissagregationAssignationToIndicator[], filter): boolean {
@@ -209,5 +230,32 @@ export class FilterUtilsService {
         return result;
     }
 
+    periodStatementAsignationsFilter(value: PeriodStatementAsignation[], filter: Period[]): boolean {
+
+        if (filter === undefined || filter === null || filter.length === 0) {
+            return true;
+        }
+
+        if (value === undefined || value === null || value.length === 0) {
+            return false;
+        }
+        let result = false;
+
+        const periodsVal: Period[] = value
+            .map(value1 => {
+                return value1.period;
+            })
+            .filter(value1 => {
+                return value1.state === EnumsState.ACTIVE;
+            });
+        for (let periodFilter of filter) {
+            for (let periodVal of periodsVal) {
+                if (periodVal.id === periodFilter.id) {
+                    result = true;
+                }
+            }
+        }
+        return result;
+    }
 
 }

@@ -121,7 +121,9 @@ export class UtilsService {
                 }
                 return value;
             }
-        } else {
+        } else if(data && !field){
+            return data;
+        }else {
             return null;
         }
     }

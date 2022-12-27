@@ -22,12 +22,17 @@ import {MarkerService} from '../../services/marker.service';
 import {EnumValuesToLabelPipe} from '../../shared/pipes/enum-values-to-label.pipe';
 import {BooleanYesNoPipe} from '../../shared/pipes/boolean-yes-no.pipe';
 import {MarkersListPipe} from '../../shared/pipes/markers-list.pipe';
-import {DissagregationsAssignationToIndicatorPipe} from '../../shared/pipes/dissagregations-assignation-to-indicator.pipe';
-import {CustomDissagregationsAssignationToIndicatorPipe} from '../../shared/pipes/custom-dissagregations-assignation-to-indicator.pipe';
+import {
+    DissagregationsAssignationToIndicatorPipe
+} from '../../shared/pipes/dissagregations-assignation-to-indicator.pipe';
+import {
+    CustomDissagregationsAssignationToIndicatorPipe
+} from '../../shared/pipes/custom-dissagregations-assignation-to-indicator.pipe';
 import {FilterUtilsService} from '../../services/filter-utils.service';
 import {PeriodService} from '../../services/period.service';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
 import {Table} from 'primeng/table';
+import {PeriodsFromIndicatorPipe} from "../../shared/pipes/periods-from-indicator.pipe";
 
 
 @Component({
@@ -57,6 +62,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     isMonitoredOptions: any[];
     isCalculatedOptions: any[];
     periods: Period[];
+    periodsSelectItems: SelectItem[];
 
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
@@ -73,6 +79,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         private enumValuesToLabelPipe: EnumValuesToLabelPipe,
         private customDissagregationService: CustomDissagregationService,
         private booleanYesNoPipe: BooleanYesNoPipe,
+        private periodsFromIndicatorPipe: PeriodsFromIndicatorPipe,
         private markersListPipe: MarkersListPipe,
         private codeDescriptionPipe: CodeDescriptionPipe,
         private dissagregationsAssignationToIndicatorPipe: DissagregationsAssignationToIndicatorPipe,
@@ -91,6 +98,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.registerFilters();
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
+            {field: null, header: 'Periodos', type: ColumnDataType.text, pipeRef: this.periodsFromIndicatorPipe},
             {field: 'code', header: 'Código', type: ColumnDataType.text},
             {field: 'description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'category', header: 'Categoría', type: ColumnDataType.text},
@@ -121,10 +129,21 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                 pipeRef: this.enumValuesToLabelPipe,
                 arg1: EnumsType.AreaType
             },
-            {field: 'compassIndicator', header: 'Indicador Compass', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
+            {
+                field: 'compassIndicator',
+                header: 'Indicador Compass',
+                type: ColumnDataType.boolean,
+                pipeRef: this.booleanYesNoPipe
+            },
             {field: 'isMonitored', header: 'Monitoreado', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
             {field: 'isCalculated', header: 'Calculado', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
-            {field: 'unit', header: 'Unidad', type: ColumnDataType.text, pipeRef: this.enumValuesToLabelPipe, arg1: EnumsType.UnitType},
+            {
+                field: 'unit',
+                header: 'Unidad',
+                type: ColumnDataType.text,
+                pipeRef: this.enumValuesToLabelPipe,
+                arg1: EnumsType.UnitType
+            },
             {
                 field: 'totalIndicatorCalculationType',
                 header: 'Tipo de Cálculo Total',
@@ -217,8 +236,14 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             });
         this.isCalculatedOptions = [{label: 'Calculado', value: true}, {label: 'No Calculado', value: false}];
         this.isMonitoredOptions = [{label: 'Monitoreado', value: true}, {label: 'No Monitoreado', value: false}];
+        this.periodsSelectItems = [];
         this.periodService.getAll().subscribe(value => {
             this.periods = value.sort((a, b) => a.year - b.year);
+            this.periods.forEach(value1 => {
+                const selectPeriodItem: SelectItem = {label: value1.year + '', value: value1};
+                this.periodsSelectItems.push(selectPeriodItem);
+            });
+
         });
     }
 
@@ -233,6 +258,17 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         });
         return r.sort((a, b) => {
             return a.label < b.label ? -1 : 1;
+        });
+    }
+
+    public getSelectedDissagregationTypeByPeriod(period: Period): string[] {
+        if(!this.formItem.controls['dissagregations'].value){
+            return [];
+        }
+        return (this.formItem.controls['dissagregations'].value as string[]).filter(value => {
+            return value.split('-')[1] === period.id.toString();
+        }).map(value => {
+            return value.split('-')[0];
         });
     }
 
@@ -571,6 +607,9 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         });
         this.filterService.register('markersFilter', (value, filter): boolean => {
             return this.filterUtilsService.markersFilter(value, filter);
+        });
+        this.filterService.register('periodIndicatorFilter', (value, filter): boolean => {
+            return this.filterUtilsService.periodIndicatorFilter(value, filter);
         });
     }
 

@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Period, PeriodStatementAsignation, Pillar, Statement} from '../../shared/model/OsmosysModel';
+import {ImportFile, Period, PeriodStatementAsignation, Pillar, Statement} from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ConfirmationService, FilterService, MessageService, SelectItem} from 'primeng/api';
@@ -14,6 +14,10 @@ import {PeriodService} from '../../services/period.service';
 import {FilterUtilsService} from '../../services/filter-utils.service';
 import {Table} from 'primeng/table';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
+import {
+    StatementPeriodStatementAsignationsListPipe
+} from "../../shared/pipes/statement-period-statement-asignations-list.pipe";
+import {HttpResponse} from "@angular/common/http";
 
 
 @Component({
@@ -37,6 +41,8 @@ export class StatementAdministrationComponent implements OnInit {
 
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
+    showDialogImport = false;
+    importForm: FormGroup;
 
 
     constructor(
@@ -53,7 +59,8 @@ export class StatementAdministrationComponent implements OnInit {
         private situationService: SituationService,
         private periodService: PeriodService,
         private codeShortDescriptionPipe: CodeShortDescriptionPipe,
-        private codeDescriptionPipe: CodeDescriptionPipe
+        private codeDescriptionPipe: CodeDescriptionPipe,
+        private statementPeriodStatementAsignationsListPipe: StatementPeriodStatementAsignationsListPipe
     ) {
     }
 
@@ -65,10 +72,26 @@ export class StatementAdministrationComponent implements OnInit {
             {field: 'productCode', header: 'Código de Producto', type: ColumnDataType.text},
             {field: 'description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
-            {field: 'parentStatement', header: 'Declaración Padre', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
+            {
+                field: 'parentStatement',
+                header: 'Declaración Padre',
+                type: ColumnDataType.text,
+                pipeRef: this.codeDescriptionPipe
+            },
             {field: 'area', header: 'Área', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},
             {field: 'pillar', header: 'Pillar', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},
-            {field: 'situation', header: 'Situación', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},
+            {
+                field: 'situation',
+                header: 'Situación',
+                type: ColumnDataType.text,
+                pipeRef: this.codeShortDescriptionPipe
+            },
+            {
+                field: 'periodStatementAsignations',
+                header: 'Periods',
+                type: ColumnDataType.numeric,
+                pipeRef: this.statementPeriodStatementAsignationsListPipe
+            },
         ];
         this._selectedColumns = this.cols.filter(value => value.field !== 'id');
 
@@ -92,6 +115,12 @@ export class StatementAdministrationComponent implements OnInit {
             this.states = value;
         });
 
+        this.importForm = this.fb.group({
+            period: new FormControl('', [Validators.required]),
+            fileName: new FormControl('', [Validators.required]),
+            file: new FormControl(''),
+        });
+
     }
 
     private registerFilters() {
@@ -100,6 +129,9 @@ export class StatementAdministrationComponent implements OnInit {
         });
         this.filterService.register('parentStatementFilter', (value, filter): boolean => {
             return this.filterUtilsService.generalFilter(value, ['description', 'code'], filter);
+        });
+        this.filterService.register('periodStatementAsignationsFilter', (value, filter): boolean => {
+            return this.filterUtilsService.periodStatementAsignationsFilter(value, filter);
         });
     }
 
@@ -375,5 +407,79 @@ export class StatementAdministrationComponent implements OnInit {
     set selectedColumns(val: any[]) {
         // restore original order
         this._selectedColumns = this.cols.filter(col => val.includes(col));
+    }
+
+    importCatalog() {
+        const {
+            period,
+            fileName,
+            file
+        } = this.importForm.value;
+        const importFile: ImportFile = {
+            period,
+            fileName,
+            file
+        };
+
+        this.statementService.importStatementsCatalog(importFile).subscribe({
+            next: () => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Catálogo cargado correctamente',
+                    life: 3000
+                });
+                this.loadItems();
+                this.showDialogImport = false;
+            }, error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al descargar la plantilla',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        })
+
+    }
+
+    downloadImportTemplate() {
+        this.statementService.getStatementImportTemplate().subscribe({
+            next: (response: HttpResponse<Blob>) => {
+                this.utilsService.downloadFileResponse(response);
+            }, error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al descargar la plantilla',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+    }
+
+    initiateCatalogImport() {
+        this.importForm.reset();
+        this.showDialogImport = true;
+
+    }
+
+    cancelImportDialog() {
+        this.showDialogImport = false;
+        this.importForm.reset();
+    }
+
+    fileUploader(event: any) {
+        const file = event.files[0];
+        this.importForm.get('fileName').setValue(file.name);
+        this.importForm.get('fileName').markAsTouched();
+        // event.
+        const fileReader = new FileReader();
+
+        fileReader.readAsDataURL(file);
+        // tslint:disable-next-line:only-arrow-functions
+        fileReader.onload = () => {
+            this.importForm.get('file').setValue(fileReader.result);
+            this.importForm.get('file').markAsTouched();
+        };
     }
 }

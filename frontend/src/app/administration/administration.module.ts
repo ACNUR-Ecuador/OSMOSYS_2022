@@ -18,14 +18,16 @@ import {SelectButtonModule} from 'primeng/selectbutton';
 import {RippleModule} from 'primeng/ripple';
 import {TooltipModule} from 'primeng/tooltip';
 import {InputTextModule} from 'primeng/inputtext';
-import { AreasAdministrationComponent } from './areas-administration/areas-administration.component';
-import { PillarAdministrationComponent } from './pillar-administration/pillar-administration.component';
-import { PeriodAdministrationComponent } from './period-administration/period-administration.component';
-import { SituationAdministrationComponent } from './situation-administration/situation-administration.component';
-import { OfficeAdministrationComponent } from './office-administration/office-administration.component';
-import { StatementAdministrationComponent } from './statement-administration/statement-administration.component';
-import { CustomDissagregationAdministrationComponent } from './custom-dissagregation-administration/custom-dissagregation-administration.component';
-import { OrganizationAdministrationComponent } from './organization-administration/organization-administration.component';
+import {AreasAdministrationComponent} from './areas-administration/areas-administration.component';
+import {PillarAdministrationComponent} from './pillar-administration/pillar-administration.component';
+import {PeriodAdministrationComponent} from './period-administration/period-administration.component';
+import {SituationAdministrationComponent} from './situation-administration/situation-administration.component';
+import {OfficeAdministrationComponent} from './office-administration/office-administration.component';
+import {StatementAdministrationComponent} from './statement-administration/statement-administration.component';
+import {
+    CustomDissagregationAdministrationComponent
+} from './custom-dissagregation-administration/custom-dissagregation-administration.component';
+import {OrganizationAdministrationComponent} from './organization-administration/organization-administration.component';
 import {ToastModule} from 'primeng/toast';
 import {InputTextareaModule} from 'primeng/inputtextarea';
 import {InputNumberModule} from 'primeng/inputnumber';
@@ -39,11 +41,19 @@ import {CodeDescriptionPipe} from '../shared/pipes/code-description.pipe';
 import {CustomDissagregationOptionsListPipe} from '../shared/pipes/custom-dissagregation-options-list.pipe';
 import {PickListModule} from 'primeng/picklist';
 import {MarkersListPipe} from '../shared/pipes/markers-list.pipe';
-import { MarkerAdministrationComponent } from './marker-administration/marker-administration.component';
-import { PerformanceIndicatorAdministrationComponent } from './performance-indicator-administration/performance-indicator-administration.component';
-import { PartnerProjectListAdministrationComponent } from './partner-project-list-administration/partner-project-list-administration.component';
-import { PartnerProjectAdministrationComponent } from './partner-project-administration/partner-project-administration.component';
-import { DirectImplementationAdministrationComponent } from './direct-implementation-administration/direct-implementation-administration.component';
+import {MarkerAdministrationComponent} from './marker-administration/marker-administration.component';
+import {
+    PerformanceIndicatorAdministrationComponent
+} from './performance-indicator-administration/performance-indicator-administration.component';
+import {
+    PartnerProjectListAdministrationComponent
+} from './partner-project-list-administration/partner-project-list-administration.component';
+import {
+    PartnerProjectAdministrationComponent
+} from './partner-project-administration/partner-project-administration.component';
+import {
+    DirectImplementationAdministrationComponent
+} from './direct-implementation-administration/direct-implementation-administration.component';
 import {ToggleButtonModule} from 'primeng/togglebutton';
 import {CardModule} from 'primeng/card';
 import {AccordionModule} from 'primeng/accordion';
@@ -62,8 +72,15 @@ import {EnumValuesToLabelPipe} from '../shared/pipes/enum-values-to-label.pipe';
 import {MonthPipe} from '../shared/pipes/month.pipe';
 import {MonthListPipe} from '../shared/pipes/month-list.pipe';
 import {DissagregationsAssignationToIndicatorPipe} from '../shared/pipes/dissagregations-assignation-to-indicator.pipe';
-import {CustomDissagregationsAssignationToIndicatorPipe} from '../shared/pipes/custom-dissagregations-assignation-to-indicator.pipe';
-import { AppconfigurationComponent } from './appconfiguration/appconfiguration.component';
+import {
+    CustomDissagregationsAssignationToIndicatorPipe
+} from '../shared/pipes/custom-dissagregations-assignation-to-indicator.pipe';
+import {AppconfigurationComponent} from './appconfiguration/appconfiguration.component';
+import {PeriodsFromIndicatorPipe} from "../shared/pipes/periods-from-indicator.pipe";
+import {
+    StatementPeriodStatementAsignationsListPipe
+} from "../shared/pipes/statement-period-statement-asignations-list.pipe";
+import {FileUploadModule} from "primeng/fileupload";
 
 
 @NgModule({
@@ -120,7 +137,8 @@ import { AppconfigurationComponent } from './appconfiguration/appconfiguration.c
         SharedModule,
         CalendarModule,
         InputSwitchModule,
-        MenuModule
+        MenuModule,
+        FileUploadModule
     ],
     providers: [
         OfficeOrganizationPipe,
@@ -128,6 +146,7 @@ import { AppconfigurationComponent } from './appconfiguration/appconfiguration.c
         CodeShortDescriptionPipe,
         CodeDescriptionPipe,
         CustomDissagregationOptionsListPipe,
+        StatementPeriodStatementAsignationsListPipe,
         MarkersListPipe,
         PercentPipe,
         BooleanYesNoPipe,
@@ -137,7 +156,8 @@ import { AppconfigurationComponent } from './appconfiguration/appconfiguration.c
         MonthPipe,
         MonthListPipe,
         DissagregationsAssignationToIndicatorPipe,
-        CustomDissagregationsAssignationToIndicatorPipe
+        CustomDissagregationsAssignationToIndicatorPipe,
+        PeriodsFromIndicatorPipe
     ]
 
 })

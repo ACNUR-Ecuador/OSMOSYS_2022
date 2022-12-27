@@ -9,6 +9,11 @@
                         <button pButton pRipple label="Crear" icon="pi pi-plus" class="p-button-success mr-2 mb-2"
                                 (click)="createItem()"></button>
                     </div>
+                    <div class="my-2">
+                        <button pButton pRipple label="Importar Catalogo de Declaraciones" icon="pi pi-plus"
+                                class="p-button-success mr-2 mb-2"
+                                (click)="initiateCatalogImport()"></button>
+                    </div>
                 </ng-template>
 
                 <ng-template pTemplate="right">
@@ -119,6 +124,22 @@
                                             type="text"
                                             [field]="col.field" [showMenu]="false"
                                             [matchMode]="'parentStatementFilter'">
+                            </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'periodStatementAsignations'" type="equals"
+                                            [field]="col.field"
+                                            [showMenu]="false" [matchMode]="'periodStatementAsignationsFilter'"
+                            >
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-multiSelect [ngModel]="value" [options]="periodsItems"
+                                                   (onChange)="filter($event.value)"
+                                                   [filter]=true
+                                                   placeholder="Selecciona..." [showClear]="true">
+                                        <ng-template let-option pTemplate="item">
+                                            <span
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
+                                        </ng-template>
+                                    </p-multiSelect>
+                                </ng-template>
                             </p-columnFilter>
                         </th>
                         <th>
@@ -271,6 +292,66 @@
             <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times"
                     class="p-button-secondary"
                     (click)="cancelDialog()"></button>
+
+        </ng-template>
+
+    </p-dialog>
+</form>
+
+<form [formGroup]="importForm" (ngSubmit)="importCatalog()">
+    <p-dialog [(visible)]="showDialogImport" header="Importación de catalogo de declaraciones" [modal]="true"
+              [closable]="false">
+
+        <ng-template pTemplate="content">
+            <p-messages></p-messages>
+
+            <div class="card p-fluid">
+                <h5>
+                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="downloadImportTemplate()"
+                            class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"
+                            label="Descargar Plantilla"></button>
+                </h5>
+
+                <div class="field grid">
+                    <label htmlFor="name3" class="col-12 mb-2 md:col-2 md:mb-0">Periodo</label>
+                    <div class="col-12 md:col-10">
+                        <p-dropdown
+                            id="periodI"
+                            formControlName="period"
+                            [options]="periodsItems"
+                            [filter]=true
+                            placeholder="Selecciona..." [showClear]="true"
+                        >
+                            <ng-template let-option pTemplate="item">
+                                            <span
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
+                            </ng-template>
+                        </p-dropdown>
+                    </div>
+                    <label htmlFor="name3" class="col-12 mb-2 md:col-2 md:mb-0">Catálogo</label>
+                    <div class="col-12 md:col-10">
+                        <p-fileUpload name="myfile[]"
+                                      [customUpload]="true"
+                                      (uploadHandler)="fileUploader($event)"
+                                      [auto]="true"
+                                      [fileLimit]="1"
+                                      uploadLabel="importar"
+                                      chooseLabel="seleccionar archivo"
+                                      cancelLabel="cancelar"
+                        ></p-fileUpload>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <button pButton type="submit"
+                    [disabled]="!importForm.valid"
+                    pRipple label="Guardar" icon="pi pi-check"
+            ></button>
+            <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times"
+                    class="p-button-secondary"
+                    (click)="cancelImportDialog()"></button>
 
         </ng-template>
 

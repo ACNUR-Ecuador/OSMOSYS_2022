@@ -376,7 +376,6 @@ export class PartnersProjectComponent implements OnInit {
     }
 
     reload() {
-        console.log('reaload');
         this.loadProject(this.idProjectParam);
     }
 }

@@ -527,3 +527,10 @@ export class AppConfiguration {
     public clave: string;
     public valor: string;
 }
+
+export class ImportFile {
+    public period: Period;
+    public fileName: string;
+    public file: string;
+}
+
