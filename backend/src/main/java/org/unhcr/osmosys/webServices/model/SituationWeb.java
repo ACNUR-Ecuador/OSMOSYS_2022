@@ -3,6 +3,7 @@ package org.unhcr.osmosys.webServices.model;
 import com.sagatechs.generics.persistence.model.State;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 
 public class SituationWeb implements Serializable {
@@ -51,5 +52,29 @@ public class SituationWeb implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "SituationWeb{" +
+                "id=" + id +
+                ", state=" + state +
+                ", code='" + code + '\'' +
+                ", shortDescription='" + shortDescription + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SituationWeb)) return false;
+        SituationWeb that = (SituationWeb) o;
+        return code.equals(that.code) && description.equals(that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, description);
     }
 }

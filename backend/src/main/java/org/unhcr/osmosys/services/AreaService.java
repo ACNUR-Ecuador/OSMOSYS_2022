@@ -36,6 +36,10 @@ public class AreaService {
         return this.areaDao.find(id);
     }
 
+    public Area getByCode(String code) throws GeneralAppException {
+        return this.areaDao.getByCode(code);
+    }
+
     public Area saveOrUpdate(Area area) {
         if (area.getId() == null) {
             this.areaDao.save(area);

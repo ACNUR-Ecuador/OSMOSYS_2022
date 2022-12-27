@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.StatementDao;
 import org.unhcr.osmosys.model.Statement;
+import org.unhcr.osmosys.model.enums.AreaType;
 import org.unhcr.osmosys.webServices.model.PeriodStatementAsignationWeb;
 import org.unhcr.osmosys.webServices.model.StatementWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
@@ -90,7 +91,7 @@ public class StatementService {
             throw new GeneralAppException("Estádo no válido", Response.Status.BAD_REQUEST);
         }
 
-        Statement itemRecovered = this.statementDao.getByCode(statementWeb.getCode());
+       /* Statement itemRecovered = this.statementDao.getByCode(statementWeb.getCode());
         if (itemRecovered != null) {
             if (statementWeb.getId() == null || !statementWeb.getId().equals(itemRecovered.getId())) {
                 throw new GeneralAppException("Ya existe un ítem con este código", Response.Status.BAD_REQUEST);
@@ -102,14 +103,22 @@ public class StatementService {
             if (statementWeb.getId() == null || !statementWeb.getId().equals(itemRecovered.getId())) {
                 throw new GeneralAppException("Ya existe un ítem con esta descripción", Response.Status.BAD_REQUEST);
             }
+        }*/
+        for (PeriodStatementAsignationWeb periodStatementAsignation : statementWeb.getPeriodStatementAsignations()) {
+            Statement itemRecovered = this.statementDao.getByCodeAndPeriodYearAndAreaType(statementWeb.getCode(), statementWeb.getAreaType(), periodStatementAsignation.getPeriod().getYear());
+            if (itemRecovered != null) {
+                if (statementWeb.getId() == null || !statementWeb.getId().equals(itemRecovered.getId())) {
+                    throw new GeneralAppException("Ya existe un ítem con este código " + statementWeb.getCode() + " y este periodo " + periodStatementAsignation.getPeriod().getYear(), Response.Status.BAD_REQUEST);
+                }
+            }
         }
+
 
         if (CollectionUtils.isEmpty(statementWeb.getPeriodStatementAsignations())) {
             throw new GeneralAppException("La declaración debe tener al menos un periodo asignado", Response.Status.BAD_REQUEST);
         }
         for (PeriodStatementAsignationWeb periodStatementAsignation : statementWeb.getPeriodStatementAsignations()) {
             if (periodStatementAsignation.getPeriod() == null || periodStatementAsignation.getPeriod().getId() == null) {
-                //noinspection ConstantConditions
                 throw new GeneralAppException("El periodo no tiene un id " + periodStatementAsignation.getPeriod().toString(), Response.Status.BAD_REQUEST);
             }
         }
@@ -118,5 +127,13 @@ public class StatementService {
 
     public Statement find(Long id) {
         return this.statementDao.find(id);
+    }
+
+    public Statement getByCodeAndPeriodYearAndAreaType(String code, AreaType areaType, int year) throws GeneralAppException {
+        return this.statementDao.getByCodeAndPeriodYearAndAreaType(code, areaType, year);
+    }
+
+    public Statement getByCodeAndDescriptionAndAreaType(String code, String description, AreaType areaType) throws GeneralAppException {
+        return this.statementDao.getByCodeAndDescriptionAndAreaType(code, description, areaType);
     }
 }

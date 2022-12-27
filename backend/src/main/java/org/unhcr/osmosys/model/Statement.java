@@ -29,7 +29,7 @@ public class Statement extends BaseEntity<Long> {
     private AreaType areaType;
 
 
-    @Column(name = "code", unique = true)
+    @Column(name = "code")
     private String code;
 
     @Column(name = "product_code")

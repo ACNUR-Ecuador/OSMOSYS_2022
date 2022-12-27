@@ -3,6 +3,7 @@ package org.unhcr.osmosys.webServices.model;
 import com.sagatechs.generics.persistence.model.State;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 
 public class PillarWeb implements Serializable {
@@ -50,5 +51,29 @@ public class PillarWeb implements Serializable {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    @Override
+    public String toString() {
+        return "PillarWeb{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", shortDescription='" + shortDescription + '\'' +
+                ", description='" + description + '\'' +
+                ", state=" + state +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PillarWeb)) return false;
+        PillarWeb pillarWeb = (PillarWeb) o;
+        return code.equals(pillarWeb.code) && description.equals(pillarWeb.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, description);
     }
 }

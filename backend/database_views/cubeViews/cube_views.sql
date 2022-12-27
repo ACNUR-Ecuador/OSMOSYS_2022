@@ -314,117 +314,120 @@ ORDER BY 1;
 DROP VIEW IF EXISTS cube.fact_table;
 CREATE OR REPLACE VIEW cube.fact_table
 AS
-SELECT iv.id,
-       ie.id AS ie_id,
-       ie.period_id,
-       per.year AS period_year,
-       CASE
-           WHEN ie.project_id IS NOT NULL THEN 'Implementación Socios'::text
-           ELSE 'Implementación Directa'::text
-           END AS implementation_type,
-       COALESCE(ie.assigned_user_id, pr.focal_point_id) AS assigned_user_id,
-       COALESCE(ie.assigned_user_backup_id, 0::bigint) AS assigned_user_backup_id,
-       COALESCE(ie.performance_indicator_id, 0::bigint) AS indicator_id,
-       COALESCE(i.statement_id, 0::bigint) AS statement_id,
-       COALESCE(ie.project_statement_id, 0::bigint) AS project_statement_id,
-       ie.indicator_type,
-       COALESCE(pr.organization_id, 1::bigint) AS organization_id,
-       COALESCE(pr.focal_point_id, ie.supervisor_user_id) AS supervisor_id,
-       COALESCE(ie.reporting_office_id, 0::bigint) AS office_id,
-       COALESCE(ie.project_id, 0::bigint) AS project_id,
-       (q.year || '-'::text) || mo.month_year_order AS month_year_id,
-       iv.dissagregation_type,
-       COALESCE(iv.age_type, 'NO APLICA'::character varying) AS age_type,
-       COALESCE(iv.age_primary_education_type, 'NO APLICA'::character varying) AS age_primary_education_type,
-       COALESCE(iv.age_tertiary_education_type, 'NO APLICA'::character varying) AS age_tertiary_education_type,
-       COALESCE(iv.gender_type, 'NO APLICA'::character varying) AS gender_type,
-       COALESCE(iv.country_of_origin, 'NO APLICA'::character varying) AS country_of_origin,
-       COALESCE(iv.population_type, 'NO APLICA'::character varying) AS population_type,
-       COALESCE(iv.diversity_type, 'NO APLICA'::character varying) AS diversity_type,
-       COALESCE(iv.canton_id, 0::bigint) AS canton_id,
-       NULL as custom_dissagregation_id,
-       COALESCE(COALESCE(ie.reporting_office_id,can.office_id),usetfppr.office_id) as responsable_office_id,
-       COALESCE(audi.office_id,usetfppr.office_id )as implementer_office_id,
-       CASE
-           WHEN ie.project_id IS NULL THEN 'II-'||pr.organization_id
-           ELSE 'DI-'||ie.reporting_office_id
-           END as implementer_id,
-       ie.total_execution,
-       ie.target AS total_target,
-       ie.execution_percentage AS total_execution_percentage,
-       q.total_execution AS quarter_execution,
-       q.target AS quarter_target,
-       q.execution_percentage AS quarter_execution_percentage,
-       mo.id AS month_id,
-       mo.total_execution AS month_execution,
-       iv.value
-FROM osmosys.indicator_values iv
-         JOIN osmosys.months mo ON mo.id = iv.month_id AND iv.state::text = 'ACTIVO'::text AND mo.state::text = 'ACTIVO'::text
-     JOIN osmosys.quarters q ON mo.quarter_id = q.id AND q.state::text = 'ACTIVO'::text
-    JOIN osmosys.indicator_executions ie ON q.indicator_execution_id = ie.id AND ie.state::text = 'ACTIVO'::text
-    JOIN osmosys.periods per ON ie.period_id = per.id
-    LEFT JOIN osmosys.projects pr ON ie.project_id = pr.id AND pr.state::text = 'ACTIVO'::text
-    LEFT JOIN osmosys.indicators i ON ie.performance_indicator_id = i.id
-    LEFT JOIN osmosys.cantones can ON iv.canton_id=can.id
-    LEFT JOIN "security"."user" audi ON ie.assigned_user_id=audi."id"
-    LEFT JOIN "security"."user" usetfppr ON pr.focal_point_id=usetfppr."id"
---ORDER BY q.year, mo.month_year_order
+SELECT
+    iv.id,
+    ie.id AS ie_id,
+    ie.period_id,
+    per.year AS period_year,
+    CASE
+        WHEN ie.project_id IS NOT NULL THEN 'Implementación Socios'
+        ELSE 'Implementación Directa'
+        END AS implementation_type,
+    COALESCE(ie.assigned_user_id, pr.focal_point_id) AS assigned_user_id,
+    COALESCE(ie.assigned_user_backup_id, 0) AS assigned_user_backup_id,
+    COALESCE(ie.performance_indicator_id, 0) AS indicator_id,
+    COALESCE(i.statement_id, 0) AS statement_id,
+    COALESCE(ie.project_statement_id, 0) AS project_statement_id,
+    ie.indicator_type,
+    COALESCE(pr.organization_id, 1) AS organization_id,
+    COALESCE(pr.focal_point_id, ie.supervisor_user_id) AS supervisor_id,
+    COALESCE(ie.reporting_office_id, 0) AS office_id,
+    COALESCE(ie.project_id, 0) AS project_id,
+    (q.year || '-') || mo.month_year_order AS month_year_id,
+    iv.dissagregation_type,
+    COALESCE(iv.age_type, 'NO APLICA') AS age_type,
+    COALESCE(iv.age_primary_education_type, 'NO APLICA') AS age_primary_education_type,
+    COALESCE(iv.age_tertiary_education_type, 'NO APLICA') AS age_tertiary_education_type,
+    COALESCE(iv.gender_type, 'NO APLICA') AS gender_type,
+    COALESCE(iv.country_of_origin, 'NO APLICA') AS country_of_origin,
+    COALESCE(iv.population_type, 'NO APLICA') AS population_type,
+    COALESCE(iv.diversity_type, 'NO APLICA') AS diversity_type,
+    COALESCE(iv.canton_id, 0) AS canton_id,
+    NULL as custom_dissagregation_id,
+
+    COALESCE(COALESCE(can.office_id,ie.reporting_office_id),usetfppr.office_id) as responsable_office_id,
+    COALESCE(audi.office_id,usetfppr.office_id )as implementer_office_id,
+    CASE
+        WHEN ie.project_id IS NULL THEN 'II-'||pr.organization_id
+        ELSE 'DI-'||ie.reporting_office_id
+        END as implementer_id,
+    ie.total_execution,
+    ie.target AS total_target,
+    ie.execution_percentage AS total_execution_percentage,
+    q.total_execution AS quarter_execution,
+    q.target AS quarter_target,
+    q.execution_percentage AS quarter_execution_percentage,
+    mo.id AS month_id,
+    mo.total_execution AS month_execution,
+    iv.value
+FROM osmosys.periods per
+         JOIN osmosys.indicator_executions ie ON ie.period_id = per.id  AND ie.state = 'ACTIVO'
+         JOIN osmosys.quarters q ON q.indicator_execution_id = ie.id AND q.state= 'ACTIVO'
+         JOIN osmosys.months mo ON mo.quarter_id = q.id AND mo.state = 'ACTIVO'
+         JOIN osmosys.indicator_values iv ON mo.id = iv.month_id AND iv.state = 'ACTIVO'
+         LEFT JOIN osmosys.indicators i ON ie.performance_indicator_id = i.id
+         LEFT JOIN osmosys.projects pr ON ie.project_id = pr.id AND pr.state = 'ACTIVO'
+         LEFT JOIN osmosys.cantones can ON iv.canton_id=can.id
+         LEFT JOIN security.user audi ON ie.assigned_user_id=audi.id
+         LEFT JOIN security.user usetfppr ON pr.focal_point_id=usetfppr.id
 UNION
-SELECT iv.id,
-       ie.id AS ie_id,
-       ie.period_id,
-       per.year AS period_year,
-       CASE
-           WHEN ie.project_id IS NOT NULL THEN 'Implementación Socios'::text
-           ELSE 'Implementación Directa'::text
-           END AS implementation_type,
-       COALESCE(ie.assigned_user_id, pr.focal_point_id) AS assigned_user_id,
-       COALESCE(ie.assigned_user_backup_id, 0::bigint) AS assigned_user_backup_id,
-       COALESCE(ie.performance_indicator_id, 0::bigint) AS indicator_id,
-       COALESCE(i.statement_id, 0::bigint) AS statement_id,
-       COALESCE(ie.project_statement_id, 0::bigint) AS project_statement_id,
-       ie.indicator_type,
-       COALESCE(pr.organization_id, 1::bigint) AS organization_id,
-       COALESCE(pr.focal_point_id, ie.supervisor_user_id) AS supervisor_id,
-       COALESCE(ie.reporting_office_id, 0::bigint) AS office_id,
-       COALESCE(ie.project_id, 0::bigint) AS project_id,
-       (q.year || '-'::text) || mo.month_year_order AS month_year_id,
-       cd.name AS dissagregation_type,
-       NULL AS age_type,
-       NULL AS age_primary_education_type,
-       NULL AS age_tertiary_education_type,
-       NULL AS gender_type,
-       NULL AS country_of_origin,
-       NULL AS population_type,
-       NULL AS diversity_type,
-       NULL AS canton_id,
-       cdo.id AS custom_dissagregation_id,
-       COALESCE(COALESCE(ie.reporting_office_id,usetfppr.office_id),0) as responsable_office_id,
-       COALESCE(audi.office_id,usetfppr.office_id )as implementer_office_id,
-       CASE
-           WHEN ie.project_id IS NOT NULL THEN 'II-'||pr.organization_id
-           ELSE 'DI-'||ie.reporting_office_id
-           END as implementer_id,
-       ie.total_execution,
-       ie.target AS total_target,
-       ie.execution_percentage AS total_execution_percentage,
-       q.total_execution AS quarter_execution,
-       q.target AS quarter_target,
-       q.execution_percentage AS quarter_execution_percentage,
-       mo.id AS month_id,
-       mo.total_execution AS month_execution,
-       iv.value
-FROM osmosys.indicator_values_custom_dissagregation iv
-         JOIN osmosys.custom_dissagregation_options cdo on iv.custom_dissagregation_option=cdo."id"
-         JOIN osmosys.custom_dissagregations cd ON cdo.custom_dissagregation_id=cd."id"
-         JOIN osmosys.months mo ON mo.id = iv.month_id AND iv.state::text = 'ACTIVO'::text AND mo.state::text = 'ACTIVO'::text
-    JOIN osmosys.quarters q ON mo.quarter_id = q.id AND q.state::text = 'ACTIVO'::text
-    JOIN osmosys.indicator_executions ie ON q.indicator_execution_id = ie.id AND ie.state::text = 'ACTIVO'::text
-    JOIN osmosys.periods per ON ie.period_id = per.id
-    LEFT JOIN osmosys.projects pr ON ie.project_id = pr.id AND pr.state::text = 'ACTIVO'::text
-    LEFT JOIN osmosys.indicators i ON ie.performance_indicator_id = i.id
-    LEFT JOIN "security"."user" audi ON ie.assigned_user_id=audi."id"
-    LEFT JOIN "security"."user" usetfppr ON pr.focal_point_id=usetfppr."id";
+SELECT
+    iv.id,
+    ie.id AS ie_id,
+    ie.period_id,
+    per.year AS period_year,
+    CASE
+        WHEN ie.project_id IS NOT NULL THEN 'Implementación Socios'::text
+        ELSE 'Implementación Directa'::text
+        END AS implementation_type,
+    COALESCE(ie.assigned_user_id, pr.focal_point_id) AS assigned_user_id,
+    COALESCE(ie.assigned_user_backup_id, 0::bigint) AS assigned_user_backup_id,
+    COALESCE(ie.performance_indicator_id, 0::bigint) AS indicator_id,
+    COALESCE(i.statement_id, 0::bigint) AS statement_id,
+    COALESCE(ie.project_statement_id, 0::bigint) AS project_statement_id,
+    ie.indicator_type,
+    COALESCE(pr.organization_id, 1::bigint) AS organization_id,
+    COALESCE(pr.focal_point_id, ie.supervisor_user_id) AS supervisor_id,
+    COALESCE(ie.reporting_office_id, 0::bigint) AS office_id,
+    COALESCE(ie.project_id, 0::bigint) AS project_id,
+    (q.year || '-'::text) || mo.month_year_order AS month_year_id,
+    cd.name AS dissagregation_type,
+    NULL AS age_type,
+    NULL AS age_primary_education_type,
+    NULL AS age_tertiary_education_type,
+    NULL AS gender_type,
+    NULL AS country_of_origin,
+    NULL AS population_type,
+    NULL AS diversity_type,
+    NULL AS canton_id,
+    cdo.id AS custom_dissagregation_id,
+    COALESCE(COALESCE(ie.reporting_office_id,usetfppr.office_id),0) as responsable_office_id,
+    COALESCE(audi.office_id,usetfppr.office_id )as implementer_office_id,
+    CASE
+        WHEN ie.project_id IS NOT NULL THEN 'II-'||pr.organization_id
+        ELSE 'DI-'||ie.reporting_office_id
+        END as implementer_id,
+    ie.total_execution,
+    ie.target AS total_target,
+    ie.execution_percentage AS total_execution_percentage,
+    q.total_execution AS quarter_execution,
+    q.target AS quarter_target,
+    q.execution_percentage AS quarter_execution_percentage,
+    mo.id AS month_id,
+    mo.total_execution AS month_execution,
+    iv.value
+FROM
+    osmosys.periods per
+        INNER JOIN osmosys.indicator_executions ie ON ie.state = 'ACTIVO' AND ie.period_id = per.id
+        INNER JOIN osmosys.quarters q ON  q.state = 'ACTIVO' AND q.indicator_execution_id = ie.id
+        INNER JOIN osmosys.months mo ON  mo.state = 'ACTIVO' AND mo.quarter_id = q.id
+        INNER JOIN osmosys.indicator_values_custom_dissagregation iv ON iv.month_id=mo."id" AND iv.state = 'ACTIVO'
+        INNER JOIN osmosys.custom_dissagregation_options cdo on iv.custom_dissagregation_option=cdo."id"
+        INNER JOIN osmosys.custom_dissagregations cd ON cdo.custom_dissagregation_id=cd."id"
+        LEFT JOIN osmosys.projects pr ON ie.project_id = pr.id AND pr.state = 'ACTIVO'
+        LEFT JOIN osmosys.indicators i ON ie.performance_indicator_id = i.id
+        LEFT JOIN "security"."user" audi ON ie.assigned_user_id=audi."id"
+        LEFT JOIN "security"."user" usetfppr ON pr.focal_point_id=usetfppr."id";
 
 DROP VIEW if EXISTS cube.indicator_execution_dissagregation_simple;
 CREATE VIEW cube.indicator_execution_dissagregation_simple AS

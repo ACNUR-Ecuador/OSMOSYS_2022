@@ -3,6 +3,7 @@ package org.unhcr.osmosys.webServices.model;
 import com.sagatechs.generics.persistence.model.State;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class PeriodWeb implements Serializable {
     private Long id;
@@ -40,5 +41,28 @@ public class PeriodWeb implements Serializable {
 
     public void setGeneralIndicator(GeneralIndicatorWeb generalIndicator) {
         this.generalIndicator = generalIndicator;
+    }
+
+    @Override
+    public String toString() {
+        return "PeriodWeb{" +
+                "id=" + id +
+                ", year=" + year +
+                ", state=" + state +
+                ", generalIndicator=" + generalIndicator +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PeriodWeb)) return false;
+        PeriodWeb periodWeb = (PeriodWeb) o;
+        return year.equals(periodWeb.year);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(year);
     }
 }

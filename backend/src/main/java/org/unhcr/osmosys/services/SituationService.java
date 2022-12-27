@@ -31,6 +31,10 @@ public class SituationService {
         return this.situationDao.find(id);
     }
 
+    public Situation getByCode(String code) throws GeneralAppException {
+        return this.situationDao.getByCode(code);
+    }
+
     public Situation saveOrUpdate(Situation situation) {
         if (situation.getId() == null) {
             this.situationDao.save(situation);

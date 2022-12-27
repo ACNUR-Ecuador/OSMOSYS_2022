@@ -6,6 +6,7 @@ import org.unhcr.osmosys.model.enums.AreaType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class StatementWeb implements Serializable {
@@ -110,5 +111,35 @@ public class StatementWeb implements Serializable {
 
     public void setProductCode(String productCode) {
         this.productCode = productCode;
+    }
+
+    @Override
+    public String toString() {
+        return "StatementWeb{" +
+                "id=" + id +
+                ", state=" + state +
+                ", areaType=" + areaType +
+                ", code='" + code + '\'' +
+                ", productCode='" + productCode + '\'' +
+                ", description='" + description + '\'' +
+                ", parentStatement=" + parentStatement +
+                ", area=" + area +
+                ", pillar=" + pillar +
+                ", situation=" + situation +
+                ", periodStatementAsignations=" + periodStatementAsignations +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof StatementWeb)) return false;
+        StatementWeb that = (StatementWeb) o;
+        return Objects.equals(id, that.id) && areaType == that.areaType && Objects.equals(code, that.code) && Objects.equals(description, that.description) && Objects.equals(periodStatementAsignations, that.periodStatementAsignations);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, areaType, code, description, periodStatementAsignations);
     }
 }

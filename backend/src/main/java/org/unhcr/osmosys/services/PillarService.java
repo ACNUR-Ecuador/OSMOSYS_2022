@@ -29,6 +29,10 @@ public class PillarService {
         return this.pillarDao.find(id);
     }
 
+    public Pillar getByCode(String code) throws GeneralAppException {
+        return this.pillarDao.getByCode(code);
+    }
+
     public Pillar saveOrUpdate(Pillar pillar) {
         if (pillar.getId() == null) {
             this.pillarDao.save(pillar);

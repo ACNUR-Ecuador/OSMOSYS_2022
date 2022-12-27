@@ -77,4 +77,46 @@ public class StatementDao extends GenericDaoJpa<Statement, Long> {
             throw new GeneralAppException("Se encontró más de un item con el código  " + code, Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
+
+    public Statement getByCodeAndPeriodYearAndAreaType(String code, AreaType areaType, int year) throws GeneralAppException {
+        String jpql = "SELECT DISTINCT o" +
+                " FROM Statement o" +
+                " inner join  o.periodStatementAsignations psa " +
+                " inner join  psa.period per  " +
+                " WHERE lower(o.code) = lower(:code)" +
+                " and o.areaType =:areType "+
+                " and per.year = :year";
+        Query q = getEntityManager().createQuery(jpql, Statement.class);
+        q.setParameter("code", code);
+        q.setParameter("year", year);
+        q.setParameter("areType", areaType);
+
+
+        try {
+            return (Statement) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (NonUniqueResultException e) {
+            throw new GeneralAppException("Se encontró más de un item con el código  " + code + " y el año " + year, Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public Statement getByCodeAndDescriptionAndAreaType(String code, String description, AreaType areaType) throws GeneralAppException {
+        String jpql = "SELECT DISTINCT o" +
+                " FROM Statement o" +
+                " WHERE lower(o.code) = lower(:code)" +
+                " and o.areaType =:areType "+
+                " and lower(o.description) = lower(:description)";
+        Query q = getEntityManager().createQuery(jpql, Statement.class);
+        q.setParameter("code", code);
+        q.setParameter("description", description);
+        q.setParameter("areType", areaType);
+        try {
+            return (Statement) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (NonUniqueResultException e) {
+            throw new GeneralAppException("Se encontró más de un item con el código  " + code + " y la descripción " + description, Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

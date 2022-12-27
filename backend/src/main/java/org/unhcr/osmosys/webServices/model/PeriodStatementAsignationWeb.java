@@ -3,6 +3,7 @@ package org.unhcr.osmosys.webServices.model;
 import com.sagatechs.generics.persistence.model.State;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 
 public class PeriodStatementAsignationWeb implements Serializable {
@@ -43,5 +44,28 @@ public class PeriodStatementAsignationWeb implements Serializable {
 
     public void setPopulationCoverage(Long populationCoverage) {
         this.populationCoverage = populationCoverage;
+    }
+
+    @Override
+    public String toString() {
+        return "PeriodStatementAsignationWeb{" +
+                "id=" + id +
+                ", state=" + state +
+                ", period=" + period +
+                ", populationCoverage=" + populationCoverage +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PeriodStatementAsignationWeb)) return false;
+        PeriodStatementAsignationWeb that = (PeriodStatementAsignationWeb) o;
+        return Objects.equals(period, that.period);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(period);
     }
 }
