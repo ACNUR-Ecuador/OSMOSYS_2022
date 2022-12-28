@@ -24,6 +24,10 @@ const routes: Routes = [
                 loadChildren: () => import('./direct-implementation/direct-implementation.module').then(m => m.DirectImplementationModule)
             },
             {
+                path: 'reports',
+                loadChildren: () => import('./reports/reports.module').then(m => m.ReportsModule)
+            },
+            {
                 path: 'demo',
                 loadChildren: () => import('./demo/components/dashboards/dashboards.module').then(m => m.DashboardsModule)
             },

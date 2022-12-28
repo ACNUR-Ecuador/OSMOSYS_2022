@@ -321,4 +321,8 @@ public class IndicatorService {
         }
 
     }
+
+    public List<Indicator> getByPeriodYearAssignmentAndState(int year) {
+        return null; // todo this.indicatorDao.getByPeriodYearAssignmentAndState(year);
+    }
 }

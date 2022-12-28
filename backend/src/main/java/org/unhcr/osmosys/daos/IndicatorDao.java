@@ -106,4 +106,26 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
         return q.getResultList();
 
     }
+
+    public List<Indicator> getByPeriodYearAssignmentAndState(int year, State state) {
+        String jpql = " SELECT DISTINCT o" +
+                " FROM Indicator o " +
+                " inner join fetch o.statement sta " +
+                " inner join sta.periodStatementAsignations psa " +
+                " inner join psa.period p " +
+
+                " left outer join o.customDissagregationAssignationToIndicators cda " +
+                " left outer join cda.customDissagregation " +
+                " left outer join cda.customDissagregationFilterIndicators " +
+                " left outer join o.dissagregationsAssignationToIndicator da " +
+                " left outer join da.dissagregationFilterIndicators " +
+
+                " left outer join o.markers "+
+                " WHERE p =:year and o.state=:state" ;
+
+        Query q = getEntityManager().createQuery(jpql, Indicator.class);
+        q.setParameter("state", state);
+        q.setParameter("year", year);
+        return null; // TODO
+    }
 }

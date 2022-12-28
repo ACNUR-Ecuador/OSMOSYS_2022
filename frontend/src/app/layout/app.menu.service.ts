@@ -213,6 +213,19 @@ export class MenuService {
         },
         {separator: true},
         {
+            label: 'Reportes',
+            icon: 'pi pi-file-o',
+            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'PUNTO_FOCAL'],
+            items: [
+                {
+                    label: 'Catálogo de Indicadores',
+                    icon: 'pi pi-fw pi-file-excel',
+                    routerLink: ['/reports/indicatorsCatalog'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS'],
+                }
+            ]
+        },
+        {
             label: 'Demo',
             icon: 'pi pi-home',
             items: [
