@@ -1,9 +1,23 @@
 i {
     opacity: 0.6;
     transition-duration: .12s;
-    color: #2196F3;
+    color: red;// #2196F3;
 
     &:hover {
         opacity: 1;
+    }
+}
+.blink {
+    animation: blink-animation 1s steps(5, start) infinite;
+    -webkit-animation: blink-animation 1s steps(5, start) infinite;
+}
+@keyframes blink-animation {
+    to {
+        visibility: hidden;
+    }
+}
+@-webkit-keyframes blink-animation {
+    to {
+        visibility: hidden;
     }
 }

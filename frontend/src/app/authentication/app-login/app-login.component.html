@@ -8,7 +8,7 @@
                 <p>¿Olvidaste tu contraseña? <a class="text-primary hover:underline cursor-pointer font-medium">Haz clic
                     aquí</a> para recuperarla.</p>
             </div>
-            <form [formGroup]="loginForm" (ngSubmit)="login()">
+            <form [formGroup]="loginForm" class="flex flex-column align-items-center gap-4" (ngSubmit)="login()">
                 <input pInputText id="username" placeholder="usuario" formControlName="username" class="w-20rem"/>
                 <p-password id="password" placeholder="Contraseña" [feedback]="true" formControlName="password"
                             inputStyleClass="w-20rem"></p-password>
@@ -58,7 +58,7 @@
             <a href="https://data.unhcr.org/en/country/ecu" target="_blank">
                 <div class="flex align-items-center gap-5 text-primary "
                      style="background-color: rgba(255, 255, 255, 0.8); ">
-                    <span class="font-semibold">Visita nuestro portal de datos.</span>
+                    <span class="font-semibold blink">Visita nuestro portal de datos.</span>
                     <i class="pi pi-chart-bar text-3xl p-1 surface-overlay border-circle cursor-pointer"></i>
                 </div>
             </a>
