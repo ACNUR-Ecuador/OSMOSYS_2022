@@ -10,7 +10,6 @@ import {
     EnumsIndicatorType,
     EnumsState,
     EnumsType,
-    MonthType,
     QuarterType,
     SelectItemWithOrder
 } from '../shared/model/UtilsModel';
@@ -21,7 +20,8 @@ import {
     IndicatorExecution,
     IndicatorValue,
     IndicatorValueCustomDissagregationWeb,
-    Period, Quarter,
+    Period,
+    Quarter,
     QuarterMonthResume
 } from '../shared/model/OsmosysModel';
 import {HttpResponse} from '@angular/common/http';
@@ -31,10 +31,8 @@ import {TableColumnProperties} from 'exceljs';
     providedIn: 'root'
 })
 export class UtilsService {
-    static daysToReport = 30;
 
     constructor(
-        private enumsService: EnumsService
     ) {
     }
 
@@ -121,9 +119,9 @@ export class UtilsService {
                 }
                 return value;
             }
-        } else if(data && !field){
+        } else if (data && !field) {
             return data;
-        }else {
+        } else {
             return null;
         }
     }
@@ -368,6 +366,39 @@ export class UtilsService {
                 result.push(EnumsType.GenderType);
                 return result;
             }
+
+
+            case DissagregationType.LUGAR_Y_DIVERSIDAD: {
+                result.push(null);
+                result.push(EnumsType.DiversityType);
+                return result;
+            }
+            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO: {
+                result.push(null);
+                result.push(EnumsType.CountryOfOrigin);
+                result.push(EnumsType.AgeType);
+                result.push(EnumsType.GenderType);
+                return result;
+            }
+            case DissagregationType.PAIS_ORIGEN_EDAD_Y_GENERO: {
+                result.push(EnumsType.CountryOfOrigin);
+                result.push(EnumsType.AgeType);
+                result.push(EnumsType.GenderType);
+                return result;
+            }
+            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
+                result.push(null);
+                result.push(EnumsType.CountryOfOrigin);
+                result.push(EnumsType.AgePrimaryEducationType);
+                result.push(EnumsType.GenderType);
+                return result;
+            }
+            case DissagregationType.PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
+                result.push(EnumsType.CountryOfOrigin);
+                result.push(EnumsType.AgePrimaryEducationType);
+                result.push(EnumsType.GenderType);
+                return result;
+            }
         }
     }
 
@@ -393,35 +424,45 @@ export class UtilsService {
             case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD:
             case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN:
             case DissagregationType.TIPO_POBLACION_Y_LUGAR:
+            case DissagregationType.LUGAR_Y_DIVERSIDAD:
                 return 2;
             case DissagregationType.LUGAR_EDAD_Y_GENERO:
             case DissagregationType.DIVERSIDAD_EDAD_Y_GENERO:
             case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
             case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
+            case DissagregationType.PAIS_ORIGEN_EDAD_Y_GENERO:
+            case DissagregationType.PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
                 return 3;
             case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO:
             case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
             case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
             case DissagregationType.LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
+            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO:
+            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
                 return 4;
         }
     }
 
-    getNoDimentionsDissagregationTypes(): DissagregationType[] {
+
+    filterDimentionsDissagregationTypesByNoOfDimentions(number: number) {
         const result: DissagregationType[] = [];
-        result.push(DissagregationType.SIN_DESAGREGACION);
+        const disa = Object.keys(DissagregationType);
+        disa.forEach(value => {
+            const dissagregationTypeE = DissagregationType[value];
+            const r1 = this.getDimentionsByDissagregationTypes(dissagregationTypeE);
+            if (r1 === number) {
+                result.push(dissagregationTypeE);
+            }
+        })
         return result;
     }
 
+    getNoDimentionsDissagregationTypes(): DissagregationType[] {
+        return this.filterDimentionsDissagregationTypesByNoOfDimentions(0);
+    }
+
     getOneDimentionsDissagregationTypes(): DissagregationType[] {
-        const result: DissagregationType[] = [];
-        result.push(DissagregationType.TIPO_POBLACION);
-        result.push(DissagregationType.EDAD);
-        result.push(DissagregationType.GENERO);
-        result.push(DissagregationType.LUGAR);
-        result.push(DissagregationType.PAIS_ORIGEN);
-        result.push(DissagregationType.DIVERSIDAD);
-        return result;
+        return this.filterDimentionsDissagregationTypesByNoOfDimentions(1);
     }
 
     isLocationDissagregation(dissagregationType: DissagregationType): boolean {
@@ -434,6 +475,9 @@ export class UtilsService {
             case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
             case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
             case DissagregationType.LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
+            case DissagregationType.LUGAR_Y_DIVERSIDAD:
+            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO:
+            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
                 return true;
             case DissagregationType.TIPO_POBLACION:
             case DissagregationType.EDAD:
@@ -452,38 +496,23 @@ export class UtilsService {
             case DissagregationType.DIVERSIDAD_EDAD_Y_GENERO:
             case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
             case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
+            case DissagregationType.PAIS_ORIGEN_EDAD_Y_GENERO:
+            case DissagregationType.PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
                 return false;
+
         }
     }
 
     getTwoDimentionsDissagregationTypes(): DissagregationType[] {
-        const result: DissagregationType[] = [];
-        result.push(DissagregationType.GENERO_Y_EDAD);
-        result.push(DissagregationType.GENERO_Y_DIVERSIDAD);
-        result.push(DissagregationType.TIPO_POBLACION_Y_EDAD);
-        result.push(DissagregationType.TIPO_POBLACION_Y_GENERO);
-        result.push(DissagregationType.TIPO_POBLACION_Y_LUGAR);
-        result.push(DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN);
-        result.push(DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD);
-        return result;
+        return this.filterDimentionsDissagregationTypesByNoOfDimentions(2);
     }
 
     getThreeDimentionsDissagregationTypes(): DissagregationType[] {
-        const result: DissagregationType[] = [];
-        result.push(DissagregationType.LUGAR_EDAD_Y_GENERO);
-        result.push(DissagregationType.DIVERSIDAD_EDAD_Y_GENERO);
-        result.push(DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO);
-        result.push(DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO);
-        return result;
+        return this.filterDimentionsDissagregationTypesByNoOfDimentions(3);
     }
 
     getFourDimentionsDissagregationTypes(): DissagregationType[] {
-        const result: DissagregationType[] = [];
-        result.push(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO);
-        result.push(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO);
-        result.push(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO);
-        result.push(DissagregationType.LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO);
-        return result;
+        return this.filterDimentionsDissagregationTypesByNoOfDimentions(4);
     }
 
     getDissagregationTypesByDissagregationType(dissagregationType: DissagregationType): DissagregationType[] {
@@ -585,6 +614,38 @@ export class UtilsService {
             case DissagregationType.LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
                 result.push(DissagregationType.LUGAR);
                 result.push(DissagregationType.DIVERSIDAD);
+                result.push(DissagregationType.EDAD_EDUCACION_PRIMARIA);
+                result.push(DissagregationType.GENERO);
+                return result;
+            }
+
+            case DissagregationType.LUGAR_Y_DIVERSIDAD: {
+                result.push(DissagregationType.LUGAR);
+                result.push(DissagregationType.DIVERSIDAD);
+                return result;
+            }
+            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO: {
+                result.push(DissagregationType.LUGAR);
+                result.push(DissagregationType.PAIS_ORIGEN);
+                result.push(DissagregationType.EDAD);
+                result.push(DissagregationType.GENERO);
+                return result;
+            }
+            case DissagregationType.PAIS_ORIGEN_EDAD_Y_GENERO: {
+                result.push(DissagregationType.PAIS_ORIGEN);
+                result.push(DissagregationType.EDAD);
+                result.push(DissagregationType.GENERO);
+                return result;
+            }
+            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
+                result.push(DissagregationType.LUGAR);
+                result.push(DissagregationType.PAIS_ORIGEN);
+                result.push(DissagregationType.EDAD_EDUCACION_PRIMARIA);
+                result.push(DissagregationType.GENERO);
+                return result;
+            }
+            case DissagregationType.PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
+                result.push(DissagregationType.PAIS_ORIGEN);
                 result.push(DissagregationType.EDAD_EDUCACION_PRIMARIA);
                 result.push(DissagregationType.GENERO);
                 return result;
@@ -780,6 +841,10 @@ export class UtilsService {
             case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO:
             case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
             case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
+            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO:
+            case DissagregationType.PAIS_ORIGEN_EDAD_Y_GENERO:
+            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
+            case DissagregationType.PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
                 return true;
             case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD:
             case DissagregationType.DIVERSIDAD:
@@ -788,6 +853,7 @@ export class UtilsService {
             case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
             case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
             case DissagregationType.LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
+            case DissagregationType.LUGAR_Y_DIVERSIDAD:
                 return false;
         }
     }
@@ -813,12 +879,6 @@ export class UtilsService {
             }
         }
         return result;
-    }
-
-    getCurrentMonth(): MonthType {
-        const today = new Date();
-        const mm = today.getMonth() + 1; // January is 0!
-        return this.enumsService.numberToMonthType(mm);
     }
 
     // noinspection JSUnusedGlobalSymbols
@@ -886,26 +946,6 @@ export class UtilsService {
                 return x;
             }
         });
-    }
-
-    public enumTypeToDissagregationType(enumType: EnumsType): DissagregationType {
-        if (!enumType) {
-            return null;
-        }
-        switch (enumType) {
-            case EnumsType.PopulationType:
-                return DissagregationType.TIPO_POBLACION;
-            case EnumsType.AgeType:
-                return DissagregationType.EDAD;
-            case EnumsType.GenderType:
-                return DissagregationType.GENERO;
-            case EnumsType.CountryOfOrigin:
-                return DissagregationType.PAIS_ORIGEN;
-            case EnumsType.DiversityType:
-                return DissagregationType.DIVERSIDAD;
-            default:
-                return null;
-        }
     }
 
 
