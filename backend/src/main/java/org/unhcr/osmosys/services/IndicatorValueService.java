@@ -94,6 +94,16 @@ public class IndicatorValueService {
                 return this.createIndicatorValueDissagregationStandardForLocationDiversityAgePrimaryEducationAndGender(cantones);
             case SIN_DESAGREGACION:
                 return this.createIndicatorValueDissagregationStandardForNoDissagregation();
+            case LUGAR_Y_DIVERSIDAD:
+                return this.createIndicatorValueDissagregationStandardForLocationAndDiversity(cantones);
+            case LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO:
+                return this.createIndicatorValueDissagregationStandardForLocationCountryOfOriginAgeAndGender(cantones);
+            case PAIS_ORIGEN_EDAD_Y_GENERO:
+                return this.createIndicatorValueDissagregationStandardForCountryOfOriginAgeAndGender();
+            case LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
+                return this.createIndicatorValueDissagregationStandardForLocationCountryOfOriginAgePrimaryEducationAndGender(cantones);
+            case PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
+                return this.createIndicatorValueDissagregationStandardForCountryOfOriginAgePrimaryEducationAndGender();
             default: {
                 throw new GeneralAppException(" Desagregación no implementada " + dissagregationType, Response.Status.INTERNAL_SERVER_ERROR);
             }
@@ -281,6 +291,24 @@ public class IndicatorValueService {
                 iv.setState(State.ACTIVO);
                 iv.setDissagregationType(dt);
                 iv.setPopulationType(populationType);
+                iv.setDiversityType(diversityType);
+                iv.setShowValue(true);
+                r.add(iv);
+            }
+
+        }
+        return r;
+    }
+
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForLocationAndDiversity(List<Canton> cantones) {
+        List<IndicatorValue> r = new ArrayList<>();
+        DissagregationType dt = DissagregationType.LUGAR_Y_DIVERSIDAD;
+        for (Canton canton : cantones) {
+            for (DiversityType diversityType : DiversityType.values()) {
+                IndicatorValue iv = new IndicatorValue();
+                iv.setState(State.ACTIVO);
+                iv.setDissagregationType(dt);
+                iv.setLocation(canton);
                 iv.setDiversityType(diversityType);
                 iv.setShowValue(true);
                 r.add(iv);
@@ -495,6 +523,90 @@ public class IndicatorValueService {
         return r;
     }
 
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForCountryOfOriginAgeAndGender() {
+        List<IndicatorValue> r = new ArrayList<>();
+        DissagregationType dt = DissagregationType.PAIS_ORIGEN_EDAD_Y_GENERO;
+        for (CountryOfOrigin countryOfOrigin : CountryOfOrigin.values()) {
+            for (GenderType genderType : GenderType.values()) {
+                for (AgeType ageType : AgeType.values()) {
+                    IndicatorValue iv = new IndicatorValue();
+                    iv.setState(State.ACTIVO);
+                    iv.setDissagregationType(dt);
+                    iv.setGenderType(genderType);
+                    iv.setAgeType(ageType);
+                    iv.setCountryOfOrigin(countryOfOrigin);
+                    iv.setShowValue(true);
+                    r.add(iv);
+                }
+            }
+        }
+        return r;
+    }
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForCountryOfOriginAgePrimaryEducationAndGender() {
+        List<IndicatorValue> r = new ArrayList<>();
+        DissagregationType dt = DissagregationType.PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO;
+        for (CountryOfOrigin countryOfOrigin : CountryOfOrigin.values()) {
+            for (GenderType genderType : GenderType.values()) {
+                for (AgePrimaryEducationType agePrimaryEducationType : AgePrimaryEducationType.values()) {
+                    IndicatorValue iv = new IndicatorValue();
+                    iv.setState(State.ACTIVO);
+                    iv.setDissagregationType(dt);
+                    iv.setGenderType(genderType);
+                    iv.setAgePrimaryEducationType(agePrimaryEducationType);
+                    iv.setCountryOfOrigin(countryOfOrigin);
+                    iv.setShowValue(true);
+                    r.add(iv);
+                }
+            }
+        }
+        return r;
+    }
+
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForLocationCountryOfOriginAgeAndGender(List<Canton> cantones) {
+        List<IndicatorValue> r = new ArrayList<>();
+        DissagregationType dt = DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO;
+        for (Canton canton : cantones) {
+            for (CountryOfOrigin countryOfOrigin : CountryOfOrigin.values()) {
+                for (GenderType genderType : GenderType.values()) {
+                    for (AgeType ageType : AgeType.values()) {
+                        IndicatorValue iv = new IndicatorValue();
+                        iv.setState(State.ACTIVO);
+                        iv.setDissagregationType(dt);
+                        iv.setGenderType(genderType);
+                        iv.setAgeType(ageType);
+                        iv.setLocation(canton);
+                        iv.setCountryOfOrigin(countryOfOrigin);
+                        iv.setShowValue(true);
+                        r.add(iv);
+                    }
+                }
+            }
+        }
+        return r;
+    }
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForLocationCountryOfOriginAgePrimaryEducationAndGender(List<Canton> cantones) {
+        List<IndicatorValue> r = new ArrayList<>();
+        DissagregationType dt = DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO;
+        for (Canton canton : cantones) {
+            for (CountryOfOrigin countryOfOrigin : CountryOfOrigin.values()) {
+                for (GenderType genderType : GenderType.values()) {
+                    for (AgePrimaryEducationType agePrimaryEducationType : AgePrimaryEducationType.values()) {
+                        IndicatorValue iv = new IndicatorValue();
+                        iv.setState(State.ACTIVO);
+                        iv.setDissagregationType(dt);
+                        iv.setGenderType(genderType);
+                        iv.setAgePrimaryEducationType(agePrimaryEducationType);
+                        iv.setLocation(canton);
+                        iv.setCountryOfOrigin(countryOfOrigin);
+                        iv.setShowValue(true);
+                        r.add(iv);
+                    }
+                }
+            }
+        }
+        return r;
+    }
+
     private List<IndicatorValue> createIndicatorValueDissagregationStandardForPopulationTypeLocationAgeTertiaryEducationAndGender(List<Canton> cantones) {
         List<IndicatorValue> r = new ArrayList<>();
         DissagregationType dt = DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO;
@@ -600,7 +712,7 @@ public class IndicatorValueService {
                 /*indicatorValuesDissagregation
                         .forEach(indicatorValue -> indicatorValue.setState(dissagregationState));*/
 
-                if(dissagregationState.equals(State.INACTIVO)){
+                if (dissagregationState.equals(State.INACTIVO)) {
                     indicatorValuesDissagregation
                             .forEach(indicatorValue -> indicatorValue.setState(dissagregationState));
                 }

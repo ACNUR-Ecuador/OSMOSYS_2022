@@ -6,10 +6,10 @@ import java.util.List;
 public enum DissagregationType implements EnumInterface {
     TIPO_POBLACION("Tipo de población", 1),
     EDAD("Edad", 2),
-    EDAD_EDUCACION_PRIMARIA("Edad Educación Primaria", 3),
-    EDAD_EDUCACION_TERCIARIA("Edad Educación Terciaria", 4),
+    EDAD_EDUCACION_PRIMARIA("Edad-Educación Primaria", 3),
+    EDAD_EDUCACION_TERCIARIA("Edad-Educación Terciaria", 4),
     GENERO("Género", 5),
-    LUGAR("Sitio/cantón", 6),
+    LUGAR("Lugar", 6),
     PAIS_ORIGEN("País de Origen", 7),
     DIVERSIDAD("Diversidad", 8),
     SIN_DESAGREGACION("Sin Desagregación", 9),
@@ -19,15 +19,20 @@ public enum DissagregationType implements EnumInterface {
     TIPO_POBLACION_Y_EDAD("Tipo de población y edad", 13),
     TIPO_POBLACION_Y_DIVERSIDAD("Tipo de población y diversidad", 14),
     TIPO_POBLACION_Y_PAIS_ORIGEN("Tipo de población y país de origen", 15),
-    TIPO_POBLACION_Y_LUGAR("Tipo de población y sitio/cantón", 16),
-    LUGAR_EDAD_Y_GENERO("Lugar, género y edad", 17),
-    DIVERSIDAD_EDAD_Y_GENERO("Diversidad, género y edad", 18),
-    DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO("Diversidad, género y edad-educación primaria", 19),
-    DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO("Diversidad, género y edad-educación primaria", 20),
-    TIPO_POBLACION_LUGAR_EDAD_Y_GENERO("Tipo de población,lugar, género y edad", 21),
-    TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO("Tipo de población,lugar, género  y edad educación primaria", 22),
-    TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO("Tipo de población,lugar, género y edad educación terciaria", 23),
-    LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO("Lugar, diversidad, género y edad-educación primaria", 24),
+    TIPO_POBLACION_Y_LUGAR("Tipo de población y lugar", 16),
+    LUGAR_Y_DIVERSIDAD("Diversidad y lugar", 17),
+    LUGAR_EDAD_Y_GENERO("Lugar, género y edad", 18),
+    DIVERSIDAD_EDAD_Y_GENERO("Diversidad, género y edad", 19),
+    PAIS_ORIGEN_EDAD_Y_GENERO("País de Origen, género y edad", 20),
+    DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO("Diversidad, género y edad-educación primaria", 21),
+    DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO("Diversidad, género y edad-educación primaria", 22),
+    TIPO_POBLACION_LUGAR_EDAD_Y_GENERO("Tipo de población,lugar, género y edad", 23),
+    TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO("Tipo de población,lugar, género  y edad-educación primaria", 24),
+    TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO("Tipo de población,lugar, género y edad-educación terciaria", 25),
+    LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO("Lugar, diversidad, género y edad-educación primaria", 26),
+    LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO("Lugar, País de Origen, género y edad", 27),
+    LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO("Lugar, País de Origen, género y edad-educación primaria", 28),
+    PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO("País de Origen, género y edad-educación primaria", 29),
     ;
 
     public static List<DissagregationType> getLocationDissagregationTypes() {
@@ -38,6 +43,9 @@ public enum DissagregationType implements EnumInterface {
         r.add(TIPO_POBLACION_LUGAR_EDAD_Y_GENERO);
         r.add(TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO);
         r.add(TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO);
+        r.add(LUGAR_Y_DIVERSIDAD);
+        r.add(LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO);
+        r.add(LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO);
         return r;
     }
 
