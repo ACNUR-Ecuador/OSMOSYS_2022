@@ -96,6 +96,8 @@ public class IndicatorValueService {
                 return this.createIndicatorValueDissagregationStandardForNoDissagregation();
             case LUGAR_Y_DIVERSIDAD:
                 return this.createIndicatorValueDissagregationStandardForLocationAndDiversity(cantones);
+            case LUGAR_Y_GENERO:
+                return this.createIndicatorValueDissagregationStandardForLocationAndGender(cantones);
             case LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO:
                 return this.createIndicatorValueDissagregationStandardForLocationCountryOfOriginAgeAndGender(cantones);
             case PAIS_ORIGEN_EDAD_Y_GENERO:
@@ -317,6 +319,23 @@ public class IndicatorValueService {
         }
         return r;
     }
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForLocationAndGender(List<Canton> cantones) {
+        List<IndicatorValue> r = new ArrayList<>();
+        DissagregationType dt = DissagregationType.LUGAR_Y_DIVERSIDAD;
+        for (Canton canton : cantones) {
+            for (GenderType genderType : GenderType.values()) {
+                IndicatorValue iv = new IndicatorValue();
+                iv.setState(State.ACTIVO);
+                iv.setDissagregationType(dt);
+                iv.setLocation(canton);
+                iv.setGenderType(genderType);
+                iv.setShowValue(true);
+                r.add(iv);
+            }
+        }
+        return r;
+    }
+
 
     private List<IndicatorValue> createIndicatorValueDissagregationStandardForPopulationTypeAndCountryOfOrigin() {
         List<IndicatorValue> r = new ArrayList<>();
@@ -542,6 +561,7 @@ public class IndicatorValueService {
         }
         return r;
     }
+
     private List<IndicatorValue> createIndicatorValueDissagregationStandardForCountryOfOriginAgePrimaryEducationAndGender() {
         List<IndicatorValue> r = new ArrayList<>();
         DissagregationType dt = DissagregationType.PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO;
@@ -584,6 +604,7 @@ public class IndicatorValueService {
         }
         return r;
     }
+
     private List<IndicatorValue> createIndicatorValueDissagregationStandardForLocationCountryOfOriginAgePrimaryEducationAndGender(List<Canton> cantones) {
         List<IndicatorValue> r = new ArrayList<>();
         DissagregationType dt = DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO;

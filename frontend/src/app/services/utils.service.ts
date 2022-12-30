@@ -13,7 +13,6 @@ import {
     QuarterType,
     SelectItemWithOrder
 } from '../shared/model/UtilsModel';
-import {EnumsService} from './enums.service';
 import {
     Canton,
     CustomDissagregationValues,
@@ -368,6 +367,11 @@ export class UtilsService {
             }
 
 
+            case DissagregationType.LUGAR_Y_GENERO: {
+                result.push(null);
+                result.push(EnumsType.GenderType);
+                return result;
+            }
             case DissagregationType.LUGAR_Y_DIVERSIDAD: {
                 result.push(null);
                 result.push(EnumsType.DiversityType);
@@ -425,6 +429,7 @@ export class UtilsService {
             case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN:
             case DissagregationType.TIPO_POBLACION_Y_LUGAR:
             case DissagregationType.LUGAR_Y_DIVERSIDAD:
+            case DissagregationType.LUGAR_Y_GENERO:
                 return 2;
             case DissagregationType.LUGAR_EDAD_Y_GENERO:
             case DissagregationType.DIVERSIDAD_EDAD_Y_GENERO:
@@ -476,6 +481,7 @@ export class UtilsService {
             case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
             case DissagregationType.LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
             case DissagregationType.LUGAR_Y_DIVERSIDAD:
+            case DissagregationType.LUGAR_Y_GENERO:
             case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO:
             case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
                 return true;
@@ -619,6 +625,11 @@ export class UtilsService {
                 return result;
             }
 
+            case DissagregationType.LUGAR_Y_GENERO: {
+                result.push(DissagregationType.LUGAR);
+                result.push(DissagregationType.GENERO);
+                return result;
+            }
             case DissagregationType.LUGAR_Y_DIVERSIDAD: {
                 result.push(DissagregationType.LUGAR);
                 result.push(DissagregationType.DIVERSIDAD);
@@ -845,6 +856,7 @@ export class UtilsService {
             case DissagregationType.PAIS_ORIGEN_EDAD_Y_GENERO:
             case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
             case DissagregationType.PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
+            case DissagregationType.LUGAR_Y_GENERO:
                 return true;
             case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD:
             case DissagregationType.DIVERSIDAD:

@@ -43,7 +43,8 @@ import { StatementPeriodStatementAsignationsListPipe } from './pipes/statement-p
         ValuesStatePipe,
         CustomDissagregationsAssignationToIndicatorPipe,
         PeriodsFromIndicatorPipe,
-        StatementPeriodStatementAsignationsListPipe
+        StatementPeriodStatementAsignationsListPipe,
+        OfficeOrganizationPipe
     ],
     imports: [
         CommonModule
@@ -55,7 +56,8 @@ import { StatementPeriodStatementAsignationsListPipe } from './pipes/statement-p
         UserPipe,
         EnumValuesToLabelPipe,
         ValuesStatePipe,
-        EnumValuesToLabelPipe
+        EnumValuesToLabelPipe,
+        OfficeOrganizationPipe
     ],
     providers: [
         MessageService,

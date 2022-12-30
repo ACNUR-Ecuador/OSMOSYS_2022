@@ -1,0 +1,80 @@
+<div class="grid">
+    <div class="col-12">
+        <p-toast></p-toast>
+        <div class="card px-6 py-6">
+            <h3 class="page-title">Perfil de usuario</h3>
+            <form [formGroup]="userForm" (ngSubmit)="save()">
+                <p-card class="">
+
+                    <div class="field grid">
+                        <label for="nameI" class="p-col-fixed" style="width:200px">Nombre</label>
+                        <div class="p-col">
+                            <input id="nameI" type="text" pInputText formControlName="name">
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('name',userForm)">
+                                {{utilsService.getErrorMessageForm('name', userForm)}}
+                            </small>
+                        </div>
+
+                    </div>
+                    <div class="field grid">
+                        <label for="usernameI" class="p-col-fixed" style="width:200px">Nombre de Usuario</label>
+                        <div class="p-col">
+                            <input id="usernameI" type="text" pInputText formControlName="username">
+                        </div>
+                    </div>
+                    <div class="field grid">
+                        <label for="emailI" class="p-col-fixed" style="width:200px">Correo Electrónico</label>
+                        <div class="p-col">
+                            <input id="emailI" type="text" pInputText formControlName="email">
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('email',userForm)">
+                                {{utilsService.getErrorMessageForm('email', userForm)}}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="field grid">
+                        <label for="organizationI" class="p-col-fixed" style="width:200px">Organización</label>
+                        <div class="p-col">
+                            <input id="organizationI" type="text" pInputText formControlName="organization">
+                        </div>
+                    </div>
+                    <div class="field grid">
+                        <label for="officeI" class="p-col-fixed" style="width:200px">Oficina</label>
+                        <div class="p-col">
+                            <p-dropdown id="officeI"
+                                        formControlName="office"
+                                        [options]="offices"
+                                        placeholder="Selecciona..."
+                                        [filter]="true"
+                                        dataKey="id"
+                                        appendTo="body"
+                            >
+                            </p-dropdown>
+
+                            <small class="p-error" *ngIf="utilsService.showErrorForm('office',userForm)">
+                                {{utilsService.getErrorMessageForm('office', userForm)}}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="field grid">
+                        <label for="rolesI" class="p-col-fixed" style="width:200px">Permisos asignados</label>
+                        <div class="p-col" style="width:600px">
+                            <input style="width:600px" id="rolesI" type="text" pInputText formControlName="roles">
+                        </div>
+
+                    </div>
+                    <ng-template pTemplate="footer">
+                            <button pButton class="btn btn-primary p-mr-2" type="submit"
+                                      [disabled]="!userForm.valid">Guardar
+                            </button>
+                            <button pButton class="p-button-secondary" type="button" (click)="cancel()">
+                                Cancelar
+                            </button>
+
+                    </ng-template>
+                </p-card>
+            </form>
+        </div>
+    </div>
+</div>
