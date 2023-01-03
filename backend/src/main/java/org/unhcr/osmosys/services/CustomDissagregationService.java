@@ -149,4 +149,8 @@ public class CustomDissagregationService {
 
 
     }
+
+    public CustomDissagregation getByName(String name) {
+        return this.customDissagregationDao.getByName(name);
+    }
 }

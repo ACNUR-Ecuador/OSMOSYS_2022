@@ -88,7 +88,7 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
     }
 
     public List<Indicator> getByCodeList(List<String> codeList) {
-        String jpql =" SELECT DISTINCT o" +
+        String jpql = " SELECT DISTINCT o" +
                 " FROM Indicator o " +
                 " left outer join fetch o.statement sta " +
                 " left outer join fetch  sta.area " +
@@ -120,12 +120,47 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
                 " left outer join o.dissagregationsAssignationToIndicator da " +
                 " left outer join da.dissagregationFilterIndicators " +
 
-                " left outer join o.markers "+
-                " WHERE p =:year and o.state=:state" ;
+                " left outer join o.markers " +
+                " WHERE p =:year and o.state=:state";
 
         Query q = getEntityManager().createQuery(jpql, Indicator.class);
         q.setParameter("state", state);
         q.setParameter("year", year);
         return null; // TODO
+    }
+
+    public Indicator getByPeriodAndCode(Long periodId, String code) throws GeneralAppException {
+        String jpql = IndicatorDao.indicatorJpql +
+                " WHERE p.id = :periodId and o.code =:code";
+        Query q = getEntityManager().createQuery(jpql, Indicator.class);
+        q.setParameter("periodId", periodId);
+        q.setParameter("code", code);
+        try {
+            return (Indicator) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (NonUniqueResultException e) {
+            throw new GeneralAppException(
+                    "Se encontró más de un item con el código  " + code + " en el periodo " + periodId, Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    public Indicator getByCodeAndDescription(String code, String description) throws GeneralAppException {
+        String jpql = IndicatorDao.indicatorJpql +
+                " WHERE UPPER(o.code)=UPPER(:code) " +
+                " and LOWER(o.description) =lower(:description) ";
+        Query q = getEntityManager().createQuery(jpql, Indicator.class);
+        q.setParameter("description", description);
+        q.setParameter("code", code);
+        try {
+            return (Indicator) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (NonUniqueResultException e) {
+            throw new GeneralAppException("Se encontró más de un item con el código  " + code
+                    + " y la descripción "+ description, Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
     }
 }

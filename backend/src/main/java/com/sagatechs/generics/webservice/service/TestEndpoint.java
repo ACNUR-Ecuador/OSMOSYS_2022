@@ -16,6 +16,7 @@ import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.reports.service.MessageAlertService;
 import org.unhcr.osmosys.reports.service.ReportService;
 import org.unhcr.osmosys.services.*;
+import org.unhcr.osmosys.services.dataImport.IndicatorsImportService;
 import org.unhcr.osmosys.services.dataImport.StatementImportService;
 import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
@@ -93,6 +94,9 @@ public class TestEndpoint {
     @Inject
     StatementImportService statementImportService;
 
+    @Inject
+    IndicatorsImportService indicatorsImportService;
+
     @Path("test")
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
@@ -134,6 +138,7 @@ public class TestEndpoint {
         this.messageAlertService.sendAlertToPartners();
         return "ya";
     }
+
     @Path("sendAlertToDirectImplementation")
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
@@ -755,7 +760,7 @@ public class TestEndpoint {
         return "terimnado generales";
     }
 
-    @Path("statementImport")
+    @Path("importTest")
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
     public String statementImport() throws GeneralAppException {
@@ -766,7 +771,7 @@ public class TestEndpoint {
         p2023.setYear(2023);
         periodWebs.add(p2023);
 
-
+        this.indicatorsImportService.indicatorsImport(p2023);
         return "terimnado generales";
     }
 

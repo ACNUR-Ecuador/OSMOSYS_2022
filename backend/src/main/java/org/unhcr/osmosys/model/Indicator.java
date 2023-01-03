@@ -2,8 +2,6 @@ package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.*;
 
 import javax.persistence.*;
@@ -28,6 +26,9 @@ public class Indicator extends BaseEntity<Long> {
 
     @Column(name = "category")
     private String category;
+
+    @Column(name = "instructions", columnDefinition = "text")
+    private String instructions;
 
     @Column(name = "qualitative_instructions", columnDefinition = "text")
     private String qualitativeInstructions;
@@ -265,24 +266,12 @@ public class Indicator extends BaseEntity<Long> {
         this.category = category;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Indicator indicator = (Indicator) o;
-
-        return new EqualsBuilder().append(id, indicator.id).append(code, indicator.code).isEquals();
+    public String getInstructions() {
+        return instructions;
     }
 
-
-    public UnitType getUnit() {
-        return unit;
-    }
-
-    public void setUnit(UnitType unit) {
-        this.unit = unit;
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
     }
 
     public String getQualitativeInstructions() {
@@ -293,6 +282,14 @@ public class Indicator extends BaseEntity<Long> {
         this.qualitativeInstructions = qualitativeInstructions;
     }
 
+    public UnitType getUnit() {
+        return unit;
+    }
+
+    public void setUnit(UnitType unit) {
+        this.unit = unit;
+    }
+
     public Boolean getBlockAfterUpdate() {
         return blockAfterUpdate;
     }
@@ -300,28 +297,4 @@ public class Indicator extends BaseEntity<Long> {
     public void setBlockAfterUpdate(Boolean blockAfterUpdate) {
         this.blockAfterUpdate = blockAfterUpdate;
     }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(code).toHashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Indicator{" +
-                "code='" + code + '\'' +
-                ", description='" + description + '\'' +
-                ", statement=" + statement +
-                ", category='" + category + '\'' +
-                ", state=" + state +
-                ", indicatorType=" + indicatorType +
-                ", measureType=" + measureType +
-                ", frecuency=" + frecuency +
-                ", areaType=" + areaType +
-                ", markers=" + markers +
-                ", isMonitored=" + isMonitored +
-                ", isCalculated=" + isCalculated +
-                '}';
-    }
-
 }

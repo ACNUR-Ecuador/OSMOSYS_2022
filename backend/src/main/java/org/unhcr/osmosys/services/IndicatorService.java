@@ -286,11 +286,17 @@ public class IndicatorService {
                 toEnable, toDisable, toCreate);
 
     }
+
     public void dissableDissagregationsToIndicator(Indicator indicator, Period period, List<DissagregationType> dissagregationTypes) throws GeneralAppException {
-        List<DissagregationAssignationToIndicator> toDisable = indicator.getDissagregationsAssignationToIndicator()
-                .stream()
-                .filter(dissagregationAssignationToIndicator -> dissagregationTypes.contains(dissagregationAssignationToIndicator.getDissagregationType()))
-                .collect(Collectors.toList());
+        List<DissagregationAssignationToIndicator> toDisable =
+                indicator.getDissagregationsAssignationToIndicator()
+                        .stream()
+                        .filter(
+                                dissagregationAssignationToIndicator -> {
+                                    return dissagregationTypes.contains(dissagregationAssignationToIndicator.getDissagregationType()) && dissagregationAssignationToIndicator.getPeriod().getId() == period.getId();
+                                }
+                        )
+                        .collect(Collectors.toList());
         this.saveOrUpdate(indicator);
         // List<DissagregationAssignationToIndicator> toDisable = new ArrayList<>();
         List<DissagregationAssignationToIndicator> toEnable = new ArrayList<>();
@@ -301,28 +307,15 @@ public class IndicatorService {
     }
 
 
-    public void removeDissagregationToIndicator(Indicator indicator, Period period, DissagregationType dissagregationType) throws GeneralAppException {
-        Optional<DissagregationAssignationToIndicator> dissa = indicator.getDissagregationsAssignationToIndicator()
-                .stream()
-                .filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.getDissagregationType().equals(dissagregationType))
-                .findFirst();
-        if(dissa.isPresent()){
-            DissagregationAssignationToIndicator d = dissa.get();
-            d.setState(State.INACTIVO);
-            this.saveOrUpdate(indicator);
-            List<DissagregationAssignationToIndicator> toDisable = new ArrayList<>();
-            List<DissagregationAssignationToIndicator> toEnable = new ArrayList<>();
-            List<DissagregationAssignationToIndicator> toCreate = new ArrayList<>();
-
-            toDisable.add(d);
-            this.indicatorExecutionService.updateIndicatorExecutionsDissagregations(
-                    toEnable, toDisable, toCreate);
-
-        }
-
-    }
-
     public List<Indicator> getByPeriodYearAssignmentAndState(int year) {
         return null; // todo this.indicatorDao.getByPeriodYearAssignmentAndState(year);
+    }
+
+    public Indicator getByPeriodAndCode(Long periodId, String code) throws GeneralAppException {
+        return this.indicatorDao.getByPeriodAndCode(periodId, code);
+    }
+
+    public Indicator getByCodeAndDescription(String code, String description) throws GeneralAppException {
+        return this.indicatorDao.getByCodeAndDescription(code, description);
     }
 }
