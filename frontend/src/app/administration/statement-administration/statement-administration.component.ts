@@ -88,7 +88,7 @@ export class StatementAdministrationComponent implements OnInit {
             },
             {
                 field: 'periodStatementAsignations',
-                header: 'Periods',
+                header: 'Periodos',
                 type: ColumnDataType.numeric,
                 pipeRef: this.statementPeriodStatementAsignationsListPipe
             },
