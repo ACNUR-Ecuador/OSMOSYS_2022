@@ -1,5 +1,6 @@
 package org.unhcr.osmosys.services;
 
+import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.CantonDao;
@@ -29,12 +30,10 @@ public class CantonService {
     }
 
     public List<CantonWeb> getAll() {
-        List<CantonWeb> r = new ArrayList<>();
         return this.modelWebTransformationService.cantonsToCantonsWeb(this.cantonDao.findAll());
     }
 
     public List<CantonWeb> getByState(State state) {
-        List<CantonWeb> r = new ArrayList<>();
         return this.modelWebTransformationService.cantonsToCantonsWeb(this.cantonDao.getByState(state));
     }
 
@@ -42,5 +41,7 @@ public class CantonService {
         return this.cantonDao.getByIds(ids);
     }
 
-
+    public Canton getByCantonDescriptionAndProvinceDescription(String cantonDescription,String provinceDescription) throws GeneralAppException {
+        return this.cantonDao.getByCantonDescriptionAndProvinceDescription(cantonDescription,provinceDescription);
+    }
 }

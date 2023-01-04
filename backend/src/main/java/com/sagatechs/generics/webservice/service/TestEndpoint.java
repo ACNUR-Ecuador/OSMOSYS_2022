@@ -16,7 +16,7 @@ import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.reports.service.MessageAlertService;
 import org.unhcr.osmosys.reports.service.ReportService;
 import org.unhcr.osmosys.services.*;
-import org.unhcr.osmosys.services.dataImport.IndicatorsImportService;
+import org.unhcr.osmosys.services.dataImport.ProjectsImportService;
 import org.unhcr.osmosys.services.dataImport.StatementImportService;
 import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
@@ -95,7 +95,7 @@ public class TestEndpoint {
     StatementImportService statementImportService;
 
     @Inject
-    IndicatorsImportService indicatorsImportService;
+    ProjectsImportService projectsImportService;
 
     @Path("test")
     @GET
@@ -771,7 +771,7 @@ public class TestEndpoint {
         p2023.setYear(2023);
         periodWebs.add(p2023);
 
-        this.indicatorsImportService.indicatorsImport(p2023);
+        this.projectsImportService.projectsImport(p2023);
         return "terimnado generales";
     }
 

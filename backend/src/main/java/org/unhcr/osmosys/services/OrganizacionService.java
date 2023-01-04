@@ -64,7 +64,6 @@ public class OrganizacionService {
     }
 
 
-
     public void validate(OrganizationWeb organizationWeb) throws GeneralAppException {
         if (organizationWeb == null) {
             throw new GeneralAppException("Organización es nulo", Response.Status.BAD_REQUEST);
@@ -85,20 +84,20 @@ public class OrganizacionService {
 
         Organization itemRecovered = this.organizationDao.getByCode(organizationWeb.getCode());
         if (itemRecovered != null) {
-            if (organizationWeb.getId() == null || !organizationWeb.getId().equals(itemRecovered.getId())){
+            if (organizationWeb.getId() == null || !organizationWeb.getId().equals(itemRecovered.getId())) {
                 throw new GeneralAppException("Ya existe un ítem con este código", Response.Status.BAD_REQUEST);
             }
         }
 
         itemRecovered = this.organizationDao.getByAcronym(organizationWeb.getAcronym());
         if (itemRecovered != null) {
-            if (organizationWeb.getId() == null || !organizationWeb.getId().equals(itemRecovered.getId())){
+            if (organizationWeb.getId() == null || !organizationWeb.getId().equals(itemRecovered.getId())) {
                 throw new GeneralAppException("Ya existe un ítem con esta descripción corta", Response.Status.BAD_REQUEST);
             }
         }
         itemRecovered = this.organizationDao.getByDescription(organizationWeb.getDescription());
         if (itemRecovered != null) {
-            if (organizationWeb.getId() == null || !organizationWeb.getId().equals(itemRecovered.getId())){
+            if (organizationWeb.getId() == null || !organizationWeb.getId().equals(itemRecovered.getId())) {
                 throw new GeneralAppException("Ya existe un ítem con esta descripción", Response.Status.BAD_REQUEST);
             }
         }
@@ -107,5 +106,9 @@ public class OrganizacionService {
 
     public List<OrganizationWeb> getByState(State state) {
         return this.modelWebTransformationService.organizationsToOrganizationsWeb(this.organizationDao.getByState(state));
+    }
+
+    public Organization getByAcronym(String acronym) throws GeneralAppException {
+        return this.organizationDao.getByAcronym(acronym);
     }
 }

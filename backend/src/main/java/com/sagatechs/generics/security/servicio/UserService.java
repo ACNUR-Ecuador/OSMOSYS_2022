@@ -555,5 +555,9 @@ public class UserService implements Serializable {
     public List<User> getActiveSupervisorsDirectImplementationUsers(Long periodId) {
         return this.userDao.getActiveSupervisorsDirectImplementationUsers(periodId);
     }
+
+    public User getByEmail(String email) {
+        return this.userDao.getByEmail(email);
+    }
 }
 

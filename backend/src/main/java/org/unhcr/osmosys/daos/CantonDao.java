@@ -45,14 +45,24 @@ public class CantonDao extends GenericDaoJpa<Canton, Long> {
         }
     }
 
-    public List<Canton> getByDescription(String description) {
+
+    public Canton getByCantonDescriptionAndProvinceDescription(String cantonDescription,String provinceDescription) throws GeneralAppException {
 
         String jpql = "SELECT DISTINCT o FROM Canton o " +
-                "WHERE lower(o.description) = lower(:description)";
+                "WHERE " +
+                " lower(o.description) = lower(:cantonDescription) "+
+                " and lower(o.provincia.description) = lower(:provinceDescription)";
         Query q = getEntityManager().createQuery(jpql, Canton.class);
-        q.setParameter("description", description);
+        q.setParameter("cantonDescription", cantonDescription);
+        q.setParameter("provinceDescription", provinceDescription);
 
-        return q.getResultList();
+        try {
+            return (Canton) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (NonUniqueResultException e) {
+            throw new GeneralAppException("Se encontró más de un item con  " + cantonDescription+"-"+provinceDescription, Response.Status.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public List<Canton> getByIds(List<Long> ids) {

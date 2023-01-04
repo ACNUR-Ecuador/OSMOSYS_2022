@@ -304,4 +304,8 @@ public class ProjectService {
         // recupero todos los meses del proyecto
         this.monthService.getActiveMonthsByProjectIdAndMonthAndYear(projectId, monthStateWeb.getMonth(), monthStateWeb.getYear(), monthStateWeb.getBlockUpdate());
     }
+
+    public Project getByCode(String code) throws GeneralAppException {
+        return this.projectDao.getByCode(code);
+    }
 }

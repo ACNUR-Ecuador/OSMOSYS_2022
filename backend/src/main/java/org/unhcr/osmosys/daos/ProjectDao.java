@@ -33,8 +33,8 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
             "pe.id as periodId, " +
             "pe.year as periodYear, " +
             "pr.start_date as startDate, " +
-             "pr.end_date as endDate " +
-             // "pr.focal_point_id as focalPointId " +
+            "pr.end_date as endDate " +
+            // "pr.focal_point_id as focalPointId " +
             "FROM  " +
             "osmosys.projects pr " +
             "LEFT JOIN osmosys.organizations org ON pr.organization_id=org.id " +
@@ -120,6 +120,7 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         q.setParameter("periodId", periodId);
         return q.getResultList();
     }
+
     public List<Project> getByPeriodIdWithDataToUpdateGeneralIndicator(Long periodId) {
         String jpql = "SELECT DISTINCT o FROM Project o " +
                 " left join fetch o.indicatorExecutions ie " +
@@ -192,6 +193,5 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         q.setParameter("projectId", projectId);
         return q.getResultList();
     }
-
 
 }
