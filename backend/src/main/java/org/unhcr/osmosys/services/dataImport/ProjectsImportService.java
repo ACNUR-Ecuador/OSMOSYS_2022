@@ -102,6 +102,7 @@ public class ProjectsImportService {
 
             Iterator<Row> rowIterator = sheet.iterator();
             // get indicators
+            List<Project> projects= new ArrayList<>();
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
                 if (row.getRowNum() <= rowInitial) {
@@ -209,10 +210,11 @@ public class ProjectsImportService {
 
                 // veo si hay q crear general indicator
                 BigDecimal target;
-                if (row.getCell(COL_GENERAL_TARGET) == null || row.getCell(COL_GENERAL_TARGET).getCellType() == CellType.BLANK) {
-                    target = null;
+                if (row.getCell(COL_GENERAL_TARGET).getCellType() == CellType.NUMERIC) {
+                    double targetD = row.getCell(COL_GENERAL_TARGET).getNumericCellValue();
+                    target = new BigDecimal(targetD);
                 } else {
-                    target = new BigDecimal(row.getCell(COL_GENERAL_TARGET).getNumericCellValue());
+                    target = null;
                 }
                 IndicatorExecution generalIndicatorIE = this.indicatorExecutionService.createGeneralIndicatorForProject(project);
                 if (generalIndicatorIE != null) {
@@ -221,13 +223,21 @@ public class ProjectsImportService {
                 }
 
 
-
                 LOGGER.info(project);
+                projects.add(project);
+
 
 
             }
+
+            LOGGER.info("Proyectos a ingresar: " +projects.size());
+            int counter=0;
+            for (Project project : projects) {
+                counter++;
+                LOGGER.info("Proyecto :  "+counter +"/" +projects.size());
+                this.projectService.saveOrUpdate(project);
+            }
             file.close();
-            throw new GeneralAppException("Terminó bien", Response.Status.BAD_REQUEST);
 
 
         } catch (Exception e) {
