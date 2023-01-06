@@ -1123,9 +1123,24 @@ public class ModelWebTransformationService {
             Integer alertDays = this.appConfigurationService.getAlertDays();
             LocalDate today = LocalDate.now();
 
-            int todayYear = today.getYear();
-            int todayDay = today.getDayOfMonth();
-            int todayMonth = today.getMonth().getValue();
+            int todayYear;
+            int todayDay ;
+            int todayMonth;
+            if (alertDays < today.getDayOfMonth()) {
+                if ((today.getMonth().getValue() - 1) == 0) {
+                    todayMonth = 12;
+                    todayYear = today.getYear() - 1;
+                    todayDay = 31;
+                } else {
+                    todayMonth = today.getMonth().getValue() - 1;
+                    todayYear = today.getYear();
+                    todayDay = today.getDayOfMonth();
+                }
+            } else {
+                todayMonth = today.getMonth().getValue();
+                todayYear = today.getYear();
+                todayDay = today.getDayOfMonth();
+            }
             QuarterEnum todayQuarter = MonthEnum.getQuarterByMonthNumber(todayMonth);
             // obtengo los meses
             List<Month> monthList = indicatorExecution.getQuarters().stream()
@@ -1150,13 +1165,23 @@ public class ModelWebTransformationService {
         Integer alertDays = this.appConfigurationService.getAlertDays();
         LocalDate today = LocalDate.now();
 
-        int todayYear = today.getYear();
-        int todayDay = today.getDayOfMonth();
+        int todayYear;
+        int todayDay ;
         int todayMonth;
-        if (alertDays < todayDay) {
-            todayMonth = today.getMonth().getValue() - 1;
+        if (alertDays < today.getDayOfMonth()) {
+            if ((today.getMonth().getValue() - 1) == 0) {
+                todayMonth = 12;
+                todayYear = today.getYear() - 1;
+                todayDay = 31;
+            } else {
+                todayMonth = today.getMonth().getValue() - 1;
+                todayYear = today.getYear();
+                todayDay = today.getDayOfMonth();
+            }
         } else {
             todayMonth = today.getMonth().getValue();
+            todayYear = today.getYear();
+            todayDay = today.getDayOfMonth();
         }
         QuarterEnum todayQuarter = MonthEnum.getQuarterByMonthNumber(todayMonth);
 
