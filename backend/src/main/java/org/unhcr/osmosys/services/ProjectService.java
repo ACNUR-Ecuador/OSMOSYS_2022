@@ -146,7 +146,7 @@ public class ProjectService {
     }
 
 
-    private void updateProjectLocations(ProjectWeb projectWeb, Project project, Boolean updateAllLocationsIndicators) throws GeneralAppException {
+    public void updateProjectLocations(ProjectWeb projectWeb, Project project, Boolean updateAllLocationsIndicators) throws GeneralAppException {
         Set<Canton> locationsToActivate = new HashSet<>();
         Set<Canton> locationsToDissable = new HashSet<>();
 

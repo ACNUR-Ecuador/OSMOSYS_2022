@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @SuppressWarnings("unused")
@@ -139,5 +140,18 @@ public class IndicatorExecutionAssigmentWeb implements Serializable {
 
     public void setAssignedBudget(BigDecimal assignedBudget) {
         this.assignedBudget = assignedBudget;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof IndicatorExecutionAssigmentWeb)) return false;
+        IndicatorExecutionAssigmentWeb that = (IndicatorExecutionAssigmentWeb) o;
+        return Objects.equals(id, that.id) && Objects.equals(indicator, that.indicator) && state == that.state && Objects.equals(period, that.period) && Objects.equals(project, that.project) && Objects.equals(projectStatement, that.projectStatement) && Objects.equals(activityDescription, that.activityDescription) && Objects.equals(locations, that.locations) && Objects.equals(reportingOffice, that.reportingOffice) && Objects.equals(assignedUser, that.assignedUser) && Objects.equals(supervisorUser, that.supervisorUser) && Objects.equals(assignedUserBackup, that.assignedUserBackup) && Objects.equals(keepBudget, that.keepBudget) && Objects.equals(assignedBudget, that.assignedBudget);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, indicator, state, period, project, projectStatement, activityDescription, locations, reportingOffice, assignedUser, supervisorUser, assignedUserBackup, keepBudget, assignedBudget);
     }
 }

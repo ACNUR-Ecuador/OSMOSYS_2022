@@ -1140,7 +1140,7 @@ public class ModelWebTransformationService {
         int todayDay = today.getDayOfMonth();
         int todayMonth;
         if (alertDays < todayDay) {
-            todayMonth = today.getMonth().getValue() - 1;
+            todayMonth = (today.getMonth().getValue() - 1)>0?today.getMonth().getValue() - 1:today.getMonth().getValue();
         } else {
             todayMonth = today.getMonth().getValue();
         }

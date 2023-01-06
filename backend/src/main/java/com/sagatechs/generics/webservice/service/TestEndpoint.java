@@ -16,6 +16,7 @@ import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.reports.service.MessageAlertService;
 import org.unhcr.osmosys.reports.service.ReportService;
 import org.unhcr.osmosys.services.*;
+import org.unhcr.osmosys.services.dataImport.ProjectIndicatorsImportService;
 import org.unhcr.osmosys.services.dataImport.ProjectsImportService;
 import org.unhcr.osmosys.services.dataImport.StatementImportService;
 import org.unhcr.osmosys.webServices.model.*;
@@ -96,6 +97,8 @@ public class TestEndpoint {
 
     @Inject
     ProjectsImportService projectsImportService;
+    @Inject
+    ProjectIndicatorsImportService projectIndicatorsImportService;
 
     @Path("test")
     @GET
@@ -763,15 +766,18 @@ public class TestEndpoint {
     @Path("importTest")
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
-    public String statementImport() throws GeneralAppException {
-        List<PeriodWeb> periodWebs = new ArrayList<>();
-        PeriodWeb p2023 = new PeriodWeb();
+    public String statementImport() throws GeneralAppException, IOException {
+
+        /*PeriodWeb p2023 = new PeriodWeb();
         p2023.setId(2L);
         p2023.setState(State.ACTIVO);
         p2023.setYear(2023);
-        periodWebs.add(p2023);
+        */
 
-        this.projectsImportService.projectsImport(p2023);
+        ProjectWeb projectWeb= new ProjectWeb();
+        projectWeb.setId(91L);
+
+        this.projectIndicatorsImportService.projectIndicatorsImport(projectWeb);
         return "terimnado generales";
     }
 
