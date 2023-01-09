@@ -7,6 +7,7 @@ import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
+import org.unhcr.osmosys.daos.AreaDao;
 import org.unhcr.osmosys.daos.StatementDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.*;
@@ -27,6 +28,9 @@ public class ModelWebTransformationService {
 
     @Inject
     StatementDao statementDao;
+
+    @Inject
+    AreaDao areaDao;
 
     @Inject
     AppConfigurationService appConfigurationService;
@@ -784,9 +788,22 @@ public class ModelWebTransformationService {
             statement.setCode(statementWeb.getCode());
             statement.setProductCode(statementWeb.getProductCode());
             statement.setAreaType(statementWeb.getArea().getAreaType());
+            /*
             statement.setParentStatement(this.statementWebToStatement(statementWeb.getParentStatement()));
+
             statement.setArea(this.areaToAreaWeb(statementWeb.getArea()));
-            statement.getArea().addStatement(statement);
+
+             */
+            if(statementWeb.getParentStatement()!=null && statementWeb.getParentStatement().getId()!=null){
+                statement.setParentStatement(this.statementDao.find(statementWeb.getParentStatement().getId()));
+            }else{
+                statement.setParentStatement(null);
+            }
+            if(statementWeb.getArea()!=null && statementWeb.getArea().getId()!=null){
+                statement.setArea(this.areaDao.find(statementWeb.getArea().getId()));
+                statement.getArea().addStatement(statement);
+            }
+
 
         } else {
             statement = this.statementDao.find(statementWeb.getId());
@@ -797,8 +814,17 @@ public class ModelWebTransformationService {
             if (statementWeb.getArea() != null) { // todo controlar
                 statement.setAreaType(statementWeb.getArea().getAreaType());
             }
-            statement.setParentStatement(this.statementWebToStatement(statementWeb.getParentStatement()));
-            statement.setArea(this.areaToAreaWeb(statementWeb.getArea()));
+            /*statement.setParentStatement(this.statementWebToStatement(statementWeb.getParentStatement()));
+            statement.setArea(this.areaToAreaWeb(statementWeb.getArea()));*/
+            if(statementWeb.getParentStatement()!=null && statementWeb.getParentStatement().getId()!=null){
+                statement.setParentStatement(this.statementDao.find(statementWeb.getParentStatement().getId()));
+            }else{
+                statement.setParentStatement(null);
+            }
+            if(statementWeb.getArea()!=null && statementWeb.getArea().getId()!=null){
+                statement.setArea(this.areaDao.find(statementWeb.getArea().getId()));
+                statement.getArea().addStatement(statement);
+            }
         }
         statement.setPillar(this.pillarWebToPillar(statementWeb.getPillar()));
         statement.setSituation(this.situationWebToSituation(statementWeb.getSituation()));
