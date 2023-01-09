@@ -758,17 +758,18 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
-    @Path("/getAllLateReportDirectImplementation")
+    @Path("/getAllLateReportDirectImplementation/{periodYear}")
     @GET
     //@Secured
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public Response getAllLateReportDirectImplementation(
             // @Context SecurityContext securityContext,
+            @PathParam("periodYear") Integer periodYear
     ) throws GeneralAppException {
         // Principal principal = securityContext.getUserPrincipal();
         LOGGER.info("getAllLateReportDirectImplementation:");//) + principal.getName());
         long lStartTime = System.nanoTime();
-        ByteArrayOutputStream r = this.reportService.getAllLateReportDirectImplementation();
+        ByteArrayOutputStream r = this.reportService.getAllLateReportDirectImplementation(periodYear);
         if(r==null){
             throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
         }
@@ -778,17 +779,18 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
-    @Path("/getAllLateReportPartners")
+    @Path("/getAllLateReportPartners/{periodYear}")
     @GET
     //@Secured
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public Response getAllLateReportPartners(
             // @Context SecurityContext securityContext,
+            @PathParam("periodYear") Integer periodYear
     ) throws GeneralAppException {
         // Principal principal = securityContext.getUserPrincipal();
         LOGGER.info("getAllLateReportPartners:");//) + principal.getName());
         long lStartTime = System.nanoTime();
-        ByteArrayOutputStream r = this.reportService.getAllLateReportPartners();
+        ByteArrayOutputStream r = this.reportService.getAllLateReportPartners(periodYear);
         if(r==null){
             throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
         }

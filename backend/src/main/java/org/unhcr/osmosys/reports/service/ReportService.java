@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -454,8 +455,9 @@ public class ReportService {
         }
     }
 
-    public ByteArrayOutputStream getAllLateReportDirectImplementation() throws GeneralAppException {
-        SXSSFWorkbook workbook = this.reportDataService.getAllLateReportDirectImplementation(this.utilsService.getCurrentYear(), this.utilsService.getCurrentMonthYearOrder());
+    public ByteArrayOutputStream getAllLateReportDirectImplementation(Integer
+                                                                              periodYear) throws GeneralAppException {
+        SXSSFWorkbook workbook = this.reportDataService.getAllLateReportDirectImplementation(periodYear, this.utilsService.getCurrentMonthYearOrder());
         if (workbook != null) {
             return getByteArrayOutputStreamFromWorkbook(workbook);
         } else {
@@ -463,8 +465,8 @@ public class ReportService {
         }
     }
 
-    public ByteArrayOutputStream getAllLateReportPartners() throws GeneralAppException {
-        SXSSFWorkbook workbook = this.reportDataService.getAllLateReportPartners(this.utilsService.getCurrentYear(), this.utilsService.getCurrentMonthYearOrder());
+    public ByteArrayOutputStream getAllLateReportPartners(Integer periodYear) throws GeneralAppException {
+        SXSSFWorkbook workbook = this.reportDataService.getAllLateReportPartners(periodYear, this.utilsService.getCurrentMonthYearOrder());
         if (workbook != null) {
             return getByteArrayOutputStreamFromWorkbook(workbook);
         } else {

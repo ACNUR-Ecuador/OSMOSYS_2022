@@ -18,6 +18,7 @@ import org.unhcr.osmosys.daos.ReportDao;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedDTO;
 import org.unhcr.osmosys.model.reportDTOs.LaterReportDTO;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
+import org.unhcr.osmosys.services.UtilsService;
 import org.unhcr.osmosys.webServices.model.IndicatorExecutionWeb;
 import org.unhcr.osmosys.webServices.model.LateType;
 
@@ -35,7 +36,8 @@ public class ReportDataService {
 
     @Inject
     ReportDao reportDao;
-
+    @Inject
+    UtilsService utilsService;
     public List<Map<String, Object>> indicatorExecutionsProjectsReportsByPeriodId(Long periodId) throws GeneralAppException {
         List<IndicatorExecutionWeb> indicatorExecutions = this.indicatorExecutionService.getActiveProjectIndicatorExecutionsByPeriodId(periodId);
         return this.indicatorExecutionsProjectsReports(indicatorExecutions);
@@ -768,6 +770,9 @@ public class ReportDataService {
         return this.getLateReport(data, false, true);
     }
     public SXSSFWorkbook getAllLateReportDirectImplementation(Integer currentYear, Integer currentMonthYearOrder) {
+        if(this.utilsService.getCurrentYear()>currentYear){
+            currentMonthYearOrder=currentMonthYearOrder+12;
+        }
 
         List<LaterReportDTO> data = this.reportDao.getAllLateReportDirectImplementation( currentYear, currentMonthYearOrder);
         if (CollectionUtils.isEmpty(data)) {
@@ -776,6 +781,9 @@ public class ReportDataService {
         return this.getLateReport(data, false, false);
     }
     public SXSSFWorkbook getAllLateReportPartners(Integer currentYear, Integer currentMonthYearOrder) {
+        if(this.utilsService.getCurrentYear()>currentYear){
+            currentMonthYearOrder=currentMonthYearOrder+12;
+        }
 
         List<LaterReportDTO> data = this.reportDao.getAllLateReportPartners( currentYear, currentMonthYearOrder);
         if (CollectionUtils.isEmpty(data)) {
