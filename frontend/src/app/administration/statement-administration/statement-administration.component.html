@@ -10,7 +10,7 @@
                                 (click)="createItem()"></button>
                     </div>
                     <div class="my-2">
-                        <button pButton pRipple label="Importar Catalogo de Declaraciones" icon="pi pi-plus"
+                        <button pButton pRipple label="Importar Catálogo de Declaraciones" icon="pi pi-plus"
                                 class="p-button-success mr-2 mb-2"
                                 (click)="initiateCatalogImport()"></button>
                     </div>
@@ -179,7 +179,7 @@
             <div class="card">
                 <div class="p-fluid p-formgrid grid">
                     <div class="field col-12 md:col-6">
-                        <label for="areaI">Área</label>
+                        <label for="areaI">Declaración padre</label>
                         <p-dropdown id="parentStatementI"
                                     formControlName="parentStatement"
                                     [options]="parentStatementsItems"
@@ -194,7 +194,7 @@
                     </div>
 
                     <div class="field col-12 md:col-6">
-                        <label for="codeI">Código</label>
+                        <label for="codeI">Código *</label>
                         <input type="text" pInputText id="codeI"
                                formControlName="code" autofocus/>
                         <small class="p-error" *ngIf="utilsService.showErrorForm('code',formItem)">Campo
@@ -202,7 +202,7 @@
                     </div>
 
                     <div class="field col-12 md:col12">
-                        <label for="descriptionI">Descripción Completa</label>
+                        <label for="descriptionI">Descripción Completa *</label>
 
                         <textarea pInputTextarea id="descriptionI"
                                   formControlName="description"
@@ -213,7 +213,7 @@
                             obligatorio.</small>
                     </div>
                     <div class="field col-3 md:col3 ">
-                        <label for="stateI">Estado</label>
+                        <label for="stateI">Estado *</label>
 
                         <p-selectButton id="stateI"
                                         formControlName="state"
@@ -240,7 +240,7 @@
                             obligatorio.</small>
                     </div>
                     <div class="field col-3 md:col3 p-sm-12 ">
-                        <label for="pillarI">Pilar</label>
+                        <label for="pillarI">Pilar *</label>
 
                         <p-dropdown id="pillarI"
                                     formControlName="pillar"
@@ -255,7 +255,7 @@
                             obligatorio.</small>
                     </div>
                     <div class="field col-3 md:col3 p-sm-12">
-                        <label for="areaI">Situation</label>
+                        <label for="areaI">Situation *</label>
 
                         <p-dropdown id="situationI"
                                     formControlName="situation"
@@ -270,12 +270,12 @@
                             obligatorio.</small>
                     </div>
                     <div class="field col-12 md:col12 p-sm-12">
-                        <label for="periodsI">Periodos</label>
+                        <label for="periodsI">Periodos *</label>
 
-                        <p-selectButton id="periodsI" [options]="periodsItems" [multiple]="true"
+                        <p-multiSelect id="periodsI" [options]="periodsItems" appendTo="body"
                                         formControlName="periods">
 
-                        </p-selectButton>
+                        </p-multiSelect>
 
                         <small class="p-error" *ngIf="utilsService.showErrorForm('situation',formItem)">Campo
                             obligatorio.</small>

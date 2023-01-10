@@ -3,7 +3,7 @@ import {
     Area, AreaType,
     CustomDissagregation,
     CustomDissagregationAssignationToIndicator,
-    DissagregationAssignationToIndicator,
+    DissagregationAssignationToIndicator, ImportFile,
     Indicator,
     Marker,
     Period,
@@ -33,6 +33,7 @@ import {PeriodService} from '../../services/period.service';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
 import {Table} from 'primeng/table';
 import {PeriodsFromIndicatorPipe} from "../../shared/pipes/periods-from-indicator.pipe";
+import {HttpResponse} from "@angular/common/http";
 
 
 @Component({
@@ -66,6 +67,8 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
+    showDialogImport = false;
+    importForm: FormGroup;
 
     constructor(
         private messageService: MessageService,
@@ -245,7 +248,13 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             });
 
         });
+        this.importForm = this.fb.group({
+            period: new FormControl('', [Validators.required]),
+            fileName: new FormControl('', [Validators.required]),
+            file: new FormControl(''),
+        });
     }
+
 
     public getDissagregationTypeByPeriod(period: Period): SelectItem[] {
         const r: SelectItem[] = [];
@@ -262,7 +271,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     }
 
     public getSelectedDissagregationTypeByPeriod(period: Period): string[] {
-        if(!this.formItem.controls['dissagregations'].value){
+        if (!this.formItem.controls['dissagregations'].value) {
             return [];
         }
         return (this.formItem.controls['dissagregations'].value as string[]).filter(value => {
@@ -687,5 +696,87 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             isCalculated
         );
         this.ref.detectChanges();
+    }
+
+    initiateCatalogImport() {
+        this.importForm.reset();
+        this.showDialogImport = true;
+    }
+
+
+    cancelImportDialog() {
+        this.showDialogImport = false;
+        this.importForm.reset();
+    }
+
+    importCatalog() {
+        const {
+            period,
+            fileName,
+            file
+        } = this.importForm.value;
+        const importFile: ImportFile = {
+            period,
+            fileName,
+            file
+        };
+
+        this.indicatorService.importCatalog(importFile).subscribe({
+            next: () => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Catálogo cargado correctamente',
+                    life: 3000
+                });
+                this.loadItems();
+                this.showDialogImport = false;
+            }, error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al descargar la plantilla',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        })
+
+    }
+
+    downloadImportTemplate() {
+        if (!this.importForm.get('period').value || !this.importForm.get('period').value.id) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Seleccione un periodo',
+                life: 3000
+            });
+        }
+        const periodId:number = this.importForm.get('period').value.id;
+        this.indicatorService.getImportTemplate(periodId).subscribe({
+            next: (response: HttpResponse<Blob>) => {
+                this.utilsService.downloadFileResponse(response);
+            }, error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al descargar la plantilla',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+    }
+
+    fileUploader(event: any) {
+        const file = event.files[0];
+        this.importForm.get('fileName').setValue(file.name);
+        this.importForm.get('fileName').markAsTouched();
+        // event.
+        const fileReader = new FileReader();
+
+        fileReader.readAsDataURL(file);
+        // tslint:disable-next-line:only-arrow-functions
+        fileReader.onload = () => {
+            this.importForm.get('file').setValue(fileReader.result);
+            this.importForm.get('file').markAsTouched();
+        };
     }
 }

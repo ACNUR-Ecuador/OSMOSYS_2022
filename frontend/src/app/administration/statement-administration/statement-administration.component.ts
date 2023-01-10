@@ -335,8 +335,13 @@ export class StatementAdministrationComponent implements OnInit {
         };
 
         const periodsCasted = periods as Period[];
-        const periodStatementAsignationsCasted = periodStatementAsignations as PeriodStatementAsignation[];
-        periodStatementAsignationsCasted.forEach(value => value.state = EnumsState.INACTIVE);
+        let periodStatementAsignationsCasted = periodStatementAsignations as PeriodStatementAsignation[];
+
+        if (periodStatementAsignations) {
+            periodStatementAsignationsCasted.forEach(value => value.state = EnumsState.INACTIVE);
+        } else {
+            periodStatementAsignationsCasted = [];
+        }
         for (const period of periodsCasted) {
             const periodStatementAsignationF = periodStatementAsignationsCasted.filter(value => {
                 return value.period.id === period.id;
