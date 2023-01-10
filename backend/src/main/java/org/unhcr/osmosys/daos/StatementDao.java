@@ -36,33 +36,6 @@ public class StatementDao extends GenericDaoJpa<Statement, Long> {
         return q.getResultList();
     }
 
-    public List<Statement> getByAreaType(AreaType areaType) {
-
-        String jpql = "SELECT DISTINCT o FROM Statement o " +
-                "WHERE o.areaType = :areaType ";
-        Query q = getEntityManager().createQuery(jpql, Statement.class);
-        q.setParameter("areaType", areaType);
-
-        return q.getResultList();
-
-    }
-
-
-    public Statement getByDescription(String description) throws GeneralAppException {
-
-        String jpql = "SELECT DISTINCT o FROM Statement o " +
-                "WHERE lower(o.description) = lower(:description)";
-        Query q = getEntityManager().createQuery(jpql, Statement.class);
-        q.setParameter("description", description);
-        try {
-            return (Statement) q.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        } catch (NonUniqueResultException e) {
-            throw new GeneralAppException("Se encontró más de un item con la descripción  " + description, Response.Status.INTERNAL_SERVER_ERROR);
-        }
-    }
-
 
     public Statement getByCode(String code) throws GeneralAppException {
         String jpql = "SELECT DISTINCT o FROM Statement o " +
@@ -84,7 +57,7 @@ public class StatementDao extends GenericDaoJpa<Statement, Long> {
                 " inner join  o.periodStatementAsignations psa " +
                 " inner join  psa.period per  " +
                 " WHERE lower(o.code) = lower(:code)" +
-                " and o.areaType =:areType "+
+                " and o.areaType =:areType " +
                 " and per.year = :year";
         Query q = getEntityManager().createQuery(jpql, Statement.class);
         q.setParameter("code", code);
@@ -105,7 +78,7 @@ public class StatementDao extends GenericDaoJpa<Statement, Long> {
         String jpql = "SELECT DISTINCT o" +
                 " FROM Statement o" +
                 " WHERE lower(o.code) = lower(:code)" +
-                " and o.areaType =:areType "+
+                " and o.areaType =:areType " +
                 " and lower(o.description) = lower(:description)";
         Query q = getEntityManager().createQuery(jpql, Statement.class);
         q.setParameter("code", code);
@@ -118,5 +91,25 @@ public class StatementDao extends GenericDaoJpa<Statement, Long> {
         } catch (NonUniqueResultException e) {
             throw new GeneralAppException("Se encontró más de un item con el código  " + code + " y la descripción " + description, Response.Status.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public List<Statement> getByPeriodYearAndAreaType(AreaType areaType, int year){
+        String jpql = "SELECT DISTINCT o" +
+                " FROM Statement o" +
+                " inner join  o.periodStatementAsignations psa " +
+                " inner join  psa.period per  " +
+                " WHERE " +
+                " o.areaType =:areType " +
+                " and per.year = :year" +
+                " and o.state=:state " +
+                " and per.state=:state ";
+        Query q = getEntityManager().createQuery(jpql, Statement.class);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("year", year);
+        q.setParameter("areType", areaType);
+
+
+        return q.getResultList();
+
     }
 }

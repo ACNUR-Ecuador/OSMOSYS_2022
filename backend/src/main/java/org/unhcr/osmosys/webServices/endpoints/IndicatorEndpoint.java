@@ -3,11 +3,11 @@ package org.unhcr.osmosys.webServices.endpoints;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.services.IndicatorService;
 import org.unhcr.osmosys.services.dataImport.IndicatorsImportService;
+import org.unhcr.osmosys.webServices.model.ImportFileWeb;
 import org.unhcr.osmosys.webServices.model.IndicatorWeb;
 
 import javax.enterprise.context.RequestScoped;
@@ -18,9 +18,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.security.Principal;
 import java.util.List;
 
@@ -88,6 +85,16 @@ public class IndicatorEndpoint {
             LOGGER.error(ExceptionUtils.getStackTrace(e));
             throw new GeneralAppException("Error al obtener el template " + fileName, Response.Status.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @POST
+    @Path("/importIndicatorsCatalog")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response importStatementsCatalog(ImportFileWeb importFileWeb) throws GeneralAppException {
+        LOGGER.debug(importFileWeb);
+        this.indicatorsImportService.indicatorsImport(importFileWeb);
+        return null;
     }
 
 }

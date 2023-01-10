@@ -152,4 +152,7 @@ public class StatementService {
         InputStream targetStream = new ByteArrayInputStream(fileContent);
         this.statementImportService.statementImportV2(importFileWeb.getPeriod(), targetStream);
     }
+    public List<Statement> getByPeriodYearAndAreaType(AreaType areaType, int year){
+        return this.statementDao.getByPeriodYearAndAreaType(areaType,year);
+    }
 }
