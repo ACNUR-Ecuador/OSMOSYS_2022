@@ -7,15 +7,14 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
-import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.*;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.*;
 import org.unhcr.osmosys.services.*;
+import org.unhcr.osmosys.webServices.model.CustomDissagregationWeb;
 import org.unhcr.osmosys.webServices.model.PeriodWeb;
 
 import javax.ejb.Stateless;
@@ -40,6 +39,7 @@ public class IndicatorsImportService {
 
     @Inject
     CustomDissagregationService customDissagregationService;
+
 
     private final static Logger LOGGER = Logger.getLogger(IndicatorsImportService.class);
     private static final String FILE_NAME = "C:\\test\\indicator_import.xlsx";
@@ -304,39 +304,12 @@ public class IndicatorsImportService {
             //Get first/desired sheet from the workbook
             XSSFSheet sheetTemplate = workbook.getSheetAt(0);
             LOGGER.info(sheetTemplate.getSheetName());
-            // options
-            XSSFSheet sheetOptions = workbook.getSheetAt(1);
-            LOGGER.info(sheetOptions.getSheetName());
-            // tables options
-            XSSFTable tableStatements;
-            XSSFTable tableFrecuency;
-            XSSFTable tableDissagregations;
-            XSSFTable tableCustomDissagregations;
-            XSSFTable tableUnits;
-            List<XSSFTable> tables = sheetOptions.getTables();
-            for (XSSFTable t : tables) {
-                switch (t.getName()) {
-                    case "statements":
-                        tableStatements = t;
-                        break;
-                    case "frecuency":
-                        tableFrecuency = t;
-                        break;
-                    case "dissagregations":
-                        tableDissagregations = t;
-                        break;
-                    case "custom_dissagregations":
-                        tableCustomDissagregations = t;
-                        break;
-                    case "units":
-                        tableUnits = t;
-                        fillUnits(sheetOptions, sheetTemplate, tableUnits);
-                        break;
-                }
-            }
-
-
-            // template.close();
+            XSSFTable table = sheetTemplate.getTables().stream().filter(xssfTable -> {
+                return xssfTable.getName().equalsIgnoreCase("indicators_catalog");
+            }).findFirst().get();
+            this.fillUnits(sheetTemplate, table);
+            this.fillCustomDissagregations(sheetTemplate, table);
+            this.fillDissagregations(sheetTemplate, table);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             workbook.write(stream);
             workbook.close();
@@ -349,47 +322,8 @@ public class IndicatorsImportService {
 
     }
 
-    private void fillUnits(XSSFSheet sheetOptions, XSSFSheet sheetTemplate, XSSFTable tableUnits) {
-        LOGGER.info(tableUnits.getArea().getFirstCell().getRow());
-        LOGGER.info(tableUnits.getArea().formatAsString());
-        LOGGER.info(tableUnits.getArea().formatAsString());
-        Iterator<Row> rowIterator = sheetOptions.iterator();
-        int firstRow = tableUnits.getArea().getFirstCell().getRow();
-        int firstCol = tableUnits.getArea().getFirstCell().getCol();
-        List<UnitType> unitValues = Arrays.stream(UnitType.values()).sorted().collect(Collectors.toList());
-
-        for (UnitType value : unitValues) {
-            firstRow++;
-            XSSFRow row = sheetOptions.getRow(firstRow);
-            XSSFCell cell = row.getCell(firstCol);
-            if (cell != null) {
-                LOGGER.info("cell: " + cell.getStringCellValue());
-                cell.setCellValue(value.getStringValue());
-            } else {
-                cell = row.createCell(firstCol);
-                cell.setCellValue(value.getStringValue());
-            }
-
-
-        }
-        for (UnitType value : unitValues) {
-            firstRow++;
-            XSSFRow row = sheetOptions.getRow(firstRow);
-            XSSFCell cell = row.getCell(firstCol);
-            if (cell != null) {
-                LOGGER.info("cell: " + cell.getStringCellValue());
-                cell.setCellValue("t-" + value.getStringValue());
-
-            } else {
-                cell = row.createCell(firstCol);
-                cell.setCellValue("t-" + value.getStringValue());
-            }
-        }
-        tableUnits.setArea(new AreaReference(tableUnits.getArea().getFirstCell(), new CellReference(firstRow, firstCol), null));
-        Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheetTemplate);
-        int COL_UNIT_TYPE = titleAdresses.get(UNIT_TYPE).getColumn();
-        CellAddress IMPACT_AREA_CODE_CELL = titleAdresses.get(IMPACT_STATEMENT_CODE);
-        int rowInitial = IMPACT_AREA_CODE_CELL.getRow() + 1;
+    private void fillUnits(XSSFSheet sheetTemplate, XSSFTable table) {
+        int unitColum = table.findColumnIndex("UNIDAD");
 
         //data validations
         DataValidationHelper dvHelper = sheetTemplate.getDataValidationHelper();
@@ -400,13 +334,61 @@ public class IndicatorsImportService {
                                         UnitType::getStringValue)
                                 .toArray(String[]::new)
                 );
-        CellRangeAddressList addressList = new CellRangeAddressList(rowInitial, MAX, COL_UNIT_TYPE, COL_UNIT_TYPE);
-        XSSFDataValidation validation = (XSSFDataValidation)dvHelper.createValidation(
+        CellRangeAddressList addressList = new CellRangeAddressList(
+                table.getStartRowIndex() + 1, MAX,
+                unitColum,
+                unitColum
+        );
+        XSSFDataValidation validation = (XSSFDataValidation) dvHelper.createValidation(
                 dvConstraint, addressList);
         validation.setShowErrorBox(true);
         sheetTemplate.addValidationData(validation);
+    }
 
+    private void fillDissagregations(XSSFSheet sheetTemplate, XSSFTable table) {
+        int unitColum = table.findColumnIndex("DESAGREGACION");
 
+        //data validations
+        DataValidationHelper dvHelper = sheetTemplate.getDataValidationHelper();
 
+        XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint)
+                dvHelper.createExplicitListConstraint(
+                        Arrays.stream(DissagregationType.values()).sorted().map(
+                                        DissagregationType::getStringValue)
+                                .toArray(String[]::new)
+                );
+        CellRangeAddressList addressList = new CellRangeAddressList(
+                table.getStartRowIndex() + 1, MAX,
+                unitColum,
+                unitColum
+        );
+        XSSFDataValidation validation = (XSSFDataValidation) dvHelper.createValidation(
+                dvConstraint, addressList);
+        validation.setShowErrorBox(true);
+        sheetTemplate.addValidationData(validation);
+    }
+
+    private void fillCustomDissagregations(XSSFSheet sheetTemplate, XSSFTable table) {
+        int unitColum = table.findColumnIndex("DESAGREGACION PERSONALIZADA");
+
+        //data validations
+        DataValidationHelper dvHelper = sheetTemplate.getDataValidationHelper();
+
+        List<String> options = this.customDissagregationService.getByState(State.ACTIVO).stream()
+                .map(CustomDissagregationWeb::getName).sorted().collect(Collectors.toList());
+
+        XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint)
+                dvHelper.createExplicitListConstraint(
+                        options.stream().toArray(String[]::new)
+                );
+        CellRangeAddressList addressList = new CellRangeAddressList(
+                table.getStartRowIndex() + 1, MAX,
+                unitColum,
+                unitColum
+        );
+        XSSFDataValidation validation = (XSSFDataValidation) dvHelper.createValidation(
+                dvConstraint, addressList);
+        validation.setShowErrorBox(true);
+        sheetTemplate.addValidationData(validation);
     }
 }
