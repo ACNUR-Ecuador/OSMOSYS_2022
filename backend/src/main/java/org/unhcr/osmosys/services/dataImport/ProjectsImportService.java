@@ -5,24 +5,30 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.security.servicio.UserService;
+import com.sagatechs.generics.utils.FileUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellAddress;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.*;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.services.*;
+import org.unhcr.osmosys.webServices.model.CantonWeb;
+import org.unhcr.osmosys.webServices.model.ImportFileWeb;
+import org.unhcr.osmosys.webServices.model.OrganizationWeb;
 import org.unhcr.osmosys.webServices.model.PeriodWeb;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.io.FileInputStream;
+import java.io.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -51,9 +57,11 @@ public class ProjectsImportService {
 
     @Inject
     IndicatorExecutionService indicatorExecutionService;
+    @Inject
+    FileUtils fileUtils;
 
     private final static Logger LOGGER = Logger.getLogger(ProjectsImportService.class);
-    private static final String FILE_NAME = "C:\\test\\projects_importV6.xlsx";
+    // private static final String FILE_NAME = "C:\\test\\projects_importV6.xlsx";
 
     private static final String CODE = "CODIGO";
     private static final String TITLE = "TITULO";
@@ -64,8 +72,16 @@ public class ProjectsImportService {
     private static final String GENERAL_TARGET = "META_INDICADOR_GENERAL";
     private static final String LOCATIONS = "LUGARES_DE_EJECUCION";
 
+    private static final int MAX = 35;
+
+    public void projectsImport(ImportFileWeb importFileWeb
+    ) throws GeneralAppException {
+        byte[] fileContent = this.fileUtils.decodeBase64ToBytes(importFileWeb.getFile());
+        InputStream targetStream = new ByteArrayInputStream(fileContent);
+        this.projectsImport(importFileWeb.getPeriod(), targetStream);
+    }
     public void projectsImport(PeriodWeb periodWeb
-                               // , InputStream file
+            , InputStream file
     ) throws GeneralAppException {
         LOGGER.info("test import");
         try {
@@ -75,7 +91,7 @@ public class ProjectsImportService {
 
             }
 
-            FileInputStream file = new FileInputStream(FILE_NAME);
+            // FileInputStream file = new FileInputStream(FILE_NAME);
             //Create Workbook instance holding reference to .xlsx file
             XSSFWorkbook workbook = new XSSFWorkbook(file);
 
@@ -102,7 +118,7 @@ public class ProjectsImportService {
 
             Iterator<Row> rowIterator = sheet.iterator();
             // get indicators
-            List<Project> projects= new ArrayList<>();
+            List<Project> projects = new ArrayList<>();
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
                 if (row.getRowNum() <= rowInitial) {
@@ -227,14 +243,13 @@ public class ProjectsImportService {
                 projects.add(project);
 
 
-
             }
 
-            LOGGER.info("Proyectos a ingresar: " +projects.size());
-            int counter=0;
+            LOGGER.info("Proyectos a ingresar: " + projects.size());
+            int counter = 0;
             for (Project project : projects) {
                 counter++;
-                LOGGER.info("Proyecto :  "+counter +"/" +projects.size());
+                LOGGER.info("Proyecto :  " + counter + "/" + projects.size());
                 this.projectService.saveOrUpdate(project);
             }
             file.close();
@@ -304,4 +319,138 @@ public class ProjectsImportService {
 
 
     }
+
+    public ByteArrayOutputStream generateTemplate(Long periodId) throws GeneralAppException {
+
+        // Period period = this.periodService.getById(periodId);
+        final String filename = "projectsImportTemplate.xlsm";
+        try {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+            InputStream template = classLoader.getResourceAsStream("templates" + File.separator + filename);
+
+            //Create Workbook instance holding reference to .xlsx file
+            XSSFWorkbook workbook = new XSSFWorkbook(Objects.requireNonNull(template));
+
+            //Get first/desired sheet from the workbook
+            XSSFSheet sheetTemplate = workbook.getSheetAt(0);
+            // options
+            XSSFSheet sheetOptions = workbook.getSheetAt(1);
+            // tables options
+            List<XSSFTable> tables = sheetOptions.getTables();
+            for (XSSFTable table : tables) {
+                LOGGER.debug(table.getName());
+                switch (table.getName()) {
+                    case "organizations":
+                        fillOrganizations(sheetTemplate, sheetOptions, table);
+                        break;
+                    case "cantons":
+                        fillCantons(sheetTemplate, sheetOptions, table);
+                        break;
+                }
+            }
+
+
+            // template.close();
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            workbook.write(stream);
+            workbook.close();
+            return stream;
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
+            throw new GeneralAppException("Error al obtener el template " + filename, Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
+
+    }
+
+    private void fillCantons(XSSFSheet sheetTemplate, XSSFSheet sheetOptions, XSSFTable tableOptions) throws GeneralAppException {
+        int firstRow = tableOptions.getArea().getFirstCell().getRow();
+        int firstCol = tableOptions.getArea().getFirstCell().getCol();
+
+        List<CantonWeb> cantons = this.cantonService.getByState(State.ACTIVO);
+        List<String> values = cantons.stream().map(cantonWeb -> {
+                    return cantonWeb.getProvincia().getDescription() + "-" + cantonWeb.getDescription();
+                })
+                .sorted().collect(Collectors.toList());
+
+
+        for (String value : values) {
+            firstRow++;
+            XSSFRow row = sheetOptions.getRow(firstRow);
+            if (row == null) {
+                row = sheetOptions.createRow(firstRow);
+            }
+            XSSFCell cell = row.getCell(firstCol);
+            if (cell != null) {
+                LOGGER.info("cell: " + cell.getStringCellValue());
+                cell.setCellValue(value);
+            } else {
+                cell = row.createCell(firstCol);
+                cell.setCellValue(value);
+            }
+        }
+
+        tableOptions.setArea(new AreaReference(tableOptions.getArea().getFirstCell(), new CellReference(firstRow, firstCol), null));
+
+        // validation
+        XSSFDataValidationHelper dvHelper = new XSSFDataValidationHelper(sheetTemplate);
+        String listFormula = "INDIRECT(\"" + tableOptions.getName() + "[" + tableOptions.getName() + "]\")";
+        XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint)
+                dvHelper.createFormulaListConstraint(listFormula);
+
+        Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheetTemplate);
+        CellAddress cell_units = titleAdresses.get(LOCATIONS);
+        CellRangeAddressList addressList = new CellRangeAddressList(cell_units.getRow() + 1,
+                cell_units.getRow() + MAX,
+                cell_units.getColumn(), cell_units.getColumn());
+        XSSFDataValidation validation = (XSSFDataValidation) dvHelper.createValidation(
+                dvConstraint, addressList);
+        sheetTemplate.addValidationData(validation);
+
+
+    }
+    private void fillOrganizations(XSSFSheet sheetTemplate, XSSFSheet sheetOptions, XSSFTable tableOptions) throws GeneralAppException {
+        int firstRow = tableOptions.getArea().getFirstCell().getRow();
+        int firstCol = tableOptions.getArea().getFirstCell().getCol();
+
+        List<OrganizationWeb> organizations = this.organizacionService.getByState(State.ACTIVO);
+        List<String> values = organizations.stream().map(OrganizationWeb::getAcronym)
+                .sorted().collect(Collectors.toList());
+
+        for (String value : values) {
+            firstRow++;
+            XSSFRow row = sheetOptions.getRow(firstRow);
+            if (row == null) {
+                row = sheetOptions.createRow(firstRow);
+            }
+            XSSFCell cell = row.getCell(firstCol);
+            if (cell != null) {
+                LOGGER.info("cell: " + cell.getStringCellValue());
+                cell.setCellValue(value);
+            } else {
+                cell = row.createCell(firstCol);
+                cell.setCellValue(value);
+            }
+        }
+
+        tableOptions.setArea(new AreaReference(tableOptions.getArea().getFirstCell(), new CellReference(firstRow, firstCol), null));
+
+        // validation
+        XSSFDataValidationHelper dvHelper = new XSSFDataValidationHelper(sheetTemplate);
+        String listFormula = "INDIRECT(\"" + tableOptions.getName() + "[" + tableOptions.getName() + "]\")";
+        XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint)
+                dvHelper.createFormulaListConstraint(listFormula);
+
+        Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheetTemplate);
+        CellAddress cell_units = titleAdresses.get(PARTNER);
+        CellRangeAddressList addressList = new CellRangeAddressList(cell_units.getRow() + 1, cell_units.getRow() + MAX,
+                cell_units.getColumn(), cell_units.getColumn());
+        XSSFDataValidation validation = (XSSFDataValidation) dvHelper.createValidation(
+                dvConstraint, addressList);
+        sheetTemplate.addValidationData(validation);
+
+
+    }
+
 }

@@ -70,7 +70,7 @@ public class IndicatorEndpoint {
     @GET
     @Secured
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    public Response getStatementImportTemplate(
+    public Response getImportTemplate(
             @Context SecurityContext securityContext,
             @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
