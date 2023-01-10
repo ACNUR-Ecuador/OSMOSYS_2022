@@ -1,33 +1,44 @@
 <div class="grid">
     <div class="col-12">
         <p-toast></p-toast>
-        <div class="card">
+        <div class="card px-6 py-6">
             <h3 class="page-title">Administración de Proyectos</h3>
 
 
             <p-toolbar styleClass="mb-4">
-                <div class="p-toolbar-group-left"
-                     *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRATOR'])">
-                    <button pButton pRipple label="Crear Proyecto" icon="pi pi-plus"
-                            class="p-button-success mr-2 mb-2"
-                            (click)="createItem()"></button>
-                </div>
-                <form [formGroup]="periodForm">
-                    <div class="field grid">
-
-                        <label for="periodI" class="col-fixed" style="width:100px; color: white;">Periodo:</label>
-                        <div class="p-col">
-                            <p-dropdown id="periodI" [options]="periods" optionLabel="year"
-                                        (onChange)="onPeriodChange($event.value)"
-                                        appendTo="body"></p-dropdown>
+                <div class="p-toolbar-group-start">
+                    <div class="flex ">
+                        <div class="my-2"
+                             *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRATOR'])">
+                            <button pButton pRipple label="Crear Proyecto" icon="pi pi-plus"
+                                    class="p-button-success mr-2 mb-2"
+                                    (click)="createItem()"></button>
                         </div>
-
+                        <div class="my-2">
+                            <button pButton pRipple label="Importar Catálogo de Indicadores" icon="pi pi-plus"
+                                    class="p-button-success mr-2 mb-2"
+                                    (click)="initiateCatalogImport()"></button>
+                        </div>
                     </div>
-                </form>
-                <div class="p-toolbar-group-right">
+                </div>
+                <div class="p-toolbar-group-center">
+                    <form [formGroup]="periodForm">
+                        <div class="field grid">
+                            <label for="periodI2" class="col-fixed" style="width:100px; color: white;">Periodo:</label>
+                            <div class="p-col">
+                                <p-dropdown id="periodI2" [options]="periods" optionLabel="year"
+                                            (onChange)="onPeriodChange($event.value)"
+                                            appendTo="body"></p-dropdown>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="p-toolbar-group-end">
+                    <div class="my-2">
 
-                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel(dt)"
-                            class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                        <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel(dt)"
+                                class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                    </div>
                 </div>
 
             </p-toolbar>
@@ -129,3 +140,66 @@
         </div>
     </div>
 </div>
+<form [formGroup]="importForm" (ngSubmit)="importCatalog()">
+    <p-dialog [(visible)]="showDialogImport" header="Importación de catalogo de indicadores" [modal]="true"
+              [closable]="false">
+
+        <ng-template pTemplate="content">
+            <p-messages></p-messages>
+
+            <div class="card p-fluid">
+                <h5>
+
+                </h5>
+
+                <div class="field grid">
+                    <label htmlFor="name3" class="col-12 mb-2 md:col-2 md:mb-0">Periodo</label>
+                    <div class="col-12 md:col-10">
+                        <p-dropdown
+                            id="periodI"
+                            formControlName="period"
+                            [options]="periodsItems"
+                            [filter]=true
+                            placeholder="Selecciona..." [showClear]="true"
+                        >
+                            <ng-template let-option pTemplate="item">
+                                            <span
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
+                            </ng-template>
+                        </p-dropdown>
+                    </div>
+                    <div class="col-12 mb-2 md:col-2 md:mb-0"></div>
+                    <div class="col-12 md:col-10 p-2">
+                        <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="downloadImportTemplate()"
+                                class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"
+                                label="Descargar Plantilla"></button>
+                    </div>
+                    <label htmlFor="name3" class="col-12 mb-2 md:col-2 md:mb-0">Catálogo</label>
+                    <div class="col-12 md:col-10">
+                        <p-fileUpload name="myfile[]"
+                                      [customUpload]="true"
+                                      (uploadHandler)="fileUploader($event)"
+                                      [auto]="true"
+                                      [fileLimit]="1"
+                                      uploadLabel="importar"
+                                      chooseLabel="seleccionar archivo"
+                                      cancelLabel="cancelar"
+                        ></p-fileUpload>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <button pButton type="submit"
+                    [disabled]="!importForm.valid"
+                    pRipple label="Guardar" icon="pi pi-check"
+            ></button>
+            <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times"
+                    class="p-button-secondary"
+                    (click)="cancelImportDialog()"></button>
+
+        </ng-template>
+
+    </p-dialog>
+</form>
