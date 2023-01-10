@@ -57,7 +57,7 @@ public class ProjectIndicatorsImportService {
     ModelWebTransformationService modelWebTransformationService;
 
     private final static Logger LOGGER = Logger.getLogger(ProjectIndicatorsImportService.class);
-    private static final String FILE_NAME = "C:\\test\\wv.xlsx";
+    private static final String FILE_NAME = "D:\\proyectos\\OSMOSYS_2023\\DataImport2023\\partnerisIndicators\\FUDELA SOIB.xlsx";
 
     private static final String NO = "No.";
     private static final String PRODUCT_STATEMENT = "Declaración de Producto";

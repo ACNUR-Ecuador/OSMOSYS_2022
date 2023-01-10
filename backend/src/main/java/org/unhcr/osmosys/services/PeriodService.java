@@ -162,4 +162,7 @@ public class PeriodService {
     public Period getByYear(Integer year) {
         return this.periodDao.getByYear(year);
     }
+    public Period getById(Long year) {
+        return this.periodDao.find(year);
+    }
 }

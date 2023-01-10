@@ -6,11 +6,12 @@ import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellAddress;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.*;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.*;
@@ -20,8 +21,9 @@ import org.unhcr.osmosys.webServices.model.PeriodWeb;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.io.FileInputStream;
+import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Stateless
 public class IndicatorsImportService {
@@ -52,6 +54,7 @@ public class IndicatorsImportService {
     private static final String DISSAGREGATION = "DESAGREGACION";
     private static final String CUSTOM_DISSAGREGATION = "DESAGREGACION PERSONALIZADA";
     private static final String UNIT_TYPE = "UNIDAD";
+    private static final int MAX = 200;
 
 
     public void indicatorsImport(PeriodWeb periodWeb
@@ -240,181 +243,7 @@ public class IndicatorsImportService {
 
 
     }
-/*
 
-    public void statementImport(List<PeriodWeb> periodWebs) throws GeneralAppException {
-        LOGGER.info("test import");
-        try {
-
-
-            FileInputStream file = new FileInputStream(FILE_NAME);
-            //Create Workbook instance holding reference to .xlsx file
-            XSSFWorkbook workbook = new XSSFWorkbook(file);
-
-            //Get first/desired sheet from the workbook
-            XSSFSheet sheet = workbook.getSheet("catalogo_statements");
-
-            Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheet);
-            LOGGER.error(titleAdresses.get(IMPACT_AREA_CODE).getColumn());
-            LOGGER.error(titleAdresses.get(IMPACT_AREA_CODE).getRow());
-            CellAddress IMPACT_AREA_CODE_CELL = titleAdresses.get(IMPACT_AREA_CODE);
-            int rowInitial = IMPACT_AREA_CODE_CELL.getRow();
-            Iterator<Row> rowIterator0 = sheet.iterator();
-            // get IMPACT STATEMENTS
-
-            int COL_IMPACT_AREA_CODE = titleAdresses.get(IMPACT_AREA_CODE).getColumn();
-            int COL_IMPACT_AREA = titleAdresses.get(IMPACT_AREA).getColumn();
-            int COL_IMPACT_STATEMENT_CODE = titleAdresses.get(IMPACT_STATEMENT_CODE).getColumn();
-            int COL_IMPACT_STATEMENT = titleAdresses.get(IMPACT_STATEMENT).getColumn();
-            int COL_OUTCOME_AREA_CODE = titleAdresses.get(OUTCOME_AREA_CODE).getColumn();
-            int COL_OUTCOME_AREA = titleAdresses.get(OUTCOME_AREA).getColumn();
-            int COL_OUTCOME_STATEMENT_CODE = titleAdresses.get(OUTCOME_STATEMENT_CODE).getColumn();
-            int COL_OUTCOME_STATEMENT = titleAdresses.get(OUTCOME_STATEMENT).getColumn();
-            int COL_OUTPUT_STATEMENT_CODE = titleAdresses.get(OUTPUT_STATEMENT_CODE).getColumn();
-            int COL_OUTPUT_STATEMENT = titleAdresses.get(OUTPUT_STATEMENT).getColumn();
-            int COL_PILLAR_CODE = titleAdresses.get(PILLAR_CODE).getColumn();
-            int COL_PILLAR = titleAdresses.get(PILLAR).getColumn();
-            int COL_SITUATION_CODE = titleAdresses.get(SITUATION_CODE).getColumn();
-            int COL_SITUATION = titleAdresses.get(SITUATION).getColumn();
-
-            Iterator<Row> rowIterator = sheet.iterator();
-            // get IMPACT STATEMENTS
-
-            Set<StatementWeb> impactStatementsWebs = new HashSet<>();
-            Set<StatementWeb> outcomeStatementsWebs = new HashSet<>();
-            Set<StatementWeb> outputStatementsWebs = new HashSet<>();
-            while (rowIterator.hasNext()) {
-                Row row = rowIterator.next();
-                if (row.getRowNum() <= rowInitial) {
-                    continue;
-                }
-                // get IMPACT STATEMENTS
-                StatementWeb impactStatementWeb = new StatementWeb();
-                impactStatementWeb.setState(State.ACTIVO);
-                impactStatementWeb.setAreaType(AreaType.IMPACTO);
-                impactStatementWeb.setCode(StringUtils.trimToNull(row.getCell(COL_IMPACT_STATEMENT_CODE).getStringCellValue()));
-                impactStatementWeb.setDescription(StringUtils.trimToNull(row.getCell(COL_IMPACT_STATEMENT).getStringCellValue()));
-                impactStatementWeb.setParentStatement(null);
-                // area
-                String areaCode = StringUtils.trimToNull(row.getCell(COL_IMPACT_AREA_CODE).getStringCellValue());
-                Area impactArea = areaService.getByCode(areaCode);
-                AreaWeb impactAreaWeb = this.modelWebTransformationService.areaToAreaWeb(impactArea);
-                impactStatementWeb.setArea(impactAreaWeb);
-                // PILLAR
-                String pillarCode = StringUtils.trimToNull(row.getCell(COL_PILLAR_CODE).getStringCellValue());
-                Pillar pillar = this.pillarService.getByCode(pillarCode);
-                PillarWeb pillarWeb = this.modelWebTransformationService.pillarToPillarWeb(pillar);
-                impactStatementWeb.setPillar(pillarWeb);
-                // SITUATION
-                String situationCode = StringUtils.trimToNull(row.getCell(COL_SITUATION_CODE).getStringCellValue());
-                Situation situation = this.situationService.getByCode(situationCode);
-                SituationWeb situationWeb = this.modelWebTransformationService.situationToSituationWeb(situation);
-                impactStatementWeb.setSituation(situationWeb);
-
-                impactStatementWeb.setPeriodStatementAsignations(new ArrayList<>());
-                for (PeriodWeb periodWeb : periodWebs) {
-                    PeriodStatementAsignationWeb periodStatementAsignationWeb = new PeriodStatementAsignationWeb();
-                    periodStatementAsignationWeb.setPeriod(periodWeb);
-                    periodStatementAsignationWeb.setState(State.ACTIVO);
-                    periodStatementAsignationWeb.setPopulationCoverage(null);
-                    impactStatementWeb.getPeriodStatementAsignations().add(periodStatementAsignationWeb);
-                }
-
-                impactStatementsWebs.add(impactStatementWeb);
-                // get OUTCOME STATEMENTS
-
-                StatementWeb outcomeStatementWeb = new StatementWeb();
-                outcomeStatementWeb.setState(State.ACTIVO);
-                outcomeStatementWeb.setAreaType(AreaType.RESULTADO);
-                outcomeStatementWeb.setCode(StringUtils.trimToNull(row.getCell(COL_OUTCOME_STATEMENT_CODE).getStringCellValue()));
-                outcomeStatementWeb.setDescription(StringUtils.trimToNull(row.getCell(COL_OUTCOME_STATEMENT).getStringCellValue()));
-                outcomeStatementWeb.setParentStatement(impactStatementsWebs.stream().filter(statementWeb -> {
-                    return statementWeb.getCode().equalsIgnoreCase(StringUtils.trimToNull(row.getCell(COL_IMPACT_STATEMENT_CODE).getStringCellValue()));
-                }).findFirst().get());
-                // area
-                String areaCodeOutcome = StringUtils.trimToNull(row.getCell(COL_OUTCOME_AREA_CODE).getStringCellValue());
-                Area outcomeArea = areaService.getByCode(areaCodeOutcome);
-                AreaWeb outcomeAreaWeb = this.modelWebTransformationService.areaToAreaWeb(outcomeArea);
-                outcomeStatementWeb.setArea(outcomeAreaWeb);
-                // PILLAR
-                outcomeStatementWeb.setPillar(pillarWeb);
-                // SITUATION
-                outcomeStatementWeb.setSituation(situationWeb);
-                outcomeStatementWeb.setPeriodStatementAsignations(new ArrayList<>());
-                for (PeriodWeb periodWeb : periodWebs) {
-                    PeriodStatementAsignationWeb periodStatementAsignationWeb = new PeriodStatementAsignationWeb();
-                    periodStatementAsignationWeb.setPeriod(periodWeb);
-                    periodStatementAsignationWeb.setState(State.ACTIVO);
-                    periodStatementAsignationWeb.setPopulationCoverage(null);
-                    outcomeStatementWeb.getPeriodStatementAsignations().add(periodStatementAsignationWeb);
-                }
-
-                outcomeStatementsWebs.add(outcomeStatementWeb);
-
-                // get OUTPUT STATEMENTS
-
-                StatementWeb outputStatementWeb = new StatementWeb();
-                outputStatementWeb.setState(State.ACTIVO);
-                outputStatementWeb.setAreaType(AreaType.PRODUCTO);
-                outputStatementWeb.setCode(StringUtils.trimToNull(row.getCell(COL_OUTPUT_STATEMENT_CODE).getStringCellValue()));
-                outputStatementWeb.setDescription(StringUtils.trimToNull(row.getCell(COL_OUTPUT_STATEMENT).getStringCellValue()));
-                outputStatementWeb.setParentStatement(outcomeStatementsWebs.stream().filter(statementWeb -> {
-                    return statementWeb.getCode().equalsIgnoreCase(StringUtils.trimToNull(row.getCell(COL_OUTCOME_STATEMENT_CODE).getStringCellValue()));
-                }).findFirst().get());
-                // area
-                String areaCodeOutput = StringUtils.trimToNull(row.getCell(COL_OUTCOME_AREA_CODE).getStringCellValue());
-                Area outputArea = areaService.getByCode(areaCodeOutput);
-                AreaWeb outputAreaWeb = this.modelWebTransformationService.areaToAreaWeb(outputArea);
-                outputStatementWeb.setArea(outputAreaWeb);
-                // PILLAR
-                outputStatementWeb.setPillar(pillarWeb);
-                // SITUATION
-                outputStatementWeb.setSituation(situationWeb);
-                outputStatementWeb.setPeriodStatementAsignations(new ArrayList<>());
-                for (PeriodWeb periodWeb : periodWebs) {
-                    PeriodStatementAsignationWeb periodStatementAsignationWeb = new PeriodStatementAsignationWeb();
-                    periodStatementAsignationWeb.setPeriod(periodWeb);
-                    periodStatementAsignationWeb.setState(State.ACTIVO);
-                    periodStatementAsignationWeb.setPopulationCoverage(null);
-                    outputStatementWeb.getPeriodStatementAsignations().add(periodStatementAsignationWeb);
-                }
-
-                outputStatementsWebs.add(outputStatementWeb);
-
-
-            }
-            LOGGER.info(impactStatementsWebs);
-            LOGGER.info(impactStatementsWebs.size());
-            for (StatementWeb impactStatementsWeb : impactStatementsWebs) {
-                this.statementService.validate(impactStatementsWeb);
-                this.statementService.save(impactStatementsWeb);
-            }
-
-            LOGGER.info(outcomeStatementsWebs);
-            LOGGER.info(outcomeStatementsWebs.size());
-            for (StatementWeb outcomeStatementsWeb : outcomeStatementsWebs) {
-                this.statementService.validate(outcomeStatementsWeb);
-                this.statementService.save(outcomeStatementsWeb);
-            }
-            LOGGER.info(outputStatementsWebs);
-            LOGGER.info(outputStatementsWebs.size());
-
-            for (StatementWeb outputStatementsWeb : outputStatementsWebs) {
-                this.statementService.validate(outputStatementsWeb);
-                this.statementService.save(outputStatementsWeb);
-            }
-
-            file.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new GeneralAppException(ExceptionUtils.getMessage(e), Response.Status.BAD_REQUEST);
-
-
-        }
-
-
-    }
-*/
 
     private Map<String, CellAddress> getTitleAdresses(XSSFSheet sheet) {
         Map<String, CellAddress> titleMaps = new HashMap<>();
@@ -455,6 +284,128 @@ public class IndicatorsImportService {
 
         titleMaps.forEach((s, cellAddress) -> LOGGER.debug(s + ": " + cellAddress.formatAsString()));
         return titleMaps;
+
+
+    }
+
+
+    public ByteArrayOutputStream generateTemplate(Long periodId) throws GeneralAppException {
+
+        Period period = this.periodService.getById(periodId);
+        final String filename = "indicatorImportTemplateV2.xlsm";
+        try {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+            InputStream template = classLoader.getResourceAsStream("templates" + File.separator + filename);
+
+            //Create Workbook instance holding reference to .xlsx file
+            XSSFWorkbook workbook = new XSSFWorkbook(template);
+
+            //Get first/desired sheet from the workbook
+            XSSFSheet sheetTemplate = workbook.getSheetAt(0);
+            LOGGER.info(sheetTemplate.getSheetName());
+            // options
+            XSSFSheet sheetOptions = workbook.getSheetAt(1);
+            LOGGER.info(sheetOptions.getSheetName());
+            // tables options
+            XSSFTable tableStatements;
+            XSSFTable tableFrecuency;
+            XSSFTable tableDissagregations;
+            XSSFTable tableCustomDissagregations;
+            XSSFTable tableUnits;
+            List<XSSFTable> tables = sheetOptions.getTables();
+            for (XSSFTable t : tables) {
+                switch (t.getName()) {
+                    case "statements":
+                        tableStatements = t;
+                        break;
+                    case "frecuency":
+                        tableFrecuency = t;
+                        break;
+                    case "dissagregations":
+                        tableDissagregations = t;
+                        break;
+                    case "custom_dissagregations":
+                        tableCustomDissagregations = t;
+                        break;
+                    case "units":
+                        tableUnits = t;
+                        fillUnits(sheetOptions, sheetTemplate, tableUnits);
+                        break;
+                }
+            }
+
+
+            // template.close();
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            workbook.write(stream);
+            workbook.close();
+            return stream;
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
+            throw new GeneralAppException("Error al obtener el template " + filename, Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
+
+    }
+
+    private void fillUnits(XSSFSheet sheetOptions, XSSFSheet sheetTemplate, XSSFTable tableUnits) {
+        LOGGER.info(tableUnits.getArea().getFirstCell().getRow());
+        LOGGER.info(tableUnits.getArea().formatAsString());
+        LOGGER.info(tableUnits.getArea().formatAsString());
+        Iterator<Row> rowIterator = sheetOptions.iterator();
+        int firstRow = tableUnits.getArea().getFirstCell().getRow();
+        int firstCol = tableUnits.getArea().getFirstCell().getCol();
+        List<UnitType> unitValues = Arrays.stream(UnitType.values()).sorted().collect(Collectors.toList());
+
+        for (UnitType value : unitValues) {
+            firstRow++;
+            XSSFRow row = sheetOptions.getRow(firstRow);
+            XSSFCell cell = row.getCell(firstCol);
+            if (cell != null) {
+                LOGGER.info("cell: " + cell.getStringCellValue());
+                cell.setCellValue(value.getStringValue());
+            } else {
+                cell = row.createCell(firstCol);
+                cell.setCellValue(value.getStringValue());
+            }
+
+
+        }
+        for (UnitType value : unitValues) {
+            firstRow++;
+            XSSFRow row = sheetOptions.getRow(firstRow);
+            XSSFCell cell = row.getCell(firstCol);
+            if (cell != null) {
+                LOGGER.info("cell: " + cell.getStringCellValue());
+                cell.setCellValue("t-" + value.getStringValue());
+
+            } else {
+                cell = row.createCell(firstCol);
+                cell.setCellValue("t-" + value.getStringValue());
+            }
+        }
+        tableUnits.setArea(new AreaReference(tableUnits.getArea().getFirstCell(), new CellReference(firstRow, firstCol), null));
+        Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheetTemplate);
+        int COL_UNIT_TYPE = titleAdresses.get(UNIT_TYPE).getColumn();
+        CellAddress IMPACT_AREA_CODE_CELL = titleAdresses.get(IMPACT_STATEMENT_CODE);
+        int rowInitial = IMPACT_AREA_CODE_CELL.getRow() + 1;
+
+        //data validations
+        DataValidationHelper dvHelper = sheetTemplate.getDataValidationHelper();
+
+        XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint)
+                dvHelper.createExplicitListConstraint(
+                        Arrays.stream(UnitType.values()).sorted().map(
+                                        UnitType::getStringValue)
+                                .toArray(String[]::new)
+                );
+        CellRangeAddressList addressList = new CellRangeAddressList(rowInitial, MAX, COL_UNIT_TYPE, COL_UNIT_TYPE);
+        XSSFDataValidation validation = (XSSFDataValidation)dvHelper.createValidation(
+                dvConstraint, addressList);
+        validation.setShowErrorBox(true);
+        sheetTemplate.addValidationData(validation);
+
 
 
     }

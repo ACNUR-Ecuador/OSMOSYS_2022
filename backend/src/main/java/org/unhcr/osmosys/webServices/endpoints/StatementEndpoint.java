@@ -73,6 +73,7 @@ public class StatementEndpoint {
         LOGGER.info("getStatementImportTemplate:" + principal.getName());
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
         final String filename = "statementImportTemplate.xlsx";
         InputStream template = classLoader.getResourceAsStream("templates" + File.separator + filename);
 
