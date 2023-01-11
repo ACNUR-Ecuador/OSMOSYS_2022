@@ -777,7 +777,7 @@ public class TestEndpoint {
         ProjectWeb projectWeb= new ProjectWeb();
         projectWeb.setId(77L);
 
-        this.projectIndicatorsImportService.projectIndicatorsImport(projectWeb);
+        // this.projectIndicatorsImportService.projectIndicatorsImport(projectWeb);
         return "terimnado generales";
     }
 

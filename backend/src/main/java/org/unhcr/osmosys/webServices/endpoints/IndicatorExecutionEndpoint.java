@@ -3,17 +3,18 @@ package org.unhcr.osmosys.webServices.endpoints;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
+import org.unhcr.osmosys.services.dataImport.ProjectIndicatorsImportService;
 import org.unhcr.osmosys.webServices.model.*;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
+import java.io.ByteArrayOutputStream;
+import java.security.Principal;
 import java.util.List;
 
 @Path("/indicatorExecutions")
@@ -23,6 +24,9 @@ public class IndicatorExecutionEndpoint {
     private final static Logger LOGGER = Logger.getLogger(IndicatorExecutionEndpoint.class);
     @Inject
     IndicatorExecutionService indicatorExecutionService;
+
+    @Inject
+    ProjectIndicatorsImportService projectIndicatorsImportService;
 
     @Path("/generalAdmin/{projectId}")
     @GET
@@ -211,5 +215,38 @@ public class IndicatorExecutionEndpoint {
 
         return this.indicatorExecutionService.getDirectImplementationIndicatorByPeriodIdResponsableIdSupervisorIdAndOfficeId(userId, periodId, officeId, supervisor, responsible, backup);
     }
+
+    @Path("/getProjectIndicatorsImportTemplate/{periodId}")
+    @GET
+    @Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getProjectIndicatorsImportTemplate(
+            @Context SecurityContext securityContext,
+            @PathParam("periodId") Long periodId
+    ) throws GeneralAppException {
+        Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getIndicatorsImportTemplate:" + principal.getName());
+        String fileName = null;
+        try {
+            fileName = "importador_indicadores_proyectos_plantilla.xlsm";
+            ByteArrayOutputStream template = this.projectIndicatorsImportService.generateProjectIndicators(periodId);
+            return Response.ok(template.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + fileName + "\"").build();
+        } catch (Exception e) {
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
+            throw new GeneralAppException("Error al obtener el template " + fileName, Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @POST
+    @Path("/importProjectIndicators/{projectId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response importStatementsCatalog(@PathParam("projectId") Long projectId, ImportFileWeb importFileWeb) throws GeneralAppException {
+        LOGGER.debug(importFileWeb);
+        this.projectIndicatorsImportService.projectIndicatorsImport(projectId, importFileWeb);
+        return Response.ok();
+    }
+
+
 
 }

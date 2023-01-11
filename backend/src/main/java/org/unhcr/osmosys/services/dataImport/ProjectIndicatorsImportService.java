@@ -3,18 +3,18 @@ package org.unhcr.osmosys.services.dataImport;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
-import com.sagatechs.generics.security.servicio.UserService;
+import com.sagatechs.generics.utils.FileUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellAddress;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.*;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.AreaType;
@@ -27,15 +27,13 @@ import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
 public class ProjectIndicatorsImportService {
-
 
 
     @Inject
@@ -55,11 +53,15 @@ public class ProjectIndicatorsImportService {
     CantonService cantonService;
     @Inject
     ModelWebTransformationService modelWebTransformationService;
+    @Inject
+    PeriodService periodService;
+
+    @Inject
+    FileUtils fileUtils;
 
     private final static Logger LOGGER = Logger.getLogger(ProjectIndicatorsImportService.class);
-    private static final String FILE_NAME = "D:\\proyectos\\OSMOSYS_2023\\DataImport2023\\partnerisIndicators\\FUDELA SOIB.xlsx";
+    // private static final String FILE_NAME = "D:\\proyectos\\OSMOSYS_2023\\DataImport2023\\partnerisIndicators\\FUDELA SOIB.xlsx";
 
-    private static final String NO = "No.";
     private static final String PRODUCT_STATEMENT = "Declaración de Producto";
     private static final String MAIN_ACTIVITIES = "Actividades clave de Producto";
     private static final String PRODUCT_INDICATOR = "Indicadores de Producto";
@@ -70,19 +72,27 @@ public class ProjectIndicatorsImportService {
     private static final String TOTAL_TARGET = "Meta Total";
     private static final String CANTONS = "Cantones de Ejecución";
 
-    public void projectIndicatorsImport(ProjectWeb projectWeb
-                                        // , InputStream file
-    ) throws GeneralAppException, IOException {
+    private static final int MAX = 50;
+
+    public void projectIndicatorsImport(Long projectId, ImportFileWeb importFileWeb) throws GeneralAppException {
+        byte[] fileContent = this.fileUtils.decodeBase64ToBytes(importFileWeb.getFile());
+        InputStream targetStream = new ByteArrayInputStream(fileContent);
+        this.projectIndicatorsImport(projectId, targetStream);
+    }
+
+    public void projectIndicatorsImport(Long projectId,
+                                        InputStream file
+    ) throws GeneralAppException {
         LOGGER.info("test import");
-        FileInputStream file = null;
+        // FileInputStream file = null;
         try {
-            Project project = this.projectService.getById(projectWeb.getId());
+            Project project = this.projectService.getById(projectId);
             if (project == null) {
-                throw new GeneralAppException("El projecto con id " + projectWeb.getId() + " no existe", Response.Status.BAD_REQUEST);
+                throw new GeneralAppException("El projecto con id " + projectId + " no existe", Response.Status.BAD_REQUEST);
 
             }
             Integer year = project.getPeriod().getYear();
-            file = new FileInputStream(FILE_NAME);
+            // file = new FileInputStream(FILE_NAME);
             //Create Workbook instance holding reference to .xlsx file
             XSSFWorkbook workbook = new XSSFWorkbook(file);
 
@@ -90,12 +100,11 @@ public class ProjectIndicatorsImportService {
             XSSFSheet sheet = workbook.getSheet("indicators");
 
             Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheet);
-            CellAddress CODE_CELL = titleAdresses.get(NO);
+            CellAddress CODE_CELL = titleAdresses.get(PRODUCT_STATEMENT);
             int rowInitial = CODE_CELL.getRow();
             // get INDICATORS
 
 
-            int COL_NO = titleAdresses.get(NO).getColumn();
             int COL_PRODUCT_STATEMENT = titleAdresses.get(PRODUCT_STATEMENT).getColumn();
             int COL_MAIN_ACTIVITIES = titleAdresses.get(MAIN_ACTIVITIES).getColumn();
             int COL_PRODUCT_INDICATOR = titleAdresses.get(PRODUCT_INDICATOR).getColumn();
@@ -120,11 +129,6 @@ public class ProjectIndicatorsImportService {
                     continue;
                 }
 
-                String noString =
-                        row.getCell(COL_NO).getCellType() == CellType.NUMERIC ?
-                                StringUtils.trimToNull(Integer.toString((int) (row.getCell(COL_NO).getNumericCellValue()))) :
-                                StringUtils.trimToNull(row.getCell(COL_NO).getStringCellValue());
-                LOGGER.debug(noString);
                 // get produdctStatement
                 if (
                         row.getCell(COL_PRODUCT_STATEMENT) == null || row.getCell(COL_PRODUCT_STATEMENT).getCellType() == CellType.BLANK
@@ -155,12 +159,12 @@ public class ProjectIndicatorsImportService {
                 String locationsTotal = StringUtils.trimToNull(row.getCell(COL_CANTONS).getStringCellValue());
                 if (StringUtils.isEmpty(locationsTotal)) {
                     throw new GeneralAppException("No se encontraron lugares de ejecución para el indicador "
-                            + productIndicatorString + ". '" + NO + "'.", Response.Status.BAD_REQUEST);
+                            + productIndicatorString + ". '" +  "'.", Response.Status.BAD_REQUEST);
                 }
                 List<String> locationStringList = Arrays.asList(StringUtils.split(locationsTotal, ","));
                 if (CollectionUtils.isEmpty(locationStringList)) {
                     throw new GeneralAppException("No se encontraron lugares de ejecución para el indicador "
-                            + productIndicatorString + ". '" + NO + "'.", Response.Status.BAD_REQUEST);
+                            + productIndicatorString + "'.", Response.Status.BAD_REQUEST);
                 }
                 locationStringList = locationStringList.stream().map(StringUtils::trimToNull).filter(StringUtils::isNotEmpty).distinct()
                         .collect(Collectors.toList());
@@ -222,8 +226,8 @@ public class ProjectIndicatorsImportService {
 
             ProjectWeb projectWebOrg = this.modelWebTransformationService.projectToProjectWeb(project);
             List<CantonWeb> totalLocaltionWeb = this.modelWebTransformationService.cantonsToCantonsWeb(new ArrayList<>(totalLocations));
+            projectWebOrg.setLocations(new HashSet<>(totalLocaltionWeb));
 
-            projectWeb.getLocations().addAll(totalLocaltionWeb);
             this.projectService.updateProjectLocations(projectWebOrg, project, false);
             for (IndicatorExecutionAssigmentWeb indicatorExecutionAssigmentWeb : indicatorExecutionAssigmentWebs) {
                 IndicatorExecution ie = this.indicatorExecutionService.assignPerformanceIndicatoToProject(indicatorExecutionAssigmentWeb);
@@ -250,13 +254,13 @@ public class ProjectIndicatorsImportService {
 
             // general target
             Integer generalTarget = this.getGeneralTarget(sheet);
-            if (generalTarget!=null){
+            if (generalTarget != null) {
                 List<IndicatorExecutionWeb> generalIes = this.indicatorExecutionService.getGeneralIndicatorExecutionsByProjectIdAndState(project.getId(), State.ACTIVO);
 
                 if (CollectionUtils.isNotEmpty(generalIes)) {
                     IndicatorExecutionWeb generalIe = generalIes.get(0);
                     generalIe.setTarget(new BigDecimal(generalTarget));
-                    TargetUpdateDTOWeb targetUpdateDTOWebGeneral= new TargetUpdateDTOWeb();
+                    TargetUpdateDTOWeb targetUpdateDTOWebGeneral = new TargetUpdateDTOWeb();
                     targetUpdateDTOWebGeneral.setTotalTarget(new BigDecimal(generalTarget));
                     targetUpdateDTOWebGeneral.setIndicatorType(IndicatorType.GENERAL);
                     targetUpdateDTOWebGeneral.setIndicatorExecutionId(generalIe.getId());
@@ -270,10 +274,6 @@ public class ProjectIndicatorsImportService {
             throw new GeneralAppException(ExceptionUtils.getMessage(e), Response.Status.BAD_REQUEST);
 
 
-        } finally {
-            if (file != null) {
-                file.close();
-            }
         }
 
 
@@ -282,7 +282,6 @@ public class ProjectIndicatorsImportService {
     private Map<String, CellAddress> getTitleAdresses(XSSFSheet sheet) throws GeneralAppException {
         Map<String, CellAddress> titleMaps = new HashMap<>();
 
-        titleMaps.put(NO, null);
         titleMaps.put(PRODUCT_STATEMENT, null);
         titleMaps.put(MAIN_ACTIVITIES, null);
         titleMaps.put(PRODUCT_INDICATOR, null);
@@ -373,6 +372,193 @@ public class ProjectIndicatorsImportService {
                 return (int) cell.getNumericCellValue();
             }
         }
+
+    }
+
+
+    public ByteArrayOutputStream generateProjectIndicators(Long periodId) throws GeneralAppException {
+
+        Period period = this.periodService.getById(periodId);
+        final String filename = "projectIndicatorsTemplate.xlsm";
+        try {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+            InputStream template = classLoader.getResourceAsStream("templates" + File.separator + filename);
+
+            //Create Workbook instance holding reference to .xlsx file
+            XSSFWorkbook workbook = new XSSFWorkbook(Objects.requireNonNull(template));
+
+            //Get first/desired sheet from the workbook
+            XSSFSheet sheetTemplate = workbook.getSheetAt(0);
+            LOGGER.info(sheetTemplate.getSheetName());
+            // options
+            XSSFSheet sheetOptions = workbook.getSheetAt(1);
+            LOGGER.info(sheetOptions.getSheetName());
+            // tables options
+            List<XSSFTable> tables = sheetOptions.getTables();
+            for (XSSFTable table : tables) {
+                switch (table.getName()) {
+                    case "statements":
+                        fillStatements(sheetTemplate, sheetOptions, table, period);
+                        break;
+                    case "indicators":
+                        fillIndicators(sheetTemplate, sheetOptions, table, period);
+                        break;
+                    case "cantons":
+                        fillCantons(sheetTemplate, sheetOptions, table);
+                        break;
+                }
+            }
+
+
+            // template.close();
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            workbook.write(stream);
+            workbook.close();
+            return stream;
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
+            throw new GeneralAppException("Error al obtener el template " + filename, Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+
+    private void fillStatements(XSSFSheet sheetTemplate, XSSFSheet sheetOptions, XSSFTable tableOptions, Period period) throws GeneralAppException {
+        int firstRow = tableOptions.getArea().getFirstCell().getRow();
+        int firstCol = tableOptions.getArea().getFirstCell().getCol();
+
+        List<Statement> statements = this.statementService.getByPeriodYearAndAreaType(AreaType.PRODUCTO, period.getYear());
+
+        List<Statement> listaValues = statements.stream().sorted(Comparator.comparing(Statement::getCode)).collect(Collectors.toList());
+
+        for (Statement value : listaValues) {
+            firstRow++;
+            XSSFRow row = sheetOptions.getRow(firstRow);
+            if (row == null) {
+                row = sheetOptions.createRow(firstRow);
+            }
+            XSSFCell cell = row.getCell(firstCol);
+            if (cell != null) {
+                LOGGER.info("cell: " + cell.getStringCellValue());
+                cell.setCellValue(value.getCode() + " " + value.getDescription());
+            } else {
+                cell = row.createCell(firstCol);
+                cell.setCellValue(value.getCode() + " " + value.getDescription());
+            }
+
+
+        }
+
+        tableOptions.setArea(new AreaReference(tableOptions.getArea().getFirstCell(), new CellReference(firstRow, firstCol), null));
+
+        // validation
+        XSSFDataValidationHelper dvHelper = new XSSFDataValidationHelper(sheetTemplate);
+        String listFormula = "INDIRECT(\"" + tableOptions.getName() + "[" + "statements" + "]\")";
+        LOGGER.info(listFormula);
+        XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint)
+                dvHelper.createFormulaListConstraint(listFormula);
+
+        Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheetTemplate);
+        CellAddress cell_units = titleAdresses.get(PRODUCT_STATEMENT);
+        CellRangeAddressList addressList = new CellRangeAddressList(cell_units.getRow() + 1, cell_units.getRow() + MAX,
+                cell_units.getColumn(), cell_units.getColumn());
+        XSSFDataValidation validation = (XSSFDataValidation) dvHelper.createValidation(
+                dvConstraint, addressList);
+        sheetTemplate.addValidationData(validation);
+
+
+    }
+
+    private void fillIndicators(XSSFSheet sheetTemplate, XSSFSheet sheetOptions, XSSFTable tableOptions, Period period) throws GeneralAppException {
+        int firstRow = tableOptions.getArea().getFirstCell().getRow();
+        int firstCol = tableOptions.getArea().getFirstCell().getCol();
+
+        List<Indicator> indicators = this.indicatorService.getByPeriodYearAssignmentAndState(period.getYear());
+
+        List<Indicator> listaValues = indicators.stream().sorted(Comparator.comparing(Indicator::getCode)).collect(Collectors.toList());
+
+        for (Indicator value : listaValues) {
+            firstRow++;
+            XSSFRow row = sheetOptions.getRow(firstRow);
+            if (row == null) {
+                row = sheetOptions.createRow(firstRow);
+            }
+            XSSFCell cell = row.getCell(firstCol);
+            if (cell != null) {
+                LOGGER.info("cell: " + cell.getStringCellValue());
+                cell.setCellValue(value.getCode() + " " + value.getDescription());
+            } else {
+                cell = row.createCell(firstCol);
+                cell.setCellValue(value.getCode() + " " + value.getDescription());
+            }
+        }
+
+        tableOptions.setArea(new AreaReference(tableOptions.getArea().getFirstCell(), new CellReference(firstRow, firstCol), null));
+
+        // validation
+        XSSFDataValidationHelper dvHelper = new XSSFDataValidationHelper(sheetTemplate);
+        String listFormula = "INDIRECT(\"" + tableOptions.getName() + "[" + "indicators" + "]\")";
+        LOGGER.info(listFormula);
+        XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint)
+                dvHelper.createFormulaListConstraint(listFormula);
+
+        Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheetTemplate);
+        CellAddress cell_units = titleAdresses.get(PRODUCT_INDICATOR);
+        CellRangeAddressList addressList = new CellRangeAddressList(cell_units.getRow() + 1, cell_units.getRow() + MAX,
+                cell_units.getColumn(), cell_units.getColumn());
+        XSSFDataValidation validation = (XSSFDataValidation) dvHelper.createValidation(
+                dvConstraint, addressList);
+        sheetTemplate.addValidationData(validation);
+
+
+    }
+
+
+    private void fillCantons(XSSFSheet sheetTemplate, XSSFSheet sheetOptions, XSSFTable tableOptions) throws GeneralAppException {
+        int firstRow = tableOptions.getArea().getFirstCell().getRow();
+        int firstCol = tableOptions.getArea().getFirstCell().getCol();
+
+        List<CantonWeb> cantons = this.cantonService.getByState(State.ACTIVO);
+        List<String> values = cantons.stream().map(cantonWeb -> {
+                    return cantonWeb.getProvincia().getDescription() + "-" + cantonWeb.getDescription();
+                })
+                .sorted().collect(Collectors.toList());
+
+
+        for (String value : values) {
+            firstRow++;
+            XSSFRow row = sheetOptions.getRow(firstRow);
+            if (row == null) {
+                row = sheetOptions.createRow(firstRow);
+            }
+            XSSFCell cell = row.getCell(firstCol);
+            if (cell != null) {
+                LOGGER.info("cell: " + cell.getStringCellValue());
+                cell.setCellValue(value);
+            } else {
+                cell = row.createCell(firstCol);
+                cell.setCellValue(value);
+            }
+        }
+
+        tableOptions.setArea(new AreaReference(tableOptions.getArea().getFirstCell(), new CellReference(firstRow, firstCol), null));
+
+        // validation
+        XSSFDataValidationHelper dvHelper = new XSSFDataValidationHelper(sheetTemplate);
+        String listFormula = "INDIRECT(\"" + tableOptions.getName() + "[" + tableOptions.getName() + "]\")";
+        XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint)
+                dvHelper.createFormulaListConstraint(listFormula);
+
+        Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheetTemplate);
+        CellAddress cell_units = titleAdresses.get(CANTONS);
+        CellRangeAddressList addressList = new CellRangeAddressList(cell_units.getRow() + 1,
+                cell_units.getRow() + MAX,
+                cell_units.getColumn(), cell_units.getColumn());
+        XSSFDataValidation validation = (XSSFDataValidation) dvHelper.createValidation(
+                dvConstraint, addressList);
+        sheetTemplate.addValidationData(validation);
+
 
     }
 }

@@ -113,20 +113,17 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
                 " inner join fetch o.statement sta " +
                 " inner join sta.periodStatementAsignations psa " +
                 " inner join psa.period p " +
-
-                " left outer join o.customDissagregationAssignationToIndicators cda " +
-                " left outer join cda.customDissagregation " +
-                " left outer join cda.customDissagregationFilterIndicators " +
-                " left outer join o.dissagregationsAssignationToIndicator da " +
-                " left outer join da.dissagregationFilterIndicators " +
-
-                " left outer join o.markers " +
-                " WHERE p =:year and o.state=:state";
+                " WHERE " +
+                " o.state=:state " +
+                " and sta.state=:state " +
+                " and psa.state=:state " +
+                " and psa.state=:state " +
+                " and p.year =:year ";
 
         Query q = getEntityManager().createQuery(jpql, Indicator.class);
         q.setParameter("state", state);
         q.setParameter("year", year);
-        return null; // TODO
+        return q.getResultList();
     }
 
     public Indicator getByPeriodAndCode(Long periodId, String code) throws GeneralAppException {

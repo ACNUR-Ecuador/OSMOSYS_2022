@@ -308,7 +308,7 @@ public class IndicatorService {
 
 
     public List<Indicator> getByPeriodYearAssignmentAndState(int year) {
-        return null; // todo this.indicatorDao.getByPeriodYearAssignmentAndState(year);
+        return this.indicatorDao.getByPeriodYearAssignmentAndState(year, State.ACTIVO);
     }
 
     public Indicator getByPeriodAndCode(Long periodId, String code) throws GeneralAppException {
