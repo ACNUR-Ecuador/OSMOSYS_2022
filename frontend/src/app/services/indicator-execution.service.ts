@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {Observable} from 'rxjs';
 import {
-    Canton,
+    Canton, ImportFile,
     IndicatorExecution, IndicatorExecutionAssigment, IndicatorValue, MonthValues, Quarter,
     TargetUpdateDTOWeb
 } from '../shared/model/OsmosysModel';
@@ -125,5 +125,16 @@ export class IndicatorExecutionService {
         params = params.append('responsible', String(responsible ? responsible : false));
         params = params.append('backup', String(backup ? backup : false));
         return this.http.get<IndicatorExecution[]>(`${mainServiceUrl}/getDirectImplementationIndicatorByPeriodIdResponsableIdSupervisorIdAndOfficeId`, {params});
+    }
+
+    public importProjectIndicators(importFile: ImportFile) {
+        return this.http.post(`${mainServiceUrl}/importProjectIndicators`, importFile);
+    }
+
+    public getProjectIndicatorsImportTemplate(periodId:number) {
+        return this.http.get(`${mainServiceUrl}/getProjectIndicatorsImportTemplate/${periodId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
     }
 }

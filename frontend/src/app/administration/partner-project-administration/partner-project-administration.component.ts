@@ -9,7 +9,7 @@ import {Location, PercentPipe} from '@angular/common';
 import {
     AreaType,
     Canton,
-    CantonForList,
+    CantonForList, ImportFile,
     Indicator, IndicatorExecution,
     IndicatorExecutionAssigment,
     Period,
@@ -42,6 +42,7 @@ import {StatementService} from '../../services/statement.service';
 import {IndicatorPipe} from '../../shared/pipes/indicator.pipe';
 import {Table} from 'primeng/table';
 import {OfficeOrganizationPipe} from '../../shared/pipes/office-organization.pipe';
+import {HttpResponse} from "@angular/common/http";
 
 @Component({
     selector: 'app-partner-project-administration',
@@ -89,6 +90,9 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     quarterOrders: number[];
     quarterTitles: string[];
     quartersToUpdate: Quarter[] = [];
+
+    showDialogImport = false;
+    importForm: FormGroup;
 
     constructor(
         private route: ActivatedRoute,
@@ -155,6 +159,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     private loadPeriod() {
+
         this.periodService.getById(this.idPeriodParam as number)
             .subscribe({
                 next: value => {
@@ -264,7 +269,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         if (this.performanceIndicators.filter(value => {
             return value.state === EnumsState.ACTIVE;
         }).length < 1) {
-            this.messageAlert += 'El proyecto no tiene indicadores de producto asignados./n </br>';
+            this.messageAlert += 'El proyecto no tiene indicadores de producto asignados. </br>';
             this.showAlert = true;
         }
         const generalIndicatorsTargetsToAlert = this.generalIndicators
@@ -443,7 +448,10 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             assignedBudget: new FormControl(''),
         });
 
-
+        this.importForm = this.fb.group({
+            fileName: new FormControl('', [Validators.required]),
+            file: new FormControl(''),
+        });
     }
 
     saveItem() {
@@ -672,7 +680,12 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         this._selectedColumnsGeneralIndicators = this.colsGeneralIndicators.filter(value => value.field !== 'id');
         this.colsPerformancelIndicators = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
-            {field: 'indicator.statement', header: 'Declaración Indicador', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
+            {
+                field: 'indicator.statement',
+                header: 'Declaración Indicador',
+                type: ColumnDataType.text,
+                pipeRef: this.codeDescriptionPipe
+            },
             {
                 field: 'projectStatement',
                 header: 'Declaración de Producto',
@@ -1184,5 +1197,80 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         this.quartersToUpdate = [];
         this.showTargetsPerformanceIndicatorUpdateDialog = false;
         this.loadProject(Number(this.idProjectParam));
+    }
+
+    initiateCatalogImport() {
+        this.importForm.reset();
+        this.showDialogImport = true;
+
+    }
+
+    cancelImportDialog() {
+        this.showDialogImport = false;
+        this.importForm.reset();
+    }
+
+    importCatalog() {
+        const {
+            period,
+            fileName,
+            file
+        } = this.importForm.value;
+        const importFile: ImportFile = {
+            period,
+            fileName,
+            file
+        };
+
+        this.projectService.importCatalog(importFile).subscribe({
+            next: () => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Catálogo cargado correctamente',
+                    life: 3000
+                });
+                this.loadProject(Number(this.idProjectParam));
+                this.showDialogImport = false;
+            }, error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al descargar la plantilla',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        })
+
+    }
+
+    downloadImportTemplate() {
+        const period: Period = this.formItem.get('period').value
+        this.indicatorExecutionService.getProjectIndicatorsImportTemplate(period.id).subscribe({
+            next: (response: HttpResponse<Blob>) => {
+                this.utilsService.downloadFileResponse(response);
+            }, error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al descargar la plantilla',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+    }
+
+    fileUploader(event: any) {
+        const file = event.files[0];
+        this.importForm.get('fileName').setValue(file.name);
+        this.importForm.get('fileName').markAsTouched();
+        // event.
+        const fileReader = new FileReader();
+
+        fileReader.readAsDataURL(file);
+        // tslint:disable-next-line:only-arrow-functions
+        fileReader.onload = () => {
+            this.importForm.get('file').setValue(fileReader.result);
+            this.importForm.get('file').markAsTouched();
+        };
     }
 }
