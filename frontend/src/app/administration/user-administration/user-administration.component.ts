@@ -323,7 +323,7 @@ export class UserAdministrationComponent implements OnInit {
 
     onEmailChange() {
         if (!this.formItem.get('id').value && this.formItem.get('email').valid) {
-            const username = this.formItem.get('email').value.split('@', 1);
+            const username = this.formItem.get('email').value.split('@', 1)?this.formItem.get('email').value.split('@', 1)[0]:null;
             this.formItem.get('username').patchValue(username);
         }
     }
