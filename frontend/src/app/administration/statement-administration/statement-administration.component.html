@@ -133,6 +133,7 @@
                                     <p-multiSelect [ngModel]="value" [options]="periodsItems"
                                                    (onChange)="filter($event.value)"
                                                    [filter]=true
+                                                   appendTo="body"
                                                    placeholder="Selecciona..." [showClear]="true">
                                         <ng-template let-option pTemplate="item">
                                             <span

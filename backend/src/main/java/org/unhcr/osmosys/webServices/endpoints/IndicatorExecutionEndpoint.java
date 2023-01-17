@@ -244,7 +244,7 @@ public class IndicatorExecutionEndpoint {
     public Response importStatementsCatalog(@PathParam("projectId") Long projectId, ImportFileWeb importFileWeb) throws GeneralAppException {
         LOGGER.debug(importFileWeb);
         this.projectIndicatorsImportService.projectIndicatorsImport(projectId, importFileWeb);
-        return Response.ok();
+        return Response.ok().build();
     }
 
 

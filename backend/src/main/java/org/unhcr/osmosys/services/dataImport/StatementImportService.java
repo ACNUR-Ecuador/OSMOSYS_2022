@@ -7,6 +7,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -63,6 +64,7 @@ public class StatementImportService {
     public void statementImportV2(PeriodWeb periodWeb, InputStream file) throws GeneralAppException {
         LOGGER.info("test import");
         try {
+            DataFormatter formatter = new DataFormatter();
             Period period = this.periodService.getByYear(periodWeb.getYear());
             if (period == null) {
                 throw new GeneralAppException("El periodo " + periodWeb.getYear() + " no existe", Response.Status.BAD_REQUEST);
@@ -74,7 +76,7 @@ public class StatementImportService {
             XSSFWorkbook workbook = new XSSFWorkbook(file);
 
             //Get first/desired sheet from the workbook
-            XSSFSheet sheet = workbook.getSheet("catalogo_statements");
+            XSSFSheet sheet = workbook.getSheet("catalogo_declaraciones");
 
             Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheet);
             LOGGER.error(titleAdresses.get(IMPACT_AREA_CODE).getColumn());
@@ -109,18 +111,20 @@ public class StatementImportService {
                 if (row.getRowNum() <= rowInitial) {
                     continue;
                 }
-                // get IMPACT STATEMENTS
 
 
-                Statement impactStatement = this.statementService.getByCodeAndPeriodYearAndAreaType(StringUtils.trimToNull(row.getCell(COL_IMPACT_STATEMENT_CODE).getStringCellValue()),
+
+
+                Statement impactStatement = this.statementService.getByCodeAndPeriodYearAndAreaType(StringUtils.trimToNull(
+                        formatter.formatCellValue(row.getCell(COL_IMPACT_STATEMENT_CODE))),
                         AreaType.IMPACTO,
                         periodWeb.getYear());
                 if (impactStatement != null) {
                     impactStatement.setState(State.ACTIVO);
                 } else {
                     impactStatement = statementService.getByCodeAndDescriptionAndAreaType(
-                            StringUtils.trimToNull(row.getCell(COL_IMPACT_STATEMENT_CODE).getStringCellValue()),
-                            StringUtils.trimToNull(row.getCell(COL_IMPACT_STATEMENT).getStringCellValue()),
+                            StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_IMPACT_STATEMENT_CODE))),
+                            StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_IMPACT_STATEMENT))),
                             AreaType.IMPACTO
                     );
                     if (impactStatement != null) {
@@ -134,22 +138,22 @@ public class StatementImportService {
                         impactStatement = new Statement();
                         impactStatement.setState(State.ACTIVO);
                         impactStatement.setAreaType(AreaType.IMPACTO);
-                        impactStatement.setCode(StringUtils.trimToNull(row.getCell(COL_IMPACT_STATEMENT_CODE).getStringCellValue()));
-                        impactStatement.setDescription(StringUtils.trimToNull(row.getCell(COL_IMPACT_STATEMENT).getStringCellValue()));
-                        String areaCode = StringUtils.trimToNull(row.getCell(COL_IMPACT_AREA_CODE).getStringCellValue());
+                        impactStatement.setCode(StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_IMPACT_STATEMENT_CODE))));
+                        impactStatement.setDescription(StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_IMPACT_STATEMENT))));
+                        String areaCode = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_IMPACT_AREA_CODE)));
                         Area area = this.areaService.getByCode(areaCode);
                         if (area == null) {
                             throw new GeneralAppException("El área con código " + areaCode + " no existe", Response.Status.BAD_REQUEST);
                         }
                         impactStatement.setArea(area);
-                        String pilarCode = StringUtils.trimToNull(row.getCell(COL_PILLAR_CODE).getStringCellValue());
+                        String pilarCode = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_PILLAR_CODE)));
                         Pillar pillar = this.pillarService.getByCode(pilarCode);
                         if (pillar == null) {
                             throw new GeneralAppException("El pilar con código " + pilarCode + " no existe", Response.Status.BAD_REQUEST);
                         }
                         impactStatement.setPillar(pillar);
 
-                        String situacionCode = StringUtils.trimToNull(row.getCell(COL_SITUATION_CODE).getStringCellValue());
+                        String situacionCode = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_SITUATION_CODE)));
                         Situation situation = this.situationService.getByCode(situacionCode);
                         if (situation == null) {
                             throw new GeneralAppException("La situación con código " + situacionCode + " no existe", Response.Status.BAD_REQUEST);
@@ -165,15 +169,16 @@ public class StatementImportService {
                 impactStatements.add(impactStatement);
 
                 // get OUTCOME STATEMENTS
-                Statement outcomeStatement = this.statementService.getByCodeAndPeriodYearAndAreaType(StringUtils.trimToNull(row.getCell(COL_OUTCOME_STATEMENT_CODE).getStringCellValue()),
+                Statement outcomeStatement = this.statementService.getByCodeAndPeriodYearAndAreaType(StringUtils.trimToNull(
+                        formatter.formatCellValue(row.getCell(COL_OUTCOME_STATEMENT_CODE))),
                         AreaType.RESULTADO,
                         periodWeb.getYear());
                 if (outcomeStatement != null) {
                     outcomeStatement.setState(State.ACTIVO);
                 } else {
                     outcomeStatement = statementService.getByCodeAndDescriptionAndAreaType(
-                            StringUtils.trimToNull(row.getCell(COL_OUTCOME_STATEMENT_CODE).getStringCellValue()),
-                            StringUtils.trimToNull(row.getCell(COL_OUTCOME_STATEMENT).getStringCellValue()),
+                            StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTCOME_STATEMENT_CODE))),
+                            StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTCOME_STATEMENT))),
                             AreaType.RESULTADO
                     );
                     if (outcomeStatement != null) {
@@ -187,16 +192,16 @@ public class StatementImportService {
                         outcomeStatement = new Statement();
                         outcomeStatement.setState(State.ACTIVO);
                         outcomeStatement.setAreaType(AreaType.RESULTADO);
-                        outcomeStatement.setCode(StringUtils.trimToNull(row.getCell(COL_OUTCOME_STATEMENT_CODE).getStringCellValue()));
-                        outcomeStatement.setDescription(StringUtils.trimToNull(row.getCell(COL_OUTCOME_STATEMENT).getStringCellValue()));
-                        String areaCode = StringUtils.trimToNull(row.getCell(COL_OUTCOME_AREA_CODE).getStringCellValue());
+                        outcomeStatement.setCode(StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTCOME_STATEMENT_CODE))));
+                        outcomeStatement.setDescription(StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTCOME_STATEMENT))));
+                        String areaCode = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTCOME_AREA_CODE)));
                         Area area = this.areaService.getByCode(areaCode);
                         if (area == null) {
                             throw new GeneralAppException("El área con código " + areaCode + " no existe", Response.Status.BAD_REQUEST);
                         }
                         outcomeStatement.setArea(area);
                         // parent statement
-                        String outcomeParentStatementCode=StringUtils.trimToNull(row.getCell(COL_IMPACT_STATEMENT_CODE).getStringCellValue());
+                        String outcomeParentStatementCode=StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_IMPACT_STATEMENT_CODE)));
                         Optional<Statement> outcomeParentStatement = impactStatements.stream().filter(statement -> statement.getCode().equalsIgnoreCase(outcomeParentStatementCode)).findFirst();
                         if (!outcomeParentStatement.isPresent()) {
                             throw new GeneralAppException("La declaración con código " + outcomeStatement.getCode() + " no tiene una declaración padre con código "+ outcomeParentStatementCode, Response.Status.BAD_REQUEST);
@@ -205,14 +210,14 @@ public class StatementImportService {
                         }
 
 
-                        String pilarCode = StringUtils.trimToNull(row.getCell(COL_PILLAR_CODE).getStringCellValue());
+                        String pilarCode = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_PILLAR_CODE)));
                         Pillar pillar = this.pillarService.getByCode(pilarCode);
                         if (pillar == null) {
                             throw new GeneralAppException("El pilar con código " + pilarCode + " no existe", Response.Status.BAD_REQUEST);
                         }
                         outcomeStatement.setPillar(pillar);
 
-                        String situacionCode = StringUtils.trimToNull(row.getCell(COL_SITUATION_CODE).getStringCellValue());
+                        String situacionCode = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_SITUATION_CODE)));
                         Situation situation = this.situationService.getByCode(situacionCode);
                         if (situation == null) {
                             throw new GeneralAppException("La situación con código " + situacionCode + " no existe", Response.Status.BAD_REQUEST);
@@ -229,15 +234,15 @@ public class StatementImportService {
 
                 // get OUTPUT STATEMENTS
                 Statement outputStatement = this.statementService.getByCodeAndPeriodYearAndAreaType(
-                        StringUtils.trimToNull(row.getCell(COL_OUTPUT_STATEMENT_CODE).getStringCellValue()),
+                        StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTPUT_STATEMENT_CODE))),
                         AreaType.PRODUCTO,
                         periodWeb.getYear());
                 if (outputStatement != null) {
                     outputStatement.setState(State.ACTIVO);
                 } else {
                     outputStatement = statementService.getByCodeAndDescriptionAndAreaType(
-                            StringUtils.trimToNull(row.getCell(COL_OUTPUT_STATEMENT_CODE).getStringCellValue()),
-                            StringUtils.trimToNull(row.getCell(COL_OUTPUT_STATEMENT).getStringCellValue()),
+                            StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTPUT_STATEMENT_CODE))),
+                            StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTPUT_STATEMENT))),
                             AreaType.PRODUCTO
                     );
                     if (outputStatement != null) {
@@ -251,30 +256,30 @@ public class StatementImportService {
                         outputStatement = new Statement();
                         outputStatement.setState(State.ACTIVO);
                         outputStatement.setAreaType(AreaType.PRODUCTO);
-                        outputStatement.setCode(StringUtils.trimToNull(row.getCell(COL_OUTPUT_STATEMENT_CODE).getStringCellValue()));
-                        outputStatement.setDescription(StringUtils.trimToNull(row.getCell(COL_OUTPUT_STATEMENT).getStringCellValue()));
+                        outputStatement.setCode(StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTPUT_STATEMENT_CODE))));
+                        outputStatement.setDescription(StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTPUT_STATEMENT))));
                         // parent statement+
-                        String outcomeParentStatementCode=StringUtils.trimToNull(row.getCell(COL_OUTCOME_STATEMENT_CODE).getStringCellValue());
+                        String outcomeParentStatementCode=StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTCOME_STATEMENT_CODE)));
                         Optional<Statement> outcomeParentStatement = outcomeStatements.stream().filter(statement -> statement.getCode().equalsIgnoreCase(outcomeParentStatementCode)).findFirst();
                         if (!outcomeParentStatement.isPresent()) {
                             throw new GeneralAppException("La declaración con código " + outputStatement.getCode() + " no tiene una declaración padre con código "+ outcomeParentStatementCode, Response.Status.BAD_REQUEST);
                         }else {
                             outputStatement.setParentStatement(outcomeParentStatement.get());
                         }
-                        String areaCode = StringUtils.trimToNull(row.getCell(COL_OUTCOME_AREA_CODE).getStringCellValue());
+                        String areaCode = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTCOME_AREA_CODE)));
                         Area area = this.areaService.getByCode(areaCode);
                         if (area == null) {
                             throw new GeneralAppException("El área con código " + areaCode + " no existe", Response.Status.BAD_REQUEST);
                         }
                         outputStatement.setArea(area);
-                        String pilarCode = StringUtils.trimToNull(row.getCell(COL_PILLAR_CODE).getStringCellValue());
+                        String pilarCode = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_PILLAR_CODE)));
                         Pillar pillar = this.pillarService.getByCode(pilarCode);
                         if (pillar == null) {
                             throw new GeneralAppException("El pilar con código " + pilarCode + " no existe", Response.Status.BAD_REQUEST);
                         }
                         outputStatement.setPillar(pillar);
 
-                        String situacionCode = StringUtils.trimToNull(row.getCell(COL_SITUATION_CODE).getStringCellValue());
+                        String situacionCode = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_SITUATION_CODE)));
                         Situation situation = this.situationService.getByCode(situacionCode);
                         if (situation == null) {
                             throw new GeneralAppException("La situación con código " + situacionCode + " no existe", Response.Status.BAD_REQUEST);
@@ -337,187 +342,11 @@ public class StatementImportService {
         } catch (Exception e) {
             e.printStackTrace();
             throw new GeneralAppException(ExceptionUtils.getMessage(e), Response.Status.BAD_REQUEST);
-
-
         }
-
-
     }
-/*
-
-    public void statementImport(List<PeriodWeb> periodWebs) throws GeneralAppException {
-        LOGGER.info("test import");
-        try {
 
 
-            FileInputStream file = new FileInputStream(FILE_NAME);
-            //Create Workbook instance holding reference to .xlsx file
-            XSSFWorkbook workbook = new XSSFWorkbook(file);
 
-            //Get first/desired sheet from the workbook
-            XSSFSheet sheet = workbook.getSheet("catalogo_statements");
-
-            Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheet);
-            LOGGER.error(titleAdresses.get(IMPACT_AREA_CODE).getColumn());
-            LOGGER.error(titleAdresses.get(IMPACT_AREA_CODE).getRow());
-            CellAddress IMPACT_AREA_CODE_CELL = titleAdresses.get(IMPACT_AREA_CODE);
-            int rowInitial = IMPACT_AREA_CODE_CELL.getRow();
-            Iterator<Row> rowIterator0 = sheet.iterator();
-            // get IMPACT STATEMENTS
-
-            int COL_IMPACT_AREA_CODE = titleAdresses.get(IMPACT_AREA_CODE).getColumn();
-            int COL_IMPACT_AREA = titleAdresses.get(IMPACT_AREA).getColumn();
-            int COL_IMPACT_STATEMENT_CODE = titleAdresses.get(IMPACT_STATEMENT_CODE).getColumn();
-            int COL_IMPACT_STATEMENT = titleAdresses.get(IMPACT_STATEMENT).getColumn();
-            int COL_OUTCOME_AREA_CODE = titleAdresses.get(OUTCOME_AREA_CODE).getColumn();
-            int COL_OUTCOME_AREA = titleAdresses.get(OUTCOME_AREA).getColumn();
-            int COL_OUTCOME_STATEMENT_CODE = titleAdresses.get(OUTCOME_STATEMENT_CODE).getColumn();
-            int COL_OUTCOME_STATEMENT = titleAdresses.get(OUTCOME_STATEMENT).getColumn();
-            int COL_OUTPUT_STATEMENT_CODE = titleAdresses.get(OUTPUT_STATEMENT_CODE).getColumn();
-            int COL_OUTPUT_STATEMENT = titleAdresses.get(OUTPUT_STATEMENT).getColumn();
-            int COL_PILLAR_CODE = titleAdresses.get(PILLAR_CODE).getColumn();
-            int COL_PILLAR = titleAdresses.get(PILLAR).getColumn();
-            int COL_SITUATION_CODE = titleAdresses.get(SITUATION_CODE).getColumn();
-            int COL_SITUATION = titleAdresses.get(SITUATION).getColumn();
-
-            Iterator<Row> rowIterator = sheet.iterator();
-            // get IMPACT STATEMENTS
-
-            Set<StatementWeb> impactStatementsWebs = new HashSet<>();
-            Set<StatementWeb> outcomeStatementsWebs = new HashSet<>();
-            Set<StatementWeb> outputStatementsWebs = new HashSet<>();
-            while (rowIterator.hasNext()) {
-                Row row = rowIterator.next();
-                if (row.getRowNum() <= rowInitial) {
-                    continue;
-                }
-                // get IMPACT STATEMENTS
-                StatementWeb impactStatementWeb = new StatementWeb();
-                impactStatementWeb.setState(State.ACTIVO);
-                impactStatementWeb.setAreaType(AreaType.IMPACTO);
-                impactStatementWeb.setCode(StringUtils.trimToNull(row.getCell(COL_IMPACT_STATEMENT_CODE).getStringCellValue()));
-                impactStatementWeb.setDescription(StringUtils.trimToNull(row.getCell(COL_IMPACT_STATEMENT).getStringCellValue()));
-                impactStatementWeb.setParentStatement(null);
-                // area
-                String areaCode = StringUtils.trimToNull(row.getCell(COL_IMPACT_AREA_CODE).getStringCellValue());
-                Area impactArea = areaService.getByCode(areaCode);
-                AreaWeb impactAreaWeb = this.modelWebTransformationService.areaToAreaWeb(impactArea);
-                impactStatementWeb.setArea(impactAreaWeb);
-                // PILLAR
-                String pillarCode = StringUtils.trimToNull(row.getCell(COL_PILLAR_CODE).getStringCellValue());
-                Pillar pillar = this.pillarService.getByCode(pillarCode);
-                PillarWeb pillarWeb = this.modelWebTransformationService.pillarToPillarWeb(pillar);
-                impactStatementWeb.setPillar(pillarWeb);
-                // SITUATION
-                String situationCode = StringUtils.trimToNull(row.getCell(COL_SITUATION_CODE).getStringCellValue());
-                Situation situation = this.situationService.getByCode(situationCode);
-                SituationWeb situationWeb = this.modelWebTransformationService.situationToSituationWeb(situation);
-                impactStatementWeb.setSituation(situationWeb);
-
-                impactStatementWeb.setPeriodStatementAsignations(new ArrayList<>());
-                for (PeriodWeb periodWeb : periodWebs) {
-                    PeriodStatementAsignationWeb periodStatementAsignationWeb = new PeriodStatementAsignationWeb();
-                    periodStatementAsignationWeb.setPeriod(periodWeb);
-                    periodStatementAsignationWeb.setState(State.ACTIVO);
-                    periodStatementAsignationWeb.setPopulationCoverage(null);
-                    impactStatementWeb.getPeriodStatementAsignations().add(periodStatementAsignationWeb);
-                }
-
-                impactStatementsWebs.add(impactStatementWeb);
-                // get OUTCOME STATEMENTS
-
-                StatementWeb outcomeStatementWeb = new StatementWeb();
-                outcomeStatementWeb.setState(State.ACTIVO);
-                outcomeStatementWeb.setAreaType(AreaType.RESULTADO);
-                outcomeStatementWeb.setCode(StringUtils.trimToNull(row.getCell(COL_OUTCOME_STATEMENT_CODE).getStringCellValue()));
-                outcomeStatementWeb.setDescription(StringUtils.trimToNull(row.getCell(COL_OUTCOME_STATEMENT).getStringCellValue()));
-                outcomeStatementWeb.setParentStatement(impactStatementsWebs.stream().filter(statementWeb -> {
-                    return statementWeb.getCode().equalsIgnoreCase(StringUtils.trimToNull(row.getCell(COL_IMPACT_STATEMENT_CODE).getStringCellValue()));
-                }).findFirst().get());
-                // area
-                String areaCodeOutcome = StringUtils.trimToNull(row.getCell(COL_OUTCOME_AREA_CODE).getStringCellValue());
-                Area outcomeArea = areaService.getByCode(areaCodeOutcome);
-                AreaWeb outcomeAreaWeb = this.modelWebTransformationService.areaToAreaWeb(outcomeArea);
-                outcomeStatementWeb.setArea(outcomeAreaWeb);
-                // PILLAR
-                outcomeStatementWeb.setPillar(pillarWeb);
-                // SITUATION
-                outcomeStatementWeb.setSituation(situationWeb);
-                outcomeStatementWeb.setPeriodStatementAsignations(new ArrayList<>());
-                for (PeriodWeb periodWeb : periodWebs) {
-                    PeriodStatementAsignationWeb periodStatementAsignationWeb = new PeriodStatementAsignationWeb();
-                    periodStatementAsignationWeb.setPeriod(periodWeb);
-                    periodStatementAsignationWeb.setState(State.ACTIVO);
-                    periodStatementAsignationWeb.setPopulationCoverage(null);
-                    outcomeStatementWeb.getPeriodStatementAsignations().add(periodStatementAsignationWeb);
-                }
-
-                outcomeStatementsWebs.add(outcomeStatementWeb);
-
-                // get OUTPUT STATEMENTS
-
-                StatementWeb outputStatementWeb = new StatementWeb();
-                outputStatementWeb.setState(State.ACTIVO);
-                outputStatementWeb.setAreaType(AreaType.PRODUCTO);
-                outputStatementWeb.setCode(StringUtils.trimToNull(row.getCell(COL_OUTPUT_STATEMENT_CODE).getStringCellValue()));
-                outputStatementWeb.setDescription(StringUtils.trimToNull(row.getCell(COL_OUTPUT_STATEMENT).getStringCellValue()));
-                outputStatementWeb.setParentStatement(outcomeStatementsWebs.stream().filter(statementWeb -> {
-                    return statementWeb.getCode().equalsIgnoreCase(StringUtils.trimToNull(row.getCell(COL_OUTCOME_STATEMENT_CODE).getStringCellValue()));
-                }).findFirst().get());
-                // area
-                String areaCodeOutput = StringUtils.trimToNull(row.getCell(COL_OUTCOME_AREA_CODE).getStringCellValue());
-                Area outputArea = areaService.getByCode(areaCodeOutput);
-                AreaWeb outputAreaWeb = this.modelWebTransformationService.areaToAreaWeb(outputArea);
-                outputStatementWeb.setArea(outputAreaWeb);
-                // PILLAR
-                outputStatementWeb.setPillar(pillarWeb);
-                // SITUATION
-                outputStatementWeb.setSituation(situationWeb);
-                outputStatementWeb.setPeriodStatementAsignations(new ArrayList<>());
-                for (PeriodWeb periodWeb : periodWebs) {
-                    PeriodStatementAsignationWeb periodStatementAsignationWeb = new PeriodStatementAsignationWeb();
-                    periodStatementAsignationWeb.setPeriod(periodWeb);
-                    periodStatementAsignationWeb.setState(State.ACTIVO);
-                    periodStatementAsignationWeb.setPopulationCoverage(null);
-                    outputStatementWeb.getPeriodStatementAsignations().add(periodStatementAsignationWeb);
-                }
-
-                outputStatementsWebs.add(outputStatementWeb);
-
-
-            }
-            LOGGER.info(impactStatementsWebs);
-            LOGGER.info(impactStatementsWebs.size());
-            for (StatementWeb impactStatementsWeb : impactStatementsWebs) {
-                this.statementService.validate(impactStatementsWeb);
-                this.statementService.save(impactStatementsWeb);
-            }
-
-            LOGGER.info(outcomeStatementsWebs);
-            LOGGER.info(outcomeStatementsWebs.size());
-            for (StatementWeb outcomeStatementsWeb : outcomeStatementsWebs) {
-                this.statementService.validate(outcomeStatementsWeb);
-                this.statementService.save(outcomeStatementsWeb);
-            }
-            LOGGER.info(outputStatementsWebs);
-            LOGGER.info(outputStatementsWebs.size());
-
-            for (StatementWeb outputStatementsWeb : outputStatementsWebs) {
-                this.statementService.validate(outputStatementsWeb);
-                this.statementService.save(outputStatementsWeb);
-            }
-
-            file.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new GeneralAppException(ExceptionUtils.getMessage(e), Response.Status.BAD_REQUEST);
-
-
-        }
-
-
-    }
-*/
 
     private Map<String, CellAddress> getTitleAdresses(XSSFSheet sheet) {
         Map<String, CellAddress> titleMaps = new HashMap<>();
@@ -560,9 +389,10 @@ public class StatementImportService {
                             System.out.print(cell.getStringCellValue() + "t");
                             break;
                     }*/
-                if (cell.getStringCellValue() != null) {
+                DataFormatter formatter = new DataFormatter();
+                if (StringUtils.trimToNull(formatter.formatCellValue(cell)) != null) {
                     for (String key : titleMaps.keySet()) {
-                        if (key.equalsIgnoreCase(cell.getStringCellValue())) {
+                        if (key.equalsIgnoreCase(formatter.formatCellValue(cell))) {
                             titleMaps.put(key, cell.getAddress());
                         }
                     }
