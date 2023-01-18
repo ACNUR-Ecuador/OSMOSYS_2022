@@ -31,6 +31,7 @@
                                    style="width:100px; color: white;">Periodo:</label>
                             <div class="p-col">
                                 <p-dropdown id="periodI" [options]="periods" optionLabel="year"
+                                            formControlName="selectedPeriod"
                                             (onChange)="onPeriodChange($event.value)"></p-dropdown>
                             </div>
 
@@ -45,7 +46,8 @@
                  [rowHover]="true" dataKey="id"
                  styleClass="p-datatable-customers"
                  currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                 [showCurrentPageReport]="true">
+                 [showCurrentPageReport]="true"
+                 (sortFunction)="utilsService.customSort($event, cols)" [customSort]="true">
             <ng-template pTemplate="caption">
 
                 <div class="flex card-container overflow-hidden">
@@ -72,9 +74,11 @@
             </ng-template>
             <ng-template pTemplate="header" let-columns>
                 <tr>
-                    <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.field" [ngSwitch]="col.field">
                         {{col.header}}
-                        <p-sortIcon [field]="col.field"></p-sortIcon>
+
+                        <p-sortIcon *ngSwitchDefault [field]="col.field"></p-sortIcon>
+                        <p-sortIcon  *ngSwitchCase="'reportingOffice'" [field]="col.field.acronym">asdsad</p-sortIcon>
                     </th>
                     <th>
 
@@ -110,10 +114,21 @@
                                         [field]="col.field" [showMenu]="false"
                                         [matchMode]="'statementFilter'">
                         </p-columnFilter>
-                        <p-columnFilter *ngSwitchCase="'reportingOffice'"
-                                        type="text"
-                                        [field]="col.field" [showMenu]="false"
-                                        [matchMode]="'officeFilter'">
+                        <p-columnFilter *ngSwitchCase="'reportingOffice'" type="equals" [field]="col.field"
+                                        [showMenu]="false" [matchMode]="'objectIdFilter'"
+                        >
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <p-dropdown [ngModel]="value" [options]="officeOptions"
+                                            (onChange)="filter($event.value)"
+                                            [filter]=true
+                                            placeholder="Selecciona..." [showClear]="true"
+                                            appendTo="body">
+                                    <ng-template let-option pTemplate="item">
+                                            <span
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
+                                    </ng-template>
+                                </p-dropdown>
+                            </ng-template>
                         </p-columnFilter>
                         <p-columnFilter *ngSwitchCase="'lateMonths'"
                                         type="text"

@@ -213,7 +213,8 @@
                     <p-table #dt [value]="generalIndicators" [columns]="selectedColumnsGeneralIndicators"
                              [rowHover]="true" dataKey="id"
                              currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                             [showCurrentPageReport]="true">
+                             [showCurrentPageReport]="true"
+                             (sortFunction)="utilsService.customSort($event, selectedColumnsGeneralIndicators)" [customSort]="true">
                         <ng-template pTemplate="caption">
                             <div class="flex flex-row-reverse flex-wrap " style="width:100%">
                                 <div
@@ -284,7 +285,7 @@
                         </ng-template>
                         <ng-template pTemplate="summary">
                             <div class="p-d-flex p-ai-center p-jc-between">
-                                Total {{generalIndicators ? generalIndicators.length : 0 }} indicadores.
+                                {{dt.filteredValue?dt.filteredValue.length:dt.totalRecords}} de {{generalIndicators?generalIndicators.length:0}}indicadores.
                             </div>
                         </ng-template>
                     </p-table>
@@ -328,6 +329,7 @@
                              styleClass="p-datatable-customers"
                              currentPageReportTemplate=" {first} a {last} de {totalRecords} "
                              [showCurrentPageReport]="true"
+                             (sortFunction)="utilsService.customSort($event, selectedColumnsPerformanceIndicators)" [customSort]="true"
 
 
                     >
@@ -422,7 +424,7 @@
                         </ng-template>
                         <ng-template pTemplate="summary">
                             <div class="p-d-flex p-ai-center p-jc-between">
-                                Total {{performanceIndicators ? performanceIndicators.length : 0 }} indicadores.
+                                {{dt.filteredValue?dt.filteredValue.length:dt.totalRecords}} de {{performanceIndicators?performanceIndicators.length:0}} indicadores.
                             </div>
                         </ng-template>
                     </p-table>

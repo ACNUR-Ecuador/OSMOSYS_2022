@@ -238,18 +238,44 @@ export class DirectImplementationAdministrationComponent implements OnInit {
 
         this.cols = [
             {field: 'id', header: 'id', type: ColumnDataType.numeric},
-            {field: 'reportingOffice', header: 'Oficina', type: ColumnDataType.text, pipeRef: this.officeOrganizationPipe},
-            {field: 'indicator.statement', header: 'Declaración de Producto', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
+            {
+                field: 'reportingOffice',
+                header: 'Oficina',
+                type: ColumnDataType.text,
+                pipeRef: this.officeOrganizationPipe
+            },
+            {
+                field: 'indicator.statement',
+                header: 'Declaración de Producto',
+                type: ColumnDataType.text,
+                pipeRef: this.codeDescriptionPipe
+            },
             {field: 'indicator.statement.productCode', header: 'Código Producto', type: ColumnDataType.text},
             {field: 'indicator', header: 'Indicador', type: ColumnDataType.text, pipeRef: this.indicatorPipe},
-            {field: 'state', header: 'Estado', type: ColumnDataType.text, pipeRef: this.enumValuesToLabelPipe, arg1: EnumsType.State},
+            {
+                field: 'state',
+                header: 'Estado',
+                type: ColumnDataType.text,
+                pipeRef: this.enumValuesToLabelPipe,
+                arg1: EnumsType.State
+            },
             {field: 'totalExecution', header: 'Ejecución Total', type: ColumnDataType.numeric},
             {field: 'late', header: 'Atrasado', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
-            {field: 'lastReportedMonth', header: 'Último mes reportado', type: ColumnDataType.text, pipeRef: this.monthPipe},
+            {
+                field: 'lastReportedMonth',
+                header: 'Último mes reportado',
+                type: ColumnDataType.text,
+                pipeRef: this.monthPipe
+            },
             {field: 'lateMonths', header: 'Meses Retrasado', type: ColumnDataType.text, pipeRef: this.monthListPipe},
             {field: 'supervisorUser', header: 'Supervisor', type: ColumnDataType.text, pipeRef: this.userPipe},
             {field: 'assignedUser', header: 'Responsable', type: ColumnDataType.text, pipeRef: this.userPipe},
-            {field: 'assignedUserBackup', header: 'Responsable alterno', type: ColumnDataType.text, pipeRef: this.userPipe}
+            {
+                field: 'assignedUserBackup',
+                header: 'Responsable alterno',
+                type: ColumnDataType.text,
+                pipeRef: this.userPipe
+            }
         ];
 
         const hiddenColumns: string[] = ['id', 'indicator.statement.productCode', 'lateMonths', 'assignedUserBackup'];
@@ -415,6 +441,9 @@ export class DirectImplementationAdministrationComponent implements OnInit {
         this.filterService.register('monthListFilter', (value, filter): boolean => {
             return this.filterUtilsService.generalListFilter(value, ['month', 'year'], filter);
         });
+        this.filterService.register('objectIdFilter', (value, filter): boolean => {
+            return this.filterUtilsService.objectFilterId(value, filter);
+        });
     }
 
     updateAssigment(indicatorExecution: IndicatorExecution) {
@@ -489,7 +518,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             file
         };
 
-        this.indicatorExecutionService.importDirectImplementationIndicators(importFile,period.id,office.id).subscribe({
+        this.indicatorExecutionService.importDirectImplementationIndicators(importFile, period.id, office.id).subscribe({
             next: () => {
                 this.messageService.add({
                     severity: 'success',
@@ -513,14 +542,14 @@ export class DirectImplementationAdministrationComponent implements OnInit {
     downloadImportTemplate() {
         const period: Period = this.importForm.get('period').value;
         const office: Period = this.importForm.get('office').value;
-        if(!period || !period.id){
+        if (!period || !period.id) {
             this.messageService.add({
                 severity: 'error',
                 summary: 'Selecciona un periodo',
                 life: 3000
             });
         }
-        this.indicatorExecutionService.getDirectImplementationTemplate(period.id,office.id).subscribe({
+        this.indicatorExecutionService.getDirectImplementationTemplate(period.id, office.id).subscribe({
             next: (response: HttpResponse<Blob>) => {
                 this.utilsService.downloadFileResponse(response);
             }, error: err => {
@@ -553,4 +582,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
         this.showDialogImport = false;
         this.importForm.reset();
     }
+
+
+
 }

@@ -25,6 +25,7 @@ import {
 } from '../shared/model/OsmosysModel';
 import {HttpResponse} from '@angular/common/http';
 import {TableColumnProperties} from 'exceljs';
+import {SortEvent} from "primeng/api";
 
 @Injectable({
     providedIn: 'root'
@@ -1014,6 +1015,35 @@ export class UtilsService {
             });
         });
         return quarterMonthResumes;
+    }
+    customSort(event: SortEvent, cols: ColumnTable[]) {
+        event.data.sort((data1, data2) => {
+            const col = cols.filter(value => {
+                return value.field === event.field;
+            }).pop();
+            let value1 = this.resolveFieldData(data1, col.field);
+            let value2 = this.resolveFieldData(data2, col.field);
+            // noinspection JSUnusedAssignment
+            let result = null;
+
+            if (col.pipeRef) {
+                value1 = col.pipeRef.transform(value1, col.arg1, col.arg2, col.arg3);
+                value2 = col.pipeRef.transform(value2, col.arg1, col.arg2, col.arg3);
+            }
+
+            if (value1 == null && value2 != null)
+                result = -1;
+            else if (value1 != null && value2 == null)
+                result = 1;
+            else if (value1 == null && value2 == null)
+                result = 0;
+            else if (typeof value1 === 'string' && typeof value2 === 'string')
+                result = value1.localeCompare(value2);
+            else
+                result = (value1 < value2) ? -1 : (value1 > value2) ? 1 : 0;
+
+            return (event.order * result);
+        });
     }
 }
 

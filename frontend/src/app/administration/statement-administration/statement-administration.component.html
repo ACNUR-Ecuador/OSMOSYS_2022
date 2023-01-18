@@ -25,7 +25,9 @@
             <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true"
                      [rowHover]="true" dataKey="id"
                      currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                     [showCurrentPageReport]="true">
+                     [showCurrentPageReport]="true"
+                     (sortFunction)="utilsService.customSort($event, cols)" [customSort]="true"
+            >
                 <ng-template pTemplate="caption">
                     <div class="flex card-container overflow-hidden">
                         <div
@@ -164,7 +166,7 @@
                 </ng-template>
                 <ng-template pTemplate="summary">
                     <div class="p-d-flex p-ai-center p-jc-between">
-                        Total {{items ? items.length : 0 }} declaraciones.
+                        {{dt.filteredValue?dt.filteredValue.length:dt.totalRecords}} de {{items?items.length:0}} declaraciones.
                     </div>
                 </ng-template>
             </p-table>

@@ -27,6 +27,7 @@
                             <label for="periodI2" class="col-fixed" style="width:100px; color: white;">Periodo:</label>
                             <div class="p-col">
                                 <p-dropdown id="periodI2" [options]="periods" optionLabel="year"
+                                            formControlName="selectedPeriod"
                                             (onChange)="onPeriodChange($event.value)"
                                             appendTo="body"></p-dropdown>
                             </div>
@@ -46,7 +47,8 @@
                      [rowHover]="true" dataKey="id"
                      styleClass="p-datatable-customers"
                      currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                     [showCurrentPageReport]="true">
+                     [showCurrentPageReport]="true"
+                     (sortFunction)="utilsService.customSort($event, cols)" [customSort]="true">
                 <ng-template pTemplate="caption">
                     <div class="flex card-container overflow-hidden">
                         <div
@@ -133,7 +135,7 @@
                 </ng-template>
                 <ng-template pTemplate="summary">
                     <div class="p-d-flex p-ai-center p-jc-between">
-                        Total {{items ? items.length : 0 }} proyectos.
+                        {{dt.filteredValue?dt.filteredValue.length:dt.totalRecords}} de {{items?items.length:0}} proyectos.
                     </div>
                 </ng-template>
             </p-table>

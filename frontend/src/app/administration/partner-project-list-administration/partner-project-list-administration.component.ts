@@ -63,12 +63,12 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
                 });
                 const currentYear = (new Date()).getFullYear();
                 if (this.periods.some(e => e.year === currentYear)) {
-                    this.periods.filter(p => p.year === currentYear).forEach(value1 => {
-                        this.periodForm.get('selectedPeriod').patchValue(value1);
-                        if (value1) {
-                            this.loadProjects(value1.id);
-                        }
-                    });
+                    const periodCurrent = this.periods.filter(p => p.year === currentYear).pop();
+                    this.periodForm.get('selectedPeriod').patchValue(periodCurrent);
+                    if (periodCurrent) {
+                        this.loadProjects(periodCurrent.id);
+                    }
+
                 } else {
                     const smallestYear = Math.min(...this.periods.map(value1 => value1.year));
                     const smallestPeriod = this.periods.filter(value1 => {
@@ -216,7 +216,7 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
 
     downloadImportTemplate() {
         const period: Period = this.importForm.get('period').value;
-        if(!period || !period.id){
+        if (!period || !period.id) {
             this.messageService.add({
                 severity: 'error',
                 summary: 'Selecciona un periodo',
