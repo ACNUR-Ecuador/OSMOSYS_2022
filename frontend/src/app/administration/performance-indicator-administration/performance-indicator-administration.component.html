@@ -2,7 +2,7 @@
     <div class="col-12">
         <p-toast></p-toast>
 
-        <div class="card  px-6 py-6">
+        <div class="card  px-3 py-6">
             <h3 class="page-title">Administración de Indicadores de Producto</h3>
             <p-toolbar styleClass="mb-4">
 
@@ -71,7 +71,8 @@
                                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                                     <p-dropdown [ngModel]="value" [options]="states"
                                                 (onChange)="filter($event.value)"
-                                                placeholder="Selecciona..." [showClear]="true">
+                                                placeholder="Selecciona..." [showClear]="true"
+                                                appendTo="body">
                                         <ng-template let-option pTemplate="item">
                                             <span
                                                 [class]="'customer-badge status-' + option">{{option.label}}</span>
@@ -87,7 +88,9 @@
                                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                                     <p-dropdown [ngModel]="value" [options]="periodsSelectItems"
                                                 (onChange)="filter($event.value)"
-                                                placeholder="Selecciona..." [showClear]="true">
+                                                placeholder="Selecciona..." [showClear]="true"
+                                                appendTo="body"
+                                    >
                                         <ng-template let-option pTemplate="item">
                                             <span
                                                 [class]="'customer-badge status-' + option">{{option.label}}</span>
@@ -101,6 +104,9 @@
                             <p-columnFilter *ngSwitchCase="'dissagregationsAssignationToIndicator'" type="text"
                                             [field]="col.field" [showMenu]="false"
                                             [matchMode]="'dissagregationsAssignationToIndicatorFilter'"></p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'statement'" type="text"
+                                            [field]="col.field" [showMenu]="false"
+                                            [matchMode]="'statementFilter'"></p-columnFilter>
                             <p-columnFilter *ngSwitchCase="'markers'" type="text"
                                             [field]="col.field" [showMenu]="false"
                                             [matchMode]="'markersFilter'"></p-columnFilter>

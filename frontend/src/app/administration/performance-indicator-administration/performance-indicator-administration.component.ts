@@ -614,6 +614,9 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.filterService.register('dissagregationsAssignationToIndicatorFilter', (value, filter): boolean => {
             return this.filterUtilsService.dissagregationsAssignationToIndicatorFilter(value, filter);
         });
+        this.filterService.register('statementFilter', (value, filter): boolean => {
+            return this.filterUtilsService.statementFilter(value, filter);
+        });
         this.filterService.register('markersFilter', (value, filter): boolean => {
             return this.filterUtilsService.markersFilter(value, filter);
         });
@@ -639,7 +642,8 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         }).sort((a, b) => a.code.localeCompare(b.code))
             .map(value => {
                 return {
-                    labelItem: value.code + '-' + value.description,
+                    labelItem: value.code + '-' + value.description +
+                        "("+(value.periodStatementAsignations.map(value1 => {return value1.period.year}).join("-"))+")",
                     valueItem: value
                 };
             });
