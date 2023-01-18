@@ -206,6 +206,7 @@
                                 placeholder="Selecciona..."
                                 [filter]="true"
                                 appendTo="body"
+                                (onChange)="onOrganizacionChange($event)"
                     >
                     </p-dropdown>
 
@@ -227,14 +228,20 @@
                 </div>
                 <div class="field">
                     <label>Permisos</label>
-                    <div class="field-checkbox col-12 md-2"
-                         *ngFor="let category of roles">
-                        <!--suppress AngularInvalidExpressionResultType -->
-                        <p-checkbox name="group1" [inputId]="category.value"
-                                    [value]="category.value"
-                                    [formControl]='$any(formItem).controls["roleTypes"]'>
-                        </p-checkbox>
-                        <label [for]="category.value">{{category.label}}</label>
+                    <div class="grid formgrid">
+                        <div class="col-12 md:col-4"
+                             *ngFor="let category of roles">
+                            <!--suppress AngularInvalidExpressionResultType -->
+                            <div class="field-checkbox">
+                                <p-checkbox name="group1" [inputId]="category.value"
+                                            [value]="category.value"
+                                            [formControl]='$any(formItem).controls["roleTypes"]'
+                                            [disabled]="category.value==='PUNTO_FOCAL'"
+                                >
+                                </p-checkbox>
+                                <label [for]="category.value">{{category.label}}</label>
+                            </div>
+                        </div>
                     </div>
 
                     <small class="p-error" *ngIf="utilsService.showErrorForm('roleTypes',formItem)">

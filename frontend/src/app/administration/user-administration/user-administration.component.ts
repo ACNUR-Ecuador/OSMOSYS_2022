@@ -12,6 +12,7 @@ import {OfficeOrganizationPipe} from '../../shared/pipes/office-organization.pip
 import {RolesListPipe} from '../../shared/pipes/roles-list.pipe';
 import {Table} from 'primeng/table';
 import {OfficeService} from '../../services/office.service';
+import {Organization} from "../../shared/model/OsmosysModel";
 
 @Component({
     selector: 'app-user-administration',
@@ -79,7 +80,12 @@ export class UserAdministrationComponent implements OnInit {
             {field: 'name', header: 'Nombre', type: ColumnDataType.text},
             {field: 'username', header: 'Nombre de usuario', type: ColumnDataType.text},
             {field: 'email', header: 'Correo', type: ColumnDataType.text},
-            {field: 'organization', header: 'Organización', type: ColumnDataType.text, pipeRef: this.officeOrganizationPipe},
+            {
+                field: 'organization',
+                header: 'Organización',
+                type: ColumnDataType.text,
+                pipeRef: this.officeOrganizationPipe
+            },
             {field: 'office', header: 'Oficina', type: ColumnDataType.text, pipeRef: this.officeOrganizationPipe},
             {field: 'roles', header: 'Permisos', type: ColumnDataType.text, pipeRef: this.rolesListPipe},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
@@ -114,7 +120,12 @@ export class UserAdministrationComponent implements OnInit {
         });
 
         this.enumsService.getByType(EnumsType.RoleType).subscribe({
-            next: value => this.roles = value,
+            next: value => {
+                this.roles = value;
+                /*.filter(value1 => {
+                    return value1.label !== 'Punto Focal'
+                })*/
+            },
             error: error => this.messageService.add({
                 severity: 'error',
                 summary: 'Error al cargar los estados',
@@ -323,8 +334,22 @@ export class UserAdministrationComponent implements OnInit {
 
     onEmailChange() {
         if (!this.formItem.get('id').value && this.formItem.get('email').valid) {
-            const username = this.formItem.get('email').value.split('@', 1)?this.formItem.get('email').value.split('@', 1)[0]:null;
+            const username = this.formItem.get('email').value.split('@', 1) ? this.formItem.get('email').value.split('@', 1)[0] : null;
             this.formItem.get('username').patchValue(username);
+        }
+    }
+
+    onOrganizacionChange($event: any) {
+        const org: Organization = $event.value;
+        if (org) {
+            if (org.id === 1) {
+                this.formItem.get('office').setValidators([Validators.required]);
+                this.formItem.get('office').updateValueAndValidity();
+            } else {
+                this.formItem.get('office').patchValue(null);
+                this.formItem.get('office').clearValidators();
+                this.formItem.get('office').updateValueAndValidity();
+            }
         }
     }
 }
