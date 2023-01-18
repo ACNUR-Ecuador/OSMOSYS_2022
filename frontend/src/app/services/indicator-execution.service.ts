@@ -127,12 +127,23 @@ export class IndicatorExecutionService {
         return this.http.get<IndicatorExecution[]>(`${mainServiceUrl}/getDirectImplementationIndicatorByPeriodIdResponsableIdSupervisorIdAndOfficeId`, {params});
     }
 
-    public importProjectIndicators(importFile: ImportFile) {
-        return this.http.post(`${mainServiceUrl}/importProjectIndicators`, importFile);
+    public importProjectIndicators(importFile: ImportFile, projectId: number) {
+        return this.http.post(`${mainServiceUrl}/importProjectIndicators/${projectId}`, importFile);
     }
 
     public getProjectIndicatorsImportTemplate(periodId:number) {
         return this.http.get(`${mainServiceUrl}/getProjectIndicatorsImportTemplate/${periodId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+
+    public importDirectImplementationIndicators(importFile: ImportFile, periodId: number, officeId:number) {
+        return this.http.post(`${mainServiceUrl}/importDirectImplementationIndicators/${periodId}/${officeId}`, importFile);
+    }
+
+    public getDirectImplementationTemplate(periodId: number, officeId:number) {
+        return this.http.get(`${mainServiceUrl}/getDirectImplementationIndicatorsImportTemplate/${periodId}/${officeId}`, {
             observe: 'response',
             responseType: 'blob' as 'json'
         });

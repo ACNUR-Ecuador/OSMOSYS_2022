@@ -1222,7 +1222,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             file
         };
 
-        this.projectService.importCatalog(importFile).subscribe({
+        this.indicatorExecutionService.importProjectIndicators(importFile, this.idProjectParam).subscribe({
             next: () => {
                 this.messageService.add({
                     severity: 'success',

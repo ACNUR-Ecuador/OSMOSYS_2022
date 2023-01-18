@@ -1,6 +1,12 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Indicator, IndicatorExecution, IndicatorExecutionAssigment, Period} from '../../shared/model/OsmosysModel';
+import {
+    ImportFile,
+    Indicator,
+    IndicatorExecution,
+    IndicatorExecutionAssigment,
+    Period
+} from '../../shared/model/OsmosysModel';
 import {FilterService, MessageService, SelectItem} from 'primeng/api';
 import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
 import {EnumValuesToLabelPipe} from '../../shared/pipes/enum-values-to-label.pipe';
@@ -20,6 +26,7 @@ import {OfficeOrganizationPipe} from '../../shared/pipes/office-organization.pip
 import {UserPipe} from '../../shared/pipes/user.pipe';
 import {MonthPipe} from '../../shared/pipes/month.pipe';
 import {MonthListPipe} from '../../shared/pipes/month-list.pipe';
+import {HttpResponse} from "@angular/common/http";
 
 
 @Component({
@@ -40,6 +47,10 @@ export class DirectImplementationAdministrationComponent implements OnInit {
     public officeOptions: SelectItem[];
     public indicatorOptions: SelectItem[];
     public userOptions: SelectItem[];
+
+    showDialogImport = false;
+    importForm: FormGroup;
+    periodsItems: SelectItem[];
 
     constructor(
         private fb: FormBuilder,
@@ -79,6 +90,13 @@ export class DirectImplementationAdministrationComponent implements OnInit {
                     if (this.periods.length < 1) {
                         this.messageService.add({severity: 'error', summary: 'No se encontraron periodos', detail: ''});
                     } else {
+                        this.periodsItems = value.map(value1 => {
+                            const selectItem: SelectItem = {
+                                label: value1.year.toString(),
+                                value: value1
+                            };
+                            return selectItem;
+                        });
                         const currentYear = (new Date()).getFullYear();
                         if (this.periods.some(e => e.year === currentYear)) {
                             this.periods.filter(p => p.year === currentYear).forEach(value1 => {
@@ -236,6 +254,12 @@ export class DirectImplementationAdministrationComponent implements OnInit {
 
         const hiddenColumns: string[] = ['id', 'indicator.statement.productCode', 'lateMonths', 'assignedUserBackup'];
         this._selectedColumns = this.cols.filter(value => !hiddenColumns.includes(value.field));
+        this.importForm = this.fb.group({
+            period: new FormControl('', [Validators.required]),
+            office: new FormControl('', [Validators.required]),
+            fileName: new FormControl('', [Validators.required]),
+            file: new FormControl(''),
+        });
     }
 
     createItem() {
@@ -444,5 +468,89 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             this.itemForm.get('assignedBudget').disable();
             this.itemForm.get('assignedBudget').patchValue(null);
         }
+    }
+
+    initiateCatalogImport() {
+        this.importForm.reset();
+        this.showDialogImport = true;
+
+    }
+
+    importCatalog() {
+        const {
+            period,
+            office,
+            fileName,
+            file
+        } = this.importForm.value;
+        const importFile: ImportFile = {
+            period,
+            fileName,
+            file
+        };
+
+        this.indicatorExecutionService.importDirectImplementationIndicators(importFile,period.id,office.id).subscribe({
+            next: () => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Catálogo cargado correctamente',
+                    life: 3000
+                });
+                this.loadPeriods();
+                this.showDialogImport = false;
+            }, error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al descargar la plantilla',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        })
+
+    }
+
+    downloadImportTemplate() {
+        const period: Period = this.importForm.get('period').value;
+        const office: Period = this.importForm.get('office').value;
+        if(!period || !period.id){
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Selecciona un periodo',
+                life: 3000
+            });
+        }
+        this.indicatorExecutionService.getDirectImplementationTemplate(period.id,office.id).subscribe({
+            next: (response: HttpResponse<Blob>) => {
+                this.utilsService.downloadFileResponse(response);
+            }, error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al descargar la plantilla',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+    }
+
+    fileUploader(event: any) {
+        const file = event.files[0];
+        this.importForm.get('fileName').setValue(file.name);
+        this.importForm.get('fileName').markAsTouched();
+        // event.
+        const fileReader = new FileReader();
+
+        fileReader.readAsDataURL(file);
+        // tslint:disable-next-line:only-arrow-functions
+        fileReader.onload = () => {
+            this.importForm.get('file').setValue(fileReader.result);
+            this.importForm.get('file').markAsTouched();
+        };
+    }
+
+    cancelImportDialog() {
+        this.showDialogImport = false;
+        this.importForm.reset();
     }
 }

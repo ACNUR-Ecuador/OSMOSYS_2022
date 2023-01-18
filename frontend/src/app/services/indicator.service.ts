@@ -42,6 +42,6 @@ export class IndicatorService {
     }
 
     public importCatalog(file: ImportFile) {
-        return this.http.post(`${mainServiceUrl}/importStatementsCatalog`, file);
+        return this.http.post(`${mainServiceUrl}/importIndicatorsCatalog`, file);
     }
 }
