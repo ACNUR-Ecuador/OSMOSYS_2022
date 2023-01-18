@@ -6,6 +6,7 @@ import com.sagatechs.generics.security.annotations.Secured;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
+import org.unhcr.osmosys.services.dataImport.DirectImplementationIndicatorsImportService;
 import org.unhcr.osmosys.services.dataImport.ProjectIndicatorsImportService;
 import org.unhcr.osmosys.webServices.model.*;
 
@@ -27,6 +28,9 @@ public class IndicatorExecutionEndpoint {
 
     @Inject
     ProjectIndicatorsImportService projectIndicatorsImportService;
+
+    @Inject
+    DirectImplementationIndicatorsImportService directImplementationIndicatorsImportService;
 
     @Path("/generalAdmin/{projectId}")
     @GET
@@ -241,12 +245,46 @@ public class IndicatorExecutionEndpoint {
     @Path("/importProjectIndicators/{projectId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response importStatementsCatalog(@PathParam("projectId") Long projectId, ImportFileWeb importFileWeb) throws GeneralAppException {
+    public Response importProjectIndicators(@PathParam("projectId") Long projectId, ImportFileWeb importFileWeb) throws GeneralAppException {
         LOGGER.debug(importFileWeb);
         this.projectIndicatorsImportService.projectIndicatorsImport(projectId, importFileWeb);
         return Response.ok().build();
     }
 
+    @Path("/getDirectImplementationIndicatorsImportTemplate/{periodId}/{officeId}")
+    @GET
+    @Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getDirectImplementationIndicatorsImportTemplate(
+            @Context SecurityContext securityContext,
+            @PathParam("periodId") Long periodId,
+            @PathParam("officeId") Long officeId
+    ) throws GeneralAppException {
+        Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getIndicatorsImportTemplate:" + principal.getName());
+        String fileName = null;
+        try {
+            fileName = "importador_indicadores_implementacion_directa_plantilla.xlsm";
+            ByteArrayOutputStream template = this.directImplementationIndicatorsImportService.generateTemplate(periodId, officeId);
+            return Response.ok(template.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + fileName + "\"").build();
+        } catch (Exception e) {
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
+            throw new GeneralAppException("Error al obtener el template " + fileName, Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @POST
+    @Path("/importDirectImplementationIndicators/{periodId}/{officeId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response importDirectImplementationIndicators(
+            @PathParam("periodId") Long periodId,
+            @PathParam("officeId") Long officeId,
+            ImportFileWeb importFileWeb) throws GeneralAppException {
+        LOGGER.debug(importFileWeb);
+        this.directImplementationIndicatorsImportService.directImplementationIndicatorsImport(periodId, officeId,importFileWeb);
+        return Response.ok().build();
+    }
 
 
 }

@@ -1,6 +1,7 @@
 package com.sagatechs.generics.security.dao;
 
 
+import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.RoleType;
@@ -8,6 +9,7 @@ import com.sagatechs.generics.security.model.User;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 import java.util.List;
 
@@ -178,6 +180,41 @@ public class UserDao extends GenericDaoJpa<User, Long> {
         Query query = getEntityManager().createQuery(jpql, User.class);
         query.setParameter("state", state);
         return query.getResultList();
+    }
+
+    public List<User> getUNHCRUsersByOfficeIdAndState(State state, Long officeId) {
+        String jpql = "SELECT DISTINCT o FROM User o " +
+                " left outer join fetch o.roleAssigments ra " +
+                " left outer join fetch ra.role ro " +
+                " left outer join fetch o.office off " +
+                " left outer join fetch o.organization " +
+                " WHERE off.id=:officeId " +
+                " and ( o.organization is null or lower(o.organization.acronym)='unhcr'  or lower(o.organization.acronym)='acnur' ) " +
+                " and o.state=:state ";
+        Query query = getEntityManager().createQuery(jpql, User.class);
+        query.setParameter("state", state);
+        query.setParameter("officeId", officeId);
+        return query.getResultList();
+    }
+
+    public User getUNHCRUsersByName(String name) throws GeneralAppException {
+        String jpql = "SELECT DISTINCT o FROM User o " +
+                " left outer join fetch o.roleAssigments ra " +
+                " left outer join fetch ra.role ro " +
+                " left outer join fetch o.office off " +
+                " left outer join fetch o.organization " +
+                " WHERE  ( o.organization is null or lower(o.organization.acronym)='unhcr'  or lower(o.organization.acronym)='acnur' ) " +
+                " and  lower(o.name)=lower(:name) "
+                ;
+        Query query = getEntityManager().createQuery(jpql, User.class);
+        query.setParameter("name", name);
+        try {
+            return (User) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }catch (NonUniqueResultException e) {
+            throw new GeneralAppException("Se encontrás de un usuario con este nombre:" +name);
+        }
     }
 
     public List<User> getAllUsers() {

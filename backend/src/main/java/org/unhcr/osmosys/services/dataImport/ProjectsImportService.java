@@ -134,6 +134,9 @@ public class ProjectsImportService {
                 }
                 // find by year and code
                 String code = StringUtils.trimToNull(row.getCell(COL_CODE).getStringCellValue());
+                if(code==null){
+                    break;
+                }
 
                 String title = StringUtils.trimToNull(row.getCell(COL_TITLE).getStringCellValue());
                 Project project;
@@ -278,9 +281,7 @@ public class ProjectsImportService {
         titleMaps.put(LOCATIONS, null);
 
         //Iterate through each rows one by one
-        Iterator<Row> rowIterator = sheet.iterator();
-        while (rowIterator.hasNext()) {
-            Row row = rowIterator.next();
+        for (Row row : sheet) {
             Iterator<Cell> cellIterator = row.cellIterator();
 
 
@@ -369,9 +370,7 @@ public class ProjectsImportService {
         int firstCol = tableOptions.getArea().getFirstCell().getCol();
 
         List<CantonWeb> cantons = this.cantonService.getByState(State.ACTIVO);
-        List<String> values = cantons.stream().map(cantonWeb -> {
-                    return cantonWeb.getProvincia().getDescription() + "-" + cantonWeb.getDescription();
-                })
+        List<String> values = cantons.stream().map(cantonWeb -> cantonWeb.getProvincia().getDescription() + "-" + cantonWeb.getDescription())
                 .sorted().collect(Collectors.toList());
 
 

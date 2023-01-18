@@ -292,9 +292,7 @@ public class IndicatorService {
                 indicator.getDissagregationsAssignationToIndicator()
                         .stream()
                         .filter(
-                                dissagregationAssignationToIndicator -> {
-                                    return dissagregationTypes.contains(dissagregationAssignationToIndicator.getDissagregationType()) && dissagregationAssignationToIndicator.getPeriod().getId() == period.getId();
-                                }
+                                dissagregationAssignationToIndicator -> dissagregationTypes.contains(dissagregationAssignationToIndicator.getDissagregationType()) && dissagregationAssignationToIndicator.getPeriod().getId() == period.getId()
                         )
                         .collect(Collectors.toList());
         this.saveOrUpdate(indicator);
@@ -316,6 +314,7 @@ public class IndicatorService {
     }
 
     public Indicator getByCodeAndDescription(String code, String description) throws GeneralAppException {
+        LOGGER.info(code+"-"+description);
         return this.indicatorDao.getByCodeAndDescription(code, description);
     }
 }

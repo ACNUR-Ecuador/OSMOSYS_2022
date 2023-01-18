@@ -70,6 +70,7 @@ public class IndicatorsImportService {
         InputStream targetStream = new ByteArrayInputStream(fileContent);
         this.indicatorsImport(importFileWeb.getPeriod(), targetStream);
     }
+
     public void indicatorsImport(PeriodWeb periodWeb
             , InputStream file
     ) throws GeneralAppException {
@@ -118,6 +119,15 @@ public class IndicatorsImportService {
                 // find by year and code
                 String indicatorCode = StringUtils.trimToNull(row.getCell(COL_INDICATOR_CODE).getStringCellValue());
                 String indicatorDescription = StringUtils.trimToNull(row.getCell(COL_INDICATOR).getStringCellValue());
+
+
+                if (indicatorCode == null && indicatorDescription == null) {
+                    break;
+                } else if (indicatorCode == null || indicatorDescription == null)  {
+                    throw new GeneralAppException("Datos incorrectos del indicador  " + indicatorCode + "-" + indicatorDescription + " Para el periodo " + period.getYear() + "." +
+                            " Por favor modifíquelo manualmente.", Response.Status.BAD_REQUEST);
+                }
+
                 Indicator indicator;
                 indicator = this.indicatorService.getByPeriodAndCode(period.getId(), indicatorCode);
 
@@ -207,12 +217,14 @@ public class IndicatorsImportService {
                     customDissagregationsTotalList = new String[0];
                 }
                 for (String customDissagregationString : customDissagregationsTotalList) {
-                    String customDissagregationStringTmp = StringUtils.upperCase(StringUtils.trimToNull(unitString));
+                    String customDissagregationStringTmp = StringUtils.upperCase(StringUtils.trimToNull(customDissagregationString));
                     try {
                         if (StringUtils.isNotEmpty(customDissagregationStringTmp)) {
                             CustomDissagregation customDissagregation = this.customDissagregationService.getByName(customDissagregationStringTmp);
                             if (customDissagregation != null) {
                                 customDissagregationTypes.add(customDissagregation);
+                            }else {
+                                throw new GeneralAppException("La segregación " + customDissagregationStringTmp + " no existe. Indicador " + indicator.getCode() + ".", Response.Status.BAD_REQUEST);
                             }
 
                         }

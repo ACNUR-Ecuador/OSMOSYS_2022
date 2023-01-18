@@ -441,6 +441,14 @@ public class UserService implements Serializable {
         return this.modelWebTransformationService.usersToUsersWebSimple(this.userDao.getUNHCRUsersByState(state), true, true);
     }
 
+    public List<User> getUNHCRUsersByOfficeIdAndState(State state, Long officeId) {
+        return this.userDao.getUNHCRUsersByOfficeIdAndState(state, officeId);
+    }
+
+    public User getUNHCRUsersByName(String name) throws GeneralAppException {
+        return this.userDao.getUNHCRUsersByName(name);
+    }
+
     public User getById(Long id) {
         return this.userDao.find(id);
     }
