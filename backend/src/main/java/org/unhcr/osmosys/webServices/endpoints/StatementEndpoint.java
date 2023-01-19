@@ -74,9 +74,12 @@ public class StatementEndpoint {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-        final String filename = "statementImportTemplate.xlsx";
+        final String filename = "importador_declaraciones_plantilla.xlsx";
         InputStream template = classLoader.getResourceAsStream("templates" + File.separator + filename);
 
+        if(template==null){
+            throw new GeneralAppException("Error al obtener el template " + filename, Response.Status.INTERNAL_SERVER_ERROR);
+        }
 
         try {
             return Response.ok(IOUtils.toByteArray(template)).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();

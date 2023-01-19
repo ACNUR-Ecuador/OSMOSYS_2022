@@ -78,7 +78,7 @@ public class IndicatorEndpoint {
         LOGGER.info("getIndicatorsImportTemplate:" + principal.getName());
         String fileName = null;
         try {
-            fileName = "implortador_indicadores_plantilla.xlsm";
+            fileName = "importador_indicadores_plantilla.xlsm";
             ByteArrayOutputStream template = this.indicatorsImportService.generateTemplate(periodId);
             return Response.ok(template.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + fileName + "\"").build();
         } catch (Exception e) {

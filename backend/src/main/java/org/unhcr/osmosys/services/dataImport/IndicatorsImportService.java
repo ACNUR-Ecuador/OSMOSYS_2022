@@ -159,6 +159,8 @@ public class IndicatorsImportService {
                 indicator.setBlockAfterUpdate(false);
                 indicator.setMonitored(false);
                 indicator.setTotalIndicatorCalculationType(TotalIndicatorCalculationType.SUMA);
+                indicator.setQualitativeInstructions("Proporcione un resumen de las actividades desarrolladas para el cumplimiento de las metas de este indicador. Adicionalmente, en este espacio se deben registrar las razones por las cuales no se reporta avance del indicador o se supera el valor inicial de la meta. La información que se incluye en este campo podrá ser considerada para la elaboración de los reportes narrativos.");
+
 
                 // freceuncy
                 String frecuencyString = StringUtils.trimToNull(row.getCell(COL_FRECUENCY).getStringCellValue());

@@ -97,7 +97,11 @@ public class ProjectIndicatorsImportService {
             XSSFWorkbook workbook = new XSSFWorkbook(file);
 
             //Get first/desired sheet from the workbook
-            XSSFSheet sheet = workbook.getSheet("indicators");
+            XSSFSheet sheet = workbook.getSheet("indicadores_proyecto");
+            if(sheet==null){
+                throw new GeneralAppException("No se encontró la hoja indicadores_proyecto en el archivo."
+                        , Response.Status.BAD_REQUEST);
+            }
 
             Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheet);
             CellAddress CODE_CELL = titleAdresses.get(PRODUCT_STATEMENT);
@@ -238,11 +242,7 @@ public class ProjectIndicatorsImportService {
                 for (Quarter quarter : ie.getQuarters()) {
                     Optional<QuarterWeb> targetTmpOpt = targets.stream().filter(quarterWeb -> quarterWeb.getQuarter().equals(quarter.getQuarter())).findFirst();
                     QuarterWeb q = this.modelWebTransformationService.quarterToQuarterWeb(quarter);
-                    if (targetTmpOpt.isPresent()) {
-
-
-                        q.setTarget(targetTmpOpt.get().getTarget());
-                    }
+                    targetTmpOpt.ifPresent(quarterWeb -> q.setTarget(quarterWeb.getTarget()));
                     targetUpdateDTOWeb.getQuarters().add(q);
                 }
                 targetUpdateDTOWeb.setIndicatorType(ie.getIndicatorType());
@@ -293,9 +293,7 @@ public class ProjectIndicatorsImportService {
         titleMaps.put(CANTONS, null);
 
         //Iterate through each rows one by one
-        Iterator<Row> rowIterator = sheet.iterator();
-        while (rowIterator.hasNext()) {
-            Row row = rowIterator.next();
+        for (Row row : sheet) {
             Iterator<Cell> cellIterator = row.cellIterator();
 
 
@@ -315,7 +313,7 @@ public class ProjectIndicatorsImportService {
             }
 
             if (titleMaps.values().stream().anyMatch(Objects::isNull) && titleMaps.values().stream().anyMatch(Objects::nonNull)) {
-                if (titleMaps.values().stream().filter(cellAddress -> cellAddress != null).count() < 2) {
+                if (titleMaps.values().stream().filter(Objects::nonNull).count() < 2) {
                     continue;
                 }
                 List<String> missedColumns = new ArrayList<>();
@@ -338,13 +336,11 @@ public class ProjectIndicatorsImportService {
         return titleMaps;
     }
 
-    private Integer getGeneralTarget(XSSFSheet sheet) throws GeneralAppException {
+    private Integer getGeneralTarget(XSSFSheet sheet) {
         String label = "General - No. total de beneficiarios";
         CellAddress lableAddress = null;
         //Iterate through each rows one by one
-        Iterator<Row> rowIterator = sheet.iterator();
-        while (rowIterator.hasNext()) {
-            Row row = rowIterator.next();
+        for (Row row : sheet) {
             Iterator<Cell> cellIterator = row.cellIterator();
 
 
@@ -520,9 +516,7 @@ public class ProjectIndicatorsImportService {
         int firstCol = tableOptions.getArea().getFirstCell().getCol();
 
         List<CantonWeb> cantons = this.cantonService.getByState(State.ACTIVO);
-        List<String> values = cantons.stream().map(cantonWeb -> {
-                    return cantonWeb.getProvincia().getDescription() + "-" + cantonWeb.getDescription();
-                })
+        List<String> values = cantons.stream().map(cantonWeb -> cantonWeb.getProvincia().getDescription() + "-" + cantonWeb.getDescription())
                 .sorted().collect(Collectors.toList());
 
 
