@@ -130,4 +130,13 @@ public class MonthWeb implements Serializable {
     public void setLate(TimeStateEnum late) {
         this.late = late;
     }
+
+    @Override
+    public String toString() {
+        return "MonthWeb{" +
+                "month=" + month +
+                ", year=" + year +
+                ", late=" + late +
+                '}';
+    }
 }

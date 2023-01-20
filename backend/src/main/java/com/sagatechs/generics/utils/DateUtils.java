@@ -155,7 +155,7 @@ public class DateUtils {
     }
 
     public boolean checkBetweenInclusive(LocalDate dateToCheck, LocalDate startDate, LocalDate endDate) {
-        return !dateToCheck.isBefore(startDate) && dateToCheck.isAfter(endDate);
+        return !dateToCheck.isBefore(startDate) && !dateToCheck.isAfter(endDate);
     }
 
 }
