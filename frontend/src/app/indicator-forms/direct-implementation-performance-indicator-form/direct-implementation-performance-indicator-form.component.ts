@@ -27,6 +27,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     isAdmin = false;
     isSupervisor = false;
     isResponsible = false;
+    noEditionMessage:string='';
 
     oneDimentionDissagregations: DissagregationType[] = [];
     twoDimentionDissagregations: DissagregationType[] = [];
@@ -106,9 +107,20 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     }
 
     private setEditable() {
+        this.noEditionMessage = null;
         if (this.isAdmin) {
             this.editable = true;
-        } else {
+        }
+        else if (this.month.blockUpdate && (this.isResponsible || this.isSupervisor )) {
+            this.editable = false;
+            this.noEditionMessage = "El indicador está bloqueado, comuníquese con el punto focal si desea actualizarlo";
+        } else if (!this.month.blockUpdate && (this.isResponsible || this.isSupervisor )) {
+            this.editable = true;
+        }else {
+            this.editable= false;
+            this.noEditionMessage = "No tiene los permisos para editar la información";
+        }
+        /*else {
             if (this.month.blockUpdate) {
                 this.editable = false;
             } else {
@@ -116,7 +128,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
                     this.editable = true;
                 }
             }
-        }
+        }*/
         if (this.editable) {
             this.formItem.get('sources').enable();
         } else {

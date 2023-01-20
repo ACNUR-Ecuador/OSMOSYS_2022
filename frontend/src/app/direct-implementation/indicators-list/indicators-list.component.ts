@@ -91,8 +91,9 @@ export class IndicatorsListComponent implements OnInit {
             {field: 'id', header: 'id', type: ColumnDataType.numeric},
             {field: 'reportingOffice', header: 'Oficina', type: ColumnDataType.text, pipeRef: this.officeOrganizationPipe},
             {field: 'indicator.statement', header: 'Declaración de Producto', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
-            {field: 'indicator.statement.productCode', header: 'Código Producto', type: ColumnDataType.text},
             {field: 'indicator', header: 'Indicador', type: ColumnDataType.text, pipeRef: this.indicatorPipe},
+            {field: 'activityDescription', header: 'Descripción de la actividad', type: ColumnDataType.text},
+            {field: 'indicator.frecuency', header: 'Frecuencia de Reporte', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text, pipeRef: this.enumValuesToLabelPipe, arg1: EnumsType.State},
             {field: 'totalExecution', header: 'Ejecución Total', type: ColumnDataType.numeric},
             {field: 'late', header: 'Atrasado', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
@@ -103,7 +104,7 @@ export class IndicatorsListComponent implements OnInit {
             {field: 'assignedUserBackup', header: 'Responsable alterno', type: ColumnDataType.text, pipeRef: this.userPipe}
         ];
 
-        const hiddenColumns: string[] = ['id', 'indicator.statement.productCode', 'lateMonths', 'assignedUserBackup'];
+        const hiddenColumns: string[] = ['id', 'indicator.statement.productCode', 'lateMonths', 'assignedUserBackup','state'];
         this._selectedColumns = this.cols.filter(value => !hiddenColumns.includes(value.field));
     }
 

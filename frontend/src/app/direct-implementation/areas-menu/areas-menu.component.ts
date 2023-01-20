@@ -83,14 +83,10 @@ export class AreasMenuComponent implements OnInit {
             }
             const currentUser = this.userService.getLogedUsername();
             this.queryForm.get('period').patchValue(selectedPeriod);
-            // todo quitar
-            const user = this.userOptions.filter(value1 => {
-                return value1.value.id === 28;
-            }).pop();
-            this.queryForm.get('user').patchValue(user.value);
+            this.queryForm.get('user').patchValue(currentUser);
             this.queryForm.get('roles').patchValue(this.roleOptions.map(value1 => value1.value));
             // this.loadAreas(currentUser.id, selectedPeriod.id, null, true, true, true);
-            this.loadAreas(user.value.id, selectedPeriod.id, null, true, true, true);
+            this.loadAreas(currentUser.id, selectedPeriod.id, null, true, true, true);
         }, error => {
             this.messageService.add({
                 severity: 'error',
