@@ -154,9 +154,10 @@
                             class="p-button-secondary"
                             (click)="cancel()"></button>
                 </div>
-                <div class="flex justify-content-end " *ngIf="!editable && !(isAdmin || isProjectFocalPoint)">
+                <div class="flex justify-content-end "
+                     *ngIf="!editable && !(isAdmin || isProjectFocalPoint && isEjecutor) ">
                     <p-message severity="warn"
-                               text="Indicador Bloqueado!, si son necesarias correcciones, comuníquese con su punto focal "
+                               [text]=noEditionMessage
                                styleClass="p-mr-2"></p-message>
                     <button pButton type="button" pRipple label="Salir" icon="pi pi-times"
                             (click)="cancel()"></button>

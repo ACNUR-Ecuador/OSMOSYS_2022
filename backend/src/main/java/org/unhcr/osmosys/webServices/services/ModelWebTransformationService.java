@@ -338,6 +338,7 @@ public class ModelWebTransformationService {
         indicatorWeb.setDescription(indicator.getDescription());
         indicatorWeb.setCategory(indicator.getCategory());
         indicatorWeb.setQualitativeInstructions(indicator.getQualitativeInstructions());
+        indicatorWeb.setInstructions(indicator.getInstructions());
         indicatorWeb.setState(indicator.getState());
         indicatorWeb.setIndicatorType(indicator.getIndicatorType());
         indicatorWeb.setMeasureType(indicator.getMeasureType());
@@ -1151,6 +1152,7 @@ public class ModelWebTransformationService {
                 TimeStateEnum monthState = this.utilsService.getLateStateForMonth(month, frecuency, reportLimitDay);
                 timeStateQuarter = TimeStateEnum.addStates(timeStateQuarter, monthState);
                 month.setLate(monthState);
+                //LOGGER.debug(month.toString());
             }
             quarter.setLate(timeStateQuarter);
             timeStateTotal = TimeStateEnum.addStates(timeStateTotal, timeStateQuarter);

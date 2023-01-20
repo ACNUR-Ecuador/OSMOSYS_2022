@@ -265,6 +265,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     showTargetAlerts() {
+        this.showAlert = false;
         this.messageAlert = '';
         if (this.performanceIndicators.filter(value => {
             return value.state === EnumsState.ACTIVE;
@@ -1211,6 +1212,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     importCatalog() {
+        this.messageService.clear();
         const {
             period,
             fileName,
@@ -1234,9 +1236,9 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             }, error: err => {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Error al descargar la plantilla',
+                    summary: 'Error al importar la plantilla',
                     detail: err.error.message,
-                    life: 3000
+                    sticky: true
                 });
             }
         })

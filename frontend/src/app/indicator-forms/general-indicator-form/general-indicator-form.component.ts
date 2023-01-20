@@ -27,6 +27,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
     monthValuesMap: Map<string, IndicatorValue[]>;
     formItem: FormGroup;
     editable: boolean;
+    noEditionMessage: string = '';
 
     sourceTypes: SelectItemWithOrder<any>[];
 
@@ -98,13 +99,19 @@ export class GeneralIndicatorFormComponent implements OnInit {
     }
 
     private setEditable() {
+        this.noEditionMessage = null;
         if (this.isAdmin) {
             this.editable = true;
-        } else {
-            if (this.isEjecutor && (this.month.checked === null || this.month.checked === false)) {
-                this.editable = true;
-            }
+        } else if (this.month.blockUpdate && (this.isEjecutor || this.isProjectFocalPoint )) {
+            this.editable = false;
+            this.noEditionMessage = "El indicador está bloqueado, comuníquese con el punto focal si desea actualizarlo";
+        } else if (!this.month.blockUpdate && (this.isEjecutor || this.isProjectFocalPoint )) {
+            this.editable = true;
+        }else {
+            this.editable= false;
+            this.noEditionMessage = "No tiene los permisos para editar la información";
         }
+
         if (this.editable) {
             this.formItem.get('sources').enable();
         } else {

@@ -1,10 +1,16 @@
 <div class="card p-0" *ngIf="render">
     <p-toast key="dialogToast" position="top-right"></p-toast>
     <p-messages></p-messages>
-    <div class="fluid" *ngIf="indicatorExecution.activityDescription">
-        <div class="field">
-            <label>Descripción de la actividad:</label>
-            {{indicatorExecution.activityDescription}}
+    <div class="card p-0 border-primary font-bold text-lg text-primary">
+        <div class="fluid p-1" *ngIf="indicatorExecution.indicator.instructions">
+            <div class="field">
+                <label>Instrucciones del indicador:</label>
+                {{indicatorExecution.indicator.instructions}}
+            </div>
+            <div class="field p-1">
+                <label>Descripción de la actividad:</label>
+                {{indicatorExecution.activityDescription}}
+            </div>
         </div>
     </div>
     <form #myForm="ngForm" [formGroup]="formItem" (ngSubmit)="saveMonth()">
@@ -156,7 +162,7 @@
                 </div>
             </fieldset>
         </div>
-        <div class="card">
+        <!--<div class="card">
             <div class="p-fluid p-formgrid grid">
                 <div class="field md:col-12">
                     <label for="checkedI">Verificación Punto Focal</label>
@@ -168,14 +174,14 @@
                     </small>
                 </div>
             </div>
-        </div>
+        </div>-->
 
 
         <div class="p-card p-0">
             <div class="md:col-12">
                 <p-messages></p-messages>
             </div>
-            <div class="flex justify-content-end flex-wrap" *ngIf="editable || isAdmin || isProjectFocalPoint">
+            <div class="flex justify-content-end flex-wrap" *ngIf="editable || isAdmin ">
                 <p-message severity="warn"
                            *ngIf="indicatorExecution.indicator.blockAfterUpdate"
                            text="El indicador se bloqueará despues de guardarlo." styleClass="p-mr-2"></p-message>
@@ -186,13 +192,16 @@
                         class="p-button-secondary"
                         (click)="cancel()"></button>
             </div>
-            <div class="flex justify-content-end " *ngIf="!editable && !(isAdmin || isProjectFocalPoint)">
+            <div class="flex justify-content-end "
+                 *ngIf="!editable && !(isAdmin || isProjectFocalPoint && isEjecutor) ">
                 <p-message severity="warn"
-                           text="Indicador Bloqueado!, si son necesarias correcciones, comuníquese con su punto focal "
+                           [text]=noEditionMessage
                            styleClass="p-mr-2"></p-message>
                 <button pButton type="button" pRipple label="Salir" icon="pi pi-times"
                         (click)="cancel()"></button>
             </div>
+
+
         </div>
 
     </form>

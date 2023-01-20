@@ -16,6 +16,7 @@ public class IndicatorWeb implements Serializable {
     private String code;
     private String description;
     private String category;
+    private String instructions;
     private String qualitativeInstructions;
     private State state;
     private IndicatorType indicatorType;
@@ -195,6 +196,14 @@ public class IndicatorWeb implements Serializable {
 
     public void setBlockAfterUpdate(Boolean blockAfterUpdate) {
         this.blockAfterUpdate = blockAfterUpdate;
+    }
+
+    public String getInstructions() {
+        return instructions;
+    }
+
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
     }
 
     @Override

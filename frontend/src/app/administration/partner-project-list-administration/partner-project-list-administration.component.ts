@@ -54,21 +54,14 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
             if (this.periods.length < 1) {
                 this.messageService.add({severity: 'error', summary: 'No se encontraron periodos', detail: ''});
             } else {
-                this.periodsItems = value.map(value1 => {
-                    const selectItem: SelectItem = {
-                        label: value1.year.toString(),
-                        value: value1
-                    };
-                    return selectItem;
-                });
                 const currentYear = (new Date()).getFullYear();
                 if (this.periods.some(e => e.year === currentYear)) {
-                    const periodCurrent = this.periods.filter(p => p.year === currentYear).pop();
-                    this.periodForm.get('selectedPeriod').patchValue(periodCurrent);
-                    if (periodCurrent) {
-                        this.loadProjects(periodCurrent.id);
-                    }
-
+                    this.periods.filter(p => p.year === currentYear).forEach(value1 => {
+                        this.periodForm.get('selectedPeriod').patchValue(value1);
+                        if (value1) {
+                            this.loadProjects(value1.id);
+                        }
+                    });
                 } else {
                     const smallestYear = Math.min(...this.periods.map(value1 => value1.year));
                     const smallestPeriod = this.periods.filter(value1 => {
@@ -78,6 +71,7 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
                     this.loadProjects(smallestPeriod.id);
                 }
             }
+
         }, error => {
             this.messageService.add({
                 severity: 'error',

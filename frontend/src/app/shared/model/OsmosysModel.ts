@@ -175,6 +175,7 @@ export class Indicator {
     public description: string;
     public category: string;
     public qualitativeInstructions: string;
+    public instructions?: string;
     public state: string;
     public indicatorType: string;
     public measureType: string;

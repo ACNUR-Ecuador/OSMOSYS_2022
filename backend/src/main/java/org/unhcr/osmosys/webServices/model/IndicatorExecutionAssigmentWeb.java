@@ -15,11 +15,13 @@ public class IndicatorExecutionAssigmentWeb implements Serializable {
     private IndicatorWeb indicator;
     private State state;
     private PeriodWeb period;
+    private String activityDescription;
+
 
     /*socios ii*/
     private ProjectWeb project;
     private StatementWeb projectStatement;
-    private String activityDescription;
+
     private List<CantonWeb> locations = new ArrayList<>();
     /* implementación directa*/
     private OfficeWeb reportingOffice;

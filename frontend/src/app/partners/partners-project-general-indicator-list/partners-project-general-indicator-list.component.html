@@ -2,7 +2,9 @@
          [columns]="selectedColumnsGeneralIndicators"
          [rowHover]="true" dataKey="id"
          currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-         [showCurrentPageReport]="true">
+         [showCurrentPageReport]="true"
+         (sortFunction)="utilsService.customSort($event, selectedColumnsGeneralIndicators)" [customSort]="true"
+>
     <ng-template pTemplate="caption">
         <div class="grid">
             <div
@@ -92,7 +94,7 @@
     </ng-template>
     <ng-template pTemplate="summary">
         <div class="p-d-flex p-ai-center p-jc-between">
-            Total {{generalIndicators ? generalIndicators.length : 0 }} indicadores
+            {{dtGeneralIndicators.filteredValue?dtGeneralIndicators.filteredValue.length:dtGeneralIndicators.totalRecords}} de {{generalIndicators?generalIndicators.length:0}}  indicadores
             generales.
         </div>
     </ng-template>

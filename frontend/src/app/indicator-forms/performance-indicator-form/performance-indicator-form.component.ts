@@ -1,5 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {CustomDissagregationValues, IndicatorExecution, IndicatorValue, Month, MonthValues} from '../../shared/model/OsmosysModel';
+import {
+    CustomDissagregationValues,
+    IndicatorExecution,
+    IndicatorValue,
+    Month,
+    MonthValues
+} from '../../shared/model/OsmosysModel';
 import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {MessageService, SelectItem} from 'primeng/api';
 import {DissagregationType, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
@@ -12,9 +18,9 @@ import {UserService} from '../../services/user.service';
 
 
 @Component({
-  selector: 'app-performance-indicator-form',
-  templateUrl: './performance-indicator-form.component.html',
-  styleUrls: ['./performance-indicator-form.component.scss']
+    selector: 'app-performance-indicator-form',
+    templateUrl: './performance-indicator-form.component.html',
+    styleUrls: ['./performance-indicator-form.component.scss']
 })
 export class PerformanceIndicatorFormComponent implements OnInit {
     indicatorExecution: IndicatorExecution;
@@ -43,6 +49,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     totalsValidation: Map<string, number> = null;
     chekedOptions: SelectItem[];
     editable: boolean;
+    noEditionMessage: string = '';
 
     constructor(public ref: DynamicDialogRef,
                 public config: DynamicDialogConfig,
@@ -96,17 +103,19 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     }
 
     private setEditable() {
+        this.noEditionMessage = null;
         if (this.isAdmin) {
             this.editable = true;
-        } else {
-            if (this.month.blockUpdate) {
-                this.editable = false;
-            } else {
-                if (this.isEjecutor && (this.month.checked === null || this.month.checked === false)) {
-                    this.editable = true;
-                }
-            }
+        } else if (this.month.blockUpdate && (this.isEjecutor || this.isProjectFocalPoint )) {
+            this.editable = false;
+            this.noEditionMessage = "El indicador está bloqueado, comuníquese con el punto focal si desea actualizarlo";
+        } else if (!this.month.blockUpdate && (this.isEjecutor || this.isProjectFocalPoint )) {
+            this.editable = true;
+        }else {
+            this.editable= false;
+            this.noEditionMessage = "No tiene los permisos para editar la información";
         }
+
         if (this.editable) {
             this.formItem.get('sources').enable();
         } else {
@@ -194,7 +203,11 @@ export class PerformanceIndicatorFormComponent implements OnInit {
             this.messageService.add({severity: 'success', summary: 'Guardado con éxito', detail: ''});
             this.ref.close({test: 1});
         }, error => {
-            this.messageService.add({severity: 'error', summary: 'Error al guardar los valores:', detail: error.error.message});
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al guardar los valores:',
+                detail: error.error.message
+            });
         });
     }
 

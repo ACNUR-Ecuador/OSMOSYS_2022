@@ -12,6 +12,7 @@ import {EnumsService} from '../../services/enums.service';
 import {UtilsService} from '../../services/utils.service';
 import {IndicatorExecutionService} from '../../services/indicator-execution.service';
 import {FilterUtilsService} from '../../services/filter-utils.service';
+import {EnumValuesToLabelPipe} from "../../shared/pipes/enum-values-to-label.pipe";
 
 @Component({
     selector: 'app-partners-project-performance-indicator-list',
@@ -46,6 +47,7 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
                 private codeDescriptionPipe: CodeDescriptionPipe,
                 private percentPipe: PercentPipe,
                 private indicatorPipe: IndicatorPipe,
+                private enumValuesToLabelPipe: EnumValuesToLabelPipe,
                 private indicatorExecutionService: IndicatorExecutionService,
                 private filterService: FilterService,
                 private filterUtilsService: FilterUtilsService,
@@ -70,6 +72,8 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
             .subscribe(value => {
                 this.performanceIndicators = value
                     .sort((a, b) => {
+                        return a.id-b.id;
+                    }).sort((a, b) => {
                         return a.indicator.code.localeCompare(b.indicator.code);
                     })
                     .sort((a, b) => {
@@ -92,8 +96,9 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
             {field: 'indicatorType', header: 'Tipo', type: ColumnDataType.text},
             {field: 'projectStatement', header: 'Declaración de Producto', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
-            {field: 'projectStatement.productCode', header: 'Código de Producto', type: ColumnDataType.text},
             {field: 'indicator', header: 'Indicador', type: ColumnDataType.text, pipeRef: this.indicatorPipe},
+            {field: 'indicator.frecuency', header: 'Frecuencia de Reporte', type: ColumnDataType.text},
+            {field: 'activityDescription', header: 'Descripción de la actividad', type: ColumnDataType.text},
             {field: 'target', header: 'Meta', type: ColumnDataType.numeric},
             {field: 'totalExecution', header: 'Ejecución Actual', type: ColumnDataType.numeric},
             {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric, pipeRef: this.percentPipe},
@@ -101,7 +106,7 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
 
         ];
 
-        const hiddenColumns: string[] = ['id', 'indicatorType'];
+        const hiddenColumns: string[] = ['id', 'indicatorType','indicator.frecuency'];
         this._selectedColumnsPerformanceIndicators = this.colsGeneralIndicators.filter(value => !hiddenColumns.includes(value.field));
         this.registerFilters();
     }
