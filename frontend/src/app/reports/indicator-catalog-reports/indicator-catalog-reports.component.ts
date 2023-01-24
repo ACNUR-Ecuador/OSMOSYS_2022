@@ -6,6 +6,7 @@ import {MessageService} from "primeng/api";
 import {UtilsService} from "../../services/utils.service";
 import {ReportsService} from "../../services/reports.service";
 import {UserService} from "../../services/user.service";
+import {HttpResponse} from "@angular/common/http";
 
 @Component({
     selector: 'app-indicator-catalog-reports',
@@ -57,5 +58,74 @@ export class IndicatorCatalogReportsComponent implements OnInit {
             selectedPeriod: new FormControl(''),
             selectedReport: new FormControl('')
         });
+    }
+
+    getIndicatorCatalogReport() {
+        const period = this.periodForm.get('selectedPeriod').value as Period;
+        this.messageService.clear();
+        if (period) {
+            this.reportsService.getIndicatorsCatalogByPeriodId(period.id).subscribe((response: HttpResponse<Blob>) => {
+                this.utilsService.downloadFileResponse(response);
+            }, error => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al Generar el Reporte',
+                    detail: error.error.message,
+                    life: 3000
+                });
+            });
+        } else {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Selecciona un periodo',
+                life: 3000
+            });
+        }
+    }
+
+    getIndicatorsCatalogWithImplementersSimple() {
+        const period = this.periodForm.get('selectedPeriod').value as Period;
+        this.messageService.clear();
+        if (period) {
+            this.reportsService.getIndicatorsCatalogWithImplementersSimple(period.id).subscribe((response: HttpResponse<Blob>) => {
+                this.utilsService.downloadFileResponse(response);
+            }, error => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al Generar el Reporte',
+                    detail: error.error.message,
+                    life: 3000
+                });
+            });
+        } else {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Selecciona un periodo',
+                life: 3000
+            });
+        }
+    }
+
+    getIndicatorsCatalogWithImplementersDetailed() {
+        const period = this.periodForm.get('selectedPeriod').value as Period;
+        this.messageService.clear();
+        if (period) {
+            this.reportsService.getIndicatorsCatalogWithImplementersDetailed(period.id).subscribe((response: HttpResponse<Blob>) => {
+                this.utilsService.downloadFileResponse(response);
+            }, error => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al Generar el Reporte',
+                    detail: error.error.message,
+                    life: 3000
+                });
+            });
+        } else {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Selecciona un periodo',
+                life: 3000
+            });
+        }
     }
 }

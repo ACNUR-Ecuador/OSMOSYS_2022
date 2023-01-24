@@ -222,6 +222,12 @@ export class MenuService {
                     icon: 'pi pi-fw pi-file-excel',
                     routerLink: ['/reports/indicatorsCatalog'],
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS'],
+                },
+                {
+                    label: 'Reportes de retrasos',
+                    icon: 'pi pi-fw pi-calendar-times',
+                    routerLink: ['/reports/lateReports'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
                 }
             ]
         },

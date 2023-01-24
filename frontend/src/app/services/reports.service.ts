@@ -5,7 +5,7 @@ import {environment} from '../../environments/environment';
 const mainServiceUrl = environment.base_url + '/reports';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class ReportsService {
 
@@ -247,6 +247,7 @@ export class ReportsService {
             responseType: 'blob' as 'json'
         });
     }
+
     public getPartnerLateReviewByProjectId(projectId: number) {
         return this.http.get(`${mainServiceUrl}/getPartnerLateReviewByProjectId/${projectId}`, {
             observe: 'response',
@@ -261,8 +262,8 @@ export class ReportsService {
         });
     }
 
-    public getResponsableLateReport(responsableId: number) {
-        return this.http.get(`${mainServiceUrl}/getResponsableLateReport/${responsableId}`, {
+    public getResponsableLateReport(responsableId: number, periodId: number) {
+        return this.http.get(`${mainServiceUrl}/getResponsableLateReport/${responsableId}/${periodId}`, {
             observe: 'response',
             responseType: 'blob' as 'json'
         });
@@ -282,21 +283,36 @@ export class ReportsService {
         });
     }
 
-    public getAllLateReportDirectImplementation() {
-        return this.http.get(`${mainServiceUrl}/getAllLateReportDirectImplementation`, {
+    public getSupervisorLateDirectImplementationReport(periodId:number, supervisorId:number) {
+        return this.http.get(`${mainServiceUrl}/getSupervisorLateReport/${periodId}/${supervisorId}`, {
             observe: 'response',
             responseType: 'blob' as 'json'
         });
     }
 
-    public getAllLateReportPartners() {
-        return this.http.get(`${mainServiceUrl}/getAllLateReportPartners`, {
+    public getAllLateReportDirectImplementation(periodId: number) {
+        return this.http.get(`${mainServiceUrl}/getAllLateReportDirectImplementation/${periodId}`, {
             observe: 'response',
             responseType: 'blob' as 'json'
         });
     }
+
+    public getAllLateReportPartners(periodId: number) {
+        return this.http.get(`${mainServiceUrl}/getAllLateReportPartners/${periodId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+
     public getAllLateReviewPartners() {
         return this.http.get(`${mainServiceUrl}/getAllLateReviewPartners`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+
+    getOfficeLateDirectImplementationReport(periodId: number, officeId: number) {
+        return this.http.get(`${mainServiceUrl}/getOfficeLateDirectImplementationReport/${periodId}/${officeId}`, {
             observe: 'response',
             responseType: 'blob' as 'json'
         });

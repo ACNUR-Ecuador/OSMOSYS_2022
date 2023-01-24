@@ -6,11 +6,12 @@
             <h3 class="page-title">Catálogo de Indicadores</h3>
             <p-toolbar styleClass="mb-4 p-fluid">
                 <form [formGroup]="periodForm" class="w-full">
-                    <div class="p-fluid">
+                    <div class="fluid">
                         <div class="field grid">
                             <label for="periodI" class="col-12 mb-2" style="width:100px; color: white;">Periodo:</label>
                             <div class="">
                                 <p-dropdown id="periodI" [options]="periods" optionLabel="year"
+                                            formControlName="selectedPeriod"
 
                                 ></p-dropdown>
                             </div>
@@ -20,6 +21,45 @@
                 </form>
 
             </p-toolbar>
+
+            <p-fieldset>
+                <ng-template pTemplate="header">Catálogo de Indicadores</ng-template>
+                <div class="grid">
+                    <div class="col-4 border_div"><h5>Reporte</h5></div>
+                    <div class="col-4 border_div"><h5>Descripción</h5></div>
+                    <div class="col-4 border_div"><h5>Generar</h5></div>
+
+                    <div class="col-4 border_div">Catálogo de Indicadores</div>
+                    <div class="col-4 border_div">Este reporte contiene el catálogo de indicadores.
+                    </div>
+                    <div class="col-4 border_div">
+                        <p-button label="Generar Reporte" icon="pi pi-file-excel"
+                                  (onClick)="getIndicatorCatalogReport()"
+                                  styleClass="p-button-success p-mb-2"></p-button>
+                    </div>
+
+                    <div class="col-4 border_div" *ngIf="enableReport">Catálogo de Indicadores e Implementadores</div>
+                    <div class="col-4 border_div" *ngIf="enableReport">Este reporte contiene el catálogo de indicadores y las oficinas/socios que usan estos indicadores.
+                    </div>
+                    <div class="col-4 border_div" *ngIf="enableReport">
+                        <p-button label="Generar Reporte" icon="pi pi-file-excel"
+                                  (onClick)="getIndicatorsCatalogWithImplementersSimple()"
+                                  styleClass="p-button-success p-mb-2"></p-button>
+                    </div>
+
+                    <div class="col-4 border_div" *ngIf="enableReport">Catálogo de Indicadores e Implementadores</div>
+                    <div class="col-4 border_div" *ngIf="enableReport">Este reporte contiene el catálogo de indicadores y las oficinas/socios que usan estos indicadores, en formato para aplicación de tablas dinámicas.
+                    </div>
+                    <div class="col-4 border_div" *ngIf="enableReport">
+                        <p-button label="Generar Reporte" icon="pi pi-file-excel"
+                                  (onClick)="getIndicatorsCatalogWithImplementersDetailed()"
+                                  styleClass="p-button-success p-mb-2"></p-button>
+                    </div>
+
+                </div>
+
+
+            </p-fieldset>
         </div>
     </div>
 </div>

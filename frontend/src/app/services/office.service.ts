@@ -40,4 +40,7 @@ export class OfficeService {
     public getByState(state: EnumsState): Observable<Office[]> {
         return this.http.get<Office[]>(`${mainServiceUrl}/byState/${state}`);
     }
+    public getReportingOfficesByPeriodId(periodId: number): Observable<Office[]> {
+        return this.http.get<Office[]>(`${mainServiceUrl}/reportingOfficesByPeriodId/${periodId}`);
+    }
 }

@@ -186,4 +186,12 @@ export class UserService {
         }
         return user.organization === null || user.organization.acronym === 'ACNUR' || user.organization.acronym === 'UNHCR';
     }
+
+
+    public getActiveResponsableDirectImplementationUsers(periodId:number) {
+        return this.http.get<User[]>(`${mainServiceUrl}/users/responsibleID/${periodId}`);
+    }
+    public getActiveSupervisorDirectImplementationUsers(periodId:number) {
+        return this.http.get<User[]>(`${mainServiceUrl}/users/supervisorID/${periodId}`);
+    }
 }

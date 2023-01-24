@@ -7,12 +7,16 @@ import {ToastModule} from "primeng/toast";
 import {MessagesModule} from "primeng/messages";
 import {DropdownModule} from "primeng/dropdown";
 import {ToolbarModule} from "primeng/toolbar";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FieldsetModule} from "primeng/fieldset";
+import {ButtonModule} from "primeng/button";
+import { LateReportsComponent } from './late-reports/late-reports.component';
 
 
 @NgModule({
   declarations: [
-    IndicatorCatalogReportsComponent
+    IndicatorCatalogReportsComponent,
+    LateReportsComponent
   ],
     imports: [
         CommonModule,
@@ -21,7 +25,10 @@ import {ReactiveFormsModule} from "@angular/forms";
         MessagesModule,
         DropdownModule,
         ToolbarModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        FieldsetModule,
+        ButtonModule,
+        FormsModule
     ]
 })
 export class ReportsModule { }

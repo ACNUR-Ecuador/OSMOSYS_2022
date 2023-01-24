@@ -925,7 +925,7 @@ export class UtilsService {
         }
     }
 
-    public downloadFileResponse(response: HttpResponse<Blob>) {
+    public downloadFileResponse(response: HttpResponse<any>) {
 
         const filename: string = this.getFileName(response);
         const binaryData = [];
