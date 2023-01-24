@@ -44,6 +44,8 @@ public class MessageAlertService {
     @Inject
     UserService userService;
 
+
+
     public void sendAlertToPartners() {
         Period currentPeriod = this.periodService.getByYear(this.utilsService.getCurrentYear());
         List<Project> projects = this.projectService.getByPeriodId(currentPeriod.getId());
@@ -57,7 +59,7 @@ public class MessageAlertService {
 
                     String message =
                             "<p style=\"text-align:justify\">Estimado/a colega:</p>" +
-                                    "<p style=\"text-align:justify\">Encuentre adjunto el reporte de indicadores con que deben ser reportados para el proyecto " + project.getName() + "-" + project.getOrganization().getDescription() + " hast el día 10 de este mes. Rogamos su ayuda para poner al d&iacute;a los datos del proyecto en el sistema OSMOSYS-ACNUR.</p>" +
+                                    "<p style=\"text-align:justify\">Encuentre adjunto el reporte de indicadores con que deben ser reportados para el proyecto " + project.getName() + "-" + project.getOrganization().getDescription() + ". Rogamos su ayuda para poner al d&iacute;a los datos del proyecto en el sistema OSMOSYS-ACNUR.</p>" +
                                     "<p style=\"text-align:justify\">Este reporte ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con su punto focal.</p>";
 
                     LOGGER.info("reporte retrasos socio: " + project.getName() + ":" + project.getOrganization().getAcronym());
@@ -133,7 +135,7 @@ public class MessageAlertService {
 
         for (User responsable : responsables) {
             try {
-                ByteArrayOutputStream report = this.reportService.getDirectImplementationLateReportByResponsableId(responsable.getId());
+                ByteArrayOutputStream report = this.reportService.getDirectImplementationLateReportByResponsableId(responsable.getId(), currentPeriod.getId());
 
                 if (report != null) {
 
@@ -172,7 +174,7 @@ public class MessageAlertService {
 
         for (User supervisor : supervisors) {
             try {
-                ByteArrayOutputStream report = this.reportService.getDirectImplementationLateReviewReportBySupervisorId(supervisor.getId());
+                ByteArrayOutputStream report = this.reportService.getDirectImplementationLateReportBySupervisorId(currentPeriod.getId(),supervisor.getId());
 
                 if (report != null) {
 

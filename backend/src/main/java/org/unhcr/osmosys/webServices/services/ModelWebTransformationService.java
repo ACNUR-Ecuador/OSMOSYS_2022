@@ -1089,7 +1089,7 @@ public class ModelWebTransformationService {
         iw.setAssignedBudget(ie.getAssignedBudget());
         iw.setAvailableBudget(ie.getAvailableBudget());
         iw.setTotalUsedBudget(ie.getTotalUsedBudget());
-        if (getProject) {
+        if (getProject && ie.getProject()!=null) {
             iw.setProject(this.projectToProjectWeb(ie.getProject()));
         }
         iw.setExecutionPercentage(ie.getExecutionPercentage());

@@ -13,18 +13,24 @@ import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
 import org.jboss.logging.Logger;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.*;
 import org.unhcr.osmosys.daos.ReportDao;
+import org.unhcr.osmosys.model.IndicatorExecution;
 import org.unhcr.osmosys.model.enums.TimeStateEnum;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedDTO;
 import org.unhcr.osmosys.model.reportDTOs.LaterReportDTO;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
 import org.unhcr.osmosys.webServices.model.IndicatorExecutionWeb;
+import org.unhcr.osmosys.webServices.model.MonthWeb;
+import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 @Stateless
@@ -35,6 +41,9 @@ public class ReportDataService {
 
     @Inject
     ReportDao reportDao;
+
+    @Inject
+    ModelWebTransformationService modelWebTransformationService;
 
     public List<Map<String, Object>> indicatorExecutionsProjectsReportsByPeriodId(Long periodId) throws GeneralAppException {
         List<IndicatorExecutionWeb> indicatorExecutions = this.indicatorExecutionService.getActiveProjectIndicatorExecutionsByPeriodId(periodId);
@@ -132,7 +141,7 @@ public class ReportDataService {
             IndicatorExecutionDetailedDTO ie = resultData.get(i);
             for (int t = 0; t < titles.size(); t++) {
                 Cell cell = rowData.createCell(t);
-                this.setDataFromIndicatorExecutionDetailedDTO(wb, titles.get(t), cell, ie, cellStylePercentage);
+                this.setDataFromIndicatorExecutionDetailedDTO(titles.get(t), cell, ie, cellStylePercentage);
             }
 
         }
@@ -224,7 +233,7 @@ public class ReportDataService {
         return getReportFromIndicatorExecutionDetailedDTO(resultData, columnsToRemove);
     }
 
-    private void setDataFromIndicatorExecutionDetailedDTO(SXSSFWorkbook wb, String title, Cell cell, IndicatorExecutionDetailedDTO ie, CellStyle cellStylePercentage) {
+    private void setDataFromIndicatorExecutionDetailedDTO(String title, Cell cell, IndicatorExecutionDetailedDTO ie, CellStyle cellStylePercentage) {
 
         switch (title) {
             case "Asignacion de Indicador Id":
@@ -505,14 +514,15 @@ public class ReportDataService {
 
     }
 
-    public SXSSFWorkbook getPartnerLateReportByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
+    public XSSFWorkbook getPartnerLateReportByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
         List<LaterReportDTO> data = this.reportDao.getPartnerLateReportByProjectId(projectId, currentYear, currentMonth);
         if (CollectionUtils.isEmpty(data)) {
             return null;
         }
         return this.getLateReport(data, true, false);
     }
-    public SXSSFWorkbook getPartnerLateReviewByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
+
+    public XSSFWorkbook getPartnerLateReviewByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
         List<LaterReportDTO> data = this.reportDao.getPartnerLateReviewByProjectId(projectId, currentYear, currentMonth);
         if (CollectionUtils.isEmpty(data)) {
             return null;
@@ -520,7 +530,7 @@ public class ReportDataService {
         return this.getLateReport(data, true, true);
     }
 
-    public SXSSFWorkbook getPartnerLateReportByFocalPointId(Long focalPointId, Integer currentYear, Integer currentMonth) {
+    public XSSFWorkbook getPartnerLateReportByFocalPointId(Long focalPointId, Integer currentYear, Integer currentMonth) {
         List<LaterReportDTO> data = this.reportDao.getPartnerLateReportByProjectId(focalPointId, currentYear, currentMonth);
         if (CollectionUtils.isEmpty(data)) {
             return null;
@@ -528,7 +538,7 @@ public class ReportDataService {
         return this.getLateReport(data, true, false);
     }
 
-    public SXSSFWorkbook getPartnerLateReviewReportByFocalPointId(Long focalPointId, Integer currentYear, Integer currentMonth) {
+    public XSSFWorkbook getPartnerLateReviewReportByFocalPointId(Long focalPointId, Integer currentYear, Integer currentMonth) {
         List<LaterReportDTO> data = this.reportDao.getPartnerLateReviewReportByFocalPointId(focalPointId, currentYear, currentMonth);
         if (CollectionUtils.isEmpty(data)) {
             return null;
@@ -536,7 +546,7 @@ public class ReportDataService {
         return this.getLateReport(data, true, true);
     }
 
-    public SXSSFWorkbook getPartnerLateReviewReportByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
+    public XSSFWorkbook getPartnerLateReviewReportByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
         List<LaterReportDTO> data = this.reportDao.getPartnerLateReviewByProjectId(projectId, currentYear, currentMonth);
         if (CollectionUtils.isEmpty(data)) {
             return null;
@@ -544,15 +554,15 @@ public class ReportDataService {
         return this.getLateReport(data, true, true);
     }
 
-    public SXSSFWorkbook getLateReport(List<LaterReportDTO> data, Boolean partner, Boolean review) {
+    public XSSFWorkbook getLateReport(List<LaterReportDTO> data, Boolean partner, Boolean review) {
 
 
         List<Integer> titlesWidth = this.getTitlesWidthLateReport(partner, review);
 
 
         List<String> titles = this.getTitlesLateReport(partner, review);
-        SXSSFWorkbook wb = new SXSSFWorkbook();
-        SXSSFSheet sheet = wb.createSheet();
+        XSSFWorkbook wb = new XSSFWorkbook();
+        XSSFSheet sheet = wb.createSheet();
         // Set which area the table should be placed in
         int NB_ROWS = data.size();
         int NB_COLS = titles.size() - 1;
@@ -561,7 +571,27 @@ public class ReportDataService {
                         new CellReference(0, 0),
                         new CellReference(NB_ROWS, NB_COLS));
         // title rows
-        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
+        // Create
+        XSSFTable table = sheet.createTable(reference);
+        table.setName("data_export");
+        table.setDisplayName("data_export");
+        // For now, create the initial style in a low-level way
+        table.getCTTable().addNewTableStyleInfo();
+        table.getCTTable().getTableStyleInfo().setName("TableStyleMedium2");
+        table.getCTTable().setAutoFilter(CTAutoFilter.Factory.newInstance());
+        // Style the table
+        XSSFTableStyleInfo style = (XSSFTableStyleInfo) table.getStyle();
+        style.setName("TableStyleMedium2");
+        style.setShowColumnStripes(false);
+        style.setShowRowStripes(true);
+        style.setFirstColumn(false);
+        style.setLastColumn(false);
+
+        DataFormat format = wb.createDataFormat();
+        CellStyle cellStylePercentage;
+        cellStylePercentage = wb.createCellStyle();
+        cellStylePercentage.setDataFormat(format.getFormat("0%"));
+
 
         Row rowTitle = sheet.createRow(0);
         for (int i = 0; i < titles.size(); i++) {
@@ -570,19 +600,23 @@ public class ReportDataService {
             sheet.setColumnWidth(i, titlesWidth.get(i));
         }
         for (int i = 0; i < data.size(); i++) {
-            SXSSFRow rowData = sheet.createRow(i + 1);
+            XSSFRow rowData = sheet.createRow(i + 1);
             LaterReportDTO dataRow = data.get(i);
 
             for (int t = 0; t < titles.size(); t++) {
                 Cell cell = rowData.createCell(t);
                 this.setDataFromLaterReportDTO(wb, titles.get(t), cell, dataRow);
+                CellStyle styleCell = cell.getCellStyle();
+                styleCell.setWrapText(true);
             }
+            rowData.setHeight((short) -1);
 
         }
+
         return wb;
     }
 
-    private void setDataFromLaterReportDTO(SXSSFWorkbook wb, String title, Cell cell, LaterReportDTO dataRow) {
+    private void setDataFromLaterReportDTO(XSSFWorkbook wb, String title, Cell cell, LaterReportDTO dataRow) {
         switch (title) {
             case "Proyecto":
                 cell.setCellValue(dataRow.getProject());
@@ -721,7 +755,7 @@ public class ReportDataService {
             IndicatorExecutionDetailedDTO ie = resultData.get(i);
             for (int t = 0; t < titles.size(); t++) {
                 Cell cell = rowData.createCell(t);
-                this.setDataFromIndicatorExecutionDetailedDTO(wb, titles.get(t), cell, ie, cellStylePercentage);
+                this.setDataFromIndicatorExecutionDetailedDTO(titles.get(t), cell, ie, cellStylePercentage);
             }
 
         }
@@ -730,7 +764,7 @@ public class ReportDataService {
         return wb;
     }
 
-    public SXSSFWorkbook getPartnerLateReportByPartnerId(Long partnerId, Integer currentYear, Integer currentMonthYearOrder) throws GeneralAppException {
+    public XSSFWorkbook getPartnerLateReportByPartnerId(Long partnerId, Integer currentYear, Integer currentMonthYearOrder) throws GeneralAppException {
 
         List<LaterReportDTO> data = this.reportDao.getPartnerLateReportByPartnerId(partnerId, currentYear, currentMonthYearOrder);
         if (CollectionUtils.isEmpty(data)) {
@@ -741,16 +775,22 @@ public class ReportDataService {
 
     }
 
-    public SXSSFWorkbook getDirectImplementationLateReportByResponsableId(Long responsableId, Integer currentYear, Integer currentMonthYearOrder) {
+    public XSSFWorkbook getDirectImplementationLateReportByResponsableId(Long periodId, Long responsableId, Integer currentYear, Integer currentMonthYearOrder) throws GeneralAppException {
 
-        List<LaterReportDTO> data = this.reportDao.getDirectImplementationLateReportByResponsableId(responsableId, currentYear, currentMonthYearOrder);
+        List<IndicatorExecution> data = this.reportDao.getDirectImplementationLateReportByResponsableId(periodId, responsableId, currentYear, currentMonthYearOrder);
+        List<LaterReportDTO> dataDto;
         if (CollectionUtils.isEmpty(data)) {
             return null;
+        } else {
+            dataDto = this.indicatorExecutionsToLateReportDtos(data);
+            if (CollectionUtils.isEmpty(dataDto)) {
+                return null;
+            }
+            return this.getLateReport(dataDto, false, false);
         }
-        return this.getLateReport(data, false, false);
     }
 
-    public SXSSFWorkbook getDirectImplementationLateReviewReportBySupervisorId(Long responsableId, Integer currentYear, Integer currentMonthYearOrder) {
+    public XSSFWorkbook getDirectImplementationLateReviewReportBySupervisorId(Long responsableId, Integer currentYear, Integer currentMonthYearOrder) {
 
         List<LaterReportDTO> data = this.reportDao.getDirectImplementationLateReviewReportBySupervisorId(responsableId, currentYear, currentMonthYearOrder);
         if (CollectionUtils.isEmpty(data)) {
@@ -758,34 +798,121 @@ public class ReportDataService {
         }
         return this.getLateReport(data, false, true);
     }
+    public XSSFWorkbook getDirectImplementationLateReportBySupervisorId(Long periodId,Long responsableId, Integer currentYear, Integer currentMonthYearOrder) throws GeneralAppException {
 
-    public SXSSFWorkbook getAllLateReviewReportDirectImplementation(Integer currentYear, Integer currentMonthYearOrder) {
+        List<IndicatorExecution> data = this.reportDao.getDirectImplementationLateReportBySupervisorId(periodId,responsableId, currentYear, currentMonthYearOrder);
+        if (CollectionUtils.isEmpty(data)) {
+            return null;
+        } else {
+            List<LaterReportDTO> dataDto = this.indicatorExecutionsToLateReportDtos(data);
+            if (CollectionUtils.isEmpty(dataDto)) {
+                return null;
+            }
+            return this.getLateReport(dataDto, false, false);
+        }
+    }
+    public XSSFWorkbook getOfficeLateDirectImplementationReport(Long periodId,Long officeId, Integer currentYear, Integer currentMonthYearOrder) throws GeneralAppException {
 
-        List<LaterReportDTO> data = this.reportDao.getAllLateReviewReportDirectImplementation( currentYear, currentMonthYearOrder);
+        List<IndicatorExecution> data = this.reportDao.getOfficeLateDirectImplementationReport(periodId,officeId, currentYear, currentMonthYearOrder);
+        if (CollectionUtils.isEmpty(data)) {
+            return null;
+        } else {
+            List<LaterReportDTO> dataDto = this.indicatorExecutionsToLateReportDtos(data);
+            if (CollectionUtils.isEmpty(dataDto)) {
+                return null;
+            }
+            return this.getLateReport(dataDto, false, false);
+        }
+    }
+
+    public XSSFWorkbook getAllLateReviewReportDirectImplementation(Integer currentYear, Integer currentMonthYearOrder) {
+
+        List<LaterReportDTO> data = this.reportDao.getAllLateReviewReportDirectImplementation(currentYear, currentMonthYearOrder);
         if (CollectionUtils.isEmpty(data)) {
             return null;
         }
         return this.getLateReport(data, false, true);
     }
-    public SXSSFWorkbook getAllLateReportDirectImplementation(Integer currentYear, Integer currentMonthYearOrder) {
 
-        List<LaterReportDTO> data = this.reportDao.getAllLateReportDirectImplementation( currentYear, currentMonthYearOrder);
+    public XSSFWorkbook getAllLateReportDirectImplementation(Long periodId, Integer currentYear, Integer currentMonthYearOrder) throws GeneralAppException {
+
+        List<IndicatorExecution> data = this.reportDao.getAllLateReportDirectImplementation(periodId, currentYear, currentMonthYearOrder);
         if (CollectionUtils.isEmpty(data)) {
             return null;
+        } else {
+            List<LaterReportDTO> dataDto = this.indicatorExecutionsToLateReportDtos(data);
+            dataDto = dataDto.stream()
+                    .sorted(Comparator.comparing(LaterReportDTO::getIndicator_code))
+                    .sorted(Comparator.comparing(LaterReportDTO::getImplementer))
+                    .collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(dataDto)) {
+                return null;
+            }
+            return this.getLateReport(dataDto, false, false);
         }
-        return this.getLateReport(data, false, false);
     }
-    public SXSSFWorkbook getAllLateReportPartners(Integer currentYear, Integer currentMonthYearOrder) {
 
-        List<LaterReportDTO> data = this.reportDao.getAllLateReportPartners( currentYear, currentMonthYearOrder);
+
+    public XSSFWorkbook getAllLateReportPartners(Long periodId, int currentMonth, int currentYear) throws GeneralAppException {
+
+        List<IndicatorExecution> data = this.reportDao.getAllLateReportPartners(periodId, currentMonth, currentYear);
         if (CollectionUtils.isEmpty(data)) {
             return null;
+        } else {
+            List<LaterReportDTO> dataDto = this.indicatorExecutionsToLateReportDtos(data);
+            if (CollectionUtils.isEmpty(dataDto)) {
+                return null;
+            }
+            return this.getLateReport(dataDto, true, false);
         }
-        return this.getLateReport(data, true, false);
     }
-    public SXSSFWorkbook getAllLateReviewPartners(Integer currentYear, Integer currentMonthYearOrder) {
 
-        List<LaterReportDTO> data = this.reportDao.getAllLateReviewPartners( currentYear, currentMonthYearOrder);
+    private List<LaterReportDTO> indicatorExecutionsToLateReportDtos(List<IndicatorExecution> indicatorExecutions) throws GeneralAppException {
+        List<LaterReportDTO> r = new ArrayList<>();
+        for (IndicatorExecution indicatorExecution : indicatorExecutions) {
+            LaterReportDTO lateDto = this.indicatorExecutionToLateReportDto(indicatorExecution);
+            if (StringUtils.isNotBlank(lateDto.getLate_months())) {
+                r.add(lateDto);
+            }
+        }
+        return r;
+    }
+
+    private LaterReportDTO indicatorExecutionToLateReportDto(IndicatorExecution indicatorExecution) throws GeneralAppException {
+        IndicatorExecutionWeb iew = this.modelWebTransformationService.indicatorExecutionToIndicatorExecutionWeb(indicatorExecution, true);
+        String lateMonths = iew.getQuarters().stream()
+                .flatMap(quarterWeb -> quarterWeb.getMonths().stream())
+                .filter(monthWeb -> monthWeb.getLate().equals(TimeStateEnum.LATE) || monthWeb.getLate().equals(TimeStateEnum.SOON_REPORT))
+                .sorted(Comparator.comparingInt(MonthWeb::getOrder))
+                .map(monthWeb -> monthWeb.getMonth().getLabel()).collect(Collectors.joining(", "));
+        if (iew.getProject() != null) {
+            return new LaterReportDTO(
+                    iew.getProject().getName(),
+                    iew.getProject().getOrganization().getAcronym(),
+                    iew.getIndicator().getCode(),
+                    iew.getIndicator().getDescription(),
+                    iew.getIndicator().getCategory(),
+                    lateMonths,
+                    iew.getProject().getFocalPoint().getName()
+            );
+        } else {
+            return new LaterReportDTO(
+                    iew.getReportingOffice().getAcronym(),
+                    iew.getIndicator().getCode(),
+                    iew.getIndicator().getDescription(),
+                    iew.getIndicator().getCategory(),
+                    lateMonths,
+                    iew.getSupervisorUser().getName(),
+                    iew.getAssignedUser().getName(),
+                    null
+            );
+        }
+
+    }
+
+    public XSSFWorkbook getAllLateReviewPartners(Integer currentYear, Integer currentMonthYearOrder) {
+
+        List<LaterReportDTO> data = this.reportDao.getAllLateReviewPartners(currentYear, currentMonthYearOrder);
         if (CollectionUtils.isEmpty(data)) {
             return null;
         }

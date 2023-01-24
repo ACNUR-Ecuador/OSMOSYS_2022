@@ -13,6 +13,8 @@ import org.unhcr.osmosys.model.Project;
 import org.unhcr.osmosys.model.cubeDTOs.FactDTO;
 import org.unhcr.osmosys.model.enums.AreaType;
 import org.unhcr.osmosys.model.enums.DissagregationType;
+import org.unhcr.osmosys.model.enums.MonthEnum;
+import org.unhcr.osmosys.model.enums.TimeStateEnum;
 import org.unhcr.osmosys.reports.service.MessageAlertService;
 import org.unhcr.osmosys.reports.service.ReportService;
 import org.unhcr.osmosys.services.*;
@@ -43,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 
 @SuppressWarnings("ALL")
@@ -86,8 +89,6 @@ public class TestEndpoint {
     @Inject
     IndicatorExecutionService indicatorExecutionService;
 
-    @Inject
-    ImportService importService;
 
     @Inject
     TestService testService;
@@ -106,14 +107,23 @@ public class TestEndpoint {
     public String test2() throws GeneralAppException {
         // this.importService.catalogImport();
         LOGGER.info("inicio");
-       /* try {
-            Thread.sleep(120000);
-            LOGGER.info("inicio");
-            return "ya";
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return "fallo";
-        }*/
+        List<IndicatorExecutionWeb> ie = this.indicatorExecutionService.getActiveProjectIndicatorExecutionsByPeriodId(2l);
+        LOGGER.info(ie.size());
+        List<IndicatorExecutionWeb> lateIe = ie.stream().filter(indicatorExecutionWeb -> {
+            return indicatorExecutionWeb.getLate().equals(TimeStateEnum.LATE);
+        }).collect(Collectors.toList());
+
+
+        for (IndicatorExecutionWeb indicatorExecutionWeb : lateIe) {
+            LOGGER.info(indicatorExecutionWeb.getProject().getOrganization().getAcronym() + indicatorExecutionWeb.getIndicator().getCode() + "-" + indicatorExecutionWeb.getLate());
+            List<MonthWeb> m = indicatorExecutionWeb.getQuarters().stream().
+                    flatMap(quarter -> quarter.getMonths().stream())
+                    .filter(monthWeb -> monthWeb.getLate().equals(TimeStateEnum.LATE))
+                    .sorted((o1, o2) -> o1.getOrder() - o2.getOrder()).
+                    collect(Collectors.toList());
+            LOGGER.info(m.stream().map(MonthWeb::getMonth).map(MonthEnum::getLabel).collect(Collectors.joining(",", "[", "]")));
+
+        }
 
         return "ya";
     }
@@ -774,7 +784,7 @@ public class TestEndpoint {
         p2023.setYear(2023);
         */
 
-        ProjectWeb projectWeb= new ProjectWeb();
+        ProjectWeb projectWeb = new ProjectWeb();
         projectWeb.setId(77L);
 
         // this.projectIndicatorsImportService.projectIndicatorsImport(projectWeb);

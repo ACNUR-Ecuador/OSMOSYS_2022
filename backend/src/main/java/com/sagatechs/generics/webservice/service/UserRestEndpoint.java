@@ -33,7 +33,6 @@ public class UserRestEndpoint {
      *
      * @param appCode
      * @return
-     * @throws GeneralAppException
      */
     @Path("/users/{userId}")
     @GET
@@ -103,6 +102,20 @@ public class UserRestEndpoint {
         return this.userService.getUNHCRUsersWebByState(State.ACTIVO);
     }
 
+    @Path("/users/responsibleID/{periodId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<UserWeb> getActiveResponsableDirectImplementationUserWebs(@PathParam("periodId") Long periodId) {
+        return this.userService.getActiveResponsableDirectImplementationUserWebs(periodId);
+    }
+
+    @Path("/users/supervisorID/{periodId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<UserWeb> getActiveSupervisorDirectImplementationUserWebs(@PathParam("periodId") Long periodId) {
+        return this.userService.getActiveSupervisorDirectImplementationUserWebs(periodId);
+    }
+
     @Path("/recoverpassword")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -114,7 +127,6 @@ public class UserRestEndpoint {
     /**
      * cambio contraseña
      *
-     * @return
      * @throws AccessDeniedException
      */
     @Secured

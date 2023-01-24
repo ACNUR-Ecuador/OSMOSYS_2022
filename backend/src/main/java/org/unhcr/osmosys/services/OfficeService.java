@@ -24,6 +24,7 @@ public class OfficeService {
     ModelWebTransformationService modelWebTransformationService;
 
 
+    @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(OfficeService.class);
 
     public Office getById(Long id) {
@@ -52,12 +53,10 @@ public class OfficeService {
     }
 
     public List<OfficeWeb> getAll(boolean returnChilds) {
-        List<OfficeWeb> r = new ArrayList<>();
         return this.modelWebTransformationService.officesToOfficesWeb(this.officeDao.findAll(), returnChilds);
     }
 
     public List<OfficeWeb> getByState(State state, boolean returnChilds) {
-        List<OfficeWeb> r = new ArrayList<>();
         return this.modelWebTransformationService.officesToOfficesWeb(this.officeDao.getByState(state), returnChilds);
     }
 
@@ -115,4 +114,8 @@ public class OfficeService {
     }
 
 
+    public List<OfficeWeb> getReportingOfficeByPeriodId(Long periodId) {
+        List<Office> offices = this.officeDao.getReportingOfficeByPeriodId(periodId);
+        return this.modelWebTransformationService.officesToOfficesWeb(offices, false);
+    }
 }

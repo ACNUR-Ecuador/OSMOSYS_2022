@@ -67,4 +67,17 @@ public class OfficeDao extends GenericDaoJpa<Office, Long> {
 
         return q.getResultList();
     }
+
+    @SuppressWarnings("unchecked")
+    public List<Office> getReportingOfficeByPeriodId(Long periodId) {
+
+        String jpql = "SELECT DISTINCT o FROM IndicatorExecution ie " +
+                " inner join  ie.reportingOffice o " +
+                " WHERE ie.period.id=:perioId " +
+                " and ie.state=:state ";
+        Query q = getEntityManager().createQuery(jpql, Office.class);
+        q.setParameter("perioId", periodId);
+        q.setParameter("state", State.ACTIVO);
+        return q.getResultList();
+    }
 }

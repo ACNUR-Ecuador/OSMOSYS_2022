@@ -560,6 +560,15 @@ public class UserService implements Serializable {
         return this.userDao.getActiveResponsableDirectImplementationUsers(periodId);
     }
 
+    public List<UserWeb> getActiveResponsableDirectImplementationUserWebs(Long periodId) {
+        List<User> r = this.userDao.getActiveResponsableDirectImplementationUsers(periodId);
+        return this.modelWebTransformationService.usersToUsersWebSimple(r, true, false);
+    }
+    public List<UserWeb> getActiveSupervisorDirectImplementationUserWebs(Long periodId) {
+        List<User> r = this.userDao.getActiveResponsableDirectImplementationUsers(periodId);
+        return this.modelWebTransformationService.usersToUsersWebSimple(r, true, false);
+    }
+
     public List<User> getActiveSupervisorsDirectImplementationUsers(Long periodId) {
         return this.userDao.getActiveSupervisorsDirectImplementationUsers(periodId);
     }

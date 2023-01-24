@@ -45,7 +45,7 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
-    @Path("" +
+    @Path(
             "/indicatorsCatalogByPeriodId/{periodId}")
     @GET
     @Secured
@@ -624,7 +624,7 @@ public class ReportsEndpoint {
         LOGGER.info("getPartnerLateReportByProjectId:");//) + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnerLateReportByProjectId(projectId);
-        if(r==null){
+        if (r == null) {
             throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
         }
         long lEndTime = System.nanoTime();
@@ -645,7 +645,7 @@ public class ReportsEndpoint {
         LOGGER.info("getPartnerLateReviewByProjectId:");//) + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnerLateReviewByProjectId(projectId);
-        if(r==null){
+        if (r == null) {
             throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
         }
         long lEndTime = System.nanoTime();
@@ -654,19 +654,42 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
-    @Path("/getSupervisorLateReviewReport/{supervisorId}")
+
+    @Path("/getSupervisorLateReport/{periodId}/{supervisorId}")
     @GET
     //@Secured
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    public Response getSupervisorLateReviewReport(
+    public Response getDirectImplementationSupervisorLateReviewReport(
             // @Context SecurityContext securityContext,
-            @PathParam("supervisorId") Long supervisorId
+            @PathParam("supervisorId") Long supervisorId,
+            @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         // Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("getSupervisorLateReviewReport:");//) + principal.getName());
+        LOGGER.info("getSupervisorLateReport:");//) + principal.getName());
         long lStartTime = System.nanoTime();
-        ByteArrayOutputStream r = this.reportService.getDirectImplementationLateReviewReportBySupervisorId(supervisorId);
-        if(r==null){
+        ByteArrayOutputStream r = this.reportService.getDirectImplementationLateReportBySupervisorId(periodId,supervisorId);
+        if (r == null) {
+            throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
+        }
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
+        String filename = "Reporte_retrasos_revision_di" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+    }
+    @Path("/getOfficeLateDirectImplementationReport/{periodId}/{officeId}")
+    @GET
+    //@Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getOfficeLateDirectImplementationReport(
+            // @Context SecurityContext securityContext,
+            @PathParam("officeId") Long officeId,
+            @PathParam("periodId") Long periodId
+    ) throws GeneralAppException {
+        // Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getSupervisorLateReport:");//) + principal.getName());
+        long lStartTime = System.nanoTime();
+        ByteArrayOutputStream r = this.reportService.getOfficeLateDirectImplementationReport(periodId,officeId);
+        if (r == null) {
             throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
         }
         long lEndTime = System.nanoTime();
@@ -675,19 +698,20 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
-    @Path("/getResponsableLateReport/{responsableId}")
+    @Path("/getResponsableLateReport/{responsableId}/{periodId}")
     @GET
     //@Secured
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public Response getResponsableLateReport(
             // @Context SecurityContext securityContext,
-            @PathParam("responsableId") Long responsableId
+            @PathParam("responsableId") Long responsableId,
+            @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         // Principal principal = securityContext.getUserPrincipal();
         LOGGER.info("getResponsableLateReport:");//) + principal.getName());
         long lStartTime = System.nanoTime();
-        ByteArrayOutputStream r = this.reportService.getDirectImplementationLateReportByResponsableId(responsableId);
-        if(r==null){
+        ByteArrayOutputStream r = this.reportService.getDirectImplementationLateReportByResponsableId(responsableId, periodId);
+        if (r == null) {
             throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
         }
         long lEndTime = System.nanoTime();
@@ -708,7 +732,7 @@ public class ReportsEndpoint {
         LOGGER.info("getFocalPointLateReport:");//) + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnerLateReportByFocalPointId(focalPointId);
-        if(r==null){
+        if (r == null) {
             throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
         }
         long lEndTime = System.nanoTime();
@@ -729,7 +753,7 @@ public class ReportsEndpoint {
         LOGGER.info("getFocalPointLateReviewReport:");//) + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnerLateReviewReportByFocalPointId(focalPointId);
-        if(r==null){
+        if (r == null) {
             throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
         }
         long lEndTime = System.nanoTime();
@@ -749,7 +773,7 @@ public class ReportsEndpoint {
         LOGGER.info("getAllLateReviewReportDirectImplementation:");//) + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getAllLateReviewReportDirectImplementation();
-        if(r==null){
+        if (r == null) {
             throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
         }
         long lEndTime = System.nanoTime();
@@ -758,18 +782,19 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
-    @Path("/getAllLateReportDirectImplementation")
+    @Path("/getAllLateReportDirectImplementation/{periodId}")
     @GET
     //@Secured
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public Response getAllLateReportDirectImplementation(
             // @Context SecurityContext securityContext,
+            @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         // Principal principal = securityContext.getUserPrincipal();
         LOGGER.info("getAllLateReportDirectImplementation:");//) + principal.getName());
         long lStartTime = System.nanoTime();
-        ByteArrayOutputStream r = this.reportService.getAllLateReportDirectImplementation();
-        if(r==null){
+        ByteArrayOutputStream r = this.reportService.getAllLateReportDirectImplementation(periodId);
+        if (r == null) {
             throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
         }
         long lEndTime = System.nanoTime();
@@ -778,18 +803,19 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
-    @Path("/getAllLateReportPartners")
+    @Path("/getAllLateReportPartners/{periodId}")
     @GET
     //@Secured
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public Response getAllLateReportPartners(
             // @Context SecurityContext securityContext,
+            @PathParam("periodId") Long periodId
     ) throws GeneralAppException {
         // Principal principal = securityContext.getUserPrincipal();
         LOGGER.info("getAllLateReportPartners:");//) + principal.getName());
         long lStartTime = System.nanoTime();
-        ByteArrayOutputStream r = this.reportService.getAllLateReportPartners();
-        if(r==null){
+        ByteArrayOutputStream r = this.reportService.getAllLateReportPartners(periodId);
+        if (r == null) {
             throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
         }
         long lEndTime = System.nanoTime();
@@ -797,6 +823,7 @@ public class ReportsEndpoint {
         String filename = "Reporte_retrasos_socios" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
+
     @Path("/getAllLateReviewPartners")
     @GET
     //@Secured
@@ -808,7 +835,7 @@ public class ReportsEndpoint {
         LOGGER.info("getAllLateReviewPartners:");//) + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getAllLateReviewPartners();
-        if(r==null){
+        if (r == null) {
             throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
         }
         long lEndTime = System.nanoTime();
@@ -816,7 +843,6 @@ public class ReportsEndpoint {
         String filename = "Reporte_retrasos_verificacion_socios" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
-
 
 
 }

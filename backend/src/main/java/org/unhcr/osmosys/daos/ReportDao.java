@@ -1,5 +1,8 @@
 package org.unhcr.osmosys.daos;
 
+import com.sagatechs.generics.persistence.model.State;
+import org.unhcr.osmosys.model.IndicatorExecution;
+import org.unhcr.osmosys.model.enums.IndicatorType;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedDTO;
 import org.unhcr.osmosys.model.reportDTOs.LaterReportDTO;
 
@@ -267,15 +270,31 @@ public class ReportDao {
         return q.getResultList();
     }
 
-    public List<LaterReportDTO> getDirectImplementationLateReportByResponsableId(Long responsableId, Integer currentYear, Integer currentMonthYearOrder) {
-        String sql = ReportDao.late_months_di
-                + " and  ie.assigned_user_id= :responsableId ";
-        sql += ReportDao.orderGroupLateReportDirectImplementation;
-        Query q = this.entityManager.createNativeQuery(sql, "LateReportMappingDTOMappingDI");
+    public List<IndicatorExecution> getDirectImplementationLateReportByResponsableId(Long periodId, Long responsableId, Integer currentYear, Integer currentMonth) {
 
+        String jpql = IndicatorExecutionDao.jpqlDirectImplementationIndicators +
+                " WHERE p.id = :periodId " +
+                " and o.indicatorType <> :generalType " +
+                " and o.project.id is null" +
+                " and o.state =:state " +
+                " and (q.state is null or q.state =:state )" +
+                " and (m.state is null or m.state =:state )" +
+                " and p.id =:periodId " +
+                " and ( au.id =:responsableId  or aub.id =:responsableId ) " +
+                " and ( " +
+                " (m.year <= :currentYear )" +
+                " or (m.year = :currentYear and m.monthYearOrder <= :currentMonth )" +
+                ") "
+                // " order by o.reportingOffice.acronym,  " +
+                //  " o.projectStatement.code , o.indicator.code  "
+                ;
+        Query q = this.entityManager.createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("generalType", IndicatorType.GENERAL);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("periodId", periodId);
+        q.setParameter("currentMonth", currentMonth);
+        q.setParameter("currentYear", currentYear);
         q.setParameter("responsableId", responsableId);
-        q.setParameter("year", currentYear);
-        q.setParameter("month", currentMonthYearOrder);
         return q.getResultList();
     }
 
@@ -301,24 +320,52 @@ public class ReportDao {
         return (List<LaterReportDTO>) q.getResultList();
     }
 
-    public List<LaterReportDTO> getAllLateReportDirectImplementation(Integer currentYear, Integer currentMonthYearOrder) {
-        String sql = ReportDao.late_months_di;
-        sql += ReportDao.orderGroupLateReportDirectImplementation;
-        Query q = this.entityManager.createNativeQuery(sql, "LateReportMappingDTOMappingDI");
-
-        q.setParameter("year", currentYear);
-        q.setParameter("month", currentMonthYearOrder);
-        return (List<LaterReportDTO>) q.getResultList();
+    public List<IndicatorExecution> getAllLateReportDirectImplementation(Long periodId, Integer currentYear, Integer currentMonth) {
+        String jpql = IndicatorExecutionDao.jpqlDirectImplementationIndicators +
+                " WHERE p.id = :periodId " +
+                " and o.indicatorType <> :generalType " +
+                " and o.project.id is null" +
+                " and o.state =:state " +
+                " and (q.state is null or q.state =:state )" +
+                " and (m.state is null or m.state =:state )" +
+                " and p.id =:periodId " +
+                " and ( " +
+                " (m.year <= :currentYear )" +
+                " or (m.year = :currentYear and m.monthYearOrder <= :currentMonth )" +
+                ") " /*+
+                " order by o.reportingOffice.acronym,  " +
+                " o.projectStatement.code , o.indicator.code  "*/;
+        Query q = this.entityManager.createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("generalType", IndicatorType.GENERAL);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("periodId", periodId);
+        q.setParameter("currentMonth", currentMonth);
+        q.setParameter("currentYear", currentYear);
+        return q.getResultList();
     }
 
-    public List<LaterReportDTO> getAllLateReportPartners(Integer currentYear, Integer currentMonthYearOrder) {
-        String sql = ReportDao.late_months_partners;
-        sql += ReportDao.orderGroupLateReportPartners;
-        Query q = this.entityManager.createNativeQuery(sql, "LateReportMappingDTOMappingPartners");
+    public List<IndicatorExecution> getAllLateReportPartners(Long periodId, int currentMonth, int currentYear) {
 
-        q.setParameter("year", currentYear);
-        q.setParameter("month", currentMonthYearOrder);
-        return (List<LaterReportDTO>) q.getResultList();
+        String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
+                " WHERE o.project is not null " +
+                " and o.project.state =:state " +
+                " and o.state =:state " +
+                " and (q.state is null or q.state =:state )" +
+                " and (m.state is null or m.state =:state )" +
+                " and p.id =:periodId " +
+                " and ( " +
+                " (m.year <= :currentYear )" +
+                " or (m.year = :currentYear and m.monthYearOrder <= :currentMonth )" +
+                ") " +
+                " order by org.acronym, org.description, " +
+                " pr.code, pr.name, o.indicatorType, o.projectStatement.code , i.code  ";
+        Query q = this.entityManager.createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("periodId", periodId);
+        q.setParameter("currentMonth", currentMonth);
+        q.setParameter("currentYear", currentYear);
+        return q.getResultList();
+
     }
 
     public List<LaterReportDTO> getAllLateReviewPartners(Integer currentYear, Integer currentMonthYearOrder) {
@@ -329,5 +376,58 @@ public class ReportDao {
         q.setParameter("year", currentYear);
         q.setParameter("month", currentMonthYearOrder);
         return (List<LaterReportDTO>) q.getResultList();
+    }
+
+    public List<IndicatorExecution> getDirectImplementationLateReportBySupervisorId(Long periodId,Long supervisorId, Integer currentYear, Integer currentMonth) {
+        String jpql = IndicatorExecutionDao.jpqlDirectImplementationIndicators +
+                " WHERE p.id = :periodId " +
+                " and o.indicatorType <> :generalType " +
+                " and o.project.id is null" +
+                " and o.state =:state " +
+                " and (q.state is null or q.state =:state )" +
+                " and (m.state is null or m.state =:state )" +
+                " and p.id =:periodId " +
+                " and su.id =:supervisorId " +
+                " and ( " +
+                " (m.year <= :currentYear )" +
+                " or (m.year = :currentYear and m.monthYearOrder <= :currentMonth )" +
+                ") "
+                // " order by o.reportingOffice.acronym,  " +
+                //  " o.projectStatement.code , o.indicator.code  "
+                ;
+        Query q = this.entityManager.createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("generalType", IndicatorType.GENERAL);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("periodId", periodId);
+        q.setParameter("currentMonth", currentMonth);
+        q.setParameter("currentYear", currentYear);
+        q.setParameter("supervisorId", supervisorId);
+        return q.getResultList();
+    }
+    public List<IndicatorExecution> getOfficeLateDirectImplementationReport(Long periodId,Long officeId, Integer currentYear, Integer currentMonth) {
+        String jpql = IndicatorExecutionDao.jpqlDirectImplementationIndicators +
+                " WHERE p.id = :periodId " +
+                " and o.indicatorType <> :generalType " +
+                " and o.project.id is null" +
+                " and o.state =:state " +
+                " and (q.state is null or q.state =:state )" +
+                " and (m.state is null or m.state =:state )" +
+                " and p.id =:periodId " +
+                " and o.reportingOffice.id =:officeId " +
+                " and ( " +
+                " (m.year <= :currentYear )" +
+                " or (m.year = :currentYear and m.monthYearOrder <= :currentMonth )" +
+                ") "
+                // " order by o.reportingOffice.acronym,  " +
+                //  " o.projectStatement.code , o.indicator.code  "
+                ;
+        Query q = this.entityManager.createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("generalType", IndicatorType.GENERAL);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("periodId", periodId);
+        q.setParameter("currentMonth", currentMonth);
+        q.setParameter("currentYear", currentYear);
+        q.setParameter("officeId", officeId);
+        return q.getResultList();
     }
 }

@@ -4,7 +4,6 @@ import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.IndicatorExecution;
-import org.unhcr.osmosys.model.Quarter;
 import org.unhcr.osmosys.model.enums.Frecuency;
 import org.unhcr.osmosys.model.enums.IndicatorType;
 import org.unhcr.osmosys.model.enums.MonthEnum;
@@ -25,7 +24,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         super(IndicatorExecution.class, Long.class);
     }
 
-    private static final String jpqlProjectIndicators =
+    public static final String jpqlProjectIndicators =
             " SELECT DISTINCT o FROM IndicatorExecution o " +
                     " left join fetch o.indicator i " +
                     " left join fetch o.project pr " +
@@ -46,7 +45,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                     " left join fetch o.period p " +
                     " left join fetch p.generalIndicator " +
                     " left join fetch o.indicator ";
-    private static final String jpqlDirectImplementationIndicators =
+    public static final String jpqlDirectImplementationIndicators =
             "SELECT DISTINCT o FROM IndicatorExecution o " +
                     " left join fetch o.indicatorExecutionLocationAssigments iela " +
                     " left join fetch iela.location can " +

@@ -74,4 +74,12 @@ public class OfficeEndpoint {
     public List<OfficeWeb> getByState(@PathParam("state") State state) {
         return this.officeService.getByState(state, false);
     }
+
+    @Path("/reportingOfficesByPeriodId/{periodId}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<OfficeWeb> reportingOfficesByPeriodId(@PathParam("periodId") Long periodId) {
+        return this.officeService.getReportingOfficeByPeriodId(periodId);
+    }
 }
