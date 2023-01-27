@@ -18,6 +18,7 @@ import org.jboss.logging.Logger;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.*;
 import org.unhcr.osmosys.daos.ReportDao;
 import org.unhcr.osmosys.model.IndicatorExecution;
+import org.unhcr.osmosys.model.enums.Frecuency;
 import org.unhcr.osmosys.model.enums.TimeStateEnum;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedDTO;
 import org.unhcr.osmosys.model.reportDTOs.LaterReportDTO;
@@ -50,6 +51,12 @@ public class ReportDataService {
         return this.indicatorExecutionsProjectsReports(indicatorExecutions);
     }
 
+    public List<Map<String, Object>> indicatorExecutionsProjectsReportsByProjectId(Long projectId) throws GeneralAppException {
+        List<IndicatorExecutionWeb> indicatorExecutions = this.indicatorExecutionService.getActivePartnersIndicatorExecutionsByProjectId(projectId);
+        return this.indicatorExecutionsProjectsToProjectReport(indicatorExecutions);
+
+    }
+
 
     public List<Map<String, Object>> indicatorExecutionsProjectsReports(List<IndicatorExecutionWeb> indicatorExecutions) {
         List<Map<String, Object>> r = new ArrayList();
@@ -65,6 +72,63 @@ public class ReportDataService {
             map.put("totalExecution", ie.getTotalExecution());
             map.put("executionPercentage", ie.getExecutionPercentage());
             map.put("late", ie.getLate().equals(TimeStateEnum.LATE) ? "Si" : "No");
+            r.add(map);
+        }
+
+        return r;
+
+    }
+
+    public List<Map<String, Object>> indicatorExecutionsProjectsToProjectReport(List<IndicatorExecutionWeb> indicatorExecutions) {
+        List<Map<String, Object>> r = new ArrayList();
+        for (IndicatorExecutionWeb ie : indicatorExecutions) {
+            Map<String, Object> map = new HashMap();
+            map.put("partner", ie.getProject().getOrganization().getAcronym() + '-' + ie.getProject().getOrganization().getDescription());
+            map.put("project", ie.getProject().getCode() + '-' + ie.getProject().getName());
+            map.put("indicatorType", ie.getIndicatorType().getLabel());
+            map.put("outcomeStatement", ie.getProjectStatement() != null ? ie.getProjectStatement().getCode() + '-' + ie.getProjectStatement().getDescription() : null);
+            map.put("indicator", ie.getIndicator().getCode() + "-" + ie.getIndicator().getDescription()
+                    + (StringUtils.isNotEmpty(ie.getIndicator().getCategory()) ? " (Categoría: " + ie.getIndicator().getCategory() + " )" : ""));
+            map.put("target", ie.getTarget());
+            map.put("totalExecution", ie.getTotalExecution());
+            map.put("executionPercentage", ie.getExecutionPercentage());
+            map.put("late", ie.getLate().equals(TimeStateEnum.LATE) ? "Si" : "No");
+
+            map.put("ie_id", ie.getId());
+            if (ie.getProject() != null) {
+                map.put("implementation_type", "Socios");
+                map.put("statement_project", ie.getProjectStatement() != null ?
+                        ie.getProjectStatement().getCode() + " - " + ie.getProjectStatement().getDescription()
+                        : null);
+                map.put("implementers", ie.getProject().getOrganization().getAcronym());
+            } else {
+                map.put("implementation_type", "Directa");
+                map.put("statement_project", null);
+                map.put("implementers", ie.getReportingOffice().getAcronym());
+            }
+            map.put("statement", ie.getIndicator() != null && ie.getIndicator().getStatement() != null ? ie.getIndicator().getStatement().getCode() + " - " + ie.getIndicator().getStatement().getDescription() : null);
+            map.put("indicator_type", ie.getIndicatorType().getLabel());
+            map.put("indicator", ie.getIndicator() == null ? "General" : ie.getIndicator().getCode() + " - " + ie.getIndicator().getDescription());
+            map.put("category", ie.getIndicator() != null ? ie.getIndicator().getCategory() : null);
+            map.put("frecuency", ie.getIndicator() != null && ie.getIndicator().getFrecuency() != null ? ie.getIndicator().getFrecuency().getLabel() : Frecuency.MENSUAL.getLabel());
+            map.put("dissagregations", ie.getIndicator().getDissagregationsAssignationToIndicator().stream().map(dissagregationAssignationToIndicatorWeb -> dissagregationAssignationToIndicatorWeb.getDissagregationType().getLabel()).collect(Collectors.joining(", ")));
+            map.put("custom_dissagregations", ie.getIndicator().getCustomDissagregationAssignationToIndicators() != null ?
+                    ie.getIndicator().getCustomDissagregationAssignationToIndicators()
+                            .stream()
+                            .map(customDissagregationAssignationToIndicatorWeb -> customDissagregationAssignationToIndicatorWeb.getCustomDissagregation().getName())
+                            .collect(Collectors.joining(", "))
+                    : null
+            );
+            map.put("total_execution", ie.getTotalExecution());
+            map.put("target", ie.getTarget());
+            map.put("execution_percentage", ie.getExecutionPercentage());
+            String monthsLate = ie.getQuarters().stream().flatMap(quarterWeb -> quarterWeb.getMonths().stream())
+                    .filter(monthWeb -> monthWeb.getLate().equals(TimeStateEnum.LATE))
+                    .sorted(Comparator.comparingInt(o -> o.getMonth().getOrder()))
+                    .map(monthWeb -> monthWeb.getMonth().getLabel())
+                    .collect(Collectors.joining(", "));
+            map.put("months_late", monthsLate);
+            map.put("is_late", StringUtils.isNotBlank(monthsLate) ? "Retrasado" : "A tiempo");
             r.add(map);
         }
 
@@ -514,12 +578,19 @@ public class ReportDataService {
 
     }
 
-    public XSSFWorkbook getPartnerLateReportByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
-        List<LaterReportDTO> data = this.reportDao.getPartnerLateReportByProjectId(projectId, currentYear, currentMonth);
+    public XSSFWorkbook getPartnerLateReportByProjectId(Long projectId, Integer currentYear, Integer currentMonth) throws GeneralAppException {
+
+        List<IndicatorExecution> data = this.reportDao.getPartnerLateReportByProjectId(projectId, currentYear, currentMonth);
+        List<LaterReportDTO> dataDto;
         if (CollectionUtils.isEmpty(data)) {
             return null;
+        } else {
+            dataDto = this.indicatorExecutionsToLateReportDtos(data);
+            if (CollectionUtils.isEmpty(dataDto)) {
+                return null;
+            }
+            return this.getLateReport(dataDto, true, false);
         }
-        return this.getLateReport(data, true, false);
     }
 
     public XSSFWorkbook getPartnerLateReviewByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
@@ -530,21 +601,21 @@ public class ReportDataService {
         return this.getLateReport(data, true, true);
     }
 
-    public XSSFWorkbook getPartnerLateReportByFocalPointId(Long focalPointId, Integer currentYear, Integer currentMonth) {
-        List<LaterReportDTO> data = this.reportDao.getPartnerLateReportByProjectId(focalPointId, currentYear, currentMonth);
+    public XSSFWorkbook getPartnerLateReportByFocalPointId(Long focalPointId, Integer currentYear, Integer currentMonth) throws GeneralAppException {
+        List<IndicatorExecution> data = this.reportDao.getPartnerLateReviewReportByFocalPointId(focalPointId , currentYear, currentMonth);
+        List<LaterReportDTO> dataDto;
         if (CollectionUtils.isEmpty(data)) {
             return null;
+        } else {
+            dataDto = this.indicatorExecutionsToLateReportDtos(data);
+            if (CollectionUtils.isEmpty(dataDto)) {
+                return null;
+            }
+            return this.getLateReport(dataDto, false, false);
         }
-        return this.getLateReport(data, true, false);
     }
 
-    public XSSFWorkbook getPartnerLateReviewReportByFocalPointId(Long focalPointId, Integer currentYear, Integer currentMonth) {
-        List<LaterReportDTO> data = this.reportDao.getPartnerLateReviewReportByFocalPointId(focalPointId, currentYear, currentMonth);
-        if (CollectionUtils.isEmpty(data)) {
-            return null;
-        }
-        return this.getLateReport(data, true, true);
-    }
+
 
     public XSSFWorkbook getPartnerLateReviewReportByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
         List<LaterReportDTO> data = this.reportDao.getPartnerLateReviewByProjectId(projectId, currentYear, currentMonth);
@@ -798,9 +869,10 @@ public class ReportDataService {
         }
         return this.getLateReport(data, false, true);
     }
-    public XSSFWorkbook getDirectImplementationLateReportBySupervisorId(Long periodId,Long responsableId, Integer currentYear, Integer currentMonthYearOrder) throws GeneralAppException {
 
-        List<IndicatorExecution> data = this.reportDao.getDirectImplementationLateReportBySupervisorId(periodId,responsableId, currentYear, currentMonthYearOrder);
+    public XSSFWorkbook getDirectImplementationLateReportBySupervisorId(Long periodId, Long responsableId, Integer currentYear, Integer currentMonthYearOrder) throws GeneralAppException {
+
+        List<IndicatorExecution> data = this.reportDao.getDirectImplementationLateReportBySupervisorId(periodId, responsableId, currentYear, currentMonthYearOrder);
         if (CollectionUtils.isEmpty(data)) {
             return null;
         } else {
@@ -811,9 +883,10 @@ public class ReportDataService {
             return this.getLateReport(dataDto, false, false);
         }
     }
-    public XSSFWorkbook getOfficeLateDirectImplementationReport(Long periodId,Long officeId, Integer currentYear, Integer currentMonthYearOrder) throws GeneralAppException {
 
-        List<IndicatorExecution> data = this.reportDao.getOfficeLateDirectImplementationReport(periodId,officeId, currentYear, currentMonthYearOrder);
+    public XSSFWorkbook getOfficeLateDirectImplementationReport(Long periodId, Long officeId, Integer currentYear, Integer currentMonthYearOrder) throws GeneralAppException {
+
+        List<IndicatorExecution> data = this.reportDao.getOfficeLateDirectImplementationReport(periodId, officeId, currentYear, currentMonthYearOrder);
         if (CollectionUtils.isEmpty(data)) {
             return null;
         } else {

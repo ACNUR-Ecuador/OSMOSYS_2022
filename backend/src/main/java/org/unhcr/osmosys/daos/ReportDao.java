@@ -198,18 +198,6 @@ public class ReportDao {
             "and  (m.checked is null or m.checked=FALSE) ";
 
 
-    public List<LaterReportDTO> getPartnerLateReportByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
-        String sql = ReportDao.late_months_partners
-                + " and  pr.id= :projectId ";
-        sql += ReportDao.orderGroupLateReportPartners;
-        Query q = this.entityManager.createNativeQuery(sql, "LateReportMappingDTOMappingPartners");
-
-        q.setParameter("projectId", projectId);
-        q.setParameter("year", currentYear);
-        q.setParameter("month", currentMonth);
-        return q.getResultList();
-    }
-
     public List<LaterReportDTO> getPartnerLateReviewByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
         String sql = ReportDao.late_months_review_partners
                 + " and  pr.id= :projectId ";
@@ -222,15 +210,25 @@ public class ReportDao {
         return q.getResultList();
     }
 
-    public List<LaterReportDTO> getPartnerLateReviewReportByFocalPointId(Long focalPointId, Integer currentYear, Integer currentMonth) {
-        String sql = ReportDao.late_months_review_partners
-                + " and  pr.focal_point_id= :focalPointId ";
-        sql += ReportDao.orderGroupLateReportPartners;
-        Query q = this.entityManager.createNativeQuery(sql, "LateReportMappingDTOMappingPartners");
+    public List<IndicatorExecution> getPartnerLateReviewReportByFocalPointId(Long focalPointId, Integer currentYear, Integer currentMonth) {
 
+        String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
+                " WHERE o.project is not null " +
+                " and o.state =:state " +
+                " and (q.state is null or q.state =:state )" +
+                " and (m.state is null or m.state =:state )" +
+                " and o.project.focalPoint.id =:focalPointId " +
+                " and ( " +
+                " (m.year <= :currentYear )" +
+                " or (m.year = :currentYear and m.monthYearOrder <= :currentMonth )" +
+                ") " +
+                " order by  " +
+                " pr.code, pr.name, o.indicatorType, o.projectStatement.code , i.code  ";
+        Query q = this.entityManager.createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("state", State.ACTIVO);
         q.setParameter("focalPointId", focalPointId);
-        q.setParameter("year", currentYear);
-        q.setParameter("month", currentMonth);
+        q.setParameter("currentMonth", currentMonth);
+        q.setParameter("currentYear", currentYear);
         return q.getResultList();
     }
 
@@ -258,7 +256,7 @@ public class ReportDao {
         return q.getResultList();
     }
 
-    public List<LaterReportDTO> getPartnerLateReportByFocalPointId(Long focalPointId, Integer currentYear, Integer currentMonthYearOrder) {
+/*    public List<LaterReportDTO> getPartnerLateReportByFocalPointId(Long focalPointId, Integer currentYear, Integer currentMonthYearOrder) {
         String sql = ReportDao.late_months_partners
                 + " and  pr.focal_point_id= :focalPointId ";
         sql += ReportDao.orderGroupLateReportPartners;
@@ -268,7 +266,7 @@ public class ReportDao {
         q.setParameter("year", currentYear);
         q.setParameter("month", currentMonthYearOrder);
         return q.getResultList();
-    }
+    }*/
 
     public List<IndicatorExecution> getDirectImplementationLateReportByResponsableId(Long periodId, Long responsableId, Integer currentYear, Integer currentMonth) {
 
@@ -295,6 +293,27 @@ public class ReportDao {
         q.setParameter("currentMonth", currentMonth);
         q.setParameter("currentYear", currentYear);
         q.setParameter("responsableId", responsableId);
+        return q.getResultList();
+    }
+
+    public List<IndicatorExecution> getPartnerLateReportByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
+        String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
+                " WHERE o.project is not null " +
+                " and o.state =:state " +
+                " and (q.state is null or q.state =:state )" +
+                " and (m.state is null or m.state =:state )" +
+                " and o.project.id =:projectId " +
+                " and ( " +
+                " (m.year <= :currentYear )" +
+                " or (m.year = :currentYear and m.monthYearOrder <= :currentMonth )" +
+                ") " +
+                " order by  " +
+                " pr.code, pr.name, o.indicatorType, o.projectStatement.code , i.code  ";
+        Query q = this.entityManager.createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("projectId", projectId);
+        q.setParameter("currentMonth", currentMonth);
+        q.setParameter("currentYear", currentYear);
         return q.getResultList();
     }
 
@@ -378,7 +397,7 @@ public class ReportDao {
         return (List<LaterReportDTO>) q.getResultList();
     }
 
-    public List<IndicatorExecution> getDirectImplementationLateReportBySupervisorId(Long periodId,Long supervisorId, Integer currentYear, Integer currentMonth) {
+    public List<IndicatorExecution> getDirectImplementationLateReportBySupervisorId(Long periodId, Long supervisorId, Integer currentYear, Integer currentMonth) {
         String jpql = IndicatorExecutionDao.jpqlDirectImplementationIndicators +
                 " WHERE p.id = :periodId " +
                 " and o.indicatorType <> :generalType " +
@@ -404,7 +423,8 @@ public class ReportDao {
         q.setParameter("supervisorId", supervisorId);
         return q.getResultList();
     }
-    public List<IndicatorExecution> getOfficeLateDirectImplementationReport(Long periodId,Long officeId, Integer currentYear, Integer currentMonth) {
+
+    public List<IndicatorExecution> getOfficeLateDirectImplementationReport(Long periodId, Long officeId, Integer currentYear, Integer currentMonth) {
         String jpql = IndicatorExecutionDao.jpqlDirectImplementationIndicators +
                 " WHERE p.id = :periodId " +
                 " and o.indicatorType <> :generalType " +

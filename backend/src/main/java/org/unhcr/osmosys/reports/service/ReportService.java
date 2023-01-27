@@ -301,6 +301,28 @@ public class ReportService {
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 
+    public ByteArrayOutputStream getPartnerAnnualByProjectIdV2(Long projectId) throws GeneralAppException {
+        if (ReportService.dissableJasperReport) {
+            throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
+        }
+
+
+        String jrxmlFile = "partner_anual_by_project_idV2.jrxml";
+        InputStream file = this.getReportFile(jrxmlFile);
+        Map<String, Object> parameters = new HashMap<>();
+        try {
+            JasperReport jasperReport = JasperCompileManager.compileReport(file);
+            List<Map<String, Object>> data = this.reportDataService.indicatorExecutionsProjectsReportsByProjectId(projectId);
+            JRMapArrayDataSource dataSource = new JRMapArrayDataSource(data.toArray());
+            parameters.put("DataParameter", dataSource);
+
+            JasperPrint jasperprint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
+            return getByteArrayOutputStreamFromJasperPrint(jasperprint);
+        } catch (JRException e) {
+            throw new GeneralAppException("Error al generar el reporte", Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        }
+    }
+
     public ByteArrayOutputStream getPartnerQuarterlyByProjectId(Long projectId) throws GeneralAppException {
         if (ReportService.dissableJasperReport) {
             throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
@@ -426,14 +448,7 @@ public class ReportService {
         }
     }
 
-    public ByteArrayOutputStream getPartnerLateReviewReportByFocalPointId(Long focalPointId) throws GeneralAppException {
-        XSSFWorkbook workbook = this.reportDataService.getPartnerLateReviewReportByFocalPointId(focalPointId, this.utilsService.getCurrentYear(), this.utilsService.getCurrentMonthYearOrder());
-        if (workbook != null) {
-            return getByteArrayOutputStreamFromWorkbook(workbook);
-        } else {
-            return null;
-        }
-    }
+
 
     public ByteArrayOutputStream getDirectImplementationLateReportByResponsableId(Long responsableId, Long periodId) throws GeneralAppException {
         XSSFWorkbook workbook = this.reportDataService.getDirectImplementationLateReportByResponsableId(periodId,responsableId, this.utilsService.getCurrentYear(), this.utilsService.getCurrentMonthYearOrder());

@@ -82,7 +82,7 @@
                                             >
                                                 {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
                                             </td>
-                                            <td  style="padding: 0.25rem 0.25rem !important;">
+                                            <td style="padding: 0.25rem 0.25rem !important;">
                                                 <p-toggleButton
                                                     [ngModelOptions]="{standalone: true}"
                                                     [ngModel]="rowData.blockUpdate"
@@ -108,16 +108,19 @@
                                         offIcon="pi pi-lock"
                                         [style]="{'width': '10em'}"></p-toggleButton>-->
                     </div>
+                    <div class="col-12 md:col-3"></div>
                     <div class="col-12 md:col-3">
                         <p-splitButton label="Generar Reporte del Proyecto" icon="pi pi-file-excel"
                                        [model]="itemsReportTypeFull"
                                        styleClass="p-button-primary mb-2 w-full"></p-splitButton>
                     </div>
+
+                    <!--
                     <div class="col-12 md:col-3">
                         <p-button label="Generar Reporte de verificación de indicadores" icon="pi pi-check-square"
                                   (onClick)="getPartnerLateReviewByProjectId()"
                                   styleClass="p-button-primary mb-2 w-full"></p-button>
-                    </div>
+                    </div>-->
 
                     <div class="col-12 md:col-3">
                         <p-button label="Generar reporte de retraso de indicadores" icon="pi pi-clock"

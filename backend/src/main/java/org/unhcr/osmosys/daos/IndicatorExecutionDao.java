@@ -166,6 +166,25 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         q.setParameter("periodId", periodId);
         return q.getResultList();
     }
+    public List<IndicatorExecution> getActivePartnersIndicatorExecutionsByProjectId(Long projectId) {
+        String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
+                " left join fetch fpu.organization fpuorg " +
+                " left join fetch pr.projectLocationAssigments pla" +
+                " left join fetch pla.location canpl" +
+                " left join fetch canpl.provincia " +
+                " WHERE o.project.state =:state " +
+                " and o.state =:state " +
+                " and (pla.state is null or pla.state =:state )" +
+                " and (q.state is null or q.state =:state )" +
+                " and (m.state is null or m.state =:state )" +
+                " and pr.id =:projectId " +
+                " order by org.acronym, org.description, " +
+                " pr.code, pr.name, o.indicatorType, o.projectStatement.code , i.code  ";
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("projectId", projectId);
+        return q.getResultList();
+    }
 
 
     /*** direct implementation**********/

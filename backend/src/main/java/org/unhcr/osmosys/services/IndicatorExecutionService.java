@@ -980,6 +980,12 @@ public class IndicatorExecutionService {
         return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(indicatorExecutions, false);
     }
 
+    public List<IndicatorExecutionWeb> getActivePartnersIndicatorExecutionsByProjectId(Long projectId) throws GeneralAppException {
+        List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getActivePartnersIndicatorExecutionsByProjectId(projectId);
+        return this.modelWebTransformationService
+                .indicatorExecutionsToIndicatorExecutionsWeb(indicatorExecutions, true);
+    }
+
     public List<IndicatorExecutionWeb> getActiveProjectIndicatorExecutionsByPeriodId(Long periodId) throws GeneralAppException {
         List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getActivePartnersIndicatorExecutionsByPeriodId(periodId);
         return this.modelWebTransformationService

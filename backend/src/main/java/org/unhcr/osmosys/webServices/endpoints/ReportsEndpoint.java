@@ -458,7 +458,7 @@ public class ReportsEndpoint {
         Principal principal = securityContext.getUserPrincipal();
         LOGGER.info("getPartnerAnnualByProjectId:" + principal.getName());
         long lStartTime = System.nanoTime();
-        ByteArrayOutputStream r = this.reportService.getPartnerAnnualByProjectId(projectId);
+        ByteArrayOutputStream r = this.reportService.getPartnerAnnualByProjectIdV2(projectId);
         long lEndTime = System.nanoTime();
         LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
         String filename = "Exportacion_datos_socio_anual" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
@@ -741,26 +741,8 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
-    @Path("/getFocalPointLateReviewReport/{focalPointId}")
-    @GET
-    //@Secured
-    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    public Response getFocalPointLateReviewReport(
-            // @Context SecurityContext securityContext,
-            @PathParam("focalPointId") Long focalPointId
-    ) throws GeneralAppException {
-        // Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("getFocalPointLateReviewReport:");//) + principal.getName());
-        long lStartTime = System.nanoTime();
-        ByteArrayOutputStream r = this.reportService.getPartnerLateReviewReportByFocalPointId(focalPointId);
-        if (r == null) {
-            throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
-        }
-        long lEndTime = System.nanoTime();
-        LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
-        String filename = "Reporte_retrasos_revision_punto_focal" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
-        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
-    }
+
+
 
     @Path("/getAllLateReviewReportDirectImplementation")
     @GET

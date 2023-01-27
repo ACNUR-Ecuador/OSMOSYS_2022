@@ -1106,7 +1106,7 @@ public class ModelWebTransformationService {
 
 
         } else {
-            iw.setIndicator(this.indicatorToIndicatorWeb(ie.getIndicator(), false, true, false));
+            iw.setIndicator(this.indicatorToIndicatorWeb(ie.getIndicator(), false, true, true));
             iw.setReportingOffice(this.officeToOfficeWeb(ie.getReportingOffice(), false));
             iw.setSupervisorUser(this.userToUserWebSimple(ie.getSupervisorUser(), false, true));
             iw.setAssignedUser(this.userToUserWebSimple(ie.getAssignedUser(), false, true));
