@@ -6,17 +6,16 @@
     padding: 0 2rem;
     display: flex;
     align-items: center;
-    justify-content: space-between; 
+    justify-content: space-between;
 
     .footer-logo-container {
         display: flex;
         align-items: center;
 
         img {
-            width: 1.5rem;
             height: 1.5rem;
         }
-    
+
         .footer-app-name {
             font-size: 1rem;
             font-weight: 600;
@@ -24,7 +23,7 @@
             margin-left: .5rem;
         }
     }
-    
+
     .footer-copyright {
         font-size: .875rem;
         color: var(--text-color-secondary);
