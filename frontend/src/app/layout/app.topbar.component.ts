@@ -1,21 +1,24 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { LayoutService } from 'src/app/layout/service/app.layout.service';
-import { AppSidebarComponent } from './app.sidebar.component';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {LayoutService} from 'src/app/layout/service/app.layout.service';
+import {AppSidebarComponent} from './app.sidebar.component';
 import {UserService} from "../services/user.service";
 
 @Component({
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html'
 })
-export class AppTopbarComponent {
+export class AppTopbarComponent implements OnInit {
 
     @ViewChild('menubutton') menuButton!: ElementRef;
 
     @ViewChild(AppSidebarComponent) appSidebar!: AppSidebarComponent;
 
+    public userInitials = '';
+
     constructor(public layoutService: LayoutService,
                 public userService: UserService,
-                public el: ElementRef) { }
+                public el: ElementRef) {
+    }
 
 
     onMenuButtonClick() {
@@ -35,11 +38,18 @@ export class AppTopbarComponent {
     }
 
     get logo() {
-        const logo = this.layoutService.config.menuTheme === 'white' || this.layoutService.config.menuTheme === 'orange' ? 'dark' : 'white';
-        return logo;
+        return this.layoutService.config.menuTheme === 'white' || this.layoutService.config.menuTheme === 'orange' ? 'dark' : 'white';
     }
 
     logout() {
         this.userService.logout();
+    }
+
+
+    ngOnInit(): void {
+        const user = this.userService.getLogedUsername();
+        if (user && user.name) {
+            this.userInitials = user.name.split(' ').map(n => n[0]).join('');
+        }
     }
 }

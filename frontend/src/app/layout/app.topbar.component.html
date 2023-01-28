@@ -25,6 +25,7 @@
                 </a>
                         </li>-->
 
+<!--
 
             <li class="static sm:relative">
                 <a tabindex="0" pStyleClass="@next" enterClass="hidden" enterActiveClass="scalein" leaveToClass="hidden"
@@ -79,12 +80,15 @@
                 </ul>
             </li>
 
+-->
 
             <li class="profile-item static sm:relative">
                 <a tabindex="0" pStyleClass="@next" enterClass="hidden" enterActiveClass="scalein" leaveToClass="hidden"
                    leaveActiveClass="fadeout" [hideOnOutsideClick]="true">
-                    <img src="assets/demo/images/avatar/profile.jpg" alt="osmosys" class="profile-image"/>
-                    <span class="profile-name">Amelia Stone</span>
+                    <p-avatar label="{{userInitials}}" styleClass="p-mr-2"
+                              size="large" shape="circle"
+                              [style]="{'background-color': '#ffffff', 'color': '#0072BC'}"
+                    ></p-avatar>
                 </a>
                 <ul class="list-none p-3 m-0 border-round shadow-2 absolute surface-overlay hidden origin-top w-full sm:w-24rem mt-2 top-auto"
                 style="left:-80px !important; background-color: #0072BC !important;">
