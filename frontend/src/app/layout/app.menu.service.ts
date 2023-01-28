@@ -231,6 +231,95 @@ export class MenuService {
                 }
             ]
         },
+        {separator: true},
+        {
+            label: 'Tableros de Control',
+            icon: 'pi pi-chart-line',
+            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
+            items: [
+                {
+                    label: '2023',
+                    icon: 'pi pi-chart-line',
+                    roles: ['SUPER_ADMINISTRADOR'],
+                    items: []
+                },
+                {
+                    label: '2022',
+                    icon: 'pi pi-chart-line',
+                    roles: ['SUPER_ADMINISTRADOR'],
+                    items: [
+                        {
+                            label: 'Reportes Temáticos',
+                            icon: 'pi pi-fw pi-chart-bar',
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
+                            items: [
+                                {
+                                    label: 'Albergue de Emergencia',
+                                    icon: 'pi pi-fw pi-chart-bar',
+                                    routerLink: ['/reports/2022/shelter'],
+                                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                                },
+                                {
+                                    label: 'Transferencias Monetarias',
+                                    icon: 'pi pi-fw pi-chart-bar',
+                                    routerLink: ['/reports/2022/cbi'],
+                                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                                }, {
+                                    label: 'Protección Comunitaria',
+                                    icon: 'pi pi-fw pi-chart-bar',
+                                    routerLink: ['/reports/2022/communityProtection'],
+                                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                                }, {
+                                    label: 'Habitabilidad',
+                                    icon: 'pi pi-fw pi-chart-bar',
+                                    routerLink: ['/reports/2022/habitability'],
+                                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                                }, {
+                                    label: 'Medios de Vida',
+                                    icon: 'pi pi-fw pi-chart-bar',
+                                    routerLink: ['/reports/2022/livelihoods'],
+                                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                                }, {
+                                    label: 'Reasentamiento',
+                                    icon: 'pi pi-fw pi-chart-bar',
+                                    routerLink: ['/reports/2022/resettlement'],
+                                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                                }, {
+                                    label: 'Necesidades Especiales',
+                                    icon: 'pi pi-fw pi-chart-bar',
+                                    routerLink: ['/reports/2022/specialNeeds'],
+                                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                                }
+                            ]
+                        },
+                        {
+                            label: 'Indicadores de Producto',
+                            icon: 'pi pi-fw pi-chart-line',
+                            routerLink: ['/reports/2022/productIndicators'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL', 'EJECUTOR_ID', 'MONITOR_ID'],
+                        },
+                        {
+                            label: 'Indicadores RBA',
+                            icon: 'pi pi-fw pi-chart-line',
+                            routerLink: ['/reports/2022/rbaIndicators'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL', 'EJECUTOR_ID', 'MONITOR_ID'],
+                        },
+                        {
+                            label: 'Reportes de tendencia de indicadores',
+                            icon: 'pi pi-fw pi-calendar-times',
+                            routerLink: ['/reports/2022/indicatorTrends'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
+                        },
+                        {
+                            label: 'Reportes de comparación de ejecución directa',
+                            icon: 'pi pi-fw pi-calendar-times',
+                            routerLink: ['/reports/2022/indicatorComparison'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
+                        }
+                    ]
+                }
+            ]
+        },
         {
             label: 'Demo',
             icon: 'pi pi-home',
