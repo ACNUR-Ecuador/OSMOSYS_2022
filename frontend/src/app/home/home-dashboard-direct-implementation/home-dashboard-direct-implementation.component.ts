@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {MessageService, SelectItem} from "primeng/api";
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {IndicatorExecution, Month, Period, Quarter} from "../../shared/model/OsmosysModel";
@@ -15,11 +15,18 @@ import {IndicatorExecutionService} from "../../services/indicator-execution.serv
 import {EnumsState, EnumsType} from "../../shared/model/UtilsModel";
 
 @Component({
-  selector: 'app-home-dashboard-direct-implementation',
-  templateUrl: './home-dashboard-direct-implementation.component.html',
-  styleUrls: ['./home-dashboard-direct-implementation.component.scss']
+    selector: 'app-home-dashboard-direct-implementation',
+    templateUrl: './home-dashboard-direct-implementation.component.html',
+    styleUrls: ['./home-dashboard-direct-implementation.component.scss']
 })
-export class HomeDashboardDirectImplementationComponent  implements OnInit {
+export class HomeDashboardDirectImplementationComponent implements OnInit {
+
+    @Input()
+    periods: Period[];
+    @Input()
+    currentPeriod: Period;
+    @Input()
+    isAdmin: boolean;
 
     stateOptions: SelectItem[];
     officeOptions: SelectItem[];
@@ -56,7 +63,7 @@ export class HomeDashboardDirectImplementationComponent  implements OnInit {
     ngOnInit(): void {
         this.createForms();
         this.loadOptions();
-        this.loadPeriods();
+
     }
 
     createForms() {
@@ -68,33 +75,40 @@ export class HomeDashboardDirectImplementationComponent  implements OnInit {
         });
     }
 
-    loadPeriods() {
-        this.periodService.getAll().subscribe(value => {
-            this.periodOptions = value
-                .sort((a, b) => a.year - b.year)
-                .map(period => {
-                    return {
-                        label: period.year.toString(),
-                        value: period
-                    };
-                });
-            const selectedPeriod: Period = this.utilsService.getCurrectPeriodOrDefault(value);
-            if (!selectedPeriod) {
-                return;
-            }
-            const currentUser = this.userService.getLogedUsername();
-            this.queryForm.get('period').patchValue(selectedPeriod);
-            this.queryForm.get('user').patchValue(currentUser);
-            this.queryForm.get('roles').patchValue(this.roleOptions.map(value1 => value1.value));
-            this.loadIndicatorExecutions();
-        }, error => {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error al cargar las áreas',
-                detail: error.error.message,
-                life: 3000
-            });
-        });
+    setOptions() {
+        this.queryForm.get('period').patchValue(this.currentPeriod);
+        const user = this.userService.getLogedUsername();
+        const currentOffice = this.officeOptions.filter(value => {
+            return user.office.id === value.value.id;
+        }).pop();
+        this.queryForm.get('office').patchValue(currentOffice.value);
+        this.loadIndicatorExecutions();
+        /*        this.periodService.getAll().subscribe(value => {
+                    this.periodOptions = value
+                        .sort((a, b) => a.year - b.year)
+                        .map(period => {
+                            return {
+                                label: period.year.toString(),
+                                value: period
+                            };
+                        });
+                    const selectedPeriod: Period = this.utilsService.getCurrectPeriodOrDefault(value);
+                    if (!selectedPeriod) {
+                        return;
+                    }
+                    const currentUser = this.userService.getLogedUsername();
+                    this.queryForm.get('period').patchValue(selectedPeriod);
+                    this.queryForm.get('user').patchValue(currentUser);
+                    this.queryForm.get('roles').patchValue(this.roleOptions.map(value1 => value1.value));
+
+                }, error => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al cargar las áreas',
+                        detail: error.error.message,
+                        life: 3000
+                    });
+                });*/
     }
 
     loadIndicatorExecutions() {
@@ -104,6 +118,8 @@ export class HomeDashboardDirectImplementationComponent  implements OnInit {
             roles,
             user,
         } = this.queryForm.value;
+
+
         const rolesF = roles as string[];
         const responsible = rolesF.includes('assignedUser');
         const responsibleBackup = rolesF.includes('assignedUserBackup');
@@ -148,6 +164,32 @@ export class HomeDashboardDirectImplementationComponent  implements OnInit {
                     value: value1
                 };
             });
+            this.officeService.getByState(EnumsState.ACTIVE).subscribe(value => {
+                this.officeOptions = value.map(value1 => {
+                    return {
+                        label: this.officeOrganizationPipe.transform(value1),
+                        value: value1
+                    };
+                });
+                this.enumsService.getByType(EnumsType.State).subscribe(value => {
+                    this.stateOptions = value;
+                    this.setOptions();
+                }, error => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error en carga de estados',
+                        detail: error.error.message,
+                        life: 3000
+                    });
+                });
+            }, error => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error en carga de oficinas',
+                    detail: error.error.message,
+                    life: 3000
+                });
+            });
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -157,31 +199,6 @@ export class HomeDashboardDirectImplementationComponent  implements OnInit {
             });
         });
 
-        this.officeService.getByState(EnumsState.ACTIVE).subscribe(value => {
-            this.officeOptions = value.map(value1 => {
-                return {
-                    label: this.officeOrganizationPipe.transform(value1),
-                    value: value1
-                };
-            });
-        }, error => {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error en carga de oficinas',
-                detail: error.error.message,
-                life: 3000
-            });
-        });
-        this.enumsService.getByType(EnumsType.State).subscribe(value => {
-            this.stateOptions = value;
-        }, error => {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error en carga de estados',
-                detail: error.error.message,
-                life: 3000
-            });
-        });
 
         this.roleOptions = [];
         this.roleOptions.push({label: 'Responsable', value: 'assignedUser'});

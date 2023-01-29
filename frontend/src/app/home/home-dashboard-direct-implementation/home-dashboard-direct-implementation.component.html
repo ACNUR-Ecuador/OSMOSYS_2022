@@ -1,99 +1,103 @@
-<p-card>
+<p-card class=" p-0 m-0">
+
     <ng-template pTemplate="header">
-        <h3 class="page-title mb-1">Implementación Directa</h3>
-        <h5 class="page-title mt-1">Indicadores reportados</h5>
+        <div class="flex justify-content-center flex-wrap">
+            <div class="flex align-items-center justify-content-center mr-2"><h3 class="text-primary">Implementación Directa</h3>
+            </div>
+
+        </div>
+
         <p-card>
-            <form [formGroup]="queryForm" (ngSubmit)="loadIndicatorExecutions()">
-                <div class="fluid formgrid grid">
-                    <div class="field col-3 md-3">
-                        <label for="periodI">Periodo</label>
-                        <p-dropdown id="periodI"
-                                    formControlName="period"
-                                    [options]="periodOptions"
-                                    placeholder="Selecciona..."
-                                    [filter]="true"
-                                    appendTo="body"
-                                    dataKey="id"
-                        >
-                        </p-dropdown>
-
-                        <small class="p-error"
-                               *ngIf="utilsService.showErrorForm('period',queryForm)">
-                            {{utilsService.getErrorMessageForm('period', queryForm)}}
-                        </small>
-                    </div>
-                    <div class="field col-3 md-3">
-                        <label for="officeI">Oficina</label>
-                        <p-dropdown id="officeI"
-                                    formControlName="office"
-                                    [options]="officeOptions"
-                                    placeholder="Selecciona..."
-                                     [filter]="true"
-                                    appendTo="body"
-                                    dataKey="id"
-                                    [showClear]="true"
-                        >
-                        </p-dropdown>
-
-                        <small class="p-error"
-                               *ngIf="utilsService.showErrorForm('office',queryForm)">
-                            {{utilsService.getErrorMessageForm('office', queryForm)}}
-                        </small>
-                    </div>
-                    <div class="field col-3 md-3">
-                        <label for="officeI">Usuario</label>
-                        <p-dropdown id="userI"
-                                    formControlName="user"
-                                    [options]="userOptions"
-                                    placeholder="Selecciona..."
-                                     [filter]="true"
-                                    appendTo="body"
-                                    dataKey="id"
-                                    [showClear]="true"
-                        >
-                        </p-dropdown>
-
-                        <small class="p-error"
-                               *ngIf="utilsService.showErrorForm('user',queryForm)">
-                            {{utilsService.getErrorMessageForm('user', queryForm)}}
-                        </small>
-                    </div>
-                    <div class="p-field p-col-3 p-md-3">
-                        <label for="officeI">Roles</label>
-                        <p-multiSelect id="rolesI"
-                                       formControlName="roles"
-                                       [options]="roleOptions"
-                                       placeholder="Selecciona..."
+            <form [formGroup]="queryForm" (ngSubmit)="loadIndicatorExecutions()" class=" p-0 m-0">
+                <div class="flex justify-content-center flex-wrap p-0 m-0">
+                    <div class="grid p-fluid col-12  p-0 m-0">
+                        <div class="col-2 field ">
+                            <label for="periodI">Periodo</label>
+                            <p-dropdown id="periodI"
+                                        formControlName="period"
+                                        [options]="periods"
+                                        placeholder="Selecciona..."
                                         [filter]="true"
-                                       appendTo="body"
-                        >
-                        </p-multiSelect>
+                                        optionLabel="year"
+                                        appendTo="body"
+                            >
+                            </p-dropdown>
 
-                        <small class="p-error"
-                               *ngIf="utilsService.showErrorForm('roles',queryForm)">
-                            {{utilsService.getErrorMessageForm('roles', queryForm)}}
-                        </small>
-                    </div>
-                    <div class="p-field p-col-3 p-md-3"></div>
-                    <div class="p-field p-col-3 p-md-3"></div>
-                    <div class="p-field p-col-3 p-md-3">
-                        <p-messages></p-messages>
-                        <p-toast></p-toast>
-                    </div>
-                    <div class="p-field p-col-3 p-md-3">
-                        <button pButton type="submit"
-                                label="Buscar" icon="pi pi-search"
-                        ></button>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('period',queryForm)">
+                                {{utilsService.getErrorMessageForm('period', queryForm)}}
+                            </small>
+                        </div>
+                        <div class="field col-3 ">
+                            <label for="officeI">Oficina</label>
+                            <p-dropdown id="officeI"
+                                        formControlName="office"
+                                        [options]="officeOptions"
+                                        placeholder="Selecciona..."
+                                        [filter]="true"
+                                        appendTo="body"
+                                        [showClear]="true"
+                            >
+                            </p-dropdown>
+
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('office',queryForm)">
+                                {{utilsService.getErrorMessageForm('office', queryForm)}}
+                            </small>
+                        </div>
+                        <div class="field col-3 ">
+                            <label for="officeI">Usuario</label>
+                            <p-dropdown id="userI"
+                                        formControlName="user"
+                                        [options]="userOptions"
+                                        placeholder="Selecciona..."
+                                        [filter]="true"
+                                        appendTo="body"
+                                        dataKey="id"
+                                        [showClear]="true"
+                            >
+                            </p-dropdown>
+
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('user',queryForm)">
+                                {{utilsService.getErrorMessageForm('user', queryForm)}}
+                            </small>
+                        </div>
+                        <div class="field col-3">
+                            <label for="officeI">Roles</label>
+                            <p-multiSelect id="rolesI"
+                                           formControlName="roles"
+                                           [options]="roleOptions"
+                                           placeholder="Selecciona..."
+                                           [filter]="true"
+                                           appendTo="body"
+                            >
+                            </p-multiSelect>
+
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('roles',queryForm)">
+                                {{utilsService.getErrorMessageForm('roles', queryForm)}}
+                            </small>
+                        </div>
+                        <div class="field col-1 ">
+                            <div class="field">
+                                <p-messages></p-messages>
+                                <p-toast></p-toast>
+                            </div>
+                            <button pButton type="submit"
+                                    label="Buscar" icon="pi pi-search"
+                            ></button>
+                        </div>
                     </div>
                 </div>
             </form>
         </p-card>
 
-        <p-card>
+        <p-card *ngIf="countPerformanceIndicators>0">
 
-            <div class="p-grid" id="print-section">
+            <div class="grid" id="print-section">
 
-                <div class="p-col-12 p-md-12 p-xl-12">
+                <div class="col-12">
                     <h4 class="blue-title" style="text-align: center">Indicadores De Producto</h4>
                     <!--                    <button
                                             [useExistingCss]="true"
@@ -101,20 +105,20 @@
                                             ngxPrint>print</button>-->
                 </div>
 
-                <div class="p-col-12 p-md-6 p-xl-6">
+                <div class="col-6">
                     <div class="card no-gutter widget-overview-box widget-overview-box-2">
                             <span class="overview-icon">
                                 <i class="pi pi-chart-line"></i>
                             </span>
                         <span class="overview-title">Indicadores de Producto</span>
-                        <div class="p-grid overview-detail">
-                            <div class="p-col-6">
+                        <div class="grid overview-detail">
+                            <div class="col-6">
                                 <div
 
                                     class="overview-number">{{countPerformanceIndicators}}</div>
                                 <div class="overview-subtext">Indicadores Asignados</div>
                             </div>
-                            <div class="p-col-6">
+                            <div class="col-6">
                                 <div class="overview-number"
                                      [ngClass]="countPerformanceIndicatorsLate>0?'late_text':''"
                                 >{{countPerformanceIndicatorsLate}}</div>
@@ -123,14 +127,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="p-col-12 p-md-6 p-xl-6">
+                <div class="col-6">
                     <div class="card no-gutter widget-overview-box widget-overview-box-2">
                             <span class="overview-icon">
                                 <i class="pi pi-chart-line"></i>
                             </span>
                         <span class="overview-title">Selecciona un Indicador de Producto</span>
-                        <div class="p-grid overview-detail">
-                            <p-dropdown class="p-col-10" [style]="{'width':'90%'}"
+                        <div class="grid overview-detail">
+                            <p-dropdown class="col-10" [style]="{'width':'90%'}"
                                         (onChange)="loadPerformanceIndicator($event.value)"
                                         [options]="indicatorExecutionOptions"
                                         [(ngModel)]="selectedPerformanceIndicator"
@@ -141,7 +145,7 @@
                     </div>
                 </div>
 
-                <div class="p-col-12 p-md-12 p-xl-12">
+                <div class="col-12">
                     <div class="card no-gutter widget-overview-box widget-overview-box-2" style="text-align: center">
                             <span class="overview-icon">
                                 <i class="pi pi-chart-line"></i>
@@ -151,15 +155,15 @@
                         + selectedPerformanceIndicator.indicator.code
                         + '-' + selectedPerformanceIndicator.indicator.description}}</span>
                     </div>
-                    <div class="p-grid">
-                        <div class="p-col-12 p-md-6 p-xl-4">
+                    <div class="grid">
+                        <div class="col-4">
                             <div class="card no-gutter widget-overview-box widget-overview-box-1">
                             <span class="overview-icon">
                                 <i class="pi pi-users"></i>
                             </span>
                                 <span class="overview-title">Ejecución</span>
-                                <div class="p-grid overview-detail" *ngIf="selectedPerformanceIndicator">
-                                    <div class="p-col-12">
+                                <div class="grid overview-detail" *ngIf="selectedPerformanceIndicator">
+                                    <div class="col-12">
                                         <div
                                             class="overview-number">{{selectedPerformanceIndicator.totalExecution ? selectedPerformanceIndicator.totalExecution : 0}}</div>
                                         <div class="overview-subtext">Ejecución Total Reportado</div>
@@ -171,14 +175,14 @@
                                 <i class="pi pi-users"></i>
                             </span>
                                 <span class="overview-title">Reportes</span>
-                                <div class="p-grid overview-detail" *ngIf="selectedPerformanceIndicator">
-                                    <div class="p-col-6">
+                                <div class="grid overview-detail" *ngIf="selectedPerformanceIndicator">
+                                    <div class="col-6">
                                         <div
                                             [ngClass]="selectedPerformanceIndicator?'late_text':''"
                                             class="overview-number">{{selectedPerformanceIndicator.lastReportedQuarter ? selectedPerformanceIndicator.lastReportedQuarter.quarter + '-' + selectedPerformanceIndicator.lastReportedQuarter.year : 'No reportado'}}</div>
                                         <div class="overview-subtext">Último Trimestre reportado</div>
                                     </div>
-                                    <div class="p-col-6">
+                                    <div class="col-6">
                                         <div
                                             [ngClass]="selectedPerformanceIndicator?'late_text':''"
                                             class="overview-number">{{selectedPerformanceIndicator.lastReportedMonth ? selectedPerformanceIndicator.lastReportedMonth.month + '-' + selectedPerformanceIndicator.lastReportedMonth.year : 'No reportado'}}</div>
@@ -187,12 +191,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="p-col-12 p-xl-6">
+                        <div class="col-6">
                             <div class="card no-gutter orders">
-                                <div class="p-grid">
-                                    <div class="p-col-12">
+                                <div class="grid">
+                                    <div class="col-12">
                                     </div>
-                                    <div class="p-col-12">
+                                    <div class="col-12">
                                         <div class="overview-chart">
                                             <p-chart
                                                 type="line"
@@ -205,12 +209,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="p-col-2 p-xl-2">
+                        <div class="col-2">
                             <div class="card no-gutter orders">
-                                <div class="p-grid">
-                                    <div class="p-col-12">
+                                <div class="grid">
+                                    <div class="col-12">
                                     </div>
-                                    <div class="p-col-12">
+                                    <div class="col-12">
                                         <div class="overview-chart">
                                             <p-chart
                                                 type="line"

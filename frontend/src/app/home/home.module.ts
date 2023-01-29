@@ -13,6 +13,9 @@ import {MultiSelectModule} from "primeng/multiselect";
 import {MessagesModule} from "primeng/messages";
 import {ToastModule} from "primeng/toast";
 import {ChartModule} from "primeng/chart";
+import {UserPipe} from "../shared/pipes/user.pipe";
+import {OfficeOrganizationPipe} from "../shared/pipes/office-organization.pipe";
+import {IndicatorPipe} from "../shared/pipes/indicator.pipe";
 
 
 @NgModule({
@@ -33,6 +36,11 @@ import {ChartModule} from "primeng/chart";
         ToastModule,
         FormsModule,
         ChartModule
+    ],
+    providers:[
+        UserPipe,
+        OfficeOrganizationPipe,
+        IndicatorPipe
     ]
 })
 export class HomeModule { }

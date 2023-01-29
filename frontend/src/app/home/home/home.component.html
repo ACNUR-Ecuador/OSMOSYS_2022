@@ -8,9 +8,8 @@
                       styleClass="p-button-success col-12 mb-2"></p-button>
         </div>
     </div>
-    {{render}}
-    {{isFocalPoint || isPartner || isAdmin}}
-    <app-home-dashboard-focal-point
+
+    <!--<app-home-dashboard-focal-point
         *ngIf="render && (isFocalPoint || isPartner || isAdmin)"
         [currentPeriod]="currentPeriod"
         [periods]="periods"
@@ -21,5 +20,12 @@
         [focalPointProjectsIds]="focalPointProjectsIds"
     >
 
-    </app-home-dashboard-focal-point>
+    </app-home-dashboard-focal-point>-->
+    <app-home-dashboard-direct-implementation
+        *ngIf="render && ( isAcnurUser || isAdmin)"
+
+        [currentPeriod]="currentPeriod"
+        [periods]="periods"
+        [isAdmin]="isAdmin"
+    ></app-home-dashboard-direct-implementation>
 </p-card>

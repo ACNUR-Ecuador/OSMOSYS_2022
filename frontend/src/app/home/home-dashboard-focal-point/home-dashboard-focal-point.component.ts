@@ -1,7 +1,7 @@
 import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {UIChart} from "primeng/chart";
 import {MessageService, SelectItem} from "primeng/api";
-import {IndicatorExecution, Month, Period, Project, ProjectResume, Quarter} from "../../shared/model/OsmosysModel";
+import {IndicatorExecution, Month, Period, ProjectResume, Quarter} from "../../shared/model/OsmosysModel";
 import {ProjectService} from "../../services/project.service";
 import {IndicatorExecutionService} from "../../services/indicator-execution.service";
 import {MonthService} from "../../services/month.service";
