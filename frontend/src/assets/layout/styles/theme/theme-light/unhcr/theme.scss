@@ -114,6 +114,7 @@ $accordionHeaderTextActiveHoverColor:$shade700 !default;
 @import '../_extensions';
 
 
+
 .p-toolbar {
     background: $primaryColor;
     //   border: $panelHeaderBorder;
@@ -150,4 +151,4 @@ $accordionHeaderTextActiveHoverColor:$shade700 !default;
     background: red !important;
 }
 
-
+@import 'widgets';

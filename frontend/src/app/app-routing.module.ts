@@ -9,8 +9,18 @@ const routerOptions: ExtraOptions = {
 
 const routes: Routes = [
     {
+
         path: '', component: AppLayoutComponent,
         children: [
+            {
+                path: '',
+                redirectTo: 'home/home',
+                pathMatch: 'full'
+            },
+            {
+                path: 'home',
+                loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
+            },
             {
                 path: 'administration',
                 loadChildren: () => import('./administration/administration.module').then(m => m.AdministrationModule)
@@ -66,7 +76,10 @@ const routes: Routes = [
             {path: 'apps', loadChildren: () => import('./demo/components/apps/apps.module').then(m => m.AppsModule)}
         ]
     },
-    {path: 'auth', loadChildren: () => import('./authentication/authentication.module').then(m => m.AuthenticationModule)},
+    {
+        path: 'auth',
+        loadChildren: () => import('./authentication/authentication.module').then(m => m.AuthenticationModule)
+    },
 
     // {path: 'auth', loadChildren: () => import('./demo/components/auth/auth.module').then(m => m.AuthModule)},
     {
