@@ -340,7 +340,7 @@ export class MenuService {
                 }
             ]
         },
-        {
+        /*{
             label: 'Demo',
             icon: 'pi pi-home',
             items: [
@@ -825,6 +825,6 @@ export class MenuService {
                     ]
                 }
             ]
-        }
+        }*/
     ];
 }
