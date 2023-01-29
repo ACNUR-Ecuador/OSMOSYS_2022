@@ -69,8 +69,17 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
                     })[0];
                     this.periodForm.get('selectedPeriod').patchValue(smallestPeriod);
                     this.loadProjects(smallestPeriod.id);
+
                 }
             }
+            this.periodsItems = this.periods.map(value1 => {
+                const selectItem: SelectItem = {
+                    label: value1.year.toString(),
+                    value: value1
+                };
+                return selectItem;
+            });
+
 
         }, error => {
             this.messageService.add({

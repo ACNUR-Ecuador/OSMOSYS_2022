@@ -75,18 +75,19 @@
                         <div class="field col-12 md:col-4">
                             <label htmlFor="startDateI">Fecha de Inicio del Proyecto</label>
                             <p-calendar id="startDateI"
-                                        formControlName="startDate" dateFormat="dd/MM/yy"
+                                        formControlName="startDate" dateFormat="dd/mm/yy"
                                         [showIcon]="true"
                                         [monthNavigator]="true"
                                         [yearNavigator]="true"
                                         yearRange="2021:2050"
+
                             ></p-calendar>
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('startDate',formItem)">{{utilsService.getErrorMessageForm('startDate', formItem)}}</small>
                         </div>
                         <div class="field col-12 md:col-4">
                             <label htmlFor="endDateI">Fecha de Fin del Proyecto</label>
-                            <p-calendar id="endDateI" formControlName="endDate" dateFormat="dd/MM/yy"
+                            <p-calendar id="endDateI" formControlName="endDate" dateFormat="dd/mm/yy"
                                         [showIcon]="true"
                                         [monthNavigator]="true"
                                         [yearNavigator]="true"
