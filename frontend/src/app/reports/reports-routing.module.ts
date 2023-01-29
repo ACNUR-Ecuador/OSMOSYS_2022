@@ -13,6 +13,8 @@ import {ProductIndicatorsComponent} from "./2022/product-indicators/product-indi
 import {RbaIndicatorsComponent} from "./2022/rba-indicators/rba-indicators.component";
 import {IndicatorComparisonComponent} from "./2022/indicator-comparison/indicator-comparison.component";
 import {IndicatorTrendsComponent} from "./2022/indicator-trends/indicator-trends.component";
+import {ProductIndicators2021Component} from "./2021/product-indicators2021/product-indicators2021.component";
+import {Beneficiaries2021Component} from "./2021/beneficiaries2021/beneficiaries2021.component";
 
 const routes: Routes = [
     {
@@ -32,6 +34,8 @@ const routes: Routes = [
             {path: '2022/rbaIndicators', component: RbaIndicatorsComponent},
             {path: '2022/indicatorComparison', component: IndicatorComparisonComponent},
             {path: '2022/indicatorTrends', component: IndicatorTrendsComponent},
+            {path: '2021/productIndicators2021', component: ProductIndicators2021Component},
+            {path: '2021/beneficiaries2021', component: Beneficiaries2021Component},
         ]
     }
 ];

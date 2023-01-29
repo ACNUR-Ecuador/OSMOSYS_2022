@@ -240,13 +240,13 @@ export class MenuService {
                 {
                     label: '2023',
                     icon: 'pi pi-chart-line',
-                    roles: ['SUPER_ADMINISTRADOR'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
                     items: []
                 },
                 {
                     label: '2022',
                     icon: 'pi pi-chart-line',
-                    roles: ['SUPER_ADMINISTRADOR'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
                     items: [
                         {
                             label: 'Reportes Temáticos',
@@ -316,6 +316,26 @@ export class MenuService {
                             routerLink: ['/reports/2022/indicatorComparison'],
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
                         }
+                    ]
+                },
+                {
+                    label: '2021',
+                    icon: 'pi pi-chart-line',
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
+                    items: [
+
+                        {
+                            label: 'Beneficiarios 2021',
+                            icon: 'pi pi-fw pi-chart-line',
+                            routerLink: ['/reports/2021/beneficiaries2021'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL', 'EJECUTOR_ID', 'MONITOR_ID'],
+                        },
+                        {
+                            label: 'Indicadores de Producto',
+                            icon: 'pi pi-fw pi-chart-line',
+                            routerLink: ['/reports/2021/productIndicators2021'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL', 'EJECUTOR_ID', 'MONITOR_ID'],
+                        },
                     ]
                 }
             ]
