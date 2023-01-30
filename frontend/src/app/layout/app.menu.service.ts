@@ -224,6 +224,12 @@ export class MenuService {
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS'],
                 },
                 {
+                    label: 'Exportación de Datos',
+                    icon: 'pi pi-fw pi-file-excel',
+                    routerLink: ['/reports/dataExport'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS'],
+                },
+                {
                     label: 'Reportes de retrasos',
                     icon: 'pi pi-fw pi-calendar-times',
                     routerLink: ['/reports/lateReports'],

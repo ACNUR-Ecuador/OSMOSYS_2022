@@ -15,6 +15,7 @@ import {IndicatorComparisonComponent} from "./2022/indicator-comparison/indicato
 import {IndicatorTrendsComponent} from "./2022/indicator-trends/indicator-trends.component";
 import {ProductIndicators2021Component} from "./2021/product-indicators2021/product-indicators2021.component";
 import {Beneficiaries2021Component} from "./2021/beneficiaries2021/beneficiaries2021.component";
+import {DataExportComponent} from "./data-export/data-export.component";
 
 const routes: Routes = [
     {
@@ -22,6 +23,8 @@ const routes: Routes = [
         children: [
             {path: 'indicatorsCatalog', component: IndicatorCatalogReportsComponent},
             {path: 'lateReports', component: LateReportsComponent},
+            {path: 'lateReports', component: LateReportsComponent},
+            {path: 'dataExport', component: DataExportComponent},
             // 2022
             {path: '2022/shelter', component: ShelterComponent},
             {path: '2022/cbi', component: CbiComponent},

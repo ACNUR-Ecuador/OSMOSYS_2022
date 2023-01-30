@@ -1,0 +1,124 @@
+<p-card>
+    <ng-template pTemplate="header">
+        <h3 class="page-title mb-1">Exportación de datos</h3>
+        <p-toast></p-toast>
+        <p-messages></p-messages>
+
+        <p-toolbar styleClass="mb-4">
+            <form [formGroup]="periodForm">
+                <div class="field grid">
+
+                    <label for="periodI" class="col-fixed" style="width:100px; color: white;">Periodo:</label>
+                    <div class="p-col">
+                        <p-dropdown id="periodI"
+                                    formControlName="selectedPeriod"
+                                    [options]="periods"
+                                    optionLabel="year"
+
+
+                        ></p-dropdown>
+                    </div>
+
+                </div>
+            </form>
+
+        </p-toolbar>
+
+    </ng-template>
+
+    <p-fieldset>
+        <ng-template pTemplate="header">Socios</ng-template>
+        <div class="grid">
+            <div class="col-4 border_div"><h5>Reporte</h5></div>
+            <div class="col-4 border_div"><h5>Descripción</h5></div>
+            <div class="col-4 border_div"><h5>Generar</h5></div>
+
+            <div class="col-4 border_div">Indicadores Generales</div>
+            <div class="col-4 border_div">Este reporte tiene todos los indicadores generales reportados en el
+                sistema por socios. *
+            </div>
+            <div class="col-4 border_div">
+                <p-splitButton label="Generar Reporte" icon="pi pi-file-excel"
+                               [model]="itemsReportTypeAnualMonthlyDetailed"
+                               (onDropdownClick)="setReport('getPartnersGeneralIndicatorsXXXByPeriodId')"
+                               styleClass="p-button-success mb-2"></p-splitButton>
+            </div>
+
+            <div class="col-4 border_div">Indicadores de Producto</div>
+            <div class="col-4 border_div">Este reporte tiene todos los indicadores de producto reportados en el
+                sistema por socios. *
+            </div>
+            <div class="col-4 border_div">
+                <p-splitButton label="Generar Reporte" icon="pi pi-file-excel"
+                               [model]="itemsReportTypeFull"
+                               (onDropdownClick)="setReport('getPartnersPerformanceIndicatorsXXXByPeriodId')"
+                               styleClass="p-button-success mb-2"></p-splitButton>
+            </div>
+
+            <div class="col-4 border_div">Indicadores Generales y de Producto</div>
+            <div class="col-4 border_div">Este reporte tiene todos los indicadores reportados en el sistema
+                socios, incluyendo indicadores de producto y generales. *
+            </div>
+            <div class="col-4 border_div">
+                <p-splitButton label="Generar Reporte" icon="pi pi-file-excel"
+                               [model]="itemsReportTypeFull"
+                               (onDropdownClick)="setReport('getPartnersXXXByPeriodId')"
+                               styleClass="p-button-success mb-2"></p-splitButton>
+            </div>
+
+        </div>
+    </p-fieldset>
+    <p-fieldset>
+        <ng-template pTemplate="header">Implementación Directa</ng-template>
+        <div class="grid">
+            <div class="col-4 border_div"><h5>Reporte</h5></div>
+            <div class="col-4 border_div"><h5>Descripción</h5></div>
+            <div class="col-4 border_div"><h5>Generar</h5></div>
+
+            <div class="col-4 border_div">Indicadores de Producto</div>
+            <div class="col-4 border_div">Este reporte tiene todos los indicadores de producto reportados en el
+                sistema por implementación directa. *
+            </div>
+            <div class="col-4 border_div">
+                <p-splitButton label="Generar Reporte" icon="pi pi-file-excel"
+                               [model]="itemsReportTypeFull"
+                               (onDropdownClick)="setReport('getDirectImplementationPerformanceIndicatorsXXXByPeriodId')"
+                               styleClass="p-button-success mb-2"></p-splitButton>
+            </div>
+
+        </div>
+    </p-fieldset>
+    <p-fieldset>
+        <ng-template pTemplate="header">Implementación Directa y Socios</ng-template>
+        <div class="grid">
+            <div class="col-4 border_div"><h5>Reporte</h5></div>
+            <div class="col-4 border_div"><h5>Descripción</h5></div>
+            <div class="col-4 border_div"><h5>Generar</h5></div>
+
+            <div class="col-4 border_div">Indicadores de Producto</div>
+            <div class="col-4 border_div">Este reporte tiene todos los indicadores de producto reportados en el
+                sistema, tanto por socios como por implementación directa. *
+            </div>
+            <div class="col-4 border_div">
+                <p-splitButton label="Generar Reporte" icon="pi pi-file-excel"
+                               [model]="itemsReportTypeFull"
+                               (onDropdownClick)="setReport('getAllImplementationsPerformanceIndicatorsXXXByPeriodId')"
+                               styleClass="p-button-success mb-2"></p-splitButton>
+            </div>
+
+            <div class="col-4 border_div">Todos los indicadores</div>
+            <div class="col-4 border_div">Este reporte tiene todos los indicadores reportados en el sistema tanto por
+                socios como por implementación directa, incluyendo indicadores de producto y generales. *
+            </div>
+            <div class="col-4 border_div">
+                <p-splitButton label="Generar Reporte" icon="pi pi-file-excel"
+                               [model]="itemsReportTypeFull"
+                               (onDropdownClick)="setReport('getAllImplementationsXXXByPeriodId')"
+                               styleClass="p-button-success mb-2"></p-splitButton>
+            </div>
+
+        </div>
+    </p-fieldset>
+    <cite>* Los reportes "Con Desagregaciones" exportará solo los datos reportados mayores a 0 (cero) </cite>
+
+</p-card>

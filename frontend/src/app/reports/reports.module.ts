@@ -24,6 +24,9 @@ import { IndicatorComparisonComponent } from './2022/indicator-comparison/indica
 import { IndicatorTrendsComponent } from './2022/indicator-trends/indicator-trends.component';
 import { ProductIndicators2021Component } from './2021/product-indicators2021/product-indicators2021.component';
 import { Beneficiaries2021Component } from './2021/beneficiaries2021/beneficiaries2021.component';
+import { DataExportComponent } from './data-export/data-export.component';
+import {CardModule} from "primeng/card";
+import {SplitButtonModule} from "primeng/splitbutton";
 
 
 @NgModule({
@@ -42,7 +45,8 @@ import { Beneficiaries2021Component } from './2021/beneficiaries2021/beneficiari
     IndicatorComparisonComponent,
     IndicatorTrendsComponent,
     ProductIndicators2021Component,
-    Beneficiaries2021Component
+    Beneficiaries2021Component,
+    DataExportComponent
   ],
     imports: [
         CommonModule,
@@ -54,7 +58,9 @@ import { Beneficiaries2021Component } from './2021/beneficiaries2021/beneficiari
         ReactiveFormsModule,
         FieldsetModule,
         ButtonModule,
-        FormsModule
+        FormsModule,
+        CardModule,
+        SplitButtonModule
     ]
 })
 export class ReportsModule { }
