@@ -39,13 +39,10 @@ export class DataExportComponent implements OnInit {
                 this.messageService.add({severity: 'error', summary: 'No se encontraron periodos', detail: ''});
             } else {
                 const currentPeriod = this.utilsService.getCurrectPeriodOrDefault(this.periods);
-                console.log(currentPeriod);
                 const currentPeriodOption = this.periods.filter(value1 => {
                     return value1.id === currentPeriod.id
                 })[0];
-                console.log(currentPeriodOption);
                 this.periodForm.get('selectedPeriod').patchValue(currentPeriodOption);
-                console.log(this.periodForm.value);
             }
         }, error => {
             this.messageService.add({
