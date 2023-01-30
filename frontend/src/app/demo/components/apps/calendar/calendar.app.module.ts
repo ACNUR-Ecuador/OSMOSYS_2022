@@ -12,16 +12,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DropdownModule } from 'primeng/dropdown';
 import { ToastModule } from 'primeng/toast'
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction'
 import { EventService } from 'src/app/demo/service/event.service';
 
-FullCalendarModule.registerPlugins([
-    dayGridPlugin,
-    interactionPlugin,
-    timeGridPlugin
-]);
 
 @NgModule({
     imports: [

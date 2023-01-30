@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { MailAppComponent } from './mail.app.component';
 import { MailInboxComponent } from './mail-inbox/mail-inbox.component';
 import { MailComposeComponent } from './mail-compose/mail-compose.component';
@@ -10,6 +9,7 @@ import { MailSentComponent } from './mail-sent/mail-sent.component';
 import { MailSpamComponent } from './mail-spam/mail-spam.component';
 import { MailStarredComponent } from './mail-starred/mail-starred.component';
 import { MailTrashComponent } from './mail-trash/mail-trash.component';
+import {RouterModule} from "@angular/router";
 
 @NgModule({
     imports: [RouterModule.forChild([

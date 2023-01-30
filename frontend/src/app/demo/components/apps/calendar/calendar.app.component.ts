@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EventService } from 'src/app/demo/service/event.service';
-import { CalendarOptions } from '@fullcalendar/angular';
+import {CalendarOptions} from "@fullcalendar/core";
 
 @Component({
     templateUrl: './calendar.app.component.html',

@@ -3,6 +3,8 @@ import {PrimeNGConfig} from 'primeng/api';
 import {LayoutService} from './layout/service/app.layout.service';
 import {EnumsService} from './services/enums.service';
 import {Angulartics2GoogleAnalytics} from 'angulartics2';
+import {CalendarOptions} from "@fullcalendar/core";
+import dayGridPlugin from "@fullcalendar/daygrid";
 
 @Component({
     selector: 'app-root',
@@ -10,6 +12,11 @@ import {Angulartics2GoogleAnalytics} from 'angulartics2';
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+
+    calendarOptions: CalendarOptions = {
+        initialView: 'dayGridMonth',
+        plugins: [dayGridPlugin]
+    };
 
     constructor(
         private primengConfig: PrimeNGConfig,

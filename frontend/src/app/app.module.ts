@@ -13,6 +13,8 @@ import {AppCodeInterceptor} from './shared/interceptors/app-code.interceptor';
 import {ServicesModule} from './services/services.module';
 import Es from '@angular/common/locales/es';
 import {IndicatorFormsModule} from './indicator-forms/indicator-forms.module';
+import {FullCalendarModule} from "@fullcalendar/angular";
+
 registerLocaleData(Es);
 
 @NgModule({
@@ -26,7 +28,8 @@ registerLocaleData(Es);
         SharedModule,
         ServicesModule.forRoot(),
         // permisos
-        NgxPermissionsModule.forRoot()
+        NgxPermissionsModule.forRoot(),
+        FullCalendarModule // register FullCalendar with your app
     ],
     providers: [
         {provide: LOCALE_ID, useValue: 'es-ES'},
