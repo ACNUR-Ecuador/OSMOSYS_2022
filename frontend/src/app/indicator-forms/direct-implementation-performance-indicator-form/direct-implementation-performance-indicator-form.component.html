@@ -8,14 +8,16 @@
                     (click)="openLocationsDialog()"></button>
         </div>
     </div>
-    <div class="card p-0 border-primary font-bold text-lg text-primary">
+    <div class="card p-0 border-primary  text-primary"
+         *ngIf="indicatorExecution.indicator.instructions || indicatorExecution.activityDescription"
+    >
         <div class="fluid p-1" *ngIf="indicatorExecution.indicator.instructions">
-            <div class="field">
-                <label>Instrucciones del indicador:</label>
+            <div class="field text-xl">
+                <label class="font-bold">Instrucciones del indicador:</label>
                 {{indicatorExecution.indicator.instructions}}
             </div>
-            <div class="field p-1">
-                <label>Descripción de la actividad:</label>
+            <div class="field text-xl p-1" *ngIf="indicatorExecution.activityDescription">
+                <label class="font-bold">Descripción de la actividad:</label>
                 {{indicatorExecution.activityDescription}}
             </div>
         </div>
@@ -107,7 +109,7 @@
                         </div>
 
                     </div>
-                    <div class="field grid" >
+                    <div class="field grid">
                         <label class="col-4" for="assignedBudgetI">Presupuesto Distribuido este
                             Mes:: </label>
                         <div class="col-6">
@@ -169,19 +171,19 @@
                 </div>
             </fieldset>
         </div>
-<!--        <div class="card">
-            <div class="p-fluid p-formgrid grid">
-                <div class="field md:col-12">
-                    <label for="checkedI">Verificación Punto Focal</label>
-                    <p-dropdown id="checkedI" [options]="chekedOptions" formControlName="checked"
-                                appendTo="body"></p-dropdown>
-                    <small class="p-error"
-                           *ngIf="utilsService.showErrorForm('checked',formItem)">
-                        {{utilsService.getErrorMessageForm('checked', formItem)}}
-                    </small>
-                </div>
-            </div>
-        </div>-->
+        <!--        <div class="card">
+                    <div class="p-fluid p-formgrid grid">
+                        <div class="field md:col-12">
+                            <label for="checkedI">Verificación Punto Focal</label>
+                            <p-dropdown id="checkedI" [options]="chekedOptions" formControlName="checked"
+                                        appendTo="body"></p-dropdown>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('checked',formItem)">
+                                {{utilsService.getErrorMessageForm('checked', formItem)}}
+                            </small>
+                        </div>
+                    </div>
+                </div>-->
 
 
         <div class="p-card p-0">

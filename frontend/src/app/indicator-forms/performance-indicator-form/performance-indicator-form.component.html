@@ -1,14 +1,20 @@
 <div class="card p-0" *ngIf="render">
     <p-toast key="dialogToast" position="top-right"></p-toast>
     <p-messages></p-messages>
-    <div class="card p-0 border-primary font-bold text-lg text-primary">
-        <div class="fluid p-1" *ngIf="indicatorExecution.indicator.instructions">
-            <div class="field">
-                <label>Instrucciones del indicador:</label>
+    <div class="card p-0 border-primary text-primary"
+         *ngIf="indicatorExecution.indicator.instructions || indicatorExecution.activityDescription"
+    >
+        <div class="fluid p-1">
+            <div class="field text-xl"
+                 *ngIf="indicatorExecution.indicator.instructions"
+            >
+                <label class="font-bold">Instrucciones del indicador:</label>
                 {{indicatorExecution.indicator.instructions}}
             </div>
-            <div class="field p-1">
-                <label>Descripción de la actividad:</label>
+            <div class="field  text-xl p-1"
+                 *ngIf="indicatorExecution.activityDescription"
+            >
+                <label class="font-bold">Descripción de la actividad:</label>
                 {{indicatorExecution.activityDescription}}
             </div>
         </div>
