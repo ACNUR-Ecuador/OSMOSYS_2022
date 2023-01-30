@@ -1,9 +1,10 @@
-<div class="grid col-12">
+<div id="initial" class="grid col-12">
     <p-toast></p-toast>
-    <div class="card">
+    <div class="card grid-nogutter col">
         <h3 class="page-title">Proyectos</h3>
         <p-toolbar styleClass="mb-4">
-            <div class="p-toolbar-group-left" *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR'])">
+            <div class="p-toolbar-group-left"
+                 *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR'])">
                 <button pButton label="Crear Proyecto" icon="pi pi-plus"
                         class="p-button-success p-mr-2 p-mb-2"
                         (click)="createItem()"></button>
