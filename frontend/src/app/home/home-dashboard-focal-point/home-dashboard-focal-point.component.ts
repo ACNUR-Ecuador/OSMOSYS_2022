@@ -140,7 +140,7 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
         }
         this.projects.sort((a, b) => a.label.localeCompare(b.label));
         if (this.projects.length > 0) {
-            this.selectedProject = this.projects.pop().value;
+            this.selectedProject = this.projects[0].value;
             this.loadProject(this.selectedProject.id);
             this.changeDetectorRef.detectChanges();
         }
