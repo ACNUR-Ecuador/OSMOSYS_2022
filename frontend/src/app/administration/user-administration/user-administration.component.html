@@ -140,7 +140,8 @@
                 </ng-template>
                 <ng-template pTemplate="summary">
                     <div class="p-d-flex p-ai-center p-jc-between">
-                        {{dt.filteredValue?dt.filteredValue.length:dt.totalRecords}} de {{items?items.length:0}} usuarios.
+                        {{dt.filteredValue ? dt.filteredValue.length : dt.totalRecords}} de {{items ? items.length : 0}}
+                        usuarios.
                     </div>
                 </ng-template>
             </p-table>
@@ -193,6 +194,7 @@
                                 placeholder="Selecciona..."
                                 [filter]="true"
                                 appendTo="body"
+                                (onChange)="onOrganizacionChange($event)"
                     >
                     </p-dropdown>
 
@@ -209,7 +211,7 @@
                                 placeholder="Selecciona..."
                                 [filter]="true"
                                 appendTo="body"
-                                (onChange)="onOrganizacionChange($event)"
+
                     >
                     </p-dropdown>
 
@@ -239,8 +241,9 @@
                                 <p-checkbox name="group1" [inputId]="category.value"
                                             [value]="category.value"
                                             [formControl]='$any(formItem).controls["roleTypes"]'
-                                            [disabled]="category.value==='PUNTO_FOCAL'"
+                                            [disabled]="category.disabled"
                                 >
+
                                 </p-checkbox>
                                 <label [for]="category.value">{{category.label}}</label>
                             </div>

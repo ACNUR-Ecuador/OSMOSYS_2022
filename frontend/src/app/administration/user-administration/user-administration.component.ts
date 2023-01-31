@@ -122,9 +122,9 @@ export class UserAdministrationComponent implements OnInit {
         this.enumsService.getByType(EnumsType.RoleType).subscribe({
             next: value => {
                 this.roles = value;
-                /*.filter(value1 => {
-                    return value1.label !== 'Punto Focal'
-                })*/
+                this.roles.forEach(value1 => {
+                    value1.disabled = value1.value === 'PUNTO_FOCAL';
+                });
             },
             error: error => this.messageService.add({
                 severity: 'error',
@@ -344,11 +344,13 @@ export class UserAdministrationComponent implements OnInit {
         if (org) {
             if (org.id === 1) {
                 this.formItem.get('office').setValidators([Validators.required]);
+                this.formItem.get('office').enable();
                 this.formItem.get('office').updateValueAndValidity();
             } else {
                 this.formItem.get('office').patchValue(null);
                 this.formItem.get('office').clearValidators();
                 this.formItem.get('office').updateValueAndValidity();
+                this.formItem.get('office').disable();
             }
         }
     }
