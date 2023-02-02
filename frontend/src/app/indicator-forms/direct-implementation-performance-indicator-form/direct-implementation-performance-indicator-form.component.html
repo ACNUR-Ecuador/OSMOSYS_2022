@@ -1,5 +1,5 @@
 <div class="card p-0" *ngIf="render">
-    <p-toast key="dialogToast" position="top-right"></p-toast>
+    <p-toast key="dialogToast" position="top-center"></p-toast>
     <p-messages></p-messages>
     <div class="card p-2" *ngIf="hasLocationDissagregation || indicatorExecution.activityDescription">
         <div class="flex justify-content-end">
@@ -194,7 +194,7 @@
                 <p-message severity="warn"
                            *ngIf="indicatorExecution.indicator.blockAfterUpdate"
                            text="El indicador se bloqueará despues de guardarlo." styleClass="p-mr-2"></p-message>
-                <button pButton type="submit" class="mx-3"
+                <button pButton type="submit" class="mx-3" [disabled]="disableSave"
                         pRipple label="Guardar" icon="pi pi-check"
                 ></button>
                 <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times"
@@ -205,7 +205,10 @@
                  *ngIf="!editable && !(isAdmin || isSupervisor && isResponsible) ">
                 <p-message severity="warn"
                            [text]=noEditionMessage
-                           styleClass="p-mr-2"></p-message>
+                           styleClass="p-mr-2"
+                           tooltipPosition="top"
+                           pTooltip="Enter your username"
+                ></p-message>
                 <button pButton type="button" pRipple label="Salir" icon="pi pi-times"
                         (click)="cancel()"></button>
             </div>

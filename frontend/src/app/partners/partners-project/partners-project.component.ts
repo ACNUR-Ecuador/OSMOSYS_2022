@@ -224,6 +224,11 @@ export class PartnersProjectComponent implements OnInit {
                 label: 'Con Desagregaciones', tooltip: 'sdfgsdfg', icon: 'pi pi-file-excel', command: () => {
                     this.getReportDetailed();
                 }
+            },
+            {
+                label: 'Resumen Demográfico', tooltip: 'sdfgsdfg', icon: 'pi pi-file-excel', command: () => {
+                    this.getDemographic();
+                }
             }
         ];
     }
@@ -242,6 +247,9 @@ export class PartnersProjectComponent implements OnInit {
 
     private getReportDetailed() {
         this.getReport('Detailed');
+    }
+   private getDemographic() {
+        this.getReport('Demographic');
     }
 
 
@@ -264,6 +272,9 @@ export class PartnersProjectComponent implements OnInit {
 
             case 'getPartnerDetailedByProjectId':
                 reportObservable = this.reportsService.getPartnerDetailedByProjectId(this.project.id);
+                break;
+            case 'getPartnerDemographicByProjectId':
+                reportObservable = this.reportsService.getDemographicByProjectId(this.project.id);
                 break;
             default: {
                 this.messageService.add({

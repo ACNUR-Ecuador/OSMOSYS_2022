@@ -317,4 +317,11 @@ export class ReportsService {
             responseType: 'blob' as 'json'
         });
     }
+
+    public getDemographicByProjectId(projectId: number) {
+        return this.http.get(`${mainServiceUrl}/getProgramReportByProjectId/${projectId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
 }

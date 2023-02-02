@@ -44,6 +44,7 @@ import {ButtonModule} from 'primeng/button';
 import {RippleModule} from 'primeng/ripple';
 import {InputTextModule} from 'primeng/inputtext';
 import {InputTextareaModule} from 'primeng/inputtextarea';
+import {TooltipModule} from "primeng/tooltip";
 
 
 @NgModule({
@@ -80,7 +81,8 @@ import {InputTextareaModule} from 'primeng/inputtextarea';
         ButtonModule,
         RippleModule,
         InputTextModule,
-        InputTextareaModule
+        InputTextareaModule,
+        TooltipModule
     ],
     exports: [
         ChartIndicatorExecutionComponent,

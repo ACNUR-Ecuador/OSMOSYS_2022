@@ -198,14 +198,14 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
 
     validateSegregations() {
         this.disableSave = false;
-        this.monthValuesMap.forEach((value, key) => {
+        this.monthValuesMap.forEach((value) => {
             if (value && value.length === 0) {
-                this.messageService.add({
+               /* this.messageService.add({
                     severity: 'error',
                     summary: 'Actualiza los valores para ' + this.enumsService.resolveLabel(EnumsType.DissagregationType, key),
                     detail: 'Agrega lugares de ejecución',
-                    life: 3000
-                });
+                    sticky: true
+                });*/
                 this.disableSave = true;
             }
         });
