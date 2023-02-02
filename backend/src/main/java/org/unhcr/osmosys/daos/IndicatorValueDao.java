@@ -41,7 +41,7 @@ public class IndicatorValueDao extends GenericDaoJpa<IndicatorValue, Long> {
     }
 
     public void updateStateByPeriodIdIndicatorIdAndDissagregationType(List<Long> indicatorExecutionIds, DissagregationType dissagregationType, State state) {
-        String sql=" UPDATE " +
+        String sql = " UPDATE " +
                 " osmosys.indicator_values " +
                 " SET state=:state " +
                 " FROM " +
@@ -64,7 +64,7 @@ public class IndicatorValueDao extends GenericDaoJpa<IndicatorValue, Long> {
     }
 
     public void updateGeneralIndicatorStateByPeriodIdAndDissagregationType(Long periodId, DissagregationType dissagregationType, State state) {
-        String sql=" UPDATE " +
+        String sql = " UPDATE " +
                 " osmosys.indicator_values " +
                 " SET state=:state " +
                 " FROM " +
@@ -86,5 +86,22 @@ public class IndicatorValueDao extends GenericDaoJpa<IndicatorValue, Long> {
         q.executeUpdate();
     }
 
+    public List<IndicatorValue> getByIndicatorExecutionId(Long indicatorExecutionId) {
 
+        String jpql = "SELECT DISTINCT o FROM " +
+                " IndicatorExecution ie " +
+                " inner join ie.quarters q " +
+                " inner join q.months m " +
+                " inner join m.indicatorValues o " +
+                "WHERE ie.id=: indicatorExecutionId" +
+                " and ie.state = :state " +
+                " and q.state = :state " +
+                " and m.state = :state " +
+                " and o.state = :state " ;
+
+        Query q = getEntityManager().createQuery(jpql, IndicatorValue.class);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("indicatorExecutionId", indicatorExecutionId);
+        return q.getResultList();
+    }
 }

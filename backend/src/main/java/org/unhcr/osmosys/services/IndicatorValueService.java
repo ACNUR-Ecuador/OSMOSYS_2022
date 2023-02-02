@@ -741,4 +741,8 @@ public class IndicatorValueService {
 
         }
     }
+
+    public List<IndicatorValue> getByIndicatorExecutionId(Long indicatorExecutionId) {
+        return this.indicatorValueDao.getByIndicatorExecutionId(indicatorExecutionId);
+    }
 }

@@ -64,12 +64,14 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         }
     }
 
-    public Project getByName(String name) throws GeneralAppException {
+    public Project getByNameAndPeriodId(String name, Long periodId) throws GeneralAppException {
 
         String jpql = "SELECT DISTINCT o FROM Project o " +
-                "WHERE lower(o.name) = lower(:name)";
+                "WHERE lower(o.name) = lower(:name) " +
+                " and o.period.id=:periodId";
         Query q = getEntityManager().createQuery(jpql, Project.class);
         q.setParameter("name", name);
+        q.setParameter("periodId", periodId);
         try {
             return (Project) q.getSingleResult();
         } catch (NoResultException e) {

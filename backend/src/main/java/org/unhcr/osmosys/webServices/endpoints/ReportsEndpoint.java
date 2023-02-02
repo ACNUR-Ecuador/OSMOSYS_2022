@@ -826,5 +826,25 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
+    @Path("/getProgramReportByProjectId/{projectId}")
+    @GET
+    //@Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getProgramReportByProjectId(
+            // @Context SecurityContext securityContext,
+            @PathParam("projectId") Long focalPointId
+    ) throws GeneralAppException {
+        // Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getIndicatorReportProgramByProjectId:");//) + principal.getName());
+        long lStartTime = System.nanoTime();
+        ByteArrayOutputStream r = this.reportService.getIndicatorReportProgramByProjectId(focalPointId);
+        if (r == null) {
+            throw new GeneralAppException("No se indicadores", Response.Status.NO_CONTENT);
+        }
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
+        String filename = "Reporte_Programas" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+    }
 
 }

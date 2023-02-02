@@ -986,6 +986,11 @@ public class IndicatorExecutionService {
                 .indicatorExecutionsToIndicatorExecutionsWeb(indicatorExecutions, true);
     }
 
+    public List<IndicatorExecution> getIndicatorExecutionsByProjectId(Long projectId) {
+        return this.indicatorExecutionDao.getActivePartnersIndicatorExecutionsByProjectId(projectId);
+
+    }
+
     public List<IndicatorExecutionWeb> getActiveProjectIndicatorExecutionsByPeriodId(Long periodId) throws GeneralAppException {
         List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getActivePartnersIndicatorExecutionsByPeriodId(periodId);
         return this.modelWebTransformationService

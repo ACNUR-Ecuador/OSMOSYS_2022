@@ -26,7 +26,7 @@ public enum DissagregationType implements EnumInterface {
     DIVERSIDAD_EDAD_Y_GENERO("Diversidad, género y edad", 20),
     PAIS_ORIGEN_EDAD_Y_GENERO("País de Origen, género y edad", 21),
     DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO("Diversidad, género y edad-educación primaria", 22),
-    DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO("Diversidad, género y edad-educación primaria", 23),
+    DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO("Diversidad, género y edad-educación terciaria", 23),
     TIPO_POBLACION_LUGAR_EDAD_Y_GENERO("Tipo de población,lugar, género y edad", 24),
     TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO("Tipo de población,lugar, género  y edad-educación primaria", 25),
     TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO("Tipo de población,lugar, género y edad-educación terciaria", 26),

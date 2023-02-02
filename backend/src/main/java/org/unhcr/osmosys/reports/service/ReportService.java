@@ -2,6 +2,7 @@ package org.unhcr.osmosys.reports.service;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.export.OutputStreamExporterOutput;
@@ -12,6 +13,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jboss.logging.Logger;
+import org.unhcr.osmosys.reports.model.IndicatorReportProgramsDTO;
 import org.unhcr.osmosys.services.UtilsService;
 
 import javax.ejb.Stateless;
@@ -187,6 +189,7 @@ public class ReportService {
             }
         }
     }
+
     private ByteArrayOutputStream getByteArrayOutputStreamFromWorkbook(XSSFWorkbook workbook) throws GeneralAppException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
@@ -449,9 +452,8 @@ public class ReportService {
     }
 
 
-
     public ByteArrayOutputStream getDirectImplementationLateReportByResponsableId(Long responsableId, Long periodId) throws GeneralAppException {
-        XSSFWorkbook workbook = this.reportDataService.getDirectImplementationLateReportByResponsableId(periodId,responsableId, this.utilsService.getCurrentYear(), this.utilsService.getCurrentMonthYearOrder());
+        XSSFWorkbook workbook = this.reportDataService.getDirectImplementationLateReportByResponsableId(periodId, responsableId, this.utilsService.getCurrentYear(), this.utilsService.getCurrentMonthYearOrder());
         if (workbook != null) {
             return getByteArrayOutputStreamFromWorkbook(workbook);
         } else {
@@ -468,16 +470,17 @@ public class ReportService {
         }
     }
 
-    public ByteArrayOutputStream getDirectImplementationLateReportBySupervisorId(Long periodId,Long supervisorId) throws GeneralAppException {
-        XSSFWorkbook workbook = this.reportDataService.getDirectImplementationLateReportBySupervisorId(periodId,supervisorId, this.utilsService.getCurrentYear(), this.utilsService.getCurrentMonthYearOrder());
+    public ByteArrayOutputStream getDirectImplementationLateReportBySupervisorId(Long periodId, Long supervisorId) throws GeneralAppException {
+        XSSFWorkbook workbook = this.reportDataService.getDirectImplementationLateReportBySupervisorId(periodId, supervisorId, this.utilsService.getCurrentYear(), this.utilsService.getCurrentMonthYearOrder());
         if (workbook != null) {
             return getByteArrayOutputStreamFromWorkbook(workbook);
         } else {
             return null;
         }
     }
-    public ByteArrayOutputStream getOfficeLateDirectImplementationReport(Long periodId,Long officeId) throws GeneralAppException {
-        XSSFWorkbook workbook = this.reportDataService.getOfficeLateDirectImplementationReport(periodId,officeId, this.utilsService.getCurrentYear(), this.utilsService.getCurrentMonthYearOrder());
+
+    public ByteArrayOutputStream getOfficeLateDirectImplementationReport(Long periodId, Long officeId) throws GeneralAppException {
+        XSSFWorkbook workbook = this.reportDataService.getOfficeLateDirectImplementationReport(periodId, officeId, this.utilsService.getCurrentYear(), this.utilsService.getCurrentMonthYearOrder());
         if (workbook != null) {
             return getByteArrayOutputStreamFromWorkbook(workbook);
         } else {
@@ -504,10 +507,9 @@ public class ReportService {
     }
 
 
-
     public ByteArrayOutputStream getAllLateReportPartners(Long periodId) throws GeneralAppException {
 
-        XSSFWorkbook workbook = this.reportDataService.getAllLateReportPartners(periodId,this.utilsService.getCurrentMonthYearOrder(), this.utilsService.getCurrentMonthYearOrder());
+        XSSFWorkbook workbook = this.reportDataService.getAllLateReportPartners(periodId, this.utilsService.getCurrentMonthYearOrder(), this.utilsService.getCurrentMonthYearOrder());
         if (workbook != null) {
             return getByteArrayOutputStreamFromWorkbook(workbook);
         } else {
@@ -521,6 +523,29 @@ public class ReportService {
             return getByteArrayOutputStreamFromWorkbook(workbook);
         } else {
             return null;
+        }
+    }
+
+
+    public ByteArrayOutputStream getIndicatorReportProgramByProjectId(Long projectId) throws GeneralAppException {
+        if (ReportService.dissableJasperReport) {
+            throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
+        }
+        try {
+            String jrxmlFile = "program_partner_report.jrxml";
+            Map<String, Object> parameters = new HashMap<>();
+            InputStream file = this.getReportFile(jrxmlFile);
+
+            List<IndicatorReportProgramsDTO> dtos = this.reportDataService.getIndicatorReportProgramsByProjectId(projectId);
+
+            JRBeanCollectionDataSource itemsJRBean = new JRBeanCollectionDataSource(dtos);
+            parameters.put("CollectionBeanParam", itemsJRBean);
+
+            JasperReport jasperReport = JasperCompileManager.compileReport(file);
+            JasperPrint jasperprint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
+            return getByteArrayOutputStreamFromJasperPrint(jasperprint);
+        } catch (JRException e) {
+            throw new GeneralAppException("Error al generar el reporte", Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
         }
     }
 

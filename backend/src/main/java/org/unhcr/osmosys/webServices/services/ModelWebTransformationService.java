@@ -118,7 +118,6 @@ public class ModelWebTransformationService {
             for (IndicatorExecutionWeb indicatorExecutionWeb : indicatorExecutionsArea) {
                 indicators.add(indicatorExecutionWeb.getIndicator());
                 arw.getIndicatorExecutionIds().add(indicatorExecutionWeb.getId());
-                LOGGER.error(indicatorExecutionWeb.getLate());
                 if (indicatorExecutionWeb.getLate().equals(TimeStateEnum.LATE)) {
                     lateCount++;
                 }

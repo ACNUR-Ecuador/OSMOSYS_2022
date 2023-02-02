@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.reports.service;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -15,14 +16,17 @@ import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.*;
 import org.jboss.logging.Logger;
-import org.openxmlformats.schemas.spreadsheetml.x2006.main.*;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTAutoFilter;
 import org.unhcr.osmosys.daos.ReportDao;
+import org.unhcr.osmosys.model.DissagregationAssignationToIndicatorExecution;
 import org.unhcr.osmosys.model.IndicatorExecution;
-import org.unhcr.osmosys.model.enums.Frecuency;
-import org.unhcr.osmosys.model.enums.TimeStateEnum;
+import org.unhcr.osmosys.model.IndicatorValue;
+import org.unhcr.osmosys.model.enums.*;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedDTO;
 import org.unhcr.osmosys.model.reportDTOs.LaterReportDTO;
+import org.unhcr.osmosys.reports.model.IndicatorReportProgramsDTO;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
+import org.unhcr.osmosys.services.IndicatorValueService;
 import org.unhcr.osmosys.webServices.model.IndicatorExecutionWeb;
 import org.unhcr.osmosys.webServices.model.MonthWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
@@ -30,6 +34,7 @@ import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,6 +44,8 @@ public class ReportDataService {
     private static final Logger LOGGER = Logger.getLogger(ReportDataService.class);
     @Inject
     IndicatorExecutionService indicatorExecutionService;
+    @Inject
+    IndicatorValueService indicatorValueService;
 
     @Inject
     ReportDao reportDao;
@@ -602,7 +609,7 @@ public class ReportDataService {
     }
 
     public XSSFWorkbook getPartnerLateReportByFocalPointId(Long focalPointId, Integer currentYear, Integer currentMonth) throws GeneralAppException {
-        List<IndicatorExecution> data = this.reportDao.getPartnerLateReviewReportByFocalPointId(focalPointId , currentYear, currentMonth);
+        List<IndicatorExecution> data = this.reportDao.getPartnerLateReviewReportByFocalPointId(focalPointId, currentYear, currentMonth);
         List<LaterReportDTO> dataDto;
         if (CollectionUtils.isEmpty(data)) {
             return null;
@@ -614,7 +621,6 @@ public class ReportDataService {
             return this.getLateReport(dataDto, false, false);
         }
     }
-
 
 
     public XSSFWorkbook getPartnerLateReviewReportByProjectId(Long projectId, Integer currentYear, Integer currentMonth) {
@@ -676,7 +682,7 @@ public class ReportDataService {
 
             for (int t = 0; t < titles.size(); t++) {
                 Cell cell = rowData.createCell(t);
-                this.setDataFromLaterReportDTO(wb, titles.get(t), cell, dataRow);
+                this.setDataFromLaterReportDTO( titles.get(t), cell, dataRow);
                 CellStyle styleCell = cell.getCellStyle();
                 styleCell.setWrapText(true);
             }
@@ -687,7 +693,7 @@ public class ReportDataService {
         return wb;
     }
 
-    private void setDataFromLaterReportDTO(XSSFWorkbook wb, String title, Cell cell, LaterReportDTO dataRow) {
+    private void setDataFromLaterReportDTO( String title, Cell cell, LaterReportDTO dataRow) {
         switch (title) {
             case "Proyecto":
                 cell.setCellValue(dataRow.getProject());
@@ -991,4 +997,206 @@ public class ReportDataService {
         }
         return this.getLateReport(data, true, true);
     }
+
+
+    public List<IndicatorReportProgramsDTO> getIndicatorReportProgramsByProjectId(Long projectId) {
+        List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionService.getIndicatorExecutionsByProjectId(projectId);
+        indicatorExecutions = indicatorExecutions.stream().filter(
+                indicatorExecution -> {
+                    Optional<DissagregationType> r = indicatorExecution.getDissagregationsAssignationsToIndicatorExecutions()
+                            .stream()
+                            .filter(dissagregationAssignationToIndicatorExecution -> dissagregationAssignationToIndicatorExecution.getState().equals(State.ACTIVO))
+                            .map(DissagregationAssignationToIndicatorExecution::getDissagregationType)
+                            .filter(dissagregationType ->
+                                    dissagregationType.equals(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO)
+                                            || dissagregationType.equals(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO)
+                                            || dissagregationType.equals(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO)
+                            )
+                            .findFirst();
+                    return r.isPresent();
+                }).collect(Collectors.toList());
+
+        return this.indicatorExecutionsToIndicatorReportPrograms(indicatorExecutions);
+    }
+
+    private List<IndicatorReportProgramsDTO> indicatorExecutionsToIndicatorReportPrograms(List<IndicatorExecution> indicatorExecutions) {
+        List<IndicatorReportProgramsDTO> r = new ArrayList<>();
+        for (IndicatorExecution indicatorExecution : indicatorExecutions) {
+            r.add(this.indicatorExecutionsToIndicatorReportPrograms(indicatorExecution));
+        }
+        return r;
+    }
+
+    private IndicatorReportProgramsDTO indicatorExecutionsToIndicatorReportPrograms(IndicatorExecution ie) {
+        IndicatorReportProgramsDTO r = new IndicatorReportProgramsDTO();
+        r.setIeId(ie.getId());
+        if (ie.getProjectStatement() != null) {
+            r.setStatement(ie.getProjectStatement().getCode() + "-" + ie.getProjectStatement().getDescription());
+        } else if (ie.getIndicator() != null) {
+            r.setStatement(ie.getIndicator().getStatement().getCode() + "-" + ie.getIndicator().getStatement().getDescription());
+        }
+
+        if (ie.getIndicator() != null) {
+            r.setIndicator(ie.getIndicator().getCode() + "-" + ie.getIndicator().getDescription());
+        } else {
+            r.setIndicator(ie.getPeriod().getGeneralIndicator().getDescription());
+        }
+
+        r.setTotalExecution(ie.getTotalExecution() == null ? 0 : ie.getTotalExecution().toBigInteger().intValueExact());
+        r.setTotalTarget(ie.getTarget() == null ? 0 : ie.getTarget().toBigInteger().intValueExact());
+        List<IndicatorValue> indicatorValues = this.indicatorValueService.getByIndicatorExecutionId(r.getIeId());
+
+        DissagregationType dissagregation = ie.getDissagregationsAssignationsToIndicatorExecutions()
+                .stream()
+                .filter(dissagregationAssignationToIndicatorExecution -> dissagregationAssignationToIndicatorExecution.getState().equals(State.ACTIVO))
+                .map(DissagregationAssignationToIndicatorExecution::getDissagregationType)
+                .filter(dissagregationType ->
+                        dissagregationType.equals(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO)
+                                || dissagregationType.equals(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO)
+                                || dissagregationType.equals(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO)
+                )
+                .findFirst().orElse(null);
+
+        //noinspection ConstantConditions
+        r.setRefugeesInfantMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.REFUGIADOS, AgeType.INFANTES, GenderType.MASCULINO));
+        r.setRefugeesInfantFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.REFUGIADOS, AgeType.INFANTES, GenderType.FEMENINO));
+        r.setRefugeesInfantOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.REFUGIADOS, AgeType.INFANTES, GenderType.OTRO));
+        r.setRefugeesNNAMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.REFUGIADOS, AgeType.NINOS, GenderType.MASCULINO));
+        r.setRefugeesNNAFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.REFUGIADOS, AgeType.NINOS, GenderType.FEMENINO));
+        r.setRefugeesNNAOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.REFUGIADOS, AgeType.NINOS, GenderType.OTRO));
+        r.setRefugeesAdultMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.REFUGIADOS, AgeType.ADULTOS, GenderType.MASCULINO));
+        r.setRefugeesAdultFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.REFUGIADOS, AgeType.ADULTOS, GenderType.FEMENINO));
+        r.setRefugeesAdultOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.REFUGIADOS, AgeType.ADULTOS, GenderType.OTRO));
+        r.setRefugeesElderlyMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.REFUGIADOS, AgeType.ADULTOS_MAYORES, GenderType.MASCULINO));
+        r.setRefugeesElderlyFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.REFUGIADOS, AgeType.ADULTOS_MAYORES, GenderType.FEMENINO));
+        r.setRefugeesElderlyOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.REFUGIADOS, AgeType.ADULTOS_MAYORES, GenderType.OTRO));
+
+        r.setAsylumSeekersInfantMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.SOLICITANTES_DE_ASILO, AgeType.INFANTES, GenderType.MASCULINO));
+        r.setAsylumSeekersInfantFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.SOLICITANTES_DE_ASILO, AgeType.INFANTES, GenderType.FEMENINO));
+        r.setAsylumSeekersInfantOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.SOLICITANTES_DE_ASILO, AgeType.INFANTES, GenderType.OTRO));
+        r.setAsylumSeekersNNAMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.SOLICITANTES_DE_ASILO, AgeType.NINOS, GenderType.MASCULINO));
+        r.setAsylumSeekersNNAFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.SOLICITANTES_DE_ASILO, AgeType.NINOS, GenderType.FEMENINO));
+        r.setAsylumSeekersNNAOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.SOLICITANTES_DE_ASILO, AgeType.NINOS, GenderType.OTRO));
+        r.setAsylumSeekersAdultMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.SOLICITANTES_DE_ASILO, AgeType.ADULTOS, GenderType.MASCULINO));
+        r.setAsylumSeekersAdultFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.SOLICITANTES_DE_ASILO, AgeType.ADULTOS, GenderType.FEMENINO));
+        r.setAsylumSeekersAdultOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.SOLICITANTES_DE_ASILO, AgeType.ADULTOS, GenderType.OTRO));
+        r.setAsylumSeekersElderlyMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.SOLICITANTES_DE_ASILO, AgeType.ADULTOS_MAYORES, GenderType.MASCULINO));
+        r.setAsylumSeekersElderlyFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.SOLICITANTES_DE_ASILO, AgeType.ADULTOS_MAYORES, GenderType.FEMENINO));
+        r.setAsylumSeekersElderlyOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.SOLICITANTES_DE_ASILO, AgeType.ADULTOS_MAYORES, GenderType.OTRO));
+
+        r.setVenezuelanAbroadInfantMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.VENEZOLANOS_DESPLAZADOS, AgeType.INFANTES, GenderType.MASCULINO));
+        r.setVenezuelanAbroadInfantFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.VENEZOLANOS_DESPLAZADOS, AgeType.INFANTES, GenderType.FEMENINO));
+        r.setVenezuelanAbroadInfantOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.VENEZOLANOS_DESPLAZADOS, AgeType.INFANTES, GenderType.OTRO));
+        r.setVenezuelanAbroadNNAMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.VENEZOLANOS_DESPLAZADOS, AgeType.NINOS, GenderType.MASCULINO));
+        r.setVenezuelanAbroadNNAFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.VENEZOLANOS_DESPLAZADOS, AgeType.NINOS, GenderType.FEMENINO));
+        r.setVenezuelanAbroadNNAOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.VENEZOLANOS_DESPLAZADOS, AgeType.NINOS, GenderType.OTRO));
+        r.setVenezuelanAbroadAdultMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.VENEZOLANOS_DESPLAZADOS, AgeType.ADULTOS, GenderType.MASCULINO));
+        r.setVenezuelanAbroadAdultFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.VENEZOLANOS_DESPLAZADOS, AgeType.ADULTOS, GenderType.FEMENINO));
+        r.setVenezuelanAbroadAdultOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.VENEZOLANOS_DESPLAZADOS, AgeType.ADULTOS, GenderType.OTRO));
+        r.setVenezuelanAbroadElderlyMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.VENEZOLANOS_DESPLAZADOS, AgeType.ADULTOS_MAYORES, GenderType.MASCULINO));
+        r.setVenezuelanAbroadElderlyFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.VENEZOLANOS_DESPLAZADOS, AgeType.ADULTOS_MAYORES, GenderType.FEMENINO));
+        r.setVenezuelanAbroadElderlyOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.VENEZOLANOS_DESPLAZADOS, AgeType.ADULTOS_MAYORES, GenderType.OTRO));
+
+        r.setHostCommunityInfantMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.COMUNIDAD_DE_ACOGIDA, AgeType.INFANTES, GenderType.MASCULINO));
+        r.setHostCommunityInfantFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.COMUNIDAD_DE_ACOGIDA, AgeType.INFANTES, GenderType.FEMENINO));
+        r.setHostCommunityInfantOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.COMUNIDAD_DE_ACOGIDA, AgeType.INFANTES, GenderType.OTRO));
+        r.setHostCommunityNNAMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.COMUNIDAD_DE_ACOGIDA, AgeType.NINOS, GenderType.MASCULINO));
+        r.setHostCommunityNNAFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.COMUNIDAD_DE_ACOGIDA, AgeType.NINOS, GenderType.FEMENINO));
+        r.setHostCommunityNNAOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.COMUNIDAD_DE_ACOGIDA, AgeType.NINOS, GenderType.OTRO));
+        r.setHostCommunityAdultMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.COMUNIDAD_DE_ACOGIDA, AgeType.ADULTOS, GenderType.MASCULINO));
+        r.setHostCommunityAdultFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.COMUNIDAD_DE_ACOGIDA, AgeType.ADULTOS, GenderType.FEMENINO));
+        r.setHostCommunityAdultOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.COMUNIDAD_DE_ACOGIDA, AgeType.ADULTOS, GenderType.OTRO));
+        r.setHostCommunityElderlyMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.COMUNIDAD_DE_ACOGIDA, AgeType.ADULTOS_MAYORES, GenderType.MASCULINO));
+        r.setHostCommunityElderlyFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.COMUNIDAD_DE_ACOGIDA, AgeType.ADULTOS_MAYORES, GenderType.FEMENINO));
+        r.setHostCommunityElderlyOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.COMUNIDAD_DE_ACOGIDA, AgeType.ADULTOS_MAYORES, GenderType.OTRO));
+
+        r.setOthersOfInterestInfantMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.OTROS_DE_INTERES, AgeType.INFANTES, GenderType.MASCULINO));
+        r.setOthersOfInterestInfantFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.OTROS_DE_INTERES, AgeType.INFANTES, GenderType.FEMENINO));
+        r.setOthersOfInterestInfantOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.OTROS_DE_INTERES, AgeType.INFANTES, GenderType.OTRO));
+        r.setOthersOfInterestNNAMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.OTROS_DE_INTERES, AgeType.NINOS, GenderType.MASCULINO));
+        r.setOthersOfInterestNNAFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.OTROS_DE_INTERES, AgeType.NINOS, GenderType.FEMENINO));
+        r.setOthersOfInterestNNAOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.OTROS_DE_INTERES, AgeType.NINOS, GenderType.OTRO));
+        r.setOthersOfInterestAdultMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.OTROS_DE_INTERES, AgeType.ADULTOS, GenderType.MASCULINO));
+        r.setOthersOfInterestAdultFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.OTROS_DE_INTERES, AgeType.ADULTOS, GenderType.FEMENINO));
+        r.setOthersOfInterestAdultOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.OTROS_DE_INTERES, AgeType.ADULTOS, GenderType.OTRO));
+        r.setOthersOfInterestElderlyMale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.OTROS_DE_INTERES, AgeType.ADULTOS_MAYORES, GenderType.MASCULINO));
+        r.setOthersOfInterestElderlyFemale(this.getProgramValue(indicatorValues, dissagregation, PopulationType.OTROS_DE_INTERES, AgeType.ADULTOS_MAYORES, GenderType.FEMENINO));
+        r.setOthersOfInterestElderlyOther(this.getProgramValue(indicatorValues, dissagregation, PopulationType.OTROS_DE_INTERES, AgeType.ADULTOS_MAYORES, GenderType.OTRO));
+
+        return r;
+
+    }
+
+    private Integer getProgramValue(List<IndicatorValue> indicatorValues, DissagregationType dissagregationType, PopulationType populationType, AgeType ageType, GenderType genderType) {
+        switch (dissagregationType) {
+            case TIPO_POBLACION_LUGAR_EDAD_Y_GENERO:
+                return indicatorValues.stream()
+                        .filter(indicatorValue -> indicatorValue.getDissagregationType().equals(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO))
+                        .filter(indicatorValue -> indicatorValue.getPopulationType().equals(populationType)
+                                && indicatorValue.getAgeType().equals(ageType)
+                                && indicatorValue.getGenderType().equals(genderType))
+                        .map(IndicatorValue::getValue)
+                        .filter(Objects::nonNull)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add).toBigInteger().intValueExact();
+            case TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
+                List<AgePrimaryEducationType> agesTypes = new ArrayList<>();
+                switch (ageType) {
+                    case INFANTES:
+                        agesTypes.add(AgePrimaryEducationType.PREPRIMARIA);
+                        break;
+                    case NINOS:
+                        agesTypes.add(AgePrimaryEducationType.PRIMARIA);
+                        agesTypes.add(AgePrimaryEducationType.SECUNDARIA);
+                        break;
+                    case ADULTOS:
+                        agesTypes.add(AgePrimaryEducationType.ADULTOS);
+                        break;
+                    case ADULTOS_MAYORES:
+                        agesTypes.add(AgePrimaryEducationType.ADULTOS_MAYORES);
+                        break;
+
+                }
+                return indicatorValues.stream()
+                        .filter(indicatorValue -> indicatorValue.getDissagregationType().equals(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO))
+                        .filter(indicatorValue -> indicatorValue.getPopulationType().equals(populationType)
+                                && indicatorValue.getGenderType().equals(genderType)
+                                && agesTypes.contains(indicatorValue.getAgePrimaryEducationType())
+                        )
+                        .map(IndicatorValue::getValue)
+                        .filter(Objects::nonNull)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add).toBigInteger().intValueExact();
+
+            case TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
+                List<AgeTertiaryEducationType> agesTypesT = new ArrayList<>();
+                switch (ageType) {
+                    case INFANTES:
+                        agesTypesT.add(AgeTertiaryEducationType.INFANTES);
+                        break;
+                    case NINOS:
+                        agesTypesT.add(AgeTertiaryEducationType.NINOS);
+                        break;
+                    case ADULTOS:
+                        agesTypesT.add(AgeTertiaryEducationType.JOVENES_ADULTOS);
+                        agesTypesT.add(AgeTertiaryEducationType.ADULTOS);
+                        break;
+                    case ADULTOS_MAYORES:
+                        agesTypesT.add(AgeTertiaryEducationType.ADULTOS_MAYORES);
+                        break;
+
+                }
+                return indicatorValues.stream()
+                        .filter(indicatorValue -> indicatorValue.getDissagregationType().equals(DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO))
+                        .filter(indicatorValue -> indicatorValue.getPopulationType().equals(populationType)
+                                && indicatorValue.getGenderType().equals(genderType)
+                                && agesTypesT.contains(indicatorValue.getAgeTertiaryEducationType())
+                        )
+                        .map(IndicatorValue::getValue)
+                        .filter(Objects::nonNull)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add).toBigInteger().intValueExact();
+            default:
+                return null;
+        }
+    }
+
+
 }

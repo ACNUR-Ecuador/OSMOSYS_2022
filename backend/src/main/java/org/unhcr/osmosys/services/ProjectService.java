@@ -11,7 +11,6 @@ import org.unhcr.osmosys.daos.CantonDao;
 import org.unhcr.osmosys.daos.ProjectDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
-import org.unhcr.osmosys.services.dataImport.ProjectsImportService;
 import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
@@ -244,7 +243,7 @@ public class ProjectService {
             }
         }
 
-        itemRecovered = this.projectDao.getByName(projectWeb.getName());
+        itemRecovered = this.projectDao.getByNameAndPeriodId(projectWeb.getName(), projectWeb.getPeriod().getId());
         if (itemRecovered != null) {
             if (projectWeb.getId() == null || !projectWeb.getId().equals(itemRecovered.getId())) {
                 throw new GeneralAppException("Ya existe un proyecto con esta descripción corta", Response.Status.BAD_REQUEST);
