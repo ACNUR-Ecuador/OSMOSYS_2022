@@ -4,14 +4,19 @@ import {Canton, IndicatorValue} from '../../../shared/model/OsmosysModel';
 import {forkJoin, Observable, of} from 'rxjs';
 import {UtilsService} from '../../../services/utils.service';
 import {EnumsService} from '../../../services/enums.service';
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import * as XLSX from "xlsx";
+import {WorkBook} from "xlsx";
 
 @Component({
-  selector: 'app-dissagregation-four-integer-dimensions',
-  templateUrl: './dissagregation-four-integer-dimensions.component.html',
-  styleUrls: ['./dissagregation-four-integer-dimensions.component.scss']
+    selector: 'app-dissagregation-four-integer-dimensions',
+    templateUrl: './dissagregation-four-integer-dimensions.component.html',
+    styleUrls: ['./dissagregation-four-integer-dimensions.component.scss']
 })
 export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnChanges {
 
+    @Input()
+    implementationType: string;
     @Input()
     dissagregationType: DissagregationType;
     @Input()
@@ -31,16 +36,34 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
     dissagregationOptionsRows: SelectItemWithOrder<string | Canton>[];
 
     valuesGroupRowsMap: Map<SelectItemWithOrder<string | Canton>, Map<SelectItemWithOrder<string | Canton>, IndicatorValue[][]>>;
+    importForm: FormGroup;
+    showImportDialog: boolean = false;
+    showImportButton: boolean = false;
+    sheetOptions: string[];
+    importErroMessage: string[];
+    showImportErroMessage: boolean;
+
+    // private workbook: XLSX.WorkBook;
+
 
     constructor(
         public utilsService: UtilsService,
         public enumsService: EnumsService,
+        private fb: FormBuilder
     ) {
     }
 
     ngOnInit(): void {
         this.processDissagregationValues();
+        this.showImportButton = this.dissagregationType === DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO && this.implementationType === 'directImplementation';
+        this.importForm = this.fb.group({
+            fileName: new FormControl('', [Validators.required]),
+            file: new FormControl(''),
+            sheet: new FormControl('', [Validators.required]),
+            workbook: new FormControl('', [Validators.required]),
+        });
     }
+
     ngOnChanges(changes: SimpleChanges): void {
         this.processDissagregationValues();
     }
@@ -190,4 +213,101 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
     }
 
 
+    fileUploader(event: any) {
+        const file = event.files[0];
+        this.importForm.get('fileName').setValue(file.name);
+        this.importForm.get('fileName').markAsTouched();
+        console.log(file);
+        const fileReader = new FileReader();
+
+        fileReader.readAsArrayBuffer(file);
+        // tslint:disable-next-line:only-arrow-functions
+        fileReader.onload = () => {
+            const arrayBuffer: any = fileReader.result;
+            let data = new Uint8Array(arrayBuffer);
+            let arr = [];
+            for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
+            let bstr = arr.join("");
+            let workbook: WorkBook;
+            workbook = XLSX.read(bstr, {type: "binary"});
+            this.importForm.get('workbook').patchValue(workbook);
+            this.sheetOptions = [];
+            workbook.SheetNames.forEach(value => {
+                console.log(value);
+                this.sheetOptions.push(value);
+            });
+            console.log(this.sheetOptions);
+            this.importForm.get('sheet').patchValue(null);
+            this.importForm.get('sheet').markAsTouched();
+        };
+
+    }
+
+
+    showImportDialogF() {
+        this.showImportDialog = true;
+    }
+
+    importFile() {
+        let workbook = this.importForm.get('workbook').value as XLSX.WorkBook;
+        workbook.SheetNames.forEach(value => {
+            console.log(value);
+        });
+        let spreedsheetname = this.importForm.get('sheet').value;
+        console.log(spreedsheetname);
+        const ws: XLSX.WorkSheet = workbook.Sheets[spreedsheetname];
+        const data = XLSX.utils.sheet_to_json(ws);
+
+        const valuesDissagregation = this.values.filter(value => {
+            console.log(value.dissagregationType);
+            console.log(this.dissagregationType);
+            console.log(value.dissagregationType === this.dissagregationType);
+            return value.dissagregationType === this.dissagregationType;
+
+        });
+        this.importErroMessage = [];
+        this.showImportErroMessage = false;
+
+
+        console.log(data);
+        data.forEach(value => {
+            const canton_codigo: string = value['canton_codigo'];
+            const tipo_poblacion: string = value['tipo_poblacion'];
+            const tipo_genero: string = value['tipo_genero'];
+            const tipo_edad: string = value['tipo_edad'];
+            const valor: number = value['valor'];
+
+            const indicatorValues = valuesDissagregation.filter(value1 => {
+                return value1.location.code === canton_codigo
+                    && value1.populationType === tipo_poblacion
+                    && value1.genderType === tipo_genero
+                    && value1.ageType === tipo_edad
+            });
+            if (indicatorValues.length < 1) {
+
+                this.importErroMessage.push('Error en la fila con los siguientes datos ' +
+                    ' provincia: ' + value['provincia'] +
+                    ' canton: ' + value['canton'] +
+                    ' tipo de población: ' + tipo_poblacion +
+                    ' tipo de género: ' + tipo_genero +
+                    ' tipo de edad: ' + tipo_edad +
+                    ' tipo de valor: ' + valor
+                );
+                this.showImportErroMessage = true;
+            } else {
+                indicatorValues[0].value = valor;
+            }
+        });
+        if (this.showImportErroMessage) {
+            console.log(this.importErroMessage);
+            console.log(this.importErroMessage.length );
+        } else {
+            this.showImportDialog = false;
+        }
+    }
+
+    cancelImportDialog() {
+        this.showImportDialog = false;
+        this.importForm.reset();
+    }
 }

@@ -6,6 +6,13 @@
                 Desagregación por {{this.enumsService.resolveLabel($any('DissagregationType'), dissagregationType)}}
             </div>
             <div
+                class="flex-grow-1 justify-content-start" *ngIf="showImportButton">
+                <button pButton type="button" label="Importar valores" icon="pi pi-file-excel"
+                        (click)="showImportDialogF()"
+                        class="p-button-success" [disabled]="false"
+                ></button>
+            </div>
+            <div
                 class="flex-auto mx-2 max-w-10rem"
                 style="color: black;"
                 [style.background]="getTotalIndicator(valuesGroupRowsMap)>0?'#C8E6C9':'#FEEDAF'"
@@ -123,3 +130,56 @@
         </p-accordionTab>
     </p-accordion>
 </p-panel>
+
+<form [formGroup]="importForm" (ngSubmit)="importFile()">
+    <p-dialog [(visible)]="showImportDialog" [style]="{width: '70%'}" header="Importación de Datos" [modal]="true"
+              [closable]="false">
+
+        <ng-template pTemplate="content">
+            <div
+                *ngIf="showImportErroMessage">
+                <div
+                    *ngFor="let mess of importErroMessage">
+                    <p-message severity="error" [text]="mess"></p-message>
+                </div>
+            </div>
+            <div class="card p-fluid">
+                <p-fileUpload name="myfile[]"
+                              [customUpload]="true"
+                              (uploadHandler)="fileUploader($event)"
+                              [auto]="true"
+                              [fileLimit]="1"
+                              uploadLabel="importar"
+                              chooseLabel="seleccionar archivo"
+                              cancelLabel="cancelar"
+                ></p-fileUpload>
+                <div class="field grid">
+                    <label htmlFor="name3" class="col-12 mb-2 md:col-2 md:mb-0">Hoja</label>
+                    <div class="col-12 md:col-10">
+                        <p-dropdown
+                            id="sheetI"
+                            formControlName="sheet"
+                            [options]="sheetOptions"
+                            [filter]=true
+                            appendTo="body"
+                            placeholder="Selecciona..." [showClear]="true"
+                        >
+
+                        </p-dropdown>
+                    </div>
+                </div>
+            </div>
+
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <button pButton type="submit"
+                    [disabled]="!importForm.valid"
+                    pRipple label="Guardar" icon="pi pi-check"
+            ></button>
+            <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times"
+                    class="p-button-secondary"
+                    (click)="cancelImportDialog()"></button>
+
+        </ng-template>
+    </p-dialog>
+</form>

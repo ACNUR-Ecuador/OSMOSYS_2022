@@ -45,6 +45,7 @@ import {RippleModule} from 'primeng/ripple';
 import {InputTextModule} from 'primeng/inputtext';
 import {InputTextareaModule} from 'primeng/inputtextarea';
 import {TooltipModule} from "primeng/tooltip";
+import {FileUploadModule} from "primeng/fileupload";
 
 
 @NgModule({
@@ -82,7 +83,8 @@ import {TooltipModule} from "primeng/tooltip";
         RippleModule,
         InputTextModule,
         InputTextareaModule,
-        TooltipModule
+        TooltipModule,
+        FileUploadModule
     ],
     exports: [
         ChartIndicatorExecutionComponent,
