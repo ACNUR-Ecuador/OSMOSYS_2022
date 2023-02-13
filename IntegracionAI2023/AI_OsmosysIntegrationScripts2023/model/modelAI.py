@@ -1900,34 +1900,48 @@ class SubFormCO1_01:
         return self.__str__()
 
 
-class SubFormCO1_02:
+class SubFormCO2_01:
     def __init__(self,
                  mes,
                  colltmgkykvhxgij6,
                  rmrp,
-                 covid,
-                 espacion_apoyo,
-                 CO1_02,
-                 CO1_02_CUAL
-
+                 poblacion_meta2,
+                 modalidad_impl,
+                 CO2_01_RM_NA,
+                 CO2_01_RM_NN,
+                 CO2_01_RM_MM,
+                 CO2_01_RM_HH,
+                 CO2_01_RM_OTR,
+                 CO2_01_RM_LGBT,
+                 CO2_01_CUAL
                  ):
         self.mes = mes
         self.colltmgkykvhxgij6 = colltmgkykvhxgij6
         self.rmrp = rmrp
-        self.covid = covid
-        self.espacion_apoyo = espacion_apoyo
-        self.CO1_02 = CO1_02
-        self.CO1_02_CUAL = CO1_02_CUAL
+        self.poblacion_meta2 = poblacion_meta2
+        self.modalidad_impl = modalidad_impl
+        self.CO2_01_RM_NA = CO2_01_RM_NA
+        self.CO2_01_RM_NN = CO2_01_RM_NN
+        self.CO2_01_RM_MM = CO2_01_RM_MM
+        self.CO2_01_RM_HH = CO2_01_RM_HH
+        self.CO2_01_RM_OTR = CO2_01_RM_OTR
+        self.CO2_01_RM_LGBT = CO2_01_RM_LGBT
+        self.CO2_01_CUAL = CO2_01_CUAL
 
     def __str__(self):
         to_return = {
             "mes": self.mes,
             "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
             "rmrp": self.rmrp,
-            "covid": self.covid,
-            "espacion_apoyo": self.espacion_apoyo,
-            "CO1_02": self.CO1_02,
-            "CO1_02_CUAL": self.CO1_02_CUAL
+            "poblacion_meta2": self.poblacion_meta2,
+            "modalidad_impl": self.modalidad_impl,
+            "CO2_01_RM_NA": self.CO2_01_RM_NA,
+            "CO2_01_RM_NN": self.CO2_01_RM_NN,
+            "CO2_01_RM_MM": self.CO2_01_RM_MM,
+            "CO2_01_RM_HH": self.CO2_01_RM_HH,
+            "CO2_01_RM_OTR": self.CO2_01_RM_OTR,
+            "CO2_01_RM_LGBT": self.CO2_01_RM_LGBT,
+            "CO2_01_CUAL": self.CO2_01_CUAL
         }
         return to_return
 
