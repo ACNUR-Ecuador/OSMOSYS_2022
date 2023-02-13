@@ -1496,18 +1496,10 @@ class SubFormAT5_01:
                  poblacion_meta,
                  modalidad_impl,
                  tipo_kit,
-                 AT5_01_RM_NA_MN,
-                 AT5_01_RM_NN_MN,
-                 AT5_01_RM_MM_MN,
-                 AT5_01_RM_HH_MN,
-                 AT5_01_RM_OTR_MN,
-                 AT5_01_RM_LGBT_MN,
-                 AT5_01_CA_NA_MN,
-                 AT5_01_CA_NN_MN,
-                 AT5_01_CA_MM_MN,
-                 AT5_01_CA_HH_MN,
-                 AT5_01_CA_OTR_MN,
-                 AT5_01_CA_LGBT_MN,
+                 AT5_01_RM_NA_BB,
+                 AT5_01_RM_NN_BB,
+                 AT5_01_CA_NA_BB,
+                 AT5_01_CA_NN_BB,
                  AT5_01_CUAL
                  ):
         self.mes = mes
@@ -1516,18 +1508,10 @@ class SubFormAT5_01:
         self.poblacion_meta = poblacion_meta
         self.modalidad_impl = modalidad_impl
         self.tipo_kit = tipo_kit
-        self.AT5_01_RM_NA_MN = AT5_01_RM_NA_MN
-        self.AT5_01_RM_NN_MN = AT5_01_RM_NN_MN
-        self.AT5_01_RM_MM_MN = AT5_01_RM_MM_MN
-        self.AT5_01_RM_HH_MN = AT5_01_RM_HH_MN
-        self.AT5_01_RM_OTR_MN = AT5_01_RM_OTR_MN
-        self.AT5_01_RM_LGBT_MN = AT5_01_RM_LGBT_MN
-        self.AT5_01_CA_NA_MN = AT5_01_CA_NA_MN
-        self.AT5_01_CA_NN_MN = AT5_01_CA_NN_MN
-        self.AT5_01_CA_MM_MN = AT5_01_CA_MM_MN
-        self.AT5_01_CA_HH_MN = AT5_01_CA_HH_MN
-        self.AT5_01_CA_OTR_MN = AT5_01_CA_OTR_MN
-        self.AT5_01_CA_LGBT_MN = AT5_01_CA_LGBT_MN
+        self.AT5_01_RM_NA_BB = AT5_01_RM_NA_BB
+        self.AT5_01_RM_NN_BB = AT5_01_RM_NN_BB
+        self.AT5_01_CA_NA_BB = AT5_01_CA_NA_BB
+        self.AT5_01_CA_NN_BB = AT5_01_CA_NN_BB
         self.AT5_01_CUAL = AT5_01_CUAL
 
     def __str__(self):
@@ -1538,18 +1522,10 @@ class SubFormAT5_01:
             "poblacion_meta": self.poblacion_meta,
             "modalidad_impl": self.modalidad_impl,
             "tipo_kit": self.tipo_kit,
-            "AT5_01_RM_NA_MN": self.AT5_01_RM_NA_MN,
-            "AT5_01_RM_NN_MN": self.AT5_01_RM_NN_MN,
-            "AT5_01_RM_MM_MN": self.AT5_01_RM_MM_MN,
-            "AT5_01_RM_HH_MN": self.AT5_01_RM_HH_MN,
-            "AT5_01_RM_OTR_MN": self.AT5_01_RM_OTR_MN,
-            "AT5_01_RM_LGBT_MN": self.AT5_01_RM_LGBT_MN,
-            "AT5_01_CA_NA_MN": self.AT5_01_CA_NA_MN,
-            "AT5_01_CA_NN_MN": self.AT5_01_CA_NN_MN,
-            "AT5_01_CA_MM_MN": self.AT5_01_CA_MM_MN,
-            "AT5_01_CA_HH_MN": self.AT5_01_CA_HH_MN,
-            "AT5_01_CA_OTR_MN": self.AT5_01_CA_OTR_MN,
-            "AT5_01_CA_LGBT_MN": self.AT5_01_CA_LGBT_MN,
+            "AT5_01_RM_NA_BB": self.AT5_01_RM_NA_BB,
+            "AT5_01_RM_NN_BB": self.AT5_01_RM_NN_BB,
+            "AT5_01_CA_NA_BB": self.AT5_01_CA_NA_BB,
+            "AT5_01_CA_NN_BB": self.AT5_01_CA_NN_BB,
             "AT5_01_CUAL": self.AT5_01_CUAL
         }
         return to_return
@@ -1636,61 +1612,22 @@ class SubFormAT1_04:
                  mes,
                  colltmgkykvhxgij6,
                  rmrp,
-                 poblacion_meta,
-                 poblacion_meta_freq,
-                 modalidad_impl,
-                 AT1_01_RM_NA_PR,
-                 AT1_01_RM_NN_PR,
-                 AT1_01_RM_MM_PR,
-                 AT1_01_RM_HH_PR,
-                 AT1_01_RM_OTR_PR,
-                 AT1_01_RM_LGBT_PR,
-                 AT1_01_CA_NA_PR,
-                 AT1_01_CA_NN_PR,
-                 AT1_01_CA_MM_PR,
-                 AT1_01_CA_HH_PR,
-                 AT1_01_CA_OTR_PR,
-                 AT1_01_CA_LGBT_PR
+                 AT1_04,
+                 AT1_04_CUAL
                  ):
         self.mes = mes
         self.colltmgkykvhxgij6 = colltmgkykvhxgij6
         self.rmrp = rmrp
-        self.poblacion_meta = poblacion_meta
-        self.poblacion_meta_freq = poblacion_meta_freq
-        self.modalidad_impl = modalidad_impl
-        self.AT1_01_RM_NA_PR = AT1_01_RM_NA_PR
-        self.AT1_01_RM_NN_PR = AT1_01_RM_NN_PR
-        self.AT1_01_RM_MM_PR = AT1_01_RM_MM_PR
-        self.AT1_01_RM_HH_PR = AT1_01_RM_HH_PR
-        self.AT1_01_RM_OTR_PR = AT1_01_RM_OTR_PR
-        self.AT1_01_RM_LGBT_PR = AT1_01_RM_LGBT_PR
-        self.AT1_01_CA_NA_PR = AT1_01_CA_NA_PR
-        self.AT1_01_CA_NN_PR = AT1_01_CA_NN_PR
-        self.AT1_01_CA_MM_PR = AT1_01_CA_MM_PR
-        self.AT1_01_CA_HH_PR = AT1_01_CA_HH_PR
-        self.AT1_01_CA_OTR_PR = AT1_01_CA_OTR_PR
-        self.AT1_01_CA_LGBT_PR = AT1_01_CA_LGBT_PR
+        self.AT1_04 = AT1_04
+        self.AT1_04_CUAL = AT1_04_CUAL
 
     def __str__(self):
         to_return = {
             "mes": self.mes,
             "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
             "rmrp": self.rmrp,
-            "poblacion_meta": self.poblacion_meta,
-            "poblacion_meta_freq": self.poblacion_meta_freq,
-            "modalidad_impl": self.modalidad_impl,
-            "AT1_01_RM_NA_PR": self.AT1_01_RM_NA_PR,
-            "AT1_01_RM_NN_PR": self.AT1_01_RM_NN_PR,
-            "AT1_01_RM_MM_PR": self.AT1_01_RM_MM_PR,
-            "AT1_01_RM_HH_PR": self.AT1_01_RM_HH_PR,
-            "AT1_01_RM_OTR_PR": self.AT1_01_RM_OTR_PR,
-            "AT1_01_RM_LGBT_PR": self.AT1_01_RM_LGBT_PR,
-            "AT1_01_CA_NA_PR": self.AT1_01_CA_NA_PR,
-            "AT1_01_CA_NN_PR": self.AT1_01_CA_NN_PR,
-            "AT1_01_CA_MM_PR": self.AT1_01_CA_MM_PR,
-            "AT1_01_CA_HH_PR": self.AT1_01_CA_HH_PR,
-            "AT1_01_CA_OTR_PR": self.AT1_01_CA_OTR_PR,
-            "AT1_01_CA_LGBT_PR": self.AT1_01_CA_LGBT_PR
+            "AT1_04": self.AT1_04,
+            "AT1_04_CUAL": self.AT1_04_CUAL
         }
         return to_return
 
@@ -1761,14 +1698,12 @@ class SubFormAT4_01:
                  mes,
                  colltmgkykvhxgij6,
                  rmrp,
-                 covid,
                  AT4_01,
                  AT4_01_CUAL
                  ):
         self.mes = mes
         self.colltmgkykvhxgij6 = colltmgkykvhxgij6
         self.rmrp = rmrp
-        self.covid = covid
         self.AT4_01 = AT4_01
         self.AT4_01_CUAL = AT4_01_CUAL
 
@@ -1777,7 +1712,6 @@ class SubFormAT4_01:
             "mes": self.mes,
             "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
             "rmrp": self.rmrp,
-            "covid": self.covid,
             "AT4_01": self.AT4_01,
             "AT4_01_CUAL": self.AT4_01_CUAL
         }
