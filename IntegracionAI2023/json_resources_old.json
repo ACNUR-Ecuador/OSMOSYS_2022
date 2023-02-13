@@ -1,0 +1,1409 @@
+{
+    "databaseId": "c3fgc9tldnik44nify",
+    "userId": "38877",
+    "version": "1",
+    "label": "***GTRM Ecuador 2023 (duplicado)",
+    "description": "",
+    "ownerRef": {
+        "id": "38877",
+        "name": "Maria Gabriela Urgiles Bravo",
+        "email": "urgilesb@unhcr.org"
+    },
+    "billingAccountId": 2.32910002E8,
+    "language": "",
+    "originalLanguage": "",
+    "continuousTranslation": false,
+    "translationFromDbMemory": false,
+    "thirdPartyTranslation": false,
+    "languages": [],
+    "role": {
+        "id": "default",
+        "parameters": {},
+        "resources": []
+    },
+    "suspended": false,
+    "storage": "",
+    "publishedTemplate": false,
+    "resources": [
+        {
+            "id": "c50f9ebldnik44oigj",
+            "parentId": "c1h1ainldnik44oigd",
+            "label": "Actividad Indicador Protección Espacios de apoyo",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cf5nir1kym2v1781f",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT Programas de transferencias monetarias",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "caf2tv2kym2txsr1b",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT Educación",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cfs09vkym2vqy81i",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT WAN",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cjnio55ldnik44oifz",
+            "parentId": "c59az6okykadfx16",
+            "label": "Nutricion",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cdmp8ozldnik44oig0",
+            "parentId": "cpfsjn6ldnik44oig2",
+            "label": "Actividad Indicador Educación",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "reference",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "Reference data",
+            "type": "FOLDER",
+            "visibility": "REFERENCE"
+        },
+        {
+            "id": "c6gnazeldnik44oig4",
+            "parentId": "cyg6irkldnik44oig1",
+            "label": "Actividad Indicador Coordinación",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cgdo4q4ldnik44oig6",
+            "parentId": "cfs09vkym2vqy81i",
+            "label": "Alojamiento",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "c4ppqhldnik44oig5",
+            "parentId": "reference",
+            "label": "organizacion",
+            "type": "FORM",
+            "visibility": "REFERENCE"
+        },
+        {
+            "id": "cpfsjn6ldnik44oig2",
+            "parentId": "caf2tv2kym2txsr1b",
+            "label": "Educación",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "ch4yhkpldnik44oigh",
+            "parentId": "cnhidmxkym2t0k918",
+            "label": "Comunicación",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cqnsi4mldnik44oig7",
+            "parentId": "cbky5k2ldnik44oige",
+            "label": "Actividad Protección general",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cfwgs79ldnik44oigp",
+            "parentId": "reference",
+            "label": "Donante",
+            "type": "FORM",
+            "visibility": "REFERENCE"
+        },
+        {
+            "id": "cab54y8ldnik44oih3",
+            "parentId": "c59az6okykadfx16",
+            "label": "Salud",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "crphcl4ldnik44oig8",
+            "parentId": "cgvhb2pkym2v8j91g",
+            "label": "Protección a la infancia",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cf3kz5akym2u9qs1d",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT Integración",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cmdhbwlldnik44oiga",
+            "parentId": "crphcl4ldnik44oig8",
+            "label": "Actividad Protección a la infancia",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "c1if9utldnik44oigy",
+            "parentId": "cdx4tlrldnik44oigq",
+            "label": "Actividad Protección trata y tráfico",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cdx4tlrldnik44oigq",
+            "parentId": "cgvhb2pkym2v8j91g",
+            "label": "Protección trata y tráfico",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cn4jey4ldnik44oigb",
+            "parentId": "reference",
+            "label": "mecanismo_entrega",
+            "type": "FORM",
+            "visibility": "REFERENCE"
+        },
+        {
+            "id": "cixi81aldnik44oigl",
+            "parentId": "reference",
+            "label": "Implementador extra",
+            "type": "FORM",
+            "visibility": "REFERENCE"
+        },
+        {
+            "id": "c235tqcldnik44oigt",
+            "parentId": "cf5nir1kym2v1781f",
+            "label": "Transferencias monetarias multipropósito",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "c1m571aldnik44oigr",
+            "parentId": "ca28i7wldnik44oigg",
+            "label": "Actividad Agua saneamiento higiene",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cks79hbldnik44oigo",
+            "parentId": "reference",
+            "label": "modalidad_implementacion",
+            "type": "FORM",
+            "visibility": "REFERENCE"
+        },
+        {
+            "id": "cecdrhjldnik44oig3",
+            "parentId": "c708o68ldnik44oigk",
+            "label": "Actividad Seguridad alimentaria",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "c1h1ainldnik44oigd",
+            "parentId": "cgvhb2pkym2v8j91g",
+            "label": "Protección Espacios de apoyo",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "ch9kn5aldnik44oigf",
+            "parentId": "reference",
+            "label": "Implementador",
+            "type": "FORM",
+            "visibility": "REFERENCE"
+        },
+        {
+            "id": "c7xnpifldnik44oign",
+            "parentId": "cg7ke70ldnik44oih1",
+            "label": "Actividad Integración",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "clkv9v0ldnik44oih4",
+            "parentId": "cmmtdkuldnik44oigw",
+            "label": "Actividad Protección VBG",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cqn9drlldnik44oih2",
+            "parentId": "cjnio55ldnik44oifz",
+            "label": "Actividad Nutricion",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "c5006dqkym2tohv1a",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT Coordinación",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cpcz8y6kym2ulcr1e",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT Manejo de la información",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "c7m95ohldnik44oigv",
+            "parentId": "c302mxsldnik44oih0",
+            "label": "Actividad Manejo de la Información",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cg7ke70ldnik44oih1",
+            "parentId": "cf3kz5akym2u9qs1d",
+            "label": "Integración",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cgvhb2pkym2v8j91g",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT Protección",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cksnjajldnik44oigm",
+            "parentId": "c1sj9a4ldnik44oigz",
+            "label": "Actividad Transporte Humanitario",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cfokrg2ldnik44oigs",
+            "parentId": "cgdo4q4ldnik44oig6",
+            "label": "Actividad Alojamiento",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "c302mxsldnik44oih0",
+            "parentId": "cpcz8y6kym2ulcr1e",
+            "label": "Manejo de la información",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cr386gykym2vjfv1h",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT Seguridad alimentaria",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cvhkke8ldnik44oigu",
+            "parentId": "cab54y8ldnik44oih3",
+            "label": "Actividad Salud",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cj541ocldnik44oigc",
+            "parentId": "reference",
+            "label": "Partner",
+            "type": "FORM",
+            "visibility": "REFERENCE"
+        },
+        {
+            "id": "c1sj9a4ldnik44oigz",
+            "parentId": "cfs09vkym2vqy81i",
+            "label": "Transporte Humanitario",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "ca28i7wldnik44oigg",
+            "parentId": "cfs09vkym2vqy81i",
+            "label": "Agua saneamiento higiene",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cw27ct7ldnik44oigi",
+            "parentId": "reference",
+            "label": "marco monitoreo",
+            "type": "FORM",
+            "visibility": "REFERENCE"
+        },
+        {
+            "id": "c708o68ldnik44oigk",
+            "parentId": "cr386gykym2vjfv1h",
+            "label": "Seguridad alimentaria",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "c59az6okykadfx16",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT Salud y nutrición",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cyg6irkldnik44oig1",
+            "parentId": "c5006dqkym2tohv1a",
+            "label": "Coordinación",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cnhidmxkym2t0k918",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT Comunicación",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cng2yupldnik44oig9",
+            "parentId": "ch4yhkpldnik44oigh",
+            "label": "Actividad Indicador Comunicación",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cbky5k2ldnik44oige",
+            "parentId": "cgvhb2pkym2v8j91g",
+            "label": "Protección general",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cmmtdkuldnik44oigw",
+            "parentId": "cgvhb2pkym2v8j91g",
+            "label": "Protección VBG",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cgcevrildnik44oigx",
+            "parentId": "c235tqcldnik44oigt",
+            "label": "Actividad PTM",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        }
+    ],
+    "grants": [],
+    "locks": [],
+    "roles": [
+        {
+            "id": "sectorlead",
+            "label": "Sector Lead",
+            "permissions": [
+                {
+                    "operation": "VIEW",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EDIT_RESOURCE",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EDIT_RECORD",
+                    "filter": null,
+                    "securityCategories": [
+                        "reviewer"
+                    ]
+                },
+                {
+                    "operation": "ADD_RECORD",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "DELETE_RECORD",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EXPORT_RECORDS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "LOCK_RECORDS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "MANAGE_USERS",
+                    "filter": null,
+                    "securityCategories": []
+                }
+            ],
+            "parameters": [],
+            "filters": [],
+            "grants": [],
+            "version": 0,
+            "grantBased": false
+        },
+        {
+            "id": "admin",
+            "label": "Administrator",
+            "permissions": [
+                {
+                    "operation": "VIEW",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "ADD_RECORD",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EDIT_RECORD",
+                    "filter": null,
+                    "securityCategories": [
+                        "reviewer"
+                    ]
+                },
+                {
+                    "operation": "MANAGE_REFERENCE_DATA",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "DELETE_RECORD",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "BULK_DELETE",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EXPORT_RECORDS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "MANAGE_USERS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "LOCK_RECORDS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "ADD_RESOURCE",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EDIT_RESOURCE",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "DELETE_RESOURCE",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "MANAGE_COLLECTION_LINKS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "AUDIT",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "SHARE_REPORTS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "PUBLISH_REPORTS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "MANAGE_ROLES",
+                    "filter": null,
+                    "securityCategories": []
+                }
+            ],
+            "parameters": [],
+            "filters": [],
+            "grants": [],
+            "version": 0,
+            "grantBased": false
+        },
+        {
+            "id": "rp",
+            "label": "Reporting partner",
+            "permissions": [
+                {
+                    "operation": "VIEW",
+                    "filter": "cj541ocldnik44oigc == @user.partner",
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EDIT_RECORD",
+                    "filter": "cj541ocldnik44oigc == @user.partner",
+                    "securityCategories": []
+                },
+                {
+                    "operation": "ADD_RECORD",
+                    "filter": "cj541ocldnik44oigc == @user.partner",
+                    "securityCategories": []
+                },
+                {
+                    "operation": "DELETE_RECORD",
+                    "filter": "cj541ocldnik44oigc == @user.partner",
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EXPORT_RECORDS",
+                    "filter": null,
+                    "securityCategories": []
+                }
+            ],
+            "parameters": [
+                {
+                    "parameterId": "partner",
+                    "label": "Partner",
+                    "range": "cj541ocldnik44oigc"
+                }
+            ],
+            "filters": [
+                {
+                    "id": "partner",
+                    "label": "partner is user's partner",
+                    "filter": "cj541ocldnik44oigc == @user.partner"
+                }
+            ],
+            "grants": [],
+            "version": 0,
+            "grantBased": false
+        },
+        {
+            "id": "support",
+            "label": "Support",
+            "permissions": [
+                {
+                    "operation": "DELETE_RECORD",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "DELETE_RESOURCE",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EDIT_RESOURCE",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "ADD_RECORD",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "MANAGE_REFERENCE_DATA",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "SHARE_REPORTS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "PUBLISH_REPORTS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "LOCK_RECORDS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "VIEW",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EDIT_RECORD",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "AUDIT",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "MANAGE_ROLES",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "BULK_DELETE",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "ADD_RESOURCE",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EXPORT_RECORDS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "MANAGE_USERS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "MANAGE_COLLECTION_LINKS",
+                    "filter": null,
+                    "securityCategories": []
+                }
+            ],
+            "parameters": [],
+            "filters": [],
+            "grants": [],
+            "version": 0,
+            "grantBased": false
+        }
+    ],
+    "securityCategories": [
+        {
+            "id": "reviewer",
+            "label": "Reviewer only"
+        }
+    ]
+}{
+    "databaseId": "c3fgc9tldnik44nify",
+    "userId": "38877",
+    "version": "1",
+    "label": "***GTRM Ecuador 2023 (duplicado)",
+    "description": "",
+    "ownerRef": {
+        "id": "38877",
+        "name": "Maria Gabriela Urgiles Bravo",
+        "email": "urgilesb@unhcr.org"
+    },
+    "billingAccountId": 2.32910002E8,
+    "language": "",
+    "originalLanguage": "",
+    "continuousTranslation": false,
+    "translationFromDbMemory": false,
+    "thirdPartyTranslation": false,
+    "languages": [],
+    "role": {
+        "id": "default",
+        "parameters": {},
+        "resources": []
+    },
+    "suspended": false,
+    "storage": "",
+    "publishedTemplate": false,
+    "resources": [
+        {
+            "id": "c50f9ebldnik44oigj",
+            "parentId": "c1h1ainldnik44oigd",
+            "label": "Actividad Indicador Protección Espacios de apoyo",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cf5nir1kym2v1781f",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT Programas de transferencias monetarias",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "caf2tv2kym2txsr1b",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT Educación",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cfs09vkym2vqy81i",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT WAN",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cjnio55ldnik44oifz",
+            "parentId": "c59az6okykadfx16",
+            "label": "Nutricion",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cdmp8ozldnik44oig0",
+            "parentId": "cpfsjn6ldnik44oig2",
+            "label": "Actividad Indicador Educación",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "reference",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "Reference data",
+            "type": "FOLDER",
+            "visibility": "REFERENCE"
+        },
+        {
+            "id": "c6gnazeldnik44oig4",
+            "parentId": "cyg6irkldnik44oig1",
+            "label": "Actividad Indicador Coordinación",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cgdo4q4ldnik44oig6",
+            "parentId": "cfs09vkym2vqy81i",
+            "label": "Alojamiento",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "c4ppqhldnik44oig5",
+            "parentId": "reference",
+            "label": "organizacion",
+            "type": "FORM",
+            "visibility": "REFERENCE"
+        },
+        {
+            "id": "cpfsjn6ldnik44oig2",
+            "parentId": "caf2tv2kym2txsr1b",
+            "label": "Educación",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "ch4yhkpldnik44oigh",
+            "parentId": "cnhidmxkym2t0k918",
+            "label": "Comunicación",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cqnsi4mldnik44oig7",
+            "parentId": "cbky5k2ldnik44oige",
+            "label": "Actividad Protección general",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cfwgs79ldnik44oigp",
+            "parentId": "reference",
+            "label": "Donante",
+            "type": "FORM",
+            "visibility": "REFERENCE"
+        },
+        {
+            "id": "cab54y8ldnik44oih3",
+            "parentId": "c59az6okykadfx16",
+            "label": "Salud",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "crphcl4ldnik44oig8",
+            "parentId": "cgvhb2pkym2v8j91g",
+            "label": "Protección a la infancia",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cf3kz5akym2u9qs1d",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT Integración",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cmdhbwlldnik44oiga",
+            "parentId": "crphcl4ldnik44oig8",
+            "label": "Actividad Protección a la infancia",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "c1if9utldnik44oigy",
+            "parentId": "cdx4tlrldnik44oigq",
+            "label": "Actividad Protección trata y tráfico",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cdx4tlrldnik44oigq",
+            "parentId": "cgvhb2pkym2v8j91g",
+            "label": "Protección trata y tráfico",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cn4jey4ldnik44oigb",
+            "parentId": "reference",
+            "label": "mecanismo_entrega",
+            "type": "FORM",
+            "visibility": "REFERENCE"
+        },
+        {
+            "id": "cixi81aldnik44oigl",
+            "parentId": "reference",
+            "label": "Implementador extra",
+            "type": "FORM",
+            "visibility": "REFERENCE"
+        },
+        {
+            "id": "c235tqcldnik44oigt",
+            "parentId": "cf5nir1kym2v1781f",
+            "label": "Transferencias monetarias multipropósito",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "c1m571aldnik44oigr",
+            "parentId": "ca28i7wldnik44oigg",
+            "label": "Actividad Agua saneamiento higiene",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cks79hbldnik44oigo",
+            "parentId": "reference",
+            "label": "modalidad_implementacion",
+            "type": "FORM",
+            "visibility": "REFERENCE"
+        },
+        {
+            "id": "cecdrhjldnik44oig3",
+            "parentId": "c708o68ldnik44oigk",
+            "label": "Actividad Seguridad alimentaria",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "c1h1ainldnik44oigd",
+            "parentId": "cgvhb2pkym2v8j91g",
+            "label": "Protección Espacios de apoyo",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "ch9kn5aldnik44oigf",
+            "parentId": "reference",
+            "label": "Implementador",
+            "type": "FORM",
+            "visibility": "REFERENCE"
+        },
+        {
+            "id": "c7xnpifldnik44oign",
+            "parentId": "cg7ke70ldnik44oih1",
+            "label": "Actividad Integración",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "clkv9v0ldnik44oih4",
+            "parentId": "cmmtdkuldnik44oigw",
+            "label": "Actividad Protección VBG",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cqn9drlldnik44oih2",
+            "parentId": "cjnio55ldnik44oifz",
+            "label": "Actividad Nutricion",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "c5006dqkym2tohv1a",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT Coordinación",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cpcz8y6kym2ulcr1e",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT Manejo de la información",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "c7m95ohldnik44oigv",
+            "parentId": "c302mxsldnik44oih0",
+            "label": "Actividad Manejo de la Información",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cg7ke70ldnik44oih1",
+            "parentId": "cf3kz5akym2u9qs1d",
+            "label": "Integración",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cgvhb2pkym2v8j91g",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT Protección",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cksnjajldnik44oigm",
+            "parentId": "c1sj9a4ldnik44oigz",
+            "label": "Actividad Transporte Humanitario",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cfokrg2ldnik44oigs",
+            "parentId": "cgdo4q4ldnik44oig6",
+            "label": "Actividad Alojamiento",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "c302mxsldnik44oih0",
+            "parentId": "cpcz8y6kym2ulcr1e",
+            "label": "Manejo de la información",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cr386gykym2vjfv1h",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT Seguridad alimentaria",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cvhkke8ldnik44oigu",
+            "parentId": "cab54y8ldnik44oih3",
+            "label": "Actividad Salud",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cj541ocldnik44oigc",
+            "parentId": "reference",
+            "label": "Partner",
+            "type": "FORM",
+            "visibility": "REFERENCE"
+        },
+        {
+            "id": "c1sj9a4ldnik44oigz",
+            "parentId": "cfs09vkym2vqy81i",
+            "label": "Transporte Humanitario",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "ca28i7wldnik44oigg",
+            "parentId": "cfs09vkym2vqy81i",
+            "label": "Agua saneamiento higiene",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cw27ct7ldnik44oigi",
+            "parentId": "reference",
+            "label": "marco monitoreo",
+            "type": "FORM",
+            "visibility": "REFERENCE"
+        },
+        {
+            "id": "c708o68ldnik44oigk",
+            "parentId": "cr386gykym2vjfv1h",
+            "label": "Seguridad alimentaria",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "c59az6okykadfx16",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT Salud y nutrición",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cyg6irkldnik44oig1",
+            "parentId": "c5006dqkym2tohv1a",
+            "label": "Coordinación",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cnhidmxkym2t0k918",
+            "parentId": "c3fgc9tldnik44nify",
+            "label": "GT Comunicación",
+            "type": "FOLDER",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cng2yupldnik44oig9",
+            "parentId": "ch4yhkpldnik44oigh",
+            "label": "Actividad Indicador Comunicación",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cbky5k2ldnik44oige",
+            "parentId": "cgvhb2pkym2v8j91g",
+            "label": "Protección general",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cmmtdkuldnik44oigw",
+            "parentId": "cgvhb2pkym2v8j91g",
+            "label": "Protección VBG",
+            "type": "FORM",
+            "visibility": "PRIVATE"
+        },
+        {
+            "id": "cgcevrildnik44oigx",
+            "parentId": "c235tqcldnik44oigt",
+            "label": "Actividad PTM",
+            "type": "SUB_FORM",
+            "visibility": "PRIVATE"
+        }
+    ],
+    "grants": [],
+    "locks": [],
+    "roles": [
+        {
+            "id": "sectorlead",
+            "label": "Sector Lead",
+            "permissions": [
+                {
+                    "operation": "VIEW",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EDIT_RESOURCE",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EDIT_RECORD",
+                    "filter": null,
+                    "securityCategories": [
+                        "reviewer"
+                    ]
+                },
+                {
+                    "operation": "ADD_RECORD",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "DELETE_RECORD",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EXPORT_RECORDS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "LOCK_RECORDS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "MANAGE_USERS",
+                    "filter": null,
+                    "securityCategories": []
+                }
+            ],
+            "parameters": [],
+            "filters": [],
+            "grants": [],
+            "version": 0,
+            "grantBased": false
+        },
+        {
+            "id": "admin",
+            "label": "Administrator",
+            "permissions": [
+                {
+                    "operation": "VIEW",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "ADD_RECORD",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EDIT_RECORD",
+                    "filter": null,
+                    "securityCategories": [
+                        "reviewer"
+                    ]
+                },
+                {
+                    "operation": "MANAGE_REFERENCE_DATA",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "DELETE_RECORD",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "BULK_DELETE",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EXPORT_RECORDS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "MANAGE_USERS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "LOCK_RECORDS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "ADD_RESOURCE",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EDIT_RESOURCE",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "DELETE_RESOURCE",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "MANAGE_COLLECTION_LINKS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "AUDIT",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "SHARE_REPORTS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "PUBLISH_REPORTS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "MANAGE_ROLES",
+                    "filter": null,
+                    "securityCategories": []
+                }
+            ],
+            "parameters": [],
+            "filters": [],
+            "grants": [],
+            "version": 0,
+            "grantBased": false
+        },
+        {
+            "id": "rp",
+            "label": "Reporting partner",
+            "permissions": [
+                {
+                    "operation": "VIEW",
+                    "filter": "cj541ocldnik44oigc == @user.partner",
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EDIT_RECORD",
+                    "filter": "cj541ocldnik44oigc == @user.partner",
+                    "securityCategories": []
+                },
+                {
+                    "operation": "ADD_RECORD",
+                    "filter": "cj541ocldnik44oigc == @user.partner",
+                    "securityCategories": []
+                },
+                {
+                    "operation": "DELETE_RECORD",
+                    "filter": "cj541ocldnik44oigc == @user.partner",
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EXPORT_RECORDS",
+                    "filter": null,
+                    "securityCategories": []
+                }
+            ],
+            "parameters": [
+                {
+                    "parameterId": "partner",
+                    "label": "Partner",
+                    "range": "cj541ocldnik44oigc"
+                }
+            ],
+            "filters": [
+                {
+                    "id": "partner",
+                    "label": "partner is user's partner",
+                    "filter": "cj541ocldnik44oigc == @user.partner"
+                }
+            ],
+            "grants": [],
+            "version": 0,
+            "grantBased": false
+        },
+        {
+            "id": "support",
+            "label": "Support",
+            "permissions": [
+                {
+                    "operation": "DELETE_RECORD",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "DELETE_RESOURCE",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EDIT_RESOURCE",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "ADD_RECORD",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "MANAGE_REFERENCE_DATA",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "SHARE_REPORTS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "PUBLISH_REPORTS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "LOCK_RECORDS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "VIEW",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EDIT_RECORD",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "AUDIT",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "MANAGE_ROLES",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "BULK_DELETE",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "ADD_RESOURCE",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "EXPORT_RECORDS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "MANAGE_USERS",
+                    "filter": null,
+                    "securityCategories": []
+                },
+                {
+                    "operation": "MANAGE_COLLECTION_LINKS",
+                    "filter": null,
+                    "securityCategories": []
+                }
+            ],
+            "parameters": [],
+            "filters": [],
+            "grants": [],
+            "version": 0,
+            "grantBased": false
+        }
+    ],
+    "securityCategories": [
+        {
+            "id": "reviewer",
+            "label": "Reviewer only"
+        }
+    ]
+}

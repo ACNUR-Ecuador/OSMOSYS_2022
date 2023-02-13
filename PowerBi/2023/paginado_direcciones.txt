@@ -1,0 +1,75 @@
+backend.imecuador.unhcr.org/osmosys/api/cube/
+localhost:8080/osmosys/api/cube/
+
+
+let
+
+    GetJson = (baseUrl) =>
+        let 
+            RawData = Web.Contents(baseUrl),
+            Json    = Json.Document(RawData)
+        in  Json,
+ 
+    GetEntityCount = () =>
+        let Url   = baseUrl & "factTablePageCount/"& Text.From(year),
+            Json  = GetJson(Url),
+            Count = Json
+        in  Count,
+ 
+    GetPage = (Index) =>
+        let Url   = baseUrl & "factTablePage/" & Text.From(year) & "/" & Text.From(entitiesPerPage) & "/" & Text.From(Index) ,
+            Json  = GetJson(Url),
+            Value = Json
+        in  Value,
+ 
+    EntityCount = List.Max({ entitiesPerPage, GetEntityCount() }),
+    PageCount   = Number.RoundUp(EntityCount / entitiesPerPage),
+    PageIndices = { 0 .. PageCount - 1 },
+    Pages       = List.Transform(PageIndices, each GetPage(_)),
+    Entities    = List.Union(Pages),
+    #"Converted to Table" = Table.FromList(Entities, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+    #"Expanded Column1" = Table.ExpandRecordColumn(#"Converted to Table", "Column1", {"id", "ie_id", "period_id", "period_year", "implementation_type", "assigned_user_id", "assigned_user_backup_id", "indicator_id", "statement_id", "project_statement_id", "indicator_type", "organization_id", "supervisor_id", "office_id", "project_id", "month_year_id", "month_id", "dissagregation_type", "age_type", "age_primary_education_type", "age_tertiary_education_type", "gender_type", "country_of_origin", "population_type", "diversity_type", "canton_id", "responsable_office_id", "implementer_office_id", "implementer_id", "total_execution", "total_target", "total_execution_percentage", "quarter_execution", "quarter_target", "quarter_execution_percentage", "month_execution", "value"}, {"id", "ie_id", "period_id", "period_year", "implementation_type", "assigned_user_id", "assigned_user_backup_id", "indicator_id", "statement_id", "project_statement_id", "indicator_type", "organization_id", "supervisor_id", "office_id", "project_id", "month_year_id", "month_id", "dissagregation_type", "age_type", "age_primary_education_type", "age_tertiary_education_type", "gender_type", "country_of_origin", "population_type", "diversity_type", "canton_id", "responsable_office_id", "implementer_office_id", "implementer_id", "total_execution", "total_target", "total_execution_percentage", "quarter_execution", "quarter_target", "quarter_execution_percentage", "month_execution", "value"}),
+    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Column1",{{"id", Int64.Type}, {"ie_id", Int64.Type}, {"period_id", Int64.Type}, {"assigned_user_id", Int64.Type}, {"assigned_user_backup_id", type any}, {"indicator_id", Int64.Type}, {"statement_id", Int64.Type}, {"project_statement_id", type any}, {"indicator_type", type text}, {"organization_id", Int64.Type}, {"supervisor_id", Int64.Type}, {"office_id", Int64.Type}, {"project_id", type any}, {"month_year_id", type text}, {"dissagregation_type", type text}, {"age_type", type text}, {"gender_type", type text}, {"country_of_origin", type text}, {"population_type", type text}, {"diversity_type", type text}, 
+{"canton_id", Int64.Type}, 
+{"responsable_office_id", Int64.Type}, 
+{"implementer_office_id", Int64.Type}, 
+{"total_execution", Int64.Type}, {"total_target", type any}, {"total_execution_percentage", type any}, {"quarter_execution", Int64.Type}, {"quarter_target", type any}, {"quarter_execution_percentage", type any}, {"month_execution", Int64.Type}, {"value", Int64.Type}, {"period_year", Int64.Type}, {"month_id", Int64.Type}}),
+    #"Added Custom" = Table.AddColumn(#"Changed Type", "value_processed", each if [value] = null then 0 else [value]),
+    #"Added Custom1" = Table.AddColumn(#"Added Custom", "month_execution_processed", each if [month_execution]=null then 0 else [month_execution]),
+    #"Reordered Columns" = Table.ReorderColumns(#"Added Custom1",{"id", "ie_id", "period_id", "period_year", "implementation_type", "assigned_user_id", "assigned_user_backup_id", "indicator_id", "statement_id", "project_statement_id", "indicator_type", "organization_id", "supervisor_id", "office_id", "project_id", "month_year_id", "month_id", "dissagregation_type", "age_type", "gender_type", "country_of_origin", "population_type", "diversity_type", "canton_id", "total_execution", "total_target", "total_execution_percentage", "quarter_execution", "quarter_target", "quarter_execution_percentage", "month_execution", "month_execution_processed", "value", "value_processed"}),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Reordered Columns",{{"month_execution_processed", Int64.Type}, {"value_processed", Int64.Type}, {"total_target", Int64.Type}, {"quarter_execution_percentage", type number}, {"quarter_target", Int64.Type}, {"total_execution_percentage", type number}, {"age_primary_education_type", type text}, {"age_tertiary_education_type", type text}}),
+    #"Replaced Value" = Table.ReplaceValue(#"Changed Type1","Implementación Socios","Socios",Replacer.ReplaceText,{"implementation_type"}),
+    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","Implementación Directa","Directa",Replacer.ReplaceText,{"implementation_type"})
+in
+    #"Replaced Value1"
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+let
+    Source = Json.Document(Web.Contents("backend.imecuador.unhcr.org/osmosys/api/cube/" & "factTable/" & "2022", [Timeout=#duration(0, 0, 30, 0)])),
+    #"Converted to Table" = Table.FromList(Source, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+    #"Expanded Column1" = Table.ExpandRecordColumn(#"Converted to Table", "Column1", {"id", "ie_id", "period_id", "period_year", "implementation_type", "assigned_user_id", "assigned_user_backup_id", "indicator_id", "statement_id", "project_statement_id", "indicator_type", "organization_id", "supervisor_id", "office_id", "project_id", "month_year_id", "month_id", "dissagregation_type", "age_type", "age_primary_education_type", "age_tertiary_education_type", "gender_type", "country_of_origin", "population_type", "diversity_type", "canton_id", "responsable_office_id", "implementer_office_id", "implementer_id", "total_execution", "total_target", "total_execution_percentage", "quarter_execution", "quarter_target", "quarter_execution_percentage", "month_execution", "value"}, {"id", "ie_id", "period_id", "period_year", "implementation_type", "assigned_user_id", "assigned_user_backup_id", "indicator_id", "statement_id", "project_statement_id", "indicator_type", "organization_id", "supervisor_id", "office_id", "project_id", "month_year_id", "month_id", "dissagregation_type", "age_type", "age_primary_education_type", "age_tertiary_education_type", "gender_type", "country_of_origin", "population_type", "diversity_type", "canton_id", "responsable_office_id", "implementer_office_id", "implementer_id", "total_execution", "total_target", "total_execution_percentage", "quarter_execution", "quarter_target", "quarter_execution_percentage", "month_execution", "value"}),
+    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Column1",{{"id", Int64.Type}, {"ie_id", Int64.Type}, {"period_id", Int64.Type}, {"assigned_user_id", Int64.Type}, {"assigned_user_backup_id", type any}, {"indicator_id", Int64.Type}, {"statement_id", Int64.Type}, {"project_statement_id", type any}, {"indicator_type", type text}, {"organization_id", Int64.Type}, {"supervisor_id", Int64.Type}, {"office_id", Int64.Type}, {"project_id", type any}, {"month_year_id", type text}, {"dissagregation_type", type text}, {"age_type", type text}, {"gender_type", type text}, {"country_of_origin", type text}, {"population_type", type text}, {"diversity_type", type text}, 
+{"canton_id", Int64.Type}, 
+{"responsable_office_id", Int64.Type}, 
+{"implementer_office_id", Int64.Type}, 
+{"total_execution", Int64.Type}, {"total_target", type any}, {"total_execution_percentage", type any}, {"quarter_execution", Int64.Type}, {"quarter_target", type any}, {"quarter_execution_percentage", type any}, {"month_execution", Int64.Type}, {"value", Int64.Type}, {"period_year", Int64.Type}, {"month_id", Int64.Type}}),
+    #"Added Custom" = Table.AddColumn(#"Changed Type", "value_processed", each if [value] = null then 0 else [value]),
+    #"Added Custom1" = Table.AddColumn(#"Added Custom", "month_execution_processed", each if [month_execution]=null then 0 else [month_execution]),
+    #"Reordered Columns" = Table.ReorderColumns(#"Added Custom1",{"id", "ie_id", "period_id", "period_year", "implementation_type", "assigned_user_id", "assigned_user_backup_id", "indicator_id", "statement_id", "project_statement_id", "indicator_type", "organization_id", "supervisor_id", "office_id", "project_id", "month_year_id", "month_id", "dissagregation_type", "age_type", "gender_type", "country_of_origin", "population_type", "diversity_type", "canton_id", "total_execution", "total_target", "total_execution_percentage", "quarter_execution", "quarter_target", "quarter_execution_percentage", "month_execution", "month_execution_processed", "value", "value_processed"}),
+    #"Changed Type1" = Table.TransformColumnTypes(#"Reordered Columns",{{"month_execution_processed", Int64.Type}, {"value_processed", Int64.Type}, {"total_target", Int64.Type}, {"quarter_execution_percentage", type number}, {"quarter_target", Int64.Type}, {"total_execution_percentage", type number}, {"age_primary_education_type", type text}, {"age_tertiary_education_type", type text}}),
+    #"Replaced Value" = Table.ReplaceValue(#"Changed Type1","Implementación Socios","Socios",Replacer.ReplaceText,{"implementation_type"}),
+    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","Implementación Directa","Directa",Replacer.ReplaceText,{"implementation_type"})
+in
+    #"Replaced Value1"

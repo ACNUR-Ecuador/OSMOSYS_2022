@@ -609,6 +609,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 this.formItem.get('locations').markAsDirty();
             }
             this.formItem.get('locations').patchValue(cantonesG);
+            this.showLocationsDialog = false;
         }
     }
 

@@ -170,7 +170,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
 
             });
             this.setDimentionsDissagregations();
-            this.validateSegregations();
+
             this.getHasLocationDissagregation();
 
             this.cd.detectChanges();
@@ -191,6 +191,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             const value = entry[1];
             if (value && this.utilsService.isLocationDissagregation(key as DissagregationType)) {
                 this.hasLocationDissagregation = true;
+                this.validateSegregations();
                 return;
             }
         }
@@ -198,8 +199,12 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
 
     validateSegregations() {
         this.disableSave = false;
-        this.monthValuesMap.forEach((value) => {
+        this.monthValuesMap.forEach((value,key) => {
+            console.log(key);
+            console.log(value);
+
             if (value && value.length === 0) {
+                console.log(value.length);
                /* this.messageService.add({
                     severity: 'error',
                     summary: 'Actualiza los valores para ' + this.enumsService.resolveLabel(EnumsType.DissagregationType, key),
