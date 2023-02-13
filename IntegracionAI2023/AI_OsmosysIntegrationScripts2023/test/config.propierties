@@ -1,0 +1,7 @@
+[OSMOSYS]
+user = postgres
+password = A1a2a3a4
+host = localhost
+database = osmosys
+[ACTIVITYINFO]
+token = 4853b111264c139048271246a3fed788
