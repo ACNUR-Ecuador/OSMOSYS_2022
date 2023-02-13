@@ -509,7 +509,7 @@ public class ReportService {
 
     public ByteArrayOutputStream getAllLateReportPartners(Long periodId) throws GeneralAppException {
 
-        XSSFWorkbook workbook = this.reportDataService.getAllLateReportPartners(periodId, this.utilsService.getCurrentMonthYearOrder(), this.utilsService.getCurrentMonthYearOrder());
+        XSSFWorkbook workbook = this.reportDataService.getAllLateReportPartners(periodId, this.utilsService.getCurrentMonthYearOrder(), this.utilsService.getCurrentYear());
         if (workbook != null) {
             return getByteArrayOutputStreamFromWorkbook(workbook);
         } else {

@@ -110,4 +110,16 @@ public class Canton extends BaseEntity<Long> {
                 .append(state)
                 .toHashCode();
     }
+
+    @Override
+    public String toString() {
+        return "Canton{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", description='" + description + '\'' +
+                ", state=" + state +
+                ", provincia=" + provincia +
+                ", office=" + office +
+                '}';
+    }
 }

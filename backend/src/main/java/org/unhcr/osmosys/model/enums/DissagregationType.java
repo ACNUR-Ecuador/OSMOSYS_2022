@@ -48,6 +48,7 @@ public enum DissagregationType implements EnumInterface {
         r.add(LUGAR_Y_GENERO);
         r.add(LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO);
         r.add(LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO);
+        r.add(LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO);
         return r;
     }
 

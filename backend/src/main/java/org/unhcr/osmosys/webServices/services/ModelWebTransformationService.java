@@ -1349,6 +1349,7 @@ public class ModelWebTransformationService {
         q.setState(mo.getState());
         q.setCommentary(mo.getCommentary());
         q.setTotalExecution(mo.getTotalExecution());
+        mo.getSources().size();
         q.setSources(mo.getSources());
         q.setSourceOther(mo.getSourceOther());
         q.setChecked(mo.getChecked());

@@ -674,32 +674,23 @@ public class IndicatorExecutionService {
         )) {
             // busco las que ya no existen
 
-            List<IndicatorValue> currentIndicatorValuesCantons =
-                    indicatorExecution.getQuarters().stream()
-                            .flatMap(quarter -> quarter.getMonths().stream())
-                            .filter(month -> month.getState().equals(State.ACTIVO))
-                            .flatMap(month -> month.getIndicatorValues().stream())
-                            .filter(indicatorValue ->
-                                    DissagregationType.getLocationDissagregationTypes().contains(indicatorValue.getDissagregationType())
-                            )
-                            .collect(Collectors.toList());
-            List<Canton> currentCantons = currentIndicatorValuesCantons.stream().map(IndicatorValue::getLocation).distinct()
-                    .collect(Collectors.toList());
-            for (Canton currentCanton : currentCantons) {
-                Optional<CantonWeb> exitsCanton = indicatorExecutionAssigmentWeb
-                        .getLocations().stream().filter(cantonWeb -> cantonWeb.getId().equals(currentCanton.getId())).findFirst();
-                if (exitsCanton.isPresent()) {
-                    currentIndicatorValuesCantons.stream().filter(indicatorValue -> indicatorValue.getLocation().getId().equals(currentCanton.getId())).forEach(indicatorValue -> indicatorValue.setState(State.ACTIVO));
-                    indicatorExecution.getIndicatorExecutionLocationAssigments()
-                            .stream().filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(currentCanton.getId()))
-                            .forEach(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.setState(State.ACTIVO));
-                } else {
-                    currentIndicatorValuesCantons.stream().filter(indicatorValue -> indicatorValue.getLocation().getId().equals(currentCanton.getId())).forEach(indicatorValue -> indicatorValue.setState(State.INACTIVO));
-                    indicatorExecution.getIndicatorExecutionLocationAssigments()
-                            .stream().filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation().getId().equals(currentCanton.getId()))
-                            .forEach(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.setState(State.INACTIVO));
+            // activo todos
+            List<CantonWeb> cantonesWeb = indicatorExecutionAssigmentWeb.getLocations();
+            Set<Canton> cantonesToActivate = new HashSet<>(this.cantonService.getByIds(cantonesWeb.stream().map(CantonWeb::getId).collect(Collectors.toList())));
+            //desactivo los q ya no existen
+            Set<Canton> cantonesToDissable = new HashSet<>();
+            // cantones que ya existent
+            List<Canton> existingCantons = indicatorExecution.getIndicatorExecutionLocationAssigments()
+                    .stream()
+                    .map(IndicatorExecutionLocationAssigment::getLocation).collect(Collectors.toList());
+            for (Canton existingCanton : existingCantons) {
+                Optional<CantonWeb> cantonWebFound = cantonesWeb.stream().filter(cantonWeb -> cantonWeb.getId().equals(existingCanton.getId()))
+                        .findFirst();
+                if (!cantonWebFound.isPresent()) {
+                    cantonesToDissable.add(existingCanton);
                 }
             }
+            this.updateIndicatorExecutionLocations(indicatorExecution, cantonesToActivate, cantonesToDissable);
 
 
         }
@@ -1032,6 +1023,7 @@ public class IndicatorExecutionService {
         }
         this.updateIndicatorExecutionLocations(ie, cantonesToActivate, cantonesToDissable);
 
+
         this.saveOrUpdate(ie);
         return ie.getId();
     }
@@ -1134,7 +1126,6 @@ public class IndicatorExecutionService {
     ) throws GeneralAppException {//
         Set<Canton> locationsToActivateIe = new HashSet<>();
         Set<Canton> locationsToDissableIe = new HashSet<>();
-
         locationsToActivate.forEach(cantonToActivate -> {
             Optional<IndicatorExecutionLocationAssigment> indicatorExecutionLocationAssigmentToActivateOpt =
                     indicatorExecution.getIndicatorExecutionLocationAssigments()
@@ -1162,10 +1153,11 @@ public class IndicatorExecutionService {
                             .filter(indicatorExecutionLocationAssigment -> cantonToDissable.getId().equals(indicatorExecutionLocationAssigment.getLocation().getId()))
                             .findFirst();
             if (indicatorExecutionLocationAssigmentToDissableOpt.isPresent()) {
-                indicatorExecutionLocationAssigmentToDissableOpt.get().setState(State.INACTIVO);
-                locationsToDissableIe.add(indicatorExecutionLocationAssigmentToDissableOpt.get().getLocation());
+                IndicatorExecutionLocationAssigment indicatorExecutionLocationAssigmentToDissable = indicatorExecutionLocationAssigmentToDissableOpt.get();
+                locationsToDissableIe.add(indicatorExecutionLocationAssigmentToDissable.getLocation());
             }
         });
+
 
         this.indicatorValueService.updateIndicatorValuesLocationsForIndicatorExecution(
                 indicatorExecution, locationsToActivateIe, locationsToDissableIe

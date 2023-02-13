@@ -10,6 +10,7 @@ import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.CantonDao;
 import org.unhcr.osmosys.daos.ProjectDao;
 import org.unhcr.osmosys.model.*;
+import org.unhcr.osmosys.model.enums.IndicatorType;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
 import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
@@ -187,8 +188,16 @@ public class ProjectService {
                 locationsToActivate.add(canton);
             }
         });
-        for (IndicatorExecution indicatorExecution : project.getIndicatorExecutions()) {
-            this.indicatorExecutionService.updateIndicatorExecutionLocations(indicatorExecution, locationsToActivate, locationsToDissable);
+
+        if (updateAllLocationsIndicators != null && updateAllLocationsIndicators) {
+            for (IndicatorExecution indicatorExecution : project.getIndicatorExecutions()) {
+                this.indicatorExecutionService.updateIndicatorExecutionLocations(indicatorExecution, locationsToActivate, locationsToDissable);
+            }
+        }else {
+            List<IndicatorExecution> generalIes = project.getIndicatorExecutions().stream().filter(indicatorExecution -> indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)).collect(Collectors.toList());
+            for (IndicatorExecution indicatorExecution : generalIes) {
+                this.indicatorExecutionService.updateIndicatorExecutionLocations(indicatorExecution, locationsToActivate, locationsToDissable);
+            }
         }
 
 

@@ -90,7 +90,10 @@ public class CubeEndpoint {
         long lStartTime = System.nanoTime();
         List<FactDTO> result = this.cubeService.getFactTablePageByPeriodYear(year, pageSize, page);
         long lEndTime = System.nanoTime();
-        LOGGER.info("Elapsed time in seconds factTable: " + (lEndTime - lStartTime) / 1000000000);
+        LOGGER.info("getFactTablePageByPeriodYear ->Elapsed time in seconds factTable: " + (lEndTime - lStartTime) / 1000000000);
+        LOGGER.info("year"+year);
+        LOGGER.info("pageSize"+pageSize);
+        LOGGER.info("page"+page);
         System.gc();
         return result;
     }
