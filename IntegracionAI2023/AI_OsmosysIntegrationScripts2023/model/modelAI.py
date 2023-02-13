@@ -1631,6 +1631,76 @@ class SubFormAT1_01:
         return self.__str__()
 
 
+class SubFormAT1_04:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 poblacion_meta,
+                 poblacion_meta_freq,
+                 modalidad_impl,
+                 AT1_01_RM_NA_PR,
+                 AT1_01_RM_NN_PR,
+                 AT1_01_RM_MM_PR,
+                 AT1_01_RM_HH_PR,
+                 AT1_01_RM_OTR_PR,
+                 AT1_01_RM_LGBT_PR,
+                 AT1_01_CA_NA_PR,
+                 AT1_01_CA_NN_PR,
+                 AT1_01_CA_MM_PR,
+                 AT1_01_CA_HH_PR,
+                 AT1_01_CA_OTR_PR,
+                 AT1_01_CA_LGBT_PR
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.poblacion_meta = poblacion_meta
+        self.poblacion_meta_freq = poblacion_meta_freq
+        self.modalidad_impl = modalidad_impl
+        self.AT1_01_RM_NA_PR = AT1_01_RM_NA_PR
+        self.AT1_01_RM_NN_PR = AT1_01_RM_NN_PR
+        self.AT1_01_RM_MM_PR = AT1_01_RM_MM_PR
+        self.AT1_01_RM_HH_PR = AT1_01_RM_HH_PR
+        self.AT1_01_RM_OTR_PR = AT1_01_RM_OTR_PR
+        self.AT1_01_RM_LGBT_PR = AT1_01_RM_LGBT_PR
+        self.AT1_01_CA_NA_PR = AT1_01_CA_NA_PR
+        self.AT1_01_CA_NN_PR = AT1_01_CA_NN_PR
+        self.AT1_01_CA_MM_PR = AT1_01_CA_MM_PR
+        self.AT1_01_CA_HH_PR = AT1_01_CA_HH_PR
+        self.AT1_01_CA_OTR_PR = AT1_01_CA_OTR_PR
+        self.AT1_01_CA_LGBT_PR = AT1_01_CA_LGBT_PR
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "poblacion_meta": self.poblacion_meta,
+            "poblacion_meta_freq": self.poblacion_meta_freq,
+            "modalidad_impl": self.modalidad_impl,
+            "AT1_01_RM_NA_PR": self.AT1_01_RM_NA_PR,
+            "AT1_01_RM_NN_PR": self.AT1_01_RM_NN_PR,
+            "AT1_01_RM_MM_PR": self.AT1_01_RM_MM_PR,
+            "AT1_01_RM_HH_PR": self.AT1_01_RM_HH_PR,
+            "AT1_01_RM_OTR_PR": self.AT1_01_RM_OTR_PR,
+            "AT1_01_RM_LGBT_PR": self.AT1_01_RM_LGBT_PR,
+            "AT1_01_CA_NA_PR": self.AT1_01_CA_NA_PR,
+            "AT1_01_CA_NN_PR": self.AT1_01_CA_NN_PR,
+            "AT1_01_CA_MM_PR": self.AT1_01_CA_MM_PR,
+            "AT1_01_CA_HH_PR": self.AT1_01_CA_HH_PR,
+            "AT1_01_CA_OTR_PR": self.AT1_01_CA_OTR_PR,
+            "AT1_01_CA_LGBT_PR": self.AT1_01_CA_LGBT_PR
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
+
+
 class SubFormAT3_01:
     def __init__(self,
                  mes,
