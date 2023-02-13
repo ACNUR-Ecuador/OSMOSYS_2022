@@ -1723,6 +1723,72 @@ class SubFormAT4_01:
     def to_json(self):
         return self.__str__()
 
+class SubFormACBI1_01:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 poblacion_meta,
+                 modalidad_impl,
+                 mecanismos,
+                 transferencia,
+                 usd_transfer,
+                 CBI1_01_RM_NA_U,
+                 CBI1_01_RM_NN_U,
+                 CBI1_01_RM_MM_U,
+                 CBI1_01_RM_HH_U,
+                 CBI1_01_CA_NA_U,
+                 CBI1_01_CA_NN_U,
+                 CBI1_01_CA_MM_U,
+                 CBI1_01_CA_HH_U,
+                 CBI1_01_CUAL
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.poblacion_meta = poblacion_meta
+        self.modalidad_impl = modalidad_impl
+        self.mecanismos = mecanismos
+        self.transferencia = transferencia
+        self.usd_transfer = usd_transfer
+        self.CBI1_01_RM_NA_U = CBI1_01_RM_NA_U
+        self.CBI1_01_RM_NN_U = CBI1_01_RM_NN_U
+        self.CBI1_01_RM_MM_U = CBI1_01_RM_MM_U
+        self.CBI1_01_RM_HH_U = CBI1_01_RM_HH_U
+        self.CBI1_01_CA_NA_U = CBI1_01_CA_NA_U
+        self.CBI1_01_CA_NN_U = CBI1_01_CA_NN_U
+        self.CBI1_01_CA_MM_U = CBI1_01_CA_MM_U
+        self.CBI1_01_CA_HH_U = CBI1_01_CA_HH_U
+        self.CBI1_01_CUAL = CBI1_01_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "poblacion_meta": self.poblacion_meta,
+            "modalidad_impl": self.modalidad_impl,
+            "mecanismos": self.mecanismos,
+            "transferencia": self.transferencia,
+            "usd_transfer": self.usd_transfer,
+            "CBI1_01_RM_NA_U": self.CBI1_01_RM_NA_U,
+            "CBI1_01_RM_NN_U": self.CBI1_01_RM_NN_U,
+            "CBI1_01_RM_MM_U": self.CBI1_01_RM_MM_U,
+            "CBI1_01_RM_HH_U": self.CBI1_01_RM_HH_U,
+            "CBI1_01_CA_NA_U": self.CBI1_01_CA_NA_U,
+            "CBI1_01_CA_NN_U": self.CBI1_01_CA_NN_U,
+            "CBI1_01_CA_MM_U": self.CBI1_01_CA_MM_U,
+            "CBI1_01_CA_HH_U": self.CBI1_01_CA_HH_U,
+            "CBI1_01_CUAL": self.CBI1_01_CUAL
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
+
 
 class SubFormACBI2_01:
     def __init__(self,
