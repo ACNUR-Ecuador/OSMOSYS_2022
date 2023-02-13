@@ -1865,6 +1865,40 @@ class SubFormACBI2_01:
     def to_json(self):
         return self.__str__()
 
+class SubFormCO1_01:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 sector,
+                 CO1_01,
+                 CO1_01_CUAL
+
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.sector = sector
+        self.CO1_01 = CO1_01
+        self.CO1_01_CUAL = CO1_01_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "sector": self.sector,
+            "CO1_01": self.CO1_01,
+            "CO1_01_CUAL": self.CO1_01_CUAL
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
+
 
 class SubFormCO1_02:
     def __init__(self,
