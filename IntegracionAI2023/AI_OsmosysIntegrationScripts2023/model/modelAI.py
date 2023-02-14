@@ -2056,32 +2056,14 @@ class SubFormED4_03:
                  mes,
                  colltmgkykvhxgij6,
                  rmrp,
-                 covid,
-                 poblacion_meta,
-                 ED4_03_RM_NA,
-                 ED4_03_RM_NN,
-                 ED4_03_RM_MM,
-                 ED4_03_RM_HH,
-                 ED4_03_CA_NA,
-                 ED4_03_CA_NN,
-                 ED4_03_CA_MM,
-                 ED4_03_CA_HH,
+                 ED4_03,
                  ED4_03_CUAL
 
                  ):
         self.mes = mes
         self.colltmgkykvhxgij6 = colltmgkykvhxgij6
         self.rmrp = rmrp
-        self.covid = covid
-        self.poblacion_meta = poblacion_meta
-        self.ED4_03_RM_NA = ED4_03_RM_NA
-        self.ED4_03_RM_NN = ED4_03_RM_NN
-        self.ED4_03_RM_MM = ED4_03_RM_MM
-        self.ED4_03_RM_HH = ED4_03_RM_HH
-        self.ED4_03_CA_NA = ED4_03_CA_NA
-        self.ED4_03_CA_NN = ED4_03_CA_NN
-        self.ED4_03_CA_MM = ED4_03_CA_MM
-        self.ED4_03_CA_HH = ED4_03_CA_HH
+        self.ED4_03 = ED4_03
         self.ED4_03_CUAL = ED4_03_CUAL
 
     def __str__(self):
@@ -2089,16 +2071,7 @@ class SubFormED4_03:
             "mes": self.mes,
             "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
             "rmrp": self.rmrp,
-            "covid": self.covid,
-            "poblacion_meta": self.poblacion_meta,
-            "ED4_03_RM_NA": self.ED4_03_RM_NA,
-            "ED4_03_RM_NN": self.ED4_03_RM_NN,
-            "ED4_03_RM_MM": self.ED4_03_RM_MM,
-            "ED4_03_RM_HH": self.ED4_03_RM_HH,
-            "ED4_03_CA_NA": self.ED4_03_CA_NA,
-            "ED4_03_CA_NN": self.ED4_03_CA_NN,
-            "ED4_03_CA_MM": self.ED4_03_CA_MM,
-            "ED4_03_CA_HH": self.ED4_03_CA_HH,
+            "ED4_03": self.ED4_03,
             "ED4_03_CUAL": self.ED4_03_CUAL
         }
         return to_return
