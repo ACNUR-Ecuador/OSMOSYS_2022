@@ -181,7 +181,7 @@ def getRefLgbtiDiscapacitadosValues(year, month, orgOsmosys, indicatorsIdsOmosys
     queryFormated = query.replace('xxxYear', str(year)).replace('xxxMonth', month).replace('xxxOrg',
                                                                                            orgOsmosys).replace(
         'XXXindicatorIds', indicatorsIdsOmosysStr).replace('XXXcantonCode', cantonCode)
-    ## print(queryFormated)
+    print(queryFormated)
 
     dbConnection = getOsmosysConnection()
     dataFrame = pds.read_sql(queryFormated, dbConnection)

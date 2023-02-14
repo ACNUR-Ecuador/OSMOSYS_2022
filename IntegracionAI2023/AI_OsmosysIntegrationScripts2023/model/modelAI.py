@@ -1952,6 +1952,105 @@ class SubFormCO2_01:
         return self.__str__()
 
 
+class SubFormED2_01:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 poblacion_meta,
+                 modalidad_impl,
+                 mecanismos,
+                 transferencia,
+                 usd_transfer,
+                 ED2_01_RM_NA,
+                 ED2_01_RM_NN,
+                 ED2_01_RM_OTR,
+                 ED2_01_RM_ADM,
+                 ED2_01_RM_ADH,
+                 ED2_01_RM_ADOTR,
+                 ED2_01_RM_MM,
+                 ED2_01_RM_HH,
+                 ED2_01_RM_DS,
+                 ED2_01_CA_NA,
+                 ED2_01_CA_NN,
+                 ED2_01_CA_OTR,
+                 ED2_01_CA_ADM,
+                 ED2_01_CA_ADH,
+                 ED2_01_CA_ADOTR,
+                 ED2_01_CA_MM,
+                 ED2_01_CA_HH,
+                 ED2_01_CA_DS,
+                 ED2_01_CUAL
+
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.poblacion_meta = poblacion_meta
+        self.modalidad_impl = modalidad_impl
+        self.mecanismos = mecanismos
+        self.transferencia = transferencia
+        self.usd_transfer = usd_transfer
+        self.ED2_01_RM_NA = ED2_01_RM_NA
+        self.ED2_01_RM_NN = ED2_01_RM_NN
+        self.ED2_01_RM_OTR = ED2_01_RM_OTR
+        self.ED2_01_RM_ADM = ED2_01_RM_ADM
+        self.ED2_01_RM_ADH = ED2_01_RM_ADH
+        self.ED2_01_RM_ADOTR = ED2_01_RM_ADOTR
+        self.ED2_01_RM_MM = ED2_01_RM_MM
+        self.ED2_01_RM_HH = ED2_01_RM_HH
+        self.ED2_01_RM_DS = ED2_01_RM_DS
+        self.ED2_01_CA_NA = ED2_01_CA_NA
+        self.ED2_01_CA_NN = ED2_01_CA_NN
+        self.ED2_01_CA_OTR = ED2_01_CA_OTR
+        self.ED2_01_CA_ADM = ED2_01_CA_ADM
+        self.ED2_01_CA_ADH = ED2_01_CA_ADH
+        self.ED2_01_CA_ADOTR = ED2_01_CA_ADOTR
+        self.ED2_01_CA_MM = ED2_01_CA_MM
+        self.ED2_01_CA_HH = ED2_01_CA_HH
+        self.ED2_01_CA_DS = ED2_01_CA_DS
+        self.ED2_01_CUAL = ED2_01_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "poblacion_meta": self.poblacion_meta,
+            "modalidad_impl": self.modalidad_impl,
+            "mecanismos": self.mecanismos,
+            "transferencia": self.transferencia,
+            "usd_transfer": self.usd_transfer,
+            "ED2_01_RM_NA": self.ED2_01_RM_NA,
+            "ED2_01_RM_NN": self.ED2_01_RM_NN,
+            "ED2_01_RM_OTR": self.ED2_01_RM_OTR,
+            "ED2_01_RM_ADM": self.ED2_01_RM_ADM,
+            "ED2_01_RM_ADH": self.ED2_01_RM_ADH,
+            "ED2_01_RM_ADOTR": self.ED2_01_RM_ADOTR,
+            "ED2_01_RM_MM": self.ED2_01_RM_MM,
+            "ED2_01_RM_HH": self.ED2_01_RM_HH,
+            "ED2_01_RM_DS": self.ED2_01_RM_DS,
+            "ED2_01_CA_NA": self.ED2_01_CA_NA,
+            "ED2_01_CA_NN": self.ED2_01_CA_NN,
+            "ED2_01_CA_OTR": self.ED2_01_CA_OTR,
+            "ED2_01_CA_ADM": self.ED2_01_CA_ADM,
+            "ED2_01_CA_ADH": self.ED2_01_CA_ADH,
+            "ED2_01_CA_ADOTR": self.ED2_01_CA_ADOTR,
+            "ED2_01_CA_MM": self.ED2_01_CA_MM,
+            "ED2_01_CA_HH": self.ED2_01_CA_HH,
+            "ED2_01_CA_DS": self.ED2_01_CA_DS,
+            "ED2_01_CUAL": self.ED2_01_CUAL
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
+
+
+
 class SubFormED4_03:
     def __init__(self,
                  mes,
