@@ -109,7 +109,7 @@ def getIesPartnerCantonsByIndicatorsIdsOsmosysAndMonth(indicatorsIdsOmosys, mont
 		aio.nombre ai_implementer,
 		m.month ,
 		m.total_execution, can.code canton_code,'EC'||can.code canton_ai_code, can.description canton,
-		sum(iv.value ) total_canton
+		coalesce(sum(iv.value ),0) total_canton
     FROM
     osmosys.indicator_executions ie 
     INNER JOIN osmosys.indicators i on ie.performance_indicator_id=i.id and ie.state='ACTIVO'
@@ -141,11 +141,10 @@ def getIesPartnerCantonsByIndicatorsIdsOsmosysAndMonth(indicatorsIdsOmosys, mont
 def getRefValues(year, month, orgOsmosys, indicatorsIdsOmosys, cantonCode):
     query = '''
     SELECT 
-    v.ie_id	, ie.performance_indicator_id indicator_osmosys_id,
-     v.month_id	,v.year	,v.month_year_order	,v.month	,
+    v.year	,v.month_year_order	,v.month	,
     org.id org_odmodyd_id,org.acronym osmosys_org, v.canton_code	,
     v.canton	,v.population_type	,v.age_gender	,
-    sum(v.value) value_a
+    coalesce(sum(v.value),0) value_a
     FROM ai_integration.ai_adultos_ninos_ref_migrantes_ven v
     INNER JOIN osmosys.indicator_executions ie on v.ie_id=ie.id
     INNER JOIN osmosys.projects pr on ie.project_id=pr.id
@@ -154,7 +153,7 @@ def getRefValues(year, month, orgOsmosys, indicatorsIdsOmosys, cantonCode):
     and org.acronym='xxxOrg'
     and v.canton_code='XXXcantonCode'
     and ie.performance_indicator_id in (XXXindicatorIds)
-    GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12
+    GROUP BY 1,2,3,4,5,6,7,8,9
     '''
     indicatorsIdsOmosysStr = ','.join(str(x) for x in indicatorsIdsOmosys)
     queryFormated = query.replace('xxxYear', str(year)).replace('xxxMonth', month).replace('xxxOrg',
@@ -171,7 +170,7 @@ def getRefValues(year, month, orgOsmosys, indicatorsIdsOmosys, cantonCode):
 def getRefLgbtiDiscapacitadosValues(year, month, orgOsmosys, indicatorsIdsOmosys, cantonCode):
     query = '''
     SELECT
-    v.org, v.month, v.diversity_type, v.canton_code, v.country_of_origin, sum(v.value) as value_a
+    v.org, v.month, v.diversity_type, v.canton_code, v.country_of_origin, coalesce(sum(v.value),0) as value_a
     FROM
     ai_integration.ai_lgbti_discapacitados_countre_origin v
     WHERE v.indicator_id in (XXXindicatorIds) and v.org='xxxOrg' AND v.year=xxxYear and v.month = 'xxxMonth' AND v.canton_code='XXXcantonCode'
@@ -181,7 +180,7 @@ def getRefLgbtiDiscapacitadosValues(year, month, orgOsmosys, indicatorsIdsOmosys
     queryFormated = query.replace('xxxYear', str(year)).replace('xxxMonth', month).replace('xxxOrg',
                                                                                            orgOsmosys).replace(
         'XXXindicatorIds', indicatorsIdsOmosysStr).replace('XXXcantonCode', cantonCode)
-    print(queryFormated)
+    ## print(queryFormated)
 
     dbConnection = getOsmosysConnection()
     dataFrame = pds.read_sql(queryFormated, dbConnection)
@@ -255,7 +254,7 @@ def getTotalMonthByCanton(year, month, orgOsmosys, indicatorsIdsOmosys, cantonCo
 def getCAValues(year, month, orgOsmosys, indicatorsIdsOmosys, cantonCode):
     query = '''
     SELECT
-    v.ie_id	, ie.performance_indicator_id indicator_osmosys_id,     v.month_id	,v.year	,v.month_year_order	,v.month	,    org.id org_odmodyd_id,org.acronym osmosys_org, v.canton_code	,    v.canton	,v.population_type	,v.age_gender	,    COALESCE(sum(v.value)) value_a
+    v.year	,v.month_year_order	,v.month	,    org.id org_odmodyd_id,org.acronym osmosys_org, v.canton_code	,    v.canton	,v.population_type	,v.age_gender	,    COALESCE(sum(v.value),0) value_a
     FROM
     ai_integration.ai_adultos_ninos_comunidad_acogida v
     INNER JOIN osmosys.indicator_executions ie on v.ie_id=ie.id
@@ -265,7 +264,7 @@ def getCAValues(year, month, orgOsmosys, indicatorsIdsOmosys, cantonCode):
         and org.acronym='xxxOrg'
         and v.canton_code='XXXcantonCode'
         and ie.performance_indicator_id in (XXXindicatorIds)
-    GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12
+    GROUP BY 1,2,3,4,5,6,7,8,9
     ORDER BY 1,2,5, v.age_gender
     '''
     indicatorsIdsOmosysStr = ','.join(str(x) for x in indicatorsIdsOmosys)

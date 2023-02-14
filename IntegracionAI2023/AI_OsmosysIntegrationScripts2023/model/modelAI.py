@@ -1033,7 +1033,6 @@ class SubFormIN4_01:
                  mes,
                  colltmgkykvhxgij6,
                  rmrp,
-                 covid,
                  poblacion_meta,
                  IN4_01_RM_NA,
                  IN4_01_RM_NN,
@@ -1052,7 +1051,6 @@ class SubFormIN4_01:
         self.mes = mes
         self.colltmgkykvhxgij6 = colltmgkykvhxgij6
         self.rmrp = rmrp
-        self.covid = covid
         self.poblacion_meta = poblacion_meta
         self.IN4_01_RM_NA = IN4_01_RM_NA
         self.IN4_01_RM_NN = IN4_01_RM_NN
@@ -1073,7 +1071,6 @@ class SubFormIN4_01:
             "mes": self.mes,
             "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
             "rmrp": self.rmrp,
-            "covid": self.covid,
             "poblacion_meta": self.poblacion_meta,
             "IN4_01_RM_NA": self.IN4_01_RM_NA,
             "IN4_01_RM_NN": self.IN4_01_RM_NN,
@@ -2212,58 +2209,62 @@ class SubFormIN1_01:
                  mes,
                  colltmgkykvhxgij6,
                  rmrp,
-                 covid,
-                 espacion_apoyo,
                  poblacion_meta,
                  poblacion_meta_freq,
                  modalidad_impl,
-                 IN1_01_RM_MM_R,
-                 IN1_01_RM_HH_R,
-                 IN1_01_RM_OTR_R,
-                 IN1_01_RM_LGBT_R,
-                 IN1_01_CA_MM_R,
-                 IN1_01_CA_HH_R,
-                 IN1_01_CA_OTR_R,
-                 IN1_01_CA_LGBT_R,
+                 mecanismos,
+                 transferencia,
+                 usd_transfer,
+                 IN1_01_RM_MM_N,
+                 IN1_01_RM_HH_N,
+                 IN1_01_RM_OTR_N,
+                 IN1_01_RM_LGBT_N,
+                 IN1_01_CA_MM_N,
+                 IN1_01_CA_HH_N,
+                 IN1_01_CA_OTR_N,
+                 IN1_01_CA_LGBT_N,
                  IN1_01_CUAL
 
                  ):
         self.mes = mes
         self.colltmgkykvhxgij6 = colltmgkykvhxgij6
         self.rmrp = rmrp
-        self.covid = covid
-        self.espacion_apoyo = espacion_apoyo
         self.poblacion_meta = poblacion_meta
         self.poblacion_meta_freq = poblacion_meta_freq
         self.modalidad_impl = modalidad_impl
-        self.IN1_01_RM_MM_R = IN1_01_RM_MM_R
-        self.IN1_01_RM_HH_R = IN1_01_RM_HH_R
-        self.IN1_01_RM_OTR_R = IN1_01_RM_OTR_R
-        self.IN1_01_RM_LGBT_R = IN1_01_RM_LGBT_R
-        self.IN1_01_CA_MM_R = IN1_01_CA_MM_R
-        self.IN1_01_CA_HH_R = IN1_01_CA_HH_R
-        self.IN1_01_CA_OTR_R = IN1_01_CA_OTR_R
-        self.IN1_01_CA_LGBT_R = IN1_01_CA_LGBT_R
+        self.mecanismos = mecanismos
+        self.transferencia = transferencia
+        self.usd_transfer = usd_transfer
+        self.IN1_01_RM_MM_N = IN1_01_RM_MM_N
+        self.IN1_01_RM_HH_N = IN1_01_RM_HH_N
+        self.IN1_01_RM_OTR_N = IN1_01_RM_OTR_N
+        self.IN1_01_RM_LGBT_N = IN1_01_RM_LGBT_N
+        self.IN1_01_CA_MM_N = IN1_01_CA_MM_N
+        self.IN1_01_CA_HH_N = IN1_01_CA_HH_N
+        self.IN1_01_CA_OTR_N = IN1_01_CA_OTR_N
+        self.IN1_01_CA_LGBT_N = IN1_01_CA_LGBT_N
         self.IN1_01_CUAL = IN1_01_CUAL
+
 
     def __str__(self):
         to_return = {
             "mes": self.mes,
             "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
             "rmrp": self.rmrp,
-            "covid": self.covid,
-            "espacion_apoyo": self.espacion_apoyo,
             "poblacion_meta": self.poblacion_meta,
             "poblacion_meta_freq": self.poblacion_meta_freq,
             "modalidad_impl": self.modalidad_impl,
-            "IN1_01_RM_MM_R": self.IN1_01_RM_MM_R,
-            "IN1_01_RM_HH_R": self.IN1_01_RM_HH_R,
-            "IN1_01_RM_OTR_R": self.IN1_01_RM_OTR_R,
-            "IN1_01_RM_LGBT_R": self.IN1_01_RM_LGBT_R,
-            "IN1_01_CA_MM_R": self.IN1_01_CA_MM_R,
-            "IN1_01_CA_HH_R": self.IN1_01_CA_HH_R,
-            "IN1_01_CA_OTR_R": self.IN1_01_CA_OTR_R,
-            "IN1_01_CA_LGBT_R": self.IN1_01_CA_LGBT_R,
+            "mecanismos": self.mecanismos,
+            "transferencia": self.transferencia,
+            "usd_transfer": self.usd_transfer,
+            "IN1_01_RM_MM_N": self.IN1_01_RM_MM_N,
+            "IN1_01_RM_HH_N": self.IN1_01_RM_HH_N,
+            "IN1_01_RM_OTR_N": self.IN1_01_RM_OTR_N,
+            "IN1_01_RM_LGBT_N": self.IN1_01_RM_LGBT_N,
+            "IN1_01_CA_MM_N": self.IN1_01_CA_MM_N,
+            "IN1_01_CA_HH_N": self.IN1_01_CA_HH_N,
+            "IN1_01_CA_OTR_N": self.IN1_01_CA_OTR_N,
+            "IN1_01_CA_LGBT_N": self.IN1_01_CA_LGBT_N,
             "IN1_01_CUAL": self.IN1_01_CUAL
         }
         return to_return
@@ -2280,27 +2281,27 @@ class SubFormIN2_01:
                  mes,
                  colltmgkykvhxgij6,
                  rmrp,
-                 covid,
-                 espacion_apoyo,
                  poblacion_meta,
                  modalidad_impl,
                  IN2_01_RM_MM,
                  IN2_01_RM_HH,
+                 IN2_01_RM_OTR,
                  IN2_01_CA_MM,
                  IN2_01_CA_HH,
+                 IN2_01_CA_OTR,
                  IN2_01_CUAL
                  ):
         self.mes = mes
         self.colltmgkykvhxgij6 = colltmgkykvhxgij6
         self.rmrp = rmrp
-        self.covid = covid
-        self.espacion_apoyo = espacion_apoyo
         self.poblacion_meta = poblacion_meta
         self.modalidad_impl = modalidad_impl
         self.IN2_01_RM_MM = IN2_01_RM_MM
         self.IN2_01_RM_HH = IN2_01_RM_HH
+        self.IN2_01_RM_OTR = IN2_01_RM_OTR
         self.IN2_01_CA_MM = IN2_01_CA_MM
         self.IN2_01_CA_HH = IN2_01_CA_HH
+        self.IN2_01_CA_OTR = IN2_01_CA_OTR
         self.IN2_01_CUAL = IN2_01_CUAL
 
     def __str__(self):
@@ -2308,14 +2309,14 @@ class SubFormIN2_01:
             "mes": self.mes,
             "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
             "rmrp": self.rmrp,
-            "covid": self.covid,
-            "espacion_apoyo": self.espacion_apoyo,
             "poblacion_meta": self.poblacion_meta,
             "modalidad_impl": self.modalidad_impl,
             "IN2_01_RM_MM": self.IN2_01_RM_MM,
             "IN2_01_RM_HH": self.IN2_01_RM_HH,
+            "IN2_01_RM_OTR": self.IN2_01_RM_OTR,
             "IN2_01_CA_MM": self.IN2_01_CA_MM,
             "IN2_01_CA_HH": self.IN2_01_CA_HH,
+            "IN2_01_CA_OTR": self.IN2_01_CA_OTR,
             "IN2_01_CUAL": self.IN2_01_CUAL
         }
         return to_return
@@ -2326,20 +2327,46 @@ class SubFormIN2_01:
     def to_json(self):
         return self.__str__()
 
+class SubFormIN3_01:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 IN3_01,
+                 IN3_01_CUAL
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.IN3_01 = IN3_01
+        self.IN3_01_CUAL = IN3_01_CUAL
 
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "IN3_01": self.IN3_01,
+            "IN3_01_CUAL": self.IN3_01_CUAL
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
 class SubFormIN3_02:
     def __init__(self,
                  mes,
                  colltmgkykvhxgij6,
                  rmrp,
-                 covid,
                  IN3_02,
                  IN3_02_CUAL
                  ):
         self.mes = mes
         self.colltmgkykvhxgij6 = colltmgkykvhxgij6
         self.rmrp = rmrp
-        self.covid = covid
         self.IN3_02 = IN3_02
         self.IN3_02_CUAL = IN3_02_CUAL
 
@@ -2348,7 +2375,6 @@ class SubFormIN3_02:
             "mes": self.mes,
             "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
             "rmrp": self.rmrp,
-            "covid": self.covid,
             "IN3_02": self.IN3_02,
             "IN3_02_CUAL": self.IN3_02_CUAL
 
