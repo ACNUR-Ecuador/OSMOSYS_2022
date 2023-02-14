@@ -1094,6 +1094,77 @@ class SubFormIN4_01:
     def to_json(self):
         return self.__str__()
 
+class SubFormIN5_01:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 poblacion_meta,
+                 poblacion_meta_freq,
+                 modalidad_impl,
+                 mecanismos,
+                 transferencia,
+                 usd_transfer,
+                 semilla,
+                 IN5_01_RM_MM_N,
+                 IN5_01_RM_HH_N,
+                 IN5_01_RM_OTR_N,
+                 IN5_01_RM_LGBT_N,
+                 IN5_01_CA_MM_N,
+                 IN5_01_CA_HH_N,
+                 IN5_01_CA_OTR_N,
+                 IN5_01_CA_LGBT_N,
+                 IN5_01_CUAL
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.poblacion_meta = poblacion_meta
+        self.poblacion_meta_freq = poblacion_meta_freq
+        self.modalidad_impl = modalidad_impl
+        self.mecanismos = mecanismos
+        self.transferencia = transferencia
+        self.usd_transfer = usd_transfer
+        self.semilla = semilla
+        self.IN5_01_RM_MM_N = IN5_01_RM_MM_N
+        self.IN5_01_RM_HH_N = IN5_01_RM_HH_N
+        self.IN5_01_RM_OTR_N = IN5_01_RM_OTR_N
+        self.IN5_01_RM_LGBT_N = IN5_01_RM_LGBT_N
+        self.IN5_01_CA_MM_N = IN5_01_CA_MM_N
+        self.IN5_01_CA_HH_N = IN5_01_CA_HH_N
+        self.IN5_01_CA_OTR_N = IN5_01_CA_OTR_N
+        self.IN5_01_CA_LGBT_N = IN5_01_CA_LGBT_N
+        self.IN5_01_CUAL = IN5_01_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "poblacion_meta": self.poblacion_meta,
+            "poblacion_meta_freq": self.poblacion_meta_freq,
+            "modalidad_impl": self.modalidad_impl,
+            "mecanismos": self.mecanismos,
+            "transferencia": self.transferencia,
+            "usd_transfer": self.usd_transfer,
+            "semilla": self.semilla,
+            "IN5_01_RM_MM_N": self.IN5_01_RM_MM_N,
+            "IN5_01_RM_HH_N": self.IN5_01_RM_HH_N,
+            "IN5_01_RM_OTR_N": self.IN5_01_RM_OTR_N,
+            "IN5_01_RM_LGBT_N": self.IN5_01_RM_LGBT_N,
+            "IN5_01_CA_MM_N": self.IN5_01_CA_MM_N,
+            "IN5_01_CA_HH_N": self.IN5_01_CA_HH_N,
+            "IN5_01_CA_OTR_N": self.IN5_01_CA_OTR_N,
+            "IN5_01_CA_LGBT_N": self.IN5_01_CA_LGBT_N,
+            "IN5_01_CUAL": self.IN5_01_CUAL
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
 
 class SubFormIN5_01_O89:
     def __init__(self,
