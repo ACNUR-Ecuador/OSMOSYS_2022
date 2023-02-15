@@ -2579,3 +2579,82 @@ class SubFormWA1_04:
 
     def to_json(self):
         return self.__str__()
+
+class SubFormS3_01:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 poblacion_meta,
+                 modalidad_impl,
+                 tipo_atencion, ## Atención psicosocial
+                 S3_01_RM_NA_PS,
+                 S3_01_RM_NN_PS,
+                 S3_01_RM_MM_PS,
+                 S3_01_RM_HH_PS,
+                 S3_01_RM_OTR_PS,
+                 S3_01_RM_LGBT_PS,
+                 S3_01_RM_DS_PS,
+                 S3_01_CA_NA_PS,
+                 S3_01_CA_NN_PS,
+                 S3_01_CA_MM_PS,
+                 S3_01_CA_HH_PS,
+                 S3_01_CA_OTR_PS,
+                 S3_01_CA_LGBT_PS,
+                 S3_01_CA_DS_PS,
+                 S3_01_CUAL
+
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.poblacion_meta = poblacion_meta
+        self.modalidad_impl = modalidad_impl
+        self.tipo_atencion = tipo_atencion
+        self.S3_01_RM_NA_PS = S3_01_RM_NA_PS
+        self.S3_01_RM_NN_PS = S3_01_RM_NN_PS
+        self.S3_01_RM_MM_PS = S3_01_RM_MM_PS
+        self.S3_01_RM_HH_PS = S3_01_RM_HH_PS
+        self.S3_01_RM_OTR_PS = S3_01_RM_OTR_PS
+        self.S3_01_RM_LGBT_PS = S3_01_RM_LGBT_PS
+        self.S3_01_RM_DS_PS = S3_01_RM_DS_PS
+        self.S3_01_CA_NA_PS = S3_01_CA_NA_PS
+        self.S3_01_CA_NN_PS = S3_01_CA_NN_PS
+        self.S3_01_CA_MM_PS = S3_01_CA_MM_PS
+        self.S3_01_CA_HH_PS = S3_01_CA_HH_PS
+        self.S3_01_CA_OTR_PS = S3_01_CA_OTR_PS
+        self.S3_01_CA_LGBT_PS = S3_01_CA_LGBT_PS
+        self.S3_01_CA_DS_PS = S3_01_CA_DS_PS
+        self.S3_01_CUAL = S3_01_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "poblacion_meta": self.poblacion_meta,
+            "modalidad_impl": self.modalidad_impl,
+            "tipo_atencion": self.tipo_atencion,
+            "S3_01_RM_NA_PS": self.S3_01_RM_NA_PS,
+            "S3_01_RM_NN_PS": self.S3_01_RM_NN_PS,
+            "S3_01_RM_MM_PS": self.S3_01_RM_MM_PS,
+            "S3_01_RM_HH_PS": self.S3_01_RM_HH_PS,
+            "S3_01_RM_OTR_PS": self.S3_01_RM_OTR_PS,
+            "S3_01_RM_LGBT_PS": self.S3_01_RM_LGBT_PS,
+            "S3_01_RM_DS_PS": self.S3_01_RM_DS_PS,
+            "S3_01_CA_NA_PS": self.S3_01_CA_NA_PS,
+            "S3_01_CA_NN_PS": self.S3_01_CA_NN_PS,
+            "S3_01_CA_MM_PS": self.S3_01_CA_MM_PS,
+            "S3_01_CA_HH_PS": self.S3_01_CA_HH_PS,
+            "S3_01_CA_OTR_PS": self.S3_01_CA_OTR_PS,
+            "S3_01_CA_LGBT_PS": self.S3_01_CA_LGBT_PS,
+            "S3_01_CA_DS_PS": self.S3_01_CA_DS_PS,
+            "S3_01_CUAL": self.S3_01_CUAL
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
