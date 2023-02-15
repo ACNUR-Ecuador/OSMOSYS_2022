@@ -700,6 +700,60 @@ class SubFormPRVBG2_01:
         return self.__str__()
 
 
+
+class SubFormPRVBG3_01:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 poblacion_meta2,
+                 PRVBG3_01_RM_NA,
+                 PRVBG3_01_RM_NN,
+                 PRVBG3_01_RM_MM,
+                 PRVBG3_01_RM_HH,
+                 PRVBG3_01_RM_OTR,
+                 PRVBG3_01_RM_LGBT,
+                 PRVBG3_01_RM_DS,
+                 PRVBG3_01_CUAL
+
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.poblacion_meta2 = poblacion_meta2
+        self.PRVBG3_01_RM_NA = PRVBG3_01_RM_NA
+        self.PRVBG3_01_RM_NN = PRVBG3_01_RM_NN
+        self.PRVBG3_01_RM_MM = PRVBG3_01_RM_MM
+        self.PRVBG3_01_RM_HH = PRVBG3_01_RM_HH
+        self.PRVBG3_01_RM_OTR = PRVBG3_01_RM_OTR
+        self.PRVBG3_01_RM_LGBT = PRVBG3_01_RM_LGBT
+        self.PRVBG3_01_RM_DS = PRVBG3_01_RM_DS
+        self.PRVBG3_01_CUAL = PRVBG3_01_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "poblacion_meta2": self.poblacion_meta2,
+            "PRVBG3_01_RM_NA": self.PRVBG3_01_RM_NA,
+            "PRVBG3_01_RM_NN": self.PRVBG3_01_RM_NN,
+            "PRVBG3_01_RM_MM": self.PRVBG3_01_RM_MM,
+            "PRVBG3_01_RM_HH": self.PRVBG3_01_RM_HH,
+            "PRVBG3_01_RM_OTR": self.PRVBG3_01_RM_OTR,
+            "PRVBG3_01_RM_LGBT": self.PRVBG3_01_RM_LGBT,
+            "PRVBG3_01_RM_DS": self.PRVBG3_01_RM_DS,
+            "PRVBG3_01_CUAL": self.PRVBG3_01_CUAL
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
+
+
 class SubFormPRVBG4_01:
     def __init__(self,
                  mes,
