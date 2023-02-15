@@ -313,8 +313,6 @@ class SubFormPR3_01:
                  mes,
                  colltmgkykvhxgij6,
                  rmrp,
-                 covid,
-                 espacion_apoyo,
                  poblacion_meta,
                  modalidad_impl,
                  mecanismos,
