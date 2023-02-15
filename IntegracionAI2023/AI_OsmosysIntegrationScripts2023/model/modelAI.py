@@ -759,14 +759,12 @@ class SubFormPRVBG4_01:
                  mes,
                  colltmgkykvhxgij6,
                  rmrp,
-                 covid,
                  PRVBG4_01,
                  PRVBG4_01_CUAL
                  ):
         self.mes = mes
         self.colltmgkykvhxgij6 = colltmgkykvhxgij6
         self.rmrp = rmrp
-        self.covid = covid
         self.PRVBG4_01 = PRVBG4_01
         self.PRVBG4_01_CUAL = PRVBG4_01_CUAL
 
@@ -775,7 +773,6 @@ class SubFormPRVBG4_01:
             "mes": self.mes,
             "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
             "rmrp": self.rmrp,
-            "covid": self.covid,
             "PRVBG4_01": self.PRVBG4_01,
             "PRVBG4_01_CUAL": self.PRVBG4_01_CUAL
         }
