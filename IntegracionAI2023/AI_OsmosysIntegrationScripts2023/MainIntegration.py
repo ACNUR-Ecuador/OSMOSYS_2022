@@ -36,6 +36,10 @@ month = 'ENERO'
 month_number = '2023-01'
 year = 2023
 test = True
+print('month'+str(month))
+print('month_number'+str(month_number))
+print('year'+str(year))
+print('test'+str(test))
 
 importScripts.ActivityInfoFormLeve1Form.importForm(month, month_number, year, test)
 importScripts.Subform_AT1_01.importForm(month, month_number, year, test)
@@ -67,3 +71,4 @@ importScripts.Subform_PRVBG3_01.importForm(month, month_number, year, test)
 importScripts.Subform_PRVBG4_01.importForm(month, month_number, year, test)
 importScripts.Subform_PRVBG4_03.importForm(month, month_number, year, test)
 importScripts.Subform_S3_01.importForm(month, month_number, year, test)
+print('-----------> FIN')
