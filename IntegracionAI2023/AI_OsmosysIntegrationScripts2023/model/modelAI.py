@@ -174,7 +174,6 @@ class SubFormPR1_01:
                  colltmgkykvhxgij6,
                  orientacion,
                  rmrp,
-                 covid,
                  poblacion_meta,
                  PR1_01_RM_NA,
                  PR1_01_RM_NN,
@@ -197,7 +196,6 @@ class SubFormPR1_01:
         self.colltmgkykvhxgij6 = colltmgkykvhxgij6
         self.orientacion = orientacion
         self.rmrp = rmrp
-        self.covid = covid
         self.poblacion_meta = poblacion_meta
         self.PR1_01_RM_NA = PR1_01_RM_NA
         self.PR1_01_RM_NN = PR1_01_RM_NN
@@ -222,7 +220,6 @@ class SubFormPR1_01:
             "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
             "orientacion": self.orientacion,
             "rmrp": self.rmrp,
-            "covid": self.covid,
             "poblacion_meta": self.poblacion_meta,
             "PR1_01_RM_NA": self.PR1_01_RM_NA,
             "PR1_01_RM_NN": self.PR1_01_RM_NN,
