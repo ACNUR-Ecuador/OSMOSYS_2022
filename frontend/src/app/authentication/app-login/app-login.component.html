@@ -5,7 +5,8 @@
         <div class="flex flex-column align-items-center gap-4">
             <div class="mb-3">
                 <h2>Ingresa a tu cuenta</h2>
-                <p>¿Olvidaste tu contraseña? <a class="text-primary hover:underline cursor-pointer font-medium">Haz clic
+                <p>¿Olvidaste tu contraseña? <a class="text-primary hover:underline cursor-pointer font-medium"
+                                                (click)="router.navigate(['/auth/recover_password'])" >Haz clic
                     aquí</a> para recuperarla.</p>
             </div>
             <form [formGroup]="loginForm" class="flex flex-column align-items-center gap-4" (ngSubmit)="login()">

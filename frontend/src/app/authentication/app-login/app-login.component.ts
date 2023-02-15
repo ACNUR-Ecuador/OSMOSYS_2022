@@ -13,7 +13,7 @@ import {User} from '../../shared/model/User';
 export class AppLoginComponent {
 
     constructor(
-        private router: Router,
+        public router: Router,
         private fb: FormBuilder,
         private userService: UserService,
         private messageService: MessageService,

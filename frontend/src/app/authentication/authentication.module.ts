@@ -8,10 +8,15 @@ import {AuthenticationRoutingModule} from './authentication-routing.module';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MessagesModule} from 'primeng/messages';
 import {MessageService} from 'primeng/api';
+import { RecoverPasswordComponent } from './recover-password/recover-password.component';
+import {ConfirmDialogModule} from "primeng/confirmdialog";
+import {ToastModule} from "primeng/toast";
+import {CardModule} from "primeng/card";
 
 @NgModule({
     declarations: [
-        AppLoginComponent
+        AppLoginComponent,
+        RecoverPasswordComponent
     ],
     imports: [
         CommonModule,
@@ -20,7 +25,10 @@ import {MessageService} from 'primeng/api';
         PasswordModule,
         ButtonModule,
         ReactiveFormsModule,
-        MessagesModule
+        MessagesModule,
+        ConfirmDialogModule,
+        ToastModule,
+        CardModule
     ],
     providers: [
         MessageService
