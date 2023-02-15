@@ -412,7 +412,6 @@ class SubFormPR6_01:
                  mes,
                  colltmgkykvhxgij6,
                  rmrp,
-                 covid,
                  modalidad_impl,
                  PR6_01,
                  PR6_01_CUAL
@@ -420,7 +419,6 @@ class SubFormPR6_01:
         self.mes = mes,
         self.colltmgkykvhxgij6 = colltmgkykvhxgij6,
         self.rmrp = rmrp,
-        self.covid = covid,
         self.modalidad_impl = modalidad_impl,
         self.PR6_01 = PR6_01,
         self.PR6_01_CUAL = PR6_01_CUAL
@@ -430,7 +428,6 @@ class SubFormPR6_01:
             "mes": self.mes,
             "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
             "rmrp": self.rmrp,
-            "covid": self.covid,
             "modalidad_impl": self.modalidad_impl,
             "PR6_01": self.PR6_01,
             "PR6_01_CUAL": self.PR6_01_CUAL
