@@ -566,14 +566,12 @@ class SubFormPRPI5_01:
                  mes,
                  colltmgkykvhxgij6,
                  rmrp,
-                 covid,
                  PRPI5_01,
                  PRPI5_01_CUAL
                  ):
         self.mes = mes
         self.colltmgkykvhxgij6 = colltmgkykvhxgij6
         self.rmrp = rmrp
-        self.covid = covid
         self.PRPI5_01 = PRPI5_01
         self.PRPI5_01_CUAL = PRPI5_01_CUAL
 
@@ -582,7 +580,6 @@ class SubFormPRPI5_01:
             "mes": self.mes,
             "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
             "rmrp": self.rmrp,
-            "covid": self.covid,
             "PRPI5_01": self.PRPI5_01,
             "PRPI5_01_CUAL": self.PRPI5_01_CUAL
         }
