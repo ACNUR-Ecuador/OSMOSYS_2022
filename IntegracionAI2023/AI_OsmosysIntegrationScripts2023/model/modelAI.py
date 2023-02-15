@@ -376,6 +376,37 @@ class SubFormPR3_01:
         return self.__str__()
 
 
+class SubFormPR4_03:
+    def __init__(self,
+                 mes,
+                 colltmgkykvhxgij6,
+                 rmrp,
+                 PR4_03,
+                 PR4_03_CUAL
+                 ):
+        self.mes = mes
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
+        self.rmrp = rmrp
+        self.PR4_03 = PR4_03
+        self.PR4_03_CUAL = PR4_03_CUAL
+
+    def __str__(self):
+        to_return = {
+            "mes": self.mes,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
+            "rmrp": self.rmrp,
+            "PR4_03": self.PR4_03,
+            "PR4_03_CUAL": self.PR4_03_CUAL
+        }
+        return to_return
+
+    def __repr__(self):
+        return self.__str__()
+
+    def to_json(self):
+        return self.__str__()
+
+
 class SubFormPR6_01:
     def __init__(self,
                  mes,
@@ -1516,39 +1547,6 @@ class SubFormAT3_01:
     def to_json(self):
         return self.__str__()
 
-
-class SubFormAT4_01:
-    def __init__(self,
-                 mes,
-                 colltmgkykvhxgij6,
-                 rmrp,
-                 covid,
-                 AT4_01,
-                 AT4_01_CUAL
-                 ):
-        self.mes = mes
-        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
-        self.rmrp = rmrp
-        self.covid = covid
-        self.AT4_01 = AT4_01
-        self.AT4_01_CUAL = AT4_01_CUAL
-
-    def __str__(self):
-        to_return = {
-            "mes": self.mes,
-            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
-            "rmrp": self.rmrp,
-            "covid": self.covid,
-            "AT4_01": self.AT4_01,
-            "AT4_01_CUAL": self.AT4_01_CUAL
-        }
-        return to_return
-
-    def __repr__(self):
-        return self.__str__()
-
-    def to_json(self):
-        return self.__str__()
 
 
 class SubFormAT5_01:
