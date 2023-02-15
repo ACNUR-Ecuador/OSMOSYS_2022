@@ -520,7 +520,6 @@ class SubFormPRPI1_02:
                  mes,
                  colltmgkykvhxgij6,
                  rmrp,
-                 covid,
                  poblacion_meta2,
                  PRPI1_02_RM_NA,
                  PRPI1_02_RM_NN,
@@ -532,7 +531,6 @@ class SubFormPRPI1_02:
         self.mes = mes
         self.colltmgkykvhxgij6 = colltmgkykvhxgij6
         self.rmrp = rmrp
-        self.covid = covid
         self.poblacion_meta2 = poblacion_meta2
         self.PRPI1_02_RM_NA = PRPI1_02_RM_NA
         self.PRPI1_02_RM_NN = PRPI1_02_RM_NN
@@ -546,7 +544,6 @@ class SubFormPRPI1_02:
             "mes": self.mes,
             "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
             "rmrp": self.rmrp,
-            "covid": self.covid,
             "poblacion_meta2": self.poblacion_meta2,
             "PRPI1_02_RM_NA": self.PRPI1_02_RM_NA,
             "PRPI1_02_RM_NN": self.PRPI1_02_RM_NN,
