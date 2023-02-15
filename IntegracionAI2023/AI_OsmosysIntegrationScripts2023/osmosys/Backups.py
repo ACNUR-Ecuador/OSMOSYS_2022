@@ -6,7 +6,6 @@ import pandas as pd
 
 def do_backup(indicatorCodeAI, indicatorIdsOsmosys, month, year, changesList, finalJson):
     changesBK = []
-    print(type(changesList))
     for change in changesList:
         changesBK.append({
             'indicadorIA': indicatorCodeAI,
