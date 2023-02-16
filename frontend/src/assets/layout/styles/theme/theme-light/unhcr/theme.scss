@@ -150,5 +150,7 @@ $accordionHeaderTextActiveHoverColor:$shade700 !default;
 .layout-wrapper.layout-horizontal .layout-topbar .topbar-menu > li > a .topbar-badge {
     background: red !important;
 }
-
+.layout-topbar {
+    background: $primaryColor !important;
+}
 @import 'widgets';

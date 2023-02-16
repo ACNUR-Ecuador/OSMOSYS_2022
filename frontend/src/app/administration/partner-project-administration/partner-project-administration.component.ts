@@ -501,12 +501,14 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             this.projectService.update(project)
                 .subscribe({
                     next: () => {
+                        this.formItem.reset();
                         this.loadProject(id);
                         this.messageService.add({
                             severity: 'success',
                             summary: 'Guardado con éxito',
                             life: 3000
                         });
+
                     },
                     error: error => {
                         this.messageService.add({
@@ -522,6 +524,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             this.projectService.save(project)
                 .subscribe({
                     next: () => {
+                        this.formItem.reset();
                         this.messageService.add({
                             severity: 'success',
                             summary: 'Guardado con éxito',
