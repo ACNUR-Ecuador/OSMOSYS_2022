@@ -152,7 +152,16 @@ public class StatementService {
         InputStream targetStream = new ByteArrayInputStream(fileContent);
         this.statementImportService.statementImportV2(importFileWeb.getPeriod(), targetStream);
     }
-    public List<Statement> getByPeriodYearAndAreaType(AreaType areaType, int year){
-        return this.statementDao.getByPeriodYearAndAreaType(areaType,year);
+
+    public List<Statement> getByPeriodYearAndAreaType(AreaType areaType, int year) {
+        return this.statementDao.getByPeriodYearAndAreaType(areaType, year);
+    }
+
+    public List<StatementWeb> getActiveByPeriodId(Long periodId, State state) {
+
+        List<Statement> r = this.statementDao.getByPeriodIdAndState(periodId, state);
+
+        return this.modelWebTransformationService.statementsToStatementsWeb(r, true, true, true, true, true);
+
     }
 }

@@ -62,6 +62,14 @@ public class StatementEndpoint {
         return this.statementService.getByState(state);
     }
 
+    @Path("/getActiveByPeriodId/{periodId}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<StatementWeb> getByState(@PathParam("periodId") Long periodId) {
+        return this.statementService.getActiveByPeriodId(periodId, State.ACTIVO);
+    }
+
     @Path("/getStatementImportTemplate")
     @GET
     @Secured
@@ -77,7 +85,7 @@ public class StatementEndpoint {
         final String filename = "importador_declaraciones_plantilla.xlsx";
         InputStream template = classLoader.getResourceAsStream("templates" + File.separator + filename);
 
-        if(template==null){
+        if (template == null) {
             throw new GeneralAppException("Error al obtener el template " + filename, Response.Status.INTERNAL_SERVER_ERROR);
         }
 

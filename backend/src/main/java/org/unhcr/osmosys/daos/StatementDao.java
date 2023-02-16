@@ -112,4 +112,19 @@ public class StatementDao extends GenericDaoJpa<Statement, Long> {
         return q.getResultList();
 
     }
+    public List<Statement> getByPeriodIdAndState(Long periodId, State state){
+        String jpql = "SELECT DISTINCT o" +
+                " FROM Statement o" +
+                " inner join  o.periodStatementAsignations psa " +
+                " inner join  psa.period per  " +
+                " WHERE " +
+                " per.id = :periodId" +
+                " and o.state=:state " +
+                " and per.state=:state ";
+        Query q = getEntityManager().createQuery(jpql, Statement.class);
+        q.setParameter("state", state);
+        q.setParameter("periodId", periodId);
+        return q.getResultList();
+
+    }
 }
