@@ -79,7 +79,7 @@ export class MenuService {
                     label: 'Usuarios',
                     icon: 'pi pi-fw pi-user',
                     routerLink: ['/administration/users'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR','PUNTO_FOCAL']
                 },
                 {
                     label: 'Configuración del sistema',

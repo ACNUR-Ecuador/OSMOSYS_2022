@@ -9,7 +9,7 @@
                 <div class="p-toolbar-group-start">
                     <div class="flex ">
                         <div class="my-2"
-                             *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRATOR'])">
+                             *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'])">
                             <button pButton pRipple label="Crear Proyecto" icon="pi pi-plus"
                                     class="p-button-success mr-2 mb-2"
                                     (click)="createItem()"></button>

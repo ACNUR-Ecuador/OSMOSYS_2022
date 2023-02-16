@@ -39,6 +39,7 @@ export class UserAdministrationComponent implements OnInit {
     organizationsActive: SelectItem[];
     showDialog = false;
 
+
     constructor(
         private messageService: MessageService,
         private fb: FormBuilder,
@@ -123,8 +124,18 @@ export class UserAdministrationComponent implements OnInit {
             next: value => {
                 this.roles = value;
                 this.roles.forEach(value1 => {
-                    value1.disabled = value1.value === 'PUNTO_FOCAL';
+                    if (value1.value === 'PUNTO_FOCAL') {
+                        value1.disabled = true;
+                    } else if (value1.value === 'SUPER_ADMINISTRADOR' || value1.value === 'ADMINISTRADOR') {
+                        const isAdministrator: boolean = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
+                        value1.disabled = !isAdministrator;
+                    }else {
+                        value1.disabled=false;
+                    }
+
+
                 });
+
             },
             error: error => this.messageService.add({
                 severity: 'error',

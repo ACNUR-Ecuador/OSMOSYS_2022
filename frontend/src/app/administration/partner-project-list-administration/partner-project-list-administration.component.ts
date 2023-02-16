@@ -92,7 +92,7 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
     }
 
     private loadProjects(periodId: number) {
-        if (this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRATOR'])) {
+        if (this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'])) {
             this.projectService.getProjectResumenWebByPeriodId(periodId).subscribe(value => {
                 this.items = value;
             }, error => {

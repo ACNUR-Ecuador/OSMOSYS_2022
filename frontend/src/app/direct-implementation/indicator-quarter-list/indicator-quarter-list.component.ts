@@ -57,7 +57,7 @@ export class IndicatorQuarterListComponent implements OnInit {
 
     private setRoles() {
         const userId = this.userService.getLogedUsername().id;
-        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']);
+        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
         this.isSupervisor = this.indicatorExecution.supervisorUser.id === userId;
         if (this.indicatorExecution.assignedUserBackup) {
             this.isEjecutor = this.indicatorExecution.assignedUser.id === userId

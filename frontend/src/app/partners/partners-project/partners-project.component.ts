@@ -301,7 +301,7 @@ export class PartnersProjectComponent implements OnInit {
     private setRoles() {
         const userId = this.userService.getLogedUsername().id;
         const orgId = this.userService.getLogedUsername().organization.id;
-        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRATOR']);
+        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
         this.isProjectFocalPoint = this.project.focalPoint && this.project.focalPoint.id === userId;
         this.isEjecutor = this.project.organization.id === orgId && this.userService.hasRole('EJECUTOR_PROYECTOS');
     }
