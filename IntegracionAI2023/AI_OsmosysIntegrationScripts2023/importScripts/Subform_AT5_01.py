@@ -68,7 +68,6 @@ def importForm(month, month_number, year, test):
             mes=month_number,
             colltmgkykvhxgij6=indicatorIdAI,
             rmrp='Si',
-            covid='No',
             poblacion_meta=poblacion_meta,
             modalidad_impl='c3jf6gykykwwemuk7',  ##'En especie / kit / commodity voucher',
             tipo_kit='Kit para bebé',

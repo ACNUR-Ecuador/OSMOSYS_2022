@@ -129,8 +129,8 @@ export class UserAdministrationComponent implements OnInit {
                     } else if (value1.value === 'SUPER_ADMINISTRADOR' || value1.value === 'ADMINISTRADOR') {
                         const isAdministrator: boolean = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
                         value1.disabled = !isAdministrator;
-                    }else {
-                        value1.disabled=false;
+                    } else {
+                        value1.disabled = false;
                     }
 
 
@@ -226,6 +226,19 @@ export class UserAdministrationComponent implements OnInit {
             .map(value => {
                 return value.name;
             });
+        const org = user.organization;
+        if (org) {
+            if (org.id === 1) {
+                this.formItem.get('office').setValidators([Validators.required]);
+                this.formItem.get('office').enable();
+                this.formItem.get('office').updateValueAndValidity();
+            } else {
+                this.formItem.get('office').patchValue(null);
+                this.formItem.get('office').clearValidators();
+                this.formItem.get('office').updateValueAndValidity();
+                this.formItem.get('office').disable();
+            }
+        }
         this.formItem.get('roleTypes').patchValue(roleTypes);
         this.formItem.get('username').disable();
     }
