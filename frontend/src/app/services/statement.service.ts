@@ -30,6 +30,9 @@ export class StatementService {
     public getByState(state: EnumsState): Observable<Statement[]> {
         return this.http.get<Statement[]>(`${mainServiceUrl}/byState/${state}`);
     }
+    public getActiveByPeriodId(periodId: number): Observable<Statement[]> {
+        return this.http.get<Statement[]>(`${mainServiceUrl}/getActiveByPeriodId/${periodId}`);
+    }
 
     public getStatementImportTemplate() {
         return this.http.get(`${mainServiceUrl}/getStatementImportTemplate`, {

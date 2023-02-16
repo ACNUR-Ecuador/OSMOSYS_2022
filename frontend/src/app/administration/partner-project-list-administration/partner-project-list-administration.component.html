@@ -15,7 +15,9 @@
                                     (click)="createItem()"></button>
                         </div>
                         <div class="my-2">
-                            <button pButton pRipple label="Importar Catálogo de Proyectos" icon="pi pi-plus"
+                            <button pButton pRipple label="Importar Catálogo de Proyectos"
+                                    *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR'])"
+                                    icon="pi pi-plus"
                                     class="p-button-success mr-2 mb-2"
                                     (click)="initiateCatalogImport()"></button>
                         </div>

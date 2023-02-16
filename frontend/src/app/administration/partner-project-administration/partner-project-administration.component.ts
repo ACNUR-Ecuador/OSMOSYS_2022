@@ -101,7 +101,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         private fb: FormBuilder,
         private messageService: MessageService,
         public utilsService: UtilsService,
-        private userService: UserService,
+        public userService: UserService,
         private indicatorService: IndicatorService,
         private enumsService: EnumsService,
         private filterService: FilterService,
@@ -138,8 +138,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     ngOnInit(): void {
         this.createForms();
         this.createTables();
-        this.loadOptions();
-        this.showLocationMenu = true;
+
 
         if (this.idProjectParam) {
             const idProject = Number(this.idProjectParam);
@@ -156,6 +155,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             });
         }
         this.registerFilters();
+
+        this.showLocationMenu = true;
     }
 
     private loadPeriod() {
@@ -168,6 +169,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     const project = new Project();
                     project.period = value;
                     this.formItem.patchValue(project);
+                    this.loadOptions(project);
                 },
                 error: error => {
                     this.messageService.add({
@@ -215,6 +217,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     });
                     this.periods = [];
                     this.periods.push(period);
+                    this.loadOptions(value);
                     this.loadPerformanceIndicatorsOptions(value as Project);
                 },
                 error: error => {
@@ -310,7 +313,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
     }
 
-    loadOptions() {
+    loadOptions(project:Project) {
         this.cantonService.getByState(EnumsState.ACTIVE)
             .subscribe({
                 next: value => {
@@ -361,7 +364,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     });
                 }
             });
-        this.statementService.getByState(EnumsState.ACTIVE)
+
+        this.statementService.getActiveByPeriodId(project.period.id)
             .subscribe({
                 next: value => {
                     this.statements = value
@@ -493,6 +497,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
         project.locations = (locations as any[]).map(value1 => {
             delete value1.provinciaDescription;
+            delete value1.enabled;
             return value1 as Canton;
         });
 

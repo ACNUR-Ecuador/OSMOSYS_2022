@@ -215,7 +215,8 @@
                              [rowHover]="true" dataKey="id"
                              currentPageReportTemplate=" {first} a {last} de {totalRecords} "
                              [showCurrentPageReport]="true"
-                             (sortFunction)="utilsService.customSort($event, selectedColumnsGeneralIndicators)" [customSort]="true">
+                             (sortFunction)="utilsService.customSort($event, selectedColumnsGeneralIndicators)"
+                             [customSort]="true">
                         <ng-template pTemplate="caption">
                             <div class="flex flex-row-reverse flex-wrap " style="width:100%">
                                 <div
@@ -286,7 +287,8 @@
                         </ng-template>
                         <ng-template pTemplate="summary">
                             <div class="p-d-flex p-ai-center p-jc-between">
-                                {{dt.filteredValue?dt.filteredValue.length:dt.totalRecords}} de {{generalIndicators?generalIndicators.length:0}}indicadores.
+                                {{dt.filteredValue ? dt.filteredValue.length : dt.totalRecords}}
+                                de {{generalIndicators ? generalIndicators.length : 0}}indicadores.
                             </div>
                         </ng-template>
                     </p-table>
@@ -309,6 +311,7 @@
                                     (click)="updatePerformanceIndicatorsTargets()"></button>
 
                             <button pButton pRipple label="Importar Indicadores" icon="pi pi-plus"
+                                    *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR'])"
                                     class="p-button-success mr-2 mb-2"
                                     (click)="initiateCatalogImport()"></button>
                         </ng-template>
@@ -330,7 +333,8 @@
                              styleClass="p-datatable-customers"
                              currentPageReportTemplate=" {first} a {last} de {totalRecords} "
                              [showCurrentPageReport]="true"
-                             (sortFunction)="utilsService.customSort($event, selectedColumnsPerformanceIndicators)" [customSort]="true"
+                             (sortFunction)="utilsService.customSort($event, selectedColumnsPerformanceIndicators)"
+                             [customSort]="true"
 
 
                     >
@@ -425,7 +429,8 @@
                         </ng-template>
                         <ng-template pTemplate="summary">
                             <div class="p-d-flex p-ai-center p-jc-between">
-                                {{dt.filteredValue?dt.filteredValue.length:dt.totalRecords}} de {{performanceIndicators?performanceIndicators.length:0}} indicadores.
+                                {{dt.filteredValue ? dt.filteredValue.length : dt.totalRecords}}
+                                de {{performanceIndicators ? performanceIndicators.length : 0}} indicadores.
                             </div>
                         </ng-template>
                     </p-table>
@@ -549,7 +554,7 @@
 </p-confirmDialog>
 
 <form [formGroup]="formPerformanceIndicator" (ngSubmit)="savePerformanceIndicator()">
-    <p-dialog [(visible)]="showPerformanceIndicatorDialog" [style]="{width: '90%'}" header="Indicador de Producto x"
+    <p-dialog [(visible)]="showPerformanceIndicatorDialog" [style]="{width: '90%'}" header="Indicador de Producto"
               [modal]="true"
               styleClass="p-fluid" [closable]="false">
 
@@ -599,6 +604,7 @@
                     <label htmlFor="statementI">Declaración para el proyecto</label>
                     <p-dropdown id="statementI"
                                 formControlName="projectStatement"
+                                [style]="{'width':'90%'}"
                                 [options]="statementsOptions"
                                 appendTo="body"
                                 [filter]="true"
@@ -673,6 +679,7 @@
                     <ng-template pTemplate="header">
                         <div class=" p-d-flex p-jc-end">
                             <button pButton type="button" pRipple label="Editar sitios/cantones de ejecución"
+                                    *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR'])"
                                     style="max-width: 20rem"
                                     icon="pi pi-pencil"
                                     class="p-button-success"
@@ -822,7 +829,7 @@
               [closable]="false">
 
         <ng-template pTemplate="content">
-            <p-messages ></p-messages>
+            <p-messages></p-messages>
 
             <div class="card p-fluid">
                 <h5>
