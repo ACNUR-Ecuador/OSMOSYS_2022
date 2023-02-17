@@ -844,6 +844,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         this.formPerformanceIndicator.get('isBorrowedStatement').patchValue(false);
         this.formPerformanceIndicator.get('projectStatement').disable();
         this.formPerformanceIndicator.get('indicator').enable();
+        this.formPerformanceIndicator.get('state').patchValue(true);
         this.showPerformanceIndicatorDialog = true;
         const locations: CantonForList [] = this.formItem.get('locations').value;
         locations.map(value1 => {
@@ -1057,6 +1058,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             }).filter(value => value.id === indicatorExecution.indicator.id).pop();
         editinItem.keepBudget = indicatorExecution.keepBudget;
         editinItem.assignedBudget = indicatorExecution.assignedBudget;
+        editinItem.state= indicatorExecution.state;
         if (indicatorExecution.projectStatement) {
             editinItem.projectStatement =
                 this.statementsOptions
@@ -1091,6 +1093,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         /**********locations**********/
 
         this.formPerformanceIndicator.patchValue(editinItem);
+
+        this.formPerformanceIndicator.get('state').patchValue(indicatorExecution.state==='ACTIVO');
         this.formPerformanceIndicator.get('indicator').disable();
         if (editinItem.projectStatement.id === editinItem.indicator.statement.id) {
             this.formPerformanceIndicator.get('isBorrowedStatement').patchValue(false);
