@@ -50,7 +50,7 @@ def importForm(month, month_number, year, test):
         df = osmosys.osmosys.getTotalMonthByCanton(year=year, month=month, orgOsmosys=orgAcron,
                                                    indicatorsIdsOmosys=indicatorIdsOsmosys, cantonCode=cantonCode)
 
-        IN3_02 = int(df.iloc[0].value_a)
+        IN3_01 = int(df.iloc[0].value_a)
         commentary = osmosys.osmosys.getCommentary(year=year, month=month, orgOsmosys=orgAcron,
                                                    indicatorsIdsOmosys=indicatorIdsOsmosys).iloc[0].value_a
 
@@ -58,8 +58,8 @@ def importForm(month, month_number, year, test):
             mes=month_number,
             colltmgkykvhxgij6=indicatorIdAI,
             rmrp='Si',
-            IN3_02=IN3_02,
-            IN3_02_CUAL=commentary
+            IN3_01=IN3_01,
+            IN3_01_CUAL=commentary
         )
         newId = generate_id()
         newIds.append(newId)

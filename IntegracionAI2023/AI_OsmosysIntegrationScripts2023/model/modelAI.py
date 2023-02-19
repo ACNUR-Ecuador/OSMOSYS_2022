@@ -330,8 +330,6 @@ class SubFormPR3_01:
         self.mes = mes
         self.colltmgkykvhxgij6 = colltmgkykvhxgij6
         self.rmrp = rmrp
-        self.covid = covid
-        self.espacion_apoyo = espacion_apoyo
         self.poblacion_meta = poblacion_meta
         self.modalidad_impl = modalidad_impl
         self.mecanismos = mecanismos
@@ -351,8 +349,6 @@ class SubFormPR3_01:
             "mes": self.mes,
             "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
             "rmrp": self.rmrp,
-            "covid": self.covid,
-            "espacion_apoyo": self.espacion_apoyo,
             "poblacion_meta": self.poblacion_meta,
             "modalidad_impl": self.modalidad_impl,
             "mecanismos": self.mecanismos,

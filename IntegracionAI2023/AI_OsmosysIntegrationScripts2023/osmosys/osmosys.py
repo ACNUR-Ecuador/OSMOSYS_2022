@@ -115,7 +115,7 @@ def getIesPartnerCantonsByIndicatorsIdsOsmosysAndMonth(indicatorsIdsOmosys, mont
     INNER JOIN osmosys.indicators i on ie.performance_indicator_id=i.id and ie.state='ACTIVO'
     INNER JOIN osmosys.projects pr on ie.project_id=pr.id
     INNER JOIN osmosys.organizations org on pr.organization_id=org.id
-		INNER JOIN ai_integration.osmosys_ai_implementador_organi aio on org.id=aio.osmosys_id
+		INNER JOIN ai_integration.osmosys_ai_implementador_organi_2023 aio on org.id=aio.osmosys_id
     INNER JOIN osmosys.quarters q ON ie.id=q.indicator_execution_id and q.state='ACTIVO'
     INNER JOIN osmosys.months m ON q.id=m.quarter_id and m.state='ACTIVO'
 		INNER JOIN osmosys.indicator_values iv on m.id=iv.month_id and iv.state='ACTIVO'
@@ -132,6 +132,8 @@ def getIesPartnerCantonsByIndicatorsIdsOsmosysAndMonth(indicatorsIdsOmosys, mont
         .replace('xxxYear', str(year)) \
         .replace('xxxMonth', month) \
         .replace('XXXindicatorIds', indicatorsIdsOmosysStr)
+
+    ## print(query)
     dbConnection = getOsmosysConnection()
     dataFrame = pds.read_sql(query, dbConnection)
     dbConnection.close()
