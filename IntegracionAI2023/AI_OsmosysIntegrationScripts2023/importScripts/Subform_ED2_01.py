@@ -135,10 +135,11 @@ def importForm(month, month_number, year, test):
         orgAcron = row.acronym
         cantonCode = row.canton_code
         df = osmosys.osmosys.getRefValues(year=year, month=month, orgOsmosys=orgAcron,
-                                          indicatorsIdsOmosys=indicatorIdsOsmosys_10L02, cantonCode=cantonCode)
+                                          indicatorsIdsOmosys=indicatorIdsOsmosys_10L09, cantonCode=cantonCode)
 
         poblacion_meta = ["Refugiados/as y migrantes", "Comunidad de acogida"]
 
+        print(df.size)
         ED2_01_RM_NA = int(df.loc[df['age_gender'] == 'NINAS'].iloc[0].value_a)
         ED2_01_RM_NN = int(df.loc[df['age_gender'] == 'NINOS'].iloc[0].value_a)
         ED2_01_RM_OTR = 0
@@ -149,7 +150,7 @@ def importForm(month, month_number, year, test):
         ED2_01_RM_HH = int(df.loc[df['age_gender'] == 'ADULTOS'].iloc[0].value_a)
 
         dfCa = osmosys.osmosys.getCAValues(year=year, month=month, orgOsmosys=orgAcron,
-                                           indicatorsIdsOmosys=indicatorIdsOsmosys_10L02, cantonCode=cantonCode)
+                                           indicatorsIdsOmosys=indicatorIdsOsmosys_10L09, cantonCode=cantonCode)
 
         ED2_01_CA_NA = int(dfCa.loc[df['age_gender'] == 'NINAS'].iloc[0].value_a)
         ED2_01_CA_NN = int(dfCa.loc[df['age_gender'] == 'NINOS'].iloc[0].value_a)
@@ -164,7 +165,7 @@ def importForm(month, month_number, year, test):
 
         ED2_01_CA_DS = 0
         commentary = osmosys.osmosys.getCommentary(year=year, month=month, orgOsmosys=orgAcron,
-                                                   indicatorsIdsOmosys=indicatorIdsOsmosys_10L02).iloc[
+                                                   indicatorsIdsOmosys=indicatorIdsOsmosys_10L09).iloc[
             0].value_a
         usd_transfer = int(osmosys.osmosys.getCBIBudget(year=year, month=month, orgOsmosys=orgAcron,
                                                         indicatorsIdsOmosys=indicatorIdsOsmosys,

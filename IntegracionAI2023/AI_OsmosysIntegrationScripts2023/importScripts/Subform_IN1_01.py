@@ -12,6 +12,7 @@ from activityinfo.id import generate_id
 import json
 from requests.exceptions import HTTPError
 import os.path
+import numpy as np
 
 def importForm(month, month_number, year, test):
     ## parameters

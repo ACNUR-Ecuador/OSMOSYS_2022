@@ -12,12 +12,17 @@ from activityinfo.id import generate_id
 import json
 from requests.exceptions import HTTPError
 import os.path
+import math
+
 
 def importForm(month, month_number, year, test):
     ## parameters
     indicatorCodeAI = 'PR1_01'
     print(
         '--------------------------------------' + indicatorCodeAI + '------------------------------------------------------')
+    asylumPercentage = 0.3
+    migrationPercentage = 0.7
+
     # busco matchs
     subformDf = osmosys.osmosys.getMatchSubforms(indicatorCodeAI)
     ## print(subformDf.info)

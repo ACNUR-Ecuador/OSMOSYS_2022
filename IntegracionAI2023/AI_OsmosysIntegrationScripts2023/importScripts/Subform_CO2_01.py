@@ -48,13 +48,13 @@ def importForm(month, month_number, year, test):
         # print(row)
         orgAcron = row.acronym
         cantonCode = row.canton_code
-        df = osmosys.osmosys.getTotalMonthByCanton(year=year, month=month, orgOsmosys=orgAcron,
-                                                   indicatorsIdsOmosys=indicatorIdsOsmosys, cantonCode=cantonCode)
+        df = osmosys.osmosys.getRefValues(year=year, month=month, orgOsmosys=orgAcron,
+                                          indicatorsIdsOmosys=indicatorIdsOsmosys, cantonCode=cantonCode)
 
-        CO1_01 = int(df.iloc[0].value_a)
+        ## CO1_01 = int(df.iloc[0].value_a)
         commentary = osmosys.osmosys.getCommentary(year=year, month=month, orgOsmosys=orgAcron,
                                                    indicatorsIdsOmosys=indicatorIdsOsmosys).iloc[0].value_a
-
+        # print(df.columns)
         CO2_01_RM_NA = int(df.loc[df['age_gender'] == 'NINAS'].iloc[0].value_a)
         CO2_01_RM_NN = int(df.loc[df['age_gender'] == 'NINOS'].iloc[0].value_a)
         CO2_01_RM_MM = int(df.loc[df['age_gender'] == 'ADULTAS'].iloc[0].value_a)
@@ -63,6 +63,7 @@ def importForm(month, month_number, year, test):
         dfDiversidad = osmosys.osmosys.getRefLgbtiDiscapacitadosValues(year=year, month=month, orgOsmosys=orgAcron,
                                                                        indicatorsIdsOmosys=indicatorIdsOsmosys,
                                                                        cantonCode=cantonCode)
+        ## print(dfDiversidad)
         CO2_01_RM_LGBT = int(dfDiversidad.loc[(dfDiversidad['diversity_type'] == 'LGBTI') & (
                 dfDiversidad['country_of_origin'] == 'VENEZUELA')].iloc[0].value_a)
         subform = model.modelAI.SubFormCO2_01(

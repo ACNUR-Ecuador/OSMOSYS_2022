@@ -2107,7 +2107,6 @@ class SubFormED5_01:
                  mes,
                  colltmgkykvhxgij6,
                  rmrp,
-                 covid,
                  poblacion_meta,
                  modalidad_impl,
                  ED5_01_RM_NA,
@@ -2122,7 +2121,6 @@ class SubFormED5_01:
         self.mes = mes
         self.colltmgkykvhxgij6 = colltmgkykvhxgij6
         self.rmrp = rmrp
-        self.covid = covid
         self.poblacion_meta = poblacion_meta
         self.modalidad_impl = modalidad_impl
         self.ED5_01_RM_NA = ED5_01_RM_NA
@@ -2138,7 +2136,6 @@ class SubFormED5_01:
             "mes": self.mes,
             "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
             "rmrp": self.rmrp,
-            "covid": self.covid,
             "poblacion_meta": self.poblacion_meta,
             "modalidad_impl": self.modalidad_impl,
             "ED5_01_RM_NA": self.ED5_01_RM_NA,
