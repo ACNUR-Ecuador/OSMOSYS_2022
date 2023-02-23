@@ -20,7 +20,7 @@ def importForm(month, month_number, year, test):
         '--------------------------------------' + indicatorCodeAI + '------------------------------------------------------')
     # busco matchs
     subformDf = osmosys.osmosys.getMatchSubforms(indicatorCodeAI)
-    print(subformDf.columns)
+    # print(subformDf.columns)
     indicatorIdsOsmosys = subformDf.osmosys_indicator_id.unique()
     subformSeries = subformDf.iloc[0]
     formIdAI = subformSeries.form_id
@@ -139,7 +139,6 @@ def importForm(month, month_number, year, test):
 
         poblacion_meta = ["Refugiados/as y migrantes", "Comunidad de acogida"]
 
-        print(df.size)
         ED2_01_RM_NA = int(df.loc[df['age_gender'] == 'NINAS'].iloc[0].value_a)
         ED2_01_RM_NN = int(df.loc[df['age_gender'] == 'NINOS'].iloc[0].value_a)
         ED2_01_RM_OTR = 0

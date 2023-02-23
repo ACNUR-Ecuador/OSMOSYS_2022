@@ -69,7 +69,7 @@ def importForm(month, month_number, year, test):
     osmosys.Backups.do_backup('form1_canton_org', '', month, year, changesList, finalJson)
     ## send to AI
     try:
-        if (numberOfFormTocreate > 0):
+        if (numberOfFormTocreate > 0 ):
             client.post_resource('update', body=finalJson)
             print("Enviado a AI")
         else:

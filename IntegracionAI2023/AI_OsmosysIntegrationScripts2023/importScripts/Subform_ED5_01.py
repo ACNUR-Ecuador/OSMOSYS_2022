@@ -62,7 +62,7 @@ def importForm(month, month_number, year, test):
                                                                        indicatorsIdsOmosys=indicatorIdsOsmosys,
                                                                        cantonCode=cantonCode)
 
-        print('--comprobacion 0')
+        ## print('--comprobacion 0')
         if (
                 not (dfDiversidad.loc[(dfDiversidad['diversity_type'] == 'DISCAPACITADOS') & (
                         dfDiversidad['country_of_origin'] == 'VENEZUELA')]).empty

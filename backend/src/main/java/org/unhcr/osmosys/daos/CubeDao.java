@@ -115,6 +115,14 @@ public class CubeDao {
             "* " +
             "from  " +
             "cube.indicator_execution_dissagregation_simple t";
+    private static final String indicatorMainDissagregationTable =
+            "SELECT " +
+                    "i.id indicator_id, dai.period_id, dai.dissagregation_type " +
+                    "FROM " +
+                    "osmosys.indicators i " +
+                    "INNER JOIN osmosys.dissagregation_assignation_indicator dai on i.id=dai.indicator_id " +
+                    "WHERE dai.state='ACTIVO' " +
+                    "ORDER BY dai.period_id, dai.indicator_id, dai.dissagregation_type";
 
     private static final String implementersTable = "SELECT " +
             "* " +
@@ -265,6 +273,10 @@ public class CubeDao {
     public List<IndicatorExecutionDissagregationSimpleDTO> getIndicatorExecutionsDissagregationSimpleTable(Integer year) {
         Query q = this.entityManager.createNativeQuery(CubeDao.dissagregationSimpleTable + " where t.year =:year ", "IndicatorExecutionsDissagregationSimpleDTOMapping");
         q.setParameter("year", year);
+        return q.getResultList();
+    }
+    public List<IndicatorMainDissagregationDTO> getIndicatorMainDissagregationDTOTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.indicatorMainDissagregationTable , "IndicatorMainDissagregationDTOMapping");
         return q.getResultList();
     }
     public List<ImplementerDTO> getImplementersTable() {

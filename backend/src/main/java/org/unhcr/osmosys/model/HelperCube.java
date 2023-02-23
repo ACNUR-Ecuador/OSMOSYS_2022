@@ -299,6 +299,18 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "year", type = Integer.class),
                                 @ColumnResult(name = "dissagregation_simple", type = String.class)
                         })})
+
+@SqlResultSetMapping(
+        name = "IndicatorMainDissagregationDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = IndicatorMainDissagregationDTO.class,
+                        columns = {
+                                @ColumnResult(name = "indicator_id", type = Long.class),
+                                @ColumnResult(name = "period_id", type = Long.class),
+                                @ColumnResult(name = "dissagregation_type", type = String.class)
+                        })})
+
 @SqlResultSetMapping(
         name = "ImplementerDTOMapping",
         classes = {

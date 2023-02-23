@@ -1,17 +1,19 @@
 package org.unhcr.osmosys.services;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.CubeDao;
 import org.unhcr.osmosys.model.cubeDTOs.*;
+import org.unhcr.osmosys.model.enums.DissagregationType;
 
 import javax.ejb.AsyncResult;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 @Stateless
 public class CubeService {
@@ -57,7 +59,7 @@ public class CubeService {
 
     public List<FactDTO> getFactTablePageByPeriodYear(Integer periodYear, int pageSize, int page) {
 
-        LOGGER.info("page: " + page+" pageSize: "+pageSize );
+        LOGGER.info("page: " + page + " pageSize: " + pageSize);
         long lStartTime = System.nanoTime();
         List<FactDTO> rp = this.cubeDao.getFactTableByPeriodYearPaginated(periodYear, pageSize, page);
 
@@ -67,6 +69,7 @@ public class CubeService {
         LOGGER.info("total result: " + rp.size());
         return rp;
     }
+
     public Long getFactTableCountByPeriodYear(Integer periodYear) {
 
         LOGGER.info("count fact year: " + periodYear);
@@ -221,6 +224,77 @@ public class CubeService {
 
     public List<IndicatorExecutionDissagregationSimpleDTO> getIndicatorExecutionsDissagregationSimpleTable(Integer year) {
         return this.cubeDao.getIndicatorExecutionsDissagregationSimpleTable(year);
+    }
+
+
+    public List<IndicatorMainDissagregationDTO> getIndicatorMainDissagregationDTOTable() {
+        List<IndicatorMainDissagregationDTO> r = this.cubeDao.getIndicatorMainDissagregationDTOTable();
+
+        Map<Long, Map<Long, List<IndicatorMainDissagregationDTO>>> grouped = r.stream()
+                .collect(
+                        Collectors.groupingBy(IndicatorMainDissagregationDTO::getPeriod_id,
+                                Collectors.groupingBy(IndicatorMainDissagregationDTO::getIndicator_id))
+                );
+
+        LOGGER.debug(" by getPeriod_id");
+        for (Map.Entry<Long, Map<Long, List<IndicatorMainDissagregationDTO>>> entry : grouped.entrySet()) {
+            LOGGER.debug("getPeriod_id: " + entry.getKey());
+            LOGGER.debug(" by indicator_id");
+
+            for (Map.Entry<Long, List<IndicatorMainDissagregationDTO>> entry1 : entry.getValue().entrySet()) {
+                LOGGER.debug(" by indicator_id" + entry1.getKey());
+                if(entry1.getKey()==67){
+                    LOGGER.debug("este");
+                }
+                this.setMainDissagregation(entry1.getValue());
+            }
+        }
+        return r;
+
+        /*Map<Long, List<IndicatorExecutionDissagregationSimpleDTO>> groupedByIeId =
+                r.stream().collect(Collectors.groupingBy(IndicatorExecutionDissagregationSimpleDTO::getIe_id));
+
+        for (Map.Entry<Long, List<IndicatorExecutionDissagregationSimpleDTO>> entry : groupedByIeId.entrySet()) {
+            DissagregationType mainDissagregationType = this.setMainDissagregation(entry.getValue());
+            LOGGER.debug(entry.getKey() + "-" + mainDissagregationType);
+        }*/
+    }
+
+    private DissagregationType setMainDissagregation(List<IndicatorMainDissagregationDTO> ies) {
+        DissagregationType mainDissagregation = null;
+        Set<DissagregationType> dissagregations = ies.stream().map(IndicatorMainDissagregationDTO::getDissagregation_type).collect(Collectors.toSet());
+
+        List<DissagregationType> notDiversityDissagregations = dissagregations.stream()
+                .filter(dissagregationType -> !dissagregationType.getStringValue().contains("DIVERSIDAD"))
+                .collect(Collectors.toList());
+
+        if (notDiversityDissagregations.size() < 2) {
+            Optional<DissagregationType> mainDissagregationOptional = notDiversityDissagregations.stream().findFirst();
+            if(mainDissagregationOptional.isPresent()){
+                mainDissagregation=mainDissagregationOptional.get();
+            }else {
+                mainDissagregation=dissagregations.stream().findFirst().get();
+            }
+        } else {
+            List<DissagregationType> mainDissagregationLugarList = notDiversityDissagregations.stream()
+                    .filter(dissagregationType -> dissagregationType.getStringValue()
+                            .contains("LUGAR"))
+                    .collect(Collectors.toList());
+            if(CollectionUtils.isNotEmpty(mainDissagregationLugarList)){
+               mainDissagregation= mainDissagregationLugarList.stream().findFirst().get();
+            }else {
+                mainDissagregation = notDiversityDissagregations.stream().findFirst().get();
+            }
+        }
+        for (IndicatorMainDissagregationDTO dto : ies) {
+            if (dto.getDissagregation_type().equals(mainDissagregation)) {
+                dto.setMainDissagregation(Boolean.TRUE);
+            } else {
+                dto.setMainDissagregation(Boolean.FALSE);
+            }
+        }
+
+        return mainDissagregation;
     }
 
     public List<ImplementerDTO> getImplementersTable() {

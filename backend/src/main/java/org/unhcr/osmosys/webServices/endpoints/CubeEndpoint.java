@@ -57,7 +57,7 @@ public class CubeEndpoint {
             LOGGER.info("inicio Fact");
             List<FactDTO> r = null;
             try {
-                r = this.cubeService.getFactTablePaginatedByPeriodYearAsync(2022, 100000);
+                r = this.cubeService.getFactTablePaginatedByPeriodYearAsync(year, 100000);
             } catch (ExecutionException e) {
                 throw new RuntimeException(e);
             } catch (InterruptedException e) {
@@ -388,6 +388,17 @@ public class CubeEndpoint {
         List<IndicatorExecutionDissagregationSimpleDTO> r = this.cubeService.getIndicatorExecutionsDissagregationSimpleTable(year);
         long lEndTime = System.nanoTime();
         LOGGER.info("Elapsed time in seconds indicatorExecutionsDissagregationSimpleTable: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
+    }
+    @Path("/indicatorMainDissagregationTable/")
+    @GET
+    // @BasicSecured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<IndicatorMainDissagregationDTO> getIndicatorMainDissagregationDTOTable() {
+        long lStartTime = System.nanoTime();
+        List<IndicatorMainDissagregationDTO> r = this.cubeService.getIndicatorMainDissagregationDTOTable();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds gIndicatorMainDissagregationDTOTable: " + (lEndTime - lStartTime) / 1000000000);
         return r;
     }
 
