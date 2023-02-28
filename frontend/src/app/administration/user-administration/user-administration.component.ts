@@ -126,6 +126,8 @@ export class UserAdministrationComponent implements OnInit {
                 this.roles.forEach(value1 => {
                     if (value1.value === 'PUNTO_FOCAL') {
                         value1.disabled = true;
+                    } else if (value1.value === 'ADMINISTRADOR_OFICINA') {
+                        value1.disabled = true;
                     } else if (value1.value === 'SUPER_ADMINISTRADOR' || value1.value === 'ADMINISTRADOR') {
                         const isAdministrator: boolean = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
                         value1.disabled = !isAdministrator;
