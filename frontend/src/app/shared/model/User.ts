@@ -11,6 +11,7 @@ export class User {
     public roles?: Role[];
     public state: string;
     public focalPointProjects?: number[];
+    public administratedOffices?: Office[];
 
 }
 

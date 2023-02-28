@@ -25,6 +25,7 @@ export class Office {
     public type: string;
     public parentOffice: Office;
     public childOffices: Office[];
+    public administrators?: User[];
 }
 
 export class Area {

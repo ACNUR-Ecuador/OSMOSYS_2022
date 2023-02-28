@@ -8,6 +8,8 @@ import {EnumsService} from '../../services/enums.service';
 import {OfficeService} from '../../services/office.service';
 import {Table} from 'primeng/table';
 import {OfficeOrganizationPipe} from '../../shared/pipes/office-organization.pipe';
+import {UserService} from "../../services/user.service";
+import {UserPipe} from "../../shared/pipes/user.pipe";
 
 @Component({
     selector: 'app-office-administration',
@@ -25,9 +27,10 @@ export class OfficeAdministrationComponent implements OnInit {
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
     parenteOffices: SelectItem[] = [];
+    usersAdministratorOptions: SelectItem[] = [];
     officeTree: TreeNode[];
     selectedNode: TreeNode;
-    activeIndex1 = 1;
+    activeIndex1 = 0;
 
 
     constructor(
@@ -37,6 +40,8 @@ export class OfficeAdministrationComponent implements OnInit {
         public utilsService: UtilsService,
         private enumsService: EnumsService,
         private officeService: OfficeService,
+        private userService: UserService,
+        private userPipe: UserPipe,
         private officeOrganizationPipe: OfficeOrganizationPipe
     ) {
     }
@@ -60,6 +65,7 @@ export class OfficeAdministrationComponent implements OnInit {
             acronym: new FormControl(''),
             type: new FormControl('', Validators.required),
             parentOffice: new FormControl(''),
+            administrators: new FormControl(''),
         });
         this.enumsService.getByType(EnumsType.State).subscribe(value => {
             this.states = value;
@@ -81,6 +87,26 @@ export class OfficeAdministrationComponent implements OnInit {
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Error al cargar las oficinas activas',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+
+        this.userService.getActiveUNHCRUsers().subscribe({
+            next: value => {
+                this.usersAdministratorOptions = value.map(value1 => {
+                    const selectItem: SelectItem = {
+                        label: this.userPipe.transform(value1),
+                        value: value1
+                    };
+                    return selectItem;
+                });
+            },
+            error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los usuarios ',
                     detail: err.error.message,
                     life: 3000
                 });
@@ -227,6 +253,7 @@ export class OfficeAdministrationComponent implements OnInit {
     }
 
     editItem(office: Office) {
+
         this.utilsService.resetForm(this.formItem);
         this.submitted = false;
         this.showDialog = true;
@@ -243,7 +270,8 @@ export class OfficeAdministrationComponent implements OnInit {
             acronym,
             type,
             parentOffice,
-            childOffices
+            childOffices,
+            administrators
         }
             = this.formItem.value;
         const office: Office = {
@@ -253,8 +281,10 @@ export class OfficeAdministrationComponent implements OnInit {
             acronym,
             type,
             parentOffice,
-            childOffices
+            childOffices,
+            administrators
         };
+
         if (office.id) {
             // tslint:disable-next-line:no-shadowed-variable
             this.officeService.update(office).subscribe({

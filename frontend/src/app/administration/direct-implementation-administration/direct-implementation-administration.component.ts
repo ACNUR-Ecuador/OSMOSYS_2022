@@ -4,7 +4,7 @@ import {
     ImportFile,
     Indicator,
     IndicatorExecution,
-    IndicatorExecutionAssigment,
+    IndicatorExecutionAssigment, Office,
     Period
 } from '../../shared/model/OsmosysModel';
 import {FilterService, MessageService, SelectItem} from 'primeng/api';
@@ -51,6 +51,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
     showDialogImport = false;
     importForm: FormGroup;
     periodsItems: SelectItem[];
+    adminOffices: Office[];
 
     constructor(
         private fb: FormBuilder,
@@ -76,6 +77,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.adminOffices = this.userService.getLogedUsername().administratedOffices;
         this.loadPeriods();
         this.createForms();
         this.registerFilters();
@@ -137,6 +139,13 @@ export class DirectImplementationAdministrationComponent implements OnInit {
                             };
                             return item;
                         });
+                    if (!this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'])
+                        && this.userService.hasAnyRole(['ADMINISTRADOR_OFICINA']) ) {
+                        const officesIds = this.adminOffices.map(value => value.id);
+                        this.officeOptions = this.officeOptions.filter(value => {
+                            return officesIds.includes(value.value.id)
+                        });
+                    }
                 },
                 error: error => {
                     this.messageService.add({
@@ -200,20 +209,41 @@ export class DirectImplementationAdministrationComponent implements OnInit {
     }
 
     loadItems(periodId: number) {
-        this.indicatorExecutionService.getPerformanceAllDirectImplementationByPeriodId(periodId)
-            .subscribe({
-                next: ies => {
-                    this.items = ies;
-                },
-                error: error => {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error al cargar las indicadores Asignados',
-                        detail: error.error.message,
-                        life: 3000
-                    });
-                }
-            });
+        if (this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'])) {
+            this.indicatorExecutionService.getPerformanceAllDirectImplementationByPeriodId(periodId)
+                .subscribe({
+                    next: ies => {
+                        this.items = ies;
+                    },
+                    error: error => {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error al cargar las indicadores Asignados',
+                            detail: error.error.message,
+                            life: 3000
+                        });
+                    }
+                });
+        } else if (this.userService.hasAnyRole(['ADMINISTRADOR_OFICINA',])) {
+            this.indicatorExecutionService.getPerformanceAllDirectImplementationByPeriodId(periodId)
+                .subscribe({
+                    next: ies => {
+                        const officesIds = this.adminOffices.map(value => value.id);
+                        this.items = ies.filter(value => {
+                            return officesIds.includes(value.reportingOffice.id)
+                        });
+
+                    },
+                    error: error => {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error al cargar las indicadores Asignados',
+                            detail: error.error.message,
+                            life: 3000
+                        });
+                    }
+                });
+        }
     }
 
     private createForms() {
@@ -582,7 +612,6 @@ export class DirectImplementationAdministrationComponent implements OnInit {
         this.showDialogImport = false;
         this.importForm.reset();
     }
-
 
 
 }

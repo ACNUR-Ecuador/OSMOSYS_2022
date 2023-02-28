@@ -30,7 +30,7 @@
                             <div class="flex card-container overflow-hidden">
                                 <div
                                     class="flex-none flex align-items-center justify-content-center m-2 px-5  border-round">
-                                    <h5 class="m-0">Situaciones</h5>
+                                    <h5 class="m-0">Oficinas</h5>
                                 </div>
                                 <div
                                     class="flex-grow-1 flex align-items-center justify-content-center px-5  border-round"></div>
@@ -178,6 +178,16 @@
 
                     <small class="p-error" *ngIf="utilsService.showErrorForm('type',formItem)">Campo
                         obligatorio.</small>
+                </div>
+                <div class="field">
+                    <label for="administratorsI">Administradores</label>
+
+                    <p-multiSelect id="administratorsI"
+                                    formControlName="administrators"
+                                    [options]="usersAdministratorOptions"
+                                   appendTo="body"
+                    >
+                    </p-multiSelect>
                 </div>
                 <div class="field">
                     <label for="stateI">Estado</label>

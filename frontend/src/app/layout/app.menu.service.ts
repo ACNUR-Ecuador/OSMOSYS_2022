@@ -72,14 +72,14 @@ export class MenuService {
     // tslint:disable-next-line
     MENUITEMS: Menu[] = [
         {
-            label: 'Administración', icon: 'pi pi-cog', roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL'],
+            label: 'Administración', icon: 'pi pi-cog', roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL', 'ADMINISTRADOR_OFICINA'],
             items: [
                 // {label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']},
                 {
                     label: 'Usuarios',
                     icon: 'pi pi-fw pi-user',
                     routerLink: ['/administration/users'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR','PUNTO_FOCAL']
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR','PUNTO_FOCAL','ADMINISTRADOR_OFICINA']
                 },
                 {
                     label: 'Configuración del sistema',
@@ -169,7 +169,7 @@ export class MenuService {
                     label: 'Implementación Directa',
                     icon: 'pi pi-fw pi-cog',
                     routerLink: ['/administration/directImplementationAdministration'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR','ADMINISTRADOR_OFICINA']
                 },
                 {
                     label: 'Configuración Global',

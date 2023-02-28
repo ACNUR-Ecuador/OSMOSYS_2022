@@ -74,6 +74,7 @@ export class UserService {
             user.organization = decToken.organization;
             user.office = decToken.office;
             user.focalPointProjects = decToken.focalPointProjects;
+            user.administratedOffices=decToken.administratedOffices;
             this.currentUserSubject.next(user);
         } else {
             this.logout();
