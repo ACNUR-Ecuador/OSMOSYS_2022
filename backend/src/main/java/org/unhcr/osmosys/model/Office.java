@@ -2,12 +2,14 @@ package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.model.User;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.OfficeType;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 @Entity
@@ -40,6 +42,12 @@ public class Office extends BaseEntity<Long> {
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "parentOffice")
     private Set<Office> childOffices =new HashSet<>();
 
+    @OneToMany(
+            mappedBy = "office",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<OfficeAdministrator> officeAdministrators = new HashSet<>();
     @Override
     public Long getId() {
         return id;
@@ -122,5 +130,30 @@ public class Office extends BaseEntity<Long> {
                 ", type=" + type +
                 ", state=" + state +
                 '}';
+    }
+
+    public Set<OfficeAdministrator> getOfficeAdministrators() {
+        return officeAdministrators;
+    }
+
+    public void setOfficeAdministrators(Set<OfficeAdministrator> officeAdministrators) {
+        this.officeAdministrators = officeAdministrators;
+    }
+
+    public void addAdministrator(User user) {
+
+        OfficeAdministrator officeAdministrator = new OfficeAdministrator(user, this);
+        this.officeAdministrators.add(officeAdministrator);
+    }
+
+    public void removeAdministrator(User user) {
+        for (OfficeAdministrator officeAdministrator : officeAdministrators) {
+            if (officeAdministrator.getAdministrator().equals(user) &&
+                    officeAdministrator.getOffice().equals(this)) {
+
+                officeAdministrator.setState(State.INACTIVO);
+
+            }
+        }
     }
 }

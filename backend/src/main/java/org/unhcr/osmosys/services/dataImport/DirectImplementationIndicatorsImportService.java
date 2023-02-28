@@ -142,7 +142,7 @@ public class DirectImplementationIndicatorsImportService {
                 indicatorExecutionAssigmentWeb.setState(State.ACTIVO);
                 indicatorExecutionAssigmentWeb.setKeepBudget(false);
                 indicatorExecutionAssigmentWeb.setPeriod(this.modelWebTransformationService.periodToPeriodWeb(period));
-                indicatorExecutionAssigmentWeb.setReportingOffice(this.modelWebTransformationService.officeToOfficeWeb(office, false));
+                indicatorExecutionAssigmentWeb.setReportingOffice(this.modelWebTransformationService.officeToOfficeWeb(office, false, false));
 
                 String reporterString = StringUtils.trimToNull(dataFormatter.formatCellValue(row.getCell(COL_REPORTER)));
                 User reporter = this.userService.getUNHCRUsersByName(reporterString);

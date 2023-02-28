@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.webServices.model;
 
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.unhcr.osmosys.model.enums.OfficeType;
 
 import java.io.Serializable;
@@ -22,6 +23,11 @@ public class OfficeWeb implements Serializable {
     private OfficeWeb parentOffice;
 
     private List<OfficeWeb> childOffices = new ArrayList<>();
+
+    private List<UserWeb> administrators = new ArrayList<>();
+
+
+
 
     public Long getId() {
         return id;
@@ -77,5 +83,13 @@ public class OfficeWeb implements Serializable {
 
     public void setChildOffices(List<OfficeWeb> childOffices) {
         this.childOffices = childOffices;
+    }
+
+    public List<UserWeb> getAdministrators() {
+        return administrators;
+    }
+
+    public void setAdministrators(List<UserWeb> administrators) {
+        this.administrators = administrators;
     }
 }

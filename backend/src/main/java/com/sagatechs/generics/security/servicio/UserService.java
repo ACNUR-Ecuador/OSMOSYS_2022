@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.Office;
+import org.unhcr.osmosys.model.OfficeAdministrator;
 import org.unhcr.osmosys.model.Organization;
 import org.unhcr.osmosys.model.enums.OfficeType;
 import org.unhcr.osmosys.services.OfficeService;
@@ -39,6 +40,7 @@ import javax.ws.rs.core.Response;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Stateless
@@ -266,7 +268,7 @@ public class UserService implements Serializable {
         userWeb.setEmail(user.getEmail());
         userWeb.setUsername(user.getUsername());
         userWeb.setState(user.getState());
-        userWeb.setOffice(this.modelWebTransformationService.officeToOfficeWeb(user.getOffice(), true));
+        userWeb.setOffice(this.modelWebTransformationService.officeToOfficeWeb(user.getOffice(), true, false));
         userWeb.setOrganization(this.modelWebTransformationService.organizationToOrganizationWeb(user.getOrganization()));
         List<RoleWeb> roles = new ArrayList<>();
         for (RoleAssigment userRoleAssigment : user.getRoleAssigments()) {
@@ -275,6 +277,8 @@ public class UserService implements Serializable {
             }
         }
         userWeb.setRoles(roles);
+        List<Office> administeredOfficess = user.getOfficeAdministrators().stream().filter(officeAdministrator -> officeAdministrator.getState().equals(State.ACTIVO))
+                .map(OfficeAdministrator::getOffice).collect(Collectors.toList());
         // find focal points ()
         List<Long> projectsIds = this.userDao.findProjectsFocalPoints(user.getId());
         if (CollectionUtils.isNotEmpty(projectsIds)) {
@@ -285,6 +289,15 @@ public class UserService implements Serializable {
             userWeb.getRoles().add(fpr);
             userWeb.setFocalPointProjects(projectsIds);
         }
+        if (CollectionUtils.isNotEmpty(administeredOfficess)) {
+            RoleWeb fpr = new RoleWeb();
+            fpr.setId(-1L);
+            fpr.setName(RoleType.ADMINISTRADOR_OFICINA.name());
+            fpr.setState(State.ACTIVO);
+            userWeb.getRoles().add(fpr);
+            userWeb.setAdministratedOffices(this.modelWebTransformationService.officesToOfficesWeb(administeredOfficess,false, false));
+        }
+
 
         return userWeb;
     }
@@ -314,6 +327,7 @@ public class UserService implements Serializable {
                     .claim("organization", userWeb.getOrganization())
                     .claim("office", userWeb.getOffice())
                     .claim("focalPointProjects", userWeb.getFocalPointProjects())
+                    .claim("administratedOffices", userWeb.getAdministratedOffices())
                     .signWith(getSecretKey()).compact();
         }
         throw new AccessDeniedException("usuario no encontrado");
@@ -426,6 +440,12 @@ public class UserService implements Serializable {
             List<Long> focalPointProjectsMap = (List<Long>) jws.getBody().get("focalPointProjects");
             if (focalPointProjectsMap != null && focalPointProjectsMap.size() > 0) {
                 user.setFocalPointProjects(focalPointProjectsMap);
+            } else {
+                user.setFocalPointProjects(null);
+            }
+            List<OfficeWeb> administratedOffices = (List<OfficeWeb>) jws.getBody().get("administratedOffices");
+            if (administratedOffices != null && administratedOffices.size() > 0) {
+                user.setAdministratedOffices(administratedOffices);
             } else {
                 user.setFocalPointProjects(null);
             }

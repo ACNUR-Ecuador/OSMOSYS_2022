@@ -12,7 +12,8 @@ public enum RoleType implements EnumInterface {
     MONITOR_PROYECTOS("Monitor de Proyectos", 6),
     EJECUTOR_ID("Ejecutor Implementación Directa", 7),
     MONITOR_ID("Monitor Implementación Directa", 8),
-    PUNTO_FOCAL("Punto Focal", 9);
+    PUNTO_FOCAL("Punto Focal", 9),
+    ADMINISTRADOR_OFICINA("Administrador de Oficina", 10);
 
 
     RoleType(String label, int order) {

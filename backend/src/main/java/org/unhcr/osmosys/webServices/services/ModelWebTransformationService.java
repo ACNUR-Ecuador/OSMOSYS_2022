@@ -507,7 +507,7 @@ public class ModelWebTransformationService {
     //</editor-fold>
 
     //<editor-fold desc="Office">
-    public OfficeWeb officeToOfficeWeb(Office office, boolean returnChilds) {
+    public OfficeWeb officeToOfficeWeb(Office office, boolean returnChilds, boolean returnAdministrators) {
         if (office == null) {
             return null;
         }
@@ -517,11 +517,17 @@ public class ModelWebTransformationService {
         officeWeb.setAcronym(office.getAcronym());
         officeWeb.setType(office.getType());
         officeWeb.setState(office.getState());
-        officeWeb.setParentOffice(this.officeToOfficeWeb(office.getParentOffice(), false));
+        officeWeb.setParentOffice(this.officeToOfficeWeb(office.getParentOffice(), false, false));
         if (returnChilds) {
-            officeWeb.setChildOffices(this.officesToOfficesWeb(new ArrayList<>(office.getChildOffices()), returnChilds));
+            officeWeb.setChildOffices(this.officesToOfficesWeb(new ArrayList<>(office.getChildOffices()), returnChilds,false));
         }
+        if(returnAdministrators) {
+            List<User> administrators = office.getOfficeAdministrators().stream()
+                    .filter(officeAdministrator -> officeAdministrator.getState().equals(State.ACTIVO))
+                    .map(OfficeAdministrator::getAdministrator).collect(Collectors.toList());
 
+            officeWeb.setAdministrators(this.usersToUsersWebSimple(administrators, true, true));
+        }
         return officeWeb;
     }
 
@@ -541,10 +547,10 @@ public class ModelWebTransformationService {
         return office;
     }
 
-    public List<OfficeWeb> officesToOfficesWeb(List<Office> offices, boolean returnChilds) {
+    public List<OfficeWeb> officesToOfficesWeb(List<Office> offices, boolean returnChilds, boolean returnAdministrators ) {
         List<OfficeWeb> r = new ArrayList<>();
         for (Office office : offices) {
-            r.add(this.officeToOfficeWeb(office, returnChilds));
+            r.add(this.officeToOfficeWeb(office, returnChilds, returnAdministrators));
         }
         return r;
     }
@@ -794,12 +800,12 @@ public class ModelWebTransformationService {
             statement.setArea(this.areaToAreaWeb(statementWeb.getArea()));
 
              */
-            if(statementWeb.getParentStatement()!=null && statementWeb.getParentStatement().getId()!=null){
+            if (statementWeb.getParentStatement() != null && statementWeb.getParentStatement().getId() != null) {
                 statement.setParentStatement(this.statementDao.find(statementWeb.getParentStatement().getId()));
-            }else{
+            } else {
                 statement.setParentStatement(null);
             }
-            if(statementWeb.getArea()!=null && statementWeb.getArea().getId()!=null){
+            if (statementWeb.getArea() != null && statementWeb.getArea().getId() != null) {
                 statement.setArea(this.areaDao.find(statementWeb.getArea().getId()));
                 statement.getArea().addStatement(statement);
             }
@@ -816,12 +822,12 @@ public class ModelWebTransformationService {
             }
             /*statement.setParentStatement(this.statementWebToStatement(statementWeb.getParentStatement()));
             statement.setArea(this.areaToAreaWeb(statementWeb.getArea()));*/
-            if(statementWeb.getParentStatement()!=null && statementWeb.getParentStatement().getId()!=null){
+            if (statementWeb.getParentStatement() != null && statementWeb.getParentStatement().getId() != null) {
                 statement.setParentStatement(this.statementDao.find(statementWeb.getParentStatement().getId()));
-            }else{
+            } else {
                 statement.setParentStatement(null);
             }
-            if(statementWeb.getArea()!=null && statementWeb.getArea().getId()!=null){
+            if (statementWeb.getArea() != null && statementWeb.getArea().getId() != null) {
                 statement.setArea(this.areaDao.find(statementWeb.getArea().getId()));
                 statement.getArea().addStatement(statement);
             }
@@ -929,7 +935,7 @@ public class ModelWebTransformationService {
         w.setState(canton.getState());
         w.setDescription(canton.getDescription());
         w.setProvincia(this.provinciaToProvinciaWeb(canton.getProvincia()));
-        w.setOffice(this.officeToOfficeWeb(canton.getOffice(), false));
+        w.setOffice(this.officeToOfficeWeb(canton.getOffice(), false, false));
         w.setCode(canton.getCode());
         return w;
     }
@@ -1088,7 +1094,7 @@ public class ModelWebTransformationService {
         iw.setAssignedBudget(ie.getAssignedBudget());
         iw.setAvailableBudget(ie.getAvailableBudget());
         iw.setTotalUsedBudget(ie.getTotalUsedBudget());
-        if (getProject && ie.getProject()!=null) {
+        if (getProject && ie.getProject() != null) {
             iw.setProject(this.projectToProjectWeb(ie.getProject()));
         }
         iw.setExecutionPercentage(ie.getExecutionPercentage());
@@ -1106,7 +1112,7 @@ public class ModelWebTransformationService {
 
         } else {
             iw.setIndicator(this.indicatorToIndicatorWeb(ie.getIndicator(), false, true, true));
-            iw.setReportingOffice(this.officeToOfficeWeb(ie.getReportingOffice(), false));
+            iw.setReportingOffice(this.officeToOfficeWeb(ie.getReportingOffice(), false, false));
             iw.setSupervisorUser(this.userToUserWebSimple(ie.getSupervisorUser(), false, true));
             iw.setAssignedUser(this.userToUserWebSimple(ie.getAssignedUser(), false, true));
             iw.setAssignedUserBackup(this.userToUserWebSimple(ie.getAssignedUserBackup(), false, true));
@@ -1114,7 +1120,7 @@ public class ModelWebTransformationService {
         }
         iw.setQuarters(this.quartersToQuarterWeb(ie.getQuarters()));
         // set late state
-        Frecuency frecuency = ie.getIndicatorType().equals(IndicatorType.GENERAL)?Frecuency.MENSUAL:ie.getIndicator().getFrecuency();
+        Frecuency frecuency = ie.getIndicatorType().equals(IndicatorType.GENERAL) ? Frecuency.MENSUAL : ie.getIndicator().getFrecuency();
         TimeStateEnum indicatorExecutionTimeState = this.setQuartersLateState(iw.getQuarters(), frecuency, this.appConfigurationService.getReportLimitDay());
         iw.setLate(indicatorExecutionTimeState);
 
@@ -1167,7 +1173,7 @@ public class ModelWebTransformationService {
         int todayDay = today.getDayOfMonth();
         int todayMonth;
         if (alertDays < todayDay) {
-            todayMonth = (today.getMonth().getValue() - 1)>0?today.getMonth().getValue() - 1:today.getMonth().getValue();
+            todayMonth = (today.getMonth().getValue() - 1) > 0 ? today.getMonth().getValue() - 1 : today.getMonth().getValue();
         } else {
             todayMonth = today.getMonth().getValue();
         }
@@ -1435,7 +1441,7 @@ public class ModelWebTransformationService {
         uw.setState(user.getState());
         uw.setUsername(user.getUsername());
         if (setOffice) {
-            uw.setOffice(this.officeToOfficeWeb(user.getOffice(), false));
+            uw.setOffice(this.officeToOfficeWeb(user.getOffice(), false,false));
         }
         if (setOrganization) {
             uw.setOrganization(this.organizationToOrganizationWeb(user.getOrganization()));

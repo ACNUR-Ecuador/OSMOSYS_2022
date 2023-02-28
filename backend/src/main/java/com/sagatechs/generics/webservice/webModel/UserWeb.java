@@ -21,6 +21,8 @@ public class UserWeb implements Serializable {
 	private OrganizationWeb organization;
 	private OfficeWeb office;
 	private List<Long> focalPointProjects;
+	private List<OfficeWeb> administratedOffices;
+
 
 	public Long getId() {
 		return id;
@@ -121,5 +123,13 @@ public class UserWeb implements Serializable {
 				", organization=" + organization +
 				", office=" + office +
 				'}';
+	}
+
+	public List<OfficeWeb> getAdministratedOffices() {
+		return administratedOffices;
+	}
+
+	public void setAdministratedOffices(List<OfficeWeb> administratedOffices) {
+		this.administratedOffices = administratedOffices;
 	}
 }

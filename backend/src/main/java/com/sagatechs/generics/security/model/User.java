@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.NaturalId;
 import org.unhcr.osmosys.model.Office;
+import org.unhcr.osmosys.model.OfficeAdministrator;
 import org.unhcr.osmosys.model.Organization;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 @Entity
@@ -58,6 +60,13 @@ public class User extends BaseEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "office_id", foreignKey = @ForeignKey(name = "fk_user_office"))
     private Office office;
+
+    @OneToMany(
+            mappedBy = "administrator",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<OfficeAdministrator> officeAdministrators = new HashSet<>();
 
     @Override
     public Long getId() {
@@ -189,5 +198,31 @@ public class User extends BaseEntity<Long> {
 
     public void setOffice(Office office) {
         this.office = office;
+    }
+
+
+    public Set<OfficeAdministrator> getOfficeAdministrators() {
+        return officeAdministrators;
+    }
+
+    public void setOfficeAdministrators(Set<OfficeAdministrator> officeAdministrators) {
+        this.officeAdministrators = officeAdministrators;
+    }
+
+    public void addOfficeToAdministrate(Office office) {
+
+        OfficeAdministrator officeAdministrator = new OfficeAdministrator(this, office);
+        this.officeAdministrators.add(officeAdministrator);
+    }
+
+    public void removeAfficeAdmnistration(Office office) {
+        for (OfficeAdministrator officeAdministrator : officeAdministrators) {
+            if (officeAdministrator.getAdministrator().equals(this) &&
+                    officeAdministrator.getOffice().equals(office)) {
+
+                officeAdministrator.setState(State.INACTIVO);
+
+            }
+        }
     }
 }
