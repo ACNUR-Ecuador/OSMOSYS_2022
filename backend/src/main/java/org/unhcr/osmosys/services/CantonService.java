@@ -41,7 +41,18 @@ public class CantonService {
         return this.cantonDao.getByIds(ids);
     }
 
-    public Canton getByCantonDescriptionAndProvinceDescription(String cantonDescription,String provinceDescription) throws GeneralAppException {
-        return this.cantonDao.getByCantonDescriptionAndProvinceDescription(cantonDescription,provinceDescription);
+    public Canton getByCantonDescriptionAndProvinceDescription(String cantonDescription, String provinceDescription) throws GeneralAppException {
+        return this.cantonDao.getByCantonDescriptionAndProvinceDescription(cantonDescription, provinceDescription);
+    }
+
+    public List<CantonWeb> discoverCantones(List<CantonWeb> cantonWebs) throws GeneralAppException {
+        List<CantonWeb> r = new ArrayList<>();
+        for (CantonWeb cantonWeb : cantonWebs) {
+            Canton can = this.cantonDao.discoverCanton(cantonWeb.getCode(), cantonWeb.getDescription(), cantonWeb.getProvincia() != null ? cantonWeb.getProvincia().getCode() : null, cantonWeb.getProvincia() != null ? cantonWeb.getProvincia().getDescription() : null);
+            if (can != null) {
+                r.add(this.modelWebTransformationService.cantonToCantonWeb(can));
+            }
+        }
+        return r;
     }
 }

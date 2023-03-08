@@ -31,4 +31,7 @@ export class CantonService {
     public getByState(state: EnumsState): Observable<Canton[]> {
         return this.http.get<Canton[]>(`${mainServiceUrl}/byState/${state}`);
     }
+    public discoverCantones(cantones: Canton[]): Observable<Canton[]> {
+        return this.http.post<Canton[]>(`${mainServiceUrl}/discoverCantones`, cantones);
+    }
 }

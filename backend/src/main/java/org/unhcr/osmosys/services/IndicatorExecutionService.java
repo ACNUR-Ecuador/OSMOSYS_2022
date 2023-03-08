@@ -938,7 +938,7 @@ public class IndicatorExecutionService {
         // existe indicador para esta officina para
         IndicatorExecution assimentFound = this.indicatorExecutionDao.getByIndicatorIdAndOfficeId(indicatorExecutionWeb.getIndicator().getId(), indicatorExecutionWeb.getReportingOffice().getId());
         if (assimentFound != null && !assimentFound.getId().equals(indicatorExecutionWeb.getId())) {
-            throw new GeneralAppException("Este indicador ya se encuentra asignado para esta oficina.", Response.Status.BAD_REQUEST);
+            throw new GeneralAppException("Este indicador ya se encuentra asignado para esta oficina. "+indicatorExecutionWeb.getIndicator().getCode(), Response.Status.BAD_REQUEST);
         }
 
     }

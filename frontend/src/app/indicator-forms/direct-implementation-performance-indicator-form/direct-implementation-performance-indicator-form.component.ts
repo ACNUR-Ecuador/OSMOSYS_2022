@@ -1,5 +1,12 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {Canton, CustomDissagregationValues, IndicatorExecution, IndicatorValue, Month, MonthValues} from '../../shared/model/OsmosysModel';
+import {
+    Canton,
+    CustomDissagregationValues,
+    IndicatorExecution,
+    IndicatorValue,
+    Month,
+    MonthValues
+} from '../../shared/model/OsmosysModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {DissagregationType, EnumsState, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
 import {MessageService, SelectItem} from 'primeng/api';
@@ -10,11 +17,13 @@ import {UtilsService} from '../../services/utils.service';
 import {CantonService} from '../../services/canton.service';
 import {UserService} from '../../services/user.service';
 import {MonthService} from '../../services/month.service';
+import {WorkBook} from "xlsx";
+import * as XLSX from "xlsx";
 
 @Component({
-  selector: 'app-direct-implementation-performance-indicator-form',
-  templateUrl: './direct-implementation-performance-indicator-form.component.html',
-  styleUrls: ['./direct-implementation-performance-indicator-form.component.scss']
+    selector: 'app-direct-implementation-performance-indicator-form',
+    templateUrl: './direct-implementation-performance-indicator-form.component.html',
+    styleUrls: ['./direct-implementation-performance-indicator-form.component.scss']
 })
 export class DirectImplementationPerformanceIndicatorFormComponent implements OnInit {
     indicatorExecution: IndicatorExecution;
@@ -27,7 +36,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     isAdmin = false;
     isSupervisor = false;
     isResponsible = false;
-    noEditionMessage:string='';
+    noEditionMessage: string = '';
 
     oneDimentionDissagregations: DissagregationType[] = [];
     twoDimentionDissagregations: DissagregationType[] = [];
@@ -49,6 +58,12 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     public formLocations: FormGroup;
     public cantonesOptions: Canton[];
     editable: boolean;
+
+    showImportCantonesDialog: boolean = false;
+    importCantonesForm: FormGroup;
+    sheetOptions: string[];
+    importCantonesErroMessage: string[];
+    showImportCantonesErroMessage: boolean;
 
     constructor(public ref: DynamicDialogRef,
                 public config: DynamicDialogConfig,
@@ -74,6 +89,12 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             sourceOther: new FormControl(''),
             checked: new FormControl(''),
             usedBudget: new FormControl(''),
+        });
+        this.importCantonesForm = this.fb.group({
+            fileName: new FormControl('', [Validators.required]),
+            file: new FormControl(''),
+            sheet: new FormControl('', [Validators.required]),
+            workbook: new FormControl('', [Validators.required]),
         });
         this.loadMonthValues(this.monthId);
 
@@ -110,14 +131,13 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
         this.noEditionMessage = null;
         if (this.isAdmin) {
             this.editable = true;
-        }
-        else if (this.month.blockUpdate && (this.isResponsible || this.isSupervisor )) {
+        } else if (this.month.blockUpdate && (this.isResponsible || this.isSupervisor)) {
             this.editable = false;
             this.noEditionMessage = "El indicador está bloqueado, comuníquese con el punto focal si desea actualizarlo";
-        } else if (!this.month.blockUpdate && (this.isResponsible || this.isSupervisor )) {
+        } else if (!this.month.blockUpdate && (this.isResponsible || this.isSupervisor)) {
             this.editable = true;
-        }else {
-            this.editable= false;
+        } else {
+            this.editable = false;
             this.noEditionMessage = "No tiene los permisos para editar la información";
         }
         /*else {
@@ -199,18 +219,18 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
 
     validateSegregations() {
         this.disableSave = false;
-        this.monthValuesMap.forEach((value,key) => {
+        this.monthValuesMap.forEach((value, key) => {
             console.log(key);
             console.log(value);
 
             if (value && value.length === 0) {
                 console.log(value.length);
-               /* this.messageService.add({
-                    severity: 'error',
-                    summary: 'Actualiza los valores para ' + this.enumsService.resolveLabel(EnumsType.DissagregationType, key),
-                    detail: 'Agrega lugares de ejecución',
-                    sticky: true
-                });*/
+                /* this.messageService.add({
+                     severity: 'error',
+                     summary: 'Actualiza los valores para ' + this.enumsService.resolveLabel(EnumsType.DissagregationType, key),
+                     detail: 'Agrega lugares de ejecución',
+                     sticky: true
+                 });*/
                 this.disableSave = true;
             }
         });
@@ -279,7 +299,11 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             this.messageService.add({severity: 'success', summary: 'Guardado con éxito', detail: ''});
             this.ref.close({test: 1});
         }, error => {
-            this.messageService.add({severity: 'error', summary: 'Error al guardar los valores:', detail: error.error.message});
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al guardar los valores:',
+                detail: error.error.message
+            });
         });
     }
 
@@ -356,5 +380,116 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
 
     cancelLocations() {
         this.showLocationsDialog = false;
+    }
+
+    showImportDialogF() {
+        this.showImportCantonesDialog = true;
+    }
+
+
+    importCantonesFile() {
+        let workbook = this.importCantonesForm.get('workbook').value as XLSX.WorkBook;
+        workbook.SheetNames.forEach(value => {
+            console.log(value);
+        });
+        let spreedsheetname = this.importCantonesForm.get('sheet').value;
+        console.log(spreedsheetname);
+        const ws: XLSX.WorkSheet = workbook.Sheets[spreedsheetname];
+        const data = XLSX.utils.sheet_to_json(ws);
+        console.log(data);
+        const cantones: Canton[] = [];
+        data.forEach(value => {
+            const canton_code: string = value['canton_code'];
+            const Canton: string = value['Canton'];
+            const Provincia_code: string = value['Provincia_code'];
+            const Provincia: string = value['Provincia'];
+
+            const cantonO: Canton = {
+                id: null,
+                code: canton_code,
+                description: Canton,
+                state: null,
+                provincia: {
+                    id: null,
+                    code: Provincia_code,
+                    state: null,
+                    description: Provincia
+                },
+                office: null
+            }
+            cantones.push(cantonO);
+        });
+
+        this.cantonService.discoverCantones(cantones).subscribe({
+            next: discoveredCantones => {
+                console.log(discoveredCantones);
+                const currentCantones: Canton[] = this.formLocations.get('locationsSelected').value;
+                discoveredCantones.forEach(discoveredCanton => {
+                    const foundsC = currentCantones.filter(value => {
+                        return discoveredCanton.id === value.id
+                    });
+                    if (foundsC.length < 1) {
+                        this.formLocations.get('locationsSelected').value.push(discoveredCanton);
+                        console.log("found!");
+                    }
+                });
+                const discoveredCantonesIds: number[] = discoveredCantones.map(value => {
+                    return value.id
+                });
+                console.log(this.cantonesAvailable.length);
+                this.cantonesAvailable = this.cantonesAvailable.filter(value => {
+                    return !discoveredCantonesIds.includes(value.id);
+                });
+                this.showImportCantonesDialog = false;
+                this.cd.detectChanges();
+                console.log(this.cantonesAvailable.length);
+                this.cd.detectChanges();
+            }, error: error => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al guardar los valores:',
+                    detail: error.error.message
+                });
+            }
+        });
+
+    }
+
+    fileUploaderCantones(event: any) {
+        const file = event.files[0];
+        this.importCantonesForm.get('fileName').setValue(file.name);
+        this.importCantonesForm.get('fileName').markAsTouched();
+        console.log(file);
+        const fileReader = new FileReader();
+
+        fileReader.readAsArrayBuffer(file);
+        // tslint:disable-next-line:only-arrow-functions
+        fileReader.onload = () => {
+            const arrayBuffer: any = fileReader.result;
+            let data = new Uint8Array(arrayBuffer);
+            let arr = [];
+            for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
+            let bstr = arr.join("");
+            let workbook: WorkBook;
+            workbook = XLSX.read(bstr, {type: "binary"});
+            this.importCantonesForm.get('workbook').patchValue(workbook);
+            this.sheetOptions = [];
+            workbook.SheetNames.forEach(value => {
+                console.log(value);
+                this.sheetOptions.push(value);
+            });
+            console.log(this.sheetOptions);
+            this.importCantonesForm.get('sheet').patchValue(null);
+            this.importCantonesForm.get('sheet').markAsTouched();
+        };
+    }
+
+    cancelImportCantonesDialog() {
+        this.importCantonesForm.reset();
+        this.showImportCantonesDialog = false;
+    }
+
+    showImportCantonesDialogF() {
+        this.showImportCantonesDialog = true;
     }
 }

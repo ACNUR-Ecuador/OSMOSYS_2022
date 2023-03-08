@@ -293,6 +293,8 @@ export class MonthState {
 }
 
 export class Canton {
+
+
     public id: number;
     public code: string;
     public description: string;
