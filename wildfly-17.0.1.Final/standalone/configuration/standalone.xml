@@ -583,9 +583,4 @@
             <remote-destination host="localhost" port="25"/>
         </outbound-socket-binding>
     </socket-binding-group>
-    <deployments>
-        <deployment name="osmosys_backend-3.0" runtime-name="osmosys_backend-3.0.war">
-            <fs-exploded path="D:\proyectos\OSMOSYS_2023\backend\target\osmosys_backend-3.0"/>
-        </deployment>
-    </deployments>
 </server>
