@@ -1,0 +1,535 @@
+@startuml 
+class org.unhcr.osmosys.model.enums.AgeType{
++ org.unhcr.osmosys.model.enums.AgeType INFANTS
++ org.unhcr.osmosys.model.enums.AgeType CHILDREN
++ org.unhcr.osmosys.model.enums.AgeType TEENAGERS
++ org.unhcr.osmosys.model.enums.AgeType YOUNG_ADULTS
++ org.unhcr.osmosys.model.enums.AgeType ADULTS
++ org.unhcr.osmosys.model.enums.AgeType OLDER_ADULTS
++ org.unhcr.osmosys.model.enums.AgeType ELDERLY
+- java.lang.String label
+- int order
+- java.lang.String name
+- int ordinal
+- void AgeType (String label, int )
++ java.lang.String getLabel ()
++ void setLabel (String )
++ int getOrder ()
++ void setOrder (int )
++ org.unhcr.osmosys.model.enums.AgeType[] values ()
++ org.unhcr.osmosys.model.enums.AgeType valueOf (String )
+}
+class java.lang.Enum{
+- java.lang.String name
+- int ordinal
++ java.lang.String name ()
++ int ordinal ()
+# void Enum (String name, int )
++ java.lang.String toString ()
++ boolean equals (Object )
++ int hashCode ()
+# java.lang.Object clone ()
++ int compareTo (E )
++ java.lang.Class<E> getDeclaringClass ()
++ T valueOf (Class<T> enumType, String )
+# void finalize ()
+- void readObject (ObjectInputStream )
+- void readObjectNoData ()
+}
+interface java.lang.Comparable {
++ int compareTo (T )
+}
+java.lang.Comparable <|.. java.lang.Enum
+interface java.io.Serializable {
+}
+java.io.Serializable <|.. java.lang.Enum
+java.lang.Enum <|-- org.unhcr.osmosys.model.enums.AgeType
+class org.unhcr.osmosys.model.enums.AreaType{
++ org.unhcr.osmosys.model.enums.AreaType IMPACT
++ org.unhcr.osmosys.model.enums.AreaType OUTCOME
++ org.unhcr.osmosys.model.enums.AreaType Output
+- java.lang.String label
+- java.lang.String name
+- int ordinal
+- void AreaType (String )
++ java.lang.String getLabel ()
++ void setLabel (String )
++ org.unhcr.osmosys.model.enums.AreaType[] values ()
++ org.unhcr.osmosys.model.enums.AreaType valueOf (String )
+}
+class org.unhcr.osmosys.model.enums.Frecuency{
++ org.unhcr.osmosys.model.enums.Frecuency MONTHLY
++ org.unhcr.osmosys.model.enums.Frecuency QUARTERLY
++ org.unhcr.osmosys.model.enums.Frecuency HALF
++ org.unhcr.osmosys.model.enums.Frecuency ANNUAL
+- java.lang.String label
+- java.lang.String name
+- int ordinal
+- void Frecuency (String )
++ java.lang.String getLabel ()
++ void setLabel (String )
++ org.unhcr.osmosys.model.enums.Frecuency[] values ()
++ org.unhcr.osmosys.model.enums.Frecuency valueOf (String )
+}
+class org.unhcr.osmosys.model.enums.GenderType{
++ org.unhcr.osmosys.model.enums.GenderType MALE
++ org.unhcr.osmosys.model.enums.GenderType FEMALE
++ org.unhcr.osmosys.model.enums.GenderType OTHER
+- java.lang.String label
+- int order
+- java.lang.String name
+- int ordinal
+- void GenderType (String label, int )
++ java.lang.String getLabel ()
++ void setLabel (String )
++ int getOrder ()
++ void setOrder (int )
++ org.unhcr.osmosys.model.enums.GenderType[] values ()
++ org.unhcr.osmosys.model.enums.GenderType valueOf (String )
+}
+class org.unhcr.osmosys.model.enums.MarkerType{
++ org.unhcr.osmosys.model.enums.MarkerType ORGANIZATIONAL
++ org.unhcr.osmosys.model.enums.MarkerType OPERATIONAL
+- java.lang.String label
+- java.lang.String name
+- int ordinal
+- void MarkerType (String )
++ java.lang.String getLabel ()
++ void setLabel (String )
++ org.unhcr.osmosys.model.enums.MarkerType[] values ()
++ org.unhcr.osmosys.model.enums.MarkerType valueOf (String )
+}
+class org.unhcr.osmosys.model.enums.OfficeType{
++ org.unhcr.osmosys.model.enums.OfficeType BO
++ org.unhcr.osmosys.model.enums.OfficeType SUB_OFFICE
++ org.unhcr.osmosys.model.enums.OfficeType FIELD_OFFICE
++ org.unhcr.osmosys.model.enums.OfficeType FIELD_UNIT
+- java.lang.String label
+- int order
+- java.lang.String name
+- int ordinal
+- void OfficeType (String label, int )
++ java.lang.String getLabel ()
++ void setLabel (String )
++ int getOrder ()
++ void setOrder (int )
++ org.unhcr.osmosys.model.enums.OfficeType[] values ()
++ org.unhcr.osmosys.model.enums.OfficeType valueOf (String )
+}
+class org.unhcr.osmosys.model.enums.MeasureType{
++ org.unhcr.osmosys.model.enums.MeasureType INTEGER
++ org.unhcr.osmosys.model.enums.MeasureType PROPORTION
++ org.unhcr.osmosys.model.enums.MeasureType TEXT
+- java.lang.String label
+- java.lang.String name
+- int ordinal
+- void MeasureType (String )
++ java.lang.String getLabel ()
++ void setLabel (String )
++ org.unhcr.osmosys.model.enums.MeasureType[] values ()
++ org.unhcr.osmosys.model.enums.MeasureType valueOf (String )
+}
+class org.unhcr.osmosys.model.enums.IndicatorType{
++ org.unhcr.osmosys.model.enums.IndicatorType CORE
++ org.unhcr.osmosys.model.enums.IndicatorType GOOD_PRACTICE
++ org.unhcr.osmosys.model.enums.IndicatorType OPERATION_DEFINED
++ org.unhcr.osmosys.model.enums.IndicatorType GENERAL_INDICATOR
+- java.lang.String label
+- java.lang.String name
+- int ordinal
+- void IndicatorType (String )
++ java.lang.String getLabel ()
++ void setLabel (String )
++ org.unhcr.osmosys.model.enums.IndicatorType[] values ()
++ org.unhcr.osmosys.model.enums.IndicatorType valueOf (String )
+}
+class org.unhcr.osmosys.model.enums.PopulationType{
++ org.unhcr.osmosys.model.enums.PopulationType REFUGEES
++ org.unhcr.osmosys.model.enums.PopulationType ASYLUM_SEEKERS
++ org.unhcr.osmosys.model.enums.PopulationType HOST_COMUNITY
+- java.lang.String label
+- java.lang.String name
+- int ordinal
+- void PopulationType (String )
++ java.lang.String getLabel ()
++ void setLabel (String )
++ org.unhcr.osmosys.model.enums.PopulationType[] values ()
++ org.unhcr.osmosys.model.enums.PopulationType valueOf (String )
+}
+class org.unhcr.osmosys.model.enums.CountryOfOrigin{
++ org.unhcr.osmosys.model.enums.CountryOfOrigin VENEZUELAN
++ org.unhcr.osmosys.model.enums.CountryOfOrigin COLOMBIAN
++ org.unhcr.osmosys.model.enums.CountryOfOrigin ECUADORIAN
++ org.unhcr.osmosys.model.enums.CountryOfOrigin OTHER
+- java.lang.String label
+- int order
+- java.lang.String name
+- int ordinal
+- void CountryOfOrigin (String label, int )
++ java.lang.String getLabel ()
++ void setLabel (String )
++ int getOrder ()
++ void setOrder (int )
++ org.unhcr.osmosys.model.enums.CountryOfOrigin[] values ()
++ org.unhcr.osmosys.model.enums.CountryOfOrigin valueOf (String )
+}
+class org.unhcr.osmosys.model.enums.DissagregationType{
++ org.unhcr.osmosys.model.enums.DissagregationType POPULATION_TYPE
++ org.unhcr.osmosys.model.enums.DissagregationType AGE
++ org.unhcr.osmosys.model.enums.DissagregationType GENDER
++ org.unhcr.osmosys.model.enums.DissagregationType SITE
++ org.unhcr.osmosys.model.enums.DissagregationType COUNTRY_OF_ORIGIN
++ org.unhcr.osmosys.model.enums.DissagregationType DISABILITY
+- java.lang.String label
+- java.lang.String name
+- int ordinal
+- void DissagregationType (String )
++ java.lang.String getLabel ()
++ void setLabel (String )
++ org.unhcr.osmosys.model.enums.DissagregationType[] values ()
++ org.unhcr.osmosys.model.enums.DissagregationType valueOf (String )
+}
+class org.unhcr.osmosys.model.Area{
+- java.lang.Long id
+- com.sagatechs.generics.persistence.model.State state
+- org.unhcr.osmosys.model.enums.AreaType areaType
+- java.lang.String code
+- java.lang.String shortDescription
+- java.lang.String description
+- java.lang.String definition
++ java.lang.Long getId ()
++ void setId (Long )
++ com.sagatechs.generics.persistence.model.State getState ()
++ void setState (State )
++ org.unhcr.osmosys.model.enums.AreaType getAreaType ()
++ void setAreaType (AreaType )
++ java.lang.String getDescription ()
++ void setDescription (String )
++ java.lang.String getDefinition ()
++ void setDefinition (String )
++ java.lang.String getCode ()
++ void setCode (String )
++ java.lang.String getShortDescription ()
++ void setShortDescription (String )
+}
+class com.sagatechs.generics.persistence.model.BaseEntity{
++ PK getId ()
++ int hashCode ()
++ boolean equals (Object )
++ java.lang.String toString ()
+}
+com.sagatechs.generics.persistence.model.BaseEntity <|-- org.unhcr.osmosys.model.Area
+class org.unhcr.osmosys.model.Pilar{
+- java.lang.Long id
+- com.sagatechs.generics.persistence.model.State state
+- java.lang.String code
+- java.lang.String shortDescription
+- java.lang.String description
++ java.lang.Long getId ()
++ void setId (Long )
++ com.sagatechs.generics.persistence.model.State getState ()
++ void setState (State )
++ java.lang.String getCode ()
++ void setCode (String )
++ java.lang.String getShortDescription ()
++ void setShortDescription (String )
++ java.lang.String getDescription ()
++ void setDescription (String )
+}
+class org.unhcr.osmosys.model.Canton{
+- java.lang.Long id
+- java.lang.String code
+- java.lang.String description
+- com.sagatechs.generics.persistence.model.State state
+- org.unhcr.osmosys.model.Provincia provincia
+- org.unhcr.osmosys.model.Office office
++ java.lang.Long getId ()
++ void setId (Long )
++ java.lang.String getCode ()
++ void setCode (String )
++ java.lang.String getDescription ()
++ void setDescription (String )
++ com.sagatechs.generics.persistence.model.State getState ()
++ void setState (State )
++ org.unhcr.osmosys.model.Provincia getProvincia ()
++ void setProvincia (Provincia )
++ boolean equals (Object )
++ int hashCode ()
+}
+class org.unhcr.osmosys.model.Marker{
+- java.lang.Long id
+- com.sagatechs.generics.persistence.model.State state
+- org.unhcr.osmosys.model.enums.MarkerType type
+- java.lang.String subType
++ java.lang.Long getId ()
++ void setId (Long )
++ com.sagatechs.generics.persistence.model.State getState ()
++ void setState (State )
++ org.unhcr.osmosys.model.enums.MarkerType getType ()
++ void setType (MarkerType )
++ java.lang.String getSubType ()
++ void setSubType (String )
+}
+class org.unhcr.osmosys.model.Office{
+- java.lang.Long id
+- java.lang.String description
+- java.lang.String acronym
+- org.unhcr.osmosys.model.enums.OfficeType type
+- com.sagatechs.generics.persistence.model.State state
++ java.lang.Long getId ()
++ void setId (Long )
++ com.sagatechs.generics.persistence.model.State getState ()
++ void setState (State )
++ java.lang.String getDescription ()
++ void setDescription (String )
++ java.lang.String getAcronym ()
++ void setAcronym (String )
+}
+class org.unhcr.osmosys.model.Period{
+- java.lang.Long id
+- java.lang.Integer year
+- com.sagatechs.generics.persistence.model.State state
++ java.lang.Long getId ()
++ void setId (Long )
++ java.lang.Integer getYear ()
++ void setYear (Integer )
++ com.sagatechs.generics.persistence.model.State getState ()
++ void setState (State )
+}
+class org.unhcr.osmosys.model.Project{
+- java.lang.Long id
+- java.lang.String code
+- java.lang.String name
+- com.sagatechs.generics.persistence.model.State state
++ java.lang.Long getId ()
++ void setId (Long )
++ java.lang.String getCode ()
++ void setCode (String )
++ java.lang.String getName ()
++ void setName (String )
++ com.sagatechs.generics.persistence.model.State getState ()
++ void setState (State )
+}
+class org.unhcr.osmosys.model.Indicator{
+- java.lang.Long id
+- java.lang.String code
+- java.lang.String description
+- org.unhcr.osmosys.model.Statement statement
+- java.lang.String guidePartners
+- java.lang.String guideDirectImplementation
+- com.sagatechs.generics.persistence.model.State state
+- org.unhcr.osmosys.model.enums.IndicatorType indicatorType
+- org.unhcr.osmosys.model.enums.MeasureType measureType
+- org.unhcr.osmosys.model.enums.Frecuency frecuency
+- org.unhcr.osmosys.model.enums.AreaType areaType
+- java.util.Set<org.unhcr.osmosys.model.Marker> markers
+- java.lang.Boolean isMonitored
+- java.lang.Boolean isCalculated
++ java.lang.Long getId ()
++ void setId (Long )
++ java.lang.String getCode ()
++ void setCode (String )
++ java.lang.String getDescription ()
++ void setDescription (String )
++ java.lang.String getGuidePartners ()
++ void setGuidePartners (String )
++ java.lang.String getGuideDirectImplementation ()
++ void setGuideDirectImplementation (String )
++ com.sagatechs.generics.persistence.model.State getState ()
++ void setState (State )
++ org.unhcr.osmosys.model.enums.IndicatorType getIndicatorType ()
++ void setIndicatorType (IndicatorType )
++ org.unhcr.osmosys.model.enums.MeasureType getMeasureType ()
++ void setMeasureType (MeasureType )
++ org.unhcr.osmosys.model.enums.Frecuency getFrecuency ()
++ void setFrecuency (Frecuency )
++ org.unhcr.osmosys.model.enums.AreaType getAreaType ()
++ void setAreaType (AreaType )
++ java.util.Set<org.unhcr.osmosys.model.Marker> getMarkers ()
++ void setMarkers (Set<Marker> )
++ java.lang.Boolean getMonitored ()
++ void setMonitored (Boolean )
++ java.lang.Boolean getCalculated ()
++ void setCalculated (Boolean )
++ org.unhcr.osmosys.model.Statement getStatement ()
++ void setStatement (Statement )
+}
+class org.unhcr.osmosys.model.Provincia{
+- java.lang.Long id
+- java.lang.String code
+- java.lang.String description
+- com.sagatechs.generics.persistence.model.State state
++ java.lang.Long getId ()
++ void setId (Long )
++ java.lang.String getCode ()
++ void setCode (String )
++ java.lang.String getDescription ()
++ void setDescription (String )
++ com.sagatechs.generics.persistence.model.State getState ()
++ void setState (State )
+}
+class org.unhcr.osmosys.model.Situation{
+- java.lang.Long id
+- com.sagatechs.generics.persistence.model.State state
+- java.lang.String code
+- java.lang.String shortDescription
+- java.lang.String description
++ java.lang.Long getId ()
++ void setId (Long )
++ com.sagatechs.generics.persistence.model.State getState ()
++ void setState (State )
++ java.lang.String getCode ()
++ void setCode (String )
++ java.lang.String getShortDescription ()
++ void setShortDescription (String )
++ java.lang.String getDescription ()
++ void setDescription (String )
+}
+class org.unhcr.osmosys.model.Statement{
+- java.lang.Long id
+- com.sagatechs.generics.persistence.model.State state
+- org.unhcr.osmosys.model.enums.AreaType areaType
+- java.lang.String shortDescription
+- java.lang.String description
+- org.unhcr.osmosys.model.Statement parentStatement
+- org.unhcr.osmosys.model.Pilar pilar
+- org.unhcr.osmosys.model.Situation situation
+- java.util.Set<org.unhcr.osmosys.model.Indicator> indicators
++ java.lang.Long getId ()
++ void setId (Long )
++ com.sagatechs.generics.persistence.model.State getState ()
++ void setState (State )
++ org.unhcr.osmosys.model.enums.AreaType getAreaType ()
++ void setAreaType (AreaType )
++ java.lang.String getShortDescription ()
++ void setShortDescription (String )
++ java.lang.String getDescription ()
++ void setDescription (String )
++ org.unhcr.osmosys.model.Statement getParentStatement ()
++ void setParentStatement (Statement )
++ org.unhcr.osmosys.model.Pilar getPilar ()
++ void setPilar (Pilar )
++ org.unhcr.osmosys.model.Situation getSituation ()
++ void setSituation (Situation )
+}
+class org.unhcr.osmosys.model.Organization{
+- java.lang.Long id
+- java.lang.String code
+- java.lang.String description
+- java.lang.String acronym
+- com.sagatechs.generics.persistence.model.State state
++ java.lang.Long getId ()
++ void setId (Long )
++ com.sagatechs.generics.persistence.model.State getState ()
++ void setState (State )
++ java.lang.String getCode ()
++ void setCode (String )
++ java.lang.String getDescription ()
++ void setDescription (String )
++ java.lang.String getAcronym ()
++ void setAcronym (String )
+}
+class org.unhcr.osmosys.model.IndicatorValue{
+- java.lang.Long id
+- java.lang.String commentary
+- com.sagatechs.generics.persistence.model.State state
++ java.lang.Long getId ()
++ void setId (Long )
++ com.sagatechs.generics.persistence.model.State getState ()
++ void setState (State )
+}
+class org.unhcr.osmosys.model.IndicatorExecution{
+- java.lang.Long id
+- java.lang.String commentary
+- org.unhcr.osmosys.model.Indicator indicator
+- com.sagatechs.generics.persistence.model.State state
+- org.unhcr.osmosys.model.Period period
+- java.util.Set<org.unhcr.osmosys.model.IndicatorValue> indicatorValues
+- org.unhcr.osmosys.model.Project project
+- org.unhcr.osmosys.model.Office reportingOffice
+- com.sagatechs.generics.security.model.User assignedUser
+- com.sagatechs.generics.security.model.User assignedUserBackup
++ java.lang.Long getId ()
++ void setId (Long )
++ com.sagatechs.generics.persistence.model.State getState ()
++ void setState (State )
+}
+class org.unhcr.osmosys.model.DissagregationFilter{
+- java.lang.Long id
+- com.sagatechs.generics.persistence.model.State state
+- org.unhcr.osmosys.model.enums.DissagregationType dissagregationType
+- org.unhcr.osmosys.model.enums.PopulationType populationType
+- org.unhcr.osmosys.model.enums.CountryOfOrigin countryOfOrigin
+- org.unhcr.osmosys.model.enums.GenderType genderType
+- org.unhcr.osmosys.model.enums.AgeType ageType
+- org.unhcr.osmosys.model.DissagregationAssignationToIndicator dissagregationAssignationToIndicator
++ java.lang.Long getId ()
++ void setId (Long )
++ com.sagatechs.generics.persistence.model.State getState ()
++ void setState (State )
++ org.unhcr.osmosys.model.enums.DissagregationType getDissagregationType ()
++ void setDissagregationType (DissagregationType )
++ org.unhcr.osmosys.model.enums.PopulationType getPopulationType ()
++ void setPopulationType (PopulationType )
++ org.unhcr.osmosys.model.enums.CountryOfOrigin getCountryOfOrigin ()
++ void setCountryOfOrigin (CountryOfOrigin )
++ org.unhcr.osmosys.model.enums.GenderType getGenderType ()
++ void setGenderType (GenderType )
++ org.unhcr.osmosys.model.enums.AgeType getAgeType ()
++ void setAgeType (AgeType )
++ org.unhcr.osmosys.model.DissagregationAssignationToIndicator getDissagregationAssignationToIndicator ()
++ void setDissagregationAssignationToIndicator (DissagregationAssignationToIndicator )
+}
+class org.unhcr.osmosys.model.PeriodStatementAsignation{
+- java.lang.Long id
+- org.unhcr.osmosys.model.Period period
+- org.unhcr.osmosys.model.Statement statement
+- com.sagatechs.generics.persistence.model.State state
+- java.util.Set<org.unhcr.osmosys.model.PeriodStatementPopulationCoverage> periodStatementPopulationCoverages
+- java.lang.Long populationCoverage
++ void PeriodStatementAsignation ()
++ java.lang.Long getId ()
++ void setId (Long )
++ org.unhcr.osmosys.model.Period getPeriod ()
++ void setPeriod (Period )
++ org.unhcr.osmosys.model.Statement getStatement ()
++ void setStatement (Statement )
++ com.sagatechs.generics.persistence.model.State getState ()
++ void setState (State )
++ java.util.Set<org.unhcr.osmosys.model.PeriodStatementPopulationCoverage> getPeriodStatementPopulationCoverages ()
++ void setPeriodStatementPopulationCoverages (Set<PeriodStatementPopulationCoverage> )
++ java.lang.Long getPopulationCoverage ()
++ void setPopulationCoverage (Long )
+}
+class org.unhcr.osmosys.model.PeriodStatementPopulationCoverage{
+- java.lang.Long id
+- org.unhcr.osmosys.model.enums.PopulationType populationType
+- org.unhcr.osmosys.model.PeriodStatementAsignation periodStatementAsignation
+- com.sagatechs.generics.persistence.model.State state
+- java.lang.Long populationCoverage
++ java.lang.Long getId ()
++ void setId (Long )
++ org.unhcr.osmosys.model.enums.PopulationType getPopulationType ()
++ void setPopulationType (PopulationType )
++ org.unhcr.osmosys.model.PeriodStatementAsignation getPeriodStatementAsignation ()
++ void setPeriodStatementAsignation (PeriodStatementAsignation )
++ com.sagatechs.generics.persistence.model.State getState ()
++ void setState (State )
++ java.lang.Long getPopulationCoverage ()
++ void setPopulationCoverage (Long )
+}
+class org.unhcr.osmosys.model.DissagregationAssignationToIndicator{
+- java.lang.Long id
+- com.sagatechs.generics.persistence.model.State state
+- org.unhcr.osmosys.model.enums.DissagregationType dissagregationType
+- java.util.Set<org.unhcr.osmosys.model.DissagregationFilter> dissagregationFilters
++ java.lang.Long getId ()
++ void setId (Long )
++ com.sagatechs.generics.persistence.model.State getState ()
++ void setState (State )
++ org.unhcr.osmosys.model.enums.DissagregationType getDissagregationType ()
++ void setDissagregationType (DissagregationType )
++ java.util.Set<org.unhcr.osmosys.model.DissagregationFilter> getDissagregationFilters ()
++ void setDissagregationFilters (Set<DissagregationFilter> )
+}
+@enduml 

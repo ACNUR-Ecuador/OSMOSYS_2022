@@ -1,0 +1,1564 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="program_partner_report" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="b457bfc8-a2a0-4173-81b0-73b757f1de05">
+	<property name="net.sf.jasperreports.export.xls.one.page.per.sheet" value="true"/>
+	<property name="net.sf.jasperreports.page.break.no.pagination" value="apply"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false"/>
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
+	<property name="net.sf.jasperreports.export.xls.sheet.names.all" value="Data/Footnotes"/>
+	<property name="net.sf.jasperreports.export.xls.freeze.row" value="1"/>
+	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.auto.fit.row" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.auto.fit.column" value="true"/>
+	<property name="net.sf.jasperreports.export.jxl.cell.complex.format" value="true"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="indicatorExecutionsDatasourse" uuid="d26b74cb-da5f-40db-b467-ad0faa5cd83f">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="ieId" class="java.lang.Long"/>
+		<field name="statement" class="java.lang.String"/>
+		<field name="indicator" class="java.lang.String"/>
+		<field name="totalTarget" class="java.lang.Integer"/>
+		<field name="totalExecution" class="java.lang.Integer"/>
+		<field name="refugeesInfantMale" class="java.lang.Integer"/>
+		<field name="refugeesInfantFemale" class="java.lang.Integer"/>
+		<field name="refugeesInfantOther" class="java.lang.Integer"/>
+		<field name="refugeesNNAMale" class="java.lang.Integer"/>
+		<field name="refugeesNNAFemale" class="java.lang.Integer"/>
+		<field name="refugeesNNAOther" class="java.lang.Integer"/>
+		<field name="refugeesAdultMale" class="java.lang.Integer"/>
+		<field name="refugeesAdultFemale" class="java.lang.Integer"/>
+		<field name="refugeesAdultOther" class="java.lang.Integer"/>
+		<field name="refugeesElderlyMale" class="java.lang.Integer"/>
+		<field name="refugeesElderlyFemale" class="java.lang.Integer"/>
+		<field name="refugeesElderlyOther" class="java.lang.Integer"/>
+		<field name="asylumSeekersInfantMale" class="java.lang.Integer"/>
+		<field name="asylumSeekersInfantFemale" class="java.lang.Integer"/>
+		<field name="asylumSeekersInfantOther" class="java.lang.Integer"/>
+		<field name="asylumSeekersNNAMale" class="java.lang.Integer"/>
+		<field name="asylumSeekersNNAFemale" class="java.lang.Integer"/>
+		<field name="asylumSeekersNNAOther" class="java.lang.Integer"/>
+		<field name="asylumSeekersAdultMale" class="java.lang.Integer"/>
+		<field name="asylumSeekersAdultFemale" class="java.lang.Integer"/>
+		<field name="asylumSeekersAdultOther" class="java.lang.Integer"/>
+		<field name="asylumSeekersElderlyMale" class="java.lang.Integer"/>
+		<field name="asylumSeekersElderlyFemale" class="java.lang.Integer"/>
+		<field name="asylumSeekersElderlyOther" class="java.lang.Integer"/>
+		<field name="venezuelanAbroadInfantMale" class="java.lang.Integer"/>
+		<field name="venezuelanAbroadInfantFemale" class="java.lang.Integer"/>
+		<field name="venezuelanAbroadInfantOther" class="java.lang.Integer"/>
+		<field name="venezuelanAbroadNNAMale" class="java.lang.Integer"/>
+		<field name="venezuelanAbroadNNAFemale" class="java.lang.Integer"/>
+		<field name="venezuelanAbroadNNAOther" class="java.lang.Integer"/>
+		<field name="venezuelanAbroadAdultMale" class="java.lang.Integer"/>
+		<field name="venezuelanAbroadAdultFemale" class="java.lang.Integer"/>
+		<field name="venezuelanAbroadAdultOther" class="java.lang.Integer"/>
+		<field name="venezuelanAbroadElderlyMale" class="java.lang.Integer"/>
+		<field name="venezuelanAbroadElderlyFemale" class="java.lang.Integer"/>
+		<field name="venezuelanAbroadElderlyOther" class="java.lang.Integer"/>
+		<field name="hostCommunityInfantMale" class="java.lang.Integer"/>
+		<field name="hostCommunityInfantFemale" class="java.lang.Integer"/>
+		<field name="hostCommunityInfantOther" class="java.lang.Integer"/>
+		<field name="hostCommunityNNAMale" class="java.lang.Integer"/>
+		<field name="hostCommunityNNAFemale" class="java.lang.Integer"/>
+		<field name="hostCommunityNNAOther" class="java.lang.Integer"/>
+		<field name="hostCommunityAdultMale" class="java.lang.Integer"/>
+		<field name="hostCommunityAdultFemale" class="java.lang.Integer"/>
+		<field name="hostCommunityAdultOther" class="java.lang.Integer"/>
+		<field name="hostCommunityElderlyMale" class="java.lang.Integer"/>
+		<field name="hostCommunityElderlyFemale" class="java.lang.Integer"/>
+		<field name="hostCommunityElderlyOther" class="java.lang.Integer"/>
+		<field name="othersOfInterestInfantMale" class="java.lang.Integer"/>
+		<field name="othersOfInterestInfantFemale" class="java.lang.Integer"/>
+		<field name="othersOfInterestInfantOther" class="java.lang.Integer"/>
+		<field name="othersOfInterestNNAMale" class="java.lang.Integer"/>
+		<field name="othersOfInterestNNAFemale" class="java.lang.Integer"/>
+		<field name="othersOfInterestNNAOther" class="java.lang.Integer"/>
+		<field name="othersOfInterestAdultMale" class="java.lang.Integer"/>
+		<field name="othersOfInterestAdultFemale" class="java.lang.Integer"/>
+		<field name="othersOfInterestAdultOther" class="java.lang.Integer"/>
+		<field name="othersOfInterestElderlyMale" class="java.lang.Integer"/>
+		<field name="othersOfInterestElderlyFemale" class="java.lang.Integer"/>
+		<field name="othersOfInterestElderlyOther" class="java.lang.Integer"/>
+	</subDataset>
+	<parameter name="CollectionBeanParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<detail>
+		<band height="100" splitType="Stretch">
+			<componentElement>
+				<reportElement x="0" y="0" width="3210" height="100" uuid="2211cc7e-5548-4d5a-940f-868e3e21e834">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="indicatorExecutionsDatasourse" uuid="d605d6ff-6d1e-4919-9ded-ca1800f52bfa">
+						<dataSourceExpression><![CDATA[$P{CollectionBeanParam}]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="200" uuid="a0f0f822-9291-4efe-962b-f50a41014a1a">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:columnHeader style="Table_CH" height="70" rowSpan="3">
+							<staticText>
+								<reportElement x="0" y="0" width="200" height="70" uuid="86a95792-bcbc-4429-b011-88949fe7676e"/>
+								<textElement textAlignment="Center"/>
+								<text><![CDATA[Declaraciones]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="200" height="30" uuid="0d70e08d-b3e6-41c0-a801-45a46517956f"/>
+								<textFieldExpression><![CDATA[$F{statement}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="160" uuid="69bd9267-4f32-4450-b507-25a685d12e37">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader style="Table_CH" height="70" rowSpan="3">
+							<staticText>
+								<reportElement x="0" y="0" width="160" height="70" uuid="b5712886-71e4-40f8-a410-3acbc01e64fe"/>
+								<textElement textAlignment="Center"/>
+								<text><![CDATA[Indicador]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="160" height="30" uuid="a7bbaf55-ae11-4f82-889c-8627b035a5b9"/>
+								<textFieldExpression><![CDATA[$F{indicator}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="180" uuid="db572afd-e60b-4860-a156-2a5aaf580d13">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:columnHeader style="Table_CH" height="70" rowSpan="3">
+							<staticText>
+								<reportElement x="0" y="0" width="180" height="70" uuid="51283d39-f5e9-475a-9854-7cc8710d94c1"/>
+								<textElement textAlignment="Center"/>
+								<text><![CDATA[Meta]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="180" height="30" uuid="0b7ac2ff-3c12-4fc0-a735-dcac9b55f667"/>
+								<textFieldExpression><![CDATA[$F{totalTarget}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="70" uuid="de6cee47-c730-4e8e-8d99-8972ee72cccd">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<jr:columnHeader style="Table_CH" height="70" rowSpan="3">
+							<staticText>
+								<reportElement x="0" y="0" width="70" height="70" uuid="4756656d-a6a8-4a8b-a3e4-0fb5fe98de65"/>
+								<textElement textAlignment="Center"/>
+								<text><![CDATA[Ejecución]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="70" height="30" uuid="c745612e-4098-4aa0-bd39-b2d295dd6db8"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$F{totalExecution}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:columnGroup width="520" uuid="4796b40f-d4e3-4ba8-a15a-d26a6c987292">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [13]"/>
+						<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="480" height="20" uuid="62a25bb2-7513-4f2e-b555-06c50fd214bd"/>
+								<textElement textAlignment="Center"/>
+								<text><![CDATA[Refugiados]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnGroup width="120" uuid="bee089e0-f6a9-46a9-b0e2-5ee830e63cdc">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="74b5681f-fdc1-4da0-9c57-32a35ac7820e"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Infantes]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="bd381129-212e-41c7-88e3-af5b430c1cf9">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="ae7f118e-8bb3-4079-b284-a3cea3f0481e"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="adfb7d0d-c350-4f52-bcef-9d06faf3e0c3"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{refugeesInfantMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="d5e6d27e-091d-4ab0-b450-6d79feeddd07">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="fd6de1b1-e6ba-4f24-92d4-406201dcbe2f"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="3d0b0fc0-678f-48f2-8bdd-8385f252c765"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{refugeesInfantFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="1385fe12-c38a-4c29-941d-5633affcbdab">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="6a684aa4-9e22-4600-837d-291e13434989"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="aa12cbd9-edc3-4b4f-b7eb-78267a30a1dd"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{refugeesInfantOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:columnGroup width="120" uuid="0bee5539-749e-4c67-a52d-a19ffabb9e3b">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="0212e9e0-a8b4-4ac8-aae3-bf814b2a6294"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Niños, niñas y adolecentes]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="2d705803-f5be-4fa3-9fa5-6f2b5a0578d7">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="e07337a7-6636-4af1-b550-020edaf094ef"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="10a8878d-e181-4c41-8c66-5962f05e86ba"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{refugeesNNAMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="6a6dc660-adbc-4595-ae13-a675f8479db0">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="4e8c1721-6d7f-46b0-b852-0f7d4d3a13e8"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="8ce8e028-05d4-49a7-b5b9-eb5c14358295"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{refugeesNNAFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="5d861fa1-1a23-4ea0-a698-57a8e1a7a200">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="05e8de90-2baf-4627-b9ae-0ca8fde68aae"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="5d9659d4-3111-4a50-8c80-5abdf52080f1"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{refugeesNNAOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:columnGroup width="120" uuid="b63b8b19-72a7-4327-998b-7329bb280984">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="c2442eb7-e086-4731-b66a-7d17b0645ede"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Adultos]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="676d1588-5111-401c-a939-1415c59844c0">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="2802e3b8-3310-49b3-9ea2-12ac9d86c330"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="47866c51-e264-4273-9bcd-925d393c197b"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{refugeesAdultMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="e5a43238-c944-458b-9aed-3b330b4335d5">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="b4d144e3-275a-4d46-9a34-df1927bc64ac"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="613cc676-15e0-4822-9c83-9f2d37dcd17c"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{refugeesAdultFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="aeac07cd-a088-49a5-80cd-5c5ba9ea8fc1">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="b09cef4b-e163-4dfd-80f2-5fa7e5e51980"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="066a22be-92f1-4816-826f-8bcaa491f451"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{refugeesAdultOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:columnGroup width="120" uuid="ec1341f4-ca6a-4c60-a34c-30e3fcc5b32c">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="ebff0848-73f9-49f2-bf68-d78ecff13560"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Adultos Mayores]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="24ed96a0-ca38-4ff2-85d1-88fcc74f3915">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="ae2a0c83-84c4-4f62-91e7-2788ba64c0f4"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="a88b5419-51ab-4e32-bc1d-a7f85db0b192"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{refugeesElderlyMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="444400d5-f2fe-4cd7-826a-415d008f316b">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="9f08ae27-a566-4612-b4d7-5d385d5230e9"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="d5e5bc30-df19-4ed9-a614-680ce145f11b"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{refugeesElderlyFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="dc4791bc-33e9-4ee3-a350-c93e8b56733b">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="10e77611-4438-4601-8379-ff7835c76f1a"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="0d1e026a-4c6d-47c8-b610-65e28828df13"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{refugeesElderlyOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:column width="40" uuid="64380ca8-f78d-4d05-88c3-a6be2d8834a2">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column17"/>
+							<jr:columnHeader style="Table_CH" height="50" rowSpan="2">
+								<staticText>
+									<reportElement x="0" y="0" width="40" height="50" uuid="a2b84f45-2afa-47c6-8279-e08827c0f21d"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle"/>
+									<text><![CDATA[Total]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField>
+									<reportElement x="0" y="0" width="40" height="30" backcolor="#DCE9FF" uuid="24fc4244-119c-4b32-9178-8636d1100433"/>
+									<textElement textAlignment="Right"/>
+									<textFieldExpression><![CDATA[$F{refugeesInfantMale}+$F{refugeesInfantFemale}+$F{refugeesInfantOther}+$F{refugeesNNAMale}+$F{refugeesNNAFemale}+$F{refugeesNNAOther}+$F{refugeesAdultMale}+$F{refugeesAdultFemale}+$F{refugeesAdultOther}+$F{refugeesElderlyMale}+$F{refugeesElderlyFemale}+$F{refugeesElderlyOther}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:columnGroup width="520" uuid="4796b40f-d4e3-4ba8-a15a-d26a6c987292">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [13]"/>
+						<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="480" height="20" uuid="62a25bb2-7513-4f2e-b555-06c50fd214bd"/>
+								<textElement textAlignment="Center"/>
+								<text><![CDATA[Solicitantes de Asilo]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnGroup width="120" uuid="bee089e0-f6a9-46a9-b0e2-5ee830e63cdc">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="74b5681f-fdc1-4da0-9c57-32a35ac7820e"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Infantes]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="bd381129-212e-41c7-88e3-af5b430c1cf9">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="ae7f118e-8bb3-4079-b284-a3cea3f0481e"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="adfb7d0d-c350-4f52-bcef-9d06faf3e0c3"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{asylumSeekersInfantMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="d5e6d27e-091d-4ab0-b450-6d79feeddd07">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="fd6de1b1-e6ba-4f24-92d4-406201dcbe2f"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="3d0b0fc0-678f-48f2-8bdd-8385f252c765"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{asylumSeekersInfantFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="1385fe12-c38a-4c29-941d-5633affcbdab">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="6a684aa4-9e22-4600-837d-291e13434989"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="aa12cbd9-edc3-4b4f-b7eb-78267a30a1dd"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{asylumSeekersInfantOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:columnGroup width="120" uuid="0bee5539-749e-4c67-a52d-a19ffabb9e3b">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="0212e9e0-a8b4-4ac8-aae3-bf814b2a6294"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Niños, niñas y adolecentes]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="2d705803-f5be-4fa3-9fa5-6f2b5a0578d7">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="e07337a7-6636-4af1-b550-020edaf094ef"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="10a8878d-e181-4c41-8c66-5962f05e86ba"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{asylumSeekersNNAMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="6a6dc660-adbc-4595-ae13-a675f8479db0">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="4e8c1721-6d7f-46b0-b852-0f7d4d3a13e8"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="8ce8e028-05d4-49a7-b5b9-eb5c14358295"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{asylumSeekersNNAFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="5d861fa1-1a23-4ea0-a698-57a8e1a7a200">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="05e8de90-2baf-4627-b9ae-0ca8fde68aae"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="5d9659d4-3111-4a50-8c80-5abdf52080f1"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{asylumSeekersNNAOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:columnGroup width="120" uuid="b63b8b19-72a7-4327-998b-7329bb280984">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="c2442eb7-e086-4731-b66a-7d17b0645ede"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Adultos]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="676d1588-5111-401c-a939-1415c59844c0">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="2802e3b8-3310-49b3-9ea2-12ac9d86c330"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="47866c51-e264-4273-9bcd-925d393c197b"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{asylumSeekersAdultMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="e5a43238-c944-458b-9aed-3b330b4335d5">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="b4d144e3-275a-4d46-9a34-df1927bc64ac"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="613cc676-15e0-4822-9c83-9f2d37dcd17c"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{asylumSeekersAdultFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="aeac07cd-a088-49a5-80cd-5c5ba9ea8fc1">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="b09cef4b-e163-4dfd-80f2-5fa7e5e51980"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="066a22be-92f1-4816-826f-8bcaa491f451"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{asylumSeekersAdultOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:columnGroup width="120" uuid="ec1341f4-ca6a-4c60-a34c-30e3fcc5b32c">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="ebff0848-73f9-49f2-bf68-d78ecff13560"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Adultos Mayores]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="24ed96a0-ca38-4ff2-85d1-88fcc74f3915">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="ae2a0c83-84c4-4f62-91e7-2788ba64c0f4"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="a88b5419-51ab-4e32-bc1d-a7f85db0b192"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{asylumSeekersElderlyMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="444400d5-f2fe-4cd7-826a-415d008f316b">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="9f08ae27-a566-4612-b4d7-5d385d5230e9"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="d5e5bc30-df19-4ed9-a614-680ce145f11b"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{asylumSeekersElderlyFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="dc4791bc-33e9-4ee3-a350-c93e8b56733b">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="10e77611-4438-4601-8379-ff7835c76f1a"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="0d1e026a-4c6d-47c8-b610-65e28828df13"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{asylumSeekersElderlyOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:column width="40" uuid="64380ca8-f78d-4d05-88c3-a6be2d8834a2">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column17"/>
+							<jr:columnHeader style="Table_CH" height="50" rowSpan="2">
+								<staticText>
+									<reportElement x="0" y="0" width="40" height="50" uuid="a2b84f45-2afa-47c6-8279-e08827c0f21d"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle"/>
+									<text><![CDATA[Total]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField>
+									<reportElement x="0" y="0" width="40" height="30" uuid="24fc4244-119c-4b32-9178-8636d1100433"/>
+									<textElement textAlignment="Right"/>
+									<textFieldExpression><![CDATA[$F{asylumSeekersInfantMale}+$F{asylumSeekersInfantFemale}+$F{asylumSeekersInfantOther}+$F{asylumSeekersNNAMale}+$F{asylumSeekersNNAFemale}+$F{asylumSeekersNNAOther}+$F{asylumSeekersAdultMale}+$F{asylumSeekersAdultFemale}+$F{asylumSeekersAdultOther}+$F{asylumSeekersElderlyMale}+$F{asylumSeekersElderlyFemale}+$F{asylumSeekersElderlyOther}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:columnGroup width="520" uuid="4796b40f-d4e3-4ba8-a15a-d26a6c987292">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [13]"/>
+						<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="480" height="20" uuid="62a25bb2-7513-4f2e-b555-06c50fd214bd"/>
+								<textElement textAlignment="Center"/>
+								<text><![CDATA[Venezolanos desplazados en el extrajero]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnGroup width="120" uuid="bee089e0-f6a9-46a9-b0e2-5ee830e63cdc">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="74b5681f-fdc1-4da0-9c57-32a35ac7820e"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Infantes]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="bd381129-212e-41c7-88e3-af5b430c1cf9">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="ae7f118e-8bb3-4079-b284-a3cea3f0481e"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="adfb7d0d-c350-4f52-bcef-9d06faf3e0c3"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{venezuelanAbroadInfantMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="d5e6d27e-091d-4ab0-b450-6d79feeddd07">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="fd6de1b1-e6ba-4f24-92d4-406201dcbe2f"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="3d0b0fc0-678f-48f2-8bdd-8385f252c765"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{venezuelanAbroadInfantFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="1385fe12-c38a-4c29-941d-5633affcbdab">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="6a684aa4-9e22-4600-837d-291e13434989"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="aa12cbd9-edc3-4b4f-b7eb-78267a30a1dd"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{venezuelanAbroadInfantOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:columnGroup width="120" uuid="0bee5539-749e-4c67-a52d-a19ffabb9e3b">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="0212e9e0-a8b4-4ac8-aae3-bf814b2a6294"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Niños, niñas y adolecentes]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="2d705803-f5be-4fa3-9fa5-6f2b5a0578d7">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="e07337a7-6636-4af1-b550-020edaf094ef"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="10a8878d-e181-4c41-8c66-5962f05e86ba"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{venezuelanAbroadNNAMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="6a6dc660-adbc-4595-ae13-a675f8479db0">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="4e8c1721-6d7f-46b0-b852-0f7d4d3a13e8"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="8ce8e028-05d4-49a7-b5b9-eb5c14358295"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{venezuelanAbroadNNAFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="5d861fa1-1a23-4ea0-a698-57a8e1a7a200">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="05e8de90-2baf-4627-b9ae-0ca8fde68aae"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="5d9659d4-3111-4a50-8c80-5abdf52080f1"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{venezuelanAbroadNNAOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:columnGroup width="120" uuid="b63b8b19-72a7-4327-998b-7329bb280984">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="c2442eb7-e086-4731-b66a-7d17b0645ede"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Adultos]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="676d1588-5111-401c-a939-1415c59844c0">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="2802e3b8-3310-49b3-9ea2-12ac9d86c330"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="47866c51-e264-4273-9bcd-925d393c197b"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{venezuelanAbroadAdultMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="e5a43238-c944-458b-9aed-3b330b4335d5">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="b4d144e3-275a-4d46-9a34-df1927bc64ac"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="613cc676-15e0-4822-9c83-9f2d37dcd17c"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{venezuelanAbroadAdultFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="aeac07cd-a088-49a5-80cd-5c5ba9ea8fc1">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="b09cef4b-e163-4dfd-80f2-5fa7e5e51980"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="066a22be-92f1-4816-826f-8bcaa491f451"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{venezuelanAbroadAdultOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:columnGroup width="120" uuid="ec1341f4-ca6a-4c60-a34c-30e3fcc5b32c">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="ebff0848-73f9-49f2-bf68-d78ecff13560"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Adultos Mayores]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="24ed96a0-ca38-4ff2-85d1-88fcc74f3915">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="ae2a0c83-84c4-4f62-91e7-2788ba64c0f4"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="a88b5419-51ab-4e32-bc1d-a7f85db0b192"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{venezuelanAbroadElderlyMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="444400d5-f2fe-4cd7-826a-415d008f316b">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="9f08ae27-a566-4612-b4d7-5d385d5230e9"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="d5e5bc30-df19-4ed9-a614-680ce145f11b"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{venezuelanAbroadElderlyFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="dc4791bc-33e9-4ee3-a350-c93e8b56733b">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="10e77611-4438-4601-8379-ff7835c76f1a"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="0d1e026a-4c6d-47c8-b610-65e28828df13"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{venezuelanAbroadElderlyOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:column width="40" uuid="64380ca8-f78d-4d05-88c3-a6be2d8834a2">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column17"/>
+							<jr:columnHeader style="Table_CH" height="50" rowSpan="2">
+								<staticText>
+									<reportElement x="0" y="0" width="40" height="50" uuid="a2b84f45-2afa-47c6-8279-e08827c0f21d"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle"/>
+									<text><![CDATA[Total]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField>
+									<reportElement x="0" y="0" width="40" height="30" uuid="24fc4244-119c-4b32-9178-8636d1100433"/>
+									<textElement textAlignment="Right"/>
+									<textFieldExpression><![CDATA[$F{venezuelanAbroadInfantMale}+$F{venezuelanAbroadInfantFemale}+$F{venezuelanAbroadInfantOther}+$F{venezuelanAbroadNNAMale}+$F{venezuelanAbroadNNAFemale}+$F{venezuelanAbroadNNAOther}+$F{venezuelanAbroadAdultMale}+$F{venezuelanAbroadAdultFemale}+$F{venezuelanAbroadAdultOther}+$F{venezuelanAbroadElderlyMale}+$F{venezuelanAbroadElderlyFemale}+$F{venezuelanAbroadElderlyOther}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:columnGroup width="520" uuid="4796b40f-d4e3-4ba8-a15a-d26a6c987292">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [13]"/>
+						<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="480" height="20" uuid="62a25bb2-7513-4f2e-b555-06c50fd214bd"/>
+								<textElement textAlignment="Center"/>
+								<text><![CDATA[Comunidad de Acogida]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnGroup width="120" uuid="bee089e0-f6a9-46a9-b0e2-5ee830e63cdc">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="74b5681f-fdc1-4da0-9c57-32a35ac7820e"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Infantes]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="bd381129-212e-41c7-88e3-af5b430c1cf9">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="ae7f118e-8bb3-4079-b284-a3cea3f0481e"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="adfb7d0d-c350-4f52-bcef-9d06faf3e0c3"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{hostCommunityInfantMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="d5e6d27e-091d-4ab0-b450-6d79feeddd07">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="fd6de1b1-e6ba-4f24-92d4-406201dcbe2f"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="3d0b0fc0-678f-48f2-8bdd-8385f252c765"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{hostCommunityInfantFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="1385fe12-c38a-4c29-941d-5633affcbdab">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="6a684aa4-9e22-4600-837d-291e13434989"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="aa12cbd9-edc3-4b4f-b7eb-78267a30a1dd"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{hostCommunityInfantOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:columnGroup width="120" uuid="0bee5539-749e-4c67-a52d-a19ffabb9e3b">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="0212e9e0-a8b4-4ac8-aae3-bf814b2a6294"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Niños, niñas y adolecentes]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="2d705803-f5be-4fa3-9fa5-6f2b5a0578d7">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="e07337a7-6636-4af1-b550-020edaf094ef"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="10a8878d-e181-4c41-8c66-5962f05e86ba"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{hostCommunityNNAMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="6a6dc660-adbc-4595-ae13-a675f8479db0">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="4e8c1721-6d7f-46b0-b852-0f7d4d3a13e8"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="8ce8e028-05d4-49a7-b5b9-eb5c14358295"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{hostCommunityNNAFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="5d861fa1-1a23-4ea0-a698-57a8e1a7a200">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="05e8de90-2baf-4627-b9ae-0ca8fde68aae"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="5d9659d4-3111-4a50-8c80-5abdf52080f1"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{hostCommunityNNAOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:columnGroup width="120" uuid="b63b8b19-72a7-4327-998b-7329bb280984">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="c2442eb7-e086-4731-b66a-7d17b0645ede"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Adultos]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="676d1588-5111-401c-a939-1415c59844c0">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="2802e3b8-3310-49b3-9ea2-12ac9d86c330"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="47866c51-e264-4273-9bcd-925d393c197b"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{hostCommunityAdultMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="e5a43238-c944-458b-9aed-3b330b4335d5">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="b4d144e3-275a-4d46-9a34-df1927bc64ac"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="613cc676-15e0-4822-9c83-9f2d37dcd17c"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{hostCommunityAdultFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="aeac07cd-a088-49a5-80cd-5c5ba9ea8fc1">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="b09cef4b-e163-4dfd-80f2-5fa7e5e51980"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="066a22be-92f1-4816-826f-8bcaa491f451"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{hostCommunityAdultOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:columnGroup width="120" uuid="ec1341f4-ca6a-4c60-a34c-30e3fcc5b32c">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="ebff0848-73f9-49f2-bf68-d78ecff13560"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Adultos Mayores]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="24ed96a0-ca38-4ff2-85d1-88fcc74f3915">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="ae2a0c83-84c4-4f62-91e7-2788ba64c0f4"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="a88b5419-51ab-4e32-bc1d-a7f85db0b192"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{hostCommunityElderlyMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="444400d5-f2fe-4cd7-826a-415d008f316b">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="9f08ae27-a566-4612-b4d7-5d385d5230e9"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="d5e5bc30-df19-4ed9-a614-680ce145f11b"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{hostCommunityElderlyFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="dc4791bc-33e9-4ee3-a350-c93e8b56733b">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="10e77611-4438-4601-8379-ff7835c76f1a"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="0d1e026a-4c6d-47c8-b610-65e28828df13"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{hostCommunityElderlyOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:column width="40" uuid="64380ca8-f78d-4d05-88c3-a6be2d8834a2">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column17"/>
+							<jr:columnHeader style="Table_CH" height="50" rowSpan="2">
+								<staticText>
+									<reportElement x="0" y="0" width="40" height="50" uuid="a2b84f45-2afa-47c6-8279-e08827c0f21d"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle"/>
+									<text><![CDATA[Total]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField>
+									<reportElement x="0" y="0" width="40" height="30" uuid="24fc4244-119c-4b32-9178-8636d1100433"/>
+									<textElement textAlignment="Right"/>
+									<textFieldExpression><![CDATA[$F{hostCommunityInfantMale}+$F{hostCommunityInfantFemale}+$F{hostCommunityInfantOther}+$F{hostCommunityNNAMale}+$F{hostCommunityNNAFemale}+$F{hostCommunityNNAOther}+$F{hostCommunityAdultMale}+$F{hostCommunityAdultFemale}+$F{hostCommunityAdultOther}+$F{hostCommunityElderlyMale}+$F{hostCommunityElderlyFemale}+$F{hostCommunityElderlyOther}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:columnGroup width="520" uuid="4796b40f-d4e3-4ba8-a15a-d26a6c987292">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [13]"/>
+						<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="480" height="20" uuid="62a25bb2-7513-4f2e-b555-06c50fd214bd"/>
+								<textElement textAlignment="Center"/>
+								<text><![CDATA[Otros de interés]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnGroup width="120" uuid="bee089e0-f6a9-46a9-b0e2-5ee830e63cdc">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="74b5681f-fdc1-4da0-9c57-32a35ac7820e"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Infantes]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="bd381129-212e-41c7-88e3-af5b430c1cf9">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="ae7f118e-8bb3-4079-b284-a3cea3f0481e"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="adfb7d0d-c350-4f52-bcef-9d06faf3e0c3"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{othersOfInterestInfantMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="d5e6d27e-091d-4ab0-b450-6d79feeddd07">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="fd6de1b1-e6ba-4f24-92d4-406201dcbe2f"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="3d0b0fc0-678f-48f2-8bdd-8385f252c765"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{othersOfInterestInfantFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="1385fe12-c38a-4c29-941d-5633affcbdab">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="6a684aa4-9e22-4600-837d-291e13434989"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="aa12cbd9-edc3-4b4f-b7eb-78267a30a1dd"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{othersOfInterestInfantOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:columnGroup width="120" uuid="0bee5539-749e-4c67-a52d-a19ffabb9e3b">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="0212e9e0-a8b4-4ac8-aae3-bf814b2a6294"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Niños, niñas y adolecentes]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="2d705803-f5be-4fa3-9fa5-6f2b5a0578d7">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="e07337a7-6636-4af1-b550-020edaf094ef"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="10a8878d-e181-4c41-8c66-5962f05e86ba"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{othersOfInterestNNAMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="6a6dc660-adbc-4595-ae13-a675f8479db0">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="4e8c1721-6d7f-46b0-b852-0f7d4d3a13e8"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="8ce8e028-05d4-49a7-b5b9-eb5c14358295"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{othersOfInterestNNAFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="5d861fa1-1a23-4ea0-a698-57a8e1a7a200">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="05e8de90-2baf-4627-b9ae-0ca8fde68aae"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="5d9659d4-3111-4a50-8c80-5abdf52080f1"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{othersOfInterestNNAOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:columnGroup width="120" uuid="b63b8b19-72a7-4327-998b-7329bb280984">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="c2442eb7-e086-4731-b66a-7d17b0645ede"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Adultos]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="676d1588-5111-401c-a939-1415c59844c0">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="2802e3b8-3310-49b3-9ea2-12ac9d86c330"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="47866c51-e264-4273-9bcd-925d393c197b"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{othersOfInterestAdultMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="e5a43238-c944-458b-9aed-3b330b4335d5">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="b4d144e3-275a-4d46-9a34-df1927bc64ac"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="613cc676-15e0-4822-9c83-9f2d37dcd17c"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{othersOfInterestAdultFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="aeac07cd-a088-49a5-80cd-5c5ba9ea8fc1">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="b09cef4b-e163-4dfd-80f2-5fa7e5e51980"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="066a22be-92f1-4816-826f-8bcaa491f451"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{othersOfInterestAdultOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:columnGroup width="120" uuid="ec1341f4-ca6a-4c60-a34c-30e3fcc5b32c">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="120" height="30" uuid="ebff0848-73f9-49f2-bf68-d78ecff13560"/>
+									<textElement textAlignment="Center"/>
+									<text><![CDATA[Adultos Mayores]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:column width="40" uuid="24ed96a0-ca38-4ff2-85d1-88fcc74f3915">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="ae2a0c83-84c4-4f62-91e7-2788ba64c0f4"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[M]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="a88b5419-51ab-4e32-bc1d-a7f85db0b192"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{othersOfInterestElderlyMale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="444400d5-f2fe-4cd7-826a-415d008f316b">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="9f08ae27-a566-4612-b4d7-5d385d5230e9"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[F]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="d5e5bc30-df19-4ed9-a614-680ce145f11b"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{othersOfInterestElderlyFemale}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="dc4791bc-33e9-4ee3-a350-c93e8b56733b">
+								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
+								<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="20" uuid="10e77611-4438-4601-8379-ff7835c76f1a"/>
+										<textElement textAlignment="Center"/>
+										<text><![CDATA[O]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="Table_TD" height="30">
+									<textField>
+										<reportElement x="0" y="0" width="40" height="30" uuid="0d1e026a-4c6d-47c8-b610-65e28828df13"/>
+										<textElement textAlignment="Right"/>
+										<textFieldExpression><![CDATA[$F{othersOfInterestElderlyOther}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:column width="40" uuid="64380ca8-f78d-4d05-88c3-a6be2d8834a2">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column17"/>
+							<jr:columnHeader style="Table_CH" height="50" rowSpan="2">
+								<staticText>
+									<reportElement x="0" y="0" width="40" height="50" uuid="a2b84f45-2afa-47c6-8279-e08827c0f21d"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle"/>
+									<text><![CDATA[Total]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField>
+									<reportElement x="0" y="0" width="40" height="30" uuid="24fc4244-119c-4b32-9178-8636d1100433"/>
+									<textElement textAlignment="Right"/>
+									<textFieldExpression><![CDATA[$F{othersOfInterestInfantMale}+$F{othersOfInterestInfantFemale}+$F{othersOfInterestInfantOther}+$F{othersOfInterestNNAMale}+$F{othersOfInterestNNAFemale}+$F{othersOfInterestNNAOther}+$F{othersOfInterestAdultMale}+$F{othersOfInterestAdultFemale}+$F{othersOfInterestAdultOther}+$F{othersOfInterestElderlyMale}+$F{othersOfInterestElderlyFemale}+$F{othersOfInterestElderlyOther}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+</jasperReport>
