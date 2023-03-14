@@ -16,6 +16,7 @@ import {IndicatorTrendsComponent} from "./2022/indicator-trends/indicator-trends
 import {ProductIndicators2021Component} from "./2021/product-indicators2021/product-indicators2021.component";
 import {Beneficiaries2021Component} from "./2021/beneficiaries2021/beneficiaries2021.component";
 import {DataExportComponent} from "./data-export/data-export.component";
+import { PiIndicators2023Component } from './2023/pi-indicators2023/pi-indicators2023.component';
 
 const routes: Routes = [
     {
@@ -25,6 +26,8 @@ const routes: Routes = [
             {path: 'lateReports', component: LateReportsComponent},
             {path: 'lateReports', component: LateReportsComponent},
             {path: 'dataExport', component: DataExportComponent},
+            //2023
+            {path: '2023/piIndicators2023', component: PiIndicators2023Component},
             // 2022
             {path: '2022/shelter', component: ShelterComponent},
             {path: '2022/cbi', component: CbiComponent},
@@ -37,6 +40,7 @@ const routes: Routes = [
             {path: '2022/rbaIndicators', component: RbaIndicatorsComponent},
             {path: '2022/indicatorComparison', component: IndicatorComparisonComponent},
             {path: '2022/indicatorTrends', component: IndicatorTrendsComponent},
+            // 2021
             {path: '2021/productIndicators2021', component: ProductIndicators2021Component},
             {path: '2021/beneficiaries2021', component: Beneficiaries2021Component},
         ]

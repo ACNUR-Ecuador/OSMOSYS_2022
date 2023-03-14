@@ -27,7 +27,7 @@ import { Beneficiaries2021Component } from './2021/beneficiaries2021/beneficiari
 import { DataExportComponent } from './data-export/data-export.component';
 import {CardModule} from "primeng/card";
 import {SplitButtonModule} from "primeng/splitbutton";
-import { ProductIndicators2023Component } from './2023/product-indicators2023/product-indicators2023.component';
+import { PiIndicators2023Component } from './2023/pi-indicators2023/pi-indicators2023.component';
 
 
 @NgModule({
@@ -48,7 +48,7 @@ import { ProductIndicators2023Component } from './2023/product-indicators2023/pr
     ProductIndicators2021Component,
     Beneficiaries2021Component,
     DataExportComponent,
-    ProductIndicators2023Component
+    PiIndicators2023Component
   ],
     imports: [
         CommonModule,

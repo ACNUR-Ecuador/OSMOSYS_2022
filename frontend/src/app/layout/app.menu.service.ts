@@ -247,7 +247,14 @@ export class MenuService {
                     label: '2023',
                     icon: 'pi pi-chart-line',
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
-                    items: []
+                    items: [
+                        {
+                            label: 'Indicadores PI',
+                            icon: 'pi pi-fw pi-chart-bar',
+                            routerLink: ['/reports/2023/piIndicators2023'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                        },
+                    ]
                 },
                 {
                     label: '2022',
