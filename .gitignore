@@ -6,3 +6,6 @@
 /backend/target
 /wildfly-26.0.1.Final
 .vs
+/backend/.classpath
+.settings
+*.project
