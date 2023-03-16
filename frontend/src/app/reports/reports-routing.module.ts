@@ -18,6 +18,7 @@ import {Beneficiaries2021Component} from "./2021/beneficiaries2021/beneficiaries
 import {DataExportComponent} from "./data-export/data-export.component";
 import { PiIndicators2023Component } from './2023/pi-indicators2023/pi-indicators2023.component';
 import {ProductIndicators2023Component} from "./2023/product-indicators2023/product-indicators2023.component";
+import { TrendsIndicators2023Component } from './2023/trends-indicators2023/trends-indicators2023.component';
 
 const routes: Routes = [
     {
@@ -30,6 +31,7 @@ const routes: Routes = [
             //2023
             {path: '2023/productIndicators2023', component: ProductIndicators2023Component},
             {path: '2023/piIndicators2023', component: PiIndicators2023Component},
+            {path: '2023/trendsIndicators2023', component: TrendsIndicators2023Component},
             // 2022
             {path: '2022/shelter', component: ShelterComponent},
             {path: '2022/cbi', component: CbiComponent},
