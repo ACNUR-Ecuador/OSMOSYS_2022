@@ -17,6 +17,7 @@ import {ProductIndicators2021Component} from "./2021/product-indicators2021/prod
 import {Beneficiaries2021Component} from "./2021/beneficiaries2021/beneficiaries2021.component";
 import {DataExportComponent} from "./data-export/data-export.component";
 import { PiIndicators2023Component } from './2023/pi-indicators2023/pi-indicators2023.component';
+import {ProductIndicators2023Component} from "./2023/product-indicators2023/product-indicators2023.component";
 
 const routes: Routes = [
     {
@@ -27,6 +28,7 @@ const routes: Routes = [
             {path: 'lateReports', component: LateReportsComponent},
             {path: 'dataExport', component: DataExportComponent},
             //2023
+            {path: '2023/productIndicators2023', component: ProductIndicators2023Component},
             {path: '2023/piIndicators2023', component: PiIndicators2023Component},
             // 2022
             {path: '2022/shelter', component: ShelterComponent},

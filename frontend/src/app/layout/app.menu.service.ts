@@ -248,6 +248,12 @@ export class MenuService {
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
                     items: [
                         {
+                            label: 'Indicadores de Producto',
+                            icon: 'pi pi-fw pi-chart-bar',
+                            routerLink: ['/reports/2023/productIndicators2023'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                        },
+                        {
                             label: 'Indicadores PI',
                             icon: 'pi pi-fw pi-chart-bar',
                             routerLink: ['/reports/2023/piIndicators2023'],
