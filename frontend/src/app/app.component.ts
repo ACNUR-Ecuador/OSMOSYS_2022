@@ -5,6 +5,8 @@ import {EnumsService} from './services/enums.service';
 import {Angulartics2GoogleAnalytics} from 'angulartics2';
 import {CalendarOptions} from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import {VersionCheckService} from "./services/version-check.service";
+import {environment} from "../environments/environment";
 
 @Component({
     selector: 'app-root',
@@ -22,7 +24,8 @@ export class AppComponent implements OnInit {
         private primengConfig: PrimeNGConfig,
         private layoutService: LayoutService,
         private enumsService: EnumsService,
-        private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
+        private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
+        private versionCheckService: VersionCheckService) {
         angulartics2GoogleAnalytics.startTracking();
     }
 
@@ -46,6 +49,9 @@ export class AppComponent implements OnInit {
         this.applyScale();
 
         this.enumsService.loadcache();
+
+        this.versionCheckService.initVersionCheck(environment.versionCheckURL);
+        this.versionCheckService.checkVersion(environment.versionCheckURL);
     }
 
     applyScale() {
