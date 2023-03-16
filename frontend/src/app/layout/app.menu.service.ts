@@ -157,7 +157,6 @@ export class MenuService {
                         },
 
                     ]
-
                 },
                 {
                     label: 'Proyectos',
