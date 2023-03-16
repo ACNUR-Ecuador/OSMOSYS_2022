@@ -142,12 +142,12 @@ export class MenuService {
                     icon: 'pi pi-fw pi-cog',
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'],
                     items: [
-                        {
+/*                        {
                             label: 'Marcadores',
                             icon: 'pi pi-fw pi-cog',
                             routerLink: ['/administration/marker'],
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
-                        },
+                        },*/
                         // tslint:disable-next-line:max-line-length
                         {
                             label: 'Indicadores de Producto',
