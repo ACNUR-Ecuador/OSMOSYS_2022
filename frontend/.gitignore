@@ -39,8 +39,4 @@ testem.log
 Thumbs.db
 
 # Compiled files
-theme.css
-layout.css
-preloading.css
 *.map
-src/assets/layout/styles/theme/designer
