@@ -372,7 +372,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
                         severity: 'error',
                         summary: 'Error al guardar los cantones',
                         detail: error.error.message,
-                        life: 3000
+                        sticky: true
                     });
                 });
         }
