@@ -11,6 +11,7 @@ import org.unhcr.osmosys.model.enums.*;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -319,6 +320,7 @@ public class IndicatorValueService {
         }
         return r;
     }
+
     private List<IndicatorValue> createIndicatorValueDissagregationStandardForLocationAndGender(List<Canton> cantones) {
         List<IndicatorValue> r = new ArrayList<>();
         DissagregationType dt = DissagregationType.LUGAR_Y_DIVERSIDAD;
@@ -676,6 +678,7 @@ public class IndicatorValueService {
                         .flatMap(month -> month.getIndicatorValues().stream())
                         .collect(Collectors.toList());
         // voy por cada dessagregacion
+        List<IndicatorValue> unvalidatedCantos = new ArrayList<>();
         for (DissagregationAssignationToIndicatorExecution dissagregationAssignationToIndicatorExecution : dissagregationAssigments) {
 
             DissagregationType dissagregationType
@@ -723,11 +726,20 @@ public class IndicatorValueService {
 
                 }
                 // desactivo
+
                 for (Canton cantonToDissable : locationsToDissableIe) {
                     indicatorValuesDissagregation.stream()
                             .filter(indicatorValue ->
                                     cantonToDissable.getId().equals(indicatorValue.getLocation().getId()))
-                            .forEach(indicatorValue -> indicatorValue.setState(State.INACTIVO));
+                            .forEach(indicatorValue -> {
+                                        if (indicatorValue.getValue() != null && indicatorValue.getValue().compareTo(BigDecimal.ZERO) > 0) {
+                                            unvalidatedCantos.add(indicatorValue);
+                                        }
+                                        indicatorValue.setState(State.INACTIVO);
+
+                                    }
+                            );
+
                 }
                 // activo o desactivo segun estado de desagregacion
                 /*indicatorValuesDissagregation
@@ -739,6 +751,17 @@ public class IndicatorValueService {
                 }
             }
 
+        }
+        if (unvalidatedCantos.size() > 1) {
+            String unvalidMonths = unvalidatedCantos.stream().map(indicatorValue -> indicatorValue.getMonthEnum())
+                    .distinct().sorted(Comparator.comparingInt(MonthEnum::getOrder))
+                    .map(MonthEnum::getLabel).collect(Collectors.joining(", "));
+            String unvalidCantonts =unvalidatedCantos.stream().map(IndicatorValue::getLocation).distinct()
+                    .map(canton -> canton.getProvincia().getDescription()+"-"+canton.getDescription())
+                    .sorted().collect(Collectors.joining(", "));
+            String message= "No se puede eliminar los siguientes cantones porque tienen datos reportados : " +
+                    unvalidCantonts +" porque tienen datos reportados en los siguientes meses: "+unvalidMonths +" Para eliminar el caanton, primero vaya a estos meses y ponga en 0 (cero) los valores de estos cantos en los meses señalados. ";
+            throw new GeneralAppException(message, Response.Status.BAD_REQUEST);
         }
     }
 
