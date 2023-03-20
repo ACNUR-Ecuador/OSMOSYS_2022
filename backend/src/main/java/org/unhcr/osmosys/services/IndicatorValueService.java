@@ -760,7 +760,7 @@ public class IndicatorValueService {
                     .map(canton -> canton.getProvincia().getDescription()+"-"+canton.getDescription())
                     .sorted().collect(Collectors.joining(", "));
             String message= "No se puede eliminar los siguientes cantones porque tienen datos reportados : " +
-                    unvalidCantonts +" porque tienen datos reportados en los siguientes meses: "+unvalidMonths +" Para eliminar el caanton, primero vaya a estos meses y ponga en 0 (cero) los valores de estos cantos en los meses señalados. ";
+                    unvalidCantonts +" en los siguientes meses: "+unvalidMonths +" Para eliminar el cantón, primero vaya a estos meses y ponga en 0 (cero) los valores de estos cantones. ";
             throw new GeneralAppException(message, Response.Status.BAD_REQUEST);
         }
     }
