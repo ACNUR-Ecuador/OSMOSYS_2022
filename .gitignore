@@ -9,3 +9,4 @@
 /backend/.classpath
 .settings
 *.project
+/wildfly-17.0.1.Final/standalone/deployments
