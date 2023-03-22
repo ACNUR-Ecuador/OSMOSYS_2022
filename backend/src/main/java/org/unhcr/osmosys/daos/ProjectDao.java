@@ -3,6 +3,7 @@ package org.unhcr.osmosys.daos;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.model.User;
 import org.unhcr.osmosys.model.Project;
 import org.unhcr.osmosys.webServices.model.MonthStateWeb;
 import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
@@ -196,4 +197,13 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         return q.getResultList();
     }
 
+    public List<User> getFocalPointByPeriodId(Long periodId) {
+        String jpql = "SELECT DISTINCT o FROM Project pr " +
+                " inner join fetch pr.focalPoint o " +
+                "  WHERE o.state =:state and pr.period.id=:periodId";
+        Query q = getEntityManager().createQuery(jpql, User.class);
+        q.setParameter("periodId", periodId);
+        q.setParameter("state", State.ACTIVO);
+        return q.getResultList();
+    }
 }

@@ -733,6 +733,7 @@ public class IndicatorValueService {
                                     cantonToDissable.getId().equals(indicatorValue.getLocation().getId()))
                             .forEach(indicatorValue -> {
                                         if (indicatorValue.getValue() != null && indicatorValue.getValue().compareTo(BigDecimal.ZERO) > 0) {
+                                            LOGGER.info(indicatorValue.getValue().compareTo(BigDecimal.ZERO));
                                             unvalidatedCantos.add(indicatorValue);
                                         }
                                         indicatorValue.setState(State.INACTIVO);
@@ -752,8 +753,8 @@ public class IndicatorValueService {
             }
 
         }
-        if (unvalidatedCantos.size() > 1) {
-            String unvalidMonths = unvalidatedCantos.stream().map(indicatorValue -> indicatorValue.getMonthEnum())
+        if (unvalidatedCantos.size() > 0) {
+            String unvalidMonths = unvalidatedCantos.stream().map(IndicatorValue::getMonthEnum)
                     .distinct().sorted(Comparator.comparingInt(MonthEnum::getOrder))
                     .map(MonthEnum::getLabel).collect(Collectors.joining(", "));
             String unvalidCantonts =unvalidatedCantos.stream().map(IndicatorValue::getLocation).distinct()

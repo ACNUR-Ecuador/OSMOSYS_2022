@@ -3,6 +3,7 @@ package org.unhcr.osmosys.daos;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
+import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.Canton;
 
 import javax.ejb.Stateless;
@@ -15,6 +16,8 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 @Stateless
 public class CantonDao extends GenericDaoJpa<Canton, Long> {
+
+    private static final Logger LOGGER = Logger.getLogger(CantonDao.class);
     public CantonDao() {
         super(Canton.class, Long.class);
     }
@@ -76,6 +79,7 @@ public class CantonDao extends GenericDaoJpa<Canton, Long> {
 
 
     public Canton discoverCanton(String codeCanton, String descriptionCanton, String codeProvincia, String descriptionProvincia) throws GeneralAppException {
+        LOGGER.info(descriptionCanton+" "+descriptionProvincia+" "+codeCanton);
         String jpql = "SELECT DISTINCT o FROM Canton o " +
                 "WHERE " +
                 " o.code =:codeCanton" +
@@ -84,9 +88,11 @@ public class CantonDao extends GenericDaoJpa<Canton, Long> {
                 " and lower(o.provincia.description) = lower(:descriptionProvincia)" +
                 " )";
         Query q = getEntityManager().createQuery(jpql, Canton.class);
-        q.setParameter("descriptionCanton", descriptionCanton);
-        q.setParameter("descriptionProvincia", descriptionProvincia);
-        q.setParameter("codeCanton", codeCanton);
+        q.setParameter("descriptionCanton", descriptionCanton!=null?descriptionCanton:"");
+        q.setParameter("descriptionProvincia", descriptionProvincia!=null?descriptionProvincia:"");
+        q.setParameter("codeCanton", codeCanton!=null?codeCanton:"");
+
+
 
         try {
             return (Canton) q.getSingleResult();

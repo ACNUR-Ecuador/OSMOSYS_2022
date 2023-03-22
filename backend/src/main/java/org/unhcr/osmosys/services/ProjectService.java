@@ -321,4 +321,7 @@ public class ProjectService {
         return this.projectDao.getByCode(code);
     }
 
+    public List<User> getFocalPointByPeriodId(Long periodId) {
+        return this.projectDao.getFocalPointByPeriodId(periodId);
+    }
 }
