@@ -938,7 +938,7 @@ public class IndicatorExecutionService {
         // existe indicador para esta officina para
         IndicatorExecution assimentFound = this.indicatorExecutionDao.getByIndicatorIdAndOfficeId(indicatorExecutionWeb.getIndicator().getId(), indicatorExecutionWeb.getReportingOffice().getId());
         if (assimentFound != null && !assimentFound.getId().equals(indicatorExecutionWeb.getId())) {
-            throw new GeneralAppException("Este indicador ya se encuentra asignado para esta oficina. "+indicatorExecutionWeb.getIndicator().getCode(), Response.Status.BAD_REQUEST);
+            throw new GeneralAppException("Este indicador ya se encuentra asignado para esta oficina. " + indicatorExecutionWeb.getIndicator().getCode(), Response.Status.BAD_REQUEST);
         }
 
     }
@@ -1268,6 +1268,15 @@ public class IndicatorExecutionService {
             this.updateIndicatorExecutionTotals(indicatorExecution);
             this.saveOrUpdate(indicatorExecution);
         }
+    }
+
+    public List<User> getFocalPointByPeriodId(Long periodId) {
+        return this.indicatorExecutionDao.getFocalPointByPeriodId(periodId);
+    }
+
+    public List<IndicatorExecutionWeb> getDirectImplementationsIndicatorExecutionsBySupervisorId(Long periodId, Long supervisorId) throws GeneralAppException {
+        List<IndicatorExecution> r = this.indicatorExecutionDao.getDirectImplementationsIndicatorExecutionsBySupervisorId(periodId, supervisorId);
+        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(r, false);
     }
 }
 

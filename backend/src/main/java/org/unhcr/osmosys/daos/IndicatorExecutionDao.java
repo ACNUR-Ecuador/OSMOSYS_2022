@@ -2,6 +2,7 @@ package org.unhcr.osmosys.daos;
 
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.model.User;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.IndicatorExecution;
 import org.unhcr.osmosys.model.enums.Frecuency;
@@ -166,6 +167,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         q.setParameter("periodId", periodId);
         return q.getResultList();
     }
+
     public List<IndicatorExecution> getActivePartnersIndicatorExecutionsByProjectId(Long projectId) {
         String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
                 " left join fetch fpu.organization fpuorg " +
@@ -388,7 +390,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " WHERE o.id in (:ids)";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("ids", ids);
-        return  q.getResultList();
+        return q.getResultList();
     }
 
     public List<Long> getByQuartersIds(List<Long> quartersIds) {
@@ -438,6 +440,37 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         q.setParameter("generalType", generalType);
         q.setParameter("monthsToControl", monthsToControl);
         q.setParameter("year", yearToControl);
+        return q.getResultList();
+    }
+
+    public List<User> getFocalPointByPeriodId(Long periodId) {
+        String jpql = "SELECT DISTINCT u FROM IndicatorExecution o " +
+                " inner join o.supervisorUser u " +
+                " WHERE u.id is not null " +
+                " and o.period.id=:periodId " +
+                " and o.state =:state ";
+        Query q = getEntityManager().createQuery(jpql, User.class);
+        q.setParameter("periodId", periodId);
+        q.setParameter("state", State.ACTIVO);
+        return q.getResultList();
+    }
+
+    public List<IndicatorExecution> getDirectImplementationsIndicatorExecutionsBySupervisorId(Long periodId, Long supervisorId) {
+        String jpql =
+                IndicatorExecutionDao.jpqlDirectImplementationIndicators +
+                        " WHERE p.id = :periodId " +
+                        " and o.indicatorType <> :generalType " +
+                        " and o.project.id is null " +
+                        " and su.id =:supervisorId " +
+                        " and o.state =:state " +
+                        " and q.state =:state " +
+                        " and m.state =:state ";
+
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("periodId", periodId);
+        q.setParameter("generalType", IndicatorType.GENERAL);
+        q.setParameter("supervisorId", supervisorId);
+        q.setParameter("state", State.ACTIVO);
         return q.getResultList();
     }
 

@@ -8,8 +8,6 @@ import org.jboss.logging.Logger;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.annotation.PostConstruct;
-import javax.ejb.AsyncResult;
-import javax.ejb.Asynchronous;
 import javax.ejb.LocalBean;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -27,7 +25,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.Future;
 
 @ApplicationScoped
 @LocalBean
@@ -93,7 +90,7 @@ public class EmailService {
             MimeBodyPart mimeBodyPart = new MimeBodyPart();
 
             message.setContent(messageText, "text/html; charset=UTF-8");
-            Transport.send(message);
+            //Transport.send(message);
             LOGGER.debug("----------------enviado");
 
         } catch (Exception e) {

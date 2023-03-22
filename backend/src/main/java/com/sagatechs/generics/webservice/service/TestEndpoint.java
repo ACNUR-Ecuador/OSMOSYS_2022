@@ -15,7 +15,7 @@ import org.unhcr.osmosys.model.enums.AreaType;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.model.enums.TimeStateEnum;
-import org.unhcr.osmosys.reports.service.MessageAlertService;
+import org.unhcr.osmosys.reports.service.MessageAlertServiceV2;
 import org.unhcr.osmosys.reports.service.ReportService;
 import org.unhcr.osmosys.services.*;
 import org.unhcr.osmosys.services.dataImport.ProjectIndicatorsImportService;
@@ -78,7 +78,7 @@ public class TestEndpoint {
     CubeService cubeService;
 
     @Inject
-    MessageAlertService messageAlertService;
+    MessageAlertServiceV2 messageAlertService;
 
     @Inject
     GeneralIndicatorService generalIndicatorService;
@@ -128,37 +128,15 @@ public class TestEndpoint {
         return "ya";
     }
 
-    @Path("sendAlertReviewToDirectImplementation")
-    @GET
-    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
-    public String sendAlertReviewToDirectImplementation() throws GeneralAppException {
-        this.messageAlertService.sendAlertReviewToDirectImplementation();
-        return "ya";
-    }
-
-    @Path("sendAlertReviewToPartnersFocalPoints")
-    @GET
-    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
-    public String sendAlertReviewToPartnersFocalPoints() throws GeneralAppException {
-        this.messageAlertService.sendAlertReviewToPartnersFocalPoints();
-        return "ya";
-    }
 
     @Path("sendAlertToPartners")
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
     public String sendAlertToPartners() throws GeneralAppException {
-        this.messageAlertService.sendAlertToPartners();
+        this.messageAlertService.sendDirectImplementationAlertsToSupervisors();
         return "ya";
     }
 
-    @Path("sendAlertToDirectImplementation")
-    @GET
-    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
-    public String sendAlertToDirectImplementation() throws GeneralAppException {
-        this.messageAlertService.sendAlertToDirectImplementation();
-        return "ya";
-    }
 
     @Path("createGenerals")
     @GET

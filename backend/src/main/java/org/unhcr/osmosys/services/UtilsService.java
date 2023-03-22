@@ -3,6 +3,7 @@ package org.unhcr.osmosys.services;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.utils.DateUtils;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.enums.Frecuency;
 import org.unhcr.osmosys.model.enums.TimeStateEnum;
@@ -12,6 +13,7 @@ import org.unhcr.osmosys.webServices.model.MonthWeb;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -106,6 +108,24 @@ public class UtilsService {
                 return TimeStateEnum.INVALID;
             } else {
                 return TimeStateEnum.NO_TIME;
+            }
+        }
+    }
+
+    public ByteArrayOutputStream getByteArrayOutputStreamFromWorkbook(SXSSFWorkbook workbook) throws GeneralAppException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+            workbook.write(bos);
+
+            return bos;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new GeneralAppException("Error al Generar el reporte", Response.Status.INTERNAL_SERVER_ERROR);
+        } finally {
+            try {
+                bos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

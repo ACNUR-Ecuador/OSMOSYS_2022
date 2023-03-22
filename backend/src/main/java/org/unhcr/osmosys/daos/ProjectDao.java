@@ -199,7 +199,7 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
 
     public List<User> getFocalPointByPeriodId(Long periodId) {
         String jpql = "SELECT DISTINCT o FROM Project pr " +
-                " inner join fetch pr.focalPoint o " +
+                " inner join pr.focalPoint o " +
                 "  WHERE o.state =:state and pr.period.id=:periodId";
         Query q = getEntityManager().createQuery(jpql, User.class);
         q.setParameter("periodId", periodId);
