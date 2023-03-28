@@ -14,13 +14,12 @@ import org.unhcr.osmosys.model.cubeDTOs.FactDTO;
 import org.unhcr.osmosys.model.enums.AreaType;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.enums.MonthEnum;
-import org.unhcr.osmosys.model.enums.TimeStateEnum;
-import org.unhcr.osmosys.reports.service.MessageAlertServiceV2;
 import org.unhcr.osmosys.reports.service.ReportService;
 import org.unhcr.osmosys.services.*;
 import org.unhcr.osmosys.services.dataImport.ProjectIndicatorsImportService;
 import org.unhcr.osmosys.services.dataImport.ProjectsImportService;
 import org.unhcr.osmosys.services.dataImport.StatementImportService;
+import org.unhcr.osmosys.services.scheduledTasks.MessageReminderService;
 import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
@@ -45,7 +44,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 
 @SuppressWarnings("ALL")
@@ -78,7 +76,7 @@ public class TestEndpoint {
     CubeService cubeService;
 
     @Inject
-    MessageAlertServiceV2 messageAlertService;
+    MessageReminderService messageReminderService;
 
     @Inject
     GeneralIndicatorService generalIndicatorService;
@@ -100,6 +98,8 @@ public class TestEndpoint {
     ProjectsImportService projectsImportService;
     @Inject
     ProjectIndicatorsImportService projectIndicatorsImportService;
+    @Inject
+    MonthService monthService;
 
     @Path("test")
     @GET
@@ -107,23 +107,7 @@ public class TestEndpoint {
     public String test2() throws GeneralAppException {
         // this.importService.catalogImport();
         LOGGER.info("inicio");
-        List<IndicatorExecutionWeb> ie = this.indicatorExecutionService.getActiveProjectIndicatorExecutionsByPeriodId(2l);
-        LOGGER.info(ie.size());
-        List<IndicatorExecutionWeb> lateIe = ie.stream().filter(indicatorExecutionWeb -> {
-            return indicatorExecutionWeb.getLate().equals(TimeStateEnum.LATE);
-        }).collect(Collectors.toList());
-
-
-        for (IndicatorExecutionWeb indicatorExecutionWeb : lateIe) {
-            LOGGER.info(indicatorExecutionWeb.getProject().getOrganization().getAcronym() + indicatorExecutionWeb.getIndicator().getCode() + "-" + indicatorExecutionWeb.getLate());
-            List<MonthWeb> m = indicatorExecutionWeb.getQuarters().stream().
-                    flatMap(quarter -> quarter.getMonths().stream())
-                    .filter(monthWeb -> monthWeb.getLate().equals(TimeStateEnum.LATE))
-                    .sorted((o1, o2) -> o1.getOrder() - o2.getOrder()).
-                    collect(Collectors.toList());
-            LOGGER.info(m.stream().map(MonthWeb::getMonth).map(MonthEnum::getLabel).collect(Collectors.joining(",", "[", "]")));
-
-        }
+        this.monthService.blockMonthsByYearAndoMonth(2023, MonthEnum.MARZO);
 
         return "ya";
     }
@@ -133,7 +117,7 @@ public class TestEndpoint {
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
     public String sendAlertToPartners() throws GeneralAppException {
-        this.messageAlertService.sendDirectImplementationAlertsToSupervisors();
+        this.messageReminderService.sendDirectImplementationReminders();
         return "ya";
     }
 

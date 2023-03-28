@@ -5,9 +5,6 @@ import org.jboss.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.DependsOn;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
 import javax.enterprise.concurrent.LastExecution;
 import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 import javax.enterprise.concurrent.Trigger;
@@ -15,11 +12,12 @@ import javax.inject.Inject;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.concurrent.ScheduledFuture;
 
-@Startup
+/*@Startup
 @Singleton
-@DependsOn("AppConfigurationService")
+@DependsOn("AppConfigurationService")*/
 public class ScheduledTasksTriger {
     private final static Logger LOGGER = Logger.getLogger(ScheduledTasksTriger.class);
     @Resource
@@ -37,19 +35,29 @@ public class ScheduledTasksTriger {
 
         // this.scheduler.scheduleAtFixedRate(this::run, 500, 500, TimeUnit.MILLISECONDS);
         Trigger trigg = new Trigger() {
+
+
             @Override
             public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
                 LOGGER.info("1");
+                LOGGER.info(lastExecutionInfo);
+                LOGGER.info(taskScheduledTime);
                 Calendar now = Calendar.getInstance();
                 SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                 LOGGER.info(formatter.format(now.getTime()));
-                if(now.get(Calendar.DAY_OF_MONTH)>limitreport){
+/*                if(now.get(Calendar.DAY_OF_MONTH)>limitreport){
                     now.add(Calendar.MONTH,1);
+                }*/
+                now.set(Calendar.DAY_OF_MONTH, 11);
+                now.set(Calendar.HOUR_OF_DAY, 3);
+                if (lastExecutionInfo == null) {
+                    now.set(Calendar.MINUTE, 4);
+                }else {
+                    Calendar calendar= GregorianCalendar.getInstance();
+                    calendar.setTime(lastExecutionInfo.getRunStart());
+                    now.set(Calendar.MINUTE,calendar.get(Calendar.MINUTE)+2);
                 }
-                now.set(Calendar.DAY_OF_MONTH,limitreport+1);
-                now.set(Calendar.HOUR_OF_DAY,23);
-                now.set(Calendar.MINUTE,34);
-                now.set(Calendar.SECOND,30);
+                now.set(Calendar.SECOND, 0);
 
                 LOGGER.info(formatter.format(now.getTime()));
                 return now.getTime();

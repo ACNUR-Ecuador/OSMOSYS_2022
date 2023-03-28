@@ -576,6 +576,10 @@ public class UserService implements Serializable {
         return this.userDao.getActivePartnerUsers(organizationId);
     }
 
+    public List<User> getFocalPointsByOrganizationIdAndPeriodId(Long organizationId, Long periodId) {
+        return this.userDao.getFocalPointsByOrganizationIdAndPeriodId(organizationId,periodId);
+    }
+
     public List<User> getActiveResponsableDirectImplementationUsers(Long periodId) {
         return this.userDao.getActiveResponsableDirectImplementationUsers(periodId);
     }

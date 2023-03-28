@@ -2,6 +2,7 @@ package com.sagatechs.generics.appConfiguration;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jboss.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -40,6 +41,7 @@ public class AppConfigurationService {
         if (CollectionUtils.isNotEmpty(appConfs)) {
             for (AppConfiguration appConfiguration : appConfs) {
                 appConfigurationCache.put(appConfiguration.getClave(), appConfiguration);
+                LOGGER.info(appConfiguration.getClave()+":"+ appConfiguration);
             }
         }
     }
@@ -82,17 +84,11 @@ public class AppConfigurationService {
 
     }
 
-    public Integer getAlertDays() {
-        String valusS = this.findValorByClave(AppConfigurationKey.ALERT_DAYS);
-        if(StringUtils.isBlank(valusS)){
-            return null;
-        }else {
-            return Integer.parseInt(valusS);
-        }
-    }
+
 
     public Integer getReportLimitDay() {
         String valusS = this.findValorByClave(AppConfigurationKey.REPORT_LIMIT);
+
         if(StringUtils.isBlank(valusS)){
             return null;
         }else {
@@ -100,9 +96,21 @@ public class AppConfigurationService {
         }
     }
 
-    private List<Integer> getWarningDays() {
-        return this.getLisOfNumberFromString(this.findValorByClave(AppConfigurationKey.WARNING_DAYS));
+    public List<Integer> getReminderDays() {
+        String valusS = this.findValorByClave(AppConfigurationKey.REMINDER_DAYS);
+
+        if(StringUtils.isBlank(valusS)){
+            return null;
+        }else {
+            try {
+                return Arrays.stream(valusS.split(",")).map(String::trim).map(Integer::parseInt).sorted().collect(Collectors.toList());
+            } catch (Exception e) {
+                LOGGER.error(ExceptionUtils.getRootCause(e));
+                return new ArrayList<>();
+            }
+        }
     }
+
     private List<Integer> getLisOfNumberFromString(String stringList ){
         List<Integer> result = new ArrayList<>();
         if (StringUtils.isBlank(stringList)) {

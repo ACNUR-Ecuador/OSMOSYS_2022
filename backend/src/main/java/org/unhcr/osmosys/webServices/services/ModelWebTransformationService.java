@@ -1166,7 +1166,7 @@ public class ModelWebTransformationService {
     }
 
     public List<MonthWeb> getLateIndicatorExecutionMonths(IndicatorExecutionWeb indicatorExecution) throws GeneralAppException {
-        Integer alertDays = this.appConfigurationService.getAlertDays();
+        Integer alertDays = this.appConfigurationService.getReportLimitDay();
         LocalDate today = LocalDate.now();
 
         int todayYear = today.getYear();

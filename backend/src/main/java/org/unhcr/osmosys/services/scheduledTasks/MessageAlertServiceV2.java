@@ -1,4 +1,4 @@
-package org.unhcr.osmosys.reports.service;
+package org.unhcr.osmosys.services.scheduledTasks;
 
 import com.sagatechs.generics.appConfiguration.AppConfigurationKey;
 import com.sagatechs.generics.appConfiguration.AppConfigurationService;
@@ -63,7 +63,6 @@ public class MessageAlertServiceV2 {
 
     public void sendPartnersAlertsToFocalPoints() throws GeneralAppException {
         Period currentPeriod = this.periodService.getByYear(this.utilsService.getCurrentYear());
-        Integer currentMonthYearOrder = this.utilsService.getCurrentMonthYearOrder();
         // obtengo los focal points de este periodo
         List<User> focalPoints = this.projectService.getFocalPointByPeriodId(currentPeriod.getId());
         List<String> imProgramsEmail = new ArrayList<>();
@@ -145,7 +144,6 @@ public class MessageAlertServiceV2 {
 
     public void sendDirectImplementationAlertsToSupervisors() throws GeneralAppException {
         Period currentPeriod = this.periodService.getByYear(this.utilsService.getCurrentYear());
-        Integer currentMonthYearOrder = this.utilsService.getCurrentMonthYearOrder();
         List<String> imProgramsEmail = new ArrayList<>();
         if (StringUtils.isNotBlank(this.appConfigurationService.findValorByClave(AppConfigurationKey.IM_EMAIL))) {
             imProgramsEmail.add(this.appConfigurationService.findValorByClave(AppConfigurationKey.IM_EMAIL));
@@ -191,8 +189,8 @@ public class MessageAlertServiceV2 {
             }
             copyAddresses.addAll(alerts.stream().map(DIAlertDTO::getResponsableEmail).distinct().collect(Collectors.toList()));
             String message = this.getDIAlertMessage(supervisor.getName(), alerts.stream().map(DIAlertDTO::getResponsableName).distinct().collect(Collectors.joining(", ")));
-            // this.emailService.sendEmailMessageWithAttachment(supervisor.getEmail(), copyAddresses.stream().collect(Collectors.joining(", ")), "Retrasos en reporte de indicadores - OSMOSYS", message, report, "reporte_retrasos.xlsx");
-            this.emailService.sendEmailMessageWithAttachment("salazart@unhcr.org", "salazart@unhcr.org", "Retrasos en reporte de indicadores - OSMOSYS", message, report, "reporte_retrasos.xlsx");
+            this.emailService.sendEmailMessageWithAttachment(supervisor.getEmail(), copyAddresses.stream().collect(Collectors.joining(", ")), "Retrasos en reporte de indicadores - OSMOSYS", message, report, "reporte_retrasos.xlsx");
+            //this.emailService.sendEmailMessageWithAttachment("salazart@unhcr.org", "salazart@unhcr.org", "Retrasos en reporte de indicadores - OSMOSYS", message, report, "reporte_retrasos.xlsx");
         }
 
     }
@@ -313,6 +311,7 @@ public class MessageAlertServiceV2 {
 
     }
 
+    @SuppressWarnings("InnerClassMayBeStatic")
     class PartnerAlertDTO {
         String projectName;
         String partner;
@@ -372,6 +371,7 @@ public class MessageAlertServiceV2 {
         }
     }
 
+    @SuppressWarnings("InnerClassMayBeStatic")
     class DIAlertDTO {
 
         String office;

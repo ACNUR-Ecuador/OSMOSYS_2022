@@ -6,10 +6,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.MonthDao;
 import org.unhcr.osmosys.model.*;
-import org.unhcr.osmosys.model.enums.DissagregationType;
-import org.unhcr.osmosys.model.enums.MonthEnum;
-import org.unhcr.osmosys.model.enums.QuarterEnum;
-import org.unhcr.osmosys.model.enums.TotalIndicatorCalculationType;
+import org.unhcr.osmosys.model.enums.*;
 import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
@@ -309,5 +306,77 @@ public class MonthService {
             monthE.setBlockUpdate(blockUpdate);
             this.saveOrUpdate(monthE);
         }
+    }
+
+    public void blockMonthsAutomaticaly() throws GeneralAppException {
+        int currentYear = this.utilsService.getCurrentYear();
+        // mes pasado
+        int currentMonth = this.utilsService.getCurrentMonthYearOrder()-1;
+        // si es enero, regreso a diciembre
+        if (currentMonth < 1) {
+            currentYear = currentYear - 1;
+            currentMonth = 1;
+        }
+        this.blockMonthsByYearAndoMonth(currentYear,MonthEnum.getMonthByNumber(currentMonth));
+
+    }
+    public void blockMonthsByYearAndoMonth(int year, MonthEnum month) throws GeneralAppException {
+
+        int currentYear = year;
+        // mes pasado
+        int currentMonth = month.getOrder();
+        // si es enero, regreso a diciembre
+
+
+        List<Month> monthsToUpdate = new ArrayList<>();
+
+        List<Month> unlockedMonthsMonthly = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(month, currentYear, false, Frecuency.MENSUAL);
+        unlockedMonthsMonthly.forEach(month1 -> month1.setBlockUpdate(true));
+        monthsToUpdate.addAll(unlockedMonthsMonthly);
+
+        // quarterly
+        if (currentMonth == 3 || currentMonth == 6 || currentMonth == 9 || currentMonth == 12) {
+            // this is last month of quarter
+            QuarterEnum quarter = MonthEnum.getQuarterByMonthNumber(currentMonth);
+            List<MonthEnum> monthsOfQuarter = Arrays.stream(MonthEnum.values()).filter(monthEnum -> monthEnum.getQuarterEnum().equals(quarter)).sorted((o1, o2) -> o2.getOrder() - o1.getOrder()).collect(Collectors.toList());
+            for (MonthEnum monthEnum : monthsOfQuarter) {
+                List<Month> unlockedMonthsQuarterM = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, currentYear, false, Frecuency.TRIMESTRAL);
+                unlockedMonthsQuarterM.forEach(month1 -> month1.setBlockUpdate(true));
+                List<Month> unlockedMonthsQuarterMGI = this.monthDao.getActiveGeneralIndicatorMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, currentYear, false);
+                unlockedMonthsQuarterMGI.forEach(month1 -> month1.setBlockUpdate(true));
+                monthsToUpdate.addAll(unlockedMonthsQuarterMGI);
+            }
+        }
+
+        // hlaf year
+        if (currentMonth == 6 || currentMonth == 12) {
+            // this is last month of quarter
+            List<MonthEnum> monthsOfSemester;
+            if (currentMonth == 6) {
+                monthsOfSemester = new ArrayList<>(Arrays.asList(MonthEnum.ENERO, MonthEnum.FEBRERO, MonthEnum.MARZO, MonthEnum.ABRIL, MonthEnum.MAYO, MonthEnum.JUNIO));
+            } else {
+                monthsOfSemester = new ArrayList<>(Arrays.asList(MonthEnum.JULIO, MonthEnum.AGOSTO, MonthEnum.SEPTIEMBRE, MonthEnum.OCTUBRE, MonthEnum.NOVIEMBRE, MonthEnum.DICIEMBRE));
+            }
+            for (MonthEnum monthEnum : monthsOfSemester) {
+                List<Month> unlockedMonthsSemesterM = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, currentYear, false, Frecuency.SEMESTRAL);
+                unlockedMonthsSemesterM.forEach(month1 -> month1.setBlockUpdate(true));
+                monthsToUpdate.addAll(unlockedMonthsSemesterM);
+            }
+        }
+
+        // annual
+        if (currentMonth == 12) {
+            // this is last month of year
+            for (MonthEnum monthEnum : MonthEnum.values()) {
+                List<Month> unlockedMonthsAnnual = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, currentYear, false, Frecuency.ANUAL);
+                unlockedMonthsAnnual.forEach(month1 -> month1.setBlockUpdate(true));
+                monthsToUpdate.addAll(unlockedMonthsAnnual);
+            }
+        }
+
+        for (Month month1 : monthsToUpdate) {
+            this.saveOrUpdate(month1);
+        }
+
     }
 }

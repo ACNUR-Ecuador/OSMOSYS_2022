@@ -111,4 +111,8 @@ public class OrganizacionService {
     public Organization getByAcronym(String acronym) throws GeneralAppException {
         return this.organizationDao.getByAcronym(acronym);
     }
+
+    public List<Organization> getByPeriodId(Long periodId) {
+        return this.organizationDao.getByPeriodId(periodId);
+    }
 }

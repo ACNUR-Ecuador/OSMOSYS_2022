@@ -74,4 +74,18 @@ public class OrganizationDao extends GenericDaoJpa<Organization, Long> {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public List<Organization> getByPeriodId(Long periodId) {
+
+        String jpql = "SELECT DISTINCT o FROM Project pr " +
+                " inner join pr.organization o " +
+                " WHERE pr.state = :state" +
+                " and o.state=:state " +
+                " and pr.period.id =:periodId";
+        Query q = getEntityManager().createQuery(jpql, Organization.class);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("periodId", periodId);
+        return q.getResultList();
+    }
+
 }

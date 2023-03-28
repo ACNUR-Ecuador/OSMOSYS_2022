@@ -72,8 +72,8 @@ public class EmailService {
 
     public void sendEmailMessage(String destinationAdress, String destinationCopyAdress, String subject, String messageText) {
         try {
-            //destinationAdress = "salazart@unhcr.org";
-            // destinationCopyAdress = null;
+            destinationAdress = "salazart@unhcr.org";
+             destinationCopyAdress = null;
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(adminEmailAdress));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinationAdress));
@@ -90,7 +90,7 @@ public class EmailService {
             MimeBodyPart mimeBodyPart = new MimeBodyPart();
 
             message.setContent(messageText, "text/html; charset=UTF-8");
-            //Transport.send(message);
+            Transport.send(message);
             LOGGER.debug("----------------enviado");
 
         } catch (Exception e) {
@@ -100,8 +100,8 @@ public class EmailService {
     }
     public void sendEmailMessageWithAttachment(String destinationAdress, String destinationCopyAdress, String subject, String messageText, ByteArrayOutputStream attachment, String filename) {
         try {
-            // destinationAdress = "salazart@unhcr.org";
-            // destinationCopyAdress = null;
+            destinationAdress = "salazart@unhcr.org";
+            destinationCopyAdress = null;
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(adminEmailAdress));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinationAdress));

@@ -5,6 +5,7 @@ import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.CustomDissagregationAssignationToIndicatorExecution;
 import org.unhcr.osmosys.model.DissagregationAssignationToIndicatorExecution;
 import org.unhcr.osmosys.model.Month;
+import org.unhcr.osmosys.model.enums.Frecuency;
 import org.unhcr.osmosys.model.enums.MonthEnum;
 
 import javax.ejb.Stateless;
@@ -109,6 +110,51 @@ public class MonthDao extends GenericDaoJpa<Month, Long> {
         q.setParameter("monthE", month);
         q.setParameter("yearI", year);
         q.setParameter("projectId", projectId);
+        return q.getResultList();
+    }
+
+    public List<Month> getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(MonthEnum month, int year, boolean blocked, Frecuency frecuency) {
+        String jpql = "SELECT DISTINCT m " +
+                " FROM Month m" +
+                " inner join m.quarter q " +
+                " inner join q.indicatorExecution ie " +
+                " inner join ie.indicator i" +
+                " where " +
+                " m.month = :monthE " +
+                " and m.blockUpdate =:blocked" +
+                " and m.year = :yearI " +
+                " and ie.state = :state " +
+                " and q.state = :state " +
+                " and m.state = :state" +
+                " and i.frecuency=:frecuency ";
+        Query q = getEntityManager().createQuery(jpql, Month.class);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("monthE", month);
+        q.setParameter("yearI", year);
+        q.setParameter("blocked", blocked);
+        q.setParameter("frecuency", frecuency);
+        return q.getResultList();
+    }
+
+    public List<Month> getActiveGeneralIndicatorMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(MonthEnum month, int year, boolean blocked) {
+        String jpql = "SELECT DISTINCT m " +
+                " FROM Month m" +
+                " inner join m.quarter q " +
+                " inner join q.indicatorExecution ie " +
+                " inner join ie.period p " +
+                " where " +
+                " m.month = :monthE " +
+                " and m.blockUpdate =:blocked" +
+                " and ie.indicator is null " +
+                " and m.year = :yearI " +
+                " and ie.state = :state " +
+                " and q.state = :state " +
+                " and m.state = :state" ;
+        Query q = getEntityManager().createQuery(jpql, Month.class);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("monthE", month);
+        q.setParameter("yearI", year);
+        q.setParameter("blocked", blocked);
         return q.getResultList();
     }
 }

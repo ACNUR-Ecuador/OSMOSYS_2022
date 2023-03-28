@@ -79,12 +79,9 @@ public class AppDataConfigLlenadoAutomatico {
         instantiateConfigurationValues("path to folder files",
                 "path to folder files",
                 AppConfigurationKey.FILE_DIRECTORY, "FILE_DIRECTORY");
-        instantiateConfigurationValues("alert days to report of month, comma separeted ",
-                "alert days to report of month, comma separeted ",
-                AppConfigurationKey.ALERT_DAYS, "5");
-        instantiateConfigurationValues("rewiev days of month to report, comma separated",
-                "warning days of month to report, comma separated",
-                AppConfigurationKey.REVIEW_DAYS, "13");
+        instantiateConfigurationValues("Días en que se recuerda que se debe realizar el deporte",
+                "número del 1 al 30, separados por coma",
+                AppConfigurationKey.REMINDER_DAYS, "1,10");
         instantiateConfigurationValues("day limit to report",
                 "día máximo del mes para el reporte de indicadores",
                 AppConfigurationKey.REPORT_LIMIT, "10");

@@ -8,6 +8,6 @@ import javax.ejb.Stateless;
 public class MyService {
     private final static Logger LOGGER = Logger.getLogger(MyService.class);
     public void processSomething() {
-        LOGGER.debug("xxxxxxxxx");
+        LOGGER.debug("xxxxxxxxx prueba schedule");
     }
 }

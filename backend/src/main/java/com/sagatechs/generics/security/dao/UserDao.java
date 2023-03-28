@@ -263,6 +263,20 @@ public class UserDao extends GenericDaoJpa<User, Long> {
         return query.getResultList();
     }
 
+    public List<User> getFocalPointsByOrganizationIdAndPeriodId(Long organizationId, Long periodId) {
+        State state = State.ACTIVO;
+        String jpql = "SELECT DISTINCT fp FROM " +
+                "  Project pr " +
+                " inner join pr.organization org" +
+                " inner join pr.focalPoint fp " +
+                " where org.id=:organizationId and pr.state=:state and pr.period.id=:periodId ";
+        Query query = getEntityManager().createQuery(jpql, User.class);
+        query.setParameter("organizationId", organizationId);
+        query.setParameter("state", state);
+        query.setParameter("periodId", periodId);
+        return query.getResultList();
+    }
+
     public List<User> getActiveResponsableDirectImplementationUsers(Long periodId) {
         State state = State.ACTIVO;
         String jpql = "SELECT DISTINCT o FROM " +
