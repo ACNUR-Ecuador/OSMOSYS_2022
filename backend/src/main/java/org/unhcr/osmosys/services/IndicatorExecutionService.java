@@ -911,6 +911,8 @@ public class IndicatorExecutionService {
                 throw new GeneralAppException("Usuario responsable alterno no encontrado " + indicatorExecutionAssigmentWeb.getAssignedUserBackup().getId(), Response.Status.BAD_REQUEST);
             }
             indicatorExecution.setAssignedUserBackup(assignedUserBackup);
+        }else{
+            indicatorExecution.setAssignedUserBackup(null);
         }
         if (indicatorExecutionAssigmentWeb.getSupervisorUser() != null) {
             User supervisorUser = this.userService.getById(indicatorExecutionAssigmentWeb.getSupervisorUser().getId());
