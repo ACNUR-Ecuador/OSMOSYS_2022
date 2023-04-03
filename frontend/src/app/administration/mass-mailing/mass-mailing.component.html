@@ -3,7 +3,7 @@
         <p-toast></p-toast>
         <p-messages></p-messages>
         <div class="card px-6 py-6">
-            <h3 class="page-title">Retrasos en reporte de indicadores</h3>
+            <h3 class="page-title">Envío Masiv de correos</h3>
             <p-toolbar styleClass="mb-4 p-fluid">
                 <form [formGroup]="periodForm" class="w-full">
                     <div class="fluid">
@@ -13,7 +13,6 @@
                                 <p-dropdown id="periodI" [options]="periods" optionLabel="year"
                                             [filter]="true"
                                             formControlName="selectedPeriod"
-                                            (onChange)="onChangePeriod()"
 s
                                 ></p-dropdown>
                             </div>
@@ -25,113 +24,48 @@ s
             </p-toolbar>
 
             <p-fieldset>
-                <ng-template pTemplate="header">Socios</ng-template>
+                <ng-template pTemplate="header">Recordatorios</ng-template>
                 <div class="grid">
-                    <div class="col-4 border_div text-primary"><h5>Reporte</h5></div>
-                    <div class="col-4 border_div text-primary"><h5>Descripción</h5></div>
-                    <div class="col-4 border_div text-primary"><h5>Generar</h5></div>
+                    <div class="col-6 border_div text-primary"><h5>Descripción</h5></div>
+                    <div class="col-6 border_div text-primary"><h5>Enviar</h5></div>
 
-                    <div class="col-4 border_div">Reporte de retrasos de socios para puntos focales</div>
-                    <div class="col-4 border_div">Este reporte contiene una lista de indicadores que están pendientes de
-                        reportar para en los proyectos que usted es punto focal. Recuerde que contamos con su ayuda para
-                        que los socios mantengan la información al día.
-                    </div>
-                    <div class="col-4 border_div">
-                        <p-button label="Generar Reporte" icon="pi pi-file-excel"
-                                  (onClick)="getFocalPointLateReport()"
+                    <div class="col-6 border_div">Enviar recordatorio de reporte a socios</div>
+                    <div class="col-6 border_div">
+                        <p-button label="Enviar recordatorio a Socios" icon="pi pi-file-excel"
+                                  (onClick)="sendRecordatoryToPartners()"
                                   styleClass="p-button-success mb-2"></p-button>
                     </div>
 
-                    <div class="col-4 border_div">Reporte de retrasos de socios</div>
-                    <div class="col-4 border_div">Este reporte contiene la lista de indicadores que están pendientes de
-                        reportar por parte de socios.
-                    </div>
-                    <div class="col-4 border_div">
-                        <p-button label="Generar Reporte" icon="pi pi-file-excel"
-                                  (onClick)="getAllLateReportPartners()"
+                    <div class="col-6 border_div">Enviar recordatorio de reporte a colegas de Implementación directa</div>
+                    <div class="col-6 border_div">
+                        <p-button label="Enviar recordatorio Implementación Directa" icon="pi pi-file-excel"
+                                  (onClick)="sendRecordatoryToId()"
                                   styleClass="p-button-success mb-2"></p-button>
                     </div>
+
                 </div>
             </p-fieldset>
+
             <p-fieldset>
-                <ng-template pTemplate="header">Implementación Directa</ng-template>
+                <ng-template pTemplate="header">Alertas</ng-template>
                 <div class="grid">
-                    <div class="col-4 border_div text-primary"><h5>Reporte</h5></div>
-                    <div class="col-4 border_div text-primary"><h5>Descripción</h5></div>
-                    <div class="col-4 border_div text-primary"><h5>Generar</h5></div>
+                    <div class="col-6 border_div text-primary"><h5>Descripción</h5></div>
+                    <div class="col-6 border_div text-primary"><h5>Enviar</h5></div>
 
-                    <div class="col-4 border_div">Reporte de retrasos para responsables de reporte</div>
-                    <div class="col-4 border_div">Este reporte contiene una lista de indicadores que están pendientes de
-                        reportar para en los que usted es responsable de reporte. Recuerde que contamos con su ayuda
-                        para
-                        mantener la información al día.
-                    </div>
-                    <div class="col-4 border_div">
-                        <div class="flex flex-column">
-
-                            <p-dropdown class="mb-2"
-                                        placeholder="Seleccione un usuario"
-                                        [options]="userResponsibleItems"
-                                        [(ngModel)]="selectedUserResponsible"
-                                        [filter]="true"
-                            ></p-dropdown>
-                            <p-button label="Generar Reporte" icon="pi pi-file-excel"
-
-                                      (onClick)="getResponsableLateReport()"
-                                      styleClass="p-button-success mb-2 "></p-button>
-                        </div>
-
-                    </div>
-
-                    <div class="col-4 border_div">Reporte de retrasos por punto focal</div>
-                    <div class="col-4 border_div">Este reporte contiene la lista de indicadores que están pendientes de
-                        reportar por cada unidad.
-                    </div>
-                    <div class="col-4 border_div">
-                        <div class="flex flex-column">
-
-                            <p-dropdown class="mb-2"
-                                        placeholder="Seleccione un usuario"
-                                        [options]="userSupervisorItems"
-                                        [(ngModel)]="selectedUserSupervisor"
-                                        [filter]="true"
-                            ></p-dropdown>
-                            <p-button label="Generar Reporte" icon="pi pi-file-excel"
-                                      (onClick)="getSupervisorLateDirectImplementationReport()"
-                                      styleClass="p-button-success mb-2"></p-button>
-                        </div>
-                    </div>
-
-
-                    <div class="col-4 border_div">Reporte de retrasos por unidades</div>
-                    <div class="col-4 border_div">Este reporte contiene la lista de indicadores que están pendientes de
-                        reportar por cada unidad.
-                    </div>
-                    <div class="col-4 border_div">
-                        <div class="flex flex-column">
-
-                            <p-dropdown class="mb-2"
-                                        placeholder="Seleccione una oficina"
-                                        [options]="officesItems"
-                                        [(ngModel)]="selectedOffice"
-                                        [filter]="true"
-                            ></p-dropdown>
-                            <p-button label="Generar Reporte" icon="pi pi-file-excel"
-                                      (onClick)="getOfficeLateDirectImplementationReport()"
-                                      styleClass="p-button-success mb-2"></p-button>
-                        </div>
-                    </div>
-
-
-                    <div class="col-4 border_div">Reporte de retrasos de implementación directa</div>
-                    <div class="col-4 border_div">Este reporte contiene la lista de indicadores que están pendientes de
-                        reportar por parte de oficinas ACNUR.
-                    </div>
-                    <div class="col-4 border_div">
-                        <p-button label="Generar Reporte" icon="pi pi-file-excel"
-                                  (onClick)="getAllLateReportDirectImplementation()"
+                    <div class="col-6 border_div">Enviar alerta de retrasos a socios</div>
+                    <div class="col-6 border_div">
+                        <p-button label="Enviar alerta de retrasos a socios" icon="pi pi-file-excel"
+                                  (onClick)="sendRecordatoryToPartners()"
                                   styleClass="p-button-success mb-2"></p-button>
                     </div>
+
+                    <div class="col-6 border_div">Enviar alerta de retrasos a colegas de Implementación Directa</div>
+                    <div class="col-6 border_div">
+                        <p-button label="Enviar alerta de retrasos a colegas de Implementación Directa" icon="pi pi-file-excel"
+                                  (onClick)="sendRecordatoryToId()"
+                                  styleClass="p-button-success mb-2"></p-button>
+                    </div>
+
                 </div>
             </p-fieldset>
         </div>
