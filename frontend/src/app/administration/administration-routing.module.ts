@@ -23,6 +23,8 @@ import {
 } from './direct-implementation-administration/direct-implementation-administration.component';
 import {MarkerAdministrationComponent} from './marker-administration/marker-administration.component';
 import {AppconfigurationComponent} from './appconfiguration/appconfiguration.component';
+import {MassMailingComponent} from "./mass-mailing/mass-mailing.component";
+import {MassBlockingComponent} from "./mass-blocking/mass-blocking.component";
 
 const routes: Routes = [
     {
@@ -43,6 +45,8 @@ const routes: Routes = [
             {path: 'partnerProjectListAdministration', component: PartnerProjectListAdministrationComponent},
             {path: 'directImplementationAdministration', component: DirectImplementationAdministrationComponent},
             {path: 'appconfiguration', component: AppconfigurationComponent},
+            {path: 'massMailing', component: MassMailingComponent},
+            {path: 'massBlocking', component: MassBlockingComponent},
         ]
     }
 ];

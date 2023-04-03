@@ -81,6 +81,8 @@ import {
     StatementPeriodStatementAsignationsListPipe
 } from "../shared/pipes/statement-period-statement-asignations-list.pipe";
 import {FileUploadModule} from "primeng/fileupload";
+import { MassMailingComponent } from './mass-mailing/mass-mailing.component';
+import { MassBlockingComponent } from './mass-blocking/mass-blocking.component';
 
 
 @NgModule({
@@ -99,7 +101,9 @@ import {FileUploadModule} from "primeng/fileupload";
         PartnerProjectListAdministrationComponent,
         PartnerProjectAdministrationComponent,
         DirectImplementationAdministrationComponent,
-        AppconfigurationComponent
+        AppconfigurationComponent,
+        MassMailingComponent,
+        MassBlockingComponent
     ],
     imports: [
         CommonModule,

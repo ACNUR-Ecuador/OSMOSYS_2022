@@ -171,6 +171,18 @@ export class MenuService {
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR','ADMINISTRADOR_OFICINA']
                 },
                 {
+                    label: 'Envío Masivo de Correos',
+                    icon: 'pi pi-fw pi-cog',
+                    routerLink: ['/administration/massMailing'],
+                    roles: ['SUPER_ADMINISTRADOR']
+                },
+                {
+                    label: 'Bloqueo Masivo de Indicadores ',
+                    icon: 'pi pi-fw pi-cog',
+                    routerLink: ['/administration/massMailing'],
+                    roles: ['SUPER_ADMINISTRADOR']
+                },
+                {
                     label: 'Configuración Global',
                     icon: 'pi pi-fw pi-cog',
                     routerLink: ['/administration/appconfiguration'],
@@ -264,7 +276,7 @@ export class MenuService {
                             icon: 'pi pi-fw pi-chart-bar',
                             routerLink: ['/reports/2023/trendsIndicators2023'],
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
-                        }, 
+                        },
                     ]
                 },
                 {
