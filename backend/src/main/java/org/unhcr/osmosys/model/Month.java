@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.model.enums.SourceType;
 import org.unhcr.osmosys.webServices.model.MonthStateWeb;
+import org.unhcr.osmosys.webServices.model.YearMonthDTO;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -31,6 +32,19 @@ import java.util.Set;
                                 @ColumnResult(name = "order", type = Integer.class),
                                 @ColumnResult(name = "blockupdate", type = Boolean.class),
 
+                        }
+                )
+        }
+)
+@SqlResultSetMapping(
+        name = "YearMonthMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = YearMonthDTO.class,
+                        columns = {
+                                @ColumnResult(name = "year", type = Integer.class),
+                                @ColumnResult(name = "month", type = String.class),
+                                @ColumnResult(name = "monthYearOrder", type = Integer.class)
                         }
                 )
         }

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {Month, MonthValues} from '../shared/model/OsmosysModel';
+import {Month, MonthValues, YearMonth} from '../shared/model/OsmosysModel';
 import {environment} from '../../environments/environment';
 
 const mainServiceUrl = environment.base_url + '/months';
@@ -34,5 +34,17 @@ export class MonthService {
 
     public changeBlockedState(monthId: number, blockingState: boolean): Observable<number> {
         return this.http.post<number>(`${mainServiceUrl}/changeBlockedState/${monthId}/${blockingState}`, null);
+    }
+
+    public getYearMonthByPeriodId(periodId: number): Observable<YearMonth[]> {
+        return this.http.get<YearMonth[]>(`${mainServiceUrl}/getYearMonthByPeriodId/${periodId}`);
+    }
+
+    public massiveBlock(yearMonth: YearMonth): Observable<any> {
+        return this.http.post(`${mainServiceUrl}/massiveBlock`, yearMonth);
+    }
+
+    public massiveUnblock(yearMonth: YearMonth): Observable<any> {
+        return this.http.post(`${mainServiceUrl}/massiveUnblock`, yearMonth);
     }
 }

@@ -7,6 +7,8 @@ import org.unhcr.osmosys.model.DissagregationAssignationToIndicatorExecution;
 import org.unhcr.osmosys.model.Month;
 import org.unhcr.osmosys.model.enums.Frecuency;
 import org.unhcr.osmosys.model.enums.MonthEnum;
+import org.unhcr.osmosys.webServices.model.MonthStateWeb;
+import org.unhcr.osmosys.webServices.model.YearMonthDTO;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
@@ -136,6 +138,27 @@ public class MonthDao extends GenericDaoJpa<Month, Long> {
         return q.getResultList();
     }
 
+    public List<Month> getActiveMonthsAndMonthAndYearAndBlockingStatusGeneralIndicators(MonthEnum month, int year, boolean blocked) {
+        String jpql = "SELECT DISTINCT m " +
+                " FROM Month m" +
+                " inner join m.quarter q " +
+                " inner join q.indicatorExecution ie " +
+                " where " +
+                " m.month = :monthE " +
+                " and m.blockUpdate =:blocked" +
+                " and m.year = :yearI " +
+                " and ie.state = :state " +
+                " and q.state = :state " +
+                " and m.state = :state" +
+                " and ie.indicator  is null ";
+        Query q = getEntityManager().createQuery(jpql, Month.class);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("monthE", month);
+        q.setParameter("yearI", year);
+        q.setParameter("blocked", blocked);
+        return q.getResultList();
+    }
+
     public List<Month> getActiveGeneralIndicatorMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(MonthEnum month, int year, boolean blocked) {
         String jpql = "SELECT DISTINCT m " +
                 " FROM Month m" +
@@ -149,12 +172,27 @@ public class MonthDao extends GenericDaoJpa<Month, Long> {
                 " and m.year = :yearI " +
                 " and ie.state = :state " +
                 " and q.state = :state " +
-                " and m.state = :state" ;
+                " and m.state = :state";
         Query q = getEntityManager().createQuery(jpql, Month.class);
         q.setParameter("state", State.ACTIVO);
         q.setParameter("monthE", month);
         q.setParameter("yearI", year);
         q.setParameter("blocked", blocked);
+        return q.getResultList();
+    }
+
+    public List<YearMonthDTO> getYearMonthDTOSByPeriodId(Long periodId) {
+
+        String sql = "SELECT " +
+                "distinct m.year, m.month, m.month_year_order as monthYearOrder " +
+                "FROM " +
+                "osmosys.indicator_executions ie  " +
+                "INNER JOIN osmosys.quarters q on ie.id=q.indicator_execution_id and ie.state='ACTIVO' AND q.state='ACTIVO' " +
+                "INNER JOIN osmosys.months m on q.id=m.quarter_id and m.state='ACTIVO' " +
+                "WHERE ie.period_id=:periodId  " +
+                " ORDER BY m.year, m.month_year_order";
+        Query q = getEntityManager().createNativeQuery(sql, "YearMonthMapping");
+        q.setParameter("periodId", periodId);
         return q.getResultList();
     }
 }

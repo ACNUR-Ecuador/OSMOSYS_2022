@@ -1,1 +1,59 @@
-<p>mass-blocking works!</p>
+<div class="grid">
+    <div class="col-12">
+        <p-toast></p-toast>
+        <p-messages></p-messages>
+        <div class="card px-6 py-6">
+            <h3 class="page-title">Bloqueo/Desbloqueo Masivo de Indicadores</h3>
+            <p-toolbar styleClass="mb-4 p-fluid">
+                <form [formGroup]="periodForm" class="w-full">
+                    <div class="fluid">
+                        <div class="field grid">
+                            <label for="periodI" class="col-12 mb-2" style="width:100px; color: white;">Periodo:</label>
+                            <div class="">
+                                <p-dropdown id="periodI" [options]="periods" optionLabel="year"
+                                            [filter]="true"
+                                            formControlName="selectedPeriod"
+                                            (onChange)="onPeriodChange($event.value)"
+                                ></p-dropdown>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+
+            </p-toolbar>
+
+            <p-fieldset>
+                <ng-template pTemplate="header">Bloquear</ng-template>
+                <div class="grid">
+                    <div *ngFor="let yearMonth of yearMonths"  class="col-2 border_div text-primary">
+
+                        <p-button label="{{yearMonth.year}}-{{yearMonth.month}}"
+                                  icon="pi pi-lock"
+                                  (onClick)="blockYearMonth(yearMonth)"
+                                  styleClass="p-button-sm p-button-danger mb-2"
+                        ></p-button>
+                    </div>
+
+
+                </div>
+            </p-fieldset>
+
+            <p-fieldset>
+                <ng-template pTemplate="header">Desbloquear</ng-template>
+                <div class="grid">
+                    <div *ngFor="let yearMonth of yearMonths"  class="col-2 border_div text-primary">
+
+                        <p-button label="{{yearMonth.year}}-{{yearMonth.month}}"
+                                  icon="pi pi-lock-open"
+                                  (onClick)="unblockYearMonth(yearMonth)"
+                                  styleClass="p-button-sm p-button-success mb-2"
+                        ></p-button>
+                    </div>
+
+
+                </div>
+            </p-fieldset>
+        </div>
+    </div>
+</div>

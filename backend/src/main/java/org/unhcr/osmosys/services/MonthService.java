@@ -317,10 +317,10 @@ public class MonthService {
             currentYear = currentYear - 1;
             currentMonth = 1;
         }
-        this.blockMonthsByYearAndoMonth(currentYear,MonthEnum.getMonthByNumber(currentMonth));
+        this.blockMonthsByYearAndoMonth(currentYear,MonthEnum.getMonthByNumber(currentMonth), true);
 
     }
-    public void blockMonthsByYearAndoMonth(int year, MonthEnum month) throws GeneralAppException {
+    public void blockMonthsByYearAndoMonth(int year, MonthEnum month, boolean block) throws GeneralAppException {
 
         int currentYear = year;
         // mes pasado
@@ -330,10 +330,14 @@ public class MonthService {
 
         List<Month> monthsToUpdate = new ArrayList<>();
 
-        List<Month> unlockedMonthsMonthly = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(month, currentYear, false, Frecuency.MENSUAL);
-        unlockedMonthsMonthly.forEach(month1 -> month1.setBlockUpdate(true));
+        List<Month> unlockedMonthsMonthly = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(month, currentYear, !block, Frecuency.MENSUAL);
+        unlockedMonthsMonthly.forEach(month1 -> month1.setBlockUpdate(block));
         monthsToUpdate.addAll(unlockedMonthsMonthly);
 
+        // general indicators
+        List<Month> unlockedMonthsMonthlyGeneral = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusGeneralIndicators(month, currentYear, !block);
+        unlockedMonthsMonthlyGeneral.forEach(month1 -> month1.setBlockUpdate(block));
+        monthsToUpdate.addAll(unlockedMonthsMonthly);
         // quarterly
         if (currentMonth == 3 || currentMonth == 6 || currentMonth == 9 || currentMonth == 12) {
             // this is last month of quarter
@@ -341,9 +345,9 @@ public class MonthService {
             List<MonthEnum> monthsOfQuarter = Arrays.stream(MonthEnum.values()).filter(monthEnum -> monthEnum.getQuarterEnum().equals(quarter)).sorted((o1, o2) -> o2.getOrder() - o1.getOrder()).collect(Collectors.toList());
             for (MonthEnum monthEnum : monthsOfQuarter) {
                 List<Month> unlockedMonthsQuarterM = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, currentYear, false, Frecuency.TRIMESTRAL);
-                unlockedMonthsQuarterM.forEach(month1 -> month1.setBlockUpdate(true));
+                unlockedMonthsQuarterM.forEach(month1 -> month1.setBlockUpdate(block));
                 List<Month> unlockedMonthsQuarterMGI = this.monthDao.getActiveGeneralIndicatorMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, currentYear, false);
-                unlockedMonthsQuarterMGI.forEach(month1 -> month1.setBlockUpdate(true));
+                unlockedMonthsQuarterMGI.forEach(month1 -> month1.setBlockUpdate(block));
                 monthsToUpdate.addAll(unlockedMonthsQuarterMGI);
             }
         }
@@ -359,7 +363,7 @@ public class MonthService {
             }
             for (MonthEnum monthEnum : monthsOfSemester) {
                 List<Month> unlockedMonthsSemesterM = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, currentYear, false, Frecuency.SEMESTRAL);
-                unlockedMonthsSemesterM.forEach(month1 -> month1.setBlockUpdate(true));
+                unlockedMonthsSemesterM.forEach(month1 -> month1.setBlockUpdate(block));
                 monthsToUpdate.addAll(unlockedMonthsSemesterM);
             }
         }
@@ -378,5 +382,9 @@ public class MonthService {
             this.saveOrUpdate(month1);
         }
 
+    }
+
+    public List<YearMonthDTO> getYearMonthDTOSByPeriodId(Long periodId) {
+        return this.monthDao.getYearMonthDTOSByPeriodId(periodId);
     }
 }

@@ -179,7 +179,7 @@ export class MenuService {
                 {
                     label: 'Bloqueo Masivo de Indicadores ',
                     icon: 'pi pi-fw pi-cog',
-                    routerLink: ['/administration/massMailing'],
+                    routerLink: ['/administration/massBlocking'],
                     roles: ['SUPER_ADMINISTRADOR']
                 },
                 {

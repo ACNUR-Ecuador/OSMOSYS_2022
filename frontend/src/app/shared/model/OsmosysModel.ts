@@ -538,3 +538,9 @@ export class ImportFile {
     public file: string;
 }
 
+export class YearMonth {
+    public year: number;
+    public month: string;
+    public monthYearOrder: number;
+}
+

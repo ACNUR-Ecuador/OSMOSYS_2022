@@ -107,8 +107,8 @@ public class TestEndpoint {
     public String test2() throws GeneralAppException {
         // this.importService.catalogImport();
         LOGGER.info("inicio");
-        this.monthService.blockMonthsByYearAndoMonth(2023, MonthEnum.MARZO);
-
+        List<YearMonthDTO> r = this.monthService.getYearMonthDTOSByPeriodId(2l);
+        LOGGER.info(r);
         return "ya";
     }
 

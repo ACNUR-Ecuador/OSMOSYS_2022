@@ -72,7 +72,7 @@ public class MessageReminderService {
                     "<p style=\"text-align:justify\">" +
                     " Este es un recordatorio de que el periodo de reportes de indicadores para el mes de  " + mesAReportar.getLabel() +
                     " ha iniciado. Contamos con su ayuda para tener sus datos al día en el sistema OSMOSYS-ACNUR hasta el día " + limitDay + " de este mes. " +
-                    "En caso de que ya haya reportado los datos, por favor haga caso omiso de este correo.</p>" +
+                    "En caso de que ya se hayan reportado los datos, por favor haga caso omiso de este correo.</p>" +
                     "<p style=\"text-align:justify\">Este recordatorio ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con con su punto focal de ACNUR.</p>";
             LOGGER.debug("usersEmails: " + usersEmails);
             LOGGER.debug("focalPointsEmails: " + focalPointsEmails);
@@ -117,8 +117,8 @@ public class MessageReminderService {
                     " ha iniciado. Contamos con su ayuda para tener sus datos al día en el sistema OSMOSYS-ACNUR hasta el día " + limitDay + " de este mes. " +
                     "En caso de que ya haya reportado los datos, por favor haga caso omiso de este correo.</p>" +
                     "<p style=\"text-align:justify\">Este recordatorio ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con con la unidad de programas.</p>";
-            // this.emailService.sendEmailMessage(user.getEmail(), null, "Recordatorio de reporte Indicadors OSMOSYS", message);
-            this.emailService.sendEmailMessage("salazart@unhcr.org", null, "Recordatorio de reporte Indicadors OSMOSYS", message);
+            this.emailService.sendEmailMessage(user.getEmail(), null, "Recordatorio de reporte Indicadors OSMOSYS", message);
+            // this.emailService.sendEmailMessage("salazart@unhcr.org", null, "Recordatorio de reporte Indicadors OSMOSYS", message);
 
 
         }
