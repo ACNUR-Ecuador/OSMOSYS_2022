@@ -8,7 +8,10 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(schema = "osmosys", name = "indicator_values_custom_dissagregation")
+@Table(schema = "osmosys", name = "indicator_values_custom_dissagregation",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_iv_cd_month_option", columnNames = {"month_id", "custom_dissagregation_option"})
+        })
 public class IndicatorValueCustomDissagregation extends BaseEntity<Long> {
 
     @Id
