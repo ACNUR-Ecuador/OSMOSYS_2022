@@ -325,6 +325,16 @@
                                    *ngIf="utilsService.showErrorForm('state',formItem)">{{utilsService.getErrorMessageForm('state', formItem)}}</small>
                         </div>
                         <div class="field col-12 md:col-12">
+                            <label for="instructionsI">Instrucciones para Información Cuantitativa</label>
+                            <textarea pInputTextarea id="instructionsI"
+                                      formControlName="instructions"
+                                      [autoResize]="true">
+                            </textarea>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('instructions',formItem)">
+                                {{utilsService.getErrorMessageForm('instructions', formItem)}}</small>
+                        </div>
+                        <div class="field col-12 md:col-12">
                             <label for="qualitativeInstructionsI">Instrucciones para Información Cualitativa</label>
                             <textarea pInputTextarea id="qualitativeInstructionsI"
                                       formControlName="qualitativeInstructions"

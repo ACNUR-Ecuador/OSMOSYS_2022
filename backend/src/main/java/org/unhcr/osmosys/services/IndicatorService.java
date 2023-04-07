@@ -87,6 +87,7 @@ public class IndicatorService {
         indicator.setCode(indicatorWeb.getCode());
         indicator.setDescription(indicatorWeb.getDescription());
         indicator.setCategory(indicatorWeb.getCategory());
+        indicator.setInstructions(indicatorWeb.getInstructions());
         indicator.setQualitativeInstructions(indicatorWeb.getQualitativeInstructions());
         indicator.setState(indicatorWeb.getState());
         indicator.setIndicatorType(indicatorWeb.getIndicatorType());
@@ -120,6 +121,7 @@ public class IndicatorService {
         this.validate(indicatorWeb);
         Indicator indicator = this.indicatorDao.findWithData(indicatorWeb.getId());
         indicator.setDescription(indicatorWeb.getDescription());
+        indicator.setInstructions(indicatorWeb.getInstructions());
         indicator.setQualitativeInstructions(indicatorWeb.getQualitativeInstructions());
         indicator.setCategory(indicatorWeb.getCategory());
         indicator.setStatement(this.statementService.find(indicatorWeb.getStatement().getId()));

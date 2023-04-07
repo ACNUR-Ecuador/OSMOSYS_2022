@@ -167,10 +167,15 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                 header: 'Desagregaciones Personalizadas',
                 type: ColumnDataType.text,
                 pipeRef: this.customDissagregationsAssignationToIndicatorPipe
+            },
+            {
+                field: 'instructions',
+                header: 'Instrucciones',
+                type: ColumnDataType.text
             }
         ];
 
-        const hiddenColumns: string[] = ['id', 'guideDirectImplementation', 'markers', 'customDissagregationAssignationToIndicators', 'dissagregationsAssignationToIndicator', 'unit'];
+        const hiddenColumns: string[] = ['id', 'guideDirectImplementation', 'markers', 'customDissagregationAssignationToIndicators', 'dissagregationsAssignationToIndicator', 'unit','instructions'];
         this._selectedColumns = this.cols.filter(value => !hiddenColumns.includes(value.field));
 
         this.formItem = this.fb.group({
@@ -178,6 +183,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             code: new FormControl('', [Validators.required, Validators.maxLength(10)]),
             description: new FormControl('', [Validators.required, Validators.maxLength(255)]),
             category: new FormControl('', [Validators.maxLength(255)]),
+            instructions: new FormControl('', [Validators.maxLength(1000)]),
             qualitativeInstructions: new FormControl('', [Validators.maxLength(1000)]),
             state: new FormControl('', Validators.required),
             indicatorType: new FormControl('', Validators.required),
@@ -385,6 +391,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             code,
             description,
             category,
+            instructions,
             qualitativeInstructions,
             state,
             indicatorType,
@@ -410,6 +417,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             code,
             description,
             category,
+            instructions,
             qualitativeInstructions,
             state,
             indicatorType,
