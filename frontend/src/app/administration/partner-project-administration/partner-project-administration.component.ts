@@ -917,7 +917,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Seleccione al menos un cantón',
-                    detail: 'Este indicador tiene segregación por lugar, es necesario activar al menos un cantón',
+                    detail: 'Este indicador tiene desagregación por lugar, es necesario activar al menos un cantón',
                     life: 3000
                 });
                 return;
@@ -959,7 +959,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Seleccione al menos un cantón',
-                    detail: 'Este indicador tiene segregación por lugar, es necesario activar al menos un cantón',
+                    detail: 'Este indicador tiene desagregación por lugar, es necesario activar al menos un cantón',
                     life: 3000
                 });
                 return;

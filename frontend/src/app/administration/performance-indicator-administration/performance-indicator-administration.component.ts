@@ -435,6 +435,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         const customDissagregationsObjs = (customDissagregations as Array<string>).map(value => {
             return this.customDissagregationsItemsValuesToObject(value);
         });
+
         if (indicator.id) {
             // veo lo q ya no estan
             for (const dissagregationsAssignationToIndicatorElement of indicator.dissagregationsAssignationToIndicator) {
