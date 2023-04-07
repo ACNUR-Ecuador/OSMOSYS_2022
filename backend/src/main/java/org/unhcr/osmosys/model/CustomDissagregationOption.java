@@ -2,11 +2,10 @@ package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -93,19 +92,19 @@ public class CustomDissagregationOption extends BaseEntity<Long> {
             this.markers.add(marker);
         }
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof CustomDissagregationOption)) return false;
         CustomDissagregationOption that = (CustomDissagregationOption) o;
-
-        return new EqualsBuilder().append(id, that.id).append(name, that.name).append(state, that.state).append(customDissagregation, that.customDissagregation).isEquals();
+        return Objects.equals(id, that.id) && name.equals(that.name) && description.equals(that.description) && customDissagregation.equals(that.customDissagregation);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(name).append(state).append(customDissagregation).toHashCode();
+        return Objects.hash(id, name, description, customDissagregation);
     }
+
+
 }

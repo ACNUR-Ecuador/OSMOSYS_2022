@@ -7,7 +7,6 @@ import org.unhcr.osmosys.model.DissagregationAssignationToIndicatorExecution;
 import org.unhcr.osmosys.model.Month;
 import org.unhcr.osmosys.model.enums.Frecuency;
 import org.unhcr.osmosys.model.enums.MonthEnum;
-import org.unhcr.osmosys.webServices.model.MonthStateWeb;
 import org.unhcr.osmosys.webServices.model.YearMonthDTO;
 
 import javax.ejb.Stateless;
@@ -193,6 +192,20 @@ public class MonthDao extends GenericDaoJpa<Month, Long> {
                 " ORDER BY m.year, m.month_year_order";
         Query q = getEntityManager().createNativeQuery(sql, "YearMonthMapping");
         q.setParameter("periodId", periodId);
+        return q.getResultList();
+    }
+
+    public List<Month> getbyCustomDissagregationId(Long customDissagregationId) {
+        String jpql = "SELECT DISTINCT m " +
+                " FROM Month m" +
+                " inner join m.quarter q " +
+                " inner join fetch m.indicatorValuesIndicatorValueCustomDissagregations ivc " +
+                " inner join fetch ivc.customDissagregationOption cdo" +
+                " inner join fetch cdo.customDissagregation cd " +
+                " where " +
+                " cd.id=:customDissagregationId ";
+        Query q = getEntityManager().createQuery(jpql, Month.class);
+        q.setParameter("customDissagregationId", customDissagregationId);
         return q.getResultList();
     }
 }

@@ -26,12 +26,6 @@ public class GeneralIndicatorService {
     GeneralIndicatorDao generalIndicatorDao;
 
     @Inject
-    IndicatorValueService indicatorValueService;
-
-    @Inject
-    ProjectService projectService;
-
-    @Inject
     IndicatorExecutionService indicatorExecutionService;
 
     @Inject
@@ -204,7 +198,7 @@ public class GeneralIndicatorService {
             throw new GeneralAppException("Tipo medida no válida", Response.Status.BAD_REQUEST);
         }
         if (CollectionUtils.isEmpty(generalIndicatorWeb.getDissagregationAssignationsToGeneralIndicator())) {
-            throw new GeneralAppException("El indicador debe tener al menos una segregación", Response.Status.BAD_REQUEST);
+            throw new GeneralAppException("El indicador debe tener al menos una desagregación", Response.Status.BAD_REQUEST);
         }
 
     }

@@ -192,7 +192,7 @@ public class IndicatorsImportService {
                         DissagregationType dissagregation = DissagregationType.valueOf(dissagregationStringTmp);
                         dissagregationTypes.add(dissagregation);
                     } catch (IllegalArgumentException e) {
-                        throw new GeneralAppException("La segregación '" + dissagregationString + "' no existe. Indicador " + indicator.getCode() + ".", Response.Status.BAD_REQUEST);
+                        throw new GeneralAppException("La desagregación '" + dissagregationString + "' no existe. Indicador " + indicator.getCode() + ".", Response.Status.BAD_REQUEST);
                     }
                 }
 
@@ -226,13 +226,13 @@ public class IndicatorsImportService {
                             if (customDissagregation != null) {
                                 customDissagregationTypes.add(customDissagregation);
                             }else {
-                                throw new GeneralAppException("La segregación " + customDissagregationStringTmp + " no existe. Indicador " + indicator.getCode() + ".", Response.Status.BAD_REQUEST);
+                                throw new GeneralAppException("La desagregación " + customDissagregationStringTmp + " no existe. Indicador " + indicator.getCode() + ".", Response.Status.BAD_REQUEST);
                             }
 
                         }
 
                     } catch (IllegalArgumentException e) {
-                        throw new GeneralAppException("La segregación " + customDissagregationString + " no existe. Indicador " + indicator.getCode() + ".", Response.Status.BAD_REQUEST);
+                        throw new GeneralAppException("La desagregación " + customDissagregationString + " no existe. Indicador " + indicator.getCode() + ".", Response.Status.BAD_REQUEST);
                     }
                 }
                 for (CustomDissagregation customDissagregationType : customDissagregationTypes) {

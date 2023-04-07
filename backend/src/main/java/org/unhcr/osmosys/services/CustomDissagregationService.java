@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.CustomDissagregationDao;
 import org.unhcr.osmosys.model.CustomDissagregation;
+import org.unhcr.osmosys.model.CustomDissagregationOption;
 import org.unhcr.osmosys.webServices.model.CustomDissagregationOptionWeb;
 import org.unhcr.osmosys.webServices.model.CustomDissagregationWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
@@ -26,6 +27,9 @@ public class CustomDissagregationService {
 
     @Inject
     ModelWebTransformationService modelWebTransformationService;
+
+    @Inject
+    MonthService monthService;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(CustomDissagregationService.class);
@@ -71,18 +75,34 @@ public class CustomDissagregationService {
             throw new GeneralAppException("No se puede crear un customDissagregation sin id", Response.Status.BAD_REQUEST);
         }
         this.validate(customDissagregationWeb);
+        CustomDissagregation customDissagregation = this.customDissagregationDao.find(customDissagregationWeb.getId());
+        customDissagregation.setDescription(customDissagregationWeb.getDescription());
+        customDissagregation.setName(customDissagregation.getName());
+        customDissagregation.setState(customDissagregation.getState());
+        customDissagregation.setControlTotalValue(customDissagregationWeb.getControlTotalValue());
+        for (CustomDissagregationOptionWeb customDissagregationOptionWeb : customDissagregationWeb.getCustomDissagregationOptions()) {
+            if(customDissagregationOptionWeb.getId()!=null){
+                CustomDissagregationOption customDissagregationOption = customDissagregation.getCustomDissagregationOptions().stream().filter(customDissagregationOption1 -> customDissagregationOption1.getId().equals(customDissagregationOptionWeb.getId())).findFirst().get();
+                customDissagregationOption.setDescription(customDissagregationOptionWeb.getDescription());
+                customDissagregationOption.setName(customDissagregationOptionWeb.getName());
+                customDissagregationOption.setState(customDissagregationOptionWeb.getState());
+            }else {
+                CustomDissagregationOption customDissagregationOption = new CustomDissagregationOption();
+                customDissagregationOption.setDescription(customDissagregationOptionWeb.getDescription());
+                customDissagregationOption.setName(customDissagregationOptionWeb.getName());
+                customDissagregationOption.setState(customDissagregationOptionWeb.getState());
+                customDissagregation.addCustomDissagregationOption(customDissagregationOption);
+            }
+        }
+
+        /*
         CustomDissagregation customDissagregation = this.saveOrUpdate(this.modelWebTransformationService.customDissagregationWebToCustomDissagregation(customDissagregationWeb));
+*/
+        //LOGGER.info(customDissagregation);
+        //
+        this.monthService.updateCustomDissagregationsOptions(customDissagregation);
         return customDissagregation.getId();
     }
-
-
-
-
-
-
-
-
-
 
 
     public void validate(CustomDissagregationWeb customDissagregationWeb) throws GeneralAppException {
@@ -129,8 +149,8 @@ public class CustomDissagregationService {
         Map<String, Long> counting = customDissagregationOptions.stream().collect(
                 Collectors.groupingBy(CustomDissagregationOptionWeb::getName,
                         Collectors.counting()));
-        for(String optionName:counting.keySet()){
-            if(counting.get(optionName)>1) {
+        for (String optionName : counting.keySet()) {
+            if (counting.get(optionName) > 1) {
                 throw new GeneralAppException("La opción " + optionName + " está repetida", Response.Status.BAD_REQUEST);
             }
         }
@@ -142,7 +162,6 @@ public class CustomDissagregationService {
             if (customDissagregationOption.getState() == null) {
                 throw new GeneralAppException("El estado de la opción es obligatorio", Response.Status.BAD_REQUEST);
             }
-
 
 
         }

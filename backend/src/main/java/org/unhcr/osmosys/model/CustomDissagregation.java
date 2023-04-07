@@ -5,6 +5,7 @@ import com.sagatechs.generics.persistence.model.State;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -88,4 +89,19 @@ public class CustomDissagregation extends BaseEntity<Long> {
             this.getCustomDissagregationOptions().add(customDissagregationOption);
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CustomDissagregation)) return false;
+        CustomDissagregation that = (CustomDissagregation) o;
+        return Objects.equals(id, that.id) && name.equals(that.name) && description.equals(that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description);
+    }
+
+
 }

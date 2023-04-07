@@ -208,6 +208,11 @@ public class IndicatorService {
                         dissagregationAssignationToIndicatorsToEnable,
                         dissagregationAssignationToIndicatorsToDisable,
                         dissagregationAssignationToIndicatorsToCreate);
+        this.indicatorExecutionService
+                .updateIndicatorExecutionsCustomDissagregations(
+                        customDissagregationAssignationToIndicatorsToEnable,
+                        customDissagregationAssignationToIndicatorsToDisable,
+                        customDissagregationAssignationToIndicatorsToCreate);
         return indicator.getId();
     }
 
@@ -292,7 +297,7 @@ public class IndicatorService {
                 indicator.getDissagregationsAssignationToIndicator()
                         .stream()
                         .filter(
-                                dissagregationAssignationToIndicator -> dissagregationTypes.contains(dissagregationAssignationToIndicator.getDissagregationType()) && dissagregationAssignationToIndicator.getPeriod().getId() == period.getId()
+                                dissagregationAssignationToIndicator -> dissagregationTypes.contains(dissagregationAssignationToIndicator.getDissagregationType()) && dissagregationAssignationToIndicator.getPeriod().getId().equals(period.getId())
                         )
                         .collect(Collectors.toList());
         this.saveOrUpdate(indicator);

@@ -311,18 +311,18 @@ public class MonthService {
     public void blockMonthsAutomaticaly() throws GeneralAppException {
         int currentYear = this.utilsService.getCurrentYear();
         // mes pasado
-        int currentMonth = this.utilsService.getCurrentMonthYearOrder()-1;
+        int currentMonth = this.utilsService.getCurrentMonthYearOrder() - 1;
         // si es enero, regreso a diciembre
         if (currentMonth < 1) {
             currentYear = currentYear - 1;
             currentMonth = 1;
         }
-        this.blockMonthsByYearAndoMonth(currentYear,MonthEnum.getMonthByNumber(currentMonth), true);
+        this.blockMonthsByYearAndoMonth(currentYear, MonthEnum.getMonthByNumber(currentMonth), true);
 
     }
+
     public void blockMonthsByYearAndoMonth(int year, MonthEnum month, boolean block) throws GeneralAppException {
 
-        int currentYear = year;
         // mes pasado
         int currentMonth = month.getOrder();
         // si es enero, regreso a diciembre
@@ -330,12 +330,12 @@ public class MonthService {
 
         List<Month> monthsToUpdate = new ArrayList<>();
 
-        List<Month> unlockedMonthsMonthly = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(month, currentYear, !block, Frecuency.MENSUAL);
+        List<Month> unlockedMonthsMonthly = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(month, year, !block, Frecuency.MENSUAL);
         unlockedMonthsMonthly.forEach(month1 -> month1.setBlockUpdate(block));
         monthsToUpdate.addAll(unlockedMonthsMonthly);
 
         // general indicators
-        List<Month> unlockedMonthsMonthlyGeneral = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusGeneralIndicators(month, currentYear, !block);
+        List<Month> unlockedMonthsMonthlyGeneral = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusGeneralIndicators(month, year, !block);
         unlockedMonthsMonthlyGeneral.forEach(month1 -> month1.setBlockUpdate(block));
         monthsToUpdate.addAll(unlockedMonthsMonthly);
         // quarterly
@@ -344,9 +344,9 @@ public class MonthService {
             QuarterEnum quarter = MonthEnum.getQuarterByMonthNumber(currentMonth);
             List<MonthEnum> monthsOfQuarter = Arrays.stream(MonthEnum.values()).filter(monthEnum -> monthEnum.getQuarterEnum().equals(quarter)).sorted((o1, o2) -> o2.getOrder() - o1.getOrder()).collect(Collectors.toList());
             for (MonthEnum monthEnum : monthsOfQuarter) {
-                List<Month> unlockedMonthsQuarterM = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, currentYear, false, Frecuency.TRIMESTRAL);
+                List<Month> unlockedMonthsQuarterM = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, year, false, Frecuency.TRIMESTRAL);
                 unlockedMonthsQuarterM.forEach(month1 -> month1.setBlockUpdate(block));
-                List<Month> unlockedMonthsQuarterMGI = this.monthDao.getActiveGeneralIndicatorMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, currentYear, false);
+                List<Month> unlockedMonthsQuarterMGI = this.monthDao.getActiveGeneralIndicatorMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, year, false);
                 unlockedMonthsQuarterMGI.forEach(month1 -> month1.setBlockUpdate(block));
                 monthsToUpdate.addAll(unlockedMonthsQuarterMGI);
             }
@@ -362,7 +362,7 @@ public class MonthService {
                 monthsOfSemester = new ArrayList<>(Arrays.asList(MonthEnum.JULIO, MonthEnum.AGOSTO, MonthEnum.SEPTIEMBRE, MonthEnum.OCTUBRE, MonthEnum.NOVIEMBRE, MonthEnum.DICIEMBRE));
             }
             for (MonthEnum monthEnum : monthsOfSemester) {
-                List<Month> unlockedMonthsSemesterM = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, currentYear, false, Frecuency.SEMESTRAL);
+                List<Month> unlockedMonthsSemesterM = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, year, false, Frecuency.SEMESTRAL);
                 unlockedMonthsSemesterM.forEach(month1 -> month1.setBlockUpdate(block));
                 monthsToUpdate.addAll(unlockedMonthsSemesterM);
             }
@@ -372,7 +372,7 @@ public class MonthService {
         if (currentMonth == 12) {
             // this is last month of year
             for (MonthEnum monthEnum : MonthEnum.values()) {
-                List<Month> unlockedMonthsAnnual = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, currentYear, false, Frecuency.ANUAL);
+                List<Month> unlockedMonthsAnnual = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, year, false, Frecuency.ANUAL);
                 unlockedMonthsAnnual.forEach(month1 -> month1.setBlockUpdate(true));
                 monthsToUpdate.addAll(unlockedMonthsAnnual);
             }
@@ -386,5 +386,34 @@ public class MonthService {
 
     public List<YearMonthDTO> getYearMonthDTOSByPeriodId(Long periodId) {
         return this.monthDao.getYearMonthDTOSByPeriodId(periodId);
+    }
+
+    public void updateCustomDissagregationsOptions(CustomDissagregation customDissagregation) {
+        List<Month> months = this.monthDao.getbyCustomDissagregationId(customDissagregation.getId());
+        List<CustomDissagregationOption> optionsTotal = customDissagregation.getCustomDissagregationOptions().stream().collect(Collectors.toList());
+        List<CustomDissagregationOption> optionsToDissable = customDissagregation.getCustomDissagregationOptions().stream().filter(customDissagregationOption -> customDissagregationOption.getState().equals(State.INACTIVO)).collect(Collectors.toList());
+        List<CustomDissagregationOption> optionsToEnable = customDissagregation.getCustomDissagregationOptions().stream().filter(customDissagregationOption -> customDissagregationOption.getState().equals(State.ACTIVO)).collect(Collectors.toList());
+        for (Month month : months) {
+            Set<IndicatorValueCustomDissagregation> indicatorValues = month.getIndicatorValuesIndicatorValueCustomDissagregations();
+            // creo las nuevas
+            Collection<CustomDissagregationOption> newOptions = CollectionUtils.removeAll(optionsTotal, indicatorValues.stream().map(IndicatorValueCustomDissagregation::getCustomDissagregationOption).collect(Collectors.toList()));
+            for (CustomDissagregationOption newOption : newOptions) {
+                IndicatorValueCustomDissagregation indicatorValueCustomDissagregation = new IndicatorValueCustomDissagregation();
+                indicatorValueCustomDissagregation.setCustomDissagregationOption(customDissagregation.getCustomDissagregationOptions().stream().filter(customDissagregationOption -> customDissagregationOption.equals(newOption)).findFirst().get());
+                indicatorValueCustomDissagregation.setMonthEnum(month.getMonth());
+                indicatorValueCustomDissagregation.setState(State.ACTIVO);
+                indicatorValueCustomDissagregation.setMonthYearOrder(month.getMonthYearOrder());
+                month.addIndicatorValueCustomDissagregation(indicatorValueCustomDissagregation);
+            }
+            // activo y desactivo
+            for (IndicatorValueCustomDissagregation indicatorValue : indicatorValues) {
+                if (optionsToDissable.contains(indicatorValue.getCustomDissagregationOption())) {
+                    indicatorValue.setState(State.INACTIVO);
+                } else if (optionsToEnable.contains(indicatorValue.getCustomDissagregationOption())) {
+                    indicatorValue.setState(State.ACTIVO);
+                }
+            }
+            this.saveOrUpdate(month);
+        }
     }
 }
