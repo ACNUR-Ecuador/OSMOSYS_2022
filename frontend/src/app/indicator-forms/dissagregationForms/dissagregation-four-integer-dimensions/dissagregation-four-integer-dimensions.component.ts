@@ -295,12 +295,17 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
                 );
                 this.showImportErroMessage = true;
             } else {
-                indicatorValues[0].value = valor;
+                if (valor) {
+                    indicatorValues[0].value = valor;
+                } else {
+                    indicatorValues[0].value = 0;
+                }
+
             }
         });
         if (this.showImportErroMessage) {
             console.log(this.importErroMessage);
-            console.log(this.importErroMessage.length );
+            console.log(this.importErroMessage.length);
         } else {
             this.showImportDialog = false;
         }
