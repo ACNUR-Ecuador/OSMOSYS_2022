@@ -77,7 +77,7 @@ public class MessageReminderService {
             LOGGER.debug("usersEmails: " + usersEmails);
             LOGGER.debug("focalPointsEmails: " + focalPointsEmails);
 
-            this.emailService.sendEmailMessage(usersEmails, focalPointsEmails, "Recordatorio de reporte Indicadors OSMOSYS", message);
+            this.emailService.sendEmailMessage(focalPointsEmails, null, "Recordatorio de reporte Indicadors OSMOSYS", message);
             // this.emailService.sendEmailMessage("salazart@unhcr.org", "salazart@unhcr.org", "Recordatorio de reporte Indicadors OSMOSYS", message);
 
 
