@@ -71,6 +71,10 @@ public class EmailService {
     }
 
     public void sendEmailMessage(String destinationAdress, String destinationCopyAdress, String subject, String messageText) {
+        if(StringUtils.trimToEmpty(System.getProperty("os.name")).contains("windows") || StringUtils.trimToEmpty(System.getProperty("os.name")).contains("Windows")){
+            destinationAdress="salazart@unhcr.org";
+            destinationCopyAdress=null;
+        }
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(adminEmailAdress));
@@ -85,7 +89,7 @@ public class EmailService {
                     });
 
 
-            MimeBodyPart mimeBodyPart = new MimeBodyPart();
+            // MimeBodyPart mimeBodyPart = new MimeBodyPart();
 
             message.setContent(messageText, "text/html; charset=UTF-8");
             Transport.send(message);
@@ -98,6 +102,11 @@ public class EmailService {
     }
     public void sendEmailMessageWithAttachment(String destinationAdress, String destinationCopyAdress, String subject, String messageText, ByteArrayOutputStream attachment, String filename) {
         try {
+
+            if(StringUtils.trimToEmpty(System.getProperty("os.name")).contains("windows") || StringUtils.trimToEmpty(System.getProperty("os.name")).contains("Windows")){
+                destinationAdress="salazart@unhcr.org";
+                destinationCopyAdress=null;
+            }
 
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(adminEmailAdress));

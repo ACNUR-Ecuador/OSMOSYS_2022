@@ -443,7 +443,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         return q.getResultList();
     }
 
-    public List<User> getFocalPointByPeriodId(Long periodId) {
+    public List<User> getSupervisorstByPeriodId(Long periodId) {
         String jpql = "SELECT DISTINCT u FROM IndicatorExecution o " +
                 " inner join o.supervisorUser u " +
                 " WHERE u.id is not null " +

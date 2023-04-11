@@ -1356,8 +1356,8 @@ public class IndicatorExecutionService {
         }
     }
 
-    public List<User> getFocalPointByPeriodId(Long periodId) {
-        return this.indicatorExecutionDao.getFocalPointByPeriodId(periodId);
+    public List<User> getSupervisorsByPeriodId(Long periodId) {
+        return this.indicatorExecutionDao.getSupervisorstByPeriodId(periodId);
     }
 
     public List<IndicatorExecutionWeb> getDirectImplementationsIndicatorExecutionsBySupervisorId(Long periodId, Long supervisorId) throws GeneralAppException {

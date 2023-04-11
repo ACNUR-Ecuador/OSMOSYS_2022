@@ -152,7 +152,7 @@ public class MessageAlertServiceV2 {
             imProgramsEmail.add(this.appConfigurationService.findValorByClave(AppConfigurationKey.PROGRAMS_EMAIL));
         }
         // busco indicadores por supervisores
-        List<User> supervisors = this.indicatorExecutionService.getFocalPointByPeriodId(currentPeriod.getId());
+        List<User> supervisors = this.indicatorExecutionService.getSupervisorsByPeriodId(currentPeriod.getId());
         // cada supervisor
         for (User supervisor : supervisors) {
             List<IndicatorExecutionWeb> performanceIndicators = this.indicatorExecutionService.getDirectImplementationsIndicatorExecutionsBySupervisorId(currentPeriod.getId(), supervisor.getId());
