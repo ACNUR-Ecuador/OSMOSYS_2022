@@ -128,6 +128,7 @@ public class IndicatorService {
         indicator.setBlockAfterUpdate(indicatorWeb.getBlockAfterUpdate());
         indicator.setUnit(indicatorWeb.getUnit());
         indicator.setFrecuency(indicatorWeb.getFrecuency());
+        indicator.setState(indicatorWeb.getState());
         // marcadores
         // veo los nuevos
         indicatorWeb.getMarkers().forEach(markerWeb -> {
