@@ -117,7 +117,7 @@ export class MassMailingComponent implements OnInit {
     }
 
     sendAlertToId() {
-        this.emailService.alertPartners().subscribe({
+        this.emailService.alertsId().subscribe({
             next: value => {
                 this.messageService.add({
                     severity: 'sucess',
