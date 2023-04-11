@@ -41,7 +41,7 @@ public class AppConfigurationService {
         if (CollectionUtils.isNotEmpty(appConfs)) {
             for (AppConfiguration appConfiguration : appConfs) {
                 appConfigurationCache.put(appConfiguration.getClave(), appConfiguration);
-                LOGGER.info(appConfiguration.getClave()+":"+ appConfiguration);
+                LOGGER.info(appConfiguration.getClave() + ":" + appConfiguration);
             }
         }
     }
@@ -85,13 +85,12 @@ public class AppConfigurationService {
     }
 
 
-
     public Integer getReportLimitDay() {
         String valusS = this.findValorByClave(AppConfigurationKey.REPORT_LIMIT);
 
-        if(StringUtils.isBlank(valusS)){
+        if (StringUtils.isBlank(valusS)) {
             return null;
-        }else {
+        } else {
             return Integer.parseInt(valusS);
         }
     }
@@ -99,9 +98,9 @@ public class AppConfigurationService {
     public List<Integer> getReminderDays() {
         String valusS = this.findValorByClave(AppConfigurationKey.REMINDER_DAYS);
 
-        if(StringUtils.isBlank(valusS)){
+        if (StringUtils.isBlank(valusS)) {
             return null;
-        }else {
+        } else {
             try {
                 return Arrays.stream(valusS.split(",")).map(String::trim).map(Integer::parseInt).sorted().collect(Collectors.toList());
             } catch (Exception e) {
@@ -111,7 +110,7 @@ public class AppConfigurationService {
         }
     }
 
-    private List<Integer> getLisOfNumberFromString(String stringList ){
+    private List<Integer> getLisOfNumberFromString(String stringList) {
         List<Integer> result = new ArrayList<>();
         if (StringUtils.isBlank(stringList)) {
             return result;

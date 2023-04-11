@@ -1239,6 +1239,7 @@ public class IndicatorExecutionService {
                             .filter(indicatorExecutionLocationAssigment -> cantonToDissable.getId().equals(indicatorExecutionLocationAssigment.getLocation().getId()))
                             .findFirst();
             if (indicatorExecutionLocationAssigmentToDissableOpt.isPresent()) {
+                indicatorExecutionLocationAssigmentToDissableOpt.get().setState(State.INACTIVO);
                 IndicatorExecutionLocationAssigment indicatorExecutionLocationAssigmentToDissable = indicatorExecutionLocationAssigmentToDissableOpt.get();
                 locationsToDissableIe.add(indicatorExecutionLocationAssigmentToDissable.getLocation());
             }
