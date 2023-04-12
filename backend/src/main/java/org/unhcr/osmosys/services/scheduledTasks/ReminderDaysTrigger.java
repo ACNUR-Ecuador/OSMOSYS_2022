@@ -92,7 +92,7 @@ public class ReminderDaysTrigger {
     public void run() {
 
         try {
-            this.messageReminderService.sendPartnersReminders();
+            this.messageReminderService.sendPartnersRemindersToFocalPoints();
         } catch (Exception e) {
             LOGGER.error("Error en envío de recordatorio de socios");
             LOGGER.error(ExceptionUtils.getRootCauseMessage(e));

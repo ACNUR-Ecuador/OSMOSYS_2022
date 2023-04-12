@@ -27,7 +27,7 @@ public class EmailsEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public void recordatoryPartners() throws GeneralAppException {
-        this.messageReminderService.sendPartnersReminders();
+        this.messageReminderService.sendPartnersRemindersToFocalPoints();
     }
 
     @Path("/recordatoryId")
