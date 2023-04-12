@@ -435,6 +435,11 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             customDissagregationAssignationToIndicators,
             blockAfterUpdate
         };
+        if(indicator.state){
+            indicator.state='ACTIVO';
+        }else {
+            indicator.state='INACTIVO';
+        }
         // process assignation dissagregations
 // desagregaciones
         const dissagregationsObjs = (dissagregations as Array<string>).map(value => {
