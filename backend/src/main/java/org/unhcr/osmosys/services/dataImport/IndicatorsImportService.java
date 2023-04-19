@@ -129,9 +129,9 @@ public class IndicatorsImportService {
                 }
 
                 Indicator indicator;
-                indicator = this.indicatorService.getByPeriodAndCode(period.getId(), indicatorCode);
+                indicator = this.indicatorService.getByCode(indicatorCode);
 
-                if (indicator != null) {
+                /*if (indicator != null) {
                     throw new GeneralAppException("Ya existe un indicador con código: " + indicatorCode + " Para el periodo " + period.getYear() + "." +
                             " Por favor modifíquelo manualmente.", Response.Status.BAD_REQUEST);
 
@@ -141,9 +141,18 @@ public class IndicatorsImportService {
                     throw new GeneralAppException("Ya existe un indicador con código: " + indicatorCode + " y descripción: " +
                             indicatorDescription + " Por favor modifíquelo manualmente.", Response.Status.BAD_REQUEST);
 
+                }*/
+                if (indicator == null) {
+                    indicator = new Indicator();
+                }else {
+                    Indicator indicatorVal = this.indicatorService.getByPeriodAndCode(period.getId(), indicatorCode);
+                    if (indicatorVal != null) {
+                        throw new GeneralAppException("Ya existe un indicador con código: " + indicatorCode + " y descripción: " +
+                                indicatorDescription + " para el periodo "+period.getYear()+ " Por favor modifíquelo manualmente.", Response.Status.BAD_REQUEST);
+
+                    }
                 }
 
-                indicator = new Indicator();
                 indicator.setCode(indicatorCode);
                 indicator.setDescription(StringUtils.trimToNull(row.getCell(COL_INDICATOR).getStringCellValue()));
                 indicator.setCategory(StringUtils.trimToNull(row.getCell(COL_CATEGORY).getStringCellValue()));

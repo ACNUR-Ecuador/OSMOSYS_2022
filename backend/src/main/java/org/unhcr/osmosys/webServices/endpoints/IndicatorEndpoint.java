@@ -92,7 +92,6 @@ public class IndicatorEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response importStatementsCatalog(ImportFileWeb importFileWeb) throws GeneralAppException {
-        LOGGER.debug(importFileWeb);
         this.indicatorsImportService.indicatorsImport(importFileWeb);
         return null;
     }

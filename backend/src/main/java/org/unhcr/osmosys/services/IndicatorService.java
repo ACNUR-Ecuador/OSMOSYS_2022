@@ -326,4 +326,8 @@ public class IndicatorService {
         LOGGER.info(code+"-"+description);
         return this.indicatorDao.getByCodeAndDescription(code, description);
     }
+
+    public Indicator getByCode(String code) throws GeneralAppException {
+        return this.indicatorDao.getByCode(code);
+    }
 }
