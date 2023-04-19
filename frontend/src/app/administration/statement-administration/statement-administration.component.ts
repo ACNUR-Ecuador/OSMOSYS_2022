@@ -36,6 +36,7 @@ export class StatementAdministrationComponent implements OnInit {
     pillarsItems: SelectItem[];
     situationsItems: SelectItem[];
     periodsItems: SelectItem[];
+    parentStatementsItemsFiltered: SelectItem[];
     parentStatementsItems: SelectItem[];
 
 
@@ -486,5 +487,23 @@ export class StatementAdministrationComponent implements OnInit {
             this.importForm.get('file').setValue(fileReader.result);
             this.importForm.get('file').markAsTouched();
         };
+    }
+
+    filterStatementsByPeriod(value) {
+        let selectedPeriods: Period[] = value;
+        this.parentStatementsItemsFiltered = this.parentStatementsItems.filter(value1 => {
+            let statementTmp: Statement = value1.value;
+            let periodIds = statementTmp.periodStatementAsignations.map(value2 => {
+                return value2.period.id
+            });
+            for (let selectedPeriod of selectedPeriods) {
+                if(periodIds.includes(selectedPeriod.id)){
+                    return true;
+                }else {
+                    return false;
+                }
+            }
+            return false;
+        });
     }
 }

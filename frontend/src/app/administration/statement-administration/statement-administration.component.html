@@ -181,22 +181,36 @@
             <p-messages></p-messages>
             <div class="card">
                 <div class="p-fluid p-formgrid grid">
-                    <div class="field col-12 md:col-6">
+                    <div class="field col-4 md:col4 p-sm-12">
+                        <label for="periodsI">Periodos *</label>
+
+                        <p-multiSelect id="periodsI" [options]="periodsItems" appendTo="body"
+                                       formControlName="periods"
+                                       (onChange)="filterStatementsByPeriod($event.value)"
+                        >
+
+                        </p-multiSelect>
+
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('situation',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+                    <div class="field col-4 md:col-4">
                         <label for="areaI">Declaración padre</label>
                         <p-dropdown id="parentStatementI"
                                     formControlName="parentStatement"
-                                    [options]="parentStatementsItems"
+                                    [options]="parentStatementsItemsFiltered"
                                     placeholder="Selecciona..."
                                     [filter]=true
                                     appendTo="body"
                                     dataKey="id"
+                                    [panelStyle]="{'width':'80%'}"
                         >
                         </p-dropdown>
                         <small class="p-error" *ngIf="utilsService.showErrorForm('parentStatement',formItem)">Campo
                             obligatorio.</small>
                     </div>
 
-                    <div class="field col-12 md:col-6">
+                    <div class="field col-4 md:col-4">
                         <label for="codeI">Código *</label>
                         <input type="text" pInputText id="codeI"
                                formControlName="code" autofocus/>
@@ -272,17 +286,7 @@
                         <small class="p-error" *ngIf="utilsService.showErrorForm('situation',formItem)">Campo
                             obligatorio.</small>
                     </div>
-                    <div class="field col-12 md:col12 p-sm-12">
-                        <label for="periodsI">Periodos *</label>
 
-                        <p-multiSelect id="periodsI" [options]="periodsItems" appendTo="body"
-                                        formControlName="periods">
-
-                        </p-multiSelect>
-
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('situation',formItem)">Campo
-                            obligatorio.</small>
-                    </div>
                 </div>
             </div>
         </ng-template>
