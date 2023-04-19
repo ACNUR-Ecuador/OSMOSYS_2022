@@ -678,14 +678,14 @@
                  *ngIf="indicatorHasLocationDissagregation(formPerformanceIndicator.get('indicator').value)">
                 <p-panel header="Sitios/cantones de ejecución" [toggleable]="true">
                     <ng-template pTemplate="header">
-                        <div class=" p-d-flex p-jc-end">
+<!--                        <div class=" p-d-flex p-jc-end">
                             <button pButton type="button" pRipple label="Editar sitios/cantones de ejecución"
                                     *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR'])"
                                     style="max-width: 20rem"
                                     icon="pi pi-pencil"
                                     class="p-button-success"
                                     (click)="editLocations()"></button>
-                        </div>
+                        </div>-->
                     </ng-template>
                     <ng-template pTemplate="content">
                         <p-table #dt [value]="formPerformanceIndicator.get('locations').value" [rows]="10"

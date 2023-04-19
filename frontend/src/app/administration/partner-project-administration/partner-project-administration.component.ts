@@ -313,7 +313,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
     }
 
-    loadOptions(project:Project) {
+    loadOptions(project: Project) {
         this.cantonService.getByState(EnumsState.ACTIVE)
             .subscribe({
                 next: value => {
@@ -335,7 +335,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                         return value1.acronym.toLowerCase() !== 'acnur';
                     }).map(value1 => {
                         return {label: this.officeOrganizationPipe.transform(value1), value: value1} as SelectItem;
-                    });
+                    }).sort((a, b) => a.value.acronym.localeCompare(b.value.acronym));
                 },
                 error: error => {
                     this.messageService.add({
@@ -1058,7 +1058,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             }).filter(value => value.id === indicatorExecution.indicator.id).pop();
         editinItem.keepBudget = indicatorExecution.keepBudget;
         editinItem.assignedBudget = indicatorExecution.assignedBudget;
-        editinItem.state= indicatorExecution.state;
+        editinItem.state = indicatorExecution.state;
         if (indicatorExecution.projectStatement) {
             editinItem.projectStatement =
                 this.statementsOptions
@@ -1094,7 +1094,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
         this.formPerformanceIndicator.patchValue(editinItem);
 
-        this.formPerformanceIndicator.get('state').patchValue(indicatorExecution.state==='ACTIVO');
+        this.formPerformanceIndicator.get('state').patchValue(indicatorExecution.state === 'ACTIVO');
         this.formPerformanceIndicator.get('indicator').disable();
         if (editinItem.projectStatement.id === editinItem.indicator.statement.id) {
             this.formPerformanceIndicator.get('isBorrowedStatement').patchValue(false);
