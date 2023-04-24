@@ -145,6 +145,9 @@ public class DirectImplementationIndicatorsImportService {
                 indicatorExecutionAssigmentWeb.setReportingOffice(this.modelWebTransformationService.officeToOfficeWeb(office, false, false));
 
                 String reporterString = StringUtils.trimToNull(dataFormatter.formatCellValue(row.getCell(COL_REPORTER)));
+                if (reporterString == null) {
+                    throw new GeneralAppException("Usuario " + REPORTER + " no encontrado " + reporterString + " en el indicaodor " + productIndicatorString, Response.Status.BAD_REQUEST);
+                }
                 User reporter = this.userService.getUNHCRUsersByName(reporterString);
                 if (reporter == null) {
                     throw new GeneralAppException("Usuario " + REPORTER + " no encontrado " + reporterString + " en el indicaodor " + productIndicatorString, Response.Status.BAD_REQUEST);
@@ -153,6 +156,9 @@ public class DirectImplementationIndicatorsImportService {
 
 
                 String supervisorString = StringUtils.trimToNull(dataFormatter.formatCellValue(row.getCell(COL_SUPERVISOR)));
+                if (supervisorString == null) {
+                    throw new GeneralAppException("Usuario " + SUPERVISOR + " no encontrado " + supervisorString + " en el indicaodor " + productIndicatorString, Response.Status.BAD_REQUEST);
+                }
                 User supervisor = this.userService.getUNHCRUsersByName(supervisorString);
                 if (supervisor == null) {
                     throw new GeneralAppException("Usuario " + SUPERVISOR + " no encontrado " + supervisorString + " en el indicaodor " + productIndicatorString, Response.Status.BAD_REQUEST);
