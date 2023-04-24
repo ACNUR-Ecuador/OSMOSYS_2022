@@ -83,7 +83,6 @@ public class ProjectIndicatorsImportService {
     public void projectIndicatorsImport(Long projectId,
                                         InputStream file
     ) throws GeneralAppException {
-        LOGGER.info("test import");
         // FileInputStream file = null;
         try {
             Project project = this.projectService.getById(projectId);
