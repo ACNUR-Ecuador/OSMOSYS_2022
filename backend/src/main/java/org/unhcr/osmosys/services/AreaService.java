@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.AreaDao;
 import org.unhcr.osmosys.model.Area;
+import org.unhcr.osmosys.model.enums.AreaType;
 import org.unhcr.osmosys.webServices.model.AreaResumeWeb;
 import org.unhcr.osmosys.webServices.model.AreaWeb;
 import org.unhcr.osmosys.webServices.model.IndicatorExecutionWeb;
@@ -134,5 +135,8 @@ public class AreaService {
 
 
         return this.modelWebTransformationService.indicatorExecutionsToAreaWebs(indicatorExecutions, areas);
+    }
+    public List<Area> getAreaTypeByState(AreaType areaType, State state) {
+        return this.areaDao.getAreaTypeByState(areaType,state);
     }
 }

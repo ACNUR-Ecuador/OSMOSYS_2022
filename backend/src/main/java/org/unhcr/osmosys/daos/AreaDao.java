@@ -4,6 +4,7 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.Area;
+import org.unhcr.osmosys.model.enums.AreaType;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
@@ -56,6 +57,16 @@ public class AreaDao extends GenericDaoJpa<Area, Long> {
         } catch (NonUniqueResultException e) {
             throw new GeneralAppException("Se encontró más de un item con la descripción corta " + shortDescription, Response.Status.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public List<Area> getAreaTypeByState(AreaType areaType, State state) {
+
+        String jpql = "SELECT DISTINCT o FROM Area o " +
+                "WHERE o.state = :state and o.areaType=:areaType";
+        Query q = getEntityManager().createQuery(jpql, Area.class);
+        q.setParameter("state", state);
+        q.setParameter("areaType", areaType);
+        return q.getResultList();
     }
 
 

@@ -60,8 +60,12 @@ public class SituationService {
         return this.modelWebTransformationService.situationsToSituationsWeb(new HashSet<>(this.situationDao.findAll()));
     }
 
-    public List<SituationWeb> getByState(State state) {
+    public List<SituationWeb> getWebByState(State state) {
         return this.modelWebTransformationService.situationsToSituationsWeb(new HashSet<>(this.situationDao.getByState(state)));
+    }
+
+    public List<Situation> getByState(State state) {
+        return this.situationDao.getByState(state);
     }
 
     public Long update(SituationWeb situationWeb) throws GeneralAppException {

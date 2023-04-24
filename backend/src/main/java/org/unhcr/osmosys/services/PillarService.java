@@ -58,8 +58,12 @@ public class PillarService {
         return this.modelWebTransformationService.pillarsToPillarsWeb(this.pillarDao.findAll());
     }
 
-    public List<PillarWeb> getByState(State state) {
+    public List<PillarWeb> getWebByState(State state) {
         return this.modelWebTransformationService.pillarsToPillarsWeb(this.pillarDao.getByState(state));
+    }
+
+    public List<Pillar> getByState(State state) {
+        return this.pillarDao.getByState(state);
     }
 
     public Long update(PillarWeb pillarWeb) throws GeneralAppException {

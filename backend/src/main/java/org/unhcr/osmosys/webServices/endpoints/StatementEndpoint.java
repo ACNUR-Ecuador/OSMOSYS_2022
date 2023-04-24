@@ -3,10 +3,10 @@ package org.unhcr.osmosys.webServices.endpoints;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.services.StatementService;
+import org.unhcr.osmosys.services.dataImport.StatementImportService;
 import org.unhcr.osmosys.webServices.model.ImportFileWeb;
 import org.unhcr.osmosys.webServices.model.StatementWeb;
 
@@ -17,9 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
 import java.security.Principal;
 import java.util.List;
 
@@ -29,6 +27,9 @@ public class StatementEndpoint {
     private static final Logger LOGGER = Logger.getLogger(StatementEndpoint.class);
     @Inject
     StatementService statementService;
+
+    @Inject
+    StatementImportService statementImportService;
 
     @Path("/")
     @POST
@@ -79,19 +80,12 @@ public class StatementEndpoint {
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
         LOGGER.info("getStatementImportTemplate:" + principal.getName());
-
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
         final String filename = "statementImportTemplate.xlsx";
-        InputStream template = classLoader.getResourceAsStream("templates" + File.separator + filename);
-
-        if (template == null) {
-            throw new GeneralAppException("Error al obtener el template " + filename, Response.Status.INTERNAL_SERVER_ERROR);
-        }
-
         try {
-            return Response.ok(IOUtils.toByteArray(template)).header("Content-Disposition", "attachment; filename=\"" + "importador_declaraciones_plantilla.xlsx" + "\"").build();
-        } catch (IOException e) {
+
+            ByteArrayOutputStream template = this.statementImportService.generateTemplate();
+            return Response.ok(template.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+        } catch (Exception e) {
             LOGGER.error(ExceptionUtils.getStackTrace(e));
             throw new GeneralAppException("Error al obtener el template " + filename, Response.Status.INTERNAL_SERVER_ERROR);
         }

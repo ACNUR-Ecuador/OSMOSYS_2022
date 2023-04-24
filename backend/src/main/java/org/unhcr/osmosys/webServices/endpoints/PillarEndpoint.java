@@ -48,6 +48,6 @@ public class PillarEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public List<PillarWeb> getByState(@PathParam("state") State state) {
-        return this.pillarService.getByState(state);
+        return this.pillarService.getWebByState(state);
     }
 }

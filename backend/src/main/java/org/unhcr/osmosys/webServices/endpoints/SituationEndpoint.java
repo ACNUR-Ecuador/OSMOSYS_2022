@@ -48,6 +48,6 @@ public class SituationEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public List<SituationWeb> getByState(@PathParam("state") State state) {
-        return this.situationService.getByState(state);
+        return this.situationService.getWebByState(state);
     }
 }
