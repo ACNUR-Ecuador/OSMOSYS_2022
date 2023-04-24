@@ -238,13 +238,15 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
      * @param reportingOfficeId
      * @return
      */
-    public IndicatorExecution getByIndicatorIdAndOfficeId(Long indicatorId, Long reportingOfficeId) {
+    public IndicatorExecution getByIndicatorIdAndOfficeIdAndPeriodId(Long indicatorId, Long reportingOfficeId, Long periodId) {
 
         String jpql = "select o from IndicatorExecution o " +
-                " WHERE o.indicator.id = :indicatorId and o.reportingOffice.id = :reportingOfficeId";
+                " WHERE o.indicator.id = :indicatorId and o.reportingOffice.id = :reportingOfficeId" +
+                " and o.period.id =:periodId";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("indicatorId", indicatorId);
         q.setParameter("reportingOfficeId", reportingOfficeId);
+        q.setParameter("periodId", periodId);
 
         try {
             return (IndicatorExecution) q.getSingleResult();

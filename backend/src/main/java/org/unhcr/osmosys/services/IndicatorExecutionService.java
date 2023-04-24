@@ -941,7 +941,7 @@ public class IndicatorExecutionService {
             throw new GeneralAppException("El usuario responsable es obligatorio.", Response.Status.BAD_REQUEST);
         }
         // existe indicador para esta officina para
-        IndicatorExecution assimentFound = this.indicatorExecutionDao.getByIndicatorIdAndOfficeId(indicatorExecutionWeb.getIndicator().getId(), indicatorExecutionWeb.getReportingOffice().getId());
+        IndicatorExecution assimentFound = this.indicatorExecutionDao.getByIndicatorIdAndOfficeIdAndPeriodId(indicatorExecutionWeb.getIndicator().getId(), indicatorExecutionWeb.getReportingOffice().getId(), indicatorExecutionWeb.getPeriod().getId());
         if (assimentFound != null && !assimentFound.getId().equals(indicatorExecutionWeb.getId())) {
             throw new GeneralAppException("Este indicador ya se encuentra asignado para esta oficina. " + indicatorExecutionWeb.getIndicator().getCode(), Response.Status.BAD_REQUEST);
         }
