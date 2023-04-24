@@ -332,6 +332,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
 
     onPeriodChange(period: Period) {
         this.loadItems(period.id);
+        this.loadOptions(period);
     }
 
     exportExcel(table: Table) {
