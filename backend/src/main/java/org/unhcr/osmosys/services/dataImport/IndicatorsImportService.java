@@ -6,7 +6,11 @@ import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellAddress;
@@ -76,6 +80,7 @@ public class IndicatorsImportService {
     ) throws GeneralAppException {
         LOGGER.info("test import");
         try {
+
             Period period = this.periodService.getByYear(periodWeb.getYear());
             if (period == null) {
                 throw new GeneralAppException("El periodo " + periodWeb.getYear() + " no existe", Response.Status.BAD_REQUEST);
@@ -117,7 +122,11 @@ public class IndicatorsImportService {
                 // get Indicator
 
                 // find by year and code
-                String indicatorCode = StringUtils.trimToNull(row.getCell(COL_INDICATOR_CODE).getStringCellValue());
+                DataFormatter objDefaultFormat = new DataFormatter();
+
+                FormulaEvaluator objFormulaEvaluator = new XSSFFormulaEvaluator( workbook);
+                objFormulaEvaluator.evaluate(row.getCell(COL_INDICATOR_CODE));
+                String indicatorCode = StringUtils.trimToNull(objDefaultFormat.formatCellValue(row.getCell(COL_INDICATOR_CODE),objFormulaEvaluator));
                 String indicatorDescription = StringUtils.trimToNull(row.getCell(COL_INDICATOR).getStringCellValue());
 
 
