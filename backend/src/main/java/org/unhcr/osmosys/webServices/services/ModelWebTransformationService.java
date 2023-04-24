@@ -519,9 +519,9 @@ public class ModelWebTransformationService {
         officeWeb.setState(office.getState());
         officeWeb.setParentOffice(this.officeToOfficeWeb(office.getParentOffice(), false, false));
         if (returnChilds) {
-            officeWeb.setChildOffices(this.officesToOfficesWeb(new ArrayList<>(office.getChildOffices()), returnChilds,false));
+            officeWeb.setChildOffices(this.officesToOfficesWeb(new ArrayList<>(office.getChildOffices()), returnChilds, false));
         }
-        if(returnAdministrators) {
+        if (returnAdministrators) {
             List<User> administrators = office.getOfficeAdministrators().stream()
                     .filter(officeAdministrator -> officeAdministrator.getState().equals(State.ACTIVO))
                     .map(OfficeAdministrator::getAdministrator).collect(Collectors.toList());
@@ -547,7 +547,7 @@ public class ModelWebTransformationService {
         return office;
     }
 
-    public List<OfficeWeb> officesToOfficesWeb(List<Office> offices, boolean returnChilds, boolean returnAdministrators ) {
+    public List<OfficeWeb> officesToOfficesWeb(List<Office> offices, boolean returnChilds, boolean returnAdministrators) {
         List<OfficeWeb> r = new ArrayList<>();
         for (Office office : offices) {
             r.add(this.officeToOfficeWeb(office, returnChilds, returnAdministrators));
@@ -1355,7 +1355,9 @@ public class ModelWebTransformationService {
         q.setState(mo.getState());
         q.setCommentary(mo.getCommentary());
         q.setTotalExecution(mo.getTotalExecution());
-        mo.getSources().size();
+        if (CollectionUtils.isNotEmpty(mo.getSources())) {
+            mo.getSources().size();
+        }
         q.setSources(mo.getSources());
         q.setSourceOther(mo.getSourceOther());
         q.setChecked(mo.getChecked());
@@ -1441,7 +1443,7 @@ public class ModelWebTransformationService {
         uw.setState(user.getState());
         uw.setUsername(user.getUsername());
         if (setOffice) {
-            uw.setOffice(this.officeToOfficeWeb(user.getOffice(), false,false));
+            uw.setOffice(this.officeToOfficeWeb(user.getOffice(), false, false));
         }
         if (setOrganization) {
             uw.setOrganization(this.organizationToOrganizationWeb(user.getOrganization()));
