@@ -138,6 +138,10 @@ public class DirectImplementationIndicatorsImportService {
                 String productIndicatorString = StringUtils.trimToNull(dataFormatter.formatCellValue(row.getCell(COL_PRODUCT_INDICATOR)));
                 String indicatorCode = StringUtils.split(productIndicatorString, " ", 2)[0];
                 Indicator indicator = this.indicatorService.getByPeriodAndCode(period.getId(), indicatorCode);
+                if (indicator == null) {
+                    throw new GeneralAppException("No se encontraro el indicador "
+                            + indicatorCode + "para el periodo " + period.getYear() + ".", Response.Status.BAD_REQUEST);
+                }
                 indicatorExecutionAssigmentWeb.setIndicator(this.modelWebTransformationService.indicatorToIndicatorWeb(indicator, false, true, false));
                 indicatorExecutionAssigmentWeb.setState(State.ACTIVO);
                 indicatorExecutionAssigmentWeb.setKeepBudget(false);
@@ -146,22 +150,22 @@ public class DirectImplementationIndicatorsImportService {
 
                 String reporterString = StringUtils.trimToNull(dataFormatter.formatCellValue(row.getCell(COL_REPORTER)));
                 if (reporterString == null) {
-                    throw new GeneralAppException("Usuario " + REPORTER + " no encontrado " + reporterString + " en el indicaodor " + productIndicatorString, Response.Status.BAD_REQUEST);
+                    throw new GeneralAppException("Usuario " + REPORTER + " no encontrado " + reporterString + " en el indicador " + productIndicatorString, Response.Status.BAD_REQUEST);
                 }
                 User reporter = this.userService.getUNHCRUsersByName(reporterString);
                 if (reporter == null) {
-                    throw new GeneralAppException("Usuario " + REPORTER + " no encontrado " + reporterString + " en el indicaodor " + productIndicatorString, Response.Status.BAD_REQUEST);
+                    throw new GeneralAppException("Usuario " + REPORTER + " no encontrado " + reporterString + " en el indicador " + productIndicatorString, Response.Status.BAD_REQUEST);
                 }
                 indicatorExecutionAssigmentWeb.setAssignedUser(this.modelWebTransformationService.userToUserWebSimple(reporter, false, false));
 
 
                 String supervisorString = StringUtils.trimToNull(dataFormatter.formatCellValue(row.getCell(COL_SUPERVISOR)));
                 if (supervisorString == null) {
-                    throw new GeneralAppException("Usuario " + SUPERVISOR + " no encontrado " + supervisorString + " en el indicaodor " + productIndicatorString, Response.Status.BAD_REQUEST);
+                    throw new GeneralAppException("Usuario " + SUPERVISOR + " no encontrado " + supervisorString + " en el indicador " + productIndicatorString, Response.Status.BAD_REQUEST);
                 }
                 User supervisor = this.userService.getUNHCRUsersByName(supervisorString);
                 if (supervisor == null) {
-                    throw new GeneralAppException("Usuario " + SUPERVISOR + " no encontrado " + supervisorString + " en el indicaodor " + productIndicatorString, Response.Status.BAD_REQUEST);
+                    throw new GeneralAppException("Usuario " + SUPERVISOR + " no encontrado " + supervisorString + " en el indicador " + productIndicatorString, Response.Status.BAD_REQUEST);
                 }
                 indicatorExecutionAssigmentWeb.setSupervisorUser(this.modelWebTransformationService.userToUserWebSimple(supervisor, false, false));
 

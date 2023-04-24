@@ -280,7 +280,6 @@ public class IndicatorExecutionEndpoint {
             @PathParam("periodId") Long periodId,
             @PathParam("officeId") Long officeId,
             ImportFileWeb importFileWeb) throws GeneralAppException {
-        LOGGER.debug(importFileWeb);
         this.directImplementationIndicatorsImportService.directImplementationIndicatorsImport(periodId, officeId,importFileWeb);
         return Response.ok().build();
     }

@@ -97,7 +97,7 @@ public class ProjectIndicatorsImportService {
 
             //Get first/desired sheet from the workbook
             XSSFSheet sheet = workbook.getSheet("indicadores_proyecto");
-            if(sheet==null){
+            if (sheet == null) {
                 throw new GeneralAppException("No se encontró la hoja indicadores_proyecto en el archivo."
                         , Response.Status.BAD_REQUEST);
             }
@@ -151,6 +151,10 @@ public class ProjectIndicatorsImportService {
                 String productIndicatorString = StringUtils.trimToNull(row.getCell(COL_PRODUCT_INDICATOR).getStringCellValue());
                 String indicatorCode = StringUtils.split(productIndicatorString, " ", 2)[0];
                 Indicator indicator = this.indicatorService.getByPeriodAndCode(project.getPeriod().getId(), indicatorCode);
+                if (indicator == null) {
+                    throw new GeneralAppException("No se encontraro el indicador "
+                            + indicatorCode + "para el periodo " + project.getPeriod().getYear() + ".", Response.Status.BAD_REQUEST);
+                }
 
                 int T1I = (int) row.getCell(COL_TARGET_T1).getNumericCellValue();
                 int T2I = (int) row.getCell(COL_TARGET_T2).getNumericCellValue();
@@ -162,7 +166,7 @@ public class ProjectIndicatorsImportService {
                 String locationsTotal = StringUtils.trimToNull(row.getCell(COL_CANTONS).getStringCellValue());
                 if (StringUtils.isEmpty(locationsTotal)) {
                     throw new GeneralAppException("No se encontraron lugares de ejecución para el indicador "
-                            + productIndicatorString + ". '" +  "'.", Response.Status.BAD_REQUEST);
+                            + productIndicatorString + ". '" + "'.", Response.Status.BAD_REQUEST);
                 }
                 List<String> locationStringList = Arrays.asList(StringUtils.split(locationsTotal, ","));
                 if (CollectionUtils.isEmpty(locationStringList)) {
