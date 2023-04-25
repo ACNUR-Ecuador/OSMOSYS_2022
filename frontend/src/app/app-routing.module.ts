@@ -99,8 +99,8 @@ const routes: Routes = [
         // google analitycs
         Angulartics2Module.forRoot({
             pageTracking: {
-                clearIds: true,
-                clearQueryParams: true,
+                clearIds: false,
+                clearQueryParams: false,
             }
         })
     ],

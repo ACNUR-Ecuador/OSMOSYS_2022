@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {PrimeNGConfig} from 'primeng/api';
 import {LayoutService} from './layout/service/app.layout.service';
 import {EnumsService} from './services/enums.service';
