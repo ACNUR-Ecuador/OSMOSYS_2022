@@ -71,7 +71,7 @@ public class ReminderDaysTrigger {
 
 
                     }
-                    LOGGER.info("next time" + formatter.format(now.getTime()));
+                    LOGGER.info("next time" + formatter.format(next.getTime()));
 
                     return next.getTime();
 

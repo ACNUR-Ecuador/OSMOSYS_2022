@@ -72,7 +72,7 @@ public class ReportDayLimitTriger {
                     next = calendar;
 
                 }
-                LOGGER.debug("next time" + formatter.format(now.getTime()));
+                LOGGER.debug("next time" + formatter.format(next.getTime()));
 
                 return next.getTime();
 
