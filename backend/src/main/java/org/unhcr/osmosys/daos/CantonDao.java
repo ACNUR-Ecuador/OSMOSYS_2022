@@ -79,7 +79,6 @@ public class CantonDao extends GenericDaoJpa<Canton, Long> {
 
 
     public Canton discoverCanton(String codeCanton, String descriptionCanton, String codeProvincia, String descriptionProvincia) throws GeneralAppException {
-        LOGGER.info(descriptionCanton+" "+descriptionProvincia+" "+codeCanton);
         String jpql = "SELECT DISTINCT o FROM Canton o " +
                 "WHERE " +
                 " o.code =:codeCanton" +
