@@ -214,12 +214,12 @@ export class MenuService {
                     routerLink: ['/directImplementation/areasMenu'],
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID'],
                 },
-                {
+               /* {
                     label: 'Tablero de indicadores',
                     icon: 'pi pi-fw pi-th-large',
                     routerLink: ['/home/homeDashboardDirectImplementation'],
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID'],
-                },
+                },*/
             ]
         },
         {separator: true},
