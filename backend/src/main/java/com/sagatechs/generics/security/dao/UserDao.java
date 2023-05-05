@@ -216,6 +216,25 @@ public class UserDao extends GenericDaoJpa<User, Long> {
         }
     }
 
+    public User getUNHCRUsersByUsername(String username) throws GeneralAppException {
+        String jpql = "SELECT DISTINCT o FROM User o " +
+                " left outer join fetch o.roleAssigments ra " +
+                " left outer join fetch ra.role ro " +
+                " left outer join fetch o.office off " +
+                " left outer join fetch o.organization " +
+                " WHERE  ( o.organization is null or lower(o.organization.acronym)='unhcr'  or lower(o.organization.acronym)='acnur' ) " +
+                " and  o.username=:username ";
+        Query query = getEntityManager().createQuery(jpql, User.class);
+        query.setParameter("username", username);
+        try {
+            return (User) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (NonUniqueResultException e) {
+            throw new GeneralAppException("Se encontró más de un usuario con este nombre:" + username);
+        }
+    }
+
     public List<User> getAllUsers() {
         String jpql = "SELECT DISTINCT o FROM User o " +
                 " left outer join fetch o.roleAssigments ra " +

@@ -44,8 +44,7 @@ public class ReportDataService {
     private static final Logger LOGGER = Logger.getLogger(ReportDataService.class);
     @Inject
     IndicatorExecutionService indicatorExecutionService;
-    @Inject
-    IndicatorValueService indicatorValueService;
+
 
     @Inject
     ReportDao reportDao;
@@ -1022,11 +1021,11 @@ public class ReportDataService {
     private List<IndicatorReportProgramsDTO> indicatorExecutionsToIndicatorReportPrograms(List<IndicatorExecution> indicatorExecutions) {
         List<IndicatorReportProgramsDTO> r = new ArrayList<>();
         for (IndicatorExecution indicatorExecution : indicatorExecutions) {
-            r.add(this.indicatorExecutionsToIndicatorReportPrograms(indicatorExecution));
+            // r.add(this.indicatorExecutionsToIndicatorReportPrograms(indicatorExecution));
         }
         return r;
     }
-
+/*
     private IndicatorReportProgramsDTO indicatorExecutionsToIndicatorReportPrograms(IndicatorExecution ie) {
         IndicatorReportProgramsDTO r = new IndicatorReportProgramsDTO();
         r.setIeId(ie.getId());
@@ -1125,7 +1124,7 @@ public class ReportDataService {
 
         return r;
 
-    }
+    }*/
 
     private Integer getProgramValue(List<IndicatorValue> indicatorValues, DissagregationType dissagregationType, PopulationType populationType, AgeType ageType, GenderType genderType) {
         switch (dissagregationType) {

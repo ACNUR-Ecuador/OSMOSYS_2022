@@ -38,6 +38,10 @@ public class OfficeService {
         return this.officeDao.find(id);
     }
 
+    public OfficeWeb getWebById(Long id) {
+        return this.modelWebTransformationService.officeToOfficeWeb(this.officeDao.find(id),false, false);
+    }
+
     public Office saveOrUpdate(Office office) {
         if (office.getId() == null) {
             this.officeDao.save(office);

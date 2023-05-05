@@ -469,6 +469,10 @@ public class UserService implements Serializable {
         return this.userDao.getUNHCRUsersByName(name);
     }
 
+    public User getUNHCRUsersByUsername(String username) throws GeneralAppException {
+        return this.userDao.getUNHCRUsersByUsername(username);
+    }
+
     public User getById(Long id) {
         return this.userDao.find(id);
     }

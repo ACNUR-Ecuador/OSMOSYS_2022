@@ -266,6 +266,8 @@ public class IndicatorExecutionService {
 
     public void updateTargets(TargetUpdateDTOWeb targetUpdateDTOWeb) throws GeneralAppException {
         IndicatorExecution ie = this.indicatorExecutionDao.getByIdWithIndicatorValues(targetUpdateDTOWeb.getIndicatorExecutionId());
+        ie.setTarget(targetUpdateDTOWeb.getTotalTarget());
+        /*
         if (ie.getIndicatorType().equals(IndicatorType.GENERAL)) {
             ie.setTarget(targetUpdateDTOWeb.getTotalTarget());
         } else {
@@ -279,7 +281,7 @@ public class IndicatorExecutionService {
             }
         }
 
-
+*/
         this.updateIndicatorExecutionTotals(ie);
 
         this.saveOrUpdate(ie);
@@ -299,7 +301,7 @@ public class IndicatorExecutionService {
             this.quarterService.updateQuarterTotals(quarter, totalIndicatorCalculationType);
         }
         List<Quarter> quarters = indicatorExecution.getQuarters().stream().filter(quarter -> quarter.getState().equals(State.ACTIVO)).collect(Collectors.toList());
-        if (!indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)) {
+        /*if (!indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)) {
             // target total
             Optional<BigDecimal> totalTargetOpt;
             totalTargetOpt = quarters.stream().map(Quarter::getTarget).filter(Objects::nonNull).reduce(BigDecimal::add);
@@ -308,7 +310,7 @@ public class IndicatorExecutionService {
             } else {
                 indicatorExecution.setTarget(null);
             }
-        }
+        }*/
 
         // total execution and total percentage
         List<BigDecimal> totalQuarterValues = quarters.stream()
@@ -325,7 +327,7 @@ public class IndicatorExecutionService {
             //noinspection DuplicatedCode
             if (indicatorExecution.getTotalExecution() != null && indicatorExecution.getTarget() != null) {
                 if (indicatorExecution.getTarget().compareTo(BigDecimal.ZERO) == 0) {
-                    indicatorExecution.setTarget(BigDecimal.ZERO);
+                    indicatorExecution.setExecutionPercentage(BigDecimal.ZERO);
                 } else {
                     indicatorExecution.setExecutionPercentage(indicatorExecution.getTotalExecution().divide(indicatorExecution.getTarget(), 4, RoundingMode.HALF_UP));
                 }
