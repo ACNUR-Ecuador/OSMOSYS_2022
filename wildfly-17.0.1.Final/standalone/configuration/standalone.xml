@@ -179,7 +179,7 @@
                         <password>sa</password>
                     </security>
                 </datasource>
-                <datasource jta="true" jndi-name="java:jboss/datasources/osmosys" pool-name="osmosys" enabled="true" use-ccm="true" statistics-enabled="true">
+                <datasource jta="true" jndi-name="java:jboss/datasources/osmosys_sv" pool-name="osmosys_sv" enabled="true" use-ccm="true" statistics-enabled="true">
                     <connection-url>jdbc:postgresql://localhost:5432/osmosys_sv</connection-url>
                     <driver>postgresql-driver</driver>
                     <pool>
@@ -584,6 +584,8 @@
         </outbound-socket-binding>
     </socket-binding-group>
     <deployments>
-        
+        <deployment name="osmosys_backend-3.0" runtime-name="osmosys_backend-3.0.war">
+            <fs-exploded path="D:\proyectos\OSMOSYS_Salvador\backend\target\osmosys_backend-3.0"/>
+        </deployment>
     </deployments>
 </server>
