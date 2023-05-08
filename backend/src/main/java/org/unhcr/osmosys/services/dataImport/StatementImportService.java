@@ -55,7 +55,7 @@ public class StatementImportService {
     private static final String IMPACT_AREA = "AREA DE IMPACTO";
     private static final String IMPACT_STATEMENT_CODE = "DECLARACION DE IMPACTO CODIGO";
     private static final String IMPACT_STATEMENT = "DECLARACION DE IMPACTO";
-    private static final String OUTCOME_AREA= "AREA DE EFECTO";
+    private static final String OUTCOME_AREA = "AREA DE EFECTO";
     private static final String OUTCOME_STATEMENT_CODE = "DECLARACION DE EFECTO CODIGO";
     private static final String OUTCOME_STATEMENT = "DECLARACION DE EFECTO";
     private static final String OUTPUT_STATEMENT_CODE = "DECLARACION DE PRODUCTO CODIGO";
@@ -115,17 +115,34 @@ public class StatementImportService {
                     continue;
                 }
 
+                String impactStatementCode = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_IMPACT_STATEMENT_CODE)));
+                String impactStatementDescription = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_IMPACT_STATEMENT)));
+                String outcomeStatementCode = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTCOME_STATEMENT_CODE)));
+                String outcomeStatementDescription = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTCOME_STATEMENT)));
+                String outputStatementCode = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTPUT_STATEMENT_CODE)));
+                String outputStatementDescription = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTPUT_STATEMENT)));
 
-                Statement impactStatement = this.statementService.getByCodeAndPeriodYearAndAreaType(StringUtils.trimToNull(
-                                formatter.formatCellValue(row.getCell(COL_IMPACT_STATEMENT_CODE))),
+                if (
+                        impactStatementCode == null &&
+                                impactStatementDescription == null &&
+                                outcomeStatementCode == null &&
+                                outcomeStatementDescription == null &&
+                                outputStatementCode == null &&
+                                outputStatementDescription == null
+                ) {
+                    break;
+                }
+
+                Statement impactStatement = this.statementService.getByCodeAndPeriodYearAndAreaType(
+                        impactStatementCode,
                         AreaType.IMPACTO,
                         periodWeb.getYear());
                 if (impactStatement != null) {
                     impactStatement.setState(State.ACTIVO);
                 } else {
                     impactStatement = statementService.getByCodeAndDescriptionAndAreaType(
-                            StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_IMPACT_STATEMENT_CODE))),
-                            StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_IMPACT_STATEMENT))),
+                            impactStatementCode,
+                            StringUtils.trimToNull(impactStatementDescription),
                             AreaType.IMPACTO
                     );
                     if (impactStatement != null) {
@@ -139,8 +156,8 @@ public class StatementImportService {
                         impactStatement = new Statement();
                         impactStatement.setState(State.ACTIVO);
                         impactStatement.setAreaType(AreaType.IMPACTO);
-                        impactStatement.setCode(StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_IMPACT_STATEMENT_CODE))));
-                        impactStatement.setDescription(StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_IMPACT_STATEMENT))));
+                        impactStatement.setCode(impactStatementCode);
+                        impactStatement.setDescription(StringUtils.trimToNull(impactStatementDescription));
 
                         String impactAreaTotal = StringUtils.trimToNull(row.getCell(COL_IMPACT_AREA).getStringCellValue());
                         String impactAreaCode = StringUtils.trimToNull(StringUtils.split(impactAreaTotal, " ", 2)[0]);
@@ -150,8 +167,8 @@ public class StatementImportService {
                             throw new GeneralAppException("El área de impacto con código " + impactAreaCode + " no existe", Response.Status.BAD_REQUEST);
                         }
                         impactStatement.setArea(area);
-                        String pilarTotal= StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_PILLAR)));
-                        String pilarCode= StringUtils.trimToNull(StringUtils.split(pilarTotal, " ", 2)[0]);
+                        String pilarTotal = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_PILLAR)));
+                        String pilarCode = StringUtils.trimToNull(StringUtils.split(pilarTotal, " ", 2)[0]);
                         Pillar pillar = this.pillarService.getByCode(pilarCode);
                         if (pillar == null) {
                             throw new GeneralAppException("El pilar con código " + pilarCode + " no existe", Response.Status.BAD_REQUEST);
@@ -183,8 +200,8 @@ public class StatementImportService {
                     outcomeStatement.setState(State.ACTIVO);
                 } else {
                     outcomeStatement = statementService.getByCodeAndDescriptionAndAreaType(
-                            StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTCOME_STATEMENT_CODE))),
-                            StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTCOME_STATEMENT))),
+                            outcomeStatementCode,
+                            outcomeStatementDescription,
                             AreaType.RESULTADO
                     );
                     if (outcomeStatement != null) {
@@ -198,8 +215,8 @@ public class StatementImportService {
                         outcomeStatement = new Statement();
                         outcomeStatement.setState(State.ACTIVO);
                         outcomeStatement.setAreaType(AreaType.RESULTADO);
-                        outcomeStatement.setCode(StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTCOME_STATEMENT_CODE))));
-                        outcomeStatement.setDescription(StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTCOME_STATEMENT))));
+                        outcomeStatement.setCode(outcomeStatementCode);
+                        outcomeStatement.setDescription(outcomeStatementDescription);
                         String outcomeAreaTotal = StringUtils.trimToNull(row.getCell(COL_OUTCOME_AREA).getStringCellValue());
                         String outcomeAreaCode = StringUtils.trimToNull(StringUtils.split(outcomeAreaTotal, " ", 2)[0]);
 
@@ -209,7 +226,7 @@ public class StatementImportService {
                         }
                         outcomeStatement.setArea(area);
                         // parent statement
-                        String outcomeParentStatementCode = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_IMPACT_STATEMENT_CODE)));
+                        String outcomeParentStatementCode = impactStatementCode;
                         Optional<Statement> outcomeParentStatement = impactStatements.stream().filter(statement -> statement.getCode().equalsIgnoreCase(outcomeParentStatementCode)).findFirst();
                         if (!outcomeParentStatement.isPresent()) {
                             throw new GeneralAppException("La declaración con código " + outcomeStatement.getCode() + " no tiene una declaración padre con código " + outcomeParentStatementCode, Response.Status.BAD_REQUEST);
@@ -218,8 +235,8 @@ public class StatementImportService {
                         }
 
 
-                        String pilarTotal= StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_PILLAR)));
-                        String pilarCode= StringUtils.trimToNull(StringUtils.split(pilarTotal, " ", 2)[0]);
+                        String pilarTotal = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_PILLAR)));
+                        String pilarCode = StringUtils.trimToNull(StringUtils.split(pilarTotal, " ", 2)[0]);
                         Pillar pillar = this.pillarService.getByCode(pilarCode);
                         if (pillar == null) {
                             throw new GeneralAppException("El pilar con código " + pilarCode + " no existe", Response.Status.BAD_REQUEST);
@@ -244,15 +261,15 @@ public class StatementImportService {
 
                 // get OUTPUT STATEMENTS
                 Statement outputStatement = this.statementService.getByCodeAndPeriodYearAndAreaType(
-                        StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTPUT_STATEMENT_CODE))),
+                        outputStatementCode,
                         AreaType.PRODUCTO,
                         periodWeb.getYear());
                 if (outputStatement != null) {
                     outputStatement.setState(State.ACTIVO);
                 } else {
                     outputStatement = statementService.getByCodeAndDescriptionAndAreaType(
-                            StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTPUT_STATEMENT_CODE))),
-                            StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTPUT_STATEMENT))),
+                            outputStatementCode,
+                            outputStatementDescription,
                             AreaType.PRODUCTO
                     );
                     if (outputStatement != null) {
@@ -266,10 +283,10 @@ public class StatementImportService {
                         outputStatement = new Statement();
                         outputStatement.setState(State.ACTIVO);
                         outputStatement.setAreaType(AreaType.PRODUCTO);
-                        outputStatement.setCode(StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTPUT_STATEMENT_CODE))));
-                        outputStatement.setDescription(StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTPUT_STATEMENT))));
+                        outputStatement.setCode(outputStatementCode);
+                        outputStatement.setDescription(outputStatementDescription);
                         // parent statement+
-                        String outcomeParentStatementCode = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_OUTCOME_STATEMENT_CODE)));
+                        String outcomeParentStatementCode = outcomeStatementCode;
                         Optional<Statement> outcomeParentStatement = outcomeStatements.stream().filter(statement -> statement.getCode().equalsIgnoreCase(outcomeParentStatementCode)).findFirst();
                         if (!outcomeParentStatement.isPresent()) {
                             throw new GeneralAppException("La declaración con código " + outputStatement.getCode() + " no tiene una declaración padre con código " + outcomeParentStatementCode, Response.Status.BAD_REQUEST);
@@ -284,8 +301,8 @@ public class StatementImportService {
                             throw new GeneralAppException("El área de resultado con código " + outcomeAreaCode + " no existe", Response.Status.BAD_REQUEST);
                         }
                         outputStatement.setArea(area);
-                        String pilarTotal= StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_PILLAR)));
-                        String pilarCode= StringUtils.trimToNull(StringUtils.split(pilarTotal, " ", 2)[0]);
+                        String pilarTotal = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_PILLAR)));
+                        String pilarCode = StringUtils.trimToNull(StringUtils.split(pilarTotal, " ", 2)[0]);
                         Pillar pillar = this.pillarService.getByCode(pilarCode);
                         outputStatement.setPillar(pillar);
 
@@ -473,7 +490,7 @@ public class StatementImportService {
 
         int firstRow = tableOptions.getArea().getFirstCell().getRow();
         int firstCol = tableOptions.getArea().getFirstCell().getCol();
-        List<Situation> situations = this.situationService.getByState( State.ACTIVO);
+        List<Situation> situations = this.situationService.getByState(State.ACTIVO);
 
 
         List<Situation> listaValues = situations.stream().sorted(Comparator.comparing(Situation::getCode)).collect(Collectors.toList());
@@ -517,7 +534,7 @@ public class StatementImportService {
     private void fillPillars(XSSFSheet sheetTemplate, XSSFSheet sheetOptions, XSSFTable tableOptions) {
         int firstRow = tableOptions.getArea().getFirstCell().getRow();
         int firstCol = tableOptions.getArea().getFirstCell().getCol();
-        List<Pillar> pillars = this.pillarService.getByState( State.ACTIVO);
+        List<Pillar> pillars = this.pillarService.getByState(State.ACTIVO);
 
 
         List<Pillar> listaValues = pillars.stream().sorted(Comparator.comparing(Pillar::getCode)).collect(Collectors.toList());

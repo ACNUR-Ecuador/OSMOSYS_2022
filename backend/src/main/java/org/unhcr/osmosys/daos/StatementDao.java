@@ -3,6 +3,7 @@ package org.unhcr.osmosys.daos;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
+import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.Statement;
 import org.unhcr.osmosys.model.enums.AreaType;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 @Stateless
 public class StatementDao extends GenericDaoJpa<Statement, Long> {
+    private final static Logger LOGGER = Logger.getLogger(StatementDao.class);
     public StatementDao() {
         super(Statement.class, Long.class);
     }
@@ -52,6 +54,7 @@ public class StatementDao extends GenericDaoJpa<Statement, Long> {
     }
 
     public Statement getByCodeAndPeriodYearAndAreaType(String code, AreaType areaType, int year) throws GeneralAppException {
+        LOGGER.debug(code);
         String jpql = "SELECT DISTINCT o" +
                 " FROM Statement o" +
                 " inner join  o.periodStatementAsignations psa " +
