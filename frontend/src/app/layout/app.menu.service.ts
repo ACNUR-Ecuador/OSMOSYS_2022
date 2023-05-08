@@ -277,6 +277,12 @@ export class MenuService {
                             routerLink: ['/reports/2023/trendsIndicators2023'],
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
                         },
+                        {
+                            label: 'Indicadores Generales',
+                            icon: 'pi pi-fw pi-chart-bar',
+                            routerLink: ['/reports/2023/generalIndicators2023'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                        }
                     ]
                 },
                 {

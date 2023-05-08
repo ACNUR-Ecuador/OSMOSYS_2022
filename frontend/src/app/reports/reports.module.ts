@@ -30,6 +30,7 @@ import {SplitButtonModule} from "primeng/splitbutton";
 import { PiIndicators2023Component } from './2023/pi-indicators2023/pi-indicators2023.component';
 import { ProductIndicators2023Component } from './2023/product-indicators2023/product-indicators2023.component';
 import { TrendsIndicators2023Component } from './2023/trends-indicators2023/trends-indicators2023.component';
+import { GeneralIndicators2023Component } from './2023/general-indicators2023/general-indicators2023.component';
 
 
 @NgModule({
@@ -52,7 +53,8 @@ import { TrendsIndicators2023Component } from './2023/trends-indicators2023/tren
     DataExportComponent,
     PiIndicators2023Component,
     ProductIndicators2023Component,
-    TrendsIndicators2023Component
+    TrendsIndicators2023Component,
+    GeneralIndicators2023Component
   ],
     imports: [
         CommonModule,
