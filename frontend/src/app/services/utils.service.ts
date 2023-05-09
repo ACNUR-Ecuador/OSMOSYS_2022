@@ -876,7 +876,8 @@ export class UtilsService {
         if (indicatorExecution.state === EnumsState.INACTIVE) {
             return false;
         }
-        if (indicatorExecution.indicatorType !== EnumsIndicatorType.GENERAL) {
+        // cambio a anual target
+/*        if (indicatorExecution.indicatorType !== EnumsIndicatorType.GENERAL) {
             if (indicatorExecution.quarters && indicatorExecution.quarters.length > 0) {
                 indicatorExecution.quarters.filter(value => {
                     return value.state === EnumsState.ACTIVE;
@@ -890,6 +891,9 @@ export class UtilsService {
             if (indicatorExecution.target === null) {
                 result = true;
             }
+        }*/
+        if (indicatorExecution.target === null) {
+            result = true;
         }
         return result;
     }
