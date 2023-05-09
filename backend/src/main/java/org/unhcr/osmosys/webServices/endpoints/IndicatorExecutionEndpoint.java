@@ -233,7 +233,28 @@ public class IndicatorExecutionEndpoint {
         String fileName = null;
         try {
             fileName = "importador_indicadores_proyectos_plantilla.xlsm";
-            ByteArrayOutputStream template = this.projectIndicatorsImportService.generateProjectIndicators(periodId);
+            ByteArrayOutputStream template = this.projectIndicatorsImportService.generateProjectIndicators(periodId, false);
+            return Response.ok(template.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + fileName + "\"").build();
+        } catch (Exception e) {
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
+            throw new GeneralAppException("Error al obtener el template " + fileName, Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Path("/getProjectIndicatorsImportTemplateTotalTarget/{periodId}")
+    @GET
+    @Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getProjectIndicatorsImportTemplateTotalTarget(
+            @Context SecurityContext securityContext,
+            @PathParam("periodId") Long periodId
+    ) throws GeneralAppException {
+        Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getIndicatorsImportTemplate:" + principal.getName());
+        String fileName = null;
+        try {
+            fileName = "importador_indicadores_proyectos_plantilla.xlsm";
+            ByteArrayOutputStream template = this.projectIndicatorsImportService.generateProjectIndicators(periodId, true);
             return Response.ok(template.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + fileName + "\"").build();
         } catch (Exception e) {
             LOGGER.error(ExceptionUtils.getStackTrace(e));
@@ -246,7 +267,16 @@ public class IndicatorExecutionEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response importProjectIndicators(@PathParam("projectId") Long projectId, ImportFileWeb importFileWeb) throws GeneralAppException {
-        this.projectIndicatorsImportService.projectIndicatorsImport(projectId, importFileWeb);
+        this.projectIndicatorsImportService.projectIndicatorsImport(projectId, importFileWeb, false);
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("/importProjectIndicatorsTotalTarget/{projectId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response importProjectIndicatorsTotalTarget(@PathParam("projectId") Long projectId, ImportFileWeb importFileWeb) throws GeneralAppException {
+        this.projectIndicatorsImportService.projectIndicatorsImport(projectId, importFileWeb, false);
         return Response.ok().build();
     }
 
