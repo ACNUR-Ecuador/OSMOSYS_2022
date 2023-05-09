@@ -6,8 +6,6 @@ import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
@@ -182,6 +180,9 @@ public class IndicatorsImportService {
 
                 // freceuncy
                 String frecuencyString = StringUtils.trimToNull(row.getCell(COL_FRECUENCY).getStringCellValue());
+                if(frecuencyString==null){
+                    throw new GeneralAppException("La frecuencia en la fila "+(row.getRowNum()+1)+" no existe. Indicador " + indicator.getCode() + ".", Response.Status.BAD_REQUEST);
+                }
                 Frecuency frecuency;
                 try {
                     frecuency = Frecuency.valueOf(StringUtils.upperCase(frecuencyString));
@@ -192,6 +193,9 @@ public class IndicatorsImportService {
                 // unit
                 String unitString = StringUtils.trimToNull(row.getCell(COL_UNIT_TYPE).getStringCellValue());
                 UnitType unit;
+                if(unitString==null){
+                    throw new GeneralAppException("La unidad en la fila "+(row.getRowNum()+1)+" no existe. Indicador " + indicator.getCode() + ".", Response.Status.BAD_REQUEST);
+                }
                 try {
                     unit = UnitType.valueOf(StringUtils.upperCase(unitString));
                     indicator.setUnit(unit);
