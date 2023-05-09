@@ -180,7 +180,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
         this.formItem = this.fb.group({
             id: new FormControl(''),
-            code: new FormControl('', [Validators.required, Validators.maxLength(10)]),
+            code: new FormControl('', [Validators.required, Validators.maxLength(15)]),
             description: new FormControl('', [Validators.required, Validators.maxLength(255)]),
             category: new FormControl('', [Validators.maxLength(255)]),
             instructions: new FormControl('', [Validators.maxLength(1000)]),
@@ -353,6 +353,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.formItem.get('dissagregations').patchValue([]);
         this.formItem.get('customDissagregations').patchValue([]);
         this.loadMarkers([]);
+        console.log(this.formItem.get('statement').value);
         this.ref.detectChanges();
     }
 
@@ -661,9 +662,10 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                     valueItem: value
                 };
             });
+
         this.formItem.get('statement').enable();
         if (clearStatements) {
-            this.formItem.get('statement').patchValue([]);
+            this.formItem.get('statement').patchValue(null);
         }
     }
 
@@ -728,6 +730,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     }
 
     importCatalog() {
+        this.messageService.clear();
         const {
             period,
             fileName,
@@ -740,11 +743,12 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         };
 
         this.indicatorService.importCatalog(importFile).subscribe({
+
             next: () => {
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Catálogo cargado correctamente',
-                    life: 3000
+                    life: 30000
                 });
                 this.loadItems();
                 this.showDialogImport = false;
@@ -753,7 +757,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                     severity: 'error',
                     summary: 'Error al descargar la plantilla',
                     detail: err.error.message,
-                    life: 3000
+                    sticky: true
                 });
             }
         })

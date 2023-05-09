@@ -54,7 +54,12 @@ export class OfficeAdministrationComponent implements OnInit {
             {field: 'acronym', header: 'Acrónimo', type: ColumnDataType.text},
             {field: 'type', header: 'Tipo', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
-            {field: 'parentOffice', header: 'Oficina Padre', type: ColumnDataType.text, pipeRef: this.officeOrganizationPipe}
+            {
+                field: 'parentOffice',
+                header: 'Oficina Padre',
+                type: ColumnDataType.text,
+                pipeRef: this.officeOrganizationPipe
+            }
         ];
         this._selectedColumns = this.cols.filter(value => value.field !== 'id');
 
@@ -72,25 +77,6 @@ export class OfficeAdministrationComponent implements OnInit {
         });
         this.enumsService.getByType(EnumsType.OfficeType).subscribe(value => {
             this.officeTypes = value;
-        });
-        this.officeService.getActive().subscribe({
-            next: value => {
-                this.parenteOffices = value.map(value1 => {
-                    const selectItem: SelectItem = {
-                        label: this.officeOrganizationPipe.transform(value1),
-                        value: value1
-                    };
-                    return selectItem;
-                });
-            },
-            error: err => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error al cargar las oficinas activas',
-                    detail: err.error.message,
-                    life: 3000
-                });
-            }
         });
 
         this.userService.getActiveUNHCRUsers().subscribe({
@@ -235,6 +221,26 @@ export class OfficeAdministrationComponent implements OnInit {
                     });
                 }
             });
+        this.officeService.getActive().subscribe({
+            next: value => {
+                this.parenteOffices = value.map(value1 => {
+                    const selectItem: SelectItem = {
+                        label: this.officeOrganizationPipe.transform(value1),
+                        value: value1
+                    };
+                    return selectItem;
+                });
+            },
+            error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar las oficinas activas',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+
     }
 
     exportExcel(table: Table) {
