@@ -74,14 +74,15 @@ public class ProjectIndicatorsImportService {
 
     private static final int MAX = 50;
 
-    public void projectIndicatorsImport(Long projectId, ImportFileWeb importFileWeb) throws GeneralAppException {
+    public void projectIndicatorsImport(Long projectId, ImportFileWeb importFileWeb, boolean quarterlyTarget) throws GeneralAppException {
         byte[] fileContent = this.fileUtils.decodeBase64ToBytes(importFileWeb.getFile());
         InputStream targetStream = new ByteArrayInputStream(fileContent);
-        this.projectIndicatorsImport(projectId, targetStream);
+        this.projectIndicatorsImport(projectId, targetStream, quarterlyTarget);
     }
 
     public void projectIndicatorsImport(Long projectId,
-                                        InputStream file
+                                        InputStream file,
+                                        boolean quarterlyTarget
     ) throws GeneralAppException {
         // FileInputStream file = null;
         try {
@@ -102,20 +103,27 @@ public class ProjectIndicatorsImportService {
                         , Response.Status.BAD_REQUEST);
             }
 
-            Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheet);
+            Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheet, quarterlyTarget);
             CellAddress CODE_CELL = titleAdresses.get(PRODUCT_STATEMENT);
             int rowInitial = CODE_CELL.getRow();
             // get INDICATORS
-
+            Integer COL_TARGET_T1 = null;
+            Integer COL_TARGET_T2 = null;
+            Integer COL_TARGET_T3 = null;
+            Integer COL_TARGET_T4 = null;
+            Integer COL_TOTAL_TARGET = null;
 
             int COL_PRODUCT_STATEMENT = titleAdresses.get(PRODUCT_STATEMENT).getColumn();
             int COL_MAIN_ACTIVITIES = titleAdresses.get(MAIN_ACTIVITIES).getColumn();
             int COL_PRODUCT_INDICATOR = titleAdresses.get(PRODUCT_INDICATOR).getColumn();
-            int COL_TARGET_T1 = titleAdresses.get(TARGET_T1).getColumn();
-            int COL_TARGET_T2 = titleAdresses.get(TARGET_T2).getColumn();
-            int COL_TARGET_T3 = titleAdresses.get(TARGET_T3).getColumn();
-            int COL_TARGET_T4 = titleAdresses.get(TARGET_T4).getColumn();
-            // int COL_TOTAL_TARGET = titleAdresses.get(TOTAL_TARGET).getColumn();
+            if (quarterlyTarget) {
+                COL_TARGET_T1 = titleAdresses.get(TARGET_T1).getColumn();
+                COL_TARGET_T2 = titleAdresses.get(TARGET_T2).getColumn();
+                COL_TARGET_T3 = titleAdresses.get(TARGET_T3).getColumn();
+                COL_TARGET_T4 = titleAdresses.get(TARGET_T4).getColumn();
+            } else {
+                COL_TOTAL_TARGET = titleAdresses.get(TOTAL_TARGET).getColumn();
+            }
             int COL_CANTONS = titleAdresses.get(CANTONS).getColumn();
 
 
@@ -155,11 +163,19 @@ public class ProjectIndicatorsImportService {
                     throw new GeneralAppException("No se encontraro el indicador "
                             + indicatorCode + "para el periodo " + project.getPeriod().getYear() + ".", Response.Status.BAD_REQUEST);
                 }
-
-                int T1I = (int) row.getCell(COL_TARGET_T1).getNumericCellValue();
-                int T2I = (int) row.getCell(COL_TARGET_T2).getNumericCellValue();
-                int T3I = (int) row.getCell(COL_TARGET_T3).getNumericCellValue();
-                int T4I = (int) row.getCell(COL_TARGET_T4).getNumericCellValue();
+                Integer T1I = null;
+                Integer T2I = null;
+                Integer T3I = null;
+                Integer T4I = null;
+                Integer Total_TARGET_value = null;
+                if (quarterlyTarget) {
+                    T1I = (int) row.getCell(COL_TARGET_T1).getNumericCellValue();
+                    T2I = (int) row.getCell(COL_TARGET_T2).getNumericCellValue();
+                    T3I = (int) row.getCell(COL_TARGET_T3).getNumericCellValue();
+                    T4I = (int) row.getCell(COL_TARGET_T4).getNumericCellValue();
+                } else {
+                    Total_TARGET_value = (int) row.getCell(COL_TOTAL_TARGET).getNumericCellValue();
+                }
                 // cantones
                 // locations
                 Set<Canton> indicatorLocations = new HashSet<>();
@@ -201,6 +217,7 @@ public class ProjectIndicatorsImportService {
                 indicatorExecutionAssigmentWeb.setActivityDescription(mainActivities);
                 indicatorExecutionAssigmentWeb.setLocations(new ArrayList<>(this.modelWebTransformationService.cantonsToCantonsWeb(new ArrayList<>(indicatorLocations))));
                 indicatorExecutionAssigmentWeb.setKeepBudget(false);
+                if (!quarterlyTarget) indicatorExecutionAssigmentWeb.setTarget(Total_TARGET_value);
                 totalLocations.addAll(indicatorLocations);
                 LOGGER.info("cantones indicador: " + indicatorLocations.size());
                 indicatorExecutionAssigmentWebs.add(indicatorExecutionAssigmentWeb);
@@ -209,19 +226,19 @@ public class ProjectIndicatorsImportService {
                 List<QuarterWeb> quarterWebs = new ArrayList<>();
                 QuarterWeb q1 = new QuarterWeb();
                 q1.setQuarter(QuarterEnum.I);
-                q1.setTarget(new BigDecimal(T1I));
+                if (quarterlyTarget) q1.setTarget(new BigDecimal(T1I));
                 quarterWebs.add(q1);
                 QuarterWeb q2 = new QuarterWeb();
                 q2.setQuarter(QuarterEnum.II);
-                q2.setTarget(new BigDecimal(T2I));
+                if (quarterlyTarget) q2.setTarget(new BigDecimal(T2I));
                 quarterWebs.add(q2);
                 QuarterWeb q3 = new QuarterWeb();
                 q3.setQuarter(QuarterEnum.III);
-                q3.setTarget(new BigDecimal(T3I));
+                if (quarterlyTarget) q3.setTarget(new BigDecimal(T3I));
                 quarterWebs.add(q3);
                 QuarterWeb q4 = new QuarterWeb();
                 q4.setQuarter(QuarterEnum.IV);
-                q4.setTarget(new BigDecimal(T4I));
+                if (quarterlyTarget) q4.setTarget(new BigDecimal(T4I));
                 quarterWebs.add(q4);
                 targetsMap.put(indicatorExecutionAssigmentWeb.hashCode(), quarterWebs);
                 LOGGER.debug(T1I + "-" + T2I + "-" + T3I + "-" + T4I);
@@ -236,23 +253,32 @@ public class ProjectIndicatorsImportService {
             projectWebOrg.setLocations(new HashSet<>(totalLocaltionWeb));
 
             this.projectService.updateProjectLocations(projectWebOrg, project, false);
+
             for (IndicatorExecutionAssigmentWeb indicatorExecutionAssigmentWeb : indicatorExecutionAssigmentWebs) {
                 IndicatorExecution ie = this.indicatorExecutionService.assignPerformanceIndicatoToProject(indicatorExecutionAssigmentWeb);
+                if (quarterlyTarget) {
+                    List<QuarterWeb> targets = targetsMap.get(indicatorExecutionAssigmentWeb.hashCode());
+                    TargetUpdateDTOWeb targetUpdateDTOWeb = new TargetUpdateDTOWeb();
+                    targetUpdateDTOWeb.setQuarters(new ArrayList<>());
+                    for (Quarter quarter : ie.getQuarters()) {
+                        Optional<QuarterWeb> targetTmpOpt = targets.stream().filter(quarterWeb -> quarterWeb.getQuarter().equals(quarter.getQuarter())).findFirst();
+                        QuarterWeb q = this.modelWebTransformationService.quarterToQuarterWeb(quarter);
+                        targetTmpOpt.ifPresent(quarterWeb -> q.setTarget(quarterWeb.getTarget()));
+                        targetUpdateDTOWeb.getQuarters().add(q);
+                    }
+                    targetUpdateDTOWeb.setIndicatorType(ie.getIndicatorType());
+                    targetUpdateDTOWeb.setIndicatorExecutionId(ie.getId());
 
-                List<QuarterWeb> targets = targetsMap.get(indicatorExecutionAssigmentWeb.hashCode());
-                TargetUpdateDTOWeb targetUpdateDTOWeb = new TargetUpdateDTOWeb();
-                targetUpdateDTOWeb.setQuarters(new ArrayList<>());
-                for (Quarter quarter : ie.getQuarters()) {
-                    Optional<QuarterWeb> targetTmpOpt = targets.stream().filter(quarterWeb -> quarterWeb.getQuarter().equals(quarter.getQuarter())).findFirst();
-                    QuarterWeb q = this.modelWebTransformationService.quarterToQuarterWeb(quarter);
-                    targetTmpOpt.ifPresent(quarterWeb -> q.setTarget(quarterWeb.getTarget()));
-                    targetUpdateDTOWeb.getQuarters().add(q);
+
+                    this.indicatorExecutionService.updateTargets(targetUpdateDTOWeb);
+                } else {
+
+                    TargetUpdateDTOWeb targetUpdateDTOWeb = new TargetUpdateDTOWeb();
+                    targetUpdateDTOWeb.setTotalTarget(indicatorExecutionAssigmentWeb.getTarget()!=null?new BigDecimal(indicatorExecutionAssigmentWeb.getTarget()):null);
+                    targetUpdateDTOWeb.setIndicatorType(ie.getIndicatorType());
+                    targetUpdateDTOWeb.setIndicatorExecutionId(ie.getId());
+                    this.indicatorExecutionService.updateTargets(targetUpdateDTOWeb);
                 }
-                targetUpdateDTOWeb.setIndicatorType(ie.getIndicatorType());
-                targetUpdateDTOWeb.setIndicatorExecutionId(ie.getId());
-
-
-                this.indicatorExecutionService.updateTargets(targetUpdateDTOWeb);
             }
 
             // general target
@@ -282,16 +308,18 @@ public class ProjectIndicatorsImportService {
 
     }
 
-    private Map<String, CellAddress> getTitleAdresses(XSSFSheet sheet) throws GeneralAppException {
+    private Map<String, CellAddress> getTitleAdresses(XSSFSheet sheet, boolean quaterlyTarget) throws GeneralAppException {
         Map<String, CellAddress> titleMaps = new HashMap<>();
 
         titleMaps.put(PRODUCT_STATEMENT, null);
         titleMaps.put(MAIN_ACTIVITIES, null);
         titleMaps.put(PRODUCT_INDICATOR, null);
-        titleMaps.put(TARGET_T1, null);
-        titleMaps.put(TARGET_T2, null);
-        titleMaps.put(TARGET_T3, null);
-        titleMaps.put(TARGET_T4, null);
+        if (quaterlyTarget) {
+            titleMaps.put(TARGET_T1, null);
+            titleMaps.put(TARGET_T2, null);
+            titleMaps.put(TARGET_T3, null);
+            titleMaps.put(TARGET_T4, null);
+        }
         titleMaps.put(TOTAL_TARGET, null);
         titleMaps.put(CANTONS, null);
 
@@ -375,10 +403,17 @@ public class ProjectIndicatorsImportService {
     }
 
 
-    public ByteArrayOutputStream generateProjectIndicators(Long periodId) throws GeneralAppException {
+    public ByteArrayOutputStream generateProjectIndicators(Long periodId, boolean quarterlyTarget) throws GeneralAppException {
 
         Period period = this.periodService.getById(periodId);
-        final String filename = "projectIndicatorsTemplate.xlsm";
+        final String filename;
+        if (quarterlyTarget) {
+            filename = "projectIndicatorsTemplate.xlsm";
+        } else {
+            filename = "projectIndicatorsTemplate_anual_target.xlsm";
+
+        }
+
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
@@ -398,13 +433,13 @@ public class ProjectIndicatorsImportService {
             for (XSSFTable table : tables) {
                 switch (table.getName()) {
                     case "statements":
-                        fillStatements(sheetTemplate, sheetOptions, table, period);
+                        fillStatements(sheetTemplate, sheetOptions, table, period, quarterlyTarget);
                         break;
                     case "indicators":
-                        fillIndicators(sheetTemplate, sheetOptions, table, period);
+                        fillIndicators(sheetTemplate, sheetOptions, table, period, quarterlyTarget);
                         break;
                     case "cantons":
-                        fillCantons(sheetTemplate, sheetOptions, table);
+                        fillCantons(sheetTemplate, sheetOptions, table, quarterlyTarget);
                         break;
                 }
             }
@@ -423,7 +458,7 @@ public class ProjectIndicatorsImportService {
     }
 
 
-    private void fillStatements(XSSFSheet sheetTemplate, XSSFSheet sheetOptions, XSSFTable tableOptions, Period period) throws GeneralAppException {
+    private void fillStatements(XSSFSheet sheetTemplate, XSSFSheet sheetOptions, XSSFTable tableOptions, Period period, boolean quarterlyTarget) throws GeneralAppException {
         int firstRow = tableOptions.getArea().getFirstCell().getRow();
         int firstCol = tableOptions.getArea().getFirstCell().getCol();
 
@@ -458,7 +493,7 @@ public class ProjectIndicatorsImportService {
         XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint)
                 dvHelper.createFormulaListConstraint(listFormula);
 
-        Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheetTemplate);
+        Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheetTemplate, quarterlyTarget);
         CellAddress cell_units = titleAdresses.get(PRODUCT_STATEMENT);
         CellRangeAddressList addressList = new CellRangeAddressList(cell_units.getRow() + 1, cell_units.getRow() + MAX,
                 cell_units.getColumn(), cell_units.getColumn());
@@ -469,7 +504,7 @@ public class ProjectIndicatorsImportService {
 
     }
 
-    private void fillIndicators(XSSFSheet sheetTemplate, XSSFSheet sheetOptions, XSSFTable tableOptions, Period period) throws GeneralAppException {
+    private void fillIndicators(XSSFSheet sheetTemplate, XSSFSheet sheetOptions, XSSFTable tableOptions, Period period, boolean quarterlyTarget) throws GeneralAppException {
         int firstRow = tableOptions.getArea().getFirstCell().getRow();
         int firstCol = tableOptions.getArea().getFirstCell().getCol();
 
@@ -502,7 +537,7 @@ public class ProjectIndicatorsImportService {
         XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint)
                 dvHelper.createFormulaListConstraint(listFormula);
 
-        Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheetTemplate);
+        Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheetTemplate, quarterlyTarget);
         CellAddress cell_units = titleAdresses.get(PRODUCT_INDICATOR);
         CellRangeAddressList addressList = new CellRangeAddressList(cell_units.getRow() + 1, cell_units.getRow() + MAX,
                 cell_units.getColumn(), cell_units.getColumn());
@@ -514,7 +549,7 @@ public class ProjectIndicatorsImportService {
     }
 
 
-    private void fillCantons(XSSFSheet sheetTemplate, XSSFSheet sheetOptions, XSSFTable tableOptions) throws GeneralAppException {
+    private void fillCantons(XSSFSheet sheetTemplate, XSSFSheet sheetOptions, XSSFTable tableOptions, boolean quarterlyTarget) throws GeneralAppException {
         int firstRow = tableOptions.getArea().getFirstCell().getRow();
         int firstCol = tableOptions.getArea().getFirstCell().getCol();
 
@@ -547,7 +582,7 @@ public class ProjectIndicatorsImportService {
         XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint)
                 dvHelper.createFormulaListConstraint(listFormula);
 
-        Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheetTemplate);
+        Map<String, CellAddress> titleAdresses = this.getTitleAdresses(sheetTemplate, quarterlyTarget);
         CellAddress cell_units = titleAdresses.get(CANTONS);
         CellRangeAddressList addressList = new CellRangeAddressList(cell_units.getRow() + 1,
                 cell_units.getRow() + MAX,

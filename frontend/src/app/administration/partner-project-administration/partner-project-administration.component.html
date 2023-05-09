@@ -306,6 +306,7 @@
                             <button pButton pRipple label="Agregar un indicador" icon="pi pi-plus"
                                     class="p-button-success mr-2 mb-2"
                                     (click)="assignNewPerformanceIndicator()"></button>
+                            <!--cambio a anual target-->
                             <button pButton pRipple label="Actualizar metas" icon="pi pi-pencil"
                                     class="p-button-success mr-2 mb-2"
                                     (click)="updatePerformanceIndicatorsTargets()"></button>
@@ -504,24 +505,26 @@
         </ng-template>
         <ng-template pTemplate="content">
             <p-messages></p-messages>
-            <div class="card col-12"
-                 formArrayName="quarterGroups"
-                 *ngIf="formTargets.get('indicatorType').value !=='GENERAL'"
-            >
-                <div class="p-fluid p-formgrid grid"
-                     *ngFor="let targetForm of quarterGroups.controls; let i = index">
+            <!-- cambio a anual target-->
+            <!--            <div class="card col-12"
+                             formArrayName="quarterGroups"
+                             *ngIf="formTargets.get('indicatorType').value !=='GENERAL'"
+                        >
+                            <div class="p-fluid p-formgrid grid"
+                                 *ngFor="let targetForm of quarterGroups.controls; let i = index">
 
-                    <div class="field col-12" [formGroup]="$any(targetForm)">
+                                <div class="field col-12" [formGroup]="$any(targetForm)">
 
-                        <label>Trimestre: {{targetForm.get('year').value}} - {{targetForm.get('quarter').value}}</label>
-                        <p-inputNumber formControlName="target" [min]="0"></p-inputNumber>
-                    </div>
-                </div>
+                                    <label>Trimestre: {{targetForm.get('year').value}} - {{targetForm.get('quarter').value}}</label>
+                                    <p-inputNumber formControlName="target" [min]="0"></p-inputNumber>
+                                </div>
+                            </div>
 
-            </div>
-            <div class="card col-12"
+                        </div>-->
+            <!--<div class="card col-12"
                  *ngIf="formTargets.get('indicatorType').value ==='GENERAL'"
-            >
+            >-->
+            <div class="card col-12">
                 <div class="p-fluid p-formgrid grid">
                     <div class="field col-12">
                         <label>Meta Total</label>
@@ -678,14 +681,14 @@
                  *ngIf="indicatorHasLocationDissagregation(formPerformanceIndicator.get('indicator').value)">
                 <p-panel header="Sitios/cantones de ejecución" [toggleable]="true">
                     <ng-template pTemplate="header">
-<!--                        <div class=" p-d-flex p-jc-end">
-                            <button pButton type="button" pRipple label="Editar sitios/cantones de ejecución"
-                                    *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR'])"
-                                    style="max-width: 20rem"
-                                    icon="pi pi-pencil"
-                                    class="p-button-success"
-                                    (click)="editLocations()"></button>
-                        </div>-->
+                        <!--                        <div class=" p-d-flex p-jc-end">
+                                                    <button pButton type="button" pRipple label="Editar sitios/cantones de ejecución"
+                                                            *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR'])"
+                                                            style="max-width: 20rem"
+                                                            icon="pi pi-pencil"
+                                                            class="p-button-success"
+                                                            (click)="editLocations()"></button>
+                                                </div>-->
                     </ng-template>
                     <ng-template pTemplate="content">
                         <p-table #dt [value]="formPerformanceIndicator.get('locations').value" [rows]="10"
@@ -773,7 +776,6 @@
 
     <ng-template pTemplate="content">
         <div class="card">
-            <h5>Cell Editing</h5>
             <p-table [value]="performanceIndicators" dataKey="id">
                 <ng-template pTemplate="header">
                     <tr>

@@ -76,7 +76,7 @@ export class ProjectService {
     }
 
     public getImportTemplate(periodId:number) {
-        return this.http.get(`${mainServiceUrl}/getImportTemplate/${periodId}`, {
+        return this.http.get(`${mainServiceUrl}/getImportTemplateTotalTarget/${periodId}`, {
             observe: 'response',
             responseType: 'blob' as 'json'
         });

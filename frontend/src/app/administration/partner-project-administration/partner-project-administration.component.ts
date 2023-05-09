@@ -733,7 +733,10 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         this.utilsService.resetForm(this.formTargets);
         this.formTargets.get('indicatorExecutionId').patchValue(indicator.id);
         this.formTargets.get('indicatorType').patchValue(indicator.indicatorType);
-        if (indicator.indicatorType === EnumsIndicatorType.GENERAL) {
+        // cambio a target anual
+        this.formTargets.addControl('anualTarget', new FormControl('', Validators.required));
+        this.formTargets.get('anualTarget').patchValue(indicator.target);
+/*        if (indicator.indicatorType === EnumsIndicatorType.GENERAL) {
             this.formTargets.addControl('anualTarget', new FormControl('', Validators.required));
             this.formTargets.get('anualTarget').patchValue(indicator.target);
         } else {
@@ -757,7 +760,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 });
                 this.quarterGroups.push(control);
             });
-        }
+        }*/
 
         this.showTargetDialog = true;
     }
@@ -772,6 +775,11 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         const indicatorType = this.formTargets.get('indicatorType').value as EnumsIndicatorType;
         targetUpdateDTOWeb.indicatorExecutionId = this.formTargets.get('indicatorExecutionId').value;
         targetUpdateDTOWeb.indicatorType = indicatorType;
+
+        targetUpdateDTOWeb.totalTarget =
+            this.formTargets.get('anualTarget').value;
+        // cambio a target anual
+        /*
         if (indicatorType === EnumsIndicatorType.GENERAL) {
             targetUpdateDTOWeb.totalTarget =
                 this.formTargets.get('anualTarget').value;
@@ -803,7 +811,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 return q;
             });
         }
-
+        */
 
         this.indicatorExecutionService.updateTargets(targetUpdateDTOWeb)
             .subscribe({
@@ -832,8 +840,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         if (this.quarterGroups) {
             this.quarterGroups.patchValue([]);
         }
-
-        this.showTargetDialog = false;
+        console.log(this.formTargets.controls);
+        // this.showTargetDialog = false;
     }
 
     assignNewPerformanceIndicator() {
