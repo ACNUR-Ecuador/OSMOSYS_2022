@@ -20,6 +20,7 @@ import { PiIndicators2023Component } from './2023/pi-indicators2023/pi-indicator
 import {ProductIndicators2023Component} from "./2023/product-indicators2023/product-indicators2023.component";
 import { TrendsIndicators2023Component } from './2023/trends-indicators2023/trends-indicators2023.component';
 import { GeneralIndicators2023Component } from './2023/general-indicators2023/general-indicators2023.component';
+import { RBAIndicators2023Component } from './2023/rbaindicators2023/rbaindicators2023.component';
 
 const routes: Routes = [
     {
@@ -34,6 +35,7 @@ const routes: Routes = [
             {path: '2023/piIndicators2023', component: PiIndicators2023Component},
             {path: '2023/trendsIndicators2023', component: TrendsIndicators2023Component},
             {path: '2023/generalIndicators2023', component: GeneralIndicators2023Component},
+            {path: '2023/rbaindicators2023', component: RBAIndicators2023Component},
             // 2022
             {path: '2022/shelter', component: ShelterComponent},
             {path: '2022/cbi', component: CbiComponent},

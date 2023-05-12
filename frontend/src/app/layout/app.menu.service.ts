@@ -282,6 +282,12 @@ export class MenuService {
                             icon: 'pi pi-fw pi-chart-bar',
                             routerLink: ['/reports/2023/generalIndicators2023'],
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                        },
+                        {
+                            label: 'Indicadores RBA',
+                            icon: 'pi pi-fw pi-chart-bar',
+                            routerLink: ['/reports/2023/rbaindicators2023'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
                         }
                     ]
                 },
