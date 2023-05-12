@@ -32,6 +32,8 @@ public class IndicatorExecutionAssigmentWeb implements Serializable {
     private Boolean keepBudget;
     private BigDecimal assignedBudget;
 
+    private Integer target;
+
     public Long getId() {
         return id;
     }
@@ -155,5 +157,13 @@ public class IndicatorExecutionAssigmentWeb implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, indicator, state, period, project, projectStatement, activityDescription, locations, reportingOffice, assignedUser, supervisorUser, assignedUserBackup, keepBudget, assignedBudget);
+    }
+
+    public Integer getTarget() {
+        return target;
+    }
+
+    public void setTarget(Integer target) {
+        this.target = target;
     }
 }
