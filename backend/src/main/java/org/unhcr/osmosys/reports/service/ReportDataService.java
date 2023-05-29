@@ -296,7 +296,7 @@ public class ReportDataService {
 
         List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        0, 1, 2, 3, 4, 5, 27, 28
+                        0, 1, 2, 3, 4, 5, 27, 28, 22, 23
                 )
         );
 

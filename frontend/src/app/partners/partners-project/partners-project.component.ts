@@ -240,12 +240,12 @@ export class PartnersProjectComponent implements OnInit {
                 label: 'Con Desagregaciones', tooltip: 'sdfgsdfg', icon: 'pi pi-file-excel', command: () => {
                     this.getReportDetailed();
                 }
-            },
+            }/*,
             {
                 label: 'Resumen Demográfico', tooltip: 'sdfgsdfg', icon: 'pi pi-file-excel', command: () => {
                     this.getDemographic();
                 }
-            }
+            }*/
         ];
     }
 

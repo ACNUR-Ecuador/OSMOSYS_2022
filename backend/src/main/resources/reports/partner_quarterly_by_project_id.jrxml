@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
+<!-- Created with Jaspersoft Studio version 6.20.3.final using JasperReports Library version 6.20.3-415f9428cffdb6805c6f85bbb29ebaf18813a2ab  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="indicatorsCatalogWithImplementersSimple" pageWidth="1600" pageHeight="595" orientation="Landscape" columnWidth="1560" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="d4000276-96a8-42bf-8921-e56312f2392a">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="local_osmosys"/>
@@ -491,45 +491,6 @@ ORDER BY 6,ar.id,1,2,3,4,5,7,8,9,15,16,17,18]]>
 								<reportElement stretchType="ContainerHeight" x="0" y="0" width="59" height="30" uuid="6b63fe9d-a70b-45c2-9a1d-f206bb75eac8"/>
 								<textElement textAlignment="Right"/>
 								<textFieldExpression><![CDATA[$F{quarter_execution}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="49" uuid="445b41c3-d546-435c-9493-d593e203fc70">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
-						<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
-							<staticText>
-								<reportElement x="0" y="0" width="49" height="50" uuid="fa28806e-b802-4136-a5c3-7434be798985"/>
-								<textElement textAlignment="Center">
-									<font isBold="true"/>
-								</textElement>
-								<text><![CDATA[Meta Trimestral]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
-							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-								<reportElement stretchType="ContainerHeight" x="0" y="0" width="49" height="30" uuid="a84754a7-994b-4847-8938-19fd9eeabd34"/>
-								<textElement textAlignment="Right"/>
-								<textFieldExpression><![CDATA[$F{quarter_target}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="59" uuid="13055dd4-a6ce-41e1-bb8a-5622d6d26be2">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
-						<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
-							<staticText>
-								<reportElement x="0" y="0" width="59" height="50" uuid="c4f6c1ef-37c4-4de4-90ac-80e3265961b4"/>
-								<textElement textAlignment="Center">
-									<font isBold="true"/>
-								</textElement>
-								<text><![CDATA[% de ejecución trimestral]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
-							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-								<reportElement stretchType="ContainerHeight" x="0" y="0" width="59" height="30" uuid="22f8be16-45a1-4c83-87f4-d2e2926f725b"/>
-								<textElement textAlignment="Right"/>
-								<textFieldExpression><![CDATA[$F{quarter_percentage}]]></textFieldExpression>
-								<patternExpression><![CDATA["#,##0%"]]></patternExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<!-- Created with Jaspersoft Studio version 6.20.3.final using JasperReports Library version 6.20.3-415f9428cffdb6805c6f85bbb29ebaf18813a2ab  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="indicatorsCatalogWithImplementersSimple" pageWidth="2200" pageHeight="595" orientation="Landscape" columnWidth="2160" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="d4000276-96a8-42bf-8921-e56312f2392a">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="local_osmosys"/>
@@ -553,47 +553,8 @@ ORDER BY 6,ar.id,1,2,3,4,5,7,8,9,15,16,17,18,19,20,23,24,25]]>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="60" uuid="c3c79397-de3f-411f-a8cd-32fa3e588167">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
-						<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
-							<staticText>
-								<reportElement x="0" y="0" width="60" height="50" uuid="91d2674f-b270-4a8d-bb60-808af55e851c"/>
-								<textElement textAlignment="Center">
-									<font isBold="true"/>
-								</textElement>
-								<text><![CDATA[Meta Trimestral]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
-							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-								<reportElement stretchType="ContainerHeight" x="0" y="0" width="60" height="30" uuid="68fa9f92-3caf-407a-8ed9-16353d48e5e7"/>
-								<textElement textAlignment="Right"/>
-								<textFieldExpression><![CDATA[$F{quarter_target}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="60" uuid="cf9c28a6-8c81-4739-acef-70995764e70b">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
-						<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
-							<staticText>
-								<reportElement x="0" y="0" width="60" height="50" uuid="b64811e0-613a-4377-9eb1-edcf66839f34"/>
-								<textElement textAlignment="Center">
-									<font isBold="true"/>
-								</textElement>
-								<text><![CDATA[% de Ejecución Trimestral]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
-							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-								<reportElement stretchType="ContainerHeight" x="0" y="0" width="60" height="30" uuid="42b8431d-d315-4e34-bcb1-7e0177d3a693"/>
-								<textElement textAlignment="Right"/>
-								<textFieldExpression><![CDATA[$F{quarter_percentage}]]></textFieldExpression>
-								<patternExpression><![CDATA["#,##0%"]]></patternExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
 					<jr:column width="70" uuid="fd76f652-b023-4254-9e67-1769dc7a01c4">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
 						<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="70" height="50" uuid="82c7e9f0-0bdf-44ca-bb17-6818678c1a02"/>
@@ -612,7 +573,7 @@ ORDER BY 6,ar.id,1,2,3,4,5,7,8,9,15,16,17,18,19,20,23,24,25]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="60" uuid="5286a501-5110-44e3-9cf9-241d9915a1c3">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column17"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
 						<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="60" height="50" uuid="f5e35161-205c-4f2e-a9eb-d9dfab089243"/>
@@ -631,7 +592,7 @@ ORDER BY 6,ar.id,1,2,3,4,5,7,8,9,15,16,17,18,19,20,23,24,25]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="89" uuid="c83d4004-9fdd-4d8f-834d-7d75102cd5fc">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column18"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
 						<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="89" height="50" uuid="d14cbb66-9531-44f4-aa97-984a30ccd3ab"/>
@@ -649,7 +610,7 @@ ORDER BY 6,ar.id,1,2,3,4,5,7,8,9,15,16,17,18,19,20,23,24,25]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="80" uuid="b1b544a4-faf4-4583-a46f-8202f1ba757e">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column19"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column17"/>
 						<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="80" height="50" uuid="722de777-2428-40bb-b3d6-0390d35ba9c3"/>
@@ -667,7 +628,7 @@ ORDER BY 6,ar.id,1,2,3,4,5,7,8,9,15,16,17,18,19,20,23,24,25]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="80" uuid="7c392cf3-c999-421f-a773-ad5e6907bb40">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column20"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column18"/>
 						<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="80" height="50" uuid="398ccd6f-6006-4859-b23a-dc78b1354802"/>
@@ -685,7 +646,7 @@ ORDER BY 6,ar.id,1,2,3,4,5,7,8,9,15,16,17,18,19,20,23,24,25]]>
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="60" uuid="3bc623da-9574-4863-afa4-43d1296c7a0f">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column21"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column19"/>
 						<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="60" height="50" uuid="bb30081f-2fd9-4e32-8de7-a8b3de3dce2d"/>
