@@ -365,6 +365,22 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         return (IndicatorExecution) q.getSingleResult();
     }
 
+    public IndicatorExecution getPartnerIndicatorExecutionById(Long id) {
+        String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
+                " WHERE o.id = :id" +
+                " and o.project is not null ";
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("id", id);
+
+        try {
+            return (IndicatorExecution) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+
+
     public IndicatorExecution getByIdWithIndicatorValues(Long id) {
 
         String jpql = "SELECT DISTINCT o FROM IndicatorExecution o " +

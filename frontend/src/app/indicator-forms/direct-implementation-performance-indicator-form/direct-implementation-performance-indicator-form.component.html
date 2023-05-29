@@ -5,9 +5,9 @@
         <div class="flex justify-content-end">
             <p-message severity="warn"
                        *ngIf="disableSave"
-                       text="Primero agrega cantones para poder reportar"
+                       text="Primero agrega municipios para poder reportar"
             ></p-message>
-            <button pButton *ngIf="hasLocationDissagregation" type="button" pRipple label="Agregar Cantones"
+            <button pButton *ngIf="hasLocationDissagregation" type="button" pRipple label="Agregar Municipios"
                     icon="pi pi-plus"
                     (click)="openLocationsDialog()"></button>
         </div>
@@ -201,7 +201,7 @@
                            text="El indicador se bloqueará despues de guardarlo." styleClass="p-mr-2"></p-message>
                 <p-message severity="warn"
                            *ngIf="disableSave"
-                           text="Primero agrega cantones para poder reportar"
+                           text="Primero agrega lugares para poder reportar"
                 ></p-message>
                 <button pButton type="submit" class="mx-3" [disabled]="disableSave"
                         pRipple label="Guardar" icon="pi pi-check"
@@ -258,11 +258,11 @@
     </ng-template>
 </p-dialog>
 <form [formGroup]="formLocations" (ngSubmit)="saveLocations()">
-    <p-dialog [(visible)]="showLocationsDialog" [modal]="true" header="Selección de Cantones"
+    <p-dialog [(visible)]="showLocationsDialog" [modal]="true" header="Selección de lugares"
               [style]="{width: '80%', height: '80%'}">
         <div class="card p-0">
             <p-messages></p-messages>
-            <button pButton type="button" label="Importar lista de cantones" icon="pi pi-file-excel"
+            <button pButton type="button" label="Importar lista de lugares" icon="pi pi-file-excel"
                     (click)="showImportCantonesDialogF()"
                     class="p-button-success" [disabled]="false"
             ></button>
@@ -273,8 +273,8 @@
                             [responsive]="true"
                             [sourceStyle]="{'height':'25rem'}" [targetStyle]="{'height':'25rem'}"
                             filterBy="description,provincia.description"
-                            sourceFilterPlaceholder="Buscar por cantón o provincia"
-                            targetFilterPlaceholder="Buscar por cantón o provincia"
+                            sourceFilterPlaceholder="Buscar por municipio o departamento"
+                            targetFilterPlaceholder="Buscar por municipio o departamento"
                             [showSourceControls]="false"
                             [showTargetControls]="false"
 

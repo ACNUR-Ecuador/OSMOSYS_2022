@@ -678,30 +678,44 @@ public class IndicatorExecutionService {
                         ).collect(Collectors.toSet())
         )) {
             // busco las que ya no existen
-
             // activo todos
-            List<CantonWeb> cantonesWeb = indicatorExecutionAssigmentWeb.getLocations();
-            Set<Canton> cantonesToActivate = new HashSet<>(this.cantonService.getByIds(cantonesWeb.stream().map(CantonWeb::getId).collect(Collectors.toList())));
-            //desactivo los q ya no existen
-            Set<Canton> cantonesToDissable = new HashSet<>();
-            // cantones que ya existent
-            List<Canton> existingCantons = indicatorExecution.getIndicatorExecutionLocationAssigments()
-                    .stream()
-                    .map(IndicatorExecutionLocationAssigment::getLocation).collect(Collectors.toList());
-            for (Canton existingCanton : existingCantons) {
-                Optional<CantonWeb> cantonWebFound = cantonesWeb.stream().filter(cantonWeb -> cantonWeb.getId().equals(existingCanton.getId()))
-                        .findFirst();
-                if (!cantonWebFound.isPresent()) {
-                    cantonesToDissable.add(existingCanton);
-                }
-            }
-            this.updateIndicatorExecutionLocations(indicatorExecution, cantonesToActivate, cantonesToDissable);
+
+            ProjectService.LocationToActivateDesativate result = this.getLocationToActivateDessactivate(indicatorExecution,indicatorExecutionAssigmentWeb.getLocations());
+            this.updateIndicatorExecutionLocations(indicatorExecution, result.locationsToActivate, result.locationsToDissable);
 
 
         }
         this.updateIndicatorExecutionTotals(indicatorExecution);
         this.saveOrUpdate(indicatorExecution);
         return indicatorExecution.getId();
+    }
+
+    public ProjectService.LocationToActivateDesativate getLocationToActivateDessactivate(IndicatorExecution indicatorExecution, List<CantonWeb> cantonesWeb){
+
+        Set<Canton> cantonesToActivate = new HashSet<>(this.cantonService.getByIds(cantonesWeb.stream().map(CantonWeb::getId).collect(Collectors.toList())));
+        //desactivo los q ya no existen
+        Set<Canton> cantonesToDissable = new HashSet<>();
+        // cantones que ya existent
+        List<Canton> existingCantons = indicatorExecution.getIndicatorExecutionLocationAssigments()
+                .stream()
+                .map(IndicatorExecutionLocationAssigment::getLocation).collect(Collectors.toList());
+        for (Canton existingCanton : existingCantons) {
+            Optional<CantonWeb> cantonWebFound = cantonesWeb.stream().filter(cantonWeb -> cantonWeb.getId().equals(existingCanton.getId()))
+                    .findFirst();
+            if (!cantonWebFound.isPresent()) {
+                cantonesToDissable.add(existingCanton);
+            }
+        }
+        return new ProjectService.LocationToActivateDesativate(cantonesToActivate, cantonesToDissable);
+    }
+    private static class Result {
+        public final Set<Canton> cantonesToActivate;
+        public final Set<Canton> cantonesToDissable;
+
+        public Result(Set<Canton> cantonesToActivate, Set<Canton> cantonesToDissable) {
+            this.cantonesToActivate = cantonesToActivate;
+            this.cantonesToDissable = cantonesToDissable;
+        }
     }
 
 
@@ -1001,6 +1015,37 @@ public class IndicatorExecutionService {
                         this.indicatorExecutionDao.getDirectImplementationIndicatorExecutionsByIdsAndState(indicatorExecutionIds, state), false);
     }
 
+    public Long updatePartnerIndicatorExecutionLocationAssigment(Long indicatorExecutionId, List<CantonWeb> cantonesWeb) throws GeneralAppException {
+        if (indicatorExecutionId == null) {
+            throw new GeneralAppException("indicador execution id es dato obligatorio", Response.Status.BAD_REQUEST);
+        }
+        if (CollectionUtils.isEmpty(cantonesWeb)) {
+            throw new GeneralAppException("Al menos debe haber un cantón", Response.Status.BAD_REQUEST);
+        }
+        // recupero el ie
+        IndicatorExecution ie = this.indicatorExecutionDao.getPartnerIndicatorExecutionById(indicatorExecutionId);
+        if (ie == null) {
+            throw new GeneralAppException("No se pudo encontrar el indicador (indicatorExecutionId =" + indicatorExecutionId + ")", Response.Status.BAD_REQUEST);
+        }
+        if (ie.getProject()==null) {
+            throw new GeneralAppException("Este indicador no es ejecutado por un Socio (indicatorExecutionId =" + indicatorExecutionId + ")", Response.Status.BAD_REQUEST);
+        }
+
+        if(ie.getIndicatorType().equals(IndicatorType.GENERAL)){
+            ProjectService.LocationToActivateDesativate locatoinActiveNoActive = this.projectService.getLocationToActivateDesativate(ie.getProject(), cantonesWeb);
+            Project project = ie.getProject();
+            for (IndicatorExecution indicatorExecution : project.getIndicatorExecutions()) {
+                this.updateIndicatorExecutionLocations(indicatorExecution, locatoinActiveNoActive.locationsToActivate, locatoinActiveNoActive.locationsToDissable);
+            }
+        }else {
+            ProjectService.LocationToActivateDesativate locationToActivateDessactivate = this.getLocationToActivateDessactivate(ie, cantonesWeb);
+            this.updateIndicatorExecutionLocations(ie, locationToActivateDessactivate.locationsToActivate, locationToActivateDessactivate.locationsToDissable);
+// todo
+        }
+
+        return ie.getId();
+    }
+
     public Long updateDirectImplementationIndicatorExecutionLocationAssigment(Long indicatorExecutionId, List<CantonWeb> cantonesWeb) throws GeneralAppException {
         if (indicatorExecutionId == null) {
             throw new GeneralAppException("indicador execution id es dato obligatorio", Response.Status.BAD_REQUEST);
@@ -1013,22 +1058,9 @@ public class IndicatorExecutionService {
         if (ie == null) {
             throw new GeneralAppException("No se pudo encontrar el indicador (indicatorExecutionId =" + indicatorExecutionId + ")", Response.Status.BAD_REQUEST);
         }
-        // activo todos
-        Set<Canton> cantonesToActivate = new HashSet<>(this.cantonService.getByIds(cantonesWeb.stream().map(CantonWeb::getId).collect(Collectors.toList())));
-        //desactivo los q ya no existen
-        Set<Canton> cantonesToDissable = new HashSet<>();
-        // cantones que ya existent
-        List<Canton> existingCantons = ie.getIndicatorExecutionLocationAssigments()
-                .stream()
-                .map(IndicatorExecutionLocationAssigment::getLocation).collect(Collectors.toList());
-        for (Canton existingCanton : existingCantons) {
-            Optional<CantonWeb> cantonWebFound = cantonesWeb.stream().filter(cantonWeb -> cantonWeb.getId().equals(existingCanton.getId()))
-                    .findFirst();
-            if (!cantonWebFound.isPresent()) {
-                cantonesToDissable.add(existingCanton);
-            }
-        }
-        this.updateIndicatorExecutionLocations(ie, cantonesToActivate, cantonesToDissable);
+        ProjectService.LocationToActivateDesativate locationToActivateDessactivate = this.getLocationToActivateDessactivate(ie, cantonesWeb);
+
+        this.updateIndicatorExecutionLocations(ie, locationToActivateDessactivate.locationsToActivate, locationToActivateDessactivate.locationsToDissable);
 
 
         this.saveOrUpdate(ie);

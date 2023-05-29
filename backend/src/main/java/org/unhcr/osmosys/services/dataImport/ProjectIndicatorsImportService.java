@@ -7,9 +7,7 @@ import com.sagatechs.generics.utils.FileUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
@@ -174,7 +172,14 @@ public class ProjectIndicatorsImportService {
                     T3I = (int) row.getCell(COL_TARGET_T3).getNumericCellValue();
                     T4I = (int) row.getCell(COL_TARGET_T4).getNumericCellValue();
                 } else {
-                    Total_TARGET_value = (int) row.getCell(COL_TOTAL_TARGET).getNumericCellValue();
+                    DataFormatter dataFormatter = new DataFormatter();
+                    String svalue = StringUtils.trimToNull(dataFormatter.formatCellValue(row.getCell(COL_TOTAL_TARGET)));
+                    if (svalue == null) {
+                        Total_TARGET_value = null;
+                    } else {
+                        Total_TARGET_value = new Integer(svalue);
+
+                    }
                 }
                 // cantones
                 // locations
@@ -252,7 +257,7 @@ public class ProjectIndicatorsImportService {
             List<CantonWeb> totalLocaltionWeb = this.modelWebTransformationService.cantonsToCantonsWeb(new ArrayList<>(totalLocations));
             projectWebOrg.setLocations(new HashSet<>(totalLocaltionWeb));
 
-            this.projectService.updateProjectLocations(projectWebOrg, project, false);
+            this.projectService.updateProjectLocations(projectWebOrg.getLocations(), project, false);
 
             for (IndicatorExecutionAssigmentWeb indicatorExecutionAssigmentWeb : indicatorExecutionAssigmentWebs) {
                 IndicatorExecution ie = this.indicatorExecutionService.assignPerformanceIndicatoToProject(indicatorExecutionAssigmentWeb);
@@ -274,7 +279,7 @@ public class ProjectIndicatorsImportService {
                 } else {
 
                     TargetUpdateDTOWeb targetUpdateDTOWeb = new TargetUpdateDTOWeb();
-                    targetUpdateDTOWeb.setTotalTarget(indicatorExecutionAssigmentWeb.getTarget()!=null?new BigDecimal(indicatorExecutionAssigmentWeb.getTarget()):null);
+                    targetUpdateDTOWeb.setTotalTarget(indicatorExecutionAssigmentWeb.getTarget() != null ? new BigDecimal(indicatorExecutionAssigmentWeb.getTarget()) : null);
                     targetUpdateDTOWeb.setIndicatorType(ie.getIndicatorType());
                     targetUpdateDTOWeb.setIndicatorExecutionId(ie.getId());
                     this.indicatorExecutionService.updateTargets(targetUpdateDTOWeb);

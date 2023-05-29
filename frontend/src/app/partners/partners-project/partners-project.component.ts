@@ -1,14 +1,18 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {FormGroup} from '@angular/forms';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {FilterService, MenuItem, MessageService, SelectItem} from 'primeng/api';
 import {ActivatedRoute} from '@angular/router';
-import {IndicatorExecution, MonthState, Project} from '../../shared/model/OsmosysModel';
-import {ColumnDataType, ColumnTable} from '../../shared/model/UtilsModel';
+import {Canton, IndicatorExecution, MonthState, Project} from '../../shared/model/OsmosysModel';
+import {ColumnDataType, ColumnTable, EnumsState} from '../../shared/model/UtilsModel';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
 import {EnumValuesToLabelPipe} from '../../shared/pipes/enum-values-to-label.pipe';
 import {DialogService} from 'primeng/dynamicdialog';
-import {GeneralIndicatorFormComponent} from '../../indicator-forms/general-indicator-form/general-indicator-form.component';
-import {PerformanceIndicatorFormComponent} from '../../indicator-forms/performance-indicator-form/performance-indicator-form.component';
+import {
+    GeneralIndicatorFormComponent
+} from '../../indicator-forms/general-indicator-form/general-indicator-form.component';
+import {
+    PerformanceIndicatorFormComponent
+} from '../../indicator-forms/performance-indicator-form/performance-indicator-form.component';
 import {IndicatorPipe} from '../../shared/pipes/indicator.pipe';
 import {HttpResponse} from '@angular/common/http';
 import {UtilsService} from '../../services/utils.service';
@@ -17,6 +21,7 @@ import {ProjectService} from '../../services/project.service';
 import {IndicatorExecutionService} from '../../services/indicator-execution.service';
 import {UserService} from '../../services/user.service';
 import {ReportsService} from '../../services/reports.service';
+import {CantonService} from "../../services/canton.service";
 
 @Component({
     selector: 'app-partners-project',
@@ -43,6 +48,11 @@ export class PartnersProjectComponent implements OnInit {
 
     colsMonthState: ColumnTable[];
 
+    public cantonesOptions: Canton[];
+    cantonesAvailable: Canton[];
+    public formLocations: FormGroup;
+    showLocationsDialog = false;
+
     constructor(
         public dialogService: DialogService,
         public utilsService: UtilsService,
@@ -56,12 +66,18 @@ export class PartnersProjectComponent implements OnInit {
         private indicatorPipe: IndicatorPipe,
         private route: ActivatedRoute,
         private reportsService: ReportsService,
-        private userService: UserService
+        private userService: UserService,
+        private cantonService: CantonService,
+        private fb: FormBuilder,
+        private cd: ChangeDetectorRef
     ) {
         this.idProjectParam = this.route.snapshot.paramMap.get('projectId');
         if (this.idProjectParam === 'null') {
             this.idProjectParam = null;
         }
+        this.formLocations = this.fb.group({
+            locationsSelected: new FormControl('')
+        });
 
     }
 
@@ -248,7 +264,8 @@ export class PartnersProjectComponent implements OnInit {
     private getReportDetailed() {
         this.getReport('Detailed');
     }
-   private getDemographic() {
+
+    private getDemographic() {
         this.getReport('Demographic');
     }
 
@@ -388,5 +405,72 @@ export class PartnersProjectComponent implements OnInit {
 
     reload() {
         this.loadProject(this.idProjectParam);
+    }
+
+    editLocations() {
+        this.messageService.clear();
+        this.cantonService.getByState(EnumsState.ACTIVE).subscribe(value => {
+            this.cantonesOptions = this.utilsService.sortCantones(value);
+            // noinspection JSMismatchedCollectionQueryUpdate
+
+            this.projectService.getProjectCantonAsignations(this.idProjectParam)
+                .subscribe({
+                    next: value1 => {
+                        let cantonesCurrent: Canton[] = value1;
+                        const keyId = 'id';
+                        const cantonesCurrentUnique: Canton[] = [...new Map(cantonesCurrent.map(item =>
+                            [item[keyId], item])).values()];
+                        if (!cantonesCurrentUnique || cantonesCurrentUnique.length < 1) {
+                            this.formLocations.get('locationsSelected').patchValue([]);
+                            this.cantonesAvailable = this.utilsService.sortCantones(this.cantonesOptions);
+                        } else {
+                            this.formLocations.get('locationsSelected').patchValue(this.utilsService.sortCantones(cantonesCurrentUnique));
+                            this.cantonesAvailable =
+                                this.cantonesOptions.filter((canton1) => !cantonesCurrentUnique.find(canton2 => canton1.id === canton2.id));
+                        }
+                        this.showLocationsDialog = true;
+                        this.cd.detectChanges();
+                    },
+                    error: err => {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error al cargar los cantones',
+                            detail: err.error.message,
+                            life: 3000
+                        });
+                    }
+                })
+
+        });
+
+    }
+
+    cancelLocations() {
+        this.showLocationsDialog = false;
+    }
+
+    saveLocations() {
+        const cantones: Canton[] = this.formLocations.get('locationsSelected').value;
+        if (!cantones || cantones.length < 1) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Selecciona al menos un municipio',
+                life: 3000
+            });
+        } else {
+            this.projectService.updateProjectLocations(this.project.id, cantones)
+                .subscribe({
+                    next: value => {
+                        this.showLocationsDialog=false;
+                    }, error: err => {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Selecciona al menos un municipio',
+                            detail: err.error.message,
+                            life: 3000
+                        });
+                    }
+                });
+        }
     }
 }

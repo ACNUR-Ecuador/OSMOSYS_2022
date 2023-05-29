@@ -168,6 +168,13 @@ public class IndicatorExecutionEndpoint {
     public Long updateDirectImplementationIndicatorExecutionLocationAssigment(@PathParam("indicatorExecutionId") Long indicatorExecutionId, List<CantonWeb> cantones) throws GeneralAppException {
         return this.indicatorExecutionService.updateDirectImplementationIndicatorExecutionLocationAssigment(indicatorExecutionId, cantones);
     }
+    @Path("/updatePartnerIndicatorExecutionLocationAssigment/{indicatorExecutionId}")
+    @POST
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public Long updatePartnerIndicatorExecutionLocationAssigment(@PathParam("indicatorExecutionId") Long indicatorExecutionId, List<CantonWeb> cantones) throws GeneralAppException {
+        return this.indicatorExecutionService.updatePartnerIndicatorExecutionLocationAssigment(indicatorExecutionId, cantones);
+    }
 
     @SuppressWarnings("DuplicatedCode")
     @Path("/getDirectImplementationIndicatorByPeriodIdResponsableIdSupervisorIdAndOfficeId")

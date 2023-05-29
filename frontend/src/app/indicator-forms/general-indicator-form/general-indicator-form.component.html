@@ -14,7 +14,17 @@
             </p>
         </div>
     </div>
-
+    <div class="card p-2" *ngIf="hasLocationDissagregation">
+        <div class="flex justify-content-end">
+            <p-message severity="warn"
+                       *ngIf="disableSave"
+                       text="Primero agrega lugares para poder reportar"
+            ></p-message>
+            <button pButton *ngIf="hasLocationDissagregation" type="button" pRipple label="Agregar lugares"
+                    icon="pi pi-plus"
+                    (click)="openLocationsDialog()"></button>
+        </div>
+    </div>
     <form #myForm="ngForm" [formGroup]="formItem" (ngSubmit)="saveMonth()">
         <div class="card p-0">
                     <div *ngIf="render">

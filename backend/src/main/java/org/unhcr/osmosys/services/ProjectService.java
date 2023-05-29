@@ -18,10 +18,7 @@ import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -142,7 +139,7 @@ public class ProjectService {
             this.indicatorExecutionService.updateIndicatorExecutionProjectDates(project, project.getStartDate(), project.getEndDate());
         }
         // las localidades
-        this.updateProjectLocations(projectWeb, project, projectWeb.getUpdateAllLocationsIndicators());
+        this.updateProjectLocations(projectWeb.getLocations(), project, projectWeb.getUpdateAllLocationsIndicators());
 
         this.saveOrUpdate(project);
 
@@ -150,14 +147,35 @@ public class ProjectService {
     }
 
 
-    public void updateProjectLocations(ProjectWeb projectWeb, Project project, Boolean updateAllLocationsIndicators) throws GeneralAppException {
+    public void updateProjectLocations(Set<CantonWeb> cantonWebs, Project project, Boolean updateAllLocationsIndicators) throws GeneralAppException {
+
+        LocationToActivateDesativate result = this.getLocationToActivateDesativate(project, List.copyOf(cantonWebs));
+
+        if (updateAllLocationsIndicators != null && updateAllLocationsIndicators) {
+            for (IndicatorExecution indicatorExecution : project.getIndicatorExecutions()) {
+                this.indicatorExecutionService.updateIndicatorExecutionLocations(indicatorExecution, result.locationsToActivate, result.locationsToDissable);
+            }
+        } else {
+            List<IndicatorExecution> generalIes = project.getIndicatorExecutions().stream().filter(indicatorExecution -> indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)).collect(Collectors.toList());
+            for (IndicatorExecution indicatorExecution : generalIes) {
+                this.indicatorExecutionService.updateIndicatorExecutionLocations(indicatorExecution, result.locationsToActivate, result.locationsToDissable);
+            }
+        }
+    }
+
+    public void updateProjectLocations(Set<CantonWeb> cantonWebs, Long projectId, Boolean updateAllLocationsIndicators) throws GeneralAppException {
+        Project project = this.getById(projectId);
+        this.updateProjectLocations(cantonWebs, project, updateAllLocationsIndicators);
+
+    }
+
+    public LocationToActivateDesativate getLocationToActivateDesativate(Project project, List<CantonWeb> cantonsWeb) {
         Set<Canton> locationsToActivate = new HashSet<>();
         Set<Canton> locationsToDissable = new HashSet<>();
-
         // ***********project location assigments
         // busco los cantones a desactivar
         project.getProjectLocationAssigments().forEach(projectLocationAssigment -> {
-            Optional<CantonWeb> cantonWebFound = projectWeb.getLocations().stream()
+            Optional<CantonWeb> cantonWebFound = cantonsWeb.stream()
                     .filter(cantonWeb -> projectLocationAssigment.getLocation().getId().equals(cantonWeb.getId())).findFirst();
             if (!cantonWebFound.isPresent()) {
                 projectLocationAssigment.setState(State.INACTIVO);
@@ -169,7 +187,7 @@ public class ProjectService {
         });
 
         // busco los cantones a activar
-        projectWeb.getLocations().forEach(cantonWeb -> {
+        cantonsWeb.forEach(cantonWeb -> {
             Optional<ProjectLocationAssigment> assignmentFound = project.getProjectLocationAssigments()
                     .stream()
                     .filter(projectLocationAssigment ->
@@ -188,19 +206,32 @@ public class ProjectService {
                 locationsToActivate.add(canton);
             }
         });
+        return new LocationToActivateDesativate(locationsToActivate, locationsToDissable);
+    }
 
-        if (updateAllLocationsIndicators != null && updateAllLocationsIndicators) {
-            for (IndicatorExecution indicatorExecution : project.getIndicatorExecutions()) {
-                this.indicatorExecutionService.updateIndicatorExecutionLocations(indicatorExecution, locationsToActivate, locationsToDissable);
-            }
-        }else {
-            List<IndicatorExecution> generalIes = project.getIndicatorExecutions().stream().filter(indicatorExecution -> indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)).collect(Collectors.toList());
-            for (IndicatorExecution indicatorExecution : generalIes) {
-                this.indicatorExecutionService.updateIndicatorExecutionLocations(indicatorExecution, locationsToActivate, locationsToDissable);
-            }
+    public List<CantonWeb> getProjectCantonAsignations(Long projectId) {
+
+        Project project = this.projectDao.find(projectId);
+        Set<ProjectLocationAssigment> projectLocationsAsignations = project.getProjectLocationAssigments();
+        List<Canton> activeCantons =
+                projectLocationsAsignations.stream()
+                        .filter(projectLocationAssigment -> projectLocationAssigment.getState().equals(State.ACTIVO))
+                        .map(projectLocationAssigment -> projectLocationAssigment.getLocation())
+                        .sorted((o1, o2) -> o1.getDescription().compareToIgnoreCase(o2.getDescription()))
+                        .sorted((o1, o2) -> o1.getProvincia().getDescription().compareToIgnoreCase(o2.getProvincia().getDescription()))
+                        .collect(Collectors.toList());
+        return this.modelWebTransformationService.cantonsToCantonsWeb(activeCantons);
+
+    }
+
+    static class LocationToActivateDesativate {
+        public final Set<Canton> locationsToActivate;
+        public final Set<Canton> locationsToDissable;
+
+        public LocationToActivateDesativate(Set<Canton> locationsToActivate, Set<Canton> locationsToDissable) {
+            this.locationsToActivate = locationsToActivate;
+            this.locationsToDissable = locationsToDissable;
         }
-
-
     }
 
 

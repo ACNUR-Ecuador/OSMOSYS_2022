@@ -19,6 +19,7 @@ import javax.ws.rs.core.SecurityContext;
 import java.io.ByteArrayOutputStream;
 import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 
 @Path("/projects")
 @RequestScoped
@@ -178,6 +179,30 @@ public class ProjectEndpoint {
         LOGGER.debug(importFileWeb);
         this.projectsImportService.projectsImport(importFileWeb);
         return null;
+    }
+
+    @Path("/getProjectCantonAsignations/{projectId}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<CantonWeb> getProjectCantonAsignations(
+            @PathParam("projectId") Long projectId
+    ) {
+        List<CantonWeb> result = this.projectService.getProjectCantonAsignations(projectId);
+        return result;
+    }
+
+    @Path("/updateProjectLocations/{projectId}")
+    @POST
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public void updateProjectLocations(
+            @PathParam("projectId") Long projectId,
+            List<CantonWeb> cantonesWeb
+    ) throws GeneralAppException {
+        LOGGER.info(cantonesWeb);
+        this.projectService.updateProjectLocations(Set.copyOf(cantonesWeb), projectId,true);
+        return ;
     }
 
 }

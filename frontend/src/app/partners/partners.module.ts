@@ -36,6 +36,9 @@ import {CodeDescriptionPipe} from '../shared/pipes/code-description.pipe';
 import {IndicatorPipe} from '../shared/pipes/indicator.pipe';
 import {MonthPipe} from '../shared/pipes/month.pipe';
 import {InputTextModule} from 'primeng/inputtext';
+import {RippleModule} from "primeng/ripple";
+import {DialogModule} from "primeng/dialog";
+import {PickListModule} from "primeng/picklist";
 
 
 @NgModule({
@@ -67,7 +70,10 @@ import {InputTextModule} from 'primeng/inputtext';
         OverlayPanelModule,
         IndicatorFormsModule,
         ButtonModule,
-        InputTextModule
+        InputTextModule,
+        RippleModule,
+        DialogModule,
+        PickListModule
     ],
     providers: [
         EnumValuesToLabelPipe,

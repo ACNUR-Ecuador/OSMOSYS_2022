@@ -8,7 +8,7 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app w
 
 ## Production
 run
-`ng build --configuration production --base-href /osmosys/`
+`ng build --configuration production --base-href /osmosys_sv/`
 
 `node ./build/post-build.js`
 

@@ -1,19 +1,20 @@
-import {Component, OnInit} from '@angular/core';
-import {IndicatorExecution, IndicatorValue, Month, MonthValues} from '../../shared/model/OsmosysModel';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {Canton, IndicatorExecution, IndicatorValue, Month, MonthValues} from '../../shared/model/OsmosysModel';
 import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {MessageService, SelectItem} from 'primeng/api';
-import {DissagregationType, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
+import {DissagregationType, EnumsState, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {IndicatorExecutionService} from '../../services/indicator-execution.service';
 import {MonthService} from '../../services/month.service';
 import {EnumsService} from '../../services/enums.service';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
+import {CantonService} from "../../services/canton.service";
 
 @Component({
-  selector: 'app-general-indicator-form',
-  templateUrl: './general-indicator-form.component.html',
-  styleUrls: ['./general-indicator-form.component.scss']
+    selector: 'app-general-indicator-form',
+    templateUrl: './general-indicator-form.component.html',
+    styleUrls: ['./general-indicator-form.component.scss']
 })
 export class GeneralIndicatorFormComponent implements OnInit {
     indicatorExecution: IndicatorExecution;
@@ -43,6 +44,12 @@ export class GeneralIndicatorFormComponent implements OnInit {
     noDimentionDissagregations: DissagregationType[] = [];
     chekedOptions: SelectItem[];
 
+    hasLocationDissagregation: boolean;
+    disableSave = false;
+    public cantonesOptions: Canton[]=[];
+    public formLocations: FormGroup;
+    cantonesAvailable: Canton[];
+    showLocationsDialog = false;
 
     constructor(public ref: DynamicDialogRef,
                 public config: DynamicDialogConfig,
@@ -52,7 +59,9 @@ export class GeneralIndicatorFormComponent implements OnInit {
                 public utilsService: UtilsService,
                 public userService: UserService,
                 private messageService: MessageService,
-                private fb: FormBuilder
+                private fb: FormBuilder,
+                private cantonService: CantonService,
+                private cd: ChangeDetectorRef
     ) {
     }
 
@@ -83,7 +92,9 @@ export class GeneralIndicatorFormComponent implements OnInit {
             label: 'Requiere correcciones por parte del socio',
             value: false
         });
-
+        this.formLocations = this.fb.group({
+            locationsSelected: new FormControl('')
+        });
     }
 
     setRoles() {
@@ -102,13 +113,13 @@ export class GeneralIndicatorFormComponent implements OnInit {
         this.noEditionMessage = null;
         if (this.isAdmin) {
             this.editable = true;
-        } else if (this.month.blockUpdate && (this.isEjecutor || this.isProjectFocalPoint )) {
+        } else if (this.month.blockUpdate && (this.isEjecutor || this.isProjectFocalPoint)) {
             this.editable = false;
             this.noEditionMessage = "El indicador está bloqueado, comuníquese con el punto focal si desea actualizarlo";
-        } else if (!this.month.blockUpdate && (this.isEjecutor || this.isProjectFocalPoint )) {
+        } else if (!this.month.blockUpdate && (this.isEjecutor || this.isProjectFocalPoint)) {
             this.editable = true;
-        }else {
-            this.editable= false;
+        } else {
+            this.editable = false;
             this.noEditionMessage = "No tiene los permisos para editar la información";
         }
 
@@ -140,6 +151,8 @@ export class GeneralIndicatorFormComponent implements OnInit {
             });
 
             this.setDimentionsDissagregations();
+            this.getHasLocationDissagregation();
+
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -184,7 +197,11 @@ export class GeneralIndicatorFormComponent implements OnInit {
             this.messageService.add({severity: 'success', summary: 'Guardado con éxito', detail: ''});
             this.ref.close({test: 1});
         }, error => {
-            this.messageService.add({severity: 'error', summary: 'Error al guardar los valores:', detail: error.error.message});
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al guardar los valores:',
+                detail: error.error.message
+            });
         });
     }
 
@@ -217,6 +234,110 @@ export class GeneralIndicatorFormComponent implements OnInit {
             this.formItem.get('sourceOther').patchValue(null);
             this.formItem.get('sourceOther').clearValidators();
             this.formItem.get('sourceOther').updateValueAndValidity();
+        }
+    }
+
+    getHasLocationDissagregation() {
+        this.hasLocationDissagregation = false;
+        for (const entry of Array.from(this.monthValuesMap.entries())) {
+            const key = entry[0];
+            const value = entry[1];
+            if (value && this.utilsService.isLocationDissagregation(key as DissagregationType)) {
+                this.hasLocationDissagregation = true;
+                this.validateSegregations();
+                return;
+            }
+        }
+    }
+
+    validateSegregations() {
+        this.disableSave = false;
+        this.monthValuesMap.forEach((value, key) => {
+            console.log(key);
+            console.log(value);
+
+            if (value && value.length === 0) {
+                console.log(value.length);
+                /* this.messageService.add({
+                     severity: 'error',
+                     summary: 'Actualiza los valores para ' + this.enumsService.resolveLabel(EnumsType.DissagregationType, key),
+                     detail: 'Agrega lugares de ejecución',
+                     sticky: true
+                 });*/
+                this.disableSave = true;
+            }
+        });
+    }
+
+    openLocationsDialog() {
+        this.messageService.clear();
+        this.cantonService.getByState(EnumsState.ACTIVE).subscribe(value => {
+            this.cantonesOptions = this.utilsService.sortCantones(value);
+            // noinspection JSMismatchedCollectionQueryUpdate
+            let cantonesCurrent: Canton[] = [];
+            this.monthValuesMap.forEach((value1, key) => {
+                if (this.utilsService.isLocationDissagregation(key as DissagregationType) && value1) {
+                    const cantones = value1
+                        .filter(value2 => value2.state === EnumsState.ACTIVE)
+                        .filter(value2 => value2.location)
+                        .map(value2 => value2.location);
+                    cantonesCurrent = cantonesCurrent.concat(cantones);
+                }
+
+            });
+            const keyId = 'id';
+            const cantonesCurrentUnique: Canton[] = [...new Map(cantonesCurrent.map(item =>
+                [item[keyId], item])).values()];
+
+
+            if (!cantonesCurrentUnique || cantonesCurrentUnique.length < 1) {
+                this.formLocations.get('locationsSelected').patchValue([]);
+                this.cantonesAvailable = this.utilsService.sortCantones(this.cantonesOptions);
+            } else {
+                this.formLocations.get('locationsSelected').patchValue(this.utilsService.sortCantones(cantonesCurrentUnique));
+                this.cantonesAvailable =
+                    this.cantonesOptions.filter((canton1) => !cantonesCurrentUnique.find(canton2 => canton1.id === canton2.id));
+            }
+            this.showLocationsDialog = true;
+            this.cd.detectChanges();
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al cargar los cantones',
+                detail: error.error.message,
+                life: 3000
+            });
+        });
+
+    }
+
+    cancelLocations() {
+        this.showLocationsDialog = false;
+    }
+
+
+    saveLocations() {
+        const cantones: Canton[] = this.formLocations.get('locationsSelected').value;
+        if (!cantones || cantones.length < 1) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Selecciona al menos un municipio',
+                life: 3000
+            });
+        } else {
+            this.indicatorExecutionService
+                .updatePartnerIndicatorExecutionLocationAssigment(this.indicatorExecution.id, cantones)
+                .subscribe(() => {
+                    this.loadMonthValues(this.monthId);
+                    this.showLocationsDialog = false;
+                }, error => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al guardar los cantones',
+                        detail: error.error.message,
+                        sticky: true
+                    });
+                });
         }
     }
 }

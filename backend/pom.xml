@@ -4,7 +4,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.unhcr</groupId>
-    <artifactId>osmosys_backend</artifactId>
+    <artifactId>osmosys_backend_sv</artifactId>
     <version>3.0</version>
     <packaging>war</packaging>
     <name>OSMOSYS backend el salvador 2023</name>
@@ -333,7 +333,15 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.3.2</version>
                 <configuration>
-                    <warName>osmosys</warName>
+                    <warName>osmosys_sv</warName>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>10</source>
+                    <target>10</target>
                 </configuration>
             </plugin>
         </plugins>
