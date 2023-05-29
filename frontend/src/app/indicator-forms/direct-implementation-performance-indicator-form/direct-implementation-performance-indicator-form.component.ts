@@ -358,7 +358,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
         if (!cantones || cantones.length < 1) {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Selecciona al menos un cantón',
+                summary: 'Selecciona al menos un municipio',
                 life: 3000
             });
         } else {

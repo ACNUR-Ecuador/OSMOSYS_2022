@@ -490,7 +490,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         if (!locations || locations.length < 1) {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Agrega al menos un cantón'
+                summary: 'Agrega al menos un municipio'
             });
             return;
         }
@@ -659,13 +659,13 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
     private createTables() {
         this.cols = [
-            {field: 'provincia.description', header: 'Provincia', type: ColumnDataType.text},
-            {field: 'description', header: 'Cantón', type: ColumnDataType.text}
+            {field: 'provincia.description', header: 'Departamento', type: ColumnDataType.text},
+            {field: 'description', header: 'Municipio', type: ColumnDataType.text}
         ];
 
         this.colsCantonList = [
-            {field: 'provincia.description', header: 'Provincia', type: ColumnDataType.text},
-            {field: 'description', header: 'Cantón', type: ColumnDataType.text},
+            {field: 'provincia.description', header: 'Departamento', type: ColumnDataType.text},
+            {field: 'description', header: 'Municipio', type: ColumnDataType.text},
             {field: 'enabled', header: 'Activo', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe}
         ];
         this.colsCantonListNotEditable = this.colsCantonList.filter(value => {
@@ -924,8 +924,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             if (indicatorExecution.locations.length < 1 && this.indicatorHasLocationDissagregation(indicatorExecution.indicator)) {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Seleccione al menos un cantón',
-                    detail: 'Este indicador tiene desagregación por lugar, es necesario activar al menos un cantón',
+                    summary: 'Seleccione al menos un municipio',
+                    detail: 'Este indicador tiene desagregación por lugar, es necesario activar al menos un municipio',
                     life: 3000
                 });
                 return;
@@ -966,8 +966,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             if (indicatorExecution.locations.length < 1 && this.indicatorHasLocationDissagregation(indicatorExecution.indicator)) {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Seleccione al menos un cantón',
-                    detail: 'Este indicador tiene desagregación por lugar, es necesario activar al menos un cantón',
+                    summary: 'Seleccione al menos un municipio',
+                    detail: 'Este indicador tiene desagregación por lugar, es necesario activar al menos un municipio',
                     life: 3000
                 });
                 return;

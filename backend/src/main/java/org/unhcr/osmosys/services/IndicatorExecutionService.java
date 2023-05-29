@@ -1040,7 +1040,7 @@ public class IndicatorExecutionService {
         }else {
             ProjectService.LocationToActivateDesativate locationToActivateDessactivate = this.getLocationToActivateDessactivate(ie, cantonesWeb);
             this.updateIndicatorExecutionLocations(ie, locationToActivateDessactivate.locationsToActivate, locationToActivateDessactivate.locationsToDissable);
-// todo
+// todo definir q hacer
         }
 
         return ie.getId();
