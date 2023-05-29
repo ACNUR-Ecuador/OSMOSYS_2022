@@ -144,7 +144,7 @@ public class UserService implements Serializable {
         String message = "<p>Bienvenid@:</p>" +
                 "<p>Se ha creado un nuevo usuario para su acceso Osmosys.</p>" +
                 "<p>Puede acceder al sistema utilizando los siguientes datos:</p>" +
-                "<p>Direcci&oacute;n: <a href=\"https://imecuador.unhcr.org/osmosys\">" + "https://imecuador.unhcr.org/osmosys" + "</a> (Se recomienda el uso de Google Chrome)</p>" +
+                "<p>Direcci&oacute;n: <a href=\"https://imecuador.unhcr.org/osmosys_sv\">" + "https://imecuador.unhcr.org/osmosys_sv" + "</a> (Se recomienda el uso de Google Chrome)</p>" +
                 "<p>Nombre de usuario: " + user.getUsername() + "</p>" +
                 "<p>Contrase&ntilde;a: " + password + "</p>" +
                 "<p>&nbsp;</p>" +
@@ -538,7 +538,7 @@ public class UserService implements Serializable {
             String message = "<p>Bienvenid@:</p>" +
                     "<p>Se ha generado una nueva contraseña para el acceso al Osmosys.</p>" +
                     "<p>Puede acceder al sistema utilizando los siguientes datos:</p>" +
-                    "<p>Direcci&oacute;n: <a href=\"https://imecuador.unhcr.org/osmosys\">" + "https://imecuador.unhcr.org/osmosys" + "</a> (Se recomienda el uso de Google Chrome)</p>" +
+                    "<p>Direcci&oacute;n: <a href=\"https://imecuador.unhcr.org/osmosys_sv\">" + "https://imecuador.unhcr.org/osmosys_sv" + "</a> (Se recomienda el uso de Google Chrome)</p>" +
                     "<p>Nombre de usuario: " + user.getUsername() + "</p>" +
                     "<p>Contraseña: " + password + "</p>" +
                     "<p>&nbsp;</p>" +

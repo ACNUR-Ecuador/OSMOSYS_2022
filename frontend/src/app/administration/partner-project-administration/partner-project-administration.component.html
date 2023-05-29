@@ -175,7 +175,7 @@
                                         <ng-template pTemplate="summary">
                                             <div class="flex align-items-center justify-content-between">
                                                 Total {{formItem.get('locations').value ? formItem.get('locations').value.length : 0 }}
-                                                cantones.
+                                                lugares.
                                             </div>
                                         </ng-template>
                                     </p-table>
@@ -487,7 +487,7 @@
         </ng-template>
         <p-confirmDialog #cdl key="cdl" [style]="{width: '50vw'}">
             <ng-template pTemplate="header">
-                <h3>Actualización de sitios/cantones</h3>
+                <h3>Actualización de lugares/municipios</h3>
             </ng-template>
             <ng-template pTemplate="footer">
                 <button type="button" pButton icon="pi pi-check" label="Sí" (click)="cdl.accept()"></button>

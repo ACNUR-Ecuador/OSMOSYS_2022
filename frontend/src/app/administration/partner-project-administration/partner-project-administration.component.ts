@@ -322,7 +322,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 error: error => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al cargar los cantones',
+                        summary: 'Error al cargar los municipios',
                         detail: error.error.message,
                         life: 3000
                     });
@@ -582,7 +582,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 }).join('<br>');
                 if (this.idProjectParam) {
                     this.confirmationService.confirm({
-                        message: 'Quieres agregar los cantones nuevos a todos los indicadores de producto?<br>' + cantonesList,
+                        message: 'Quieres agregar los municipios nuevos a todos los indicadores de producto?<br>' + cantonesList,
                         header: 'Actualización de indicadores',
                         closeOnEscape: false,
                         icon: 'pi pi-exclamation-triangle',
