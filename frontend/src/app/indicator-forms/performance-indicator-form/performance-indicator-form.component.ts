@@ -72,7 +72,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         this.isEjecutor = this.config.data.isEjecutor; //
 
         this.formItem = this.fb.group({
-            commentary: new FormControl('', [Validators.maxLength(1000)]),
+            commentary: new FormControl('', [Validators.maxLength(1000), Validators.required]),
             sources: new FormControl('', Validators.required),
             sourceOther: new FormControl(''),
             checked: new FormControl(''),

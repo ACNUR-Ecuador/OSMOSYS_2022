@@ -376,13 +376,13 @@ export class MenuService {
                 }
             ]
         },
-        {
+        /*{
             label: 'Portal de datos',
             icon: 'pi pi-fw pi-globe',
             url: ['https://data.unhcr.org/en/country/ecu'],
             target: '_blank',
             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS'],
-        }
+        }*/
         /*{
             label: 'Demo',
             icon: 'pi pi-home',

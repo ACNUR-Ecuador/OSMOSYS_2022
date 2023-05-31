@@ -73,7 +73,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
         this.isProjectFocalPoint = this.config.data.isProjectFocalPoint; //
         this.isEjecutor = this.config.data.isEjecutor; //
         this.formItem = this.fb.group({
-            commentary: new FormControl('', [Validators.maxLength(1000)]),
+            commentary: new FormControl('', [Validators.maxLength(1000), Validators.required]),
             sources: new FormControl('', Validators.required),
             sourceOther: new FormControl(''),
             checked: new FormControl(''),
@@ -253,9 +253,6 @@ export class GeneralIndicatorFormComponent implements OnInit {
     validateSegregations() {
         this.disableSave = false;
         this.monthValuesMap.forEach((value, key) => {
-            console.log(key);
-            console.log(value);
-
             if (value && value.length === 0) {
                 console.log(value.length);
                 /* this.messageService.add({
