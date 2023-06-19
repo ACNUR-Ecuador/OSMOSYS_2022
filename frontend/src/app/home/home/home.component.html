@@ -1,13 +1,13 @@
 <p-card>
 
-    <div class="grid" *ngIf="isAcnurUser">
+<!--    <div class="grid" *ngIf="isAcnurUser">
         <div class="col-12 border_div">
             <p-button label="Ver mis actividades pendientes" icon="pi pi-calendar-times"
                       [routerLink]="'/reports/lateReportsComponent'"
 
                       styleClass="p-button-success col-12 mb-2"></p-button>
         </div>
-    </div>
+    </div>-->
 
     <app-home-dashboard-focal-point
         *ngIf="render && (isFocalPoint || isPartner || isAdmin)"

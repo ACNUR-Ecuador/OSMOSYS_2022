@@ -377,7 +377,7 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
                 });
                 this.countPerformanceIndicators = value.length;
                 this.countPerformanceIndicatorsLate = 0;
-                this.countPerformanceIndicatorsLate = this.performanceIndicators.filter(value1 => value1.late).length;
+                this.countPerformanceIndicatorsLate = this.performanceIndicators.filter(value1 => value1.late==='LATE').length;
                 this.loadPerformanceIndicator(this.performanceIndicators[0]);
             }
 

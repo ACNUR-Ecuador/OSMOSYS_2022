@@ -19,7 +19,7 @@
                 <div class="col-8 field">
                     <label for="projectI" class="text-900 font-semibold">Proyecto</label>
                     <p-dropdown class="col-12" [style]="{'width':'90%'}" id="projectI"
-                                (onChange)="loadProject($event.value)"
+                                (onChange)="loadProject($event.value.id)"
                                 [options]="projects" [(ngModel)]="selectedProject"
                                 [filter]="true"
                     ></p-dropdown>
