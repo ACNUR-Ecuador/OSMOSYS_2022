@@ -238,6 +238,20 @@
                         {{utilsService.getErrorMessageForm('indicator', itemForm)}}
                     </small>
                 </div>
+                <div class="field col-12 md-12">
+                    <label for="indicatorI">Meta Anual</label>
+                    <p-inputNumber id="targetI"
+                                formControlName="target"
+                                   mode="decimal"
+                                   [min]="0"
+                    >
+                    </p-inputNumber>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('target',itemForm)">
+                        {{utilsService.getErrorMessageForm('target', itemForm)}}
+                    </small>
+                </div>
                 <div class="field col-6 md-6">
                     <label for="keepBudgetI">Controlar presupuesto</label>
                     <div>

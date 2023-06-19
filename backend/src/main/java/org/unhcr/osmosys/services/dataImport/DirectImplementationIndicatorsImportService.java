@@ -61,6 +61,7 @@ public class DirectImplementationIndicatorsImportService {
 
     private static final String PRODUCT_INDICATOR = "Indicadores de Producto";
     private static final String MAIN_ACTIVITIES = "Actividades clave de Producto";
+    private static final String TARGET = "Meta";
     private static final String CANTONS = "Cantones de Ejecución";
     private static final String REPORTER = "Responsable de Reporte";
     private static final String SUPERVISOR = "Punto Focal de Unidad/FO";
@@ -71,7 +72,7 @@ public class DirectImplementationIndicatorsImportService {
     public void directImplementationIndicatorsImport(Long periodId, Long officeId, ImportFileWeb importFileWeb) throws GeneralAppException {
         byte[] fileContent = this.fileUtils.decodeBase64ToBytes(importFileWeb.getFile());
         InputStream targetStream = new ByteArrayInputStream(fileContent);
-        this.directImplementationIndicatorsImport(periodId,  officeId, targetStream);
+        this.directImplementationIndicatorsImport(periodId, officeId, targetStream);
     }
 
     public void directImplementationIndicatorsImport(Long periodId, Long officeId,
@@ -105,6 +106,7 @@ public class DirectImplementationIndicatorsImportService {
 
             int COL_PRODUCT_INDICATOR = titleAdresses.get(PRODUCT_INDICATOR).getColumn();
             int COL_MAIN_ACTIVITIES = titleAdresses.get(MAIN_ACTIVITIES).getColumn();
+            int COL_TARGET = titleAdresses.get(TARGET).getColumn();
             int COL_CANTONS = titleAdresses.get(CANTONS).getColumn();
             int COL_REPORTER = titleAdresses.get(REPORTER).getColumn();
             int COL_SUPERVISOR = titleAdresses.get(SUPERVISOR).getColumn();
@@ -169,6 +171,16 @@ public class DirectImplementationIndicatorsImportService {
                 }
                 indicatorExecutionAssigmentWeb.setSupervisorUser(this.modelWebTransformationService.userToUserWebSimple(supervisor, false, false));
 
+                // target
+                Integer target;
+                Cell targetCell = row.getCell(COL_TARGET);
+                if (targetCell.getCellType() != CellType.NUMERIC) {
+                    target= null;
+                } else {
+                    target= (int) targetCell.getNumericCellValue();
+                }
+                indicatorExecutionAssigmentWeb.setTarget(target);
+
                 // cantones
                 // locations
                 Set<Canton> indicatorLocations = new HashSet<>();
@@ -222,6 +234,7 @@ public class DirectImplementationIndicatorsImportService {
 
         titleMaps.put(PRODUCT_INDICATOR, null);
         titleMaps.put(MAIN_ACTIVITIES, null);
+        titleMaps.put(TARGET, null);
         titleMaps.put(CANTONS, null);
         titleMaps.put(REPORTER, null);
         titleMaps.put(SUPERVISOR, null);
@@ -269,7 +282,6 @@ public class DirectImplementationIndicatorsImportService {
         titleMaps.forEach((s, cellAddress) -> LOGGER.debug(s + ": " + cellAddress.formatAsString()));
         return titleMaps;
     }
-
 
 
     public ByteArrayOutputStream generateTemplate(Long periodId, Long officeId) throws GeneralAppException {

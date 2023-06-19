@@ -27,6 +27,7 @@ import {UserPipe} from '../../shared/pipes/user.pipe';
 import {MonthPipe} from '../../shared/pipes/month.pipe';
 import {MonthListPipe} from '../../shared/pipes/month-list.pipe';
 import {HttpResponse} from "@angular/common/http";
+import {PercentPipe} from "@angular/common";
 
 
 @Component({
@@ -73,6 +74,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
         private monthPipe: MonthPipe,
         private monthListPipe: MonthListPipe,
         private booleanYesNoPipe: BooleanYesNoPipe,
+        private percentPipe: PercentPipe
     ) {
     }
 
@@ -258,6 +260,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             statement: new FormControl({value: '', disabled: true}),
             product: new FormControl({value: '', disabled: true}),
             indicator: new FormControl(''),
+            target: new FormControl('',Validators.required),
             supervisorUser: new FormControl('', Validators.required),
             assignedUser: new FormControl('', Validators.required),
             assignedUserBackup: new FormControl(''),
@@ -289,7 +292,9 @@ export class DirectImplementationAdministrationComponent implements OnInit {
                 pipeRef: this.enumValuesToLabelPipe,
                 arg1: EnumsType.State
             },
+            {field: 'target', header: 'Meta', type: ColumnDataType.numeric},
             {field: 'totalExecution', header: 'Ejecución Total', type: ColumnDataType.numeric},
+            {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric,pipeRef: this.percentPipe},
             {field: 'late', header: 'Atrasado', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
             {
                 field: 'lastReportedMonth',
@@ -363,7 +368,8 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             assignedUser,
             assignedUserBackup,
             keepBudget,
-            assignedBudget
+            assignedBudget,
+            target
         } = this.itemForm.getRawValue();
         if (assignedUserBackup && assignedUser.id === assignedUserBackup.id) {
             this.messageService.add({
@@ -384,7 +390,8 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             assignedUser,
             assignedUserBackup,
             keepBudget,
-            assignedBudget
+            assignedBudget,
+            target
         };
         if (assigment.id) {
             this.indicatorExecutionService
@@ -488,7 +495,8 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             assignedUser,
             assignedUserBackup,
             keepBudget,
-            assignedBudget
+            assignedBudget,
+            target
         } = indicatorExecution;
         const assigment: IndicatorExecutionAssigment = {
             id,
@@ -500,7 +508,8 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             assignedUser,
             assignedUserBackup,
             keepBudget,
-            assignedBudget
+            assignedBudget,
+            target
         };
         this.messageService.clear();
         this.utilsService.resetForm(this.itemForm);

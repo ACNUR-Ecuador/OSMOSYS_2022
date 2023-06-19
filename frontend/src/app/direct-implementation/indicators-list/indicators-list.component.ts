@@ -22,6 +22,7 @@ import {OverlayPanel} from "primeng/overlaypanel";
 import {
     DirectImplementationPerformanceIndicatorFormComponent
 } from "../../indicator-forms/direct-implementation-performance-indicator-form/direct-implementation-performance-indicator-form.component";
+import {PercentPipe} from "@angular/common";
 
 @Component({
   selector: 'app-indicators-list',
@@ -55,7 +56,8 @@ export class IndicatorsListComponent implements OnInit {
                 private enumsService: EnumsService,
                 private filterService: FilterService,
                 private filterUtilsService: FilterUtilsService,
-                private dialogService: DialogService
+                private dialogService: DialogService,
+                private percentPipe: PercentPipe
     ) {
         if (this.router.getCurrentNavigation().extras.state) {
             this.indicatorExecutionIds = this.router.getCurrentNavigation().extras.state.indicatorExecutionIds;
@@ -95,7 +97,9 @@ export class IndicatorsListComponent implements OnInit {
             {field: 'activityDescription', header: 'Descripción de la actividad', type: ColumnDataType.text},
             {field: 'indicator.frecuency', header: 'Frecuencia de Reporte', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text, pipeRef: this.enumValuesToLabelPipe, arg1: EnumsType.State},
+            {field: 'target', header: 'Meta', type: ColumnDataType.numeric},
             {field: 'totalExecution', header: 'Ejecución Total', type: ColumnDataType.numeric},
+            {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric,pipeRef: this.percentPipe},
             {field: 'late', header: 'Atrasado', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
             {field: 'lastReportedMonth', header: 'Último mes reportado', type: ColumnDataType.text, pipeRef: this.monthPipe},
             {field: 'lateMonths', header: 'Meses Retrasado', type: ColumnDataType.text, pipeRef: this.monthListPipe},

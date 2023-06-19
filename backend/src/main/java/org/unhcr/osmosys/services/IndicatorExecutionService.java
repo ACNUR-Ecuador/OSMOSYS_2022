@@ -843,6 +843,7 @@ public class IndicatorExecutionService {
         indicatorExecution.setKeepBudget(indicatorExecutionAssigmentWeb.getKeepBudget());
         indicatorExecution.setAssignedBudget(indicatorExecutionAssigmentWeb.getAssignedBudget());
         Office office = this.officeService.getById(indicatorExecutionAssigmentWeb.getReportingOffice().getId());
+        indicatorExecution.setTarget(indicatorExecutionAssigmentWeb.getTarget()!=null?new BigDecimal(indicatorExecutionAssigmentWeb.getTarget()):null);
         indicatorExecution.setReportingOffice(office);
         if (office == null) {
             throw new GeneralAppException("Oficina no encontrada " + indicatorExecutionAssigmentWeb.getReportingOffice().getId(), Response.Status.BAD_REQUEST);
@@ -908,6 +909,7 @@ public class IndicatorExecutionService {
         }
 
         indicatorExecution.setState(indicatorExecutionAssigmentWeb.getState());
+        indicatorExecution.setTarget(indicatorExecutionAssigmentWeb.getTarget()!=null?new BigDecimal(indicatorExecutionAssigmentWeb.getTarget()):null);
 
         this.assigUsersToIndicatorExecution(indicatorExecution, indicatorExecutionAssigmentWeb);
         /*  *************budget**********/
@@ -915,6 +917,7 @@ public class IndicatorExecutionService {
         indicatorExecution.setAssignedBudget(indicatorExecutionAssigmentWeb.getAssignedBudget());
 
         this.saveOrUpdate(indicatorExecution);
+        this.updateIndicatorExecutionTotals(indicatorExecution);
         return indicatorExecution.getId();
     }
 

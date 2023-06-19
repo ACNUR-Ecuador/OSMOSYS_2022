@@ -449,6 +449,7 @@ export class IndicatorExecutionAssigment {
     public activityDescription?: string;
     public locations?: Canton[];
     // direct implementation
+    public target?: number;
     public reportingOffice?: Office;
     public supervisorUser?: User;
     public assignedUser?: User;
