@@ -114,7 +114,8 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
                 " WHERE pr.id = :projectId" +
                 " and o.indicatorType =: generalType " +
-                " and o.state = :state ";
+                " and o.state = :state " +
+                " and m.state = :state ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("projectId", projectId);
         q.setParameter("generalType", indicatorType);
