@@ -3,7 +3,7 @@ package org.unhcr.osmosys.model.enums;
 public enum GenderType  implements EnumInterface{
 	MASCULINO("Masculino",1),
 	FEMENINO("Femenino",2),
-	NO_BINARIE("No Binarie",3);
+	NO_BINARIE("No Binario",3);
 
 	private String label;
 
