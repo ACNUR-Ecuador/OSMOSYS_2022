@@ -288,7 +288,14 @@ export class MenuService {
                             icon: 'pi pi-fw pi-chart-bar',
                             routerLink: ['/reports/2023/rbaindicators2023'],
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                        },
+                        {
+                            label: 'MYRP - ECW',
+                            icon: 'pi pi-fw pi-chart-bar',
+                            routerLink: ['/reports/2023/myrp2023'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
                         }
+                
                     ]
                 },
                 {
@@ -363,7 +370,14 @@ export class MenuService {
                             icon: 'pi pi-fw pi-calendar-times',
                             routerLink: ['/reports/2022/indicatorComparison'],
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
+                        },
+                        {
+                         label: 'MYRP - ECW',
+                         icon: 'pi pi-fw pi-chart-bar',
+                         routerLink: ['/reports/2022/myrp2022'],
+                         roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
                         }
+                        
                     ]
                 },
                 {

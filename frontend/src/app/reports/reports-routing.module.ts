@@ -21,6 +21,9 @@ import {ProductIndicators2023Component} from "./2023/product-indicators2023/prod
 import { TrendsIndicators2023Component } from './2023/trends-indicators2023/trends-indicators2023.component';
 import { GeneralIndicators2023Component } from './2023/general-indicators2023/general-indicators2023.component';
 import { RBAIndicators2023Component } from './2023/rbaindicators2023/rbaindicators2023.component';
+import { MYRP2023Component } from './2023/myrp2023/myrp2023.component';
+import { Myrp2022Component } from './2022/myrp2022/myrp2022.component';
+import { M } from '@fullcalendar/resource/internal-common';
 
 const routes: Routes = [
     {
@@ -36,6 +39,7 @@ const routes: Routes = [
             {path: '2023/trendsIndicators2023', component: TrendsIndicators2023Component},
             {path: '2023/generalIndicators2023', component: GeneralIndicators2023Component},
             {path: '2023/rbaindicators2023', component: RBAIndicators2023Component},
+            {path: '2023/myrp2023', component: MYRP2023Component},
             // 2022
             {path: '2022/shelter', component: ShelterComponent},
             {path: '2022/cbi', component: CbiComponent},
@@ -48,6 +52,7 @@ const routes: Routes = [
             {path: '2022/rbaIndicators', component: RbaIndicatorsComponent},
             {path: '2022/indicatorComparison', component: IndicatorComparisonComponent},
             {path: '2022/indicatorTrends', component: IndicatorTrendsComponent},
+            {path: '2022/myrp2022', component: Myrp2022Component},
             // 2021
             {path: '2021/productIndicators2021', component: ProductIndicators2021Component},
             {path: '2021/beneficiaries2021', component: Beneficiaries2021Component},

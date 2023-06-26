@@ -32,6 +32,8 @@ import { ProductIndicators2023Component } from './2023/product-indicators2023/pr
 import { TrendsIndicators2023Component } from './2023/trends-indicators2023/trends-indicators2023.component';
 import { GeneralIndicators2023Component } from './2023/general-indicators2023/general-indicators2023.component';
 import { RBAIndicators2023Component } from './2023/rbaindicators2023/rbaindicators2023.component';
+import { MYRP2023Component } from './2023/myrp2023/myrp2023.component';
+import { Myrp2022Component } from './2022/myrp2022/myrp2022.component';
 
 
 @NgModule({
@@ -56,7 +58,9 @@ import { RBAIndicators2023Component } from './2023/rbaindicators2023/rbaindicato
     ProductIndicators2023Component,
     TrendsIndicators2023Component,
     GeneralIndicators2023Component,
-    RBAIndicators2023Component
+    RBAIndicators2023Component,
+    MYRP2023Component,
+    Myrp2022Component
   ],
     imports: [
         CommonModule,
