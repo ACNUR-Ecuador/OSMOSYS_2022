@@ -255,6 +255,18 @@ export class MenuService {
             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
             items: [
                 {
+                    label: 'Indicadores de Producto',
+                    icon: 'pi pi-fw pi-chart-bar',
+                    routerLink: ['/reports/powerbi/productIndicators2023'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                },
+                {
+                    label: 'Beneficiarios Alcanzados por Socios',
+                    icon: 'pi pi-fw pi-chart-bar',
+                    routerLink: ['/reports/powerbi/generalIndicator2023'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
+                }
+                /*{
                     label: '2023',
                     icon: 'pi pi-chart-line',
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
@@ -373,7 +385,7 @@ export class MenuService {
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL', 'EJECUTOR_ID', 'MONITOR_ID'],
                         },
                     ]
-                }
+                }*/
             ]
         },
         /*{

@@ -9,7 +9,7 @@ import {HabitabilityComponent} from "./2022/habitability/habitability.component"
 import {ResettlementComponent} from "./2022/resettlement/resettlement.component";
 import {SpecialNeedsComponent} from "./2022/special-needs/special-needs.component";
 import {LivehoodsComponent} from "./2022/livehoods/livehoods.component";
-import {ProductIndicatorsComponent} from "./2022/product-indicators/product-indicators.component";
+import {ProductIndicatorsComponent} from "./powerbi/2023/product-indicators/product-indicators.component";
 import {RbaIndicatorsComponent} from "./2022/rba-indicators/rba-indicators.component";
 import {IndicatorComparisonComponent} from "./2022/indicator-comparison/indicator-comparison.component";
 import {IndicatorTrendsComponent} from "./2022/indicator-trends/indicator-trends.component";
@@ -17,8 +17,9 @@ import {ProductIndicators2021Component} from "./2021/product-indicators2021/prod
 import {Beneficiaries2021Component} from "./2021/beneficiaries2021/beneficiaries2021.component";
 import {DataExportComponent} from "./data-export/data-export.component";
 import { PiIndicators2023Component } from './2023/pi-indicators2023/pi-indicators2023.component';
-import {ProductIndicators2023Component} from "./2023/product-indicators2023/product-indicators2023.component";
-import { TrendsIndicators2023Component } from './2023/trends-indicators2023/trends-indicators2023.component';
+
+
+import {GeneralIndicatorComponent} from "./powerbi/2023/general-indicator/general-indicator.component";
 
 const routes: Routes = [
     {
@@ -28,10 +29,11 @@ const routes: Routes = [
             {path: 'lateReports', component: LateReportsComponent},
             {path: 'lateReports', component: LateReportsComponent},
             {path: 'dataExport', component: DataExportComponent},
+            // powerbi sv
+            {path: 'powerbi/productIndicators2023', component: ProductIndicatorsComponent},
+            {path: 'powerbi/generalIndicator2023', component: GeneralIndicatorComponent},
             //2023
-            {path: '2023/productIndicators2023', component: ProductIndicators2023Component},
-            {path: '2023/piIndicators2023', component: PiIndicators2023Component},
-            {path: '2023/trendsIndicators2023', component: TrendsIndicators2023Component},
+
             // 2022
             {path: '2022/shelter', component: ShelterComponent},
             {path: '2022/cbi', component: CbiComponent},
