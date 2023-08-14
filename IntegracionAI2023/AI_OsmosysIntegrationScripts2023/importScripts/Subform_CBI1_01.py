@@ -51,7 +51,7 @@ def importForm(month, month_number, year, test):
         df = osmosys.osmosys.getRefValues(year=year, month=month, orgOsmosys=orgAcron,
                                           indicatorsIdsOmosys=indicatorIdsOsmosys, cantonCode=cantonCode)
 
-        poblacion_meta = ["Refugiados/as y migrantes", "Comunidad de acogida"]
+        poblacion_meta = ["Refugiados/as y Migrantes", "Comunidad de acogida"]
 
         CBI1_01_RM_NA_U = int(df.loc[df['age_gender'] == 'NINAS'].iloc[0].value_a)
         CBI1_01_RM_NN_U = int(df.loc[df['age_gender'] == 'NINOS'].iloc[0].value_a)
@@ -75,7 +75,7 @@ def importForm(month, month_number, year, test):
 
         subform = model.modelAI.SubFormACBI1_01(
             mes=month_number,
-            colltmgkykvhxgij6=indicatorIdAI,
+            ccjq8tlcza3zqdb=indicatorIdAI,
             rmrp='Si',
             poblacion_meta=poblacion_meta,
             modalidad_impl='c3jf6gykykwwemuk7',  ##'Efectivo',

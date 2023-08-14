@@ -48,7 +48,7 @@ def importForm(month, month_number, year, test):
         orgAcron = row.acronym
         cantonCode = row.canton_code
 
-        poblacion_meta2 = 'Refugiados/as y migrantes'
+        poblacion_meta2 = 'Refugiados y migrantes'
         modalidad_impl = 'cmo12q1kykwwosjka'  # servicios
 
         df = osmosys.osmosys.getRefValues(year=year, month=month, orgOsmosys=orgAcron,
