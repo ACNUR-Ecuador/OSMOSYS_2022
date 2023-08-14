@@ -6,6 +6,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.enums.Frecuency;
+import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.model.enums.TimeStateEnum;
 import org.unhcr.osmosys.model.enums.TotalIndicatorCalculationType;
 import org.unhcr.osmosys.webServices.model.MonthWeb;
@@ -88,6 +89,9 @@ public class UtilsService {
     }
 
     public TimeStateEnum getLateStateForMonth(MonthWeb month, Frecuency frecuency, int limitDayReport) throws GeneralAppException {
+        if(month.getMonth().equals(MonthEnum.ENERO)){
+            LOGGER.debug("este es");
+        }
         LocalDate today = LocalDate.now();
         LocalDate firstDayReport = this.getFirstDayReport(month, frecuency);
         LocalDate lastDayReport = firstDayReport.withDayOfMonth(limitDayReport);

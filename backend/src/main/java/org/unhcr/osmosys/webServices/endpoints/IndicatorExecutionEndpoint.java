@@ -61,7 +61,9 @@ public class IndicatorExecutionEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public List<IndicatorExecutionWeb> getPerformanceIndicatorExecutionsByProjectId(@PathParam("projectId") Long projectId) throws GeneralAppException {
-        return this.indicatorExecutionService.getPerformanceIndicatorExecutionsByProjectId(projectId, State.ACTIVO);
+        List<IndicatorExecutionWeb> data = this.indicatorExecutionService.getPerformanceIndicatorExecutionsByProjectId(projectId, State.ACTIVO);
+
+        return data;
     }
 
     @Path("/performanceAllDirectImplementationByPeriodId/{periodId}")
