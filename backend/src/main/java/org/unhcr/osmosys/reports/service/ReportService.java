@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -314,7 +315,7 @@ public class ReportService {
         InputStream file = this.getReportFile(jrxmlFile);
         Map<String, Object> parameters = new HashMap<>();
         try {
-            JasperReport jasperReport = JasperCompileManager.compileReport(file);
+            JasperReport jasperReport =  JasperCompileManager.compileReport(file);
             List<Map<String, Object>> data = this.reportDataService.indicatorExecutionsProjectsReportsByProjectId(projectId);
             JRMapArrayDataSource dataSource = new JRMapArrayDataSource(data.toArray());
             parameters.put("DataParameter", dataSource);

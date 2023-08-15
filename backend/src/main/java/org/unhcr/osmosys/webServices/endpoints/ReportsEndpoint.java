@@ -449,14 +449,14 @@ public class ReportsEndpoint {
 
     @Path("/getPartnerAnnualByProjectId/{projectId}")
     @GET
-    @Secured
+    //@Secured
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public Response getPartnerAnnualByProjectId(
             @Context SecurityContext securityContext,
             @PathParam("projectId") Long projectId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("getPartnerAnnualByProjectId:" + principal.getName());
+//        LOGGER.info("getPartnerAnnualByProjectId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnerAnnualByProjectIdV2(projectId);
         long lEndTime = System.nanoTime();
