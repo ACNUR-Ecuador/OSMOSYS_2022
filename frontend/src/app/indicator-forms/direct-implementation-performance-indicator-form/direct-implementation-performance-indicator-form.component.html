@@ -203,7 +203,7 @@
                            *ngIf="disableSave"
                            text="Primero agrega lugares para poder reportar"
                 ></p-message>
-                <button pButton type="submit" class="mx-3" [disabled]="disableSave"
+                <button pButton type="submit" class="mx-3" [disabled]="disableSave || !formItem.valid"
                         pRipple label="Guardar" icon="pi pi-check"
                 ></button>
                 <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times"
