@@ -106,7 +106,9 @@ public class MessageAlertServiceV2 {
                 LOGGER.info("       " + "LatePerformance:" + latePerformanceIndicators.size());
                 for (IndicatorExecutionWeb latePerformanceIndicator : latePerformanceIndicators) {
 
-                    String lateMonths = latePerformanceIndicator.getQuarters().stream().flatMap(quarterWeb -> quarterWeb.getMonths().stream()).filter(monthWeb -> monthWeb.getLate().equals(TimeStateEnum.LATE) || monthWeb.getLate().equals(TimeStateEnum.SOON_REPORT))
+                    String lateMonths = latePerformanceIndicator.getQuarters().stream().flatMap(quarterWeb -> quarterWeb.getMonths().stream())
+                            .filter(monthWeb -> monthWeb.getState().equals(State.ACTIVO))
+                            .filter(monthWeb -> monthWeb.getLate().equals(TimeStateEnum.LATE) || monthWeb.getLate().equals(TimeStateEnum.SOON_REPORT))
                             .map(MonthWeb::getMonth)
                             .sorted()
                             .map(MonthEnum::getLabel)
