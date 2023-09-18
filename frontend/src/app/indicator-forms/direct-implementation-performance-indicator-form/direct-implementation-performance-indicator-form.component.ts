@@ -399,10 +399,10 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
         console.log(data);
         const cantones: Canton[] = [];
         data.forEach(value => {
-            const canton_code: string = value['canton_code'];
-            const Canton: string = value['Canton'];
-            const Provincia_code: string = value['Provincia_code'];
-            const Provincia: string = value['Provincia'];
+            const canton_code: string = value['canton_codigo'];
+            const Canton: string = value['canton'];
+            const Provincia_code: string = value['provincia_codigo'];
+            const Provincia: string = value['provincia'];
 
             const cantonO: Canton = {
                 id: null,
