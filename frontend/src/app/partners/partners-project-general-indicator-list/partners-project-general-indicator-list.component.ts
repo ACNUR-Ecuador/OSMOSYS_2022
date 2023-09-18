@@ -1,4 +1,13 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnInit,
+    Output,
+    SimpleChanges
+} from '@angular/core';
 import {IndicatorExecution, Project} from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsType} from '../../shared/model/UtilsModel';
 import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
@@ -47,7 +56,8 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnC
         private indicatorExecutionService: IndicatorExecutionService,
         private filterService: FilterService,
         private filterUtilsService: FilterUtilsService,
-        private monthPipe: MonthPipe
+        private monthPipe: MonthPipe,
+        private cd: ChangeDetectorRef
     ) {
     }
 
@@ -87,8 +97,18 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnC
             {field: 'indicator', header: 'Indicador', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
             {field: 'target', header: 'Meta', type: ColumnDataType.numeric},
             {field: 'totalExecution', header: 'Ejecución Actual', type: ColumnDataType.numeric},
-            {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric, pipeRef: this.percentPipe},
-            {field: 'lastReportedMonth', header: 'Último Mes Reportado', type: ColumnDataType.text, pipeRef: this.monthPipe},
+            {
+                field: 'executionPercentage',
+                header: 'Porcentaje de ejecución',
+                type: ColumnDataType.numeric,
+                pipeRef: this.percentPipe
+            },
+            {
+                field: 'lastReportedMonth',
+                header: 'Último Mes Reportado',
+                type: ColumnDataType.text,
+                pipeRef: this.monthPipe
+            },
 
         ];
 
@@ -124,6 +144,7 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnC
 
     refreshData() {
         this.loadGeneralIndicators(this.project.id);
+        this.cd.detectChanges();
     }
 
     selectedIndicatorSet(indicator: IndicatorExecution) {

@@ -79,6 +79,7 @@ export class IndicatorQuarterListComponent implements OnInit {
                 summary: 'Mes actualizado correctamente',
                 life: 3000
             });
+            this.refreshData.emit(quarterMonthResume.monthId)
         }, error => {
             this.messageService.add({
                 severity: 'error',

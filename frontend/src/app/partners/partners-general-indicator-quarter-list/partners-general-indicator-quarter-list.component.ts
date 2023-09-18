@@ -67,6 +67,7 @@ export class PartnersGeneralIndicatorQuarterListComponent implements OnInit {
                             summary: 'Mes actualizado correctamente',
                             life: 3000
                         });
+                        this.refreshData.emit(quarterMonthResume.monthId)
                     },
                     error: err => {
                         this.messageService.add({
