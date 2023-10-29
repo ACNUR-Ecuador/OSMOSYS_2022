@@ -89,7 +89,7 @@ public class MessageReminderService {
                     " Este es un recordatorio de que el periodo de reportes de indicadores para el mes de  " + mesAReportar.getLabel() +
                     " ha iniciado. Contamos con su ayuda para tener sus datos al día en el sistema OSMOSYS-ACNUR hasta el día " + limitDay + " de este mes. " +
                     " Los socios asignados para Ud. son " +projects.stream().map(ProjectResumeWeb::getOrganizationAcronym).collect(Collectors.joining(", "))+
-                    "En caso de que ya se hayan reportado los datos, por favor haga caso omiso de este correo.</p>" +
+                    ". En caso de que ya se hayan reportado los datos, por favor haga caso omiso de este correo.</p>" +
                     "<p style=\"text-align:justify\">Este recordatorio ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con con su punto focal de ACNUR.</p>";
 
             String copyAddresses = CollectionUtils.isNotEmpty(imProgramsEmail) ? String.join(", ", imProgramsEmail) : null;
