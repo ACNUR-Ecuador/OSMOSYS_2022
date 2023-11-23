@@ -58,4 +58,23 @@ public class PeriodDao extends GenericDaoJpa<Period, Long> {
             return  q.getResultList();
 
     }
+
+
+    public Period getWithDissagregationOptionsById(Long id)  {
+
+        String jpql = "SELECT DISTINCT o FROM Period o left join fetch o.generalIndicator gi " +
+                " left join fetch o.periodPopulationTypeDissagregationOptions " +
+                " left join fetch o.periodAgeDissagregationOptions " +
+                " left join fetch o.periodGenderDissagregationOptions " +
+                " left join fetch o.periodDiversityDissagregationOptions " +
+                " left join fetch o.periodCountryOfOriginDissagregationOptions " +
+                " WHERE o.id = :id";
+        Query q = getEntityManager().createQuery(jpql, Period.class);
+        q.setParameter("id", id);
+        try {
+            return (Period) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 }

@@ -2,9 +2,14 @@ package org.unhcr.osmosys.services;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.PeriodDao;
 import org.unhcr.osmosys.model.Period;
+import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.PopulationTypeDissagregationOption;
+import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.PeriodPopulationTypeDissagregationOption;
+import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.ids.PopulationTypeDissagregationOptionPeriodId;
+import org.unhcr.osmosys.services.standardDissagregations.PopulationTypeDissagregationOptionService;
 import org.unhcr.osmosys.webServices.model.PeriodWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
@@ -13,6 +18,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class PeriodService {
@@ -25,6 +31,9 @@ public class PeriodService {
 
     @Inject
     GeneralIndicatorService generalIndicatorService;
+
+    @Inject
+    PopulationTypeDissagregationOptionService populationTypeDissagregationOptionService;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(PeriodService.class);
@@ -159,10 +168,50 @@ public class PeriodService {
         return r;
     }
 
+    public Period getWithDissagregationOptionsById(Long id) {
+        return this.periodDao.getWithDissagregationOptionsById(id);
+    }
+
     public Period getByYear(Integer year) {
         return this.periodDao.getByYear(year);
     }
+
     public Period getById(Long year) {
         return this.periodDao.find(year);
+    }
+
+    public Period addPopulationTypeDissagregationOption(Long periodId, Long populationTypeDissagregationOptionId) {
+        Period period = this.find(periodId);
+
+        Optional<PeriodPopulationTypeDissagregationOption> optional = period.getPeriodPopulationTypeDissagregationOptions()
+                .stream()
+                .filter(periodPopulationTypeDissagregationOption -> periodPopulationTypeDissagregationOption.getId().equals(new PopulationTypeDissagregationOptionPeriodId(periodId, populationTypeDissagregationOptionId))).findFirst();
+        if (
+                optional.isPresent()
+        ) {
+            optional.get().setState(State.ACTIVO);
+        } else {
+
+            PopulationTypeDissagregationOption populationTypeDissagregationOption = this.populationTypeDissagregationOptionService.getById(populationTypeDissagregationOptionId);
+
+            PeriodPopulationTypeDissagregationOption periodPopulationTypeDissagregationOption = new PeriodPopulationTypeDissagregationOption(period, populationTypeDissagregationOption);
+        }
+        return this.saveOrUpdate(period);
+
+    }
+
+    public Period removePopulationTypeDissagregationOption(Long periodId, Long populationTypeDissagregationOptionId) {
+        Period period = this.find(periodId);
+
+        Optional<PeriodPopulationTypeDissagregationOption> optional = period.getPeriodPopulationTypeDissagregationOptions()
+                .stream()
+                .filter(periodPopulationTypeDissagregationOption -> periodPopulationTypeDissagregationOption.getId().equals(new PopulationTypeDissagregationOptionPeriodId(periodId, populationTypeDissagregationOptionId))).findFirst();
+        if (
+                optional.isPresent()
+        ) {
+            optional.get().setState(State.INACTIVO);
+        }
+        return this.saveOrUpdate(period);
+
     }
 }

@@ -127,6 +127,19 @@
                     <small class="p-error" *ngIf="utilsService.showErrorForm('state',formItem)">Campo
                         obligatorio.</small>
                 </div>
+                <p-panel class="col-12" header="Desagregaciones" [toggleable]="true">
+                    <div class="p-fluid grid formgrid">
+                        <div class="col-6">
+                            <p-panel class="col-6" header="Tipos de Población" [toggleable]="true"></p-panel>
+                        </div>
+                        <div class="col-6">
+                            <p-panel class="col-6" header="Género" [toggleable]="true"></p-panel>
+                        </div>
+                        <p-panel class="col-6" header="Edad" [toggleable]="true"></p-panel>
+                        <p-panel class="col-6" header="Edad" [toggleable]="true"></p-panel>
+                        <p-panel class="col-6" header="Edad" [toggleable]="true"></p-panel>
+                    </div>
+                </p-panel>
                 <div class="field">
 
                     <p-triStateCheckbox id="hasGeneralIndicatorI"

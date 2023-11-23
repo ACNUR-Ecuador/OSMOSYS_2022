@@ -179,24 +179,8 @@
                         <password>sa</password>
                     </security>
                 </datasource>
-                <datasource jta="true" jndi-name="java:jboss/datasources/osmosys_sv" pool-name="osmosys_sv" enabled="true" use-ccm="true" statistics-enabled="true">
-                    <connection-url>jdbc:postgresql://localhost:5432/osmosys_sv</connection-url>
-                    <driver>postgresql-driver</driver>
-                    <pool>
-                        <max-pool-size>100</max-pool-size>
-                    </pool>
-                    <security>
-                        <user-name>postgres</user-name>
-                        <password>A1a2a3a4</password>
-                    </security>
-                    <validation>
-                        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"/>
-                        <background-validation>true</background-validation>
-                        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter"/>
-                    </validation>
-                </datasource>
-                <datasource jta="true" jndi-name="java:jboss/datasources/osmosys_capacitacion" pool-name="osmosys_capacitacion" enabled="true" use-ccm="true" statistics-enabled="true">
-                    <connection-url>jdbc:postgresql://localhost:5432/osmosys_capacitacion</connection-url>
+                <datasource jta="true" jndi-name="java:jboss/datasources/osmosys" pool-name="osmosys" enabled="true" use-ccm="true" statistics-enabled="true">
+                    <connection-url>jdbc:postgresql://localhost:5432/osmosys_v4</connection-url>
                     <driver>postgresql-driver</driver>
                     <pool>
                         <max-pool-size>100</max-pool-size>
@@ -584,8 +568,8 @@
         </outbound-socket-binding>
     </socket-binding-group>
     <deployments>
-        <deployment name="osmosys_backend_sv-3.0" runtime-name="osmosys_backend_sv-3.0.war">
-            <fs-exploded path="D:\proyectos_git\osmosys_sv\backend\target\osmosys_backend_sv-3.0"/>
+        <deployment name="osmosys_backend-3.0" runtime-name="osmosys_backend-3.0.war">
+            <fs-exploded path="D:\proyectos_git\0OSMOSYS_2024\backend\target\osmosys_backend-3.0"/>
         </deployment>
     </deployments>
 </server>

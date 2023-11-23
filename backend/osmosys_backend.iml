@@ -7,23 +7,12 @@
           <map>
             <entry key="com.zeroturnaround.jrebel.FormatVersion" value="7.0.0" />
             <entry key="jrebelEnabled" value="true" />
-            <entry key="lastExternalPluginCheckTime" value="1683484812344" />
-            <entry key="rebelXmlGenerationInvariantToken" value="PGFwcGxpY2F0aW9uIGdlbmVyYXRlZC1ieT0iaW50ZWxsaWoiPjxpZD5vc21vc3lzX2JhY2tlbmQ8L2lkPjxjbGFzc3BhdGg+PGRpciBuYW1lPSJEOi9wcm95ZWN0b3NfZ2l0L29zbW9zeXNfc3YvYmFja2VuZC90YXJnZXQvY2xhc3NlcyI+PC9kaXI+PC9jbGFzc3BhdGg+PHdlYj48bGluayB0YXJnZXQ9Ii8iPjxkaXIgbmFtZT0iRDovcHJveWVjdG9zX2dpdC9vc21vc3lzX3N2L2JhY2tlbmQvc3JjL21haW4vd2ViYXBwIj48L2Rpcj48L2xpbms+PC93ZWI+PC9hcHBsaWNhdGlvbj4=" />
+            <entry key="lastExternalPluginCheckTime" value="1700666389245" />
+            <entry key="rebelXmlGenerationInvariantToken" value="PGFwcGxpY2F0aW9uIGdlbmVyYXRlZC1ieT0iaW50ZWxsaWoiPjxpZD5vc21vc3lzX2JhY2tlbmQ8L2lkPjxjbGFzc3BhdGg+PGRpciBuYW1lPSJEOi9wcm95ZWN0b3NfZ2l0LzBPU01PU1lTXzIwMjQvYmFja2VuZC90YXJnZXQvY2xhc3NlcyI+PC9kaXI+PC9jbGFzc3BhdGg+PHdlYj48bGluayB0YXJnZXQ9Ii8iPjxkaXIgbmFtZT0iRDovcHJveWVjdG9zX2dpdC8wT1NNT1NZU18yMDI0L2JhY2tlbmQvc3JjL21haW4vd2ViYXBwIj48L2Rpcj48L2xpbms+PC93ZWI+PC9hcHBsaWNhdGlvbj4=" />
             <entry key="rebelXmlGenerationType" value="ide" />
           </map>
         </option>
-        <option name="version" value="42" />
-      </configuration>
-    </facet>
-    <facet type="jpa" name="JPA">
-      <configuration>
-        <setting name="validation-enabled" value="true" />
-        <setting name="provider-name" value="Hibernate" />
-        <datasource-mapping>
-          <factory-entry name="main-persistence-unit" value="1fac1cea-f24d-4f19-bf4e-0b365fc3af22" />
-        </datasource-mapping>
-        <naming-strategy-map />
-        <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
+        <option name="version" value="15" />
       </configuration>
     </facet>
   </component>

@@ -4,8 +4,11 @@ import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(schema = "osmosys", name = "periods")
@@ -25,6 +28,21 @@ public class Period extends BaseEntity<Long> {
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "period")
     private GeneralIndicator generalIndicator;
+
+    @OneToMany(mappedBy = "period", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<PeriodAgeDissagregationOption> periodAgeDissagregationOptions = new HashSet<>();
+
+    @OneToMany(mappedBy = "period", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<PeriodGenderDissagregationOption> periodGenderDissagregationOptions = new HashSet<>();
+
+    @OneToMany(mappedBy = "period", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<PeriodPopulationTypeDissagregationOption> periodPopulationTypeDissagregationOptions = new HashSet<>();
+
+    @OneToMany(mappedBy = "period", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<PeriodDiversityDissagregationOption> periodDiversityDissagregationOptions = new HashSet<>();
+
+    @OneToMany(mappedBy = "period", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<PeriodCountryOfOriginDissagregationOption> periodCountryOfOriginDissagregationOptions = new HashSet<>();
 
     @Override
     public Long getId() {
@@ -59,6 +77,83 @@ public class Period extends BaseEntity<Long> {
         this.generalIndicator = generalIndicator;
     }
 
+    public Set<PeriodAgeDissagregationOption> getPeriodAgeDissagregationOptions() {
+        return periodAgeDissagregationOptions;
+    }
+
+    public void setPeriodAgeDissagregationOptions(Set<PeriodAgeDissagregationOption> periodAgeDissagregationOptions) {
+        this.periodAgeDissagregationOptions = periodAgeDissagregationOptions;
+    }
+
+    public void addPeriodAgeDissagregationOption(PeriodAgeDissagregationOption periodAgeDissagregationOption){
+        periodAgeDissagregationOption.setPeriod(this);
+        if(!this.periodAgeDissagregationOptions.add(periodAgeDissagregationOption)){
+            this.periodAgeDissagregationOptions.remove(periodAgeDissagregationOption);
+            this.periodAgeDissagregationOptions.add(periodAgeDissagregationOption);
+        }
+    }
+
+    public Set<PeriodGenderDissagregationOption> getPeriodGenderDissagregationOptions() {
+        return periodGenderDissagregationOptions;
+    }
+
+    public void setPeriodGenderDissagregationOptions(Set<PeriodGenderDissagregationOption> periodGenderDissagregationOptions) {
+        this.periodGenderDissagregationOptions = periodGenderDissagregationOptions;
+    }
+    public void addPeriodGenderDissagregationOption(PeriodGenderDissagregationOption periodGenderDissagregationOption){
+        periodGenderDissagregationOption.setPeriod(this);
+        if(!this.periodGenderDissagregationOptions.add(periodGenderDissagregationOption)){
+            this.periodGenderDissagregationOptions.remove(periodGenderDissagregationOption);
+            this.periodGenderDissagregationOptions.add(periodGenderDissagregationOption);
+        }
+    }
+
+    public Set<PeriodPopulationTypeDissagregationOption> getPeriodPopulationTypeDissagregationOptions() {
+        return periodPopulationTypeDissagregationOptions;
+    }
+
+    public void setPeriodPopulationTypeDissagregationOptions(Set<PeriodPopulationTypeDissagregationOption> periodPopulationTypeDissagregationOptions) {
+        this.periodPopulationTypeDissagregationOptions = periodPopulationTypeDissagregationOptions;
+    }
+
+    public void addPeriodPopulationTypeDissagregationOption(PeriodPopulationTypeDissagregationOption periodPopulationTypeDissagregationOption){
+        periodPopulationTypeDissagregationOption.setPeriod(this);
+        if(!this.periodPopulationTypeDissagregationOptions.add(periodPopulationTypeDissagregationOption)){
+            this.periodPopulationTypeDissagregationOptions.remove(periodPopulationTypeDissagregationOption);
+            this.periodPopulationTypeDissagregationOptions.add(periodPopulationTypeDissagregationOption);
+        }
+    }
+    public Set<PeriodDiversityDissagregationOption> getPeriodDiversityDissagregationOptions() {
+        return periodDiversityDissagregationOptions;
+    }
+
+
+    public void addPeriodDiversityDissagregationOption(PeriodDiversityDissagregationOption periodDiversityDissagregationOption){
+        periodDiversityDissagregationOption.setPeriod(this);
+        if(!this.periodDiversityDissagregationOptions.add(periodDiversityDissagregationOption)){
+            this.periodDiversityDissagregationOptions.remove(periodDiversityDissagregationOption);
+            this.periodDiversityDissagregationOptions.add(periodDiversityDissagregationOption);
+        }
+    }
+    public void setPeriodDiversityDissagregationOptions(Set<PeriodDiversityDissagregationOption> periodDiversityDissagregationOptions) {
+        this.periodDiversityDissagregationOptions = periodDiversityDissagregationOptions;
+    }
+
+    public Set<PeriodCountryOfOriginDissagregationOption> getPeriodCountryOfOriginDissagregationOptions() {
+        return periodCountryOfOriginDissagregationOptions;
+    }
+
+    public void setPeriodCountryOfOriginDissagregationOptions(Set<PeriodCountryOfOriginDissagregationOption> periodCountryOfOriginDissagregationOptions) {
+        this.periodCountryOfOriginDissagregationOptions = periodCountryOfOriginDissagregationOptions;
+    }
+
+    public void addPeriodCountryOfOriginDissagregationOption(PeriodCountryOfOriginDissagregationOption periodCountryOfOriginDissagregationOption){
+        periodCountryOfOriginDissagregationOption.setPeriod(this);
+        if(!this.periodCountryOfOriginDissagregationOptions.add(periodCountryOfOriginDissagregationOption)){
+            this.periodCountryOfOriginDissagregationOptions.remove(periodCountryOfOriginDissagregationOption);
+            this.periodCountryOfOriginDissagregationOptions.add(periodCountryOfOriginDissagregationOption);
+        }
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
