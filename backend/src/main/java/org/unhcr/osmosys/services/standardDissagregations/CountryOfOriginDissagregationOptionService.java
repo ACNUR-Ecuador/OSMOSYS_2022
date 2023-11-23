@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 @Stateless
-public class CountryOfOriginDissagregationOptionService {
+public class CountryOfOriginDissagregationOptionService extends StandardDissagregationOptionService<CountryOfOriginDissagregationOptionDao, CountryOfOriginDissagregationOption>{
 
     @Inject
     CountryOfOriginDissagregationOptionDao countryOfOriginDissagregationOptionDao;
@@ -17,18 +17,10 @@ public class CountryOfOriginDissagregationOptionService {
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(CountryOfOriginDissagregationOptionService.class);
 
-    public CountryOfOriginDissagregationOption getById(Long id) {
-        return this.countryOfOriginDissagregationOptionDao.find(id);
-    }
 
-    public CountryOfOriginDissagregationOption saveOrUpdate(CountryOfOriginDissagregationOption countryOfOriginDissagregationOption) {
-        if (countryOfOriginDissagregationOption.getId() == null) {
-            this.countryOfOriginDissagregationOptionDao.save(countryOfOriginDissagregationOption);
-        } else {
-            this.countryOfOriginDissagregationOptionDao.update(countryOfOriginDissagregationOption);
-        }
-        return countryOfOriginDissagregationOption;
+    @Override
+    protected CountryOfOriginDissagregationOptionDao getDao() {
+        return this.countryOfOriginDissagregationOptionDao;
     }
-
 
 }

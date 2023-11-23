@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 @Stateless
-public class DiversityDissagregationOptionService {
+public class DiversityDissagregationOptionService extends StandardDissagregationOptionService<DiversityDissagregationOptionDao, DiversityDissagregationOption>{
 
     @Inject
     DiversityDissagregationOptionDao diversityDissagregationOptionDao;
@@ -17,18 +17,10 @@ public class DiversityDissagregationOptionService {
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(DiversityDissagregationOptionService.class);
 
-    public DiversityDissagregationOption getById(Long id) {
-        return this.diversityDissagregationOptionDao.find(id);
-    }
 
-    public DiversityDissagregationOption saveOrUpdate(DiversityDissagregationOption diversityDissagregationOption) {
-        if (diversityDissagregationOption.getId() == null) {
-            this.diversityDissagregationOptionDao.save(diversityDissagregationOption);
-        } else {
-            this.diversityDissagregationOptionDao.update(diversityDissagregationOption);
-        }
-        return diversityDissagregationOption;
+    @Override
+    protected DiversityDissagregationOptionDao getDao() {
+        return this.diversityDissagregationOptionDao;
     }
-
 
 }

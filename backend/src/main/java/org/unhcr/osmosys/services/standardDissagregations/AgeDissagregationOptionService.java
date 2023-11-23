@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 @Stateless
-public class AgeDissagregationOptionService {
+public class AgeDissagregationOptionService extends StandardDissagregationOptionService<AgeDissagregationOptionDao, AgeDissagregationOption>{
 
     @Inject
     AgeDissagregationOptionDao ageDissagregationOptionDao;
@@ -17,18 +17,10 @@ public class AgeDissagregationOptionService {
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(AgeDissagregationOptionService.class);
 
-    public AgeDissagregationOption getById(Long id) {
-        return this.ageDissagregationOptionDao.find(id);
-    }
 
-    public AgeDissagregationOption saveOrUpdate(AgeDissagregationOption ageDissagregationOption) {
-        if (ageDissagregationOption.getId() == null) {
-            this.ageDissagregationOptionDao.save(ageDissagregationOption);
-        } else {
-            this.ageDissagregationOptionDao.update(ageDissagregationOption);
-        }
-        return ageDissagregationOption;
+    @Override
+    protected AgeDissagregationOptionDao getDao() {
+        return this.ageDissagregationOptionDao;
     }
-
 
 }

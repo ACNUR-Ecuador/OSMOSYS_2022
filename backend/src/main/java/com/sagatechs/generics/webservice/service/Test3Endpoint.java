@@ -169,9 +169,6 @@ public class Test3Endpoint {
     }
 
 
-    @Inject
-    PeriodPopulationTypeDissagregationOptionService periodPopulationTypeDissagregationOptionService;
-
     @Path("setPeriod1")
     @GET()
     @Produces(MediaType.APPLICATION_JSON)
@@ -201,6 +198,16 @@ public class Test3Endpoint {
         this.periodService.saveOrUpdate(period2024);
 
         return "done";
+    }
+
+
+
+    @Path("getdata")
+    @GET()
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AgeDissagregationOption> getData() {
+
+        return this.ageDissagregationOptionService.getByState(State.ACTIVO);
     }
 }
 

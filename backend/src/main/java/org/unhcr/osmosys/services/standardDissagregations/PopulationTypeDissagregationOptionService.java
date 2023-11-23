@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 @Stateless
-public class PopulationTypeDissagregationOptionService {
+public class PopulationTypeDissagregationOptionService extends StandardDissagregationOptionService<PopulationTypeDissagregationOptionDao, PopulationTypeDissagregationOption>{
 
     @Inject
     PopulationTypeDissagregationOptionDao populationTypeDissagregationOptionDao;
@@ -17,18 +17,10 @@ public class PopulationTypeDissagregationOptionService {
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(PopulationTypeDissagregationOptionService.class);
 
-    public PopulationTypeDissagregationOption getById(Long id) {
-        return this.populationTypeDissagregationOptionDao.find(id);
-    }
 
-    public PopulationTypeDissagregationOption saveOrUpdate(PopulationTypeDissagregationOption populationTypeDissagregationOption) {
-        if (populationTypeDissagregationOption.getId() == null) {
-            this.populationTypeDissagregationOptionDao.save(populationTypeDissagregationOption);
-        } else {
-            this.populationTypeDissagregationOptionDao.update(populationTypeDissagregationOption);
-        }
-        return populationTypeDissagregationOption;
+    @Override
+    protected PopulationTypeDissagregationOptionDao getDao() {
+        return this.populationTypeDissagregationOptionDao;
     }
-
 
 }
