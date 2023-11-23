@@ -11,18 +11,9 @@ import java.util.List;
 
 @SuppressWarnings("unchecked")
 @Stateless
-public class GenderDissagregationOptionDao extends GenericDaoJpa<GenderDissagregationOption, Long> {
+public class GenderDissagregationOptionDao extends StandardDissagregationOptionDao<GenderDissagregationOption> {
     public GenderDissagregationOptionDao() {
-        super(GenderDissagregationOption.class, Long.class);
-    }
-
-    public List<Area> getByState(State state) {
-
-        String jpql = "SELECT DISTINCT o FROM GenderDissagregationOption o " +
-                "WHERE o.state = :state";
-        Query q = getEntityManager().createQuery(jpql, Area.class);
-        q.setParameter("state", state);
-        return q.getResultList();
+        super(GenderDissagregationOption.class);
     }
 
 }

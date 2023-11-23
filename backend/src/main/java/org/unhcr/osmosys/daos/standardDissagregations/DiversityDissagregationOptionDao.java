@@ -11,18 +11,10 @@ import java.util.List;
 
 @SuppressWarnings("unchecked")
 @Stateless
-public class DiversityDissagregationOptionDao extends GenericDaoJpa<DiversityDissagregationOption, Long> {
+public class DiversityDissagregationOptionDao extends StandardDissagregationOptionDao<DiversityDissagregationOption> {
     public DiversityDissagregationOptionDao() {
-        super(DiversityDissagregationOption.class, Long.class);
+        super(DiversityDissagregationOption.class);
     }
 
-    public List<Area> getByState(State state) {
-
-        String jpql = "SELECT DISTINCT o FROM DiversityDissagregationOption o " +
-                "WHERE o.state = :state";
-        Query q = getEntityManager().createQuery(jpql, Area.class);
-        q.setParameter("state", state);
-        return q.getResultList();
-    }
 
 }
