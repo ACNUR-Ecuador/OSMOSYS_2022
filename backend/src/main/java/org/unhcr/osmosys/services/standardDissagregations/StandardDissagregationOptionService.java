@@ -1,21 +1,23 @@
 package org.unhcr.osmosys.services.standardDissagregations;
 
 import com.sagatechs.generics.persistence.model.State;
-import org.jboss.logging.Logger;
-import org.unhcr.osmosys.daos.standardDissagregations.AgeDissagregationOptionDao;
 import org.unhcr.osmosys.daos.standardDissagregations.StandardDissagregationOptionDao;
-import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.AgeDissagregationOption;
 import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.StandardDissagregationOption;
+import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
+import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
 
 
 public abstract class StandardDissagregationOptionService<T extends StandardDissagregationOptionDao, E extends StandardDissagregationOption> {
 
+    @Inject
+    private ModelWebTransformationService modelWebTransformationService;
 
     protected abstract T getDao();
+
+
 
 
     public E getById(Long id) {
@@ -33,6 +35,14 @@ public abstract class StandardDissagregationOptionService<T extends StandardDiss
 
     public List<E> getByState(State state) {
         return this.getDao().getByState(state);
+    }
+
+    public List<StandardDissagregationOptionWeb> getWebByState(State state){
+
+        return this.modelWebTransformationService
+                .standardDissagregationOptionsToStandardDissagregationOptionWebs(
+                        this.getDao().getByState(state)
+                );
     }
 
 

@@ -12,7 +12,7 @@ import org.unhcr.osmosys.daos.StatementDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.*;
 import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.AgeDissagregationOption;
-import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.GenderDissagregationOption;
+import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.StandardDissagregationOption;
 import org.unhcr.osmosys.services.UtilsService;
 import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
@@ -1469,6 +1469,30 @@ public class ModelWebTransformationService {
 
 
     /////////////////******** standar dissagregations*********///////////////////////////////
+
+    public <D extends StandardDissagregationOption> StandardDissagregationOptionWeb standardDissagregationOptionToStandardDissagregationOptionWeb(D dissagregationOption) {
+        StandardDissagregationOptionWeb d = new StandardDissagregationOptionWeb();
+        d.setId(dissagregationOption.getId());
+        d.setState(dissagregationOption.getState());
+        d.setOrder(dissagregationOption.getOrder());
+        if (dissagregationOption instanceof AgeDissagregationOption) {
+            AgeDissagregationOption ageOption = (AgeDissagregationOption) dissagregationOption;
+            d.setName(dissagregationOption.getName() + " " + ageOption.getAgeRange());
+        } else {
+            d.setName(dissagregationOption.getName());
+        }
+        return d;
+
+    }
+
+    public <LD extends StandardDissagregationOption> List<StandardDissagregationOptionWeb> standardDissagregationOptionsToStandardDissagregationOptionWebs(List<LD> options) {
+        List<StandardDissagregationOptionWeb> r = new ArrayList<>();
+        for (LD option : options) {
+            r.add(this.standardDissagregationOptionToStandardDissagregationOptionWeb(option));
+        }
+        return r;
+
+    }
 
 
 }
