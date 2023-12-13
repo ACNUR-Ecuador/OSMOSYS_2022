@@ -11,6 +11,7 @@ import org.unhcr.osmosys.daos.AreaDao;
 import org.unhcr.osmosys.daos.StatementDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.*;
 import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.AgeDissagregationOption;
 import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.StandardDissagregationOption;
 import org.unhcr.osmosys.services.UtilsService;
@@ -623,6 +624,36 @@ public class ModelWebTransformationService {
         periodWeb.setId(period.getId());
         periodWeb.setYear(period.getYear());
         periodWeb.setState(period.getState());
+
+        for (PeriodAgeDissagregationOption option : period.getPeriodAgeDissagregationOptions()) {
+            if(option.getState().equals(State.ACTIVO)){
+                periodWeb.getPeriodAgeDissagregationOptions().add(this.standardDissagregationOptionToStandardDissagregationOptionWeb(option.getDissagregationOption()));
+            }
+        }
+
+        for (PeriodGenderDissagregationOption option : period.getPeriodGenderDissagregationOptions()) {
+            if(option.getState().equals(State.ACTIVO)){
+                periodWeb.getPeriodGenderDissagregationOptions().add(this.standardDissagregationOptionToStandardDissagregationOptionWeb(option.getDissagregationOption()));
+            }
+        }
+
+        for (PeriodPopulationTypeDissagregationOption option : period.getPeriodPopulationTypeDissagregationOptions()) {
+            if(option.getState().equals(State.ACTIVO)){
+                periodWeb.getPeriodPopulationTypeDissagregationOptions().add(this.standardDissagregationOptionToStandardDissagregationOptionWeb(option.getDissagregationOption()));
+            }
+        }
+
+        for (PeriodDiversityDissagregationOption option : period.getPeriodDiversityDissagregationOptions()) {
+            if(option.getState().equals(State.ACTIVO)){
+                periodWeb.getPeriodDiversityDissagregationOptions().add(this.standardDissagregationOptionToStandardDissagregationOptionWeb(option.getDissagregationOption()));
+            }
+        }
+
+        for (PeriodCountryOfOriginDissagregationOption option : period.getPeriodCountryOfOriginDissagregationOptions()) {
+            if(option.getState().equals(State.ACTIVO)){
+                periodWeb.getPeriodCountryOfOriginDissagregationOptions().add(this.standardDissagregationOptionToStandardDissagregationOptionWeb(option.getDissagregationOption()));
+            }
+        }
 
         return periodWeb;
     }
@@ -1481,6 +1512,7 @@ public class ModelWebTransformationService {
         } else {
             d.setName(dissagregationOption.getName());
         }
+        d.setGroupName(dissagregationOption.getGroupName());
         return d;
 
     }
@@ -1493,6 +1525,7 @@ public class ModelWebTransformationService {
         return r;
 
     }
+
 
 
 }

@@ -9,13 +9,13 @@
 	<id>osmosys_backend</id>
 
 	<classpath>
-		<dir name="D:/proyectos_git/0OSMOSYS_2024/backend/target/classes">
+		<dir name="D:/Proyectos/0OSMOSYS_2024/backend/target/classes">
 		</dir>
 	</classpath>
 
 	<web>
 		<link target="/">
-			<dir name="D:/proyectos_git/0OSMOSYS_2024/backend/src/main/webapp">
+			<dir name="D:/Proyectos/0OSMOSYS_2024/backend/src/main/webapp">
 			</dir>
 		</link>
 	</web>

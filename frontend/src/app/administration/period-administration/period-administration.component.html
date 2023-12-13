@@ -129,15 +129,68 @@
                 </div>
                 <p-panel class="col-12" header="Desagregaciones" [toggleable]="true">
                     <div class="p-fluid grid formgrid">
-                        <div class="col-6">
-                            <p-panel class="col-6" header="Tipos de Población" [toggleable]="true"></p-panel>
-                        </div>
-                        <div class="col-6">
-                            <p-panel class="col-6" header="Género" [toggleable]="true"></p-panel>
-                        </div>
-                        <p-panel class="col-6" header="Edad" [toggleable]="true"></p-panel>
-                        <p-panel class="col-6" header="Edad" [toggleable]="true"></p-panel>
-                        <p-panel class="col-6" header="Edad" [toggleable]="true"></p-panel>
+                        <p-panel class="col-6" header="Tipos de Población" [toggleable]="true">
+                            <div class="field-checkbox col-12 md:col-12"
+                                 *ngFor="let option of populationTypeOptions">
+                                <!--suppress AngularInvalidExpressionResultType -->
+                                <p-checkbox name="grouppopulationTypeOptions"
+                                            [value]="option"
+                                            [formControl]="$any(formItem).controls['populationTypeOptions']"
+                                >
+                                </p-checkbox>
+                                <label [for]="option.name">{{option.name}} [grupo:{{option.groupName}}]</label>
+                            </div>
+                        </p-panel>
+
+                        <p-panel class="col-6" header="Género" [toggleable]="true">
+                            <div class="field-checkbox col-12 md:col-12"
+                                 *ngFor="let option of genderOptions">
+                                <!--suppress AngularInvalidExpressionResultType -->
+                                <p-checkbox name="groupgenderOptions"
+                                            [value]="option"
+                                            [formControl]="$any(formItem).controls['genderOptions']"
+                                >
+                                </p-checkbox>
+                                <label [for]="option.name">{{option.name}} [grupo:{{option.groupName}}]</label>
+                            </div>
+                        </p-panel>
+
+                        <p-panel class="col-6" header="Edad" [toggleable]="true">
+                            <div class="field-checkbox col-12 md:col-12"
+                                 *ngFor="let option of ageOptions">
+                                <!--suppress AngularInvalidExpressionResultType -->
+                                <p-checkbox name="group2"
+                                            [value]="option"
+                                            [formControl]="$any(formItem).controls['ageOptions']"
+                                >
+                                </p-checkbox>
+                                <label [for]="option.name">{{option.name}} [grupo:{{option.groupName}}]</label>
+                            </div>
+                        </p-panel>
+                        <p-panel class="col-6" header="Diversidad" [toggleable]="true">
+                            <div class="field-checkbox col-12 md:col-12"
+                                 *ngFor="let option of diversityOptions">
+                                <!--suppress AngularInvalidExpressionResultType -->
+                                <p-checkbox name="groupdiversityOptions"
+                                            [value]="option"
+                                            [formControl]="$any(formItem).controls['diversityOptions']"
+                                >
+                                </p-checkbox>
+                                <label [for]="option.name">{{option.name}} [grupo:{{option.groupName}}]</label>
+                            </div>
+                        </p-panel>
+                        <p-panel class="col-6" header="País de Origen" [toggleable]="true">
+                            <div class="field-checkbox col-12 md:col-12"
+                                 *ngFor="let option of countryOfOriginOptions">
+                                <!--suppress AngularInvalidExpressionResultType -->
+                                <p-checkbox name="groupgenderOptions"
+                                            [value]="option"
+                                            [formControl]="$any(formItem).controls['countryOfOriginOptions']"
+                                >
+                                </p-checkbox>
+                                <label [for]="option.name">{{option.name}} [grupo:{{option.groupName}}]</label>
+                            </div>
+                        </p-panel>
                     </div>
                 </p-panel>
                 <div class="field">

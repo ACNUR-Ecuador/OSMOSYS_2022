@@ -10,6 +10,8 @@ import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregat
 import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.ids.StandardDissagregationOptionPeriodId;
 
 import javax.persistence.*;
+import java.util.Objects;
+
 @MappedSuperclass
 public abstract class PeriodStandardDissagregationOption<T extends StandardDissagregationOption, PK extends StandardDissagregationOptionPeriodId> {
 
@@ -57,5 +59,26 @@ public abstract class PeriodStandardDissagregationOption<T extends StandardDissa
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    @Override
+    public String toString() {
+        return "PeriodStandardDissagregationOption{" +
+                "period=" + period +
+                ", state=" + state +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PeriodStandardDissagregationOption<?, ?> that = (PeriodStandardDissagregationOption<?, ?>) o;
+        return Objects.equals(period, that.period) && state == that.state;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(period, state);
     }
 }

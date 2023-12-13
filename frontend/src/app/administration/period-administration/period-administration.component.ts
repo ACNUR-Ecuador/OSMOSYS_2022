@@ -1,5 +1,10 @@
 import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
-import {DissagregationAssignationToGeneralIndicator, GeneralIndicator, Period} from '../../shared/model/OsmosysModel';
+import {
+    DissagregationAssignationToGeneralIndicator,
+    GeneralIndicator,
+    Period,
+    StandardDissagregationOption
+} from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
@@ -7,6 +12,7 @@ import {UtilsService} from '../../services/utils.service';
 import {EnumsService} from '../../services/enums.service';
 import {Table} from 'primeng/table';
 import {PeriodService} from '../../services/period.service';
+import {StandardDissagregationsService} from "../../services/standardDissagregations.service";
 
 @Component({
     selector: 'app-period-administration',
@@ -15,6 +21,11 @@ import {PeriodService} from '../../services/period.service';
 })
 export class PeriodAdministrationComponent implements OnInit {
     items: Period[];
+    ageOptions: StandardDissagregationOption[];
+    genderOptions: StandardDissagregationOption[];
+    populationTypeOptions: StandardDissagregationOption[];
+    diversityOptions: StandardDissagregationOption[];
+    countryOfOriginOptions: StandardDissagregationOption[];
     cols: ColumnTable[];
     showDialog = false;
     private submitted = false;
@@ -32,6 +43,7 @@ export class PeriodAdministrationComponent implements OnInit {
         public utilsService: UtilsService,
         private enumsService: EnumsService,
         private periodService: PeriodService,
+        private standardDissagregationsService: StandardDissagregationsService,
         private ref: ChangeDetectorRef
     ) {
     }
@@ -39,6 +51,7 @@ export class PeriodAdministrationComponent implements OnInit {
     ngOnInit(): void {
         this.loadOptions();
         this.loadItems();
+        this.loadDissagregationOptions();
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
             {field: 'year', header: 'Año', type: ColumnDataType.numeric},
@@ -57,7 +70,13 @@ export class PeriodAdministrationComponent implements OnInit {
             generalIndicatorState: new FormControl(''),
             generalIndicatorPeriod: new FormControl({value: '', disabled: true}),
             generalIndicatorDissagregations: new FormControl(''),
-            generalIndicatorDissagregationAssignationsToGeneralIndicator: new FormControl('')
+            generalIndicatorDissagregationAssignationsToGeneralIndicator: new FormControl(''),
+            ageOptions: new FormControl('', Validators.required),
+            genderOptions: new FormControl('', Validators.required),
+            populationTypeOptions: new FormControl('', Validators.required),
+            diversityOptions: new FormControl('', Validators.required),
+            countryOfOriginOptions: new FormControl('', Validators.required),
+
         });
     }
 
@@ -70,6 +89,76 @@ export class PeriodAdministrationComponent implements OnInit {
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Error al cargar los periodos',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+    }
+
+    private loadDissagregationOptions() {
+        this.standardDissagregationsService.getActiveAgeOptions().subscribe({
+            next: value => {
+                this.ageOptions = value;
+                console.log(this.ageOptions);
+            },
+            error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los tipos de edad',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+
+        this.standardDissagregationsService.getActiveGenderOptions().subscribe({
+            next: value => {
+                this.genderOptions = value;
+            },
+            error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los tipos de género',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+        this.standardDissagregationsService.getActivePopulationTypeOptions().subscribe({
+            next: value => {
+                this.populationTypeOptions = value;
+            },
+            error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los tipos de población',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+        this.standardDissagregationsService.getActiveDiversityOptions().subscribe({
+            next: value => {
+                this.diversityOptions = value;
+            },
+            error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los tipos de diversidad',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+        this.standardDissagregationsService.getActiveCountryOfOriginOptions().subscribe({
+            next: value => {
+                this.countryOfOriginOptions = value;
+            },
+            error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los países de origen',
                     detail: err.error.message,
                     life: 3000
                 });
@@ -163,7 +252,16 @@ export class PeriodAdministrationComponent implements OnInit {
                 generalIndicatorDissagregationAssignationsToGeneralIndicator,
                 generalIndicatorDissagregations
             });
+            console.log(this.formItem.value);
         }
+        this.formItem.patchValue({
+            ageOptions: period.periodAgeDissagregationOptions,
+            genderOptions: period.periodGenderDissagregationOptions,
+            populationTypeOptions: period.periodPopulationTypeDissagregationOptions,
+            diversityOptions: period.periodDiversityDissagregationOptions,
+            countryOfOriginOptions: period.periodCountryOfOriginDissagregationOptions
+        });
+        console.log(this.formItem.value);
     }
 
 
@@ -172,13 +270,25 @@ export class PeriodAdministrationComponent implements OnInit {
         const {
             id,
             year,
-            state
+            state,
+            ageOptions,
+            genderOptions,
+            populationTypeOptions,
+            diversityOptions,
+            countryOfOriginOptions,
         }
             = this.formItem.value;
         const period: Period = {
             id,
             year,
-            state
+            state,
+            periodAgeDissagregationOptions: ageOptions,
+            periodGenderDissagregationOptions: genderOptions,
+            periodPopulationTypeDissagregationOptions: populationTypeOptions,
+            periodDiversityDissagregationOptions: diversityOptions,
+            periodCountryOfOriginDissagregationOptions: countryOfOriginOptions
+
+
         };
 
 
@@ -229,6 +339,8 @@ export class PeriodAdministrationComponent implements OnInit {
                 period.generalIndicator = null;
             }
         }
+
+
 
         if (period.id) {
             // tslint:disable-next-line:no-shadowed-variable

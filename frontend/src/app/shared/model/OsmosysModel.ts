@@ -62,6 +62,13 @@ export class Period {
     public year: number;
     public state: string;
     public generalIndicator?: GeneralIndicator;
+    public periodAgeDissagregationOptions?: StandardDissagregationOption[];
+    public periodGenderDissagregationOptions?: StandardDissagregationOption[];
+    public periodPopulationTypeDissagregationOptions?: StandardDissagregationOption[];
+    public periodDiversityDissagregationOptions?: StandardDissagregationOption[];
+    public periodCountryOfOriginDissagregationOptions?: StandardDissagregationOption[];
+
+
 }
 
 export class Pillar {
@@ -545,3 +552,16 @@ export class YearMonth {
     public monthYearOrder: number;
 }
 
+
+export class StandardDissagregationOption {
+
+    constructor() {
+        this.state = 'ACTIVO';
+    }
+
+    public id: number;
+    public name: string;
+    public state: string;
+    public groupName: string;
+    public order: number;
+}

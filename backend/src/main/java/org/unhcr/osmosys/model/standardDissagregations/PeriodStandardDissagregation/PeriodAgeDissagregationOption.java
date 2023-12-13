@@ -23,7 +23,9 @@ public class PeriodAgeDissagregationOption extends PeriodStandardDissagregationO
     }
 
     @EmbeddedId
-    private AgeDissagregationOptionPeriodId id;
+    private AgeDissagregationOptionPeriodId id = new AgeDissagregationOptionPeriodId();
+
+
 
     @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("dissagregationOptionId")

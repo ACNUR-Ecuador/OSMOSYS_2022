@@ -16,6 +16,7 @@ import javax.persistence.*;
 public class PeriodCountryOfOriginDissagregationOption extends PeriodStandardDissagregationOption<CountryOfOriginDissagregationOption, CountryOfOriginDissagregationOptionPeriodId> {
 
     public PeriodCountryOfOriginDissagregationOption() {
+        super();
     }
 
 
@@ -24,15 +25,13 @@ public class PeriodCountryOfOriginDissagregationOption extends PeriodStandardDis
     }
 
     @EmbeddedId
-    private CountryOfOriginDissagregationOptionPeriodId id;
+    private CountryOfOriginDissagregationOptionPeriodId id = new CountryOfOriginDissagregationOptionPeriodId();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("dissagregationOptionId")
     private CountryOfOriginDissagregationOption dissagregationOption;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "state", nullable = false, length = 12)
-    private State state;
+
 
     @Override
     public CountryOfOriginDissagregationOption getDissagregationOption() {

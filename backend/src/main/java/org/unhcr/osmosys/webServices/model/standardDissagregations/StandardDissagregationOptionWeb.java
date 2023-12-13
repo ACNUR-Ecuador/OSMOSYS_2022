@@ -13,6 +13,7 @@ public class StandardDissagregationOptionWeb implements Serializable {
     private String name;
 
     private Integer order;
+    private String groupName;
     private State state;
 
 
@@ -46,6 +47,14 @@ public class StandardDissagregationOptionWeb implements Serializable {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     @Override

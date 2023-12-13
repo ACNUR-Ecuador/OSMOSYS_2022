@@ -27,7 +27,7 @@ public class PeriodGenderDissagregationOption
     }
 
     @EmbeddedId
-    private GenderDissagregationOptionPeriodId id;
+    private GenderDissagregationOptionPeriodId id = new GenderDissagregationOptionPeriodId();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("dissagregationOptionId")

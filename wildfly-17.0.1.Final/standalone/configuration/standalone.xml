@@ -187,7 +187,7 @@
                     </pool>
                     <security>
                         <user-name>postgres</user-name>
-                        <password>A1a2a3a4</password>
+                        <password>A1a2a3a4$</password>
                     </security>
                     <validation>
                         <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"/>
@@ -569,7 +569,7 @@
     </socket-binding-group>
     <deployments>
         <deployment name="osmosys_backend-3.0" runtime-name="osmosys_backend-3.0.war">
-            <fs-exploded path="D:\proyectos_git\0OSMOSYS_2024\backend\target\osmosys_backend-3.0"/>
+            <fs-exploded path="D:\Proyectos\0OSMOSYS_2024\backend\target\osmosys_backend-3.0"/>
         </deployment>
     </deployments>
 </server>

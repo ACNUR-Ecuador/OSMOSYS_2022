@@ -23,7 +23,7 @@ public class PeriodPopulationTypeDissagregationOption extends PeriodStandardDiss
     }
 
     @EmbeddedId
-    private PopulationTypeDissagregationOptionPeriodId id;
+    private PopulationTypeDissagregationOptionPeriodId id = new PopulationTypeDissagregationOptionPeriodId();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("dissagregationOptionId")

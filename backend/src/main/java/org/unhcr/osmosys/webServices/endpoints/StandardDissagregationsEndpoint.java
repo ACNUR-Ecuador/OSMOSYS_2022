@@ -54,7 +54,8 @@ public class StandardDissagregationsEndpoint {
     // @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public List<StandardDissagregationOptionWeb> getActivePopulationTypeOptions() {
-        return this.ageDissagregationOptionService.getWebByState(State.ACTIVO);
+        List<StandardDissagregationOptionWeb> result = this.populationTypeDissagregationOptionService.getWebByState(State.ACTIVO);
+        return result;
     }
     @Path("/options/active/countryOfOrigin")
     @GET

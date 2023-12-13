@@ -1,12 +1,7 @@
 package org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation;
 
-import com.sagatechs.generics.persistence.model.State;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.Period;
-import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.AgeDissagregationOption;
 import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.DiversityDissagregationOption;
-import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.ids.AgeDissagregationOptionPeriodId;
 import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.ids.DiversityDissagregationOptionPeriodId;
 
 import javax.persistence.*;
@@ -23,7 +18,7 @@ public class PeriodDiversityDissagregationOption extends PeriodStandardDissagreg
     }
 
     @EmbeddedId
-    private DiversityDissagregationOptionPeriodId id;
+    private DiversityDissagregationOptionPeriodId id = new DiversityDissagregationOptionPeriodId();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("dissagregationOptionId")

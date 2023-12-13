@@ -185,15 +185,7 @@ public class Test3Endpoint {
 
         List<PeriodPopulationTypeDissagregationOption> pptos = new ArrayList<>();
 
-        for (PopulationTypeDissagregationOption pto : ptos) {
-            this.periodService.addPopulationTypeDissagregationOption(3l, 1l);
 
-            /*
-            PeriodPopulationTypeDissagregationOption periodPopulationTypeDissagregationOption = new PeriodPopulationTypeDissagregationOption(period2024, pto);
-            period2024.addPeriodPopulationTypeDissagregationOption(periodPopulationTypeDissagregationOption);
-            pptos.add(periodPopulationTypeDissagregationOption);
-            */
-        }
 
         this.periodService.saveOrUpdate(period2024);
 
