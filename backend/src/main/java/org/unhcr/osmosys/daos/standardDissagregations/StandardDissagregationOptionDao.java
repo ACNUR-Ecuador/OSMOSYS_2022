@@ -39,4 +39,14 @@ public abstract class StandardDissagregationOptionDao<T extends StandardDissagre
         return q.getResultList();
     }
 
+    public List<StandardDissagregationOption> getAllByState(State state) {
+
+        String jpql = "SELECT DISTINCT o FROM StandardDissagregationOption  o " +
+                " WHERE o.state = :state" +
+                " order by o.order ASC";
+        Query q = getEntityManager().createQuery(jpql, StandardDissagregationOption.class);
+        q.setParameter("state", state);
+        return q.getResultList();
+    }
+
 }

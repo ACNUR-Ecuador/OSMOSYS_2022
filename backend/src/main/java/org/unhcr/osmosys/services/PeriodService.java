@@ -2,13 +2,11 @@ package org.unhcr.osmosys.services;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
-import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.PeriodDao;
 import org.unhcr.osmosys.model.Period;
-import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.*;
 import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.*;
-import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.ids.PopulationTypeDissagregationOptionPeriodId;
+import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.*;
 import org.unhcr.osmosys.services.standardDissagregations.*;
 import org.unhcr.osmosys.webServices.model.PeriodWeb;
 import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
@@ -17,8 +15,8 @@ import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 @Stateless
 public class PeriodService {
@@ -139,7 +137,7 @@ public class PeriodService {
         }
 
         Period period = this.periodDao.find(periodWeb.getId());
-
+/*
         this.update
         this.updateDissagregationOptions();
 
@@ -175,7 +173,7 @@ public class PeriodService {
             }
         }
 
-
+*/
         this.validate(periodWeb);
         this.saveOrUpdate(period);
         if (periodWeb.getGeneralIndicator() != null) {
@@ -196,7 +194,7 @@ public class PeriodService {
         }
         return period.getId();
     }
-
+/*
     private void updateDissagregationOptions(
             Set<PeriodStandardDissagregationOption> currentPeriodOptions,
             List<StandardDissagregationOptionWeb> newPeriodOptionsWeb
@@ -236,7 +234,7 @@ public class PeriodService {
         }
     }
 
-
+*/
     public void validate(PeriodWeb periodWeb) throws GeneralAppException {
         if (periodWeb == null) {
             throw new GeneralAppException("Periodo es nulo", Response.Status.BAD_REQUEST);

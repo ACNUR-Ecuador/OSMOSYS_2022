@@ -7,8 +7,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 
-@Entity
-@Table(schema = "dissagregations", name = "population_type_dissagregation_options")
+@Entity(name = "PopulationTypeDissagregationOption")
+@DiscriminatorValue("population_type_option")
 public class PopulationTypeDissagregationOption extends StandardDissagregationOption {
 
 

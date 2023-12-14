@@ -8,7 +8,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import javax.persistence.*;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "dissagregation_type")
+@Table(schema = "osmosys", name = "dissagregation_options")
 public abstract class StandardDissagregationOption extends BaseEntity<Long> {
 
     public StandardDissagregationOption() {

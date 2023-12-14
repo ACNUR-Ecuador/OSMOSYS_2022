@@ -5,8 +5,8 @@ import com.sagatechs.generics.persistence.model.State;
 
 import javax.persistence.*;
 
-@Entity
-@Table(schema = "dissagregations", name = "diversity_dissagregation_options")
+@Entity(name = "DiversityDissagregationOption")
+@DiscriminatorValue("diversity_option")
 public class DiversityDissagregationOption extends StandardDissagregationOption {
 
     public DiversityDissagregationOption() {

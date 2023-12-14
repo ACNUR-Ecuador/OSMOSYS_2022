@@ -5,8 +5,8 @@ import com.sagatechs.generics.persistence.model.State;
 
 import javax.persistence.*;
 
-@Entity
-@Table(schema = "dissagregations", name = "country_of_origin_dissagregation_options")
+@Entity(name = "CountryOfOriginDissagregationOption")
+@DiscriminatorValue("country_of_origin_option")
 public class CountryOfOriginDissagregationOption extends StandardDissagregationOption{
 
     public CountryOfOriginDissagregationOption() {

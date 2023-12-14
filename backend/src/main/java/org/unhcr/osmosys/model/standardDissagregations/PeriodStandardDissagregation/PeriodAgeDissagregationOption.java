@@ -1,17 +1,14 @@
 package org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation;
 
-import com.sagatechs.generics.persistence.model.State;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.Period;
 import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.AgeDissagregationOption;
-import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.ids.AgeDissagregationOptionPeriodId;
+import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.ids.StandardDissagregationOptionPeriodId;
 
 import javax.persistence.*;
 
-@Entity
-@Table(schema = "dissagregations", name = "period_age_dissagregation_options")
-public class PeriodAgeDissagregationOption extends PeriodStandardDissagregationOption<AgeDissagregationOption, AgeDissagregationOptionPeriodId> {
+@Entity(name = "PeriodAgeOption")
+@DiscriminatorValue("period_age_option")
+public class PeriodAgeDissagregationOption extends PeriodStandardDissagregationOption<AgeDissagregationOption> {
 
     public PeriodAgeDissagregationOption() {
         super();
@@ -19,36 +16,8 @@ public class PeriodAgeDissagregationOption extends PeriodStandardDissagregationO
 
 
     public PeriodAgeDissagregationOption(Period period, AgeDissagregationOption ageDissagregationOption) {
-        super(period, ageDissagregationOption, new AgeDissagregationOptionPeriodId(period.getId(), ageDissagregationOption.getId()));
+        super(period, ageDissagregationOption);
     }
 
-    @EmbeddedId
-    private AgeDissagregationOptionPeriodId id = new AgeDissagregationOptionPeriodId();
 
-
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @MapsId("dissagregationOptionId")
-    private AgeDissagregationOption dissagregationOption;
-
-
-    @Override
-    public AgeDissagregationOption getDissagregationOption() {
-        return this.dissagregationOption;
-    }
-
-    @Override
-    public void setDissagregationOption(AgeDissagregationOption dissagregationOption) {
-        this.dissagregationOption = dissagregationOption;
-    }
-
-    @Override
-    public AgeDissagregationOptionPeriodId getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(AgeDissagregationOptionPeriodId id) {
-        this.id = id;
-    }
 }

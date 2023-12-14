@@ -17,21 +17,21 @@ import java.util.List;
  * @param <T>
  */
 @SuppressWarnings({"rawtypes", "FieldMayBeFinal"})
-public abstract class PeriodStandardDissagregationOptionDao<T extends PeriodStandardDissagregationOption, PK extends StandardDissagregationOptionPeriodId> {
+public abstract class PeriodStandardDissagregationOptionDao<T extends PeriodStandardDissagregationOption> {
 
     @PersistenceContext(unitName = "main-persistence-unit")
     protected EntityManager entityManager;
 
     private Class<T> entityClass;
-    private Class<PK> entityPKClass;
+    private Class entityPKClass;
 
-    public PeriodStandardDissagregationOptionDao(Class<T> entityClass, Class<PK> entityPKClass) {
+    public PeriodStandardDissagregationOptionDao(Class<T> entityClass) {
         this.entityClass = entityClass;
-        this.entityPKClass = entityPKClass;
+        this.entityPKClass = StandardDissagregationOptionPeriodId.class;
     }
 
     @SuppressWarnings("unused")
-    private Class<PK> getPrimaryKeyClass() {
+    private Class getPrimaryKeyClass() {
 
         return this.entityPKClass;
     }
@@ -54,7 +54,7 @@ public abstract class PeriodStandardDissagregationOptionDao<T extends PeriodStan
         return t;
     }
 
-    public T find(PK id) {
+    public T find(StandardDissagregationOptionPeriodId id) {
         return this.entityManager.find(entityClass, id);
     }
 
