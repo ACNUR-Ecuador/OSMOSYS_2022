@@ -4,11 +4,11 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 
-@Embeddable
-public class StandardDissagregationOptionPeriodId implements Serializable {
+@MappedSuperclass
+public abstract class StandardDissagregationOptionPeriodId implements Serializable {
 
     public StandardDissagregationOptionPeriodId() {
     }

@@ -2,13 +2,13 @@ package org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagrega
 
 import org.unhcr.osmosys.model.Period;
 import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.CountryOfOriginDissagregationOption;
-import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.ids.StandardDissagregationOptionPeriodId;
+import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.ids.CountryOfOriginDissagregationOptionPeriodId;
 
 import javax.persistence.*;
 
-@Entity(name = "PeriodCountryOfOriginOption")
-@DiscriminatorValue("period_country_of_origin_option")
-public class PeriodCountryOfOriginDissagregationOption extends PeriodStandardDissagregationOption<CountryOfOriginDissagregationOption> {
+@Entity
+@Table(schema = "dissagregations", name = "period_country_of_origin_dissagregation_options")
+public class PeriodCountryOfOriginDissagregationOption extends PeriodStandardDissagregationOption<CountryOfOriginDissagregationOption, CountryOfOriginDissagregationOptionPeriodId> {
 
     public PeriodCountryOfOriginDissagregationOption() {
         super();
@@ -16,8 +16,36 @@ public class PeriodCountryOfOriginDissagregationOption extends PeriodStandardDis
 
 
     public PeriodCountryOfOriginDissagregationOption(Period period, CountryOfOriginDissagregationOption countryOfOriginDissagregationOption) {
-        super(period, countryOfOriginDissagregationOption);
+        super(period, countryOfOriginDissagregationOption, new CountryOfOriginDissagregationOptionPeriodId(period.getId(), countryOfOriginDissagregationOption.getId()));
     }
 
+    @EmbeddedId
+    private CountryOfOriginDissagregationOptionPeriodId id = new CountryOfOriginDissagregationOptionPeriodId();
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @MapsId("dissagregationOptionId")
+    private CountryOfOriginDissagregationOption dissagregationOption;
+
+
+
+    @Override
+    public CountryOfOriginDissagregationOption getDissagregationOption() {
+        return dissagregationOption;
+    }
+
+    @Override
+    public void setDissagregationOption(CountryOfOriginDissagregationOption dissagregationOption) {
+        this.dissagregationOption = dissagregationOption;
+    }
+
+    @Override
+    public CountryOfOriginDissagregationOptionPeriodId getId() {
+        return this.id;
+    }
+
+    @Override
+    public void setId(CountryOfOriginDissagregationOptionPeriodId id) {
+        this.id = id;
+    }
 
 }

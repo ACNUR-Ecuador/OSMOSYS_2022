@@ -1,12 +1,12 @@
 package org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options;
 
-import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-@Entity(name = "DiversityDissagregationOption")
-@DiscriminatorValue("diversity_option")
+@Entity
+@Table(schema = "dissagregations", name = "diversity_dissagregation_options")
 public class DiversityDissagregationOption extends StandardDissagregationOption {
 
     public DiversityDissagregationOption() {

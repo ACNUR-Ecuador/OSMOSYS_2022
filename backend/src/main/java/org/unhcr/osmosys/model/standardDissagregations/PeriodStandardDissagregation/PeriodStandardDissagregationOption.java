@@ -1,67 +1,42 @@
 package org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation;
 
 import com.sagatechs.generics.persistence.model.State;
-import org.hibernate.annotations.DiscriminatorOptions;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.Period;
 import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.StandardDissagregationOption;
 import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.ids.StandardDissagregationOptionPeriodId;
 
 import javax.persistence.*;
-import java.util.Objects;
 
-@Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "type")
-@DiscriminatorOptions(force = true)
-@Table(schema = "osmosys", name = "period_dissagregation_options")
-public abstract class PeriodStandardDissagregationOption<T extends StandardDissagregationOption> {
+@MappedSuperclass
+public abstract class PeriodStandardDissagregationOption<T extends StandardDissagregationOption, PK extends StandardDissagregationOptionPeriodId> {
 
     public PeriodStandardDissagregationOption() {
 
     }
 
-    public PeriodStandardDissagregationOption(Period period, T dissagregationOption) {
+    public PeriodStandardDissagregationOption(Period period, T dissagregationOption, PK id) {
         this.period = period;
         this.setDissagregationOption(dissagregationOption);
-        this.setId(new StandardDissagregationOptionPeriodId(period.getId(), dissagregationOption.getId()));
+        this.setId(id);
         this.state = State.ACTIVO;
     }
 
 
-    @EmbeddedId
-    private StandardDissagregationOptionPeriodId id = new StandardDissagregationOptionPeriodId();
-
-
-    public StandardDissagregationOptionPeriodId getId() {
-        return id;
-    }
-
-    public void setId(StandardDissagregationOptionPeriodId id) {
-        this.id = id;
-    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("periodId")
-    @JoinColumn(name = "period_id")
     private Period period;
-
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = StandardDissagregationOption.class )
-    @MapsId("dissagregationOptionId")
-    @JoinColumn(name = "dissagregation_option_id")
-    private T dissagregationOption;
 
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", nullable = false, length = 12)
     private State state;
 
-    public T getDissagregationOption() {
-        return dissagregationOption;
-    }
+    public abstract PK getId();
 
-    public void setDissagregationOption(T dissagregationOption) {
-        this.dissagregationOption = dissagregationOption;
-    }
+    public abstract void setId(PK id);
 
     public Period getPeriod() {
         return period;
@@ -71,6 +46,9 @@ public abstract class PeriodStandardDissagregationOption<T extends StandardDissa
         this.period = period;
     }
 
+    public abstract T getDissagregationOption();
+
+    public abstract void setDissagregationOption(T dissagregationOption);
 
     public State getState() {
         return state;
@@ -80,4 +58,27 @@ public abstract class PeriodStandardDissagregationOption<T extends StandardDissa
         this.state = state;
     }
 
+    @Override
+    public String toString() {
+        return "PeriodStandardDissagregationOption{" +
+                "period=" + period +
+                ", option=" + this.getDissagregationOption() +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof PeriodStandardDissagregationOption)) return false;
+
+        PeriodStandardDissagregationOption<?, ?> that = (PeriodStandardDissagregationOption<?, ?>) o;
+
+        return new EqualsBuilder().append(getPeriod(), that.getPeriod()).append(getDissagregationOption(), that.getDissagregationOption()).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(getPeriod()).append(getDissagregationOption()).toHashCode();
+    }
 }

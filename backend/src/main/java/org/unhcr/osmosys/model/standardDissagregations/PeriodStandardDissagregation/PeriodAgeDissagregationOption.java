@@ -2,13 +2,13 @@ package org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagrega
 
 import org.unhcr.osmosys.model.Period;
 import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.AgeDissagregationOption;
-import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.ids.StandardDissagregationOptionPeriodId;
+import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.ids.AgeDissagregationOptionPeriodId;
 
 import javax.persistence.*;
 
-@Entity(name = "PeriodAgeOption")
-@DiscriminatorValue("period_age_option")
-public class PeriodAgeDissagregationOption extends PeriodStandardDissagregationOption<AgeDissagregationOption> {
+@Entity
+@Table(schema = "dissagregations", name = "period_age_dissagregation_options")
+public class PeriodAgeDissagregationOption extends PeriodStandardDissagregationOption<AgeDissagregationOption, AgeDissagregationOptionPeriodId> {
 
     public PeriodAgeDissagregationOption() {
         super();
@@ -16,8 +16,37 @@ public class PeriodAgeDissagregationOption extends PeriodStandardDissagregationO
 
 
     public PeriodAgeDissagregationOption(Period period, AgeDissagregationOption ageDissagregationOption) {
-        super(period, ageDissagregationOption);
+        super(period, ageDissagregationOption, new AgeDissagregationOptionPeriodId(period.getId(), ageDissagregationOption.getId()));
     }
 
+    @EmbeddedId
+    private AgeDissagregationOptionPeriodId id = new AgeDissagregationOptionPeriodId();
+
+
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @MapsId("dissagregationOptionId")
+    private AgeDissagregationOption dissagregationOption;
+
+
+    @Override
+    public AgeDissagregationOption getDissagregationOption() {
+        return this.dissagregationOption;
+    }
+
+    @Override
+    public void setDissagregationOption(AgeDissagregationOption dissagregationOption) {
+        this.dissagregationOption = dissagregationOption;
+    }
+
+    @Override
+    public AgeDissagregationOptionPeriodId getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(AgeDissagregationOptionPeriodId id) {
+        this.id = id;
+    }
 
 }

@@ -3,11 +3,11 @@ package org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagrega
 import com.sagatechs.generics.persistence.model.State;
 
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
-@Entity(name = "AgeDissagregationOption")
-@DiscriminatorValue("age_option")
+@Entity
+@Table(schema = "dissagregations", name = "age_dissagregation_options")
 public class AgeDissagregationOption extends StandardDissagregationOption {
 
     public AgeDissagregationOption() {
@@ -20,7 +20,7 @@ public class AgeDissagregationOption extends StandardDissagregationOption {
     }
 
 
-    @Column(name = "age_range")
+    @Column(name = "age_range",  nullable = false)
     private String ageRange;
 
     public String getAgeRange() {
