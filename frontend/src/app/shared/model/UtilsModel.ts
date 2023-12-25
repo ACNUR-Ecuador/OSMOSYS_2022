@@ -48,6 +48,7 @@ export enum EnumsType {
 }
 
 export enum DissagregationType {
+    
     TIPO_POBLACION = 'TIPO_POBLACION',
     EDAD = 'EDAD',
     EDAD_EDUCACION_PRIMARIA = 'EDAD_EDUCACION_PRIMARIA',

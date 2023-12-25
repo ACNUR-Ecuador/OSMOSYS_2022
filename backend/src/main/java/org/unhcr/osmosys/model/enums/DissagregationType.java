@@ -1,56 +1,84 @@
 package org.unhcr.osmosys.model.enums;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public enum DissagregationType implements EnumInterface {
+    SIN_DESAGREGACION("Sin Desagregación", 9),
+    //
     TIPO_POBLACION("Tipo de población", 1),
     EDAD("Edad", 2),
-    EDAD_EDUCACION_PRIMARIA("Edad-Educación Primaria", 3),
-    EDAD_EDUCACION_TERCIARIA("Edad-Educación Terciaria", 4),
     GENERO("Género", 5),
-    LUGAR("Lugar", 6),
-    PAIS_ORIGEN("País de Origen", 7),
     DIVERSIDAD("Diversidad", 8),
-    SIN_DESAGREGACION("Sin Desagregación", 9),
-    GENERO_Y_EDAD("Género y edad", 10),
-    GENERO_Y_DIVERSIDAD("Género y diversidad", 11),
-    TIPO_POBLACION_Y_GENERO("Tipo de población	y género", 12),
-    TIPO_POBLACION_Y_EDAD("Tipo de población y edad", 13),
-    TIPO_POBLACION_Y_DIVERSIDAD("Tipo de población y diversidad", 14),
-    TIPO_POBLACION_Y_PAIS_ORIGEN("Tipo de población y país de origen", 15),
-    TIPO_POBLACION_Y_LUGAR("Tipo de población y lugar", 16),
-    LUGAR_Y_GENERO("Lugar y Género", 17),
-    LUGAR_Y_DIVERSIDAD("Diversidad y lugar", 18),
-    LUGAR_EDAD_Y_GENERO("Lugar, género y edad", 19),
-    DIVERSIDAD_EDAD_Y_GENERO("Diversidad, género y edad", 20),
-    PAIS_ORIGEN_EDAD_Y_GENERO("País de Origen, género y edad", 21),
-    DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO("Diversidad, género y edad-educación primaria", 22),
-    DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO("Diversidad, género y edad-educación terciaria", 23),
-    TIPO_POBLACION_LUGAR_EDAD_Y_GENERO("Tipo de población,lugar, género y edad", 24),
-    TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO("Tipo de población,lugar, género  y edad-educación primaria", 25),
-    TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO("Tipo de población,lugar, género y edad-educación terciaria", 26),
-    LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO("Lugar, diversidad, género y edad-educación primaria", 27),
-    LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO("Lugar, País de Origen, género y edad", 28),
-    LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO("Lugar, País de Origen, género y edad-educación primaria", 29),
-    PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO("País de Origen, género y edad-educación primaria", 30),
-    ;
+    PAIS_ORIGEN("País de Origen", 7),
+    LUGAR("Lugar", 6),
 
-    public static List<DissagregationType> getLocationDissagregationTypes() {
-        List<DissagregationType> r = new ArrayList<>();
-        r.add(TIPO_POBLACION_Y_LUGAR);
-        r.add(LUGAR);
-        r.add(LUGAR_EDAD_Y_GENERO);
-        r.add(TIPO_POBLACION_LUGAR_EDAD_Y_GENERO);
-        r.add(TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO);
-        r.add(TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO);
-        r.add(LUGAR_Y_DIVERSIDAD);
-        r.add(LUGAR_Y_GENERO);
-        r.add(LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO);
-        r.add(LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO);
-        r.add(LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO);
-        return r;
-    }
+
+    // 2
+
+    TIPO_POBLACION_EDAD("Tipo de población y Edad", 1),
+    TIPO_POBLACION_GENERO("Tipo de población y GENERO", 1),
+    TIPO_POBLACION_DIVERSIDAD("Tipo de población y DIVERSIDAD", 1),
+    TIPO_POBLACION_PAIS_ORIGEN("Tipo de población y PAIS_ORIGEN", 1),
+    TIPO_POBLACION_LUGAR("Tipo de población y LUGAR", 1),
+    EDAD_GENERO("Edad y GENERO", 1),
+    EDAD_DIVERSIDAD("Edad y DIVERSIDAD", 1),
+    EDAD_PAIS_ORIGEN("Edad y PAIS_ORIGEN", 1),
+    EDAD_LUGAR("Edad y LUGAR", 1),
+    GENERO_DIVERSIDAD("GENERO y DIVERSIDAD", 1),
+    GENERO_PAIS_ORIGEN("GENERO y PAIS_ORIGEN", 1),
+    GENERO_LUGAR("GENERO y LUGAR", 1),
+    DIVERSIDAD_PAIS_ORIGEN("DIVERSIDAD y PAIS_ORIGEN", 1),
+    DIVERSIDAD_LUGAR("DIVERSIDAD y LUGAR", 1),
+    PAIS_ORIGEN_LUGAR("PAIS_ORIGEN y LUGAR", 1),
+
+    // 3
+
+    TIPO_POBLACION_EDAD_GENERO("Tipo de población, Edad y GENERO", 1),
+    TIPO_POBLACION_EDAD_DIVERSIDAD("Tipo de población, Edad y DIVERSIDAD", 1),
+    TIPO_POBLACION_EDAD_PAIS_ORIGEN("Tipo de población, Edad y PAIS_ORIGEN", 1),
+    TIPO_POBLACION_EDAD_LUGAR("Tipo de población, Edad y LUGAR", 1),
+    TIPO_POBLACION_GENERO_DIVERSIDAD("Tipo de población, GENERO y DIVERSIDAD", 1),
+    TIPO_POBLACION_GENERO_PAIS_ORIGEN("Tipo de población, GENERO y PAIS_ORIGEN", 1),
+    TIPO_POBLACION_GENERO_LUGAR("Tipo de población, GENERO y LUGAR", 1),
+    TIPO_POBLACION_DIVERSIDAD_PAIS_ORIGEN("Tipo de población, DIVERSIDAD y PAIS_ORIGEN", 1),
+    TIPO_POBLACION_DIVERSIDAD_LUGAR("Tipo de población, DIVERSIDAD y LUGAR", 1),
+    TIPO_POBLACION_PAIS_ORIGEN_LUGAR("Tipo de población, PAIS_ORIGEN y LUGAR", 1),
+    EDAD_GENERO_DIVERSIDAD("Edad, GENERO y DIVERSIDAD", 1),
+    EDAD_GENERO_PAIS_ORIGEN("Edad, GENERO y PAIS_ORIGEN", 1),
+    EDAD_GENERO_LUGAR("Edad, GENERO y LUGAR", 1),
+    EDAD_DIVERSIDAD_PAIS_ORIGEN("Edad, DIVERSIDAD y PAIS_ORIGEN", 1),
+    EDAD_DIVERSIDAD_LUGAR("Edad, DIVERSIDAD y LUGAR", 1),
+    EDAD_PAIS_ORIGEN_LUGAR("Edad, PAIS_ORIGEN y LUGAR", 1),
+    GENERO_DIVERSIDAD_PAIS_ORIGEN("GENERO, DIVERSIDAD y PAIS_ORIGEN", 1),
+    GENERO_DIVERSIDAD_LUGAR("GENERO, DIVERSIDAD y LUGAR", 1),
+    GENERO_PAIS_ORIGEN_LUGAR("GENERO, PAIS_ORIGEN y LUGAR", 1),
+    DIVERSIDAD_PAIS_ORIGEN_LUGAR("DIVERSIDAD, PAIS_ORIGEN y LUGAR", 1),
+
+    TIPO_POBLACION_EDAD__GENERO_DIVERSIDAD("Tipo de población, Edad, GENERO y DIVERSIDAD", 1),
+    TIPO_POBLACION_EDAD__GENERO_PAIS_ORIGEN("Tipo de población, Edad, GENERO y PAIS_ORIGEN", 1),
+    TIPO_POBLACION_EDAD__GENERO_LUGAR("Tipo de población, Edad, GENERO y LUGAR", 1),
+    TIPO_POBLACION_EDAD__DIVERSIDAD_PAIS_ORIGEN("Tipo de población, Edad, DIVERSIDAD y PAIS_ORIGEN", 1),
+    TIPO_POBLACION_EDAD__DIVERSIDAD_LUGAR("Tipo de población, Edad, DIVERSIDAD y LUGAR", 1),
+    TIPO_POBLACION_EDAD__PAIS_ORIGEN_LUGAR("Tipo de población, Edad, PAIS_ORIGEN y LUGAR", 1),
+    TIPO_POBLACION_GENERO__DIVERSIDAD_PAIS_ORIGEN("Tipo de población, GENERO, DIVERSIDAD y PAIS_ORIGEN", 1),
+    TIPO_POBLACION_GENERO__DIVERSIDAD_LUGAR("Tipo de población, GENERO, DIVERSIDAD y LUGAR", 1),
+    TIPO_POBLACION_GENERO__PAIS_ORIGEN_LUGAR("Tipo de población, GENERO, PAIS_ORIGEN y LUGAR", 1),
+    TIPO_POBLACION_DIVERSIDAD__PAIS_ORIGEN_LUGAR("Tipo de población, DIVERSIDAD, PAIS_ORIGEN y LUGAR", 1),
+    EDAD_GENERO__DIVERSIDAD_PAIS_ORIGEN("Edad, GENERO, DIVERSIDAD y PAIS_ORIGEN", 1),
+    EDAD_GENERO__DIVERSIDAD_LUGAR("Edad, GENERO, DIVERSIDAD y LUGAR", 1),
+    EDAD_GENERO__PAIS_ORIGEN_LUGAR("Edad, GENERO, PAIS_ORIGEN y LUGAR", 1),
+    EDAD_DIVERSIDAD__PAIS_ORIGEN_LUGAR("Edad, DIVERSIDAD, PAIS_ORIGEN y LUGAR", 1),
+    GENERO_DIVERSIDAD__PAIS_ORIGEN_LUGAR("GENERO, DIVERSIDAD, PAIS_ORIGEN y LUGAR", 1),
+
+    // 5
+    TIPO_POBLACION_EDAD_GENERO_DIVERSIDAD_PAIS_ORIGEN("Tipo de población, Edad, GENERO, DIVERSIDAD, PAIS_ORIGEN", 1),
+    TIPO_POBLACION_EDAD_GENERO_DIVERSIDAD_LUGAR("Tipo de población, Edad, GENERO, DIVERSIDAD, LUGAR", 1),
+    TIPO_POBLACION_EDAD_GENERO_PAIS_ORIGEN_LUGAR("Tipo de población, Edad, GENERO, PAIS_ORIGEN, LUGAR", 1),
+    TIPO_POBLACION_EDAD_DIVERSIDAD_PAIS_ORIGEN_LUGAR("Tipo de población, Edad, DIVERSIDAD, PAIS_ORIGEN, LUGAR", 1),
+    TIPO_POBLACION_GENERO_DIVERSIDAD_PAIS_ORIGEN_LUGAR("Tipo de población, GENERO, DIVERSIDAD, PAIS_ORIGEN, LUGAR", 1),
+    EDAD_GENERO_DIVERSIDAD_PAIS_ORIGEN_LUGAR("Edad, GENERO, DIVERSIDAD, PAIS_ORIGEN, LUGAR", 1);
+
+
+
+
 
     private String label;
     private final int order;
@@ -78,4 +106,4 @@ public enum DissagregationType implements EnumInterface {
         this.label = label;
     }
 
-}
+    }
