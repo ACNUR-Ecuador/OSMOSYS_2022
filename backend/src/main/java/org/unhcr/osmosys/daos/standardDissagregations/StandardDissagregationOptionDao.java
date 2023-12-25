@@ -3,26 +3,28 @@ package org.unhcr.osmosys.daos.standardDissagregations;
 
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
-import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.StandardDissagregationOption;
+import org.unhcr.osmosys.model.standardDissagregations.options.*;
 
+import javax.ejb.Stateless;
 import javax.persistence.Query;
 import java.util.List;
 
 /**
  * Dao Genérico
  *
- * @param <T>
  */
-@SuppressWarnings({"rawtypes", "FieldMayBeFinal"})
-public abstract class StandardDissagregationOptionDao<T extends StandardDissagregationOption> extends GenericDaoJpa<T, Long>{
+@SuppressWarnings("unchecked")
+@Stateless
+public class StandardDissagregationOptionDao extends GenericDaoJpa<StandardDissagregationOption, Long> {
 
-    public StandardDissagregationOptionDao(Class<T> entityClass) {
-        super(entityClass, Long.class);
+    public StandardDissagregationOptionDao() {
+        super(StandardDissagregationOption.class, Long.class);
 
     }
 
 
-    public List<T> getByState(State state) {
+
+    public List<StandardDissagregationOption> getByState(State state) {
 
         String jpql = "SELECT DISTINCT o FROM " + this.getEntityClass().getSimpleName() + " o " +
                 " WHERE o.state = :state" +
@@ -31,5 +33,56 @@ public abstract class StandardDissagregationOptionDao<T extends StandardDissagre
         q.setParameter("state", state);
         return q.getResultList();
     }
+
+    public List<AgeDissagregationOption> getAgeOptionsByState(State state) {
+
+        String jpql = "SELECT DISTINCT o FROM AgeOption o " +
+                " WHERE o.state = :state" +
+                " order by o.order ASC";
+        Query q = getEntityManager().createQuery(jpql, StandardDissagregationOption.class);
+        q.setParameter("state", state);
+        return q.getResultList();
+    }
+
+    public List<PopulationTypeDissagregationOption> getPopulationTypeOptionsByState(State state) {
+
+        String jpql = "SELECT DISTINCT o FROM PopulationTypeOption o " +
+                " WHERE o.state = :state" +
+                " order by o.order ASC";
+        Query q = getEntityManager().createQuery(jpql, StandardDissagregationOption.class);
+        q.setParameter("state", state);
+        return q.getResultList();
+    }
+
+    public List<GenderDissagregationOption> getGenderOptionsByState(State state) {
+
+        String jpql = "SELECT DISTINCT o FROM GenderOption o " +
+                " WHERE o.state = :state" +
+                " order by o.order ASC";
+        Query q = getEntityManager().createQuery(jpql, StandardDissagregationOption.class);
+        q.setParameter("state", state);
+        return q.getResultList();
+    }
+
+    public List<DiversityDissagregationOption> getDiversityOptionsByState(State state) {
+
+        String jpql = "SELECT DISTINCT o FROM DiversityOption o " +
+                " WHERE o.state = :state" +
+                " order by o.order ASC";
+        Query q = getEntityManager().createQuery(jpql, StandardDissagregationOption.class);
+        q.setParameter("state", state);
+        return q.getResultList();
+    }
+
+    public List<CountryOfOriginDissagregationOption> getCountryOfOriginOptionsByState(State state) {
+
+        String jpql = "SELECT DISTINCT o FROM CountryOfOriginOption o " +
+                " WHERE o.state = :state" +
+                " order by o.order ASC";
+        Query q = getEntityManager().createQuery(jpql, StandardDissagregationOption.class);
+        q.setParameter("state", state);
+        return q.getResultList();
+    }
+
 
 }

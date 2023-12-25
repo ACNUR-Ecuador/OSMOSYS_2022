@@ -6,8 +6,6 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 
 @Entity
@@ -40,9 +38,6 @@ public class PeriodStatementAsignation extends BaseEntity<Long> {
     @Column(name = "state", nullable = false)
     @Enumerated(EnumType.STRING)
     private State state;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "periodStatementAsignation")
-    private Set<PeriodStatementPopulationCoverage> periodStatementPopulationCoverages = new HashSet<>();
 
     // calculated
     @Column(name = "population_coverage")
@@ -82,31 +77,6 @@ public class PeriodStatementAsignation extends BaseEntity<Long> {
         this.state = state;
     }
 
-    public void addPeriodStatementPopulationCoverage(PeriodStatementPopulationCoverage periodStatementPopulationCoverage) {
-        periodStatementPopulationCoverage.setPeriodStatementAsignation(this);
-        if (!this.periodStatementPopulationCoverages.add(periodStatementPopulationCoverage)) {
-            this.periodStatementPopulationCoverages.remove(periodStatementPopulationCoverage);
-            this.periodStatementPopulationCoverages.add(periodStatementPopulationCoverage);
-        }
-    }
-
-    public void removePeriodStatementPopulationCoverage(PeriodStatementPopulationCoverage periodStatementPopulationCoverage) {
-
-        if (periodStatementPopulationCoverage.getId() != null) {
-            periodStatementPopulationCoverage.setPopulationCoverage(0L);
-            periodStatementPopulationCoverage.setState(State.INACTIVO);
-        } else {
-            this.periodStatementPopulationCoverages.remove(periodStatementPopulationCoverage);
-        }
-    }
-
-    public Set<PeriodStatementPopulationCoverage> getPeriodStatementPopulationCoverages() {
-        return periodStatementPopulationCoverages;
-    }
-
-    public void setPeriodStatementPopulationCoverages(Set<PeriodStatementPopulationCoverage> periodStatementPopulationCoverages) {
-        this.periodStatementPopulationCoverages = periodStatementPopulationCoverages;
-    }
 
     public Long getPopulationCoverage() {
         return populationCoverage;

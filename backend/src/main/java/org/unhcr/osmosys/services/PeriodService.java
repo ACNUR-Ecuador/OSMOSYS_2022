@@ -6,8 +6,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.PeriodDao;
 import org.unhcr.osmosys.model.Period;
-import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.*;
-import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.*;
+import org.unhcr.osmosys.model.standardDissagregations.options.*;
+import org.unhcr.osmosys.model.standardDissagregations.periodOptions.*;
 import org.unhcr.osmosys.services.standardDissagregations.*;
 import org.unhcr.osmosys.webServices.model.PeriodWeb;
 import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
@@ -36,19 +36,7 @@ public class PeriodService {
 
 
     @Inject
-    AgeDissagregationOptionService ageDissagregationOptionService;
-
-    @Inject
-    GenderDissagregationOptionService genderDissagregationOptionService;
-
-    @Inject
-    PopulationTypeDissagregationOptionService populationTypeDissagregationOptionService;
-
-    @Inject
-    DiversityDissagregationOptionService diversityDissagregationOptionService;
-
-    @Inject
-    CountryOfOriginDissagregationOptionService countryOfOriginDissagregationOptionService;
+    StandardDissagregationOptionService standardDissagregationOptionService;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(PeriodService.class);
@@ -80,33 +68,33 @@ public class PeriodService {
         // standard dissagregations
 
         for (StandardDissagregationOptionWeb optionWeb : periodWeb.getPeriodAgeDissagregationOptions()) {
-            AgeDissagregationOption option = this.ageDissagregationOptionService.getById(optionWeb.getId());
+            AgeDissagregationOption option = (AgeDissagregationOption) this.standardDissagregationOptionService.getById(optionWeb.getId());
             PeriodAgeDissagregationOption periodOption = new PeriodAgeDissagregationOption(period, option);
             period.addPeriodAgeDissagregationOption(periodOption);
         }
 
         for (StandardDissagregationOptionWeb optionWeb : periodWeb.getPeriodGenderDissagregationOptions()) {
-            GenderDissagregationOption option = this.genderDissagregationOptionService.getById(optionWeb.getId());
+            GenderDissagregationOption option = (GenderDissagregationOption) this.standardDissagregationOptionService.getById(optionWeb.getId());
             PeriodGenderDissagregationOption periodOption = new PeriodGenderDissagregationOption(period, option);
             period.addPeriodGenderDissagregationOption(periodOption);
         }
 
         for (StandardDissagregationOptionWeb optionWeb : periodWeb.getPeriodPopulationTypeDissagregationOptions()) {
-            PopulationTypeDissagregationOption option = this.populationTypeDissagregationOptionService.getById(optionWeb.getId());
+            PopulationTypeDissagregationOption option = (PopulationTypeDissagregationOption) this.standardDissagregationOptionService.getById(optionWeb.getId());
             PeriodPopulationTypeDissagregationOption periodOption = new PeriodPopulationTypeDissagregationOption(period, option);
             period.addPeriodPopulationTypeDissagregationOption(periodOption);
         }
 
 
         for (StandardDissagregationOptionWeb optionWeb : periodWeb.getPeriodDiversityDissagregationOptions()) {
-            DiversityDissagregationOption option = this.diversityDissagregationOptionService.getById(optionWeb.getId());
+            DiversityDissagregationOption option = (DiversityDissagregationOption) this.standardDissagregationOptionService.getById(optionWeb.getId());
             PeriodDiversityDissagregationOption periodOption = new PeriodDiversityDissagregationOption(period, option);
             period.addPeriodDiversityDissagregationOption(periodOption);
         }
 
 
         for (StandardDissagregationOptionWeb optionWeb : periodWeb.getPeriodCountryOfOriginDissagregationOptions()) {
-            CountryOfOriginDissagregationOption option = this.countryOfOriginDissagregationOptionService.getById(optionWeb.getId());
+            CountryOfOriginDissagregationOption option = (CountryOfOriginDissagregationOption) this.standardDissagregationOptionService.getById(optionWeb.getId());
             PeriodCountryOfOriginDissagregationOption periodOption = new PeriodCountryOfOriginDissagregationOption(period, option);
             period.addPeriodCountryOfOriginDissagregationOption(periodOption);
         }
@@ -148,7 +136,7 @@ public class PeriodService {
         //los nuevos
         Collection<Long> newOptions = CollectionUtils.subtract(optionsIdsWeb, optionsIds);
         for (Long newOption : newOptions) {
-            AgeDissagregationOption option = this.ageDissagregationOptionService.getById(newOption);
+            AgeDissagregationOption option = (AgeDissagregationOption) this.standardDissagregationOptionService.getById(newOption);
             PeriodAgeDissagregationOption newPeriodAgeOption = new PeriodAgeDissagregationOption(period, option);
             period.addPeriodAgeDissagregationOption(newPeriodAgeOption);
         }
@@ -179,7 +167,7 @@ public class PeriodService {
         //los nuevos
         newOptions = CollectionUtils.subtract(optionsIdsWeb, optionsIds);
         for (Long newOption : newOptions) {
-            GenderDissagregationOption option = this.genderDissagregationOptionService.getById(newOption);
+            GenderDissagregationOption option = (GenderDissagregationOption) this.standardDissagregationOptionService.getById(newOption);
             PeriodGenderDissagregationOption newPeriodGenderOption = new PeriodGenderDissagregationOption(period, option);
             period.addPeriodGenderDissagregationOption(newPeriodGenderOption);
         }
@@ -205,101 +193,97 @@ public class PeriodService {
         }
 
 
-            optionsIdsWeb = periodWeb.getPeriodPopulationTypeDissagregationOptions().stream().map(StandardDissagregationOptionWeb::getId).collect(Collectors.toSet());
-            optionsIds = period.getPeriodPopulationTypeDissagregationOptions().stream().map(option -> option.getDissagregationOption().getId()).collect(Collectors.toSet());
-            //los nuevos
-            newOptions = CollectionUtils.subtract(optionsIdsWeb, optionsIds);
-            for (Long newOption : newOptions) {
-                PopulationTypeDissagregationOption option = this.populationTypeDissagregationOptionService.getById(newOption);
-                PeriodPopulationTypeDissagregationOption newPeriodPopulationTypeOption = new PeriodPopulationTypeDissagregationOption(period, option);
-                period.addPeriodPopulationTypeDissagregationOption(newPeriodPopulationTypeOption);
-            }
+        optionsIdsWeb = periodWeb.getPeriodPopulationTypeDissagregationOptions().stream().map(StandardDissagregationOptionWeb::getId).collect(Collectors.toSet());
+        optionsIds = period.getPeriodPopulationTypeDissagregationOptions().stream().map(option -> option.getDissagregationOption().getId()).collect(Collectors.toSet());
+        //los nuevos
+        newOptions = CollectionUtils.subtract(optionsIdsWeb, optionsIds);
+        for (Long newOption : newOptions) {
+            PopulationTypeDissagregationOption option = (PopulationTypeDissagregationOption) this.standardDissagregationOptionService.getById(newOption);
+            PeriodPopulationTypeDissagregationOption newPeriodPopulationTypeOption = new PeriodPopulationTypeDissagregationOption(period, option);
+            period.addPeriodPopulationTypeDissagregationOption(newPeriodPopulationTypeOption);
+        }
 
-            //los eliminados
-            removeOptions = CollectionUtils.subtract(optionsIds, optionsIdsWeb);
-            for (Long removeOption : removeOptions) {
-                for (PeriodPopulationTypeDissagregationOption option : period.getPeriodPopulationTypeDissagregationOptions()) {
-                    if (option.getDissagregationOption().getId().equals(removeOption)) {
-                        option.setState(State.INACTIVO);
-                    }
+        //los eliminados
+        removeOptions = CollectionUtils.subtract(optionsIds, optionsIdsWeb);
+        for (Long removeOption : removeOptions) {
+            for (PeriodPopulationTypeDissagregationOption option : period.getPeriodPopulationTypeDissagregationOptions()) {
+                if (option.getDissagregationOption().getId().equals(removeOption)) {
+                    option.setState(State.INACTIVO);
                 }
             }
+        }
 
-            //los existentes
-            toUpdateOptions = CollectionUtils.intersection(optionsIds, optionsIdsWeb);
-            for (Long toUpdateOption : toUpdateOptions) {
-                for (PeriodPopulationTypeDissagregationOption option : period.getPeriodPopulationTypeDissagregationOptions()) {
-                    if (option.getDissagregationOption().getId().equals(toUpdateOption)) {
-                        option.setState(State.ACTIVO);
-                    }
+        //los existentes
+        toUpdateOptions = CollectionUtils.intersection(optionsIds, optionsIdsWeb);
+        for (Long toUpdateOption : toUpdateOptions) {
+            for (PeriodPopulationTypeDissagregationOption option : period.getPeriodPopulationTypeDissagregationOptions()) {
+                if (option.getDissagregationOption().getId().equals(toUpdateOption)) {
+                    option.setState(State.ACTIVO);
                 }
             }
+        }
 
 
+        optionsIdsWeb = periodWeb.getPeriodDiversityDissagregationOptions().stream().map(StandardDissagregationOptionWeb::getId).collect(Collectors.toSet());
+        optionsIds = period.getPeriodDiversityDissagregationOptions().stream().map(option -> option.getDissagregationOption().getId()).collect(Collectors.toSet());
+        //los nuevos
+        newOptions = CollectionUtils.subtract(optionsIdsWeb, optionsIds);
+        for (Long newOption : newOptions) {
+            DiversityDissagregationOption option = (DiversityDissagregationOption) this.standardDissagregationOptionService.getById(newOption);
+            PeriodDiversityDissagregationOption newPeriodDiversityOption = new PeriodDiversityDissagregationOption(period, option);
+            period.addPeriodDiversityDissagregationOption(newPeriodDiversityOption);
+        }
 
-            optionsIdsWeb = periodWeb.getPeriodDiversityDissagregationOptions().stream().map(StandardDissagregationOptionWeb::getId).collect(Collectors.toSet());
-            optionsIds = period.getPeriodDiversityDissagregationOptions().stream().map(option -> option.getDissagregationOption().getId()).collect(Collectors.toSet());
-            //los nuevos
-            newOptions = CollectionUtils.subtract(optionsIdsWeb, optionsIds);
-            for (Long newOption : newOptions) {
-                DiversityDissagregationOption option = this.diversityDissagregationOptionService.getById(newOption);
-                PeriodDiversityDissagregationOption newPeriodDiversityOption = new PeriodDiversityDissagregationOption(period, option);
-                period.addPeriodDiversityDissagregationOption(newPeriodDiversityOption);
-            }
-
-            //los eliminados
-            removeOptions = CollectionUtils.subtract(optionsIds, optionsIdsWeb);
-            for (Long removeOption : removeOptions) {
-                for (PeriodDiversityDissagregationOption option : period.getPeriodDiversityDissagregationOptions()) {
-                    if (option.getDissagregationOption().getId().equals(removeOption)) {
-                        option.setState(State.INACTIVO);
-                    }
+        //los eliminados
+        removeOptions = CollectionUtils.subtract(optionsIds, optionsIdsWeb);
+        for (Long removeOption : removeOptions) {
+            for (PeriodDiversityDissagregationOption option : period.getPeriodDiversityDissagregationOptions()) {
+                if (option.getDissagregationOption().getId().equals(removeOption)) {
+                    option.setState(State.INACTIVO);
                 }
             }
+        }
 
-            //los existentes
-            toUpdateOptions = CollectionUtils.intersection(optionsIds, optionsIdsWeb);
-            for (Long toUpdateOption : toUpdateOptions) {
-                for (PeriodDiversityDissagregationOption option : period.getPeriodDiversityDissagregationOptions()) {
-                    if (option.getDissagregationOption().getId().equals(toUpdateOption)) {
-                        option.setState(State.ACTIVO);
-                    }
+        //los existentes
+        toUpdateOptions = CollectionUtils.intersection(optionsIds, optionsIdsWeb);
+        for (Long toUpdateOption : toUpdateOptions) {
+            for (PeriodDiversityDissagregationOption option : period.getPeriodDiversityDissagregationOptions()) {
+                if (option.getDissagregationOption().getId().equals(toUpdateOption)) {
+                    option.setState(State.ACTIVO);
                 }
             }
+        }
 
 
+        optionsIdsWeb = periodWeb.getPeriodCountryOfOriginDissagregationOptions().stream().map(StandardDissagregationOptionWeb::getId).collect(Collectors.toSet());
+        optionsIds = period.getPeriodCountryOfOriginDissagregationOptions().stream().map(option -> option.getDissagregationOption().getId()).collect(Collectors.toSet());
+        //los nuevos
+        newOptions = CollectionUtils.subtract(optionsIdsWeb, optionsIds);
+        for (Long newOption : newOptions) {
+            CountryOfOriginDissagregationOption option = (CountryOfOriginDissagregationOption) this.standardDissagregationOptionService.getById(newOption);
+            PeriodCountryOfOriginDissagregationOption newPeriodCountryOfOriginOption = new PeriodCountryOfOriginDissagregationOption(period, option);
+            period.addPeriodCountryOfOriginDissagregationOption(newPeriodCountryOfOriginOption);
+        }
 
-            optionsIdsWeb = periodWeb.getPeriodCountryOfOriginDissagregationOptions().stream().map(StandardDissagregationOptionWeb::getId).collect(Collectors.toSet());
-            optionsIds = period.getPeriodCountryOfOriginDissagregationOptions().stream().map(option -> option.getDissagregationOption().getId()).collect(Collectors.toSet());
-            //los nuevos
-            newOptions = CollectionUtils.subtract(optionsIdsWeb, optionsIds);
-            for (Long newOption : newOptions) {
-                CountryOfOriginDissagregationOption option = this.countryOfOriginDissagregationOptionService.getById(newOption);
-                PeriodCountryOfOriginDissagregationOption newPeriodCountryOfOriginOption = new PeriodCountryOfOriginDissagregationOption(period, option);
-                period.addPeriodCountryOfOriginDissagregationOption(newPeriodCountryOfOriginOption);
-            }
-
-            //los eliminados
-            removeOptions = CollectionUtils.subtract(optionsIds, optionsIdsWeb);
-            for (Long removeOption : removeOptions) {
-                for (PeriodCountryOfOriginDissagregationOption option : period.getPeriodCountryOfOriginDissagregationOptions()) {
-                    if (option.getDissagregationOption().getId().equals(removeOption)) {
-                        option.setState(State.INACTIVO);
-                    }
+        //los eliminados
+        removeOptions = CollectionUtils.subtract(optionsIds, optionsIdsWeb);
+        for (Long removeOption : removeOptions) {
+            for (PeriodCountryOfOriginDissagregationOption option : period.getPeriodCountryOfOriginDissagregationOptions()) {
+                if (option.getDissagregationOption().getId().equals(removeOption)) {
+                    option.setState(State.INACTIVO);
                 }
             }
+        }
 
-            //los existentes
-            toUpdateOptions = CollectionUtils.intersection(optionsIds, optionsIdsWeb);
-            for (Long toUpdateOption : toUpdateOptions) {
-                for (PeriodCountryOfOriginDissagregationOption option : period.getPeriodCountryOfOriginDissagregationOptions()) {
-                    if (option.getDissagregationOption().getId().equals(toUpdateOption)) {
-                        option.setState(State.ACTIVO);
-                    }
+        //los existentes
+        toUpdateOptions = CollectionUtils.intersection(optionsIds, optionsIdsWeb);
+        for (Long toUpdateOption : toUpdateOptions) {
+            for (PeriodCountryOfOriginDissagregationOption option : period.getPeriodCountryOfOriginDissagregationOptions()) {
+                if (option.getDissagregationOption().getId().equals(toUpdateOption)) {
+                    option.setState(State.ACTIVO);
                 }
             }
-
-
+        }
 
 
         this.validate(periodWeb);

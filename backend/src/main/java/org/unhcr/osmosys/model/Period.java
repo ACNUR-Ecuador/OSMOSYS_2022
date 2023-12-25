@@ -4,7 +4,7 @@ import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.*;
+import org.unhcr.osmosys.model.standardDissagregations.periodOptions.*;
 
 import javax.persistence.*;
 import java.util.HashSet;

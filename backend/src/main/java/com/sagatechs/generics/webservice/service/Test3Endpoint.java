@@ -4,10 +4,9 @@ package com.sagatechs.generics.webservice.service;
 import com.sagatechs.generics.persistence.model.State;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.Period;
-import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.*;
-import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.PeriodPopulationTypeDissagregationOption;
+import org.unhcr.osmosys.model.standardDissagregations.options.*;
 import org.unhcr.osmosys.services.PeriodService;
-import org.unhcr.osmosys.services.standardDissagregations.*;
+import org.unhcr.osmosys.services.standardDissagregations.StandardDissagregationOptionService;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -25,19 +24,8 @@ public class Test3Endpoint {
     private static final Logger LOGGER = Logger.getLogger(TestEndpoint.class);
 
     @Inject
-    PopulationTypeDissagregationOptionService populationTypeDissagregationOptionService;
+    StandardDissagregationOptionService standardDissagregationOptionService;
 
-    @Inject
-    AgeDissagregationOptionService ageDissagregationOptionService;
-
-    @Inject
-    GenderDissagregationOptionService genderDissagregationOptionService;
-
-    @Inject
-    DiversityDissagregationOptionService diversityDissagregationOptionService;
-
-    @Inject
-    CountryOfOriginDissagregationOptionService countryOfOriginDissagregationOptionService;
 
     @Inject
     PeriodService periodService;
@@ -86,7 +74,7 @@ public class Test3Endpoint {
         populationTypeDissagregationOptions.add(populationTypeDissagregationOption15);
 
         for (PopulationTypeDissagregationOption populationTypeDissagregationOption : populationTypeDissagregationOptions) {
-            this.populationTypeDissagregationOptionService.saveOrUpdate(populationTypeDissagregationOption);
+            this.standardDissagregationOptionService.saveOrUpdate(populationTypeDissagregationOption);
         }
         return "done";
     }
@@ -105,7 +93,7 @@ public class Test3Endpoint {
         genders.add(a3);
 
         for (GenderDissagregationOption gender : genders) {
-            this.genderDissagregationOptionService.saveOrUpdate(gender);
+            this.standardDissagregationOptionService.saveOrUpdate(gender);
         }
 
         List<AgeDissagregationOption> ages = new ArrayList<>();
@@ -133,7 +121,7 @@ public class Test3Endpoint {
         ages.add(ag11);
 
         for (AgeDissagregationOption age : ages) {
-            this.ageDissagregationOptionService.saveOrUpdate(age);
+            this.standardDissagregationOptionService.saveOrUpdate(age);
         }
 
         List<DiversityDissagregationOption> ds = new ArrayList<>();
@@ -147,7 +135,7 @@ public class Test3Endpoint {
         ds.add(d4);
 
         for (DiversityDissagregationOption d : ds) {
-            this.diversityDissagregationOptionService.saveOrUpdate(d);
+            this.standardDissagregationOptionService.saveOrUpdate(d);
         }
 
 
@@ -161,7 +149,7 @@ public class Test3Endpoint {
         cs.add(c4);
 
         for (CountryOfOriginDissagregationOption c : cs) {
-            this.countryOfOriginDissagregationOptionService.saveOrUpdate(c);
+            this.standardDissagregationOptionService.saveOrUpdate(c);
         }
 
 
@@ -174,32 +162,26 @@ public class Test3Endpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public String setPeriod() {
         Period period2024 = this.periodService.getWithDissagregationOptionsById(3l);
+/*
 
         List<PopulationTypeDissagregationOption> ptos = new ArrayList<>();
-        ptos.add(this.populationTypeDissagregationOptionService.getById(1l));
-        ptos.add(this.populationTypeDissagregationOptionService.getById(6l));
-        ptos.add(this.populationTypeDissagregationOptionService.getById(7l));
-        ptos.add(this.populationTypeDissagregationOptionService.getById(11l));
-        ptos.add(this.populationTypeDissagregationOptionService.getById(14l));
-        ptos.add(this.populationTypeDissagregationOptionService.getById(15l));
+        ptos.add(this.standardDissagregationOptionService.getById(1l));
+        ptos.add(this.standardDissagregationOptionService.getById(6l));
+        ptos.add(this.standardDissagregationOptionService.getById(7l));
+        ptos.add(this.standardDissagregationOptionService.getById(11l));
+        ptos.add(this.standardDissagregationOptionService.getById(14l));
+        ptos.add(this.standardDissagregationOptionService.getById(15l));
 
         List<PeriodPopulationTypeDissagregationOption> pptos = new ArrayList<>();
 
 
 
-        this.periodService.saveOrUpdate(period2024);
 
+        this.periodService.saveOrUpdate(period2024);
+*/
         return "done";
     }
 
 
-
-    @Path("getdata")
-    @GET()
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<AgeDissagregationOption> getData() {
-
-        return this.ageDissagregationOptionService.getByState(State.ACTIVO);
-    }
 }
 

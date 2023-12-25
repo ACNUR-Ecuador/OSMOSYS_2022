@@ -11,9 +11,9 @@ import org.unhcr.osmosys.daos.AreaDao;
 import org.unhcr.osmosys.daos.StatementDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.*;
-import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.*;
-import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.AgeDissagregationOption;
-import org.unhcr.osmosys.model.standardDissagregations.PeriodStandardDissagregation.Options.StandardDissagregationOption;
+import org.unhcr.osmosys.model.standardDissagregations.options.AgeDissagregationOption;
+import org.unhcr.osmosys.model.standardDissagregations.options.StandardDissagregationOption;
+import org.unhcr.osmosys.model.standardDissagregations.periodOptions.*;
 import org.unhcr.osmosys.services.UtilsService;
 import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
@@ -102,7 +102,7 @@ public class ModelWebTransformationService {
         for (IndicatorExecutionWeb indicatorExecution : indicatorExecutions) {
             AreaWeb area = indicatorExecution.getIndicator().getStatement().getArea();
             Optional<AreaWeb> areaT = areasWeb.stream().filter(area1 -> area1.getId().equals(area.getId())).findFirst();
-            if (!areaT.isPresent()) {
+            if (areaT.isEmpty()) {
                 throw new GeneralAppException("Area no encontrada, error interno", Response.Status.INTERNAL_SERVER_ERROR);
             }
 
@@ -218,9 +218,6 @@ public class ModelWebTransformationService {
         customDissagregationOption.setState(customDissagregationOptionWeb.getState());
         customDissagregationOption.setDescription(customDissagregationOptionWeb.getDescription());
         //customDissagregationOption.setMarkers(new HashSet<>(this.markerService.markersWebToMarkers(new ArrayList<>(customDissagregationOptionWeb.getMarkers()))));
-        for (MarkerWeb marker : customDissagregationOptionWeb.getMarkers()) {
-            customDissagregationOption.addMarker(this.markerWebToMarker(marker));
-        }
         return customDissagregationOption;
     }
 
@@ -233,7 +230,6 @@ public class ModelWebTransformationService {
         customDissagregationOptionWeb.setName(customDissagregationOption.getName());
         customDissagregationOptionWeb.setState(customDissagregationOption.getState());
         customDissagregationOptionWeb.setDescription(customDissagregationOption.getDescription());
-        customDissagregationOptionWeb.setMarkers(this.markersToMarkersWeb(customDissagregationOption.getMarkers()));
         return customDissagregationOptionWeb;
     }
 
@@ -331,7 +327,7 @@ public class ModelWebTransformationService {
     //</editor-fold>
 
     //<editor-fold desc="Indicator">
-    public IndicatorWeb indicatorToIndicatorWeb(Indicator indicator, boolean getMarkers, boolean getStatement, boolean getDissagregations) {
+    public IndicatorWeb indicatorToIndicatorWeb(Indicator indicator, boolean getStatement, boolean getDissagregations) {
         if (indicator == null) {
             return null;
         }
@@ -353,10 +349,6 @@ public class ModelWebTransformationService {
         indicatorWeb.setCompassIndicator(indicator.getCompassIndicator());
         indicatorWeb.setUnit(indicator.getUnit());
         indicatorWeb.setBlockAfterUpdate(indicator.getBlockAfterUpdate());
-        if (getMarkers) {
-            List<MarkerWeb> markers = this.markersToMarkersWeb(indicator.getMarkers());
-            indicatorWeb.setMarkers(markers);
-        }
         if (getStatement) {
             indicatorWeb.setStatement(this.statementToStatementWeb(indicator.getStatement(), false, true, false, false, false));
         }
@@ -368,10 +360,10 @@ public class ModelWebTransformationService {
     }
 
 
-    public List<IndicatorWeb> indicatorsToIndicatorsWeb(List<Indicator> indicators, boolean getMarkers, boolean getStatement, boolean getDissagregations) {
+    public List<IndicatorWeb> indicatorsToIndicatorsWeb(List<Indicator> indicators, boolean getStatement, boolean getDissagregations) {
         List<IndicatorWeb> r = new ArrayList<>();
         for (Indicator indicator : indicators) {
-            r.add(this.indicatorToIndicatorWeb(indicator, getMarkers, getStatement, getDissagregations));
+            r.add(this.indicatorToIndicatorWeb(indicator,  getStatement, getDissagregations));
         }
         return r;
     }
@@ -384,7 +376,6 @@ public class ModelWebTransformationService {
         w.setState(d.getState());
         w.setPeriod(this.periodToPeriodWeb(d.getPeriod()));
         w.setDissagregationType(d.getDissagregationType());
-        w.setDissagregationFilterIndicators(this.dissagregationFilterIndicatorsToDissagregationFilterIndicatorsWeb(d.getDissagregationFilterIndicators()));
         return w;
     }
 
@@ -394,10 +385,6 @@ public class ModelWebTransformationService {
         d.setState(w.getState());
         d.setDissagregationType(w.getDissagregationType());
         d.setPeriod(this.periodWebToPeriod(w.getPeriod()));
-        Set<DissagregationFilterIndicator> dissagregationFilterIndicators = this.dissagregationFilterIndicatorsWebToDissagregationFilterIndicators(w.getDissagregationFilterIndicators());
-        for (DissagregationFilterIndicator dissagregationFilterIndicator : dissagregationFilterIndicators) {
-            d.addDissagregationFilterIndicator(dissagregationFilterIndicator);
-        }
         return d;
     }
 
@@ -421,94 +408,8 @@ public class ModelWebTransformationService {
     }
     //</editor-fold>
 
-    //<editor-fold desc="DissagregationFilterIndicator">
-    public DissagregationFilterIndicatorWeb dissagregationFilterIndicatorToDissagregationFilterIndicatorWeb(DissagregationFilterIndicator d) {
-        DissagregationFilterIndicatorWeb w = new DissagregationFilterIndicatorWeb();
-        w.setId(d.getId());
-        w.setState(d.getState());
-        w.setDissagregationType(d.getDissagregationType());
-        w.setPopulationType(d.getPopulationType());
-        w.setCountryOfOrigin(d.getCountryOfOrigin());
-        w.setGenderType(d.getGenderType());
-        w.setAgeType(d.getAgeType());
-        return w;
-    }
-
-    public DissagregationFilterIndicator dissagregationFilterIndicatorWebToDissagregationFilterIndicator(DissagregationFilterIndicatorWeb w) {
-        DissagregationFilterIndicator d = new DissagregationFilterIndicator();
-        d.setId(w.getId());
-        d.setState(w.getState());
-        d.setDissagregationType(w.getDissagregationType());
-        d.setPopulationType(w.getPopulationType());
-        d.setCountryOfOrigin(w.getCountryOfOrigin());
-        d.setGenderType(w.getGenderType());
-        d.setAgeType(w.getAgeType());
-        return d;
-    }
-
-    public List<DissagregationFilterIndicatorWeb> dissagregationFilterIndicatorsToDissagregationFilterIndicatorsWeb(Set<DissagregationFilterIndicator> d) {
-        List<DissagregationFilterIndicatorWeb> r = new ArrayList<>();
-        for (DissagregationFilterIndicator dissagregationFilterIndicator : d) {
-            r.add(this.dissagregationFilterIndicatorToDissagregationFilterIndicatorWeb(dissagregationFilterIndicator));
-        }
-        return r;
-    }
-
-    public Set<DissagregationFilterIndicator> dissagregationFilterIndicatorsWebToDissagregationFilterIndicators(List<DissagregationFilterIndicatorWeb> d) {
-        Set<DissagregationFilterIndicator> r = new HashSet<>();
-        for (DissagregationFilterIndicatorWeb dissagregationFilterIndicatorWeb : d) {
-            r.add(this.dissagregationFilterIndicatorWebToDissagregationFilterIndicator(dissagregationFilterIndicatorWeb));
-        }
-        return r;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Marker">
-    public MarkerWeb markerToMarkerWeb(Marker marker) {
-        if (marker == null) {
-            return null;
-        }
-        MarkerWeb markerWeb = new MarkerWeb();
-        markerWeb.setId(marker.getId());
-        markerWeb.setSubType(marker.getSubType());
-        markerWeb.setType(marker.getType());
-        markerWeb.setDescription(marker.getDescription());
-        markerWeb.setShortDescription(marker.getShortDescription());
-        markerWeb.setState(marker.getState());
-        return markerWeb;
-    }
-
-    public Marker markerWebToMarker(MarkerWeb markerWeb) {
-        if (markerWeb == null) {
-            return null;
-        }
-        Marker marker = new Marker();
-        marker.setId(markerWeb.getId());
-        marker.setType(markerWeb.getType());
-        marker.setSubType(markerWeb.getSubType());
-        marker.setState(markerWeb.getState());
-        marker.setDescription(markerWeb.getDescription());
-        marker.setShortDescription(markerWeb.getShortDescription());
-        return marker;
-    }
 
 
-    public List<MarkerWeb> markersToMarkersWeb(Set<Marker> markers) {
-        List<MarkerWeb> r = new ArrayList<>();
-        for (Marker marker : markers) {
-            r.add(this.markerToMarkerWeb(marker));
-        }
-        return r;
-    }
-
-    public Set<Marker> markersWebToMarkers(List<MarkerWeb> markersWebs) {
-        Set<Marker> r = new HashSet<>();
-        for (MarkerWeb markerWeb : markersWebs) {
-            r.add(this.markerWebToMarker(markerWeb));
-        }
-        return r;
-    }
-    //</editor-fold>
 
     //<editor-fold desc="Office">
     public OfficeWeb officeToOfficeWeb(Office office, boolean returnChilds, boolean returnAdministrators) {
@@ -1145,7 +1046,7 @@ public class ModelWebTransformationService {
 
 
         } else {
-            iw.setIndicator(this.indicatorToIndicatorWeb(ie.getIndicator(), false, true, true));
+            iw.setIndicator(this.indicatorToIndicatorWeb(ie.getIndicator(),  true, true));
             iw.setReportingOffice(this.officeToOfficeWeb(ie.getReportingOffice(), false, false));
             iw.setSupervisorUser(this.userToUserWebSimple(ie.getSupervisorUser(), false, true));
             iw.setAssignedUser(this.userToUserWebSimple(ie.getAssignedUser(), false, true));
@@ -1417,13 +1318,11 @@ public class ModelWebTransformationService {
         q.setState(indicatorValue.getState());
         q.setMonthEnum(indicatorValue.getMonthEnum());
         q.setDissagregationType(indicatorValue.getDissagregationType());
-        q.setPopulationType(indicatorValue.getPopulationType());
-        q.setCountryOfOrigin(indicatorValue.getCountryOfOrigin());
-        q.setGenderType(indicatorValue.getGenderType());
-        q.setDiversityType(indicatorValue.getDiversityType());
-        q.setAgeType(indicatorValue.getAgeType());
-        q.setAgePrimaryEducationType(indicatorValue.getAgePrimaryEducationType());
-        q.setAgeTertiaryEducationType(indicatorValue.getAgeTertiaryEducationType());
+        q.setPopulationType(this.standardDissagregationOptionToStandardDissagregationOptionWeb(indicatorValue.getPopulationType()));
+        q.setCountryOfOrigin(this.standardDissagregationOptionToStandardDissagregationOptionWeb(indicatorValue.getCountryOfOrigin()));
+        q.setGenderType(this.standardDissagregationOptionToStandardDissagregationOptionWeb(indicatorValue.getGenderType()));
+        q.setDiversityType(this.standardDissagregationOptionToStandardDissagregationOptionWeb(indicatorValue.getDiversityType()));
+        q.setAgeType(this.standardDissagregationOptionToStandardDissagregationOptionWeb(indicatorValue.getAgeType()));
         q.setLocation(this.cantonToCantonWeb(indicatorValue.getLocation()));
         q.setShowValue(indicatorValue.getShowValue());
         q.setValue(indicatorValue.getValue());

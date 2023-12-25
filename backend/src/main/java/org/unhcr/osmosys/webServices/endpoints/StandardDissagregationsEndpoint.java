@@ -1,8 +1,7 @@
 package org.unhcr.osmosys.webServices.endpoints;
 
-import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
-import org.unhcr.osmosys.services.standardDissagregations.*;
+import org.unhcr.osmosys.services.standardDissagregations.StandardDissagregationOptionService;
 import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
 
 import javax.enterprise.context.RequestScoped;
@@ -18,27 +17,16 @@ import java.util.List;
 public class StandardDissagregationsEndpoint {
 
     @Inject
-    AgeDissagregationOptionService ageDissagregationOptionService;
+    StandardDissagregationOptionService standardDissagregationOptionService;
 
-    @Inject
-    GenderDissagregationOptionService genderDissagregationOptionService;
-
-    @Inject
-    PopulationTypeDissagregationOptionService populationTypeDissagregationOptionService;
-
-    @Inject
-    DiversityDissagregationOptionService diversityDissagregationOptionService;
-
-    @Inject
-    CountryOfOriginDissagregationOptionService countryOfOriginDissagregationOptionService;
 
     @Path("/options/active/age")
     @GET
     // @Secured
     @Produces(MediaType.APPLICATION_JSON)
-    public List<StandardDissagregationOptionWeb> getActiveAgeOptions() throws GeneralAppException {
+    public List<StandardDissagregationOptionWeb> getActiveAgeOptions() {
 
-        return this.ageDissagregationOptionService.getWebByState(State.ACTIVO);
+        return this.standardDissagregationOptionService.getAgeDissagregationOptionWebByState(State.ACTIVO);
     }
 
     @Path("/options/active/gender")
@@ -46,7 +34,7 @@ public class StandardDissagregationsEndpoint {
     // @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public List<StandardDissagregationOptionWeb> getActiveGenderOptions() {
-        return this.genderDissagregationOptionService.getWebByState(State.ACTIVO);
+        return this.standardDissagregationOptionService.getGenderDissagregationOptionWebByState(State.ACTIVO);
     }
 
     @Path("/options/active/populationType")
@@ -54,15 +42,14 @@ public class StandardDissagregationsEndpoint {
     // @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public List<StandardDissagregationOptionWeb> getActivePopulationTypeOptions() {
-        List<StandardDissagregationOptionWeb> result = this.populationTypeDissagregationOptionService.getWebByState(State.ACTIVO);
-        return result;
+        return this.standardDissagregationOptionService.getPopulationTypeOptionsWebByState(State.ACTIVO);
     }
     @Path("/options/active/countryOfOrigin")
     @GET
     // @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public List<StandardDissagregationOptionWeb> getActiveCountryOfOriginOptions() {
-        return this.countryOfOriginDissagregationOptionService.getWebByState(State.ACTIVO);
+        return this.standardDissagregationOptionService.getCountryOfOriginDissagregationWebOptionByState(State.ACTIVO);
     }
 
     @Path("/options/active/diversity")
@@ -70,7 +57,7 @@ public class StandardDissagregationsEndpoint {
     // @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public List<StandardDissagregationOptionWeb> getActiveDiversityOptions() {
-        return this.diversityDissagregationOptionService.getWebByState(State.ACTIVO);
+        return this.standardDissagregationOptionService.getDiversityeOptionsWebByState(State.ACTIVO);
     }
 
 
