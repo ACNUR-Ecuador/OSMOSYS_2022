@@ -57,9 +57,7 @@ public class Indicator extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private AreaType areaType;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(schema = "osmosys", name = "indicators_markers", joinColumns = @JoinColumn(name = "indicator_id"), inverseJoinColumns = @JoinColumn(name = "marker_id"))
-    private Set<Marker> markers = new HashSet<>();
+
 
     @Column(name = "is_monitored", nullable = false)
     private Boolean isMonitored;
@@ -154,26 +152,7 @@ public class Indicator extends BaseEntity<Long> {
         this.areaType = areaType;
     }
 
-    public void addMarker(Marker marker) {
-        marker.getIndicators().remove(this);
-        if (!this.markers.add(marker)) {
-            this.markers.remove(marker);
-            this.markers.add(marker);
-        }
-    }
 
-    public void removeMarker(Marker marker) {
-        this.markers.remove(marker);
-    }
-
-
-    public Set<Marker> getMarkers() {
-        return markers;
-    }
-
-    public void setMarkers(Set<Marker> markers) {
-        this.markers = markers;
-    }
 
     public Boolean getMonitored() {
         return isMonitored;

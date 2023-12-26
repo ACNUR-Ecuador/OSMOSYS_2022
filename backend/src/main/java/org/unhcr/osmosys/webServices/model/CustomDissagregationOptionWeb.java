@@ -12,8 +12,6 @@ public class CustomDissagregationOptionWeb implements Serializable {
     private String name;
     private String description;
     private State state;
-    private List<MarkerWeb> markers = new ArrayList<>();
-
     public Long getId() {
         return id;
     }
@@ -46,11 +44,5 @@ public class CustomDissagregationOptionWeb implements Serializable {
         this.state = state;
     }
 
-    public List<MarkerWeb> getMarkers() {
-        return markers;
-    }
 
-    public void setMarkers(List<MarkerWeb> markers) {
-        this.markers = markers;
-    }
 }

@@ -1,15 +1,19 @@
 package org.unhcr.osmosys.model.enums;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public enum DissagregationType implements EnumInterface {
 
-    SIN_DESAGREGACION(new String[]{}, 0),
+    SIN_DESAGREGACION("Sin Desagregación", new String[]{}, 0),
 
-    LUGAR(new String[]{"LUGAR"}, 1),
-    TIPO_POBLACION(new String[]{"TIPO_POBLACION"}, 2),
-    PAIS_ORIGEN(new String[]{"PAIS_ORIGEN"}, 3),
-    DIVERSIDAD(new String[]{"DIVERSIDAD"}, 4),
-    EDAD(new String[]{"EDAD"}, 5),
-    GENERO(new String[]{"GENERO"}, 6),
+    LUGAR("Lugar", new String[]{"LUGAR"}, 1),
+    TIPO_POBLACION("Tipo de Población", new String[]{"TIPO_POBLACION"}, 2),
+    PAIS_ORIGEN("País de Origen", new String[]{"PAIS_ORIGEN"}, 3),
+    DIVERSIDAD("Diversidad", new String[]{"DIVERSIDAD"}, 4),
+    EDAD("Edad", new String[]{"EDAD"}, 5),
+    GENERO("Género", new String[]{"GENERO"}, 6),
 
     // 2
     LUGAR_TIPO_POBLACION(new String[]{"LUGAR", "TIPO_POBLACION"}, 7),
@@ -80,6 +84,8 @@ public enum DissagregationType implements EnumInterface {
 
     private final int order;
 
+    private String label = null;
+
     private final String[] standardDissagregationTypes;
 
     DissagregationType(String[] standardDissagregationTypes, int order) {
@@ -87,13 +93,35 @@ public enum DissagregationType implements EnumInterface {
         this.order = order;
     }
 
+    DissagregationType(String label, String[] standardDissagregationTypes, int order) {
+        this.standardDissagregationTypes = standardDissagregationTypes;
+        this.order = order;
+        this.label = label;
+    }
+
     @Override
     public String getStringValue() {
         return this.name();
     }
 
-    public String getLabel() {
-        return null;
+    public String createLabel() {
+        StringBuilder label = new StringBuilder();
+        List<DissagregationType> list= this.getSimpleDissagregations();
+        for (int i = 0; i < list.size() - 1; i++) {
+
+            label.append(list.get(i).getLabel()).append(", ");
+        }
+        DissagregationType enumeLast = list.get(list.size()-1);
+        // Add the last element with "and"
+        label.append("y ").append(enumeLast.getLabel());
+        System.out.println("Generando label: " + label.toString());
+        return label.toString();
+    }
+
+    public List<DissagregationType> getSimpleDissagregations() {
+        return Arrays.stream(this.standardDissagregationTypes).map(s -> Enum.valueOf(DissagregationType.class, s))
+                .sorted((o1, o2) -> o1.getOrder() - o2.getOrder()).collect(Collectors.toList());
+
     }
 
     @Override
@@ -103,5 +131,17 @@ public enum DissagregationType implements EnumInterface {
 
     public String[] getStandardDissagregationTypes() {
         return standardDissagregationTypes;
+    }
+
+    public Integer getNumberOfDissagregationTypes() {
+        return this.standardDissagregationTypes.length;
+    }
+
+    @Override
+    public String getLabel() {
+        if (this.label == null) {
+            this.label = this.createLabel();
+        }
+        return this.label;
     }
 }

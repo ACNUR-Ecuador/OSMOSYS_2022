@@ -25,9 +25,7 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
                     " left outer join cda.customDissagregation " +
                     " left outer join cda.customDissagregationFilterIndicators " +
                     " left outer join o.dissagregationsAssignationToIndicator da " +
-                    " left outer join da.dissagregationFilterIndicators " +
-                    " left join psa.period p " +
-                    " left outer join o.markers ";
+                    " left join psa.period p ";
 
     public IndicatorDao() {
         super(Indicator.class, Long.class);
@@ -97,9 +95,7 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
                 " left outer join fetch cda.customDissagregation " +
                 " left outer join fetch cda.customDissagregationFilterIndicators " +
                 " left outer join fetch o.dissagregationsAssignationToIndicator da " +
-                " left outer join fetch da.dissagregationFilterIndicators " +
                 " left join fetch psa.period p " +
-                " left outer join fetch o.markers " +
                 " WHERE o.code in (:codeList)";
         Query q = getEntityManager().createQuery(jpql, Indicator.class);
         q.setParameter("codeList", codeList);

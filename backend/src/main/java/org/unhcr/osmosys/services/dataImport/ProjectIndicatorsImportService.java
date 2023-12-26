@@ -214,7 +214,7 @@ public class ProjectIndicatorsImportService {
 
                 // create ie
                 IndicatorExecutionAssigmentWeb indicatorExecutionAssigmentWeb = new IndicatorExecutionAssigmentWeb();
-                indicatorExecutionAssigmentWeb.setIndicator(this.modelWebTransformationService.indicatorToIndicatorWeb(indicator, false, false, false));
+                indicatorExecutionAssigmentWeb.setIndicator(this.modelWebTransformationService.indicatorToIndicatorWeb(indicator, false, false));
                 indicatorExecutionAssigmentWeb.setState(State.ACTIVO);
                 indicatorExecutionAssigmentWeb.setPeriod(this.modelWebTransformationService.periodToPeriodWeb(project.getPeriod()));
                 indicatorExecutionAssigmentWeb.setProject(this.modelWebTransformationService.projectToProjectWeb(project));

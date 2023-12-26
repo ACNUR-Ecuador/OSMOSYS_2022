@@ -37,6 +37,7 @@ public class IndicatorValueService {
         }
         return indicatorValue;
     }
+/*
 
     public List<IndicatorValue> createIndicatorValueDissagregationStandardForMonth(
             DissagregationType dissagregationType,
@@ -46,10 +47,6 @@ public class IndicatorValueService {
         switch (dissagregationType) {
             case EDAD:
                 return this.createIndicatorValueDissagregationStandardAge();
-            case EDAD_EDUCACION_PRIMARIA:
-                return this.createIndicatorValueDissagregationStandardAgePrimaryEducation();
-            case EDAD_EDUCACION_TERCIARIA:
-                return this.createIndicatorValueDissagregationStandardAgeTertiaryEducation();
 
             case DIVERSIDAD:
                 return this.createIndicatorValueDissagregationStandardForMonthDiversity();
@@ -113,28 +110,7 @@ public class IndicatorValueService {
         }
     }
 
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForLocationDiversityAgePrimaryEducationAndGender(List<Canton> cantones) {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO;
-        for (Canton canton : cantones) {
-            for (DiversityType diversityType : DiversityType.values()) {
-                for (GenderType genderType : GenderType.values()) {
-                    for (AgePrimaryEducationType ageType : AgePrimaryEducationType.values()) {
-                        IndicatorValue iv = new IndicatorValue();
-                        iv.setState(State.ACTIVO);
-                        iv.setDissagregationType(dt);
-                        iv.setGenderType(genderType);
-                        iv.setAgePrimaryEducationType(ageType);
-                        iv.setDiversityType(diversityType);
-                        iv.setLocation(canton);
-                        iv.setShowValue(true);
-                        r.add(iv);
-                    }
-                }
-            }
-        }
-        return r;
-    }
+
 
     private List<IndicatorValue> createIndicatorValueDissagregationStandardAge() {
         List<IndicatorValue> r = new ArrayList<>();
@@ -151,33 +127,6 @@ public class IndicatorValueService {
     }
 
 
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardAgePrimaryEducation() {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.EDAD;
-        for (AgePrimaryEducationType agePrimaryEducationType : AgePrimaryEducationType.values()) {
-            IndicatorValue iv = new IndicatorValue();
-            iv.setState(State.ACTIVO);
-            iv.setDissagregationType(dt);
-            iv.setAgePrimaryEducationType(agePrimaryEducationType);
-            iv.setShowValue(true);
-            r.add(iv);
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardAgeTertiaryEducation() {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.EDAD;
-        for (AgeTertiaryEducationType ageageTertiaryEducationType : AgeTertiaryEducationType.values()) {
-            IndicatorValue iv = new IndicatorValue();
-            iv.setState(State.ACTIVO);
-            iv.setDissagregationType(dt);
-            iv.setAgeTertiaryEducationType(ageageTertiaryEducationType);
-            iv.setShowValue(true);
-            r.add(iv);
-        }
-        return r;
-    }
 
     private List<IndicatorValue> createIndicatorValueDissagregationStandardForMonthDiversity() {
         List<IndicatorValue> r = new ArrayList<>();
@@ -458,45 +407,6 @@ public class IndicatorValueService {
         return r;
     }
 
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForDiversityAgePrimaryEducationAndGender() {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO;
-        for (DiversityType diversityType : DiversityType.values()) {
-            for (GenderType genderType : GenderType.values()) {
-                for (AgePrimaryEducationType ageType : AgePrimaryEducationType.values()) {
-                    IndicatorValue iv = new IndicatorValue();
-                    iv.setState(State.ACTIVO);
-                    iv.setDissagregationType(dt);
-                    iv.setGenderType(genderType);
-                    iv.setAgePrimaryEducationType(ageType);
-                    iv.setDiversityType(diversityType);
-                    iv.setShowValue(true);
-                    r.add(iv);
-                }
-            }
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForDiversityAgeTerciaryEducationAndGender() {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO;
-        for (DiversityType diversityType : DiversityType.values()) {
-            for (GenderType genderType : GenderType.values()) {
-                for (AgeTertiaryEducationType ageType : AgeTertiaryEducationType.values()) {
-                    IndicatorValue iv = new IndicatorValue();
-                    iv.setState(State.ACTIVO);
-                    iv.setDissagregationType(dt);
-                    iv.setGenderType(genderType);
-                    iv.setAgeTertiaryEducationType(ageType);
-                    iv.setDiversityType(diversityType);
-                    iv.setShowValue(true);
-                    r.add(iv);
-                }
-            }
-        }
-        return r;
-    }
 
     private List<IndicatorValue> createIndicatorValueDissagregationStandardForPopulationTypeLocationAgeAndGender(List<Canton> cantones) {
         List<IndicatorValue> r = new ArrayList<>();
@@ -743,8 +653,10 @@ public class IndicatorValueService {
 
                 }
                 // activo o desactivo segun estado de desagregacion
-                /*indicatorValuesDissagregation
-                        .forEach(indicatorValue -> indicatorValue.setState(dissagregationState));*/
+                */
+/*indicatorValuesDissagregation
+                        .forEach(indicatorValue -> indicatorValue.setState(dissagregationState));*//*
+
 
                 if (dissagregationState.equals(State.INACTIVO)) {
                     indicatorValuesDissagregation
@@ -765,6 +677,7 @@ public class IndicatorValueService {
             throw new GeneralAppException(message, Response.Status.BAD_REQUEST);
         }
     }
+*/
 
     public List<IndicatorValue> getByIndicatorExecutionId(Long indicatorExecutionId) {
         return this.indicatorValueDao.getByIndicatorExecutionId(indicatorExecutionId);

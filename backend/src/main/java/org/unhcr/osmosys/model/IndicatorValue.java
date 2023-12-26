@@ -3,12 +3,13 @@ package org.unhcr.osmosys.model;
 import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.model.standardDissagregations.options.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(schema = "osmosys", name = "indicator_values")
+@Table(schema = "osmosys", name = "indicator_valuesV2")
 public class IndicatorValue extends BaseEntity<Long> {
 
     @Id
@@ -38,33 +39,26 @@ public class IndicatorValue extends BaseEntity<Long> {
     @Column(name = "dissagregation_type", nullable = false, length = 60)
     private DissagregationType dissagregationType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "population_type", length = 50)
-    private PopulationType populationType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "population_type_option_id", foreignKey = @ForeignKey(name = "fk_iv_pto"))
+    private PopulationTypeDissagregationOption populationType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "country_of_origin", length = 50)
-    private CountryOfOrigin countryOfOrigin;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "country_of_origin_option_id", foreignKey = @ForeignKey(name = "fk_iv_coo"))
+    private CountryOfOriginDissagregationOption countryOfOrigin;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "gender_type", length = 50)
-    private GenderType genderType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gender_option_id", foreignKey = @ForeignKey(name = "fk_iv_go"))
+    private GenderDissagregationOption genderType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "age_type", length = 60)
-    private AgeType ageType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "age_option_id", foreignKey = @ForeignKey(name = "fk_iv_ao"))
+    private AgeDissagregationOption ageType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "age_primary_education_type", length = 50)
-    private AgePrimaryEducationType agePrimaryEducationType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "age_tertiary_education_type", length = 50)
-    private AgeTertiaryEducationType ageTertiaryEducationType;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "diversity_type", length = 50)
-    private DiversityType diversityType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "diversity_option_id", foreignKey = @ForeignKey(name = "fk_iv_do"))
+    private DiversityDissagregationOption diversityType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "canton_id", foreignKey = @ForeignKey(name = "fk_indicator_values_cantones"))
@@ -129,35 +123,35 @@ public class IndicatorValue extends BaseEntity<Long> {
         this.dissagregationType = dissagregationType;
     }
 
-    public PopulationType getPopulationType() {
+    public PopulationTypeDissagregationOption getPopulationType() {
         return populationType;
     }
 
-    public void setPopulationType(PopulationType populationType) {
+    public void setPopulationType(PopulationTypeDissagregationOption populationType) {
         this.populationType = populationType;
     }
 
-    public CountryOfOrigin getCountryOfOrigin() {
+    public CountryOfOriginDissagregationOption getCountryOfOrigin() {
         return countryOfOrigin;
     }
 
-    public void setCountryOfOrigin(CountryOfOrigin countryOfOrigin) {
+    public void setCountryOfOrigin(CountryOfOriginDissagregationOption countryOfOrigin) {
         this.countryOfOrigin = countryOfOrigin;
     }
 
-    public GenderType getGenderType() {
+    public GenderDissagregationOption getGenderType() {
         return genderType;
     }
 
-    public void setGenderType(GenderType genderType) {
+    public void setGenderType(GenderDissagregationOption genderType) {
         this.genderType = genderType;
     }
 
-    public AgeType getAgeType() {
+    public AgeDissagregationOption getAgeType() {
         return ageType;
     }
 
-    public void setAgeType(AgeType ageType) {
+    public void setAgeType(AgeDissagregationOption ageType) {
         this.ageType = ageType;
     }
 
@@ -193,11 +187,11 @@ public class IndicatorValue extends BaseEntity<Long> {
         this.showValue = showValue;
     }
 
-    public DiversityType getDiversityType() {
+    public DiversityDissagregationOption getDiversityType() {
         return diversityType;
     }
 
-    public void setDiversityType(DiversityType diversityType) {
+    public void setDiversityType(DiversityDissagregationOption diversityType) {
         this.diversityType = diversityType;
     }
 
@@ -217,21 +211,6 @@ public class IndicatorValue extends BaseEntity<Long> {
         this.monthYearOrder = monthYearOrder;
     }
 
-    public AgePrimaryEducationType getAgePrimaryEducationType() {
-        return agePrimaryEducationType;
-    }
-
-    public void setAgePrimaryEducationType(AgePrimaryEducationType agePrimaryEducationType) {
-        this.agePrimaryEducationType = agePrimaryEducationType;
-    }
-
-    public AgeTertiaryEducationType getAgeTertiaryEducationType() {
-        return ageTertiaryEducationType;
-    }
-
-    public void setAgeTertiaryEducationType(AgeTertiaryEducationType ageTertiaryEducationType) {
-        this.ageTertiaryEducationType = ageTertiaryEducationType;
-    }
 
     @Override
     public String toString() {

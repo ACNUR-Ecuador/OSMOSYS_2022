@@ -9,7 +9,6 @@ import org.unhcr.osmosys.daos.IndicatorDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.webServices.model.IndicatorWeb;
-import org.unhcr.osmosys.webServices.model.MarkerWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
@@ -104,11 +103,11 @@ public class IndicatorService {
     }
 
     public List<IndicatorWeb> getAll() {
-        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getAllWithData(), true, true, true);
+        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getAllWithData(),  true, true);
     }
 
     public List<IndicatorWeb> getByState(State state) {
-        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getByState(state), true, true, true);
+        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getByState(state), true, true);
     }
 
     public Long update(IndicatorWeb indicatorWeb) throws GeneralAppException {
@@ -129,21 +128,8 @@ public class IndicatorService {
         indicator.setUnit(indicatorWeb.getUnit());
         indicator.setFrecuency(indicatorWeb.getFrecuency());
         indicator.setState(indicatorWeb.getState());
-        // marcadores
-        // veo los nuevos
-        indicatorWeb.getMarkers().forEach(markerWeb -> {
-            Optional<Marker> markerOp = indicator.getMarkers().stream().filter(marker -> marker.getId().equals(markerWeb.getId())).findFirst();
-            if (!markerOp.isPresent()) {
-                indicator.addMarker(this.modelWebTransformationService.markerWebToMarker(markerWeb));
-            }
-        });
         // nuevo borro ausentes
-        indicator.getMarkers().forEach(marker -> {
-            Optional<MarkerWeb> markerWebOp = indicatorWeb.getMarkers().stream().filter(markerWeb -> markerWeb.getId().equals(marker.getId())).findFirst();
-            if (!markerWebOp.isPresent()) {
-                indicator.removeMarker(marker);
-            }
-        });
+
         // dissagregationAssiment
 
         List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToEnable = new ArrayList<>();
@@ -273,7 +259,7 @@ public class IndicatorService {
     }
 
     public List<IndicatorWeb> getByPeriodAssignmentAndState(Long periodId, State state) {
-        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getByPeriodAssignmentAndState(periodId, state), true, true, true);
+        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getByPeriodAssignmentAndState(periodId, state), true, true);
     }
 
     public List<Indicator> getByCodeList(List<String> codeList) {

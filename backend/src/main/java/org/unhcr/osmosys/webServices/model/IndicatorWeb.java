@@ -23,7 +23,6 @@ public class IndicatorWeb implements Serializable {
     private MeasureType measureType;
     private Frecuency frecuency;
     private AreaType areaType;
-    private List<MarkerWeb> markers = new ArrayList<>();
     @JsonProperty("isMonitored")
     private Boolean isMonitored;
     @JsonProperty("isCalculated")
@@ -118,13 +117,6 @@ public class IndicatorWeb implements Serializable {
         this.areaType = areaType;
     }
 
-    public List<MarkerWeb> getMarkers() {
-        return markers;
-    }
-
-    public void setMarkers(List<MarkerWeb> markers) {
-        this.markers = markers;
-    }
 
     public Boolean getMonitored() {
         return isMonitored;

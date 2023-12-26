@@ -2,11 +2,9 @@ package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
-import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.model.enums.DissagregationType;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(schema = "osmosys", name = "dissagregation_assignation_indicator_execution")
@@ -29,8 +27,6 @@ public class DissagregationAssignationToIndicatorExecution extends BaseEntity<Lo
     @Column(name = "dissagregation_type", nullable = false, length = 60)
     private DissagregationType dissagregationType;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "dissagregationAssignationToIndicatorExecution")
-    private Set<DissagregationFilterIndicatorExecution> dissagregationFilterIndicatorsExecutions = new HashSet<>();
 
     @Override
     public Long getId() {
@@ -65,31 +61,4 @@ public class DissagregationAssignationToIndicatorExecution extends BaseEntity<Lo
         this.dissagregationType = dissagregationType;
     }
 
-    public void addDissagregationFilterIndicatorExecution(DissagregationFilterIndicatorExecution dissagregationFilterIndicatorExecution){
-        dissagregationFilterIndicatorExecution.setDissagregationAssignationToIndicatorExecution(this);
-        dissagregationFilterIndicatorExecution.setState(State.ACTIVO);
-
-        if(!this.dissagregationFilterIndicatorsExecutions.add(dissagregationFilterIndicatorExecution)){
-            this.dissagregationFilterIndicatorsExecutions.remove(dissagregationFilterIndicatorExecution);
-            this.dissagregationFilterIndicatorsExecutions.add(dissagregationFilterIndicatorExecution);
-        }
-    }
-
-
-    public void removeDissagregationFilterIndicatorExecution(DissagregationFilterIndicatorExecution dissagregationFilterIndicatorExecution){
-        if (dissagregationFilterIndicatorExecution.getId() != null) {
-
-            dissagregationFilterIndicatorExecution.setState(State.INACTIVO);
-        } else {
-            this.dissagregationFilterIndicatorsExecutions.remove(dissagregationFilterIndicatorExecution);
-        }
-    }
-
-    public Set<DissagregationFilterIndicatorExecution> getDissagregationFilterIndicatorsExecutions() {
-        return dissagregationFilterIndicatorsExecutions;
-    }
-
-    public void setDissagregationFilterIndicatorsExecutions(Set<DissagregationFilterIndicatorExecution> dissagregationFilterIndicatorsExecutions) {
-        this.dissagregationFilterIndicatorsExecutions = dissagregationFilterIndicatorsExecutions;
-    }
 }

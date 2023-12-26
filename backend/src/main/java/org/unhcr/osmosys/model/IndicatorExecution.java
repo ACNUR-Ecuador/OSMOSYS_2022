@@ -93,10 +93,6 @@ public class IndicatorExecution extends BaseEntity<Long> {
     @JoinColumn(name = "assigned_user_backup_id", foreignKey = @ForeignKey(name = "fk_indicator_execution_user_backup"))
     private User assignedUserBackup;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(schema = "osmosys", name = "indicator_executions_markers", joinColumns = @JoinColumn(name = "indicator_execution_id"), inverseJoinColumns = @JoinColumn(name = "marker_id"))
-    private Set<Marker> markers = new HashSet<>();
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "indicatorExecution", cascade = CascadeType.ALL)
     private Set<IndicatorExecutionLocationAssigment> indicatorExecutionLocationAssigments = new HashSet<>();
 
@@ -255,14 +251,6 @@ public class IndicatorExecution extends BaseEntity<Long> {
             this.customDissagregationAssignationToIndicatorExecutions.remove(dissagregationAssignationToIndicatorExecution);
             this.customDissagregationAssignationToIndicatorExecutions.add(dissagregationAssignationToIndicatorExecution);
         }
-    }
-
-    public Set<Marker> getMarkers() {
-        return markers;
-    }
-
-    public void setMarkers(Set<Marker> markers) {
-        this.markers = markers;
     }
 
     public BigDecimal getTarget() {

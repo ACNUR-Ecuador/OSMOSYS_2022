@@ -7,11 +7,23 @@
           <map>
             <entry key="com.zeroturnaround.jrebel.FormatVersion" value="7.0.0" />
             <entry key="jrebelEnabled" value="true" />
+            <entry key="lastExternalPluginCheckTime" value="1702411681728" />
             <entry key="rebelXmlGenerationInvariantToken" value="PGFwcGxpY2F0aW9uIGdlbmVyYXRlZC1ieT0iaW50ZWxsaWoiPjxpZD5vc21vc3lzX2JhY2tlbmQ8L2lkPjxjbGFzc3BhdGg+PGRpciBuYW1lPSJEOi9Qcm95ZWN0b3MvME9TTU9TWVNfMjAyNC9iYWNrZW5kL3RhcmdldC9jbGFzc2VzIj48L2Rpcj48L2NsYXNzcGF0aD48d2ViPjxsaW5rIHRhcmdldD0iLyI+PGRpciBuYW1lPSJEOi9Qcm95ZWN0b3MvME9TTU9TWVNfMjAyNC9iYWNrZW5kL3NyYy9tYWluL3dlYmFwcCI+PC9kaXI+PC9saW5rPjwvd2ViPjwvYXBwbGljYXRpb24+" />
             <entry key="rebelXmlGenerationType" value="ide" />
           </map>
         </option>
-        <option name="version" value="37" />
+        <option name="version" value="54" />
+      </configuration>
+    </facet>
+    <facet type="jpa" name="JPA">
+      <configuration>
+        <setting name="validation-enabled" value="true" />
+        <setting name="provider-name" value="Hibernate" />
+        <datasource-mapping>
+          <factory-entry name="main-persistence-unit" value="80402fe1-add6-4614-aad8-693a5a7ac0a3" />
+        </datasource-mapping>
+        <naming-strategy-map />
+        <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
       </configuration>
     </facet>
   </component>

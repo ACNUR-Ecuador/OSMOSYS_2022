@@ -997,7 +997,7 @@ public class ReportDataService {
         return this.getLateReport(data, true, true);
     }
 
-
+/*
     public List<IndicatorReportProgramsDTO> getIndicatorReportProgramsByProjectId(Long projectId) {
         List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionService.getIndicatorExecutionsByProjectId(projectId);
         indicatorExecutions = indicatorExecutions.stream().filter(
@@ -1016,7 +1016,7 @@ public class ReportDataService {
                 }).collect(Collectors.toList());
 
         return this.indicatorExecutionsToIndicatorReportPrograms(indicatorExecutions);
-    }
+    }*/
 
     private List<IndicatorReportProgramsDTO> indicatorExecutionsToIndicatorReportPrograms(List<IndicatorExecution> indicatorExecutions) {
         List<IndicatorReportProgramsDTO> r = new ArrayList<>();
@@ -1125,6 +1125,7 @@ public class ReportDataService {
         return r;
 
     }*/
+/*
 
     private Integer getProgramValue(List<IndicatorValue> indicatorValues, DissagregationType dissagregationType, PopulationType populationType, AgeType ageType, GenderType genderType) {
         switch (dissagregationType) {
@@ -1197,5 +1198,6 @@ public class ReportDataService {
         }
     }
 
+*/
 
 }

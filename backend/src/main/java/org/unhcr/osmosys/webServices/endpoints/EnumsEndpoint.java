@@ -29,27 +29,30 @@ public class EnumsEndpoint {
     public List<EnumWeb> getTypes(@PathParam("type") String type) throws GeneralAppException {
         switch (type) {
             case "AgeType":
-                return this.EnumsToEnumsWeb(AgeType.values());
+                // todo
+                // return this.EnumsToEnumsWeb(AgeType.values());
             case "AreaType":
                 return this.EnumsToEnumsWeb(AreaType.values());
             case "CountryOfOrigin":
-                return this.EnumsToEnumsWeb(CountryOfOrigin.values());
+                // todo
+                // return this.EnumsToEnumsWeb(CountryOfOrigin.values());
             case "DissagregationType":
                 return this.EnumsToEnumsWeb(DissagregationType.values());
             case "Frecuency":
                 return this.EnumsToEnumsWeb(Frecuency.values());
             case "GenderType":
-                return this.EnumsToEnumsWeb(GenderType.values());
+                // todo
+                // return this.EnumsToEnumsWeb(GenderType.values());
             case "IndicatorType":
                 return this.EnumsToEnumsWeb(IndicatorType.values());
-            case "MarkerType":
-                return this.EnumsToEnumsWeb(MarkerType.values());
+
             case "MeasureType":
                 return this.EnumsToEnumsWeb(MeasureType.values());
             case "OfficeType":
                 return this.EnumsToEnumsWeb(OfficeType.values());
             case "PopulationType":
-                return this.EnumsToEnumsWeb(PopulationType.values());
+                // todo
+                // return this.EnumsToEnumsWeb(PopulationType.values());
             case "State":
                 return this.EnumsToEnumsWeb(State.values());
             case "DiversityType":
@@ -62,10 +65,6 @@ public class EnumsEndpoint {
                 return this.EnumsToEnumsWeb(SourceType.values());
             case "UnitType":
                 return this.EnumsToEnumsWeb(UnitType.values());
-            case "AgePrimaryEducationType":
-                return this.EnumsToEnumsWeb(AgePrimaryEducationType.values());
-            case "AgeTertiaryEducationType":
-                return this.EnumsToEnumsWeb(AgeTertiaryEducationType.values());
             case "TimeStateEnum":
                 return this.EnumsToEnumsWeb(TimeStateEnum.values());
         }

@@ -526,7 +526,7 @@ public class ReportService {
             return null;
         }
     }
-
+/*
 
     public ByteArrayOutputStream getIndicatorReportProgramByProjectId(Long projectId) throws GeneralAppException {
         if (ReportService.dissableJasperReport) {
@@ -548,7 +548,7 @@ public class ReportService {
         } catch (JRException e) {
             throw new GeneralAppException("Error al generar el reporte", Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
         }
-    }
+    }*/
 
 
 }

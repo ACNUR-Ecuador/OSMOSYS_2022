@@ -4,8 +4,6 @@ import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class DissagregationAssignationToIndicatorWeb implements Serializable {
@@ -13,7 +11,6 @@ public class DissagregationAssignationToIndicatorWeb implements Serializable {
     private State state;
     private DissagregationType dissagregationType;
     private PeriodWeb period;
-    private List<DissagregationFilterIndicatorWeb> dissagregationFilterIndicators = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -39,13 +36,6 @@ public class DissagregationAssignationToIndicatorWeb implements Serializable {
         this.dissagregationType = dissagregationType;
     }
 
-    public List<DissagregationFilterIndicatorWeb> getDissagregationFilterIndicators() {
-        return dissagregationFilterIndicators;
-    }
-
-    public void setDissagregationFilterIndicators(List<DissagregationFilterIndicatorWeb> dissagregationFilterIndicators) {
-        this.dissagregationFilterIndicators = dissagregationFilterIndicators;
-    }
 
     public PeriodWeb getPeriod() {
         return period;

@@ -4,11 +4,9 @@ import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.model.enums.DissagregationType;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(schema = "osmosys", name = "dissagregation_assignation_indicator",
@@ -40,9 +38,6 @@ public class DissagregationAssignationToIndicator extends BaseEntity<Long> {
     private DissagregationType dissagregationType;
 
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dissagregationAssignationToIndicator")
-    private Set<DissagregationFilterIndicator> dissagregationFilterIndicators = new HashSet<>();
-
     @Override
     public Long getId() {
         return id;
@@ -68,29 +63,6 @@ public class DissagregationAssignationToIndicator extends BaseEntity<Long> {
         this.dissagregationType = dissagregationType;
     }
 
-    public void addDissagregationFilterIndicator(DissagregationFilterIndicator dissagregationFilterIndicator){
-        dissagregationFilterIndicator.setDissagregationAssignationToIndicator(this);
-        if(!this.dissagregationFilterIndicators.add(dissagregationFilterIndicator)){
-            this.dissagregationFilterIndicators.remove(dissagregationFilterIndicator);
-            this.dissagregationFilterIndicators.add(dissagregationFilterIndicator);
-        }
-    }
-
-    public void removeDissagregationFilterIndicator(DissagregationFilterIndicator dissagregationFilterIndicator){
-        if (dissagregationFilterIndicator.getId() != null) {
-            dissagregationFilterIndicator.setState(State.INACTIVO);
-        } else {
-            this.dissagregationFilterIndicators.remove(dissagregationFilterIndicator);
-        }
-    }
-
-    public Set<DissagregationFilterIndicator> getDissagregationFilters() {
-        return dissagregationFilterIndicators;
-    }
-
-    public void setDissagregationFilters(Set<DissagregationFilterIndicator> dissagregationFilterIndicators) {
-        this.dissagregationFilterIndicators = dissagregationFilterIndicators;
-    }
 
     public Indicator getIndicator() {
         return indicator;
@@ -100,13 +72,6 @@ public class DissagregationAssignationToIndicator extends BaseEntity<Long> {
         this.indicator = indicator;
     }
 
-    public Set<DissagregationFilterIndicator> getDissagregationFilterIndicators() {
-        return dissagregationFilterIndicators;
-    }
-
-    public void setDissagregationFilterIndicators(Set<DissagregationFilterIndicator> dissagregationFilterIndicators) {
-        this.dissagregationFilterIndicators = dissagregationFilterIndicators;
-    }
 
     public Period getPeriod() {
         return period;

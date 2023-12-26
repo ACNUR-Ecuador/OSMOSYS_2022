@@ -51,7 +51,6 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                     " left join fetch o.indicatorExecutionLocationAssigments iela " +
                     " left join fetch iela.location can " +
                     " left join fetch can.provincia prov " +
-                    " left join fetch o.markers " +
                     " left join fetch o.indicator i " +
                     " left join fetch i.statement st " +
                     " left join fetch st.area " +

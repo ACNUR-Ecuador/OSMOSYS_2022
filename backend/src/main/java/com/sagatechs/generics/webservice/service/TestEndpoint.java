@@ -102,13 +102,21 @@ public class TestEndpoint {
 
     @Path("test")
     @GET
-    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public String test2() throws GeneralAppException {
         // this.importService.catalogImport();
         LOGGER.info("inicio");
-        List<YearMonthDTO> r = this.monthService.getYearMonthDTOSByPeriodId(2l);
-        LOGGER.info(r);
-        return "ya";
+
+        LOGGER.info(DissagregationType.LUGAR_PAIS_ORIGEN_DIVERSIDAD.getSimpleDissagregations());
+        LOGGER.info(DissagregationType.LUGAR_PAIS_ORIGEN_DIVERSIDAD.getLabel());
+        LOGGER.info(DissagregationType.LUGAR_PAIS_ORIGEN_DIVERSIDAD_EDAD.getSimpleDissagregations());
+        LOGGER.info(DissagregationType.LUGAR_PAIS_ORIGEN_DIVERSIDAD_EDAD.getLabel());
+        LOGGER.info(DissagregationType.DIVERSIDAD_EDAD_GENERO.getSimpleDissagregations());
+        LOGGER.info(DissagregationType.DIVERSIDAD_EDAD_GENERO.getLabel());
+        LOGGER.info(DissagregationType.SIN_DESAGREGACION.getSimpleDissagregations());
+        LOGGER.info(DissagregationType.SIN_DESAGREGACION.getLabel());
+
+        return "result";
     }
 
 

@@ -144,7 +144,7 @@ public class DirectImplementationIndicatorsImportService {
                     throw new GeneralAppException("No se encontraro el indicador "
                             + indicatorCode + "para el periodo " + period.getYear() + ".", Response.Status.BAD_REQUEST);
                 }
-                indicatorExecutionAssigmentWeb.setIndicator(this.modelWebTransformationService.indicatorToIndicatorWeb(indicator, false, true, false));
+                indicatorExecutionAssigmentWeb.setIndicator(this.modelWebTransformationService.indicatorToIndicatorWeb(indicator, true, false));
                 indicatorExecutionAssigmentWeb.setState(State.ACTIVO);
                 indicatorExecutionAssigmentWeb.setKeepBudget(false);
                 indicatorExecutionAssigmentWeb.setPeriod(this.modelWebTransformationService.periodToPeriodWeb(period));
