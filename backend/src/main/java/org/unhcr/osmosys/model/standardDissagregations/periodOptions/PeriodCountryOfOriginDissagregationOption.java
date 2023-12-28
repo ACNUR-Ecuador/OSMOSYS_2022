@@ -19,7 +19,7 @@ public class PeriodCountryOfOriginDissagregationOption extends PeriodStandardDis
     }
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dissagregation_option_id")
     private CountryOfOriginDissagregationOption dissagregationOption;
 

@@ -868,7 +868,7 @@ public class ModelWebTransformationService {
         CantonWeb w = new CantonWeb();
         w.setId(canton.getId());
         w.setState(canton.getState());
-        w.setDescription(canton.getDescription());
+        w.setDescription(canton.getName());
         w.setProvincia(this.provinciaToProvinciaWeb(canton.getProvincia()));
         w.setOffice(this.officeToOfficeWeb(canton.getOffice(), false, false));
         w.setCode(canton.getCode());
@@ -898,7 +898,7 @@ public class ModelWebTransformationService {
         Canton w = new Canton();
         w.setId(cantonWeb.getId());
         w.setState(cantonWeb.getState());
-        w.setDescription(cantonWeb.getDescription());
+        w.setName(cantonWeb.getDescription());
         w.setCode(cantonWeb.getCode());
         return w;
     }

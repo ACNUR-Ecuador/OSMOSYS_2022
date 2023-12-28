@@ -129,7 +129,7 @@ public class ProjectService {
 
         project.setFocalPoint(focalPoint);
         Boolean projectDatesChanged = Boolean.FALSE;
-        if (project.getStartDate().compareTo(projectWeb.getStartDate()) != 0 || project.getEndDate().compareTo(projectWeb.getEndDate()) != 0) {
+        if (!project.getStartDate().isEqual(projectWeb.getStartDate()) || !project.getEndDate().isEqual(projectWeb.getEndDate())) {
             projectDatesChanged = Boolean.TRUE;
             project.setStartDate(projectWeb.getStartDate());
             project.setEndDate(projectWeb.getEndDate());
@@ -177,7 +177,7 @@ public class ProjectService {
         project.getProjectLocationAssigments().forEach(projectLocationAssigment -> {
             Optional<CantonWeb> cantonWebFound = cantonsWeb.stream()
                     .filter(cantonWeb -> projectLocationAssigment.getLocation().getId().equals(cantonWeb.getId())).findFirst();
-            if (!cantonWebFound.isPresent()) {
+            if (cantonWebFound.isEmpty()) {
                 projectLocationAssigment.setState(State.INACTIVO);
                 locationsToDissable.add(projectLocationAssigment.getLocation());
             } else {
@@ -216,8 +216,8 @@ public class ProjectService {
         List<Canton> activeCantons =
                 projectLocationsAsignations.stream()
                         .filter(projectLocationAssigment -> projectLocationAssigment.getState().equals(State.ACTIVO))
-                        .map(projectLocationAssigment -> projectLocationAssigment.getLocation())
-                        .sorted((o1, o2) -> o1.getDescription().compareToIgnoreCase(o2.getDescription()))
+                        .map(ProjectLocationAssigment::getLocation)
+                        .sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()))
                         .sorted((o1, o2) -> o1.getProvincia().getDescription().compareToIgnoreCase(o2.getProvincia().getDescription()))
                         .collect(Collectors.toList());
         return this.modelWebTransformationService.cantonsToCantonsWeb(activeCantons);

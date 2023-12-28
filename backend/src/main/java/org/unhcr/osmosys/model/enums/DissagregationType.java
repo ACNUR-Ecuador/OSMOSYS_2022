@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.model.enums;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -106,21 +107,21 @@ public enum DissagregationType implements EnumInterface {
 
     public String createLabel() {
         StringBuilder label = new StringBuilder();
-        List<DissagregationType> list= this.getSimpleDissagregations();
+        List<DissagregationType> list = this.getSimpleDissagregations();
         for (int i = 0; i < list.size() - 1; i++) {
 
             label.append(list.get(i).getLabel()).append(", ");
         }
-        DissagregationType enumeLast = list.get(list.size()-1);
+        DissagregationType enumeLast = list.get(list.size() - 1);
         // Add the last element with "and"
         label.append("y ").append(enumeLast.getLabel());
-        System.out.println("Generando label: " + label.toString());
+        System.out.println("Generando label: " + label);
         return label.toString();
     }
 
     public List<DissagregationType> getSimpleDissagregations() {
         return Arrays.stream(this.standardDissagregationTypes).map(s -> Enum.valueOf(DissagregationType.class, s))
-                .sorted((o1, o2) -> o1.getOrder() - o2.getOrder()).collect(Collectors.toList());
+                .sorted(Comparator.comparingInt(DissagregationType::getOrder)).collect(Collectors.toList());
 
     }
 
@@ -135,6 +136,10 @@ public enum DissagregationType implements EnumInterface {
 
     public Integer getNumberOfDissagregationTypes() {
         return this.standardDissagregationTypes.length;
+    }
+
+    public boolean isLocationsDissagregation() {
+        return this.getSimpleDissagregations().contains(DissagregationType.LUGAR);
     }
 
     @Override

@@ -19,7 +19,7 @@ public class PeriodAgeDissagregationOption extends PeriodStandardDissagregationO
     }
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dissagregation_option_id")
     private AgeDissagregationOption dissagregationOption;
 

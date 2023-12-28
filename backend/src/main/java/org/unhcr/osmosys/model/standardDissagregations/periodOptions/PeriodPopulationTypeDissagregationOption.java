@@ -17,7 +17,7 @@ public class PeriodPopulationTypeDissagregationOption extends PeriodStandardDiss
     }
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dissagregation_option_id")
     private PopulationTypeDissagregationOption dissagregationOption;
 

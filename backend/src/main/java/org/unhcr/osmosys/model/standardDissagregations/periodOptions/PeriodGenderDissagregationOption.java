@@ -23,7 +23,7 @@ public class PeriodGenderDissagregationOption
     }
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dissagregation_option_id")
     private GenderDissagregationOption dissagregationOption;
 

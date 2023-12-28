@@ -53,7 +53,7 @@ public class CantonDao extends GenericDaoJpa<Canton, Long> {
 
         String jpql = "SELECT DISTINCT o FROM Canton o " +
                 "WHERE " +
-                " lower(o.description) = lower(:cantonDescription) "+
+                " lower(o.name) = lower(:cantonDescription) "+
                 " and lower(o.provincia.description) = lower(:provinceDescription)";
         Query q = getEntityManager().createQuery(jpql, Canton.class);
         q.setParameter("cantonDescription", cantonDescription);
@@ -83,7 +83,7 @@ public class CantonDao extends GenericDaoJpa<Canton, Long> {
                 "WHERE " +
                 " o.code =:codeCanton" +
                 " or (" +
-                " lower(o.description) = lower(:descriptionCanton) "+
+                " lower(o.name) = lower(:descriptionCanton) "+
                 " and lower(o.provincia.description) = lower(:descriptionProvincia)" +
                 " )";
         Query q = getEntityManager().createQuery(jpql, Canton.class);

@@ -7,6 +7,8 @@ import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.IndicatorValueDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.model.standardDissagregations.options.*;
+import org.unhcr.osmosys.model.standardDissagregations.periodOptions.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -37,289 +39,164 @@ public class IndicatorValueService {
         }
         return indicatorValue;
     }
-/*
 
     public List<IndicatorValue> createIndicatorValueDissagregationStandardForMonth(
             DissagregationType dissagregationType,
-            List<Canton> cantones
+            List<Canton> cantones,
+            Period period
     ) throws GeneralAppException {
+
+
+        // NO dissagregation
+        if (dissagregationType.equals(DissagregationType.SIN_DESAGREGACION)) {
+            return this.createIndicatorValueDissagregationStandardForNoDissagregation();
+        } else {
+            Integer numberOdDissagregations = dissagregationType.getNumberOfDissagregationTypes();
+
+            List<DissagregationType> simpleDissagregations = dissagregationType.getSimpleDissagregations();
+            List<List<StandardDissagregationOption>> optionsLists = new ArrayList<>();
+
+            for (DissagregationType simpleDissagregation : simpleDissagregations) {
+                List<StandardDissagregationOption> optionsList = this.getPeriodStandardDissagregationOptionsFromPeriod(period, simpleDissagregation);
+                if (optionsList == null && simpleDissagregation.equals(DissagregationType.LUGAR)) {
+                    optionsList = cantones.stream().map(canton -> (StandardDissagregationOption) canton).collect(Collectors.toList());
+                }
+                optionsLists.add(optionsList);
+            }
+
+            switch (numberOdDissagregations) {
+                case 1:
+                    return this.createIndicatorValueDissagregationStandardForMonth1Dissagregations(optionsLists, simpleDissagregations);
+                case 2:
+                    return this.createIndicatorValueDissagregationStandardForMonth2Dissagregations(optionsLists, simpleDissagregations);
+                case 3:
+                    return this.createIndicatorValueDissagregationStandardForMonth3Dissagregations(optionsLists, simpleDissagregations);
+                default:
+                    throw new GeneralAppException("No implementado para " + numberOdDissagregations + " desagregaciones");
+
+            }
+        }
+
+    }
+
+    private void setValueDissagregation(IndicatorValue value, DissagregationType dissagregationType, StandardDissagregationOption standardDissagregationOption) throws GeneralAppException {
 
         switch (dissagregationType) {
             case EDAD:
-                return this.createIndicatorValueDissagregationStandardAge();
-
-            case DIVERSIDAD:
-                return this.createIndicatorValueDissagregationStandardForMonthDiversity();
-
+                value.setAgeType((AgeDissagregationOption) standardDissagregationOption);
+                break;
             case GENERO:
-                return this.createIndicatorValueDissagregationStandardForMonthGender();
-
-            case LUGAR:
-                return this.createIndicatorValueDissagregationStandardForMonthLocation(cantones);
-            case PAIS_ORIGEN:
-                return this.createIndicatorValueDissagregationStandardForMonthCountryOfOrigin();
+                value.setGenderType((GenderDissagregationOption) standardDissagregationOption);
+                break;
             case TIPO_POBLACION:
-                return this.createIndicatorValueDissagregationStandardForMonthPopulationType();
-            case GENERO_Y_EDAD:
-                return this.createIndicatorValueDissagregationStandardForGenderAndAge();
-            case GENERO_Y_DIVERSIDAD:
-                return this.createIndicatorValueDissagregationStandardForGenderAndDiversity();
-            case TIPO_POBLACION_Y_DIVERSIDAD:
-                return this.createIndicatorValueDissagregationStandardForPopulationTypeAndDiversity();
-            case TIPO_POBLACION_Y_EDAD:
-                return this.createIndicatorValueDissagregationStandardForPopulationTypeAndAge();
-            case TIPO_POBLACION_Y_GENERO:
-                return this.createIndicatorValueDissagregationStandardForPopulationTypeAndGender();
-            case TIPO_POBLACION_Y_PAIS_ORIGEN:
-                return this.createIndicatorValueDissagregationStandardForPopulationTypeAndCountryOfOrigin();
-            case TIPO_POBLACION_Y_LUGAR:
-                return this.createIndicatorValueDissagregationStandardForPopulationTypeAndLocation(cantones);
-            case LUGAR_EDAD_Y_GENERO:
-                return this.createIndicatorValueDissagregationStandardForLocationAgeAndGender(cantones);
-            case DIVERSIDAD_EDAD_Y_GENERO:
-                return this.createIndicatorValueDissagregationStandardForDiversityAgeAndGender();
-            case DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-                return this.createIndicatorValueDissagregationStandardForDiversityAgePrimaryEducationAndGender();
-            case DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
-                return this.createIndicatorValueDissagregationStandardForDiversityAgeTerciaryEducationAndGender();
-            case TIPO_POBLACION_LUGAR_EDAD_Y_GENERO:
-                return this.createIndicatorValueDissagregationStandardForPopulationTypeLocationAgeAndGender(cantones);
-            case TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-                return this.createIndicatorValueDissagregationStandardForPopulationTypeLocationAgePrimaryEducationAndGender(cantones);
-            case TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
-                return this.createIndicatorValueDissagregationStandardForPopulationTypeLocationAgeTertiaryEducationAndGender(cantones);
-            case LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-                return this.createIndicatorValueDissagregationStandardForLocationDiversityAgePrimaryEducationAndGender(cantones);
-            case SIN_DESAGREGACION:
-                return this.createIndicatorValueDissagregationStandardForNoDissagregation();
-            case LUGAR_Y_DIVERSIDAD:
-                return this.createIndicatorValueDissagregationStandardForLocationAndDiversity(cantones);
-            case LUGAR_Y_GENERO:
-                return this.createIndicatorValueDissagregationStandardForLocationAndGender(cantones);
-            case LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO:
-                return this.createIndicatorValueDissagregationStandardForLocationCountryOfOriginAgeAndGender(cantones);
-            case PAIS_ORIGEN_EDAD_Y_GENERO:
-                return this.createIndicatorValueDissagregationStandardForCountryOfOriginAgeAndGender();
-            case LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-                return this.createIndicatorValueDissagregationStandardForLocationCountryOfOriginAgePrimaryEducationAndGender(cantones);
-            case PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-                return this.createIndicatorValueDissagregationStandardForCountryOfOriginAgePrimaryEducationAndGender();
-            default: {
-                throw new GeneralAppException(" Desagregación no implementada " + dissagregationType, Response.Status.INTERNAL_SERVER_ERROR);
-            }
+                value.setPopulationType((PopulationTypeDissagregationOption) standardDissagregationOption);
+                break;
+            case DIVERSIDAD:
+                value.setDiversityType((DiversityDissagregationOption) standardDissagregationOption);
+                break;
+            case PAIS_ORIGEN:
+                value.setCountryOfOrigin((CountryOfOriginDissagregationOption) standardDissagregationOption);
+                break;
+            case LUGAR:
+                value.setLocation((Canton) standardDissagregationOption);
+                break;
+
+            default:
+                throw new GeneralAppException("No se puede puede generar opciones simples de desagregación para " + dissagregationType + ".");
+
         }
+
     }
 
-
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardAge() {
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForMonth1Dissagregations(List<List<StandardDissagregationOption>> optionsLists, List<DissagregationType> simpleDissagregations) throws GeneralAppException {
         List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.EDAD;
-        for (AgeType ageType : AgeType.values()) {
-            IndicatorValue iv = new IndicatorValue();
-            iv.setState(State.ACTIVO);
-            iv.setDissagregationType(dt);
-            iv.setAgeType(ageType);
-            iv.setShowValue(true);
-            r.add(iv);
+        List<StandardDissagregationOption> listOptions0 = optionsLists.get(0);
+        for (StandardDissagregationOption standardDissagregationOption0 : listOptions0) {
+            IndicatorValue indicatorValue = new IndicatorValue();
+            indicatorValue.setState(State.ACTIVO);
+            this.setValueDissagregation(indicatorValue, simpleDissagregations.get(0), standardDissagregationOption0);
+            r.add(indicatorValue);
         }
         return r;
     }
 
-
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForMonthDiversity() {
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForMonth2Dissagregations(List<List<StandardDissagregationOption>> optionsLists, List<DissagregationType> simpleDissagregations) throws GeneralAppException {
         List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.DIVERSIDAD;
-        for (DiversityType diversityType : DiversityType.values()) {
-            IndicatorValue iv = new IndicatorValue();
-            iv.setState(State.ACTIVO);
-            iv.setDissagregationType(dt);
-            iv.setDiversityType(diversityType);
-            iv.setShowValue(true);
-            r.add(iv);
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForMonthGender() {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.GENERO;
-        for (GenderType genderType : GenderType.values()) {
-            IndicatorValue iv = new IndicatorValue();
-            iv.setState(State.ACTIVO);
-            iv.setDissagregationType(dt);
-            iv.setGenderType(genderType);
-            iv.setShowValue(true);
-            r.add(iv);
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForMonthCountryOfOrigin() {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.PAIS_ORIGEN;
-        for (CountryOfOrigin countryOfOrigin : CountryOfOrigin.values()) {
-            IndicatorValue iv = new IndicatorValue();
-            iv.setState(State.ACTIVO);
-            iv.setDissagregationType(dt);
-            iv.setCountryOfOrigin(countryOfOrigin);
-            iv.setShowValue(true);
-            r.add(iv);
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForMonthPopulationType() {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.TIPO_POBLACION;
-        for (PopulationType populationType : PopulationType.values()) {
-            IndicatorValue iv = new IndicatorValue();
-            iv.setState(State.ACTIVO);
-            iv.setDissagregationType(dt);
-            iv.setPopulationType(populationType);
-            iv.setShowValue(true);
-            r.add(iv);
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForMonthLocation(List<Canton> cantones) {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.LUGAR;
-        for (Canton canton : cantones) {
-            IndicatorValue iv = new IndicatorValue();
-            iv.setState(State.ACTIVO);
-            iv.setDissagregationType(dt);
-            iv.setLocation(canton);
-            iv.setShowValue(true);
-            r.add(iv);
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForGenderAndAge() {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.GENERO_Y_EDAD;
-        for (GenderType genderType : GenderType.values()) {
-            for (AgeType ageType : AgeType.values()) {
-                IndicatorValue iv = new IndicatorValue();
-                iv.setState(State.ACTIVO);
-                iv.setDissagregationType(dt);
-                iv.setGenderType(genderType);
-                iv.setAgeType(ageType);
-                iv.setShowValue(true);
-                r.add(iv);
-            }
-
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForGenderAndDiversity() {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.GENERO_Y_DIVERSIDAD;
-        for (GenderType genderType : GenderType.values()) {
-            for (DiversityType diversityType : DiversityType.values()) {
-                IndicatorValue iv = new IndicatorValue();
-                iv.setState(State.ACTIVO);
-                iv.setDissagregationType(dt);
-                iv.setGenderType(genderType);
-                iv.setDiversityType(diversityType);
-                iv.setShowValue(true);
-                r.add(iv);
-            }
-
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForPopulationTypeAndDiversity() {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD;
-        for (PopulationType populationType : PopulationType.values()) {
-            for (DiversityType diversityType : DiversityType.values()) {
-                IndicatorValue iv = new IndicatorValue();
-                iv.setState(State.ACTIVO);
-                iv.setDissagregationType(dt);
-                iv.setPopulationType(populationType);
-                iv.setDiversityType(diversityType);
-                iv.setShowValue(true);
-                r.add(iv);
-            }
-
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForLocationAndDiversity(List<Canton> cantones) {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.LUGAR_Y_DIVERSIDAD;
-        for (Canton canton : cantones) {
-            for (DiversityType diversityType : DiversityType.values()) {
-                IndicatorValue iv = new IndicatorValue();
-                iv.setState(State.ACTIVO);
-                iv.setDissagregationType(dt);
-                iv.setLocation(canton);
-                iv.setDiversityType(diversityType);
-                iv.setShowValue(true);
-                r.add(iv);
-            }
-
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForLocationAndGender(List<Canton> cantones) {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.LUGAR_Y_DIVERSIDAD;
-        for (Canton canton : cantones) {
-            for (GenderType genderType : GenderType.values()) {
-                IndicatorValue iv = new IndicatorValue();
-                iv.setState(State.ACTIVO);
-                iv.setDissagregationType(dt);
-                iv.setLocation(canton);
-                iv.setGenderType(genderType);
-                iv.setShowValue(true);
-                r.add(iv);
+        List<StandardDissagregationOption> listOptions0 = optionsLists.get(0);
+        List<StandardDissagregationOption> listOptions1 = optionsLists.get(1);
+        for (StandardDissagregationOption standardDissagregationOption0 : listOptions0) {
+            for (StandardDissagregationOption standardDissagregationOption1 : listOptions1) {
+                IndicatorValue indicatorValue = new IndicatorValue();
+                indicatorValue.setState(State.ACTIVO);
+                this.setValueDissagregation(indicatorValue, simpleDissagregations.get(0), standardDissagregationOption0);
+                this.setValueDissagregation(indicatorValue, simpleDissagregations.get(1), standardDissagregationOption1);
+                r.add(indicatorValue);
             }
         }
         return r;
     }
 
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForPopulationTypeAndCountryOfOrigin() {
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForMonth3Dissagregations(List<List<StandardDissagregationOption>> optionsLists, List<DissagregationType> simpleDissagregations) throws GeneralAppException {
         List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN;
-        for (PopulationType populationType : PopulationType.values()) {
-            for (CountryOfOrigin countryOfOrigin : CountryOfOrigin.values()) {
-                IndicatorValue iv = new IndicatorValue();
-                iv.setState(State.ACTIVO);
-                iv.setDissagregationType(dt);
-                iv.setPopulationType(populationType);
-                iv.setCountryOfOrigin(countryOfOrigin);
-                iv.setShowValue(true);
-                r.add(iv);
+        List<StandardDissagregationOption> listOptions0 = optionsLists.get(0);
+        List<StandardDissagregationOption> listOptions1 = optionsLists.get(1);
+        List<StandardDissagregationOption> listOptions2 = optionsLists.get(2);
+        for (StandardDissagregationOption standardDissagregationOption0 : listOptions0) {
+            for (StandardDissagregationOption standardDissagregationOption1 : listOptions1) {
+                for (StandardDissagregationOption standardDissagregationOption2 : listOptions2) {
+                    IndicatorValue indicatorValue = new IndicatorValue();
+                    indicatorValue.setState(State.ACTIVO);
+                    this.setValueDissagregation(indicatorValue, simpleDissagregations.get(0), standardDissagregationOption0);
+                    this.setValueDissagregation(indicatorValue, simpleDissagregations.get(1), standardDissagregationOption1);
+                    this.setValueDissagregation(indicatorValue, simpleDissagregations.get(2), standardDissagregationOption2);
+                    r.add(indicatorValue);
+                }
             }
         }
         return r;
     }
 
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForPopulationTypeAndLocation(List<Canton> cantones) {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.TIPO_POBLACION_Y_LUGAR;
-        for (PopulationType populationType : PopulationType.values()) {
-            for (Canton canton : cantones) {
-                IndicatorValue iv = new IndicatorValue();
-                iv.setState(State.ACTIVO);
-                iv.setDissagregationType(dt);
-                iv.setPopulationType(populationType);
-                iv.setLocation(canton);
-                iv.setShowValue(true);
-                r.add(iv);
-            }
+    private List<StandardDissagregationOption> getPeriodStandardDissagregationOptionsFromPeriod(Period period, DissagregationType dissagregationType) throws GeneralAppException {
+
+        switch (dissagregationType) {
+            case EDAD:
+                return period.getPeriodAgeDissagregationOptions()
+                        .stream()
+                        .filter(option -> option.getState().equals(State.ACTIVO))
+                        .map(PeriodAgeDissagregationOption::getDissagregationOption)
+                        .collect(Collectors.toList());
+            case GENERO:
+                return period.getPeriodGenderDissagregationOptions()
+                        .stream()
+                        .filter(option -> option.getState().equals(State.ACTIVO))
+                        .map(PeriodGenderDissagregationOption::getDissagregationOption)
+                        .collect(Collectors.toList());
+            case TIPO_POBLACION:
+                return period.getPeriodPopulationTypeDissagregationOptions()
+                        .stream()
+                        .filter(option -> option.getState().equals(State.ACTIVO))
+                        .map(PeriodPopulationTypeDissagregationOption::getDissagregationOption)
+                        .collect(Collectors.toList());
+            case DIVERSIDAD:
+                return period.getPeriodDiversityDissagregationOptions()
+                        .stream()
+                        .filter(option -> option.getState().equals(State.ACTIVO))
+                        .map(PeriodDiversityDissagregationOption::getDissagregationOption)
+                        .collect(Collectors.toList());
+            case PAIS_ORIGEN:
+                return period.getPeriodCountryOfOriginDissagregationOptions()
+                        .stream()
+                        .filter(option -> option.getState().equals(State.ACTIVO))
+                        .map(PeriodCountryOfOriginDissagregationOption::getDissagregationOption)
+                        .collect(Collectors.toList());
+            case LUGAR:
+                return null;
+
+            default:
+                throw new GeneralAppException("No se puede puede generar opciones simples de desagregación para " + dissagregationType + ".");
+
         }
-        return r;
+
     }
 
     private List<IndicatorValue> createIndicatorValueDissagregationStandardForNoDissagregation() {
@@ -333,235 +210,6 @@ public class IndicatorValueService {
         return r;
     }
 
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForPopulationTypeAndAge() {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.TIPO_POBLACION_Y_EDAD;
-        for (PopulationType populationType : PopulationType.values()) {
-            for (AgeType ageType : AgeType.values()) {
-                IndicatorValue iv = new IndicatorValue();
-                iv.setState(State.ACTIVO);
-                iv.setDissagregationType(dt);
-                iv.setPopulationType(populationType);
-                iv.setAgeType(ageType);
-                iv.setShowValue(true);
-                r.add(iv);
-            }
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForPopulationTypeAndGender() {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.TIPO_POBLACION_Y_GENERO;
-        for (PopulationType populationType : PopulationType.values()) {
-            for (GenderType genderType : GenderType.values()) {
-                IndicatorValue iv = new IndicatorValue();
-                iv.setState(State.ACTIVO);
-                iv.setDissagregationType(dt);
-                iv.setPopulationType(populationType);
-                iv.setGenderType(genderType);
-                iv.setShowValue(true);
-                r.add(iv);
-            }
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForLocationAgeAndGender(List<Canton> cantones) {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.LUGAR_EDAD_Y_GENERO;
-        for (Canton canton : cantones) {
-            for (GenderType genderType : GenderType.values()) {
-                for (AgeType ageType : AgeType.values()) {
-                    IndicatorValue iv = new IndicatorValue();
-                    iv.setState(State.ACTIVO);
-                    iv.setDissagregationType(dt);
-                    iv.setGenderType(genderType);
-                    iv.setAgeType(ageType);
-                    iv.setLocation(canton);
-                    iv.setShowValue(true);
-                    r.add(iv);
-                }
-            }
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForDiversityAgeAndGender() {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.DIVERSIDAD_EDAD_Y_GENERO;
-        for (DiversityType diversityType : DiversityType.values()) {
-            for (GenderType genderType : GenderType.values()) {
-                for (AgeType ageType : AgeType.values()) {
-                    IndicatorValue iv = new IndicatorValue();
-                    iv.setState(State.ACTIVO);
-                    iv.setDissagregationType(dt);
-                    iv.setGenderType(genderType);
-                    iv.setAgeType(ageType);
-                    iv.setDiversityType(diversityType);
-                    iv.setShowValue(true);
-                    r.add(iv);
-                }
-            }
-        }
-        return r;
-    }
-
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForPopulationTypeLocationAgeAndGender(List<Canton> cantones) {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO;
-        for (Canton canton : cantones) {
-            for (PopulationType populationType : PopulationType.values()) {
-                for (GenderType genderType : GenderType.values()) {
-                    for (AgeType ageType : AgeType.values()) {
-                        IndicatorValue iv = new IndicatorValue();
-                        iv.setState(State.ACTIVO);
-                        iv.setDissagregationType(dt);
-                        iv.setLocation(canton);
-                        iv.setPopulationType(populationType);
-                        iv.setGenderType(genderType);
-                        iv.setAgeType(ageType);
-                        iv.setShowValue(true);
-                        r.add(iv);
-                    }
-                }
-            }
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForPopulationTypeLocationAgePrimaryEducationAndGender(List<Canton> cantones) {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO;
-        for (PopulationType populationType : PopulationType.values()) {
-            for (Canton canton : cantones) {
-                for (GenderType genderType : GenderType.values()) {
-                    for (AgePrimaryEducationType ageType : AgePrimaryEducationType.values()) {
-                        IndicatorValue iv = new IndicatorValue();
-                        iv.setState(State.ACTIVO);
-                        iv.setDissagregationType(dt);
-                        iv.setGenderType(genderType);
-                        iv.setAgePrimaryEducationType(ageType);
-                        iv.setLocation(canton);
-                        iv.setPopulationType(populationType);
-                        iv.setShowValue(true);
-                        r.add(iv);
-                    }
-                }
-            }
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForCountryOfOriginAgeAndGender() {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.PAIS_ORIGEN_EDAD_Y_GENERO;
-        for (CountryOfOrigin countryOfOrigin : CountryOfOrigin.values()) {
-            for (GenderType genderType : GenderType.values()) {
-                for (AgeType ageType : AgeType.values()) {
-                    IndicatorValue iv = new IndicatorValue();
-                    iv.setState(State.ACTIVO);
-                    iv.setDissagregationType(dt);
-                    iv.setGenderType(genderType);
-                    iv.setAgeType(ageType);
-                    iv.setCountryOfOrigin(countryOfOrigin);
-                    iv.setShowValue(true);
-                    r.add(iv);
-                }
-            }
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForCountryOfOriginAgePrimaryEducationAndGender() {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO;
-        for (CountryOfOrigin countryOfOrigin : CountryOfOrigin.values()) {
-            for (GenderType genderType : GenderType.values()) {
-                for (AgePrimaryEducationType agePrimaryEducationType : AgePrimaryEducationType.values()) {
-                    IndicatorValue iv = new IndicatorValue();
-                    iv.setState(State.ACTIVO);
-                    iv.setDissagregationType(dt);
-                    iv.setGenderType(genderType);
-                    iv.setAgePrimaryEducationType(agePrimaryEducationType);
-                    iv.setCountryOfOrigin(countryOfOrigin);
-                    iv.setShowValue(true);
-                    r.add(iv);
-                }
-            }
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForLocationCountryOfOriginAgeAndGender(List<Canton> cantones) {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO;
-        for (Canton canton : cantones) {
-            for (CountryOfOrigin countryOfOrigin : CountryOfOrigin.values()) {
-                for (GenderType genderType : GenderType.values()) {
-                    for (AgeType ageType : AgeType.values()) {
-                        IndicatorValue iv = new IndicatorValue();
-                        iv.setState(State.ACTIVO);
-                        iv.setDissagregationType(dt);
-                        iv.setGenderType(genderType);
-                        iv.setAgeType(ageType);
-                        iv.setLocation(canton);
-                        iv.setCountryOfOrigin(countryOfOrigin);
-                        iv.setShowValue(true);
-                        r.add(iv);
-                    }
-                }
-            }
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForLocationCountryOfOriginAgePrimaryEducationAndGender(List<Canton> cantones) {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO;
-        for (Canton canton : cantones) {
-            for (CountryOfOrigin countryOfOrigin : CountryOfOrigin.values()) {
-                for (GenderType genderType : GenderType.values()) {
-                    for (AgePrimaryEducationType agePrimaryEducationType : AgePrimaryEducationType.values()) {
-                        IndicatorValue iv = new IndicatorValue();
-                        iv.setState(State.ACTIVO);
-                        iv.setDissagregationType(dt);
-                        iv.setGenderType(genderType);
-                        iv.setAgePrimaryEducationType(agePrimaryEducationType);
-                        iv.setLocation(canton);
-                        iv.setCountryOfOrigin(countryOfOrigin);
-                        iv.setShowValue(true);
-                        r.add(iv);
-                    }
-                }
-            }
-        }
-        return r;
-    }
-
-    private List<IndicatorValue> createIndicatorValueDissagregationStandardForPopulationTypeLocationAgeTertiaryEducationAndGender(List<Canton> cantones) {
-        List<IndicatorValue> r = new ArrayList<>();
-        DissagregationType dt = DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO;
-        for (PopulationType populationType : PopulationType.values()) {
-            for (Canton canton : cantones) {
-                for (GenderType genderType : GenderType.values()) {
-                    for (AgeTertiaryEducationType ageType : AgeTertiaryEducationType.values()) {
-                        IndicatorValue iv = new IndicatorValue();
-                        iv.setState(State.ACTIVO);
-                        iv.setDissagregationType(dt);
-                        iv.setGenderType(genderType);
-                        iv.setAgeTertiaryEducationType(ageType);
-                        iv.setLocation(canton);
-                        iv.setPopulationType(populationType);
-                        iv.setShowValue(true);
-                        r.add(iv);
-                    }
-                }
-            }
-        }
-        return r;
-    }
 
     public List<IndicatorValue> getIndicatorValuesByMonthId(Long monthId, State state) {
         return this.indicatorValueDao.getIndicatorValuesByMonthIdAndState(monthId, state);
@@ -595,7 +243,7 @@ public class IndicatorValueService {
                     = dissagregationAssignationToIndicatorExecution.getDissagregationType();
             State dissagregationState
                     = dissagregationAssignationToIndicatorExecution.getState();
-            if (DissagregationType.getLocationDissagregationTypes().contains(dissagregationType)) {
+            if (dissagregationType.isLocationsDissagregation()) {
                 // solo los indicadores de localtion
                 List<IndicatorValue> indicatorValuesDissagregation = indicatorValues
                         .stream().filter(indicatorValue ->
@@ -624,7 +272,8 @@ public class IndicatorValueService {
                         cantones.add(cantonToActivate);
                         for (Month month : months) {
                             List<IndicatorValue> newIndicatorValues =
-                                    this.createIndicatorValueDissagregationStandardForMonth(dissagregationType, cantones);
+                                    // todo se agrego null en 2024
+                                    this.createIndicatorValueDissagregationStandardForMonth(dissagregationType, cantones, null);
                             newIndicatorValues.forEach(indicatorValue -> {
                                         month.addIndicatorValue(indicatorValue);
                                         indicatorValuesDissagregation.add(indicatorValue);
@@ -653,10 +302,8 @@ public class IndicatorValueService {
 
                 }
                 // activo o desactivo segun estado de desagregacion
-                */
-/*indicatorValuesDissagregation
-                        .forEach(indicatorValue -> indicatorValue.setState(dissagregationState));*//*
-
+                /*indicatorValuesDissagregation
+                        .forEach(indicatorValue -> indicatorValue.setState(dissagregationState));*/
 
                 if (dissagregationState.equals(State.INACTIVO)) {
                     indicatorValuesDissagregation
@@ -665,21 +312,22 @@ public class IndicatorValueService {
             }
 
         }
-        if (unvalidatedCantos.size() > 0) {
+        if (!unvalidatedCantos.isEmpty()) {
             String unvalidMonths = unvalidatedCantos.stream().map(IndicatorValue::getMonthEnum)
                     .distinct().sorted(Comparator.comparingInt(MonthEnum::getOrder))
                     .map(MonthEnum::getLabel).collect(Collectors.joining(", "));
-            String unvalidCantonts =unvalidatedCantos.stream().map(IndicatorValue::getLocation).distinct()
-                    .map(canton -> canton.getProvincia().getDescription()+"-"+canton.getDescription())
+            String unvalidCantonts = unvalidatedCantos.stream().map(IndicatorValue::getLocation).distinct()
+                    .map(canton -> canton.getProvincia().getDescription() + "-" + canton.getName())
                     .sorted().collect(Collectors.joining(", "));
-            String message= "No se puede eliminar los siguientes cantones porque tienen datos reportados : " +
-                    unvalidCantonts +" en los siguientes meses: "+unvalidMonths +" Para eliminar el cantón, primero vaya a estos meses y ponga en 0 (cero) los valores de estos cantones. ";
+            String message = "No se puede eliminar los siguientes cantones porque tienen datos reportados : " +
+                    unvalidCantonts + " en los siguientes meses: " + unvalidMonths + " Para eliminar el cantón, primero vaya a estos meses y ponga en 0 (cero) los valores de estos cantones. ";
             throw new GeneralAppException(message, Response.Status.BAD_REQUEST);
         }
     }
-*/
 
     public List<IndicatorValue> getByIndicatorExecutionId(Long indicatorExecutionId) {
         return this.indicatorValueDao.getByIndicatorExecutionId(indicatorExecutionId);
     }
+
+    /////////////////////
 }
