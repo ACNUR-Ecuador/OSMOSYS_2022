@@ -53,7 +53,7 @@ public class MonthService {
 
     public List<Month> createMonthsForQuarter(Quarter quarter, LocalDate startDate, LocalDate endDate,
                                               List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations,
-                                              List<Canton> cantones) throws GeneralAppException {
+                                              List<Canton> cantones, Period period) throws GeneralAppException {
         QuarterEnum quarterEnum = quarter.getQuarter();
         List<MonthEnum> monthsEnums = MonthEnum.getMonthsByQuarter(quarterEnum);
         // solo los meses q enten dentro del periodo
@@ -68,7 +68,7 @@ public class MonthService {
             ) {
 
 
-                Month month = this.createMonth(quarter.getYear(), monthEnum, dissagregationTypes, customDissagregations, cantones);
+                Month month = this.createMonth(quarter.getYear(), monthEnum, dissagregationTypes, customDissagregations, cantones, period);
                 months.add(month);
             }
         }
@@ -78,7 +78,7 @@ public class MonthService {
 
     public Month createMonth(Integer year, MonthEnum monthEnum,
                              List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations,
-                             List<Canton> cantones) throws GeneralAppException {
+                             List<Canton> cantones, Period period) throws GeneralAppException {
         Month m = new Month();
         m.setState(State.ACTIVO);
         m.setYear(year);
@@ -87,8 +87,8 @@ public class MonthService {
 
         Set<IndicatorValue> indicatorValues = new HashSet<>();
         for (DissagregationType dissagregationType : dissagregationTypes) {
-            //todo
-            //indicatorValues.addAll(this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(dissagregationType, cantones));
+
+            indicatorValues.addAll(this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(dissagregationType, cantones, period));
         }
 
         for (IndicatorValue indicatorValue : indicatorValues) {
@@ -202,9 +202,9 @@ public class MonthService {
     }
 
     public MonthValuesWeb getMonthValuesWeb(Long monthId, State state) {
-        // todo
-        // List<IndicatorValue> indicatorValues = this.indicatorValueService.getIndicatorValuesByMonthId(monthId, state);
-        List<IndicatorValue> indicatorValues = new ArrayList<>();
+
+        List<IndicatorValue> indicatorValues = this.indicatorValueService.getIndicatorValuesByMonthId(monthId, state);
+
 
         List<IndicatorValueCustomDissagregation> indicatorValuesCustomDissagregation =
                 this.indicatorValueCustomDissagregationService.getIndicatorValuesByMonthId(monthId, state);
@@ -273,11 +273,14 @@ public class MonthService {
 
     }
 
-    public void updateMonthLocationsByAssignation(Month month, List<Canton> cantones, List<DissagregationType> locationDissagregationTypes) throws GeneralAppException {
+    public void updateMonthLocationsByAssignation(Month month, List<Canton> cantones, List<DissagregationType> locationDissagregationTypes,
+                                                  Period period
+
+    ) throws GeneralAppException {
         List<IndicatorValue> newValues = new ArrayList<>();
         for (DissagregationType locationDissagregationType : locationDissagregationTypes) {
-            // todo
-            // newValues.addAll(this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(locationDissagregationType, cantones));
+
+            newValues.addAll(this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(locationDissagregationType, cantones, period));
         }
         newValues.forEach(month::addIndicatorValue);
     }

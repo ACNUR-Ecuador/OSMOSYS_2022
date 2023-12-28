@@ -181,7 +181,7 @@ public class IndicatorExecutionService {
         ie.setProject(project);
 
         List<Canton> cantones = new ArrayList<>();
-        if (indicatorExecutionWeb.getLocations().size() > 0) {
+        if (!indicatorExecutionWeb.getLocations().isEmpty()) {
             cantones = this.modelWebTransformationService.cantonsWebToCantons(indicatorExecutionWeb.getLocations());
 
         }
@@ -208,9 +208,9 @@ public class IndicatorExecutionService {
     }
 
     private void createQuartersInIndicatorExecution(IndicatorExecution ie, Project project, List<Canton> cantones, List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations) throws GeneralAppException {
-        Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, customDissagregations, cantones);
-        //todo
-        //this.validateLocationsSegregationsAndCantons(dissagregationTypes, cantones);
+        Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, customDissagregations, cantones, ie.getPeriod());
+
+        this.validateLocationsSegregationsAndCantons(dissagregationTypes, cantones);
         List<Quarter> qsl = setOrderInQuartersAndMonths(qs);
         for (Quarter quarter : qsl) {
             ie.addQuarter(quarter);
@@ -381,7 +381,7 @@ public class IndicatorExecutionService {
         if (monthValuesWeb.getMonth() == null || monthValuesWeb.getMonth().getId() == null) {
             throw new GeneralAppException("Llamada mal estructurada (month es nulo)", Response.Status.BAD_REQUEST);
         }
-        if (monthValuesWeb.getIndicatorValuesMap() == null || monthValuesWeb.getIndicatorValuesMap().size() < 1) {
+        if (monthValuesWeb.getIndicatorValuesMap() == null || monthValuesWeb.getIndicatorValuesMap().isEmpty()) {
             throw new GeneralAppException("Llamada mal estructurada (no valores )", Response.Status.BAD_REQUEST);
         }
         if (indicatorExecution == null) {
@@ -505,9 +505,11 @@ public class IndicatorExecutionService {
 
     public void updateIndicatorExecutionProjectDates(Project project, LocalDate newStartDate, LocalDate newEndDate) throws GeneralAppException {
         List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionDao.getIndicatorExecutionsByProjectId(project.getId());
+
         List<Canton> cantones = project.getProjectLocationAssigments().stream().filter(projectLocationAssigment -> projectLocationAssigment.getState().equals(State.ACTIVO)).map(ProjectLocationAssigment::getLocation).collect(Collectors.toList());
 
         for (IndicatorExecution indicatorExecution : indicatorExecutions) {
+            Period period = indicatorExecution.getPeriod();
             List<DissagregationType> dissagregationTypes;
             List<CustomDissagregation> customDissagregations;
             if (indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)) {
@@ -578,19 +580,19 @@ public class IndicatorExecutionService {
                     // meses ausentes
                     for (MonthEnum monthEnum : monthsEnums) {
                         Optional<Month> foundMonth = foundQuarter.getMonths().stream().filter(month -> month.getMonth().equals(monthEnum)).findFirst();
-                        if (!foundMonth.isPresent()) {
+                        if (foundMonth.isEmpty()) {
                             // creo mes
                             Month newmonth = this.monthService
-                                    .createMonth(foundQuarter.getYear(), monthEnum, dissagregationTypes, customDissagregations, cantones);
+                                    .createMonth(foundQuarter.getYear(), monthEnum, dissagregationTypes, customDissagregations, cantones, period);
                             foundQuarter.addMonth(newmonth);
                         }
                     }
 
 
                 } else {
-                    //todo
-                    // this.validateLocationsSegregationsAndCantons(dissagregationTypes, cantones);
-                    Quarter newCreatedQuarter = this.quarterService.createQuarter(newQuarter, newStartDate, newEndDate, dissagregationTypes, customDissagregations, cantones);
+
+                    this.validateLocationsSegregationsAndCantons(dissagregationTypes, cantones);
+                    Quarter newCreatedQuarter = this.quarterService.createQuarter(newQuarter, newStartDate, newEndDate, dissagregationTypes, customDissagregations, cantones, period);
                     indicatorExecution.addQuarter(newCreatedQuarter);
                 }
             }
@@ -604,7 +606,7 @@ public class IndicatorExecutionService {
                         return false;
                     }
                 }).findFirst();
-                if (!foundOrgQuarter.isPresent()) {
+                if (foundOrgQuarter.isEmpty()) {
                     quarterOrg.setState(State.INACTIVO);
                     for (Month month : quarterOrg.getMonths()) {
                         month.setState(State.INACTIVO);
@@ -625,37 +627,40 @@ public class IndicatorExecutionService {
 
 
     }
-// todo
- /*   private void validateLocationsSegregationsAndCantons(List<DissagregationType> dissagregationTypes, List<Canton> cantones) throws GeneralAppException {
+
+    private void validateLocationsSegregationsAndCantons(List<DissagregationType> dissagregationTypes, List<Canton> cantones) throws GeneralAppException {
         for (DissagregationType dissagregationType : dissagregationTypes) {
-            if (DissagregationType.getLocationDissagregationTypes().contains(dissagregationType)) {
+            if (dissagregationType.isLocationsDissagregation()) {
                 if (CollectionUtils.isEmpty(cantones)) {
                     throw new GeneralAppException("No se puede crear una desagregación de lugar sin cantones ", Response.Status.BAD_REQUEST);
                 }
             }
         }
-    }*/
-// todo
-/*    public void updateIndicatorExecutionLocationsByAssignation(IndicatorExecution indicatorExecution, List<Canton> cantonesToCreate) throws GeneralAppException {
+    }
+
+    public void updateIndicatorExecutionLocationsByAssignation(IndicatorExecution indicatorExecution,
+                                                               List<Canton> cantonesToCreate
+    ) throws GeneralAppException {
         List<DissagregationType> locationDissagregationTypes;
         if (indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)) {
             locationDissagregationTypes = indicatorExecution
                     .getPeriod()
                     .getGeneralIndicator()
                     .getDissagregationAssignationsToGeneralIndicator()
-                    .stream().map(DissagregationAssignationToGeneralIndicator::getDissagregationType).filter(dissagregationType -> DissagregationType.getLocationDissagregationTypes().contains(dissagregationType)).collect(Collectors.toList());
+                    .stream().map(DissagregationAssignationToGeneralIndicator::getDissagregationType)
+                    .filter(DissagregationType::isLocationsDissagregation)
+                    .collect(Collectors.toList());
         } else {
             locationDissagregationTypes = indicatorExecution.getDissagregationsAssignationsToIndicatorExecutions()
                     .stream().map(DissagregationAssignationToIndicatorExecution::getDissagregationType)
-                    .filter(dissagregationType -> DissagregationType.getLocationDissagregationTypes().contains(dissagregationType))
+                    .filter(DissagregationType::isLocationsDissagregation)
                     .collect(Collectors.toList());
         }
         for (Quarter quarter : indicatorExecution.getQuarters()) {
-            this.quarterService.updateQuarterLocationsByAssignation(quarter, cantonesToCreate, locationDissagregationTypes);
+            this.quarterService.updateQuarterLocationsByAssignation(quarter, cantonesToCreate, locationDissagregationTypes, indicatorExecution.getPeriod());
         }
-    }*/
-    //todo
-/*
+    }
+
     public Long updateAssignPerformanceIndicatoToProject(IndicatorExecutionAssigmentWeb indicatorExecutionAssigmentWeb) throws GeneralAppException {
         if (indicatorExecutionAssigmentWeb.getId() == null) {
             throw new GeneralAppException("No se pudo encontrar la asignación (Id:" + indicatorExecutionAssigmentWeb.getId() + ")", Response.Status.BAD_REQUEST);
@@ -677,13 +682,13 @@ public class IndicatorExecutionService {
         if (CollectionUtils.isNotEmpty(
                 indicatorExecution.getDissagregationsAssignationsToIndicatorExecutions().stream()
                         .filter(dissagregationAssignationToIndicatorExecution ->
-                                DissagregationType.getLocationDissagregationTypes().contains(dissagregationAssignationToIndicatorExecution.getDissagregationType())
+                                dissagregationAssignationToIndicatorExecution.getDissagregationType().isLocationsDissagregation()
                         ).collect(Collectors.toSet())
         )) {
             // busco las que ya no existen
             // activo todos
 
-            ProjectService.LocationToActivateDesativate result = this.getLocationToActivateDessactivate(indicatorExecution,indicatorExecutionAssigmentWeb.getLocations());
+            ProjectService.LocationToActivateDesativate result = this.getLocationToActivateDessactivate(indicatorExecution, indicatorExecutionAssigmentWeb.getLocations());
             this.updateIndicatorExecutionLocations(indicatorExecution, result.locationsToActivate, result.locationsToDissable);
 
 
@@ -691,9 +696,9 @@ public class IndicatorExecutionService {
         this.updateIndicatorExecutionTotals(indicatorExecution);
         this.saveOrUpdate(indicatorExecution);
         return indicatorExecution.getId();
-    }*/
+    }
 
-    public ProjectService.LocationToActivateDesativate getLocationToActivateDessactivate(IndicatorExecution indicatorExecution, List<CantonWeb> cantonesWeb){
+    public ProjectService.LocationToActivateDesativate getLocationToActivateDessactivate(IndicatorExecution indicatorExecution, List<CantonWeb> cantonesWeb) {
 
         Set<Canton> cantonesToActivate = new HashSet<>(this.cantonService.getByIds(cantonesWeb.stream().map(CantonWeb::getId).collect(Collectors.toList())));
         //desactivo los q ya no existen
@@ -705,12 +710,13 @@ public class IndicatorExecutionService {
         for (Canton existingCanton : existingCantons) {
             Optional<CantonWeb> cantonWebFound = cantonesWeb.stream().filter(cantonWeb -> cantonWeb.getId().equals(existingCanton.getId()))
                     .findFirst();
-            if (!cantonWebFound.isPresent()) {
+            if (cantonWebFound.isEmpty()) {
                 cantonesToDissable.add(existingCanton);
             }
         }
         return new ProjectService.LocationToActivateDesativate(cantonesToActivate, cantonesToDissable);
     }
+
     private static class Result {
         public final Set<Canton> cantonesToActivate;
         public final Set<Canton> cantonesToDissable;
@@ -753,9 +759,9 @@ public class IndicatorExecutionService {
 
 
                 List<CustomDissagregation> customDissagregations = customDissagregationsAssignations.stream().map(CustomDissagregationAssignationToIndicatorExecution::getCustomDissagregation).collect(Collectors.toList());
-                //todo
-                //this.validateLocationsSegregationsAndCantons(dissagregationTypes, cantones);
-                Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, customDissagregations, cantones);
+
+                this.validateLocationsSegregationsAndCantons(dissagregationTypes, cantones);
+                Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, customDissagregations, cantones, project.getPeriod());
                 List<Quarter> qsl = setOrderInQuartersAndMonths(qs);
                 for (Quarter quarter : qsl) {
                     indicatorExecution.addQuarter(quarter);
@@ -773,7 +779,7 @@ public class IndicatorExecutionService {
                 .stream()
                 .filter(indicatorExecution -> indicatorExecution.getQuarters().size() < 1)
                 .collect(Collectors.toList());
-        Period period = this.periodService.find(periodId);
+        Period period = this.periodService.getWithDissagregationOptionsById(periodId);
         for (IndicatorExecution indicatorExecution : indicatorExecutions) {
             Indicator indicator = indicatorExecution.getIndicator();
 
@@ -808,7 +814,7 @@ public class IndicatorExecutionService {
             LocalDate startDate = LocalDate.of(period.getYear(), 1, 1);
             LocalDate endDate = LocalDate.of(period.getYear(), 12, 31);
 
-            Set<Quarter> qs = this.quarterService.createQuarters(startDate, endDate, dissagregationTypes, customDissagregations, new ArrayList<>());
+            Set<Quarter> qs = this.quarterService.createQuarters(startDate, endDate, dissagregationTypes, customDissagregations, new ArrayList<>(), period);
             List<Quarter> qsl = setOrderInQuartersAndMonths(qs);
             for (Quarter quarter : qsl) {
                 indicatorExecution.addQuarter(quarter);
@@ -836,7 +842,7 @@ public class IndicatorExecutionService {
             throw new GeneralAppException("Indicador no encontrado " + indicatorExecutionAssigmentWeb.getIndicator().getId(), Response.Status.BAD_REQUEST);
         }
         indicatorExecution.setIndicator(indicator);
-        Period period = this.periodService.find(indicatorExecutionAssigmentWeb.getPeriod().getId());
+        Period period = this.periodService.getWithDissagregationOptionsById(indicatorExecutionAssigmentWeb.getPeriod().getId());
         if (period == null) {
             throw new GeneralAppException("Periodo no encontrado " + indicatorExecutionAssigmentWeb.getPeriod().getId(), Response.Status.BAD_REQUEST);
         }
@@ -847,7 +853,7 @@ public class IndicatorExecutionService {
         indicatorExecution.setKeepBudget(indicatorExecutionAssigmentWeb.getKeepBudget());
         indicatorExecution.setAssignedBudget(indicatorExecutionAssigmentWeb.getAssignedBudget());
         Office office = this.officeService.getById(indicatorExecutionAssigmentWeb.getReportingOffice().getId());
-        indicatorExecution.setTarget(indicatorExecutionAssigmentWeb.getTarget()!=null?new BigDecimal(indicatorExecutionAssigmentWeb.getTarget()):null);
+        indicatorExecution.setTarget(indicatorExecutionAssigmentWeb.getTarget() != null ? new BigDecimal(indicatorExecutionAssigmentWeb.getTarget()) : null);
         indicatorExecution.setReportingOffice(office);
         if (office == null) {
             throw new GeneralAppException("Oficina no encontrada " + indicatorExecutionAssigmentWeb.getReportingOffice().getId(), Response.Status.BAD_REQUEST);
@@ -878,8 +884,7 @@ public class IndicatorExecutionService {
                             return da;
                         }).collect(Collectors.toList());
         customDissagregationsAssignations.forEach(indicatorExecution::addCustomDissagregationAssignationToIndicatorExecution);
-        //TODO FILTERS
-        // TODO MARKERS
+
         List<DissagregationType> dissagregationTypes = dissagregationAssignations
                 .stream()
                 .map(DissagregationAssignationToIndicatorExecution::getDissagregationType)
@@ -891,7 +896,7 @@ public class IndicatorExecutionService {
                         .collect(Collectors.toList());
         LocalDate startDate = LocalDate.of(period.getYear(), 1, 1);
         LocalDate endDate = LocalDate.of(period.getYear(), 12, 31);
-        Set<Quarter> qs = this.quarterService.createQuarters(startDate, endDate, dissagregationTypes, customDissagregations, new ArrayList<>());
+        Set<Quarter> qs = this.quarterService.createQuarters(startDate, endDate, dissagregationTypes, customDissagregations, new ArrayList<>(), period);
         List<Quarter> qsl = setOrderInQuartersAndMonths(qs);
         for (Quarter quarter : qsl) {
             indicatorExecution.addQuarter(quarter);
@@ -913,7 +918,7 @@ public class IndicatorExecutionService {
         }
 
         indicatorExecution.setState(indicatorExecutionAssigmentWeb.getState());
-        indicatorExecution.setTarget(indicatorExecutionAssigmentWeb.getTarget()!=null?new BigDecimal(indicatorExecutionAssigmentWeb.getTarget()):null);
+        indicatorExecution.setTarget(indicatorExecutionAssigmentWeb.getTarget() != null ? new BigDecimal(indicatorExecutionAssigmentWeb.getTarget()) : null);
 
         this.assigUsersToIndicatorExecution(indicatorExecution, indicatorExecutionAssigmentWeb);
         /*  *************budget**********/
@@ -1034,17 +1039,17 @@ public class IndicatorExecutionService {
         if (ie == null) {
             throw new GeneralAppException("No se pudo encontrar el indicador (indicatorExecutionId =" + indicatorExecutionId + ")", Response.Status.BAD_REQUEST);
         }
-        if (ie.getProject()==null) {
+        if (ie.getProject() == null) {
             throw new GeneralAppException("Este indicador no es ejecutado por un Socio (indicatorExecutionId =" + indicatorExecutionId + ")", Response.Status.BAD_REQUEST);
         }
 
-        if(ie.getIndicatorType().equals(IndicatorType.GENERAL)){
+        if (ie.getIndicatorType().equals(IndicatorType.GENERAL)) {
             ProjectService.LocationToActivateDesativate locatoinActiveNoActive = this.projectService.getLocationToActivateDesativate(ie.getProject(), cantonesWeb);
             Project project = ie.getProject();
             for (IndicatorExecution indicatorExecution : project.getIndicatorExecutions()) {
                 this.updateIndicatorExecutionLocations(indicatorExecution, locatoinActiveNoActive.locationsToActivate, locatoinActiveNoActive.locationsToDissable);
             }
-        }else {
+        } else {
             ProjectService.LocationToActivateDesativate locationToActivateDessactivate = this.getLocationToActivateDessactivate(ie, cantonesWeb);
             this.updateIndicatorExecutionLocations(ie, locationToActivateDessactivate.locationsToActivate, locationToActivateDessactivate.locationsToDissable);
 // todo definir q hacer
@@ -1286,10 +1291,9 @@ public class IndicatorExecutionService {
             }
         });
 
-        // todo
-        // this.indicatorValueService.updateIndicatorValuesLocationsForIndicatorExecution(
-        //         indicatorExecution, locationsToActivateIe, locationsToDissableIe
-        // );
+        this.indicatorValueService.updateIndicatorValuesLocationsForIndicatorExecution(
+                indicatorExecution, locationsToActivateIe, locationsToDissableIe
+        );
         this.updateIndicatorExecutionTotals(indicatorExecution);
     }
 
@@ -1333,9 +1337,8 @@ public class IndicatorExecutionService {
                         .map(IndicatorExecutionLocationAssigment::getLocation)
                         .distinct()
                         .collect(Collectors.toList());
-                //todo
-                //List<IndicatorValue> ivs = this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(dissagregationType, cantones);
-                List<IndicatorValue> ivs =new ArrayList<>();
+
+                List<IndicatorValue> ivs = this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(dissagregationType, cantones, indicatorExecution.getPeriod());
                 for (IndicatorValue iv : ivs) {
                     // veo q esten activos o inactivos los locations asigmentes
                     if (iv.getLocation() != null) {

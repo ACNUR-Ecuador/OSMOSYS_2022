@@ -18,10 +18,4 @@ public class CatalogReportDataService {
     IndicatorService indicatorService;
 
 
-    public List<IndicatorCatalogDTO> getByYear(int year) {
-        List<Indicator> indicators = this.indicatorService.getByPeriodYearAssignmentAndState(year);
-        return null;// todo
-    }
-
-
 }

@@ -837,12 +837,12 @@ public class ReportsEndpoint {
         LOGGER.info("getIndicatorReportProgramByProjectId:");//) + principal.getName());
         long lStartTime = System.nanoTime();
 
-        //todo
-        ByteArrayOutputStream r = null;
-        /* ByteArrayOutputStream r = this.reportService.getIndicatorReportProgramByProjectId(focalPointId);
+
+
+        ByteArrayOutputStream r = this.reportService.getIndicatorReportProgramByProjectId(focalPointId);
         if (r == null) {
             throw new GeneralAppException("No se indicadores", Response.Status.NO_CONTENT);
-        }*/
+        }
         long lEndTime = System.nanoTime();
         LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
         String filename = "Reporte_Programas" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";

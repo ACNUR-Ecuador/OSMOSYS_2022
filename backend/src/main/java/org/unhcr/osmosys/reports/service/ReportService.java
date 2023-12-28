@@ -526,7 +526,7 @@ public class ReportService {
             return null;
         }
     }
-/*
+
 
     public ByteArrayOutputStream getIndicatorReportProgramByProjectId(Long projectId) throws GeneralAppException {
         if (ReportService.dissableJasperReport) {
@@ -537,8 +537,9 @@ public class ReportService {
             Map<String, Object> parameters = new HashMap<>();
             InputStream file = this.getReportFile(jrxmlFile);
 
-            List<IndicatorReportProgramsDTO> dtos = this.reportDataService.getIndicatorReportProgramsByProjectId(projectId);
-
+            // todo
+            // List<IndicatorReportProgramsDTO> dtos = this.reportDataService.getIndicatorReportProgramsByProjectId(projectId);
+            List<IndicatorReportProgramsDTO> dtos=null;
             JRBeanCollectionDataSource itemsJRBean = new JRBeanCollectionDataSource(dtos);
             parameters.put("CollectionBeanParam", itemsJRBean);
 
@@ -548,7 +549,7 @@ public class ReportService {
         } catch (JRException e) {
             throw new GeneralAppException("Error al generar el reporte", Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
         }
-    }*/
+    }
 
 
 }

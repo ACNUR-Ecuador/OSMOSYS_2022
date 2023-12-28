@@ -61,9 +61,8 @@ public class IndicatorExecutionEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public List<IndicatorExecutionWeb> getPerformanceIndicatorExecutionsByProjectId(@PathParam("projectId") Long projectId) throws GeneralAppException {
-        List<IndicatorExecutionWeb> data = this.indicatorExecutionService.getPerformanceIndicatorExecutionsByProjectId(projectId, State.ACTIVO);
 
-        return data;
+        return this.indicatorExecutionService.getPerformanceIndicatorExecutionsByProjectId(projectId, State.ACTIVO);
     }
 
     @Path("/performanceAllDirectImplementationByPeriodId/{periodId}")
@@ -121,9 +120,8 @@ public class IndicatorExecutionEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public Long updateAssignPerformanceIndicatoToProject(IndicatorExecutionAssigmentWeb indicatorExecutionAssigmentWeb) throws GeneralAppException {
-//todo
-        //return this.indicatorExecutionService.updateAssignPerformanceIndicatoToProject(indicatorExecutionAssigmentWeb);
-return null;
+        return this.indicatorExecutionService.updateAssignPerformanceIndicatoToProject(indicatorExecutionAssigmentWeb);
+
     }
 
     @Path("/updateAssignPerformanceIndicatorDirectImplementation")
@@ -170,6 +168,7 @@ return null;
     public Long updateDirectImplementationIndicatorExecutionLocationAssigment(@PathParam("indicatorExecutionId") Long indicatorExecutionId, List<CantonWeb> cantones) throws GeneralAppException {
         return this.indicatorExecutionService.updateDirectImplementationIndicatorExecutionLocationAssigment(indicatorExecutionId, cantones);
     }
+
     @Path("/updatePartnerIndicatorExecutionLocationAssigment/{indicatorExecutionId}")
     @POST
     @Secured
@@ -319,7 +318,7 @@ return null;
             @PathParam("periodId") Long periodId,
             @PathParam("officeId") Long officeId,
             ImportFileWeb importFileWeb) throws GeneralAppException {
-        this.directImplementationIndicatorsImportService.directImplementationIndicatorsImport(periodId, officeId,importFileWeb);
+        this.directImplementationIndicatorsImportService.directImplementationIndicatorsImport(periodId, officeId, importFileWeb);
         return Response.ok().build();
     }
 
