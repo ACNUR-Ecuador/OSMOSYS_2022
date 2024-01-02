@@ -7,7 +7,6 @@ import {RolesListPipe} from './pipes/roles-list.pipe';
 import { CodeShortDescriptionPipe } from './pipes/code-short-description.pipe';
 import { CodeDescriptionPipe } from './pipes/code-description.pipe';
 import { CustomDissagregationOptionsListPipe } from './pipes/custom-dissagregation-options-list.pipe';
-import { MarkersListPipe } from './pipes/markers-list.pipe';
 import {IndicatorPipe} from './pipes/indicator.pipe';
 import {EnumValuesToLabelPipe} from './pipes/enum-values-to-label.pipe';
 import {DissagregationsAssignationToIndicatorPipe} from './pipes/dissagregations-assignation-to-indicator.pipe';
@@ -31,7 +30,6 @@ import { StatementPeriodStatementAsignationsListPipe } from './pipes/statement-p
         CodeShortDescriptionPipe,
         CodeDescriptionPipe,
         CustomDissagregationOptionsListPipe,
-        MarkersListPipe,
         IndicatorPipe,
         CodeDescriptionPipe,
         EnumValuesToLabelPipe,

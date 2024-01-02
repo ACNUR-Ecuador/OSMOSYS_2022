@@ -1,14 +1,5 @@
 import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
-import {
-    Area, AreaType,
-    CustomDissagregation,
-    CustomDissagregationAssignationToIndicator,
-    DissagregationAssignationToIndicator, ImportFile,
-    Indicator,
-    Marker,
-    Period,
-    Statement
-} from '../../shared/model/OsmosysModel';
+import {AreaType, CustomDissagregation, CustomDissagregationAssignationToIndicator, DissagregationAssignationToIndicator, ImportFile, Indicator, Period, Statement} from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ConfirmationService, FilterService, MessageService, SelectItem} from 'primeng/api';
@@ -18,10 +9,8 @@ import {IndicatorService} from '../../services/indicator.service';
 import {StatementService} from '../../services/statement.service';
 import {CodeShortDescriptionPipe} from '../../shared/pipes/code-short-description.pipe';
 import {CustomDissagregationService} from '../../services/custom-dissagregation.service';
-import {MarkerService} from '../../services/marker.service';
 import {EnumValuesToLabelPipe} from '../../shared/pipes/enum-values-to-label.pipe';
 import {BooleanYesNoPipe} from '../../shared/pipes/boolean-yes-no.pipe';
-import {MarkersListPipe} from '../../shared/pipes/markers-list.pipe';
 import {
     DissagregationsAssignationToIndicatorPipe
 } from '../../shared/pipes/dissagregations-assignation-to-indicator.pipe';
@@ -59,7 +48,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     filteredStatements: { labelItem: string, valueItem: Statement }[];
     customDissagregations: CustomDissagregation[];
     dissagregationTypes: SelectItem[];
-    markers: Marker[];
     isMonitoredOptions: any[];
     isCalculatedOptions: any[];
     periods: Period[];
@@ -83,11 +71,9 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         private customDissagregationService: CustomDissagregationService,
         private booleanYesNoPipe: BooleanYesNoPipe,
         private periodsFromIndicatorPipe: PeriodsFromIndicatorPipe,
-        private markersListPipe: MarkersListPipe,
         private codeDescriptionPipe: CodeDescriptionPipe,
         private dissagregationsAssignationToIndicatorPipe: DissagregationsAssignationToIndicatorPipe,
         private customDissagregationsAssignationToIndicatorPipe: CustomDissagregationsAssignationToIndicatorPipe,
-        private markerService: MarkerService,
         private filterService: FilterService,
         private filterUtilsService: FilterUtilsService,
         private periodService: PeriodService,
@@ -154,7 +140,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                 pipeRef: this.enumValuesToLabelPipe,
                 arg1: EnumsType.TotalIndicatorCalculationType
             },
-            {field: 'markers', header: 'Marcadores', type: ColumnDataType.text, pipeRef: this.markersListPipe},
             {field: 'statement', header: 'Declaración', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
             {
                 field: 'dissagregationsAssignationToIndicator',
@@ -175,7 +160,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             }
         ];
 
-        const hiddenColumns: string[] = ['id', 'guideDirectImplementation', 'markers', 'customDissagregationAssignationToIndicators', 'dissagregationsAssignationToIndicator', 'unit','instructions'];
+        const hiddenColumns: string[] = ['id', 'guideDirectImplementation',  'customDissagregationAssignationToIndicators', 'dissagregationsAssignationToIndicator', 'unit','instructions'];
         this._selectedColumns = this.cols.filter(value => !hiddenColumns.includes(value.field));
 
         this.formItem = this.fb.group({
@@ -194,7 +179,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             isCalculated: new FormControl('', Validators.required),
             totalIndicatorCalculationType: new FormControl('', Validators.required),
             compassIndicator: new FormControl('', Validators.required),
-            markers: new FormControl(''),
             statement: new FormControl(''),
             dissagregations: new FormControl('', Validators.required),
             dissagregationsAssignationToIndicator: new FormControl(''),
@@ -352,8 +336,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.formItem.get('statement').enable();
         this.formItem.get('dissagregations').patchValue([]);
         this.formItem.get('customDissagregations').patchValue([]);
-        this.loadMarkers([]);
-        console.log(this.formItem.get('statement').value);
         this.ref.detectChanges();
     }
 
@@ -380,7 +362,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                     '-' + value.period.id;
             });
         this.formItem.get('customDissagregations').patchValue(customDissagregations);
-        this.loadMarkers(indicator.markers);
+
         this.ref.detectChanges();
     }
 
@@ -403,7 +385,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             isCalculated,
             totalIndicatorCalculationType,
             compassIndicator,
-            markers,
             statement,
             dissagregations,
             dissagregationsAssignationToIndicator,
@@ -429,7 +410,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             isCalculated,
             totalIndicatorCalculationType,
             compassIndicator,
-            markers,
             statement,
             unit,
             dissagregationsAssignationToIndicator,
@@ -593,34 +573,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     }
 
     // noinspection DuplicatedCode
-    private loadMarkers(markersToRemove: Marker[]) {
-        this.markerService.getByState(EnumsState.ACTIVE)
-            .subscribe({
-                next: value => {
-                    if (markersToRemove && markersToRemove.length > 0) {
-                        this.markers = value.filter(value1 => {
-                            for (const marker of markersToRemove) {
-                                if (marker.id === value1.id) {
-                                    return false;
-                                }
-                            }
-                            return true;
-                        });
-                    } else {
-                        this.markers = value;
-                    }
-                },
-                error: err => {
-
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error al cargar los marcadores',
-                        detail: err.error.message,
-                        life: 3000
-                    });
-                }
-            });
-    }
 
     private registerFilters() {
         this.filterService.register('customDissagregationsAssignationToIndicatorFilter', (value, filter): boolean => {
@@ -631,9 +583,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         });
         this.filterService.register('statementFilter', (value, filter): boolean => {
             return this.filterUtilsService.statementFilter(value, filter);
-        });
-        this.filterService.register('markersFilter', (value, filter): boolean => {
-            return this.filterUtilsService.markersFilter(value, filter);
         });
         this.filterService.register('periodIndicatorFilter', (value, filter): boolean => {
             return this.filterUtilsService.periodIndicatorFilter(value, filter);

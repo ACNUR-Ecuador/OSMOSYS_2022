@@ -21,7 +21,6 @@ import {
 import {
     DirectImplementationAdministrationComponent
 } from './direct-implementation-administration/direct-implementation-administration.component';
-import {MarkerAdministrationComponent} from './marker-administration/marker-administration.component';
 import {AppconfigurationComponent} from './appconfiguration/appconfiguration.component';
 import {MassMailingComponent} from "./mass-mailing/mass-mailing.component";
 import {MassBlockingComponent} from "./mass-blocking/mass-blocking.component";
@@ -39,7 +38,6 @@ const routes: Routes = [
             {path: 'offices', component: OfficeAdministrationComponent},
             {path: 'statements', component: StatementAdministrationComponent},
             {path: 'customDissagregation', component: CustomDissagregationAdministrationComponent},
-            {path: 'marker', component: MarkerAdministrationComponent},
             {path: 'performanceIndicator', component: PerformanceIndicatorAdministrationComponent},
             {path: 'partnerProjectAdministration', component: PartnerProjectAdministrationComponent},
             {path: 'partnerProjectListAdministration', component: PartnerProjectListAdministrationComponent},

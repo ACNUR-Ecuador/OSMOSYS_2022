@@ -51,15 +51,20 @@ public class PeriodDao extends GenericDaoJpa<Period, Long> {
         }
     }
 
-    public List<Period> getWithGeneralIndicatorAll()  {
 
-        String jpql = "SELECT DISTINCT o FROM Period o left join fetch o.generalIndicator gi order by o.year " ;
+
+    public List<Period> getAllWithDissagregationOptions()  {
+
+        String jpql = "SELECT DISTINCT o FROM Period o left join fetch o.generalIndicator gi " +
+                " left join fetch o.periodPopulationTypeDissagregationOptions " +
+                " left join fetch o.periodAgeDissagregationOptions " +
+                " left join fetch o.periodGenderDissagregationOptions " +
+                " left join fetch o.periodDiversityDissagregationOptions " +
+                " left join fetch o.periodCountryOfOriginDissagregationOptions " +
+                " order by o.year";
         Query q = getEntityManager().createQuery(jpql, Period.class);
-            return  q.getResultList();
-
+        return q.getResultList();
     }
-
-
     public Period getWithDissagregationOptionsById(Long id)  {
 
         String jpql = "SELECT DISTINCT o FROM Period o left join fetch o.generalIndicator gi " +
@@ -68,7 +73,8 @@ public class PeriodDao extends GenericDaoJpa<Period, Long> {
                 " left join fetch o.periodGenderDissagregationOptions " +
                 " left join fetch o.periodDiversityDissagregationOptions " +
                 " left join fetch o.periodCountryOfOriginDissagregationOptions " +
-                " WHERE o.id = :id";
+                " WHERE o.id = :id " +
+                " order by o.year";
         Query q = getEntityManager().createQuery(jpql, Period.class);
         q.setParameter("id", id);
         try {

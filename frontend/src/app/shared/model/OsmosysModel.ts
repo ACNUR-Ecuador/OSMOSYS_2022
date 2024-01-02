@@ -125,19 +125,6 @@ export class PeriodStatementAsignation {
     public populationCoverage: number;
 }
 
-export class Marker {
-    constructor() {
-        this.state = 'ACTIVO';
-    }
-
-    public id: string;
-    public state: string;
-    public type: string;
-    public subType: string;
-    public description: string;
-    public shortDescription: string;
-}
-
 export class CustomDissagregation {
     constructor() {
         this.state = 'ACTIVO';
@@ -156,20 +143,17 @@ export class CustomDissagregation {
 export class CustomDissagregationOption {
     constructor() {
         this.state = 'ACTIVO';
-        this.markers = [];
     }
 
     public id: number;
     public name: string;
     public description: string;
     public state: string;
-    public markers: Marker[];
 }
 
 export class Indicator {
     constructor() {
         this.state = 'ACTIVO';
-        this.markers = [];
         this.dissagregationsAssignationToIndicator = [];
         this.customDissagregationAssignationToIndicators = [];
         this.isCalculated = false;
@@ -192,7 +176,6 @@ export class Indicator {
     public isMonitored: boolean;
     public isCalculated: boolean;
     public totalIndicatorCalculationType: string;
-    public markers: Marker[];
     public compassIndicator: boolean;
     public statement: Statement;
     public unit: string;

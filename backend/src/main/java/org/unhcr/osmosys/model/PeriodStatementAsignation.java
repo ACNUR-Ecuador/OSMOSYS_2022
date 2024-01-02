@@ -40,9 +40,6 @@ public class PeriodStatementAsignation extends BaseEntity<Long> {
     private State state;
 
     // calculated
-    @Column(name = "population_coverage")
-    private Long populationCoverage;
-
 
     @Override
     public Long getId() {
@@ -78,14 +75,6 @@ public class PeriodStatementAsignation extends BaseEntity<Long> {
     }
 
 
-    public Long getPopulationCoverage() {
-        return populationCoverage;
-    }
-
-    public void setPopulationCoverage(Long populationCoverage) {
-        this.populationCoverage = populationCoverage;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -109,7 +98,7 @@ public class PeriodStatementAsignation extends BaseEntity<Long> {
                 ", period=" + period +
                 ", statement=" + statement +
                 ", state=" + state +
-                ", populationCoverage=" + populationCoverage +
+
                 '}';
     }
 }

@@ -23,7 +23,7 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
                     " left join sta.periodStatementAsignations psa " +
                     " left outer join o.customDissagregationAssignationToIndicators cda " +
                     " left outer join cda.customDissagregation " +
-                    " left outer join cda.customDissagregationFilterIndicators " +
+
                     " left outer join o.dissagregationsAssignationToIndicator da " +
                     " left join psa.period p ";
 
@@ -93,7 +93,6 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
                 " left join fetch  sta.periodStatementAsignations psa " +
                 " left outer join fetch o.customDissagregationAssignationToIndicators cda " +
                 " left outer join fetch cda.customDissagregation " +
-                " left outer join fetch cda.customDissagregationFilterIndicators " +
                 " left outer join fetch o.dissagregationsAssignationToIndicator da " +
                 " left join fetch psa.period p " +
                 " WHERE o.code in (:codeList)";

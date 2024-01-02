@@ -140,7 +140,8 @@ public class Test3Endpoint {
 
 
         List<CountryOfOriginDissagregationOption> cs = new ArrayList<>();
-        //CountryOfOriginDissagregationOption c1 = new CountryOfOriginDissagregationOption("Venezuela","General",1,State.ACTIVO); cs.add(c1);
+        CountryOfOriginDissagregationOption c1 = new CountryOfOriginDissagregationOption("Venezuela","General",1,State.ACTIVO);
+        cs.add(c1);
         CountryOfOriginDissagregationOption c2 = new CountryOfOriginDissagregationOption("Colombia", "General", 2, State.ACTIVO);
         cs.add(c2);
         CountryOfOriginDissagregationOption c3 = new CountryOfOriginDissagregationOption("Ecuador", "General", 3, State.ACTIVO);

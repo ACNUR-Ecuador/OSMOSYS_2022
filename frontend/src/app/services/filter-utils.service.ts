@@ -3,7 +3,7 @@ import {UtilsService} from './utils.service';
 import {
     CustomDissagregationAssignationToIndicator, CustomDissagregationOption,
     DissagregationAssignationToIndicator,
-    Marker, Period, PeriodStatementAsignation,
+    Period, PeriodStatementAsignation,
     Statement
 } from '../shared/model/OsmosysModel';
 import {EnumsService} from './enums.service';
@@ -141,36 +141,6 @@ export class FilterUtilsService {
             || value.description.toLowerCase().includes(filter.toString().toLowerCase());
     }
 
-    markersFilter(value: Marker[], filter): boolean {
-
-        if (filter === undefined || filter === null || filter.trim() === '') {
-            return true;
-        }
-
-        if (value === undefined || value === null || value.length === 0) {
-            return false;
-        }
-        let result = false;
-
-        for (const da of value) {
-
-            if (
-                da.shortDescription.toLowerCase().includes(filter.toString().toLowerCase())
-                || da.shortDescription.toLowerCase().includes(filter.toString().toLowerCase())
-                || da.subType.toLowerCase().includes(filter.toString().toLowerCase())
-                || da.subType.toLowerCase().includes(filter.toString().toLowerCase())
-                || da.type.toLowerCase().includes(filter.toString().toLowerCase())
-                || da.type.toLowerCase().includes(filter.toString().toLowerCase())
-
-
-            ) {
-                return result = true;
-            } else {
-                result = false;
-            }
-        }
-        return result;
-    }
 
     objectFilterId(value: any, filter): boolean {
 

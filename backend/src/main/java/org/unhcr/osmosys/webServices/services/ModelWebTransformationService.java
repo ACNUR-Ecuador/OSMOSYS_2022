@@ -251,40 +251,7 @@ public class ModelWebTransformationService {
     }
     //</editor-fold>
 
-    //<editor-fold desc="CustomDissagregationFilterIndicator">
-    public CustomDissagregationFilterIndicatorWeb customDissagregationFilterIndicatorsToCustomDissagregationFilterIndicatorsWeb(CustomDissagregationFilterIndicator c) {
-        CustomDissagregationFilterIndicatorWeb w = new CustomDissagregationFilterIndicatorWeb();
-        w.setId(c.getId());
-        w.setState(c.getState());
-        w.setCustomDissagregationOptions(this.customDissagregationOptionsToCustomDissagregationOptionsWeb(c.getCustomDissagregationOptions()));
-        return w;
-    }
 
-    public CustomDissagregationFilterIndicator customDissagregationFilterIndicatorWebToCustomDissagregationFilterIndicator(CustomDissagregationFilterIndicatorWeb w1) {
-        CustomDissagregationFilterIndicator c = new CustomDissagregationFilterIndicator();
-        c.setId(w1.getId());
-        c.setState(w1.getState());
-        c.setCustomDissagregationOptions(this.customDissagregationOptionsWebToCustomDissagregationOptions(w1.getCustomDissagregationOptions()));
-        return c;
-    }
-
-    public List<CustomDissagregationFilterIndicatorWeb> customDissagregationFilterIndicatorsToCustomDissagregationFilterIndicatorsWeb(Set<CustomDissagregationFilterIndicator> c) {
-        List<CustomDissagregationFilterIndicatorWeb> r = new ArrayList<>();
-        for (CustomDissagregationFilterIndicator customDissagregationFilterIndicator : c) {
-            r.add(this.customDissagregationFilterIndicatorsToCustomDissagregationFilterIndicatorsWeb(customDissagregationFilterIndicator));
-        }
-        return r;
-    }
-
-    public Set<CustomDissagregationFilterIndicator> customDissagregationFilterIndicatorsWebToCustomDissagregationFilterIndicators(List<CustomDissagregationFilterIndicatorWeb> c) {
-        Set<CustomDissagregationFilterIndicator> r = new HashSet<>();
-        for (CustomDissagregationFilterIndicatorWeb customDissagregationFilterIndicator : c) {
-            r.add(this.customDissagregationFilterIndicatorWebToCustomDissagregationFilterIndicator(customDissagregationFilterIndicator));
-        }
-        return r;
-    }
-
-    //</editor-fold>
 
     //<editor-fold desc="CustomDissagregationAssignationToIndicator">
     public CustomDissagregationAssignationToIndicatorWeb customDissagregationAssignationToIndicatorToCustomDissagregationAssignationToIndicatorWeb(CustomDissagregationAssignationToIndicator c) {
@@ -293,7 +260,6 @@ public class ModelWebTransformationService {
         w.setState(c.getState());
         w.setPeriod(this.periodToPeriodWeb(c.getPeriod()));
         w.setCustomDissagregation(this.customDissagregationWebToCustomDissagregation(c.getCustomDissagregation()));
-        w.setCustomDissagregationFilterIndicators(this.customDissagregationFilterIndicatorsToCustomDissagregationFilterIndicatorsWeb(c.getCustomDissagregationFilterIndicators()));
         return w;
     }
 
@@ -303,7 +269,6 @@ public class ModelWebTransformationService {
         c.setState(w.getState());
         c.setPeriod(this.periodWebToPeriod(w.getPeriod()));
         c.setCustomDissagregation(this.customDissagregationWebToCustomDissagregation(w.getCustomDissagregation()));
-        c.setCustomDissagregationFilterIndicators(this.customDissagregationFilterIndicatorsWebToCustomDissagregationFilterIndicators(w.getCustomDissagregationFilterIndicators()));
 
         return c;
     }
@@ -779,7 +744,6 @@ public class ModelWebTransformationService {
                 PeriodStatementAsignation psa = new PeriodStatementAsignation();
                 psa.setState(periodStatementAsignationWeb.getState());
                 psa.setPeriod(this.periodWebToPeriod(periodStatementAsignationWeb.getPeriod()));
-                psa.setPopulationCoverage(0L);
                 statement.addPeriodStatementAsignation(psa);
             }
         }
@@ -809,7 +773,6 @@ public class ModelWebTransformationService {
         PeriodStatementAsignationWeb paw = new PeriodStatementAsignationWeb();
         paw.setId(periodStatementAsignation.getId());
         paw.setState(periodStatementAsignation.getState());
-        paw.setPopulationCoverage(periodStatementAsignation.getPopulationCoverage());
         paw.setPeriod(this.periodToPeriodWeb(periodStatementAsignation.getPeriod()));
         return paw;
     }

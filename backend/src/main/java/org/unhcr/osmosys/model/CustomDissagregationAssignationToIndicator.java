@@ -4,8 +4,6 @@ import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(schema = "osmosys", name = "custom_dissagregation_assignation_indicator",
@@ -38,9 +36,6 @@ public class CustomDissagregationAssignationToIndicator extends BaseEntity<Long>
     private CustomDissagregation customDissagregation;
 
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customDissagregationAssignationToIndicator")
-    private Set<CustomDissagregationFilterIndicator> customDissagregationFilterIndicators = new HashSet<>();
-
     @Override
     public Long getId() {
         return id;
@@ -72,22 +67,6 @@ public class CustomDissagregationAssignationToIndicator extends BaseEntity<Long>
 
     public void setCustomDissagregation(CustomDissagregation customDissagregation) {
         this.customDissagregation = customDissagregation;
-    }
-
-    public Set<CustomDissagregationFilterIndicator> getCustomDissagregationFilterIndicators() {
-        return customDissagregationFilterIndicators;
-    }
-
-    public void setCustomDissagregationFilterIndicators(Set<CustomDissagregationFilterIndicator> customDissagregationFilterIndicators) {
-        this.customDissagregationFilterIndicators = customDissagregationFilterIndicators;
-    }
-
-    public void addCustomDissagregationFilterIndicator(CustomDissagregationFilterIndicator customDissagregationFilterIndicator) {
-        customDissagregationFilterIndicator.setCustomDissagregationAssignationToIndicator(this);
-        if (!this.customDissagregationFilterIndicators.add(customDissagregationFilterIndicator)) {
-            this.customDissagregationFilterIndicators.remove(customDissagregationFilterIndicator);
-            this.customDissagregationFilterIndicators.add(customDissagregationFilterIndicator);
-        }
     }
 
     public Period getPeriod() {

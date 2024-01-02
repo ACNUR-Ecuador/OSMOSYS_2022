@@ -11,7 +11,6 @@ public class PeriodStatementAsignationWeb implements Serializable {
     private Long id;
     private State state;
     private PeriodWeb period;
-    private Long populationCoverage;
 
 
     public Long getId() {
@@ -38,21 +37,12 @@ public class PeriodStatementAsignationWeb implements Serializable {
         this.period = period;
     }
 
-    public Long getPopulationCoverage() {
-        return populationCoverage;
-    }
-
-    public void setPopulationCoverage(Long populationCoverage) {
-        this.populationCoverage = populationCoverage;
-    }
-
     @Override
     public String toString() {
         return "PeriodStatementAsignationWeb{" +
                 "id=" + id +
                 ", state=" + state +
                 ", period=" + period +
-                ", populationCoverage=" + populationCoverage +
                 '}';
     }
 

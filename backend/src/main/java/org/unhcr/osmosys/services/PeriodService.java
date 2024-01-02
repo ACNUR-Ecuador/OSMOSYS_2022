@@ -42,7 +42,7 @@ public class PeriodService {
     private final static Logger LOGGER = Logger.getLogger(PeriodService.class);
 
     public Period find(Long id) {
-        return this.periodDao.find(id);
+        return this.periodDao.getWithDissagregationOptionsById(id);
     }
 
     public Period saveOrUpdate(Period period) {
@@ -112,9 +112,6 @@ public class PeriodService {
         return period.getId();
     }
 
-    public List<PeriodWeb> getAll() {
-        return this.modelWebTransformationService.periodsToPeriodsWeb(this.periodDao.findAll());
-    }
 
     public List<PeriodWeb> getByState(State state) {
         return this.modelWebTransformationService.periodsToPeriodsWeb(this.periodDao.getByState(state));
@@ -128,7 +125,7 @@ public class PeriodService {
             throw new GeneralAppException("No se puede crear un period sin id", Response.Status.BAD_REQUEST);
         }
 
-        Period period = this.periodDao.find(periodWeb.getId());
+        Period period = this.periodDao.getWithDissagregationOptionsById(periodWeb.getId());
 
 
         Set<Long> optionsIdsWeb = periodWeb.getPeriodAgeDissagregationOptions().stream().map(StandardDissagregationOptionWeb::getId).collect(Collectors.toSet());
@@ -351,7 +348,7 @@ public class PeriodService {
 
 
     public List<PeriodWeb> getWithGeneralIndicatorAll() {
-        List<Period> periods = this.periodDao.getWithGeneralIndicatorAll();
+        List<Period> periods = this.periodDao.getAllWithDissagregationOptions();
 
         List<PeriodWeb> r = new ArrayList<>();
 

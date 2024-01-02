@@ -4,8 +4,6 @@ import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.State;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(schema = "osmosys", name = "custom_dissagregation_assignations_indicator_execution")
@@ -28,8 +26,6 @@ public class CustomDissagregationAssignationToIndicatorExecution extends BaseEnt
     @JoinColumn(name = "custom_dissagregation_id", foreignKey = @ForeignKey(name = "fk_custom_dissagregation_asignation_indicator_execution"))
     private CustomDissagregation customDissagregation;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customDissagregationAssignationToIndicatorExecution")
-    private Set<CustomDissagregationFilterIndicatorExecution> customDissagregationFilterIndicatorsExecutions = new HashSet<>();
 
     @Override
     public Long getId() {
@@ -64,11 +60,6 @@ public class CustomDissagregationAssignationToIndicatorExecution extends BaseEnt
         this.customDissagregation = customDissagregation;
     }
 
-    public Set<CustomDissagregationFilterIndicatorExecution> getCustomDissagregationFilterIndicatorsExecutions() {
-        return customDissagregationFilterIndicatorsExecutions;
-    }
 
-    public void setCustomDissagregationFilterIndicatorsExecutions(Set<CustomDissagregationFilterIndicatorExecution> customDissagregationFilterIndicatorsExecutions) {
-        this.customDissagregationFilterIndicatorsExecutions = customDissagregationFilterIndicatorsExecutions;
-    }
+
 }

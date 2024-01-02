@@ -40,8 +40,6 @@ import {CodeShortDescriptionPipe} from '../shared/pipes/code-short-description.p
 import {CodeDescriptionPipe} from '../shared/pipes/code-description.pipe';
 import {CustomDissagregationOptionsListPipe} from '../shared/pipes/custom-dissagregation-options-list.pipe';
 import {PickListModule} from 'primeng/picklist';
-import {MarkersListPipe} from '../shared/pipes/markers-list.pipe';
-import {MarkerAdministrationComponent} from './marker-administration/marker-administration.component';
 import {
     PerformanceIndicatorAdministrationComponent
 } from './performance-indicator-administration/performance-indicator-administration.component';
@@ -96,7 +94,6 @@ import { MassBlockingComponent } from './mass-blocking/mass-blocking.component';
         StatementAdministrationComponent,
         CustomDissagregationAdministrationComponent,
         OrganizationAdministrationComponent,
-        MarkerAdministrationComponent,
         PerformanceIndicatorAdministrationComponent,
         PartnerProjectListAdministrationComponent,
         PartnerProjectAdministrationComponent,
@@ -151,7 +148,6 @@ import { MassBlockingComponent } from './mass-blocking/mass-blocking.component';
         CodeDescriptionPipe,
         CustomDissagregationOptionsListPipe,
         StatementPeriodStatementAsignationsListPipe,
-        MarkersListPipe,
         PercentPipe,
         BooleanYesNoPipe,
         IndicatorPipe,

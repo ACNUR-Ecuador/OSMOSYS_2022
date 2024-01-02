@@ -105,16 +105,19 @@ public class TestEndpoint {
     public String test2() throws GeneralAppException {
         // this.importService.catalogImport();
         LOGGER.info("inicio");
-
-
         Period period = this.periodService.getWithDissagregationOptionsById(2L);
+        LOGGER.info(period.getPeriodGenderDissagregationOptions());
+        LOGGER.info(period.getPeriodPopulationTypeDissagregationOptions());
+        LOGGER.info(period.getPeriodGenderDissagregationOptions());
+// indicator values creation
+/*        Period period = this.periodService.getWithDissagregationOptionsById(2L);
 
 
         List<IndicatorValue> r = this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(DissagregationType.DIVERSIDAD_EDAD, null, period);
 
         for (IndicatorValue indicatorValue : r) {
             LOGGER.info(indicatorValue);
-        }
+        }*/
 
         return "result";
     }

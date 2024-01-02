@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(schema = "osmosys", name = "indicator_valuesV2")
+@Table(schema = "osmosys", name = "indicator_values")
 public class IndicatorValue extends BaseEntity<Long> {
 
     @Id

@@ -29,7 +29,7 @@ public class PeriodEndpoint {
 
     @Path("/")
     @PUT
-    @Secured
+    //@Secured
     @Produces(MediaType.APPLICATION_JSON)
     public Long update(PeriodWeb periodWeb) throws GeneralAppException {
         return this.periodService.update(periodWeb);
@@ -48,7 +48,7 @@ public class PeriodEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public List<PeriodWeb> getAll() {
-        return this.periodService.getAll();
+        return this.periodService.getWithGeneralIndicatorAll();
     }
 
     @Path("/byState/{state}")

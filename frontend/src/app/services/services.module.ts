@@ -8,7 +8,6 @@ import {FilterUtilsService} from './filter-utils.service';
 import {IndicatorService} from './indicator.service';
 import {IndicatorExecutionService} from './indicator-execution.service';
 import {LoaderService} from './loader.service';
-import {MarkerService} from './marker.service';
 import {OfficeService} from './office.service';
 import {OrganizationService} from './organization.service';
 import {PeriodService} from './period.service';
@@ -38,7 +37,6 @@ export class ServicesModule {
                 IndicatorService,
                 IndicatorExecutionService,
                 LoaderService,
-                MarkerService,
                 OfficeService,
                 OrganizationService,
                 PeriodService,

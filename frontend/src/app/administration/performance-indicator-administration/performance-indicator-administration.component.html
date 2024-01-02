@@ -108,9 +108,7 @@
                             <p-columnFilter *ngSwitchCase="'statement'" type="text"
                                             [field]="col.field" [showMenu]="false"
                                             [matchMode]="'statementFilter'"></p-columnFilter>
-                            <p-columnFilter *ngSwitchCase="'markers'" type="text"
-                                            [field]="col.field" [showMenu]="false"
-                                            [matchMode]="'markersFilter'"></p-columnFilter>
+
                         </th>
                         <th>
 
@@ -412,43 +410,6 @@
                                 </p-accordion>
                             </div>
                         </div>
-                        <p-fieldset class="field col-12 md:col-12" legend="Marcadores" [toggleable]="true"
-                                    [collapsed]="true">
-
-                            <p-pickList [source]="markers" [target]="formItem.get('markers').value"
-                                        sourceHeader="Marcadores Disponibles" targetHeader="Marcadores Seleccionados"
-                                        [dragdrop]="true"
-                                        [responsive]="true" [sourceStyle]="{'height':'30rem'}"
-                                        [targetStyle]="{'height':'30rem'}"
-                                        filterBy="description,shortDescription,type,subType"
-                                        sourceFilterPlaceholder="Search by name"
-                                        targetFilterPlaceholder="Search by name">
-                                <ng-template let-marker pTemplate="item">
-                                    <div class="product-item">
-                                        <div class="image-container">
-                                            <h4 class="mb-2">{{marker.shortDescription}}</h4>
-                                        </div>
-                                        <div class="product-list-detail">
-                                            <i class="pi pi-tag product-category-icon"></i>
-                                            <span class="product-category"
-                                                  style="font-weight: bolder;">Tipo: </span>{{marker.type}}
-                                        </div>
-                                        <div class="product-list-detail">
-                                            <i class="pi pi-tag product-category-icon"></i>
-                                            <span class="product-category"
-                                                  style="font-weight: bolder;">Subtipo: </span>{{marker.subType}}
-                                        </div>
-                                        <div class="image-container">
-
-                                            <p class="mb-2"><span class="product-category"
-                                                                  style="font-weight: bolder;">Descripción: </span>{{marker.description}}
-                                            </p>
-                                        </div>
-
-                                    </div>
-                                </ng-template>
-                            </p-pickList>
-                        </p-fieldset>
                     </div>
                 </div>
             </div>
