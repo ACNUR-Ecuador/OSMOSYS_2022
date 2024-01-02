@@ -8,15 +8,14 @@ import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.IndicatorDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.DissagregationType;
+import org.unhcr.osmosys.webServices.model.DissagregationAssignationToIndicatorWeb;
 import org.unhcr.osmosys.webServices.model.IndicatorWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -103,7 +102,7 @@ public class IndicatorService {
     }
 
     public List<IndicatorWeb> getAll() {
-        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getAllWithData(),  true, true);
+        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getAllWithData(), true, true);
     }
 
     public List<IndicatorWeb> getByState(State state) {
@@ -135,9 +134,12 @@ public class IndicatorService {
         List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToEnable = new ArrayList<>();
         List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToDisable = new ArrayList<>();
         List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToCreate = new ArrayList<>();
+
         indicatorWeb.getDissagregationsAssignationToIndicator().forEach(dissagregationAssignationToIndicatorWeb -> {
             if (dissagregationAssignationToIndicatorWeb.getId() != null) {
-                Optional<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorOp = indicator.getDissagregationsAssignationToIndicator().stream().filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicatorWeb.getId().equals(dissagregationAssignationToIndicator.getId())).findFirst();
+                Optional<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorOp = indicator.getDissagregationsAssignationToIndicator().stream()
+                        .filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicatorWeb.getId().equals(dissagregationAssignationToIndicator.getId())).
+                        findFirst();
                 dissagregationAssignationToIndicatorOp.ifPresent(dissagregationAssignationToIndicator ->
                 {
                     if (!dissagregationAssignationToIndicator.getState().equals(dissagregationAssignationToIndicatorWeb.getState())) {
@@ -309,7 +311,7 @@ public class IndicatorService {
     }
 
     public Indicator getByCodeAndDescription(String code, String description) throws GeneralAppException {
-        LOGGER.info(code+"-"+description);
+        LOGGER.info(code + "-" + description);
         return this.indicatorDao.getByCodeAndDescription(code, description);
     }
 

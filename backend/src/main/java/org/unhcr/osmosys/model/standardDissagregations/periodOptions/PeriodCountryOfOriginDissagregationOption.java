@@ -15,24 +15,31 @@ public class PeriodCountryOfOriginDissagregationOption extends PeriodStandardDis
 
 
     public PeriodCountryOfOriginDissagregationOption(Period period, CountryOfOriginDissagregationOption countryOfOriginDissagregationOption) {
-        super(period, countryOfOriginDissagregationOption);
+        super(period);
+        this.countryOfOriginDissagregationOption = countryOfOriginDissagregationOption;
     }
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = CountryOfOriginDissagregationOption.class)
     @JoinColumn(name = "dissagregation_option_id")
-    private CountryOfOriginDissagregationOption dissagregationOption;
+    private CountryOfOriginDissagregationOption countryOfOriginDissagregationOption;
 
+    public CountryOfOriginDissagregationOption getCountryOfOriginDissagregationOption() {
+        return countryOfOriginDissagregationOption;
+    }
 
+    public void setCountryOfOriginDissagregationOption(CountryOfOriginDissagregationOption countryOfOriginDissagregationOption) {
+        this.countryOfOriginDissagregationOption = countryOfOriginDissagregationOption;
+    }
 
     @Override
     public CountryOfOriginDissagregationOption getDissagregationOption() {
-        return dissagregationOption;
+        return countryOfOriginDissagregationOption;
     }
 
     @Override
     public void setDissagregationOption(CountryOfOriginDissagregationOption dissagregationOption) {
-        this.dissagregationOption = dissagregationOption;
+        this.countryOfOriginDissagregationOption = dissagregationOption;
     }
 
 

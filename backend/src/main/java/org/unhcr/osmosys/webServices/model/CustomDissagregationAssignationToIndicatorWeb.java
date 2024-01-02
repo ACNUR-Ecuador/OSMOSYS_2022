@@ -13,7 +13,6 @@ public class CustomDissagregationAssignationToIndicatorWeb implements Serializab
 
     private State state;
     private CustomDissagregationWeb customDissagregation;
-    private List<CustomDissagregationFilterIndicatorWeb> customDissagregationFilterIndicators = new ArrayList<>();
     private PeriodWeb period;
 
     public Long getId() {
@@ -38,14 +37,6 @@ public class CustomDissagregationAssignationToIndicatorWeb implements Serializab
 
     public void setCustomDissagregation(CustomDissagregationWeb customDissagregation) {
         this.customDissagregation = customDissagregation;
-    }
-
-    public List<CustomDissagregationFilterIndicatorWeb> getCustomDissagregationFilterIndicators() {
-        return customDissagregationFilterIndicators;
-    }
-
-    public void setCustomDissagregationFilterIndicators(List<CustomDissagregationFilterIndicatorWeb> customDissagregationFilterIndicators) {
-        this.customDissagregationFilterIndicators = customDissagregationFilterIndicators;
     }
 
     public PeriodWeb getPeriod() {

@@ -122,7 +122,6 @@ export class PeriodStatementAsignation {
     public id: string;
     public state: string;
     public period: Period;
-    public populationCoverage: number;
 }
 
 export class CustomDissagregation {
@@ -166,8 +165,8 @@ export class Indicator {
     public code: string;
     public description: string;
     public category: string;
-    public qualitativeInstructions: string;
     public instructions?: string;
+    public qualitativeInstructions: string;
     public state: string;
     public indicatorType: string;
     public measureType: string;
@@ -187,42 +186,35 @@ export class Indicator {
 export class DissagregationAssignationToIndicator {
     constructor() {
         this.state = 'ACTIVO';
-        this.dissagregationFilterIndicators = [];
     }
 
     public id: string;
     public state: string;
     public period: Period;
     public dissagregationType: string;
-    public dissagregationFilterIndicators: DissagregationFilterIndicator[];
 }
 
-export class DissagregationFilterIndicator {
+export class StandardDissagregationOption {
     constructor() {
         this.state = 'ACTIVO';
     }
 
     public id: number;
+    public name: string;
+    public order: number;
+    public groupName: string;
     public state: string;
-    public dissagregationType: string;
-    public populationType: string;
-    public countryOfOrigin: string;
-    public genderType: string;
-    public ageType: string;
-
 }
 
 export class CustomDissagregationAssignationToIndicator {
     constructor() {
         this.state = 'ACTIVO';
-        this.customDissagregationFilterIndicators = [];
     }
 
     public id: number;
     public state: string;
     public period: Period;
     public customDissagregation: CustomDissagregation;
-    public customDissagregationFilterIndicators: CustomDissagregationFilterIndicator[];
 }
 
 export class CustomDissagregationFilterIndicator {
@@ -481,13 +473,11 @@ export class IndicatorValue {
     public state: string;
     public monthEnum: string;
     public dissagregationType: string;
-    public populationType: string;
-    public countryOfOrigin: string;
-    public genderType: string;
-    public ageType: string;
-    public agePrimaryEducationType: string;
-    public ageTertiaryEducationType: string;
-    public diversityType: string;
+    public populationType: StandardDissagregationOption;
+    public countryOfOrigin: StandardDissagregationOption;
+    public genderType: StandardDissagregationOption;
+    public ageType: StandardDissagregationOption;
+    public diversityType: StandardDissagregationOption;
     public location: Canton;
     public showValue: boolean;
     public value: number;
@@ -536,15 +526,4 @@ export class YearMonth {
 }
 
 
-export class StandardDissagregationOption {
 
-    constructor() {
-        this.state = 'ACTIVO';
-    }
-
-    public id: number;
-    public name: string;
-    public state: string;
-    public groupName: string;
-    public order: number;
-}

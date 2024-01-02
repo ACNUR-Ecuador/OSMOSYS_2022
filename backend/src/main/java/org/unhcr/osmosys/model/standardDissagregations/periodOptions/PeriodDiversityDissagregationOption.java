@@ -13,23 +13,32 @@ public class PeriodDiversityDissagregationOption extends PeriodStandardDissagreg
     }
 
     public PeriodDiversityDissagregationOption(Period period, DiversityDissagregationOption diversityDissagregationOption) {
-        super(period, diversityDissagregationOption);
+        super(period);
+        this.diversityDissagregationOption=diversityDissagregationOption;
     }
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = DiversityDissagregationOption.class)
     @JoinColumn(name = "dissagregation_option_id")
-    private DiversityDissagregationOption dissagregationOption;
+    private DiversityDissagregationOption diversityDissagregationOption;
+
+    public DiversityDissagregationOption getDiversityDissagregationOption() {
+        return diversityDissagregationOption;
+    }
+
+    public void setDiversityDissagregationOption(DiversityDissagregationOption diversityDissagregationOption) {
+        this.diversityDissagregationOption = diversityDissagregationOption;
+    }
 
 
 
     @Override
     public DiversityDissagregationOption getDissagregationOption() {
-        return dissagregationOption;
+        return diversityDissagregationOption;
     }
 
     @Override
     public void setDissagregationOption(DiversityDissagregationOption dissagregationOption) {
-        this.dissagregationOption = dissagregationOption;
+        this.diversityDissagregationOption = dissagregationOption;
     }
 }

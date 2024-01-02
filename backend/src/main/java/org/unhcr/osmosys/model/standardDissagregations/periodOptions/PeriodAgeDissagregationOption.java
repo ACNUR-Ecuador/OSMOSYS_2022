@@ -15,23 +15,31 @@ public class PeriodAgeDissagregationOption extends PeriodStandardDissagregationO
 
 
     public PeriodAgeDissagregationOption(Period period, AgeDissagregationOption ageDissagregationOption) {
-        super(period, ageDissagregationOption);
+        super(period);
+        this.ageDissagregationOption=ageDissagregationOption;
     }
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = AgeDissagregationOption.class)
     @JoinColumn(name = "dissagregation_option_id")
-    private AgeDissagregationOption dissagregationOption;
+    private AgeDissagregationOption ageDissagregationOption;
 
+    public AgeDissagregationOption getAgeDissagregationOption() {
+        return ageDissagregationOption;
+    }
+
+    public void setAgeDissagregationOption(AgeDissagregationOption ageDissagregationOption) {
+        this.ageDissagregationOption = ageDissagregationOption;
+    }
 
     @Override
     public AgeDissagregationOption getDissagregationOption() {
-        return this.dissagregationOption;
+        return this.ageDissagregationOption;
     }
 
     @Override
     public void setDissagregationOption(AgeDissagregationOption dissagregationOption) {
-        this.dissagregationOption = dissagregationOption;
+        this.ageDissagregationOption = dissagregationOption;
     }
 
 

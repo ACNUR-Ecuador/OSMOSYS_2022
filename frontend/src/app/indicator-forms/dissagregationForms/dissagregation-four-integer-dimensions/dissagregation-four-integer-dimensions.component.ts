@@ -277,12 +277,14 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
             const tipo_edad: string = value['tipo_edad'];
             const valor: number = value['valor'];
 
-            const indicatorValues = valuesDissagregation.filter(value1 => {
+            // todo 2024
+            const indicatorValues=[];
+            /*const indicatorValues = valuesDissagregation.filter(value1 => {
                 return value1.location.code === canton_codigo
                     && value1.populationType === tipo_poblacion
                     && value1.genderType === tipo_genero
                     && value1.ageType === tipo_edad
-            });
+            });*/
             if (indicatorValues.length < 1) {
 
                 this.importErroMessage.push('Error en la fila con los siguientes datos ' +

@@ -18,23 +18,31 @@ public class PeriodGenderDissagregationOption
 
     public PeriodGenderDissagregationOption(Period period, GenderDissagregationOption genderDissagregationOption) {
 
-        super(period, genderDissagregationOption);
+        super(period);
+        this.genderDissagregationOption=genderDissagregationOption;
 
     }
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = GenderDissagregationOption.class)
     @JoinColumn(name = "dissagregation_option_id")
-    private GenderDissagregationOption dissagregationOption;
+    private GenderDissagregationOption genderDissagregationOption;
+
+    public GenderDissagregationOption getGenderDissagregationOption() {
+        return genderDissagregationOption;
+    }
+
+    public void setGenderDissagregationOption(GenderDissagregationOption genderDissagregationOption) {
+        this.genderDissagregationOption = genderDissagregationOption;
+    }
 
     @Override
     public GenderDissagregationOption getDissagregationOption() {
-        return this.dissagregationOption;
+        return genderDissagregationOption;
     }
 
     @Override
     public void setDissagregationOption(GenderDissagregationOption dissagregationOption) {
-        this.dissagregationOption = dissagregationOption;
+        this.genderDissagregationOption = dissagregationOption;
     }
-
 }

@@ -21,7 +21,7 @@ public class DissagregationAssignationToIndicator extends BaseEntity<Long> {
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false )
     @JoinColumn(name = "period_id", foreignKey = @ForeignKey(name = "fk_dissagregation_asignation_period"))
     private Period period;
 

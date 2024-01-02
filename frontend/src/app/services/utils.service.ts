@@ -7,7 +7,6 @@ import {FormGroup} from '@angular/forms';
 import {
     ColumnTable,
     DissagregationType,
-    EnumsIndicatorType,
     EnumsState,
     EnumsType,
     QuarterType,
@@ -716,14 +715,11 @@ export class UtilsService {
     getIndicatorValueByDissagregationType(dissagregationType: DissagregationType, value: IndicatorValue): string | Canton {
         const dissagregationTypeE = DissagregationType[dissagregationType];
         switch (dissagregationTypeE) {
-            case DissagregationType.TIPO_POBLACION:
+            // todo 2024
+            /*case DissagregationType.TIPO_POBLACION:
                 return value.populationType;
             case DissagregationType.EDAD:
                 return value.ageType;
-            case DissagregationType.EDAD_EDUCACION_PRIMARIA:
-                return value.agePrimaryEducationType;
-            case DissagregationType.EDAD_EDUCACION_TERCIARIA:
-                return value.ageTertiaryEducationType;
             case DissagregationType.GENERO:
                 return value.genderType;
             case DissagregationType.LUGAR:
@@ -731,7 +727,7 @@ export class UtilsService {
             case DissagregationType.PAIS_ORIGEN:
                 return value.countryOfOrigin;
             case DissagregationType.DIVERSIDAD:
-                return value.diversityType;
+                return value.diversityType;*/
             default:
                 return null;
         }

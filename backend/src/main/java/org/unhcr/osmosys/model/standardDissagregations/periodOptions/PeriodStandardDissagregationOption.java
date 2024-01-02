@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "type")
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING, length = 20)
 @Table(schema = "dissagregations", name = "period_standard_dissagregation_options",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"period_id", "dissagregation_option_id"})})
 public abstract class PeriodStandardDissagregationOption<T extends StandardDissagregationOption> extends BaseEntity<Long> {
@@ -18,25 +18,29 @@ public abstract class PeriodStandardDissagregationOption<T extends StandardDissa
 
     }
 
-    public PeriodStandardDissagregationOption(Period period, T dissagregationOption) {
+ /*   public PeriodStandardDissagregationOption(Period period, T dissagregationOption) {
         this.period = period;
         this.setDissagregationOption(dissagregationOption);
         this.state = State.ACTIVO;
+    }*/
+
+    public PeriodStandardDissagregationOption(Period period) {
+        this.period = period;
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
-    private Long id;
+    protected Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "period_id")
-    private Period period;
+    protected Period period;
 
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", nullable = false, length = 12)
-    private State state;
+    protected State state;
 
     @Override
     public Long getId() {

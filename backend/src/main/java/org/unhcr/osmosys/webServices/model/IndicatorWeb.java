@@ -29,7 +29,6 @@ public class IndicatorWeb implements Serializable {
     private Boolean isCalculated;
     private Boolean compassIndicator;
     private TotalIndicatorCalculationType totalIndicatorCalculationType;
-
     private StatementWeb statement;
     private UnitType unit;
     private List<DissagregationAssignationToIndicatorWeb> dissagregationsAssignationToIndicator = new ArrayList<>();

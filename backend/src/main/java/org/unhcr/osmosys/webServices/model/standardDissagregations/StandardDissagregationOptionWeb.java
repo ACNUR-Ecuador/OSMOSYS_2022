@@ -9,9 +9,7 @@ import java.io.Serializable;
 
 public class StandardDissagregationOptionWeb implements Serializable {
     private Long id;
-
     private String name;
-
     private Integer order;
     private String groupName;
     private State state;

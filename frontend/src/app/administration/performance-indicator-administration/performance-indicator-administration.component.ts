@@ -496,6 +496,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
             }
         }
+        console.log(indicator);
         if (indicator.id) {
             // tslint:disable-next-line:no-shadowed-variable
             this.indicatorService.update(indicator)
@@ -507,7 +508,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                     error: err => {
                         this.messageService.add({
                             severity: 'error',
-                            summary: 'Error al actualizar la situación',
+                            summary: 'Error al actualizar el indicador',
                             detail: err.error.message,
                             life: 3000
                         });
