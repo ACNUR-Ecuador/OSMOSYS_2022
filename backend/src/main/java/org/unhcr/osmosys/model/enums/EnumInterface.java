@@ -10,4 +10,8 @@ public interface EnumInterface extends Serializable {
 
     int getOrder();
 
+
+
+
+
 }

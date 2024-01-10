@@ -130,7 +130,7 @@
                 </ng-template>
                 <ng-template pTemplate="summary">
                     <div class="p-d-flex p-ai-center p-jc-between">
-                        {{dt.filteredValue?dt.filteredValue.length:dt.totalRecords}} de {{items?items.length:0}}
+                        {{dt.filteredValue ? dt.filteredValue.length : dt.totalRecords}} de {{items ? items.length : 0}}
                         indicadores.
                     </div>
                 </ng-template>
@@ -349,61 +349,21 @@
                                     <p-accordionTab header="{{period.year}}" *ngFor="let period of periods"
                                                     [selected]="true">
                                         <div class="p-fluid p-formgrid grid" id="dissaScroll">
-                                            <div class="field col-12 md:col-6">
-                                                <label>Desagregaciones Estándar</label>
-                                                <div class="field col-12 md:col-12"
-                                                     style="border: 1px solid #ced4da;">
-                                                    <p-scrollPanel
-                                                        [style]="{width: '100%', height: '160px', border: 'yellow'}">
-                                                        <div>
-                                                            <p-multiSelect
-                                                                [options]="getDissagregationTypeByPeriod(period)"
-                                                                formControlName="dissagregations"
-                                                                defaultLabel="Selecciona al menos una desagregación"
-                                                                optionLabel="label"
-                                                                optionValue="value"
-                                                                [maxSelectedLabels]="0"
-                                                                [showToggleAll]="false"
-                                                                [style]="{width: '100%'}"
-                                                                [panelStyle]="{width: '100%'}"
-                                                                appendTo="body"
-                                                            >
-                                                            </p-multiSelect>
-                                                        </div>
-                                                        <div class="flex flex-row flex-wrap m-2">
-                                                            <p-tag
-                                                                *ngFor="let dissa of getSelectedDissagregationTypeByPeriod(period) "
-                                                                styleClass="flex align-items-center justify-content-center m-2"
-                                                                value="{{getDissagregationLabel(dissa)}}">
-                                                            </p-tag>
-                                                        </div>
-                                                    </p-scrollPanel>
-                                                </div>
-                                                <small class="p-error"
-                                                       *ngIf="utilsService.showErrorForm('dissagregations',formItem)">{{utilsService.getErrorMessageForm('dissagregations', formItem)}}</small>
+                                            <div class="field col-6 md:col-6 ">
+                                                <app-dissagregation-selector
+                                                    [dissagregationAssignationToIndicators]="getdissagregationsAssignationToIndicator(period)"
+                                                [period]="period"
+                                                    (newDissagregationAssignationToIndicators)="setDissagregationAssignationsToIndicator($event)"
+                                                >
+
+                                                </app-dissagregation-selector>
                                             </div>
                                             <div class="field col-6 md:col-6 ">
-                                                <label>Desagregaciones Personalizadas</label>
-                                                <div class="field col-12 md:col-12"
-                                                     style="border: 1px solid #ced4da;">
-                                                    <p-scrollPanel [style]="{width: '100%', height: '80px'}">
-                                                        <div class="p-formgroup-inline p-pt-2">
-
-                                                            <div class="field-checkbox col-12 md:col-3"
-                                                                 *ngFor="let custd of getCustomDissagregationTypeByPeriod(period)">
-                                                                <!--suppress AngularInvalidExpressionResultType -->
-                                                                <p-checkbox name="group2" [inputId]="custd.value"
-                                                                            [value]="custd.value"
-                                                                            [formControl]="$any(formItem).controls['customDissagregations']"
-                                                                >
-                                                                </p-checkbox>
-                                                                <label [for]="custd.value">{{custd.label}}</label>
-                                                            </div>
-                                                        </div>
-                                                    </p-scrollPanel>
-                                                </div>
-                                                <small class="p-error"
-                                                       *ngIf="utilsService.showErrorForm('customDissagregations',formItem)">{{utilsService.getErrorMessageForm('customDissagregations', formItem)}}</small>
+                                                <app-custom-dissagregation-selector
+                                                        [customDissagregationAssignationToIndicators]="getCustomDissagregationsAssignationToIndicator(period)"
+                                                        [period]="period"
+                                                        (newDissagregationAssignationToIndicators)="setCustomDissagregationAssignationsToIndicator($event)"
+                                                ></app-custom-dissagregation-selector>
                                             </div>
                                         </div>
                                     </p-accordionTab>

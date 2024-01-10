@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -49,7 +50,7 @@ import java.util.Set;
                 )
         }
 )
-public class Month extends BaseEntity<Long> {
+public class Month extends BaseEntityIdState {
 
     public Month() {
         this.state = State.ACTIVO;

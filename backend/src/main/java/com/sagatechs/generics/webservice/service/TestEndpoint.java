@@ -7,9 +7,8 @@ import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.utils.DateUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.ReportDao;
-import org.unhcr.osmosys.model.IndicatorValue;
 import org.unhcr.osmosys.model.Period;
-import org.unhcr.osmosys.model.enums.DissagregationType;
+import org.unhcr.osmosys.model.TesterBaseEntity;
 import org.unhcr.osmosys.model.standardDissagregations.options.*;
 import org.unhcr.osmosys.model.standardDissagregations.periodOptions.*;
 import org.unhcr.osmosys.reports.service.ReportService;
@@ -34,6 +33,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -81,7 +81,7 @@ public class TestEndpoint {
 
 
     @Inject
-    TestService testService;
+    TesterService testerService;
 
     @Inject
     StatementImportService statementImportService;
@@ -99,13 +99,16 @@ public class TestEndpoint {
     @Inject
     StandardDissagregationOptionService standardDissagregationOptionService;
 
+
+
+
     @Path("test")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public String test2() throws GeneralAppException {
         // this.importService.catalogImport();
         LOGGER.info("inicio");
-        Period period = this.periodService.getWithDissagregationOptionsById(2L);
+        Period period = this.periodService.getWithAllDataById(2L);
         LOGGER.info(period.getPeriodGenderDissagregationOptions());
         LOGGER.info(period.getPeriodPopulationTypeDissagregationOptions());
         LOGGER.info(period.getPeriodGenderDissagregationOptions());
@@ -122,6 +125,42 @@ public class TestEndpoint {
         return "result";
     }
 
+    @Path("tester")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public String tester() throws GeneralAppException {
+
+        /*List<TesterBaseEntity> listCreate = new ArrayList<>();
+        TesterBaseEntity t1 = new TesterBaseEntity();
+        t1.setCode("a");
+        t1.setState(State.ACTIVO);
+        listCreate.add(t1);
+        TesterBaseEntity t2 = new TesterBaseEntity(State.INACTIVO, "b");
+        listCreate.add(t2);
+        TesterBaseEntity t3 = new TesterBaseEntity(State.ACTIVO, "c");
+        listCreate.add(t3);
+        TesterBaseEntity t4 = new TesterBaseEntity(State.INACTIVO, "d");
+        listCreate.add(t4);
+
+        for (TesterBaseEntity testerBaseEntity : listCreate) {
+            this.testerService.saveOrUpdate(testerBaseEntity);
+        }*/
+
+        List<TesterBaseEntity> list1 = this.testerService.getAll();
+        LOGGER.info("-------------------ALL");
+        list1.forEach(testerBaseEntity -> LOGGER.info(testerBaseEntity));
+
+        List<TesterBaseEntity> list2 = this.testerService.getByState(State.ACTIVO);
+        LOGGER.info("-------------------ACTIVOS");
+        list2.forEach(testerBaseEntity -> LOGGER.info(testerBaseEntity));
+
+
+        TesterBaseEntity tester1 = this.testerService.getById(1L);
+        LOGGER.info("-------------------1L id");
+        LOGGER.info(tester1);
+
+        return "ya";
+    }
 
     @Path("setPeriod")
     @GET

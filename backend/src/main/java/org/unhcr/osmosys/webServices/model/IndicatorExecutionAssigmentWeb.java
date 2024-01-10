@@ -1,7 +1,7 @@
 package org.unhcr.osmosys.webServices.model;
 
-import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -10,10 +10,14 @@ import java.util.Objects;
 
 
 @SuppressWarnings("unused")
-public class IndicatorExecutionAssigmentWeb implements Serializable {
-    private Long id;
+public class IndicatorExecutionAssigmentWeb extends BaseWebEntity implements Serializable {
+
+    public IndicatorExecutionAssigmentWeb() {
+        super();
+    }
+
     private IndicatorWeb indicator;
-    private State state;
+
     private PeriodWeb period;
     private String activityDescription;
 
@@ -34,13 +38,6 @@ public class IndicatorExecutionAssigmentWeb implements Serializable {
 
     private Integer target;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public IndicatorWeb getIndicator() {
         return indicator;
@@ -50,13 +47,6 @@ public class IndicatorExecutionAssigmentWeb implements Serializable {
         this.indicator = indicator;
     }
 
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
 
     public PeriodWeb getPeriod() {
         return period;

@@ -1,13 +1,14 @@
 package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 
 import javax.persistence.*;
 
 @Entity
 @Table(schema = "osmosys", name = "custom_dissagregation_assignations_indicator_execution")
-public class CustomDissagregationAssignationToIndicatorExecution extends BaseEntity<Long> {
+public class CustomDissagregationAssignationToIndicatorExecution extends BaseEntityIdState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

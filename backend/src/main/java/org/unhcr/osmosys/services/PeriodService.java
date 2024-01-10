@@ -8,7 +8,7 @@ import org.unhcr.osmosys.daos.PeriodDao;
 import org.unhcr.osmosys.model.Period;
 import org.unhcr.osmosys.model.standardDissagregations.options.*;
 import org.unhcr.osmosys.model.standardDissagregations.periodOptions.*;
-import org.unhcr.osmosys.services.standardDissagregations.*;
+import org.unhcr.osmosys.services.standardDissagregations.StandardDissagregationOptionService;
 import org.unhcr.osmosys.webServices.model.PeriodWeb;
 import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
@@ -16,7 +16,6 @@ import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -114,7 +113,7 @@ public class PeriodService {
 
 
     public List<PeriodWeb> getByState(State state) {
-        return this.modelWebTransformationService.periodsToPeriodsWeb(this.periodDao.getByState(state));
+        return this.modelWebTransformationService.periodsToPeriodsWeb(this.periodDao.getByState(state), false);
     }
 
     public Long update(PeriodWeb periodWeb) throws GeneralAppException {
@@ -325,53 +324,43 @@ public class PeriodService {
         }
     }
 
-    public PeriodWeb getByid(Long id) {
-        return this.modelWebTransformationService.periodToPeriodWeb(this.periodDao.find(id));
+    public PeriodWeb getWebById(Long id) {
+        return this.modelWebTransformationService.periodToPeriodWeb(this.periodDao.find(id), false);
     }
 
-    public PeriodWeb getWebWithGeneralIndicatorById(Long id) {
+    public Period getById(Long year) {
+        return this.periodDao.find(year);
+    }
+    public PeriodWeb getWebWithAllDataById(Long id) {
 
         Period period = this.periodDao.getWithGeneralIndicatorById(id);
-        PeriodWeb periodWeb = this.modelWebTransformationService.periodToPeriodWeb(period);
+        PeriodWeb periodWeb = this.modelWebTransformationService.periodToPeriodWeb(period, false);
 
         if (period.getGeneralIndicator() != null) {
             periodWeb.setGeneralIndicator(this.modelWebTransformationService.generalIndicatorToGeneralIndicatorWeb(period.getGeneralIndicator()));
         }
         return periodWeb;
     }
-
-    public Period getWithGeneralIndicatorById(Long id) {
-
-        return this.periodDao.getWithGeneralIndicatorById(id);
-
+    public Period getWithAllDataById(Long id) {
+        return this.periodDao.getWithDissagregationOptionsById(id);
     }
+
+
 
 
     public List<PeriodWeb> getWithGeneralIndicatorAll() {
         List<Period> periods = this.periodDao.getAllWithDissagregationOptions();
 
-        List<PeriodWeb> r = new ArrayList<>();
+        return this.modelWebTransformationService.periodsToPeriodsWeb(periods,false);
 
-        for (Period period : periods) {
-            PeriodWeb periodWeb = this.modelWebTransformationService.periodToPeriodWeb(period);
-            if (period.getGeneralIndicator() != null) {
-                periodWeb.setGeneralIndicator(this.modelWebTransformationService.generalIndicatorToGeneralIndicatorWeb(period.getGeneralIndicator()));
-            }
-            r.add(periodWeb);
-        }
-        return r;
     }
 
-    public Period getWithDissagregationOptionsById(Long id) {
-        return this.periodDao.getWithDissagregationOptionsById(id);
-    }
+
 
     public Period getByYear(Integer year) {
         return this.periodDao.getByYear(year);
     }
 
-    public Period getById(Long year) {
-        return this.periodDao.find(year);
-    }
+
 
 }

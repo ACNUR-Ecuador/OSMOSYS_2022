@@ -177,7 +177,7 @@ public class ProjectIndicatorsImportService {
                     if (svalue == null) {
                         Total_TARGET_value = null;
                     } else {
-                        Total_TARGET_value = new Integer(svalue);
+                        Total_TARGET_value = Integer.valueOf(svalue);
 
                     }
                 }
@@ -216,7 +216,7 @@ public class ProjectIndicatorsImportService {
                 IndicatorExecutionAssigmentWeb indicatorExecutionAssigmentWeb = new IndicatorExecutionAssigmentWeb();
                 indicatorExecutionAssigmentWeb.setIndicator(this.modelWebTransformationService.indicatorToIndicatorWeb(indicator, false, false));
                 indicatorExecutionAssigmentWeb.setState(State.ACTIVO);
-                indicatorExecutionAssigmentWeb.setPeriod(this.modelWebTransformationService.periodToPeriodWeb(project.getPeriod()));
+                indicatorExecutionAssigmentWeb.setPeriod(this.modelWebTransformationService.periodToPeriodWeb(project.getPeriod(), true));
                 indicatorExecutionAssigmentWeb.setProject(this.modelWebTransformationService.projectToProjectWeb(project));
                 indicatorExecutionAssigmentWeb.setProjectStatement(this.modelWebTransformationService.statementToStatementWeb(statement, false, false, false, false, false));
                 indicatorExecutionAssigmentWeb.setActivityDescription(mainActivities);
@@ -304,7 +304,6 @@ public class ProjectIndicatorsImportService {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new GeneralAppException(ExceptionUtils.getMessage(e), Response.Status.BAD_REQUEST);
 
 

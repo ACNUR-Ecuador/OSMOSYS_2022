@@ -10,8 +10,9 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 
-public class ProjectResumeWeb implements Serializable {
+public class ProjectResumeWeb extends BaseWebEntity implements Serializable {
     public ProjectResumeWeb() {
+        super();
     }
 
     public ProjectResumeWeb(
@@ -27,10 +28,11 @@ public class ProjectResumeWeb implements Serializable {
             LocalDate startDate,
             LocalDate endDate
     ) {
-        this.id = id;
+        super(id, State.valueOf(state));
+
         this.code = code;
         this.name = name;
-        this.state = State.valueOf(state);
+
 
         this.organizationId = organizationId;
         this.organizationDescription = organizationDescription;

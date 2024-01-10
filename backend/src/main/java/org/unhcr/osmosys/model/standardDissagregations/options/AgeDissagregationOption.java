@@ -16,9 +16,10 @@ public class AgeDissagregationOption extends StandardDissagregationOption {
     }
 
     public AgeDissagregationOption(String name, String ageRange, String groupName, Integer order, State state) {
-        super(name,groupName,order,state);
+        super(name, groupName, order, state);
         this.ageRange = ageRange;
     }
+
 
 
     @Column(name = "age_range")

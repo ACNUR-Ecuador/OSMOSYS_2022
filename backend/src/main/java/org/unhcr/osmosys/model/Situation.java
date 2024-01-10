@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(schema = "osmosys", name = "situations")
-public class Situation extends BaseEntity<Long> {
+public class Situation extends BaseEntityIdState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

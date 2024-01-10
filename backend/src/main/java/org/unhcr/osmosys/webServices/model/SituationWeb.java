@@ -1,34 +1,18 @@
 package org.unhcr.osmosys.webServices.model;
 
-import com.sagatechs.generics.persistence.model.State;
-
 import java.io.Serializable;
 import java.util.Objects;
 
 
-public class SituationWeb implements Serializable {
+public class SituationWeb extends BaseWebEntity implements Serializable {
 
-    private Long id;
-    private State state;
+    public SituationWeb() {
+        super();
+    }
+
     private String code;
     private String shortDescription;
     private String description;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
 
     public String getCode() {
         return code;

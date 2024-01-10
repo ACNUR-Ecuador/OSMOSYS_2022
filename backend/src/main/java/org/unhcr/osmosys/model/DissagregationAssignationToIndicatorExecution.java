@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 
@@ -8,7 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(schema = "osmosys", name = "dissagregation_assignation_indicator_execution")
-public class DissagregationAssignationToIndicatorExecution extends BaseEntity<Long> {
+public class DissagregationAssignationToIndicatorExecution extends BaseEntityIdState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

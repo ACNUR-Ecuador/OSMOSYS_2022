@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -44,7 +45,7 @@ import java.util.Set;
                 @NamedAttributeNode("projectLocationAssigments"),
         }
 )
-public class Project extends BaseEntity<Long> {
+public class Project extends BaseEntityIdState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

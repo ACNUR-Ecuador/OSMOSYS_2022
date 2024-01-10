@@ -1,6 +1,5 @@
 package org.unhcr.osmosys.webServices.model;
 
-import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.DissagregationType;
@@ -8,26 +7,13 @@ import org.unhcr.osmosys.model.enums.DissagregationType;
 import java.io.Serializable;
 
 
-public class DissagregationAssignationToGeneralIndicatorWeb implements Serializable {
-    private Long id;
-    private State state;
+public class DissagregationAssignationToGeneralIndicatorWeb extends BaseWebEntity implements Serializable {
+
+    public DissagregationAssignationToGeneralIndicatorWeb() {
+        super();
+    }
+
     private DissagregationType dissagregationType;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
 
     public DissagregationType getDissagregationType() {
         return dissagregationType;

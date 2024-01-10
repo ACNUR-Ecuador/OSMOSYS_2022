@@ -20,6 +20,7 @@ import {
 } from "./pipes/custom-dissagregations-assignation-to-indicator.pipe";
 import { PeriodsFromIndicatorPipe } from './pipes/periods-from-indicator.pipe';
 import { StatementPeriodStatementAsignationsListPipe } from './pipes/statement-period-statement-asignations-list.pipe';
+import { StandardDissagreationListPipe } from './pipes/standard-dissagreation-list.pipe';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { StatementPeriodStatementAsignationsListPipe } from './pipes/statement-p
         CustomDissagregationsAssignationToIndicatorPipe,
         PeriodsFromIndicatorPipe,
         StatementPeriodStatementAsignationsListPipe,
-        OfficeOrganizationPipe
+        OfficeOrganizationPipe,
+        StandardDissagreationListPipe
     ],
     imports: [
         CommonModule

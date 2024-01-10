@@ -1,6 +1,5 @@
 package org.unhcr.osmosys.webServices.model;
 
-import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.unhcr.osmosys.model.enums.IndicatorType;
 import org.unhcr.osmosys.model.enums.TimeStateEnum;
@@ -11,11 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class IndicatorExecutionWeb implements Serializable {
-    private Long id;
+public class IndicatorExecutionWeb extends BaseWebEntity implements Serializable {
+
+    public IndicatorExecutionWeb() {
+        super();
+    }
+
     private String activityDescription;
     private IndicatorType indicatorType;
-    private State state;
+
     private BigDecimal target;
     private Boolean compassIndicator;
     private IndicatorWeb indicator;
@@ -48,13 +51,7 @@ public class IndicatorExecutionWeb implements Serializable {
     /**************administration*********/
     private List<CantonWeb> locations;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getActivityDescription() {
         return activityDescription;
@@ -72,13 +69,6 @@ public class IndicatorExecutionWeb implements Serializable {
         this.indicatorType = indicatorType;
     }
 
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
 
     public BigDecimal getTarget() {
         return target;

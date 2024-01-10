@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.enums.*;
 import org.unhcr.osmosys.model.standardDissagregations.options.*;
@@ -10,7 +11,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(schema = "osmosys", name = "indicator_values")
-public class IndicatorValue extends BaseEntity<Long> {
+public class IndicatorValue extends BaseEntityIdState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

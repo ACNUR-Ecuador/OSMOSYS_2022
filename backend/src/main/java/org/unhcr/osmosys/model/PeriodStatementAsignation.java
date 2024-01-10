@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @Table(schema = "osmosys", name = "period_statement_asignations",
         uniqueConstraints = @UniqueConstraint(name = "period_statament_ids_unique", columnNames = {"period_id", "statement_id"})
 )
-public class PeriodStatementAsignation extends BaseEntity<Long> {
+public class PeriodStatementAsignation extends BaseEntityIdState {
 
 
     public PeriodStatementAsignation() {

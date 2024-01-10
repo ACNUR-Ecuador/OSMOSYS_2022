@@ -186,12 +186,16 @@ export class Indicator {
 export class DissagregationAssignationToIndicator {
     constructor() {
         this.state = 'ACTIVO';
+        this.useCustomAgeDissagregations = false;
     }
 
     public id: string;
     public state: string;
     public period: Period;
     public dissagregationType: string;
+    public useCustomAgeDissagregations: boolean;
+    public customIndicatorOptions: StandardDissagregationOption[];
+
 }
 
 export class StandardDissagregationOption {

@@ -1,6 +1,6 @@
 package org.unhcr.osmosys.model.standardDissagregations.options;
 
-import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -9,14 +9,22 @@ import javax.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "type")
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING, length = 20)
 @Table(schema = "dissagregations", name = "standard_dissagregation_options")
-public abstract class StandardDissagregationOption extends BaseEntity<Long> {
+public abstract class StandardDissagregationOption extends BaseEntityIdState {
 
     public StandardDissagregationOption() {
     }
 
     public StandardDissagregationOption(String name, String groupName, Integer order, State state) {
+        this.name = name;
+        this.groupName = groupName;
+        this.order = order;
+        this.state = state;
+    }
+
+    public StandardDissagregationOption(Long id, String name, String groupName, Integer order, State state) {
+        this.id = id;
         this.name = name;
         this.groupName = groupName;
         this.order = order;
@@ -103,11 +111,11 @@ public abstract class StandardDissagregationOption extends BaseEntity<Long> {
 
         StandardDissagregationOption that = (StandardDissagregationOption) o;
 
-        return new EqualsBuilder().append(id, that.id).append(name, that.name).append(groupName, that.groupName).append(order, that.order).append(state, that.state).isEquals();
+        return new EqualsBuilder().append(id, that.id).append(name, that.name).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(name).append(groupName).append(order).append(state).toHashCode();
+        return new HashCodeBuilder(17, 37).append(id).append(name).toHashCode();
     }
 }

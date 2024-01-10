@@ -1,32 +1,25 @@
 package org.unhcr.osmosys.webServices.model;
 
-import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 
 
-public class CantonWeb implements Serializable {
-    private Long id;
+public class CantonWeb extends BaseWebEntity  implements Serializable {
+
+    public CantonWeb() {
+        super();
+    }
 
     private String code;
 
     private String description;
 
-    private State state;
 
     private ProvinciaWeb provincia;
 
     private OfficeWeb office;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getCode() {
         return code;
@@ -44,13 +37,7 @@ public class CantonWeb implements Serializable {
         this.description = description;
     }
 
-    public State getState() {
-        return state;
-    }
 
-    public void setState(State state) {
-        this.state = state;
-    }
 
     public ProvinciaWeb getProvincia() {
         return provincia;

@@ -1,6 +1,5 @@
 package org.unhcr.osmosys.webServices.model;
 
-import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.MeasureType;
@@ -10,22 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GeneralIndicatorWeb implements Serializable {
-    private Long id;
+public class GeneralIndicatorWeb extends BaseWebEntity implements Serializable {
+
+    public GeneralIndicatorWeb() {
+        super();
+    }
+
     private String description;
     private MeasureType measureType;
-    private State state;
     private PeriodWeb period;
 
     private List<DissagregationAssignationToGeneralIndicatorWeb> dissagregationAssignationsToGeneralIndicator = new ArrayList<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getDescription() {
         return description;
@@ -41,14 +35,6 @@ public class GeneralIndicatorWeb implements Serializable {
 
     public void setMeasureType(MeasureType measureType) {
         this.measureType = measureType;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
     }
 
     public PeriodWeb getPeriod() {

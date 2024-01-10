@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
 import org.unhcr.osmosys.model.enums.IndicatorType;
@@ -14,7 +15,7 @@ import java.util.Set;
 @Entity
 @Table(schema = "osmosys", name = "indicator_executions")
 
-public class IndicatorExecution extends BaseEntity<Long> {
+public class IndicatorExecution extends BaseEntityIdState {
 
 
     public IndicatorExecution() {

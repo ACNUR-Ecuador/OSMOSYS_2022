@@ -162,7 +162,7 @@ public class Test3Endpoint {
     @GET()
     @Produces(MediaType.APPLICATION_JSON)
     public String setPeriod() {
-        Period period2024 = this.periodService.getWithDissagregationOptionsById(3l);
+        Period period2024 = this.periodService.getWithAllDataById(3l);
 /*
 
         List<PopulationTypeDissagregationOption> ptos = new ArrayList<>();

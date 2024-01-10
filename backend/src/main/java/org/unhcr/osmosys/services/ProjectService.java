@@ -78,7 +78,7 @@ public class ProjectService {
         project.setName(projectWeb.getName());
         project.setState(projectWeb.getState());
         project.setCode(projectWeb.getCode());
-        Period period = this.periodService.getWithGeneralIndicatorById(projectWeb.getPeriod().getId());
+        Period period = this.periodService.getWithAllDataById(projectWeb.getPeriod().getId());
         project.setPeriod(period);
         project.setOrganization(this.modelWebTransformationService.organizationWebToOrganization(projectWeb.getOrganization()));
         project.setStartDate(projectWeb.getStartDate());

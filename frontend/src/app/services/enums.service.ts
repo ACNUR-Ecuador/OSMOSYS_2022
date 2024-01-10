@@ -90,94 +90,15 @@ export class EnumsService {
             return value;
         }
     }
-
-    // todo
-    monthTypeToNumber(month: MonthType): number {
-        // @ts-ignore
-        const monthV = MonthType[month] as MonthType;
-        switch (monthV) {
-            case MonthType.ENERO: {
-                return 1;
-            }
-            case MonthType.FEBRERO: {
-                return 2;
-            }
-            case MonthType.MARZO: {
-                return 3;
-            }
-            case MonthType.ABRIL: {
-                return 4;
-            }
-            case MonthType.MAYO: {
-                return 5;
-            }
-            case MonthType.JUNIO: {
-                return 6;
-            }
-            case MonthType.JULIO: {
-                return 7;
-            }
-            case MonthType.AGOSTO: {
-                return 8;
-            }
-            case MonthType.SEPTIEMBRE: {
-                return 9;
-            }
-            case MonthType.OCTUBRE: {
-                return 10;
-            }
-            case MonthType.NOVIEMBRE: {
-                return 11;
-            }
-            case MonthType.DICIEMBRE: {
-                return 12;
-            }
-            default:
-                return 0;
+    resolveEnum(enumName: EnumsType, value: string): any {
+        const enumerador = this.cacheMap.get(enumName).filter(
+            enume => {
+                return enume.value === value;
+            });
+        if (enumerador && enumerador.length > 0) {
+            return enumerador[0]
+        } else {
+            return null;
         }
     }
-
-    // todo pasa a order
-    // @ts-ignore
-    numberToMonthType(monthNumber: number): MonthType {
-        switch (monthNumber) {
-            case 1: {
-                return MonthType.ENERO;
-            }
-            case 2: {
-                return MonthType.FEBRERO;
-            }
-            case 3: {
-                return MonthType.MARZO;
-            }
-            case 4: {
-                return MonthType.ABRIL;
-            }
-            case 5: {
-                return MonthType.MAYO;
-            }
-            case 6: {
-                return MonthType.JUNIO;
-            }
-            case 7: {
-                return MonthType.JULIO;
-            }
-            case 8: {
-                return MonthType.AGOSTO;
-            }
-            case 9: {
-                return MonthType.SEPTIEMBRE;
-            }
-            case 10: {
-                return MonthType.OCTUBRE;
-            }
-            case 11: {
-                return MonthType.NOVIEMBRE;
-            }
-            case 12: {
-                return MonthType.DICIEMBRE;
-            }
-        }
-    }
-
 }

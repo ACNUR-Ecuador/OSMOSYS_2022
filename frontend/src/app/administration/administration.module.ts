@@ -81,6 +81,9 @@ import {
 import {FileUploadModule} from "primeng/fileupload";
 import { MassMailingComponent } from './mass-mailing/mass-mailing.component';
 import { MassBlockingComponent } from './mass-blocking/mass-blocking.component';
+import { DissagregationSelectorComponent } from './performance-indicator-administration/dissagregation-selector/dissagregation-selector.component';
+import {StandardDissagreationListPipe} from "../shared/pipes/standard-dissagreation-list.pipe";
+import { CustomDissagregationSelectorComponent } from './performance-indicator-administration/custom-dissagregation-selector/custom-dissagregation-selector.component';
 
 
 @NgModule({
@@ -100,7 +103,9 @@ import { MassBlockingComponent } from './mass-blocking/mass-blocking.component';
         DirectImplementationAdministrationComponent,
         AppconfigurationComponent,
         MassMailingComponent,
-        MassBlockingComponent
+        MassBlockingComponent,
+        DissagregationSelectorComponent,
+        CustomDissagregationSelectorComponent
     ],
     imports: [
         CommonModule,
@@ -157,7 +162,8 @@ import { MassBlockingComponent } from './mass-blocking/mass-blocking.component';
         MonthListPipe,
         DissagregationsAssignationToIndicatorPipe,
         CustomDissagregationsAssignationToIndicatorPipe,
-        PeriodsFromIndicatorPipe
+        PeriodsFromIndicatorPipe,
+        StandardDissagreationListPipe
     ]
 
 })

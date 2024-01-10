@@ -2,7 +2,6 @@ package org.unhcr.osmosys.webServices.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.webservice.jsonSerializers.LocalDateDeserializer;
 import com.sagatechs.generics.webservice.jsonSerializers.LocalDateSerializer;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
@@ -15,13 +14,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class ProjectWeb implements Serializable {
+public class ProjectWeb extends BaseWebEntity implements Serializable {
 
+    public ProjectWeb() {
+        super();
+    }
 
-    private Long id;
     private String code;
     private String name;
-    private State state;
     private OrganizationWeb organization;
     private PeriodWeb period;
     private Set<CantonWeb> locations = new HashSet<>();
@@ -35,14 +35,6 @@ public class ProjectWeb implements Serializable {
 
     private Boolean updateAllLocationsIndicators;
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getCode() {
         return code;
@@ -60,13 +52,6 @@ public class ProjectWeb implements Serializable {
         this.name = name;
     }
 
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
 
     public OrganizationWeb getOrganization() {
         return organization;

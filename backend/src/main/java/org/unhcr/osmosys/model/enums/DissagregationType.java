@@ -86,16 +86,19 @@ public enum DissagregationType implements EnumInterface {
     private final int order;
 
     private String label = null;
+    private Integer numberOfDissagregations = null;
 
     private final String[] standardDissagregationTypes;
 
     DissagregationType(String[] standardDissagregationTypes, int order) {
         this.standardDissagregationTypes = standardDissagregationTypes;
+        this.numberOfDissagregations = standardDissagregationTypes.length;
         this.order = order;
     }
 
     DissagregationType(String label, String[] standardDissagregationTypes, int order) {
         this.standardDissagregationTypes = standardDissagregationTypes;
+        this.numberOfDissagregations = standardDissagregationTypes.length;
         this.order = order;
         this.label = label;
     }
@@ -140,6 +143,22 @@ public enum DissagregationType implements EnumInterface {
 
     public boolean isLocationsDissagregation() {
         return this.getSimpleDissagregations().contains(DissagregationType.LUGAR);
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public Integer getNumberOfDissagregations() {
+        return numberOfDissagregations;
+    }
+
+    public void setNumberOfDissagregations(Integer numberOfDissagregations) {
+        this.numberOfDissagregations = numberOfDissagregations;
+    }
+
+    public boolean isAgeDissagregation() {
+        return this.getSimpleDissagregations().contains(DissagregationType.EDAD);
     }
 
     @Override

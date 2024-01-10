@@ -1,6 +1,5 @@
 package org.unhcr.osmosys.webServices.model;
 
-import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.model.enums.SourceType;
 import org.unhcr.osmosys.model.enums.TimeStateEnum;
@@ -10,12 +9,16 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 
-public class MonthWeb implements Serializable {
-    private Long id;
+public class MonthWeb extends BaseWebEntity implements Serializable {
+
+    public MonthWeb() {
+        super();
+    }
+
     private MonthEnum month;
     private Integer year;
     private Integer order;
-    private State state;
+
     private String commentary;
     private BigDecimal totalExecution;
     private Set<SourceType> sources;
@@ -26,13 +29,6 @@ public class MonthWeb implements Serializable {
 
     private TimeStateEnum late;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public MonthEnum getMonth() {
         return month;
@@ -58,13 +54,6 @@ public class MonthWeb implements Serializable {
         this.order = order;
     }
 
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
 
     public String getCommentary() {
         return commentary;

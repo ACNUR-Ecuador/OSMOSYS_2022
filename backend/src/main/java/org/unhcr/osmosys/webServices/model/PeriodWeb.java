@@ -1,6 +1,5 @@
 package org.unhcr.osmosys.webServices.model;
 
-import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
 
 import java.io.Serializable;
@@ -8,10 +7,13 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class PeriodWeb implements Serializable {
-    private Long id;
+public class PeriodWeb extends BaseWebEntity implements Serializable {
+
+    public PeriodWeb() {
+        super();
+    }
+
     private Integer year;
-    private State state;
     private GeneralIndicatorWeb generalIndicator;
 
     private Set<StandardDissagregationOptionWeb> periodAgeDissagregationOptions = new HashSet<>();
@@ -22,15 +24,10 @@ public class PeriodWeb implements Serializable {
 
     private Set<StandardDissagregationOptionWeb> periodDiversityDissagregationOptions = new HashSet<>();
 
-    public Long getId() {
-        return id;
-    }
 
     private Set<StandardDissagregationOptionWeb> periodCountryOfOriginDissagregationOptions = new HashSet<>();
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+
 
     public Integer getYear() {
         return year;
@@ -40,13 +37,6 @@ public class PeriodWeb implements Serializable {
         this.year = year;
     }
 
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
 
     public GeneralIndicatorWeb getGeneralIndicator() {
         return generalIndicator;

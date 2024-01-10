@@ -10,7 +10,6 @@ public class OfficeAdministratorId implements Serializable {
 
     private static final long serialVersionUID = -2765772194175419782L;
 
-
     @Column(name = "user_id")
     private Long userId;
 

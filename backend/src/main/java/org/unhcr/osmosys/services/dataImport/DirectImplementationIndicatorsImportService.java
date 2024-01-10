@@ -147,7 +147,7 @@ public class DirectImplementationIndicatorsImportService {
                 indicatorExecutionAssigmentWeb.setIndicator(this.modelWebTransformationService.indicatorToIndicatorWeb(indicator, true, false));
                 indicatorExecutionAssigmentWeb.setState(State.ACTIVO);
                 indicatorExecutionAssigmentWeb.setKeepBudget(false);
-                indicatorExecutionAssigmentWeb.setPeriod(this.modelWebTransformationService.periodToPeriodWeb(period));
+                indicatorExecutionAssigmentWeb.setPeriod(this.modelWebTransformationService.periodToPeriodWeb(period, true));
                 indicatorExecutionAssigmentWeb.setReportingOffice(this.modelWebTransformationService.officeToOfficeWeb(office, false, false));
 
                 String reporterString = StringUtils.trimToNull(dataFormatter.formatCellValue(row.getCell(COL_REPORTER)));
@@ -220,7 +220,6 @@ public class DirectImplementationIndicatorsImportService {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new GeneralAppException(ExceptionUtils.getMessage(e), Response.Status.BAD_REQUEST);
 
 

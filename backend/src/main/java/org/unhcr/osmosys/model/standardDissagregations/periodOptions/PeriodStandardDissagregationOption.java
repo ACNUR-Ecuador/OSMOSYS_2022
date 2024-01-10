@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.model.standardDissagregations.periodOptions;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.Period;
 import org.unhcr.osmosys.model.standardDissagregations.options.StandardDissagregationOption;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING, length = 20)
 @Table(schema = "dissagregations", name = "period_standard_dissagregation_options",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"period_id", "dissagregation_option_id"})})
-public abstract class PeriodStandardDissagregationOption<T extends StandardDissagregationOption> extends BaseEntity<Long> {
+public abstract class PeriodStandardDissagregationOption<T extends StandardDissagregationOption> extends BaseEntityIdState {
 
     public PeriodStandardDissagregationOption() {
 

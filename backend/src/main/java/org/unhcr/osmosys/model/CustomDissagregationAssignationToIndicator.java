@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import javax.persistence.*;
                 @UniqueConstraint(name = "uk_custom_dissagregation_assignation_indicator", columnNames = {"indicator_id", "custom_dissagregation_id", "period_id"})
         }
 )
-public class CustomDissagregationAssignationToIndicator extends BaseEntity<Long> {
+public class CustomDissagregationAssignationToIndicator extends BaseEntityIdState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -16,33 +16,43 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Path("/enums")
 @RequestScoped
 public class EnumsEndpoint {
 
+    private static final Logger logger = Logger.getLogger(EnumsEndpoint.class.getName());
 
     @Path("/{type}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<EnumWeb> getTypes(@PathParam("type") String type) throws GeneralAppException {
         switch (type) {
+
+            case "AreaType":
+                return this.EnumsToEnumsWeb(AreaType.values());
             case "AgeType":
                 // todo
                 // return this.EnumsToEnumsWeb(AgeType.values());
-            case "AreaType":
-                return this.EnumsToEnumsWeb(AreaType.values());
             case "CountryOfOrigin":
                 // todo
                 // return this.EnumsToEnumsWeb(CountryOfOrigin.values());
+            case "GenderType":
+                // todo
+                // return this.EnumsToEnumsWeb(GenderType.values());
+            case "PopulationType":
+                // todo
+                // return this.EnumsToEnumsWeb(PopulationType.values());
+            case "DiversityType":
+                // todo
+                // return this.EnumsToEnumsWeb(DiversityType.values());
             case "DissagregationType":
                 return this.EnumsToEnumsWeb(DissagregationType.values());
             case "Frecuency":
                 return this.EnumsToEnumsWeb(Frecuency.values());
-            case "GenderType":
-                // todo
-                // return this.EnumsToEnumsWeb(GenderType.values());
+
             case "IndicatorType":
                 return this.EnumsToEnumsWeb(IndicatorType.values());
 
@@ -50,13 +60,10 @@ public class EnumsEndpoint {
                 return this.EnumsToEnumsWeb(MeasureType.values());
             case "OfficeType":
                 return this.EnumsToEnumsWeb(OfficeType.values());
-            case "PopulationType":
-                // todo
-                // return this.EnumsToEnumsWeb(PopulationType.values());
+
             case "State":
                 return this.EnumsToEnumsWeb(State.values());
-            case "DiversityType":
-                return this.EnumsToEnumsWeb(DiversityType.values());
+
             case "TotalIndicatorCalculationType":
                 return this.EnumsToEnumsWeb(TotalIndicatorCalculationType.values());
             case "RoleType":
@@ -85,6 +92,14 @@ public class EnumsEndpoint {
         ew.setValue(enumerator.getStringValue());
         ew.setLabel(enumerator.getLabel());
         ew.setOrder(enumerator.getOrder());
+
+        if(enumerator instanceof DissagregationType){
+            DissagregationType dissagregationType= (DissagregationType) enumerator;
+            ew.setStandardDissagregationTypes(dissagregationType.getStandardDissagregationTypes());
+            ew.setAgeDissagregation(dissagregationType.isAgeDissagregation());
+            ew.setLocationsDissagregation(dissagregationType.isLocationsDissagregation());
+            ew.setNumberOfDissagregations(dissagregationType.getNumberOfDissagregations());
+        }
 
         return ew;
     }

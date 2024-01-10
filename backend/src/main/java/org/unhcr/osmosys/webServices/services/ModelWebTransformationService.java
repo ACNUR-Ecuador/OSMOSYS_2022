@@ -252,13 +252,12 @@ public class ModelWebTransformationService {
     //</editor-fold>
 
 
-
     //<editor-fold desc="CustomDissagregationAssignationToIndicator">
     public CustomDissagregationAssignationToIndicatorWeb customDissagregationAssignationToIndicatorToCustomDissagregationAssignationToIndicatorWeb(CustomDissagregationAssignationToIndicator c) {
         CustomDissagregationAssignationToIndicatorWeb w = new CustomDissagregationAssignationToIndicatorWeb();
         w.setId(c.getId());
         w.setState(c.getState());
-        w.setPeriod(this.periodToPeriodWeb(c.getPeriod()));
+        w.setPeriod(this.periodToPeriodWeb(c.getPeriod(), true));
         w.setCustomDissagregation(this.customDissagregationWebToCustomDissagregation(c.getCustomDissagregation()));
         return w;
     }
@@ -328,7 +327,7 @@ public class ModelWebTransformationService {
     public List<IndicatorWeb> indicatorsToIndicatorsWeb(List<Indicator> indicators, boolean getStatement, boolean getDissagregations) {
         List<IndicatorWeb> r = new ArrayList<>();
         for (Indicator indicator : indicators) {
-            r.add(this.indicatorToIndicatorWeb(indicator,  getStatement, getDissagregations));
+            r.add(this.indicatorToIndicatorWeb(indicator, getStatement, getDissagregations));
         }
         return r;
     }
@@ -339,8 +338,18 @@ public class ModelWebTransformationService {
         DissagregationAssignationToIndicatorWeb w = new DissagregationAssignationToIndicatorWeb();
         w.setId(d.getId());
         w.setState(d.getState());
-        w.setPeriod(this.periodToPeriodWeb(d.getPeriod()));
+        w.setPeriod(this.periodToPeriodWeb(d.getPeriod(), true));
         w.setDissagregationType(d.getDissagregationType());
+        w.setUseCustomAgeDissagregations(d.getUseCustomAgeDissagregations());
+        w.setCustomIndicatorOptions(new HashSet<>());
+
+        Set<StandardDissagregationOptionWeb> customIndicatorOptions = d.getDissagregationAssignationToIndicatorPeriodCustomizations()
+                .stream()
+                .filter(dissagregationAssignationToIndicatorPeriodCustomization -> dissagregationAssignationToIndicatorPeriodCustomization.getState().equals(State.ACTIVO))
+                .map(dissagregationAssignationToIndicatorPeriodCustomization -> {
+                    return this.standardDissagregationOptionToStandardDissagregationOptionWeb(dissagregationAssignationToIndicatorPeriodCustomization.getAgeDissagregationOption());
+                }).collect(Collectors.toSet());
+        w.setCustomIndicatorOptions(customIndicatorOptions);
         return w;
     }
 
@@ -350,6 +359,7 @@ public class ModelWebTransformationService {
         d.setState(w.getState());
         d.setDissagregationType(w.getDissagregationType());
         d.setPeriod(this.periodWebToPeriod(w.getPeriod()));
+
         return d;
     }
 
@@ -372,8 +382,6 @@ public class ModelWebTransformationService {
         return r;
     }
     //</editor-fold>
-
-
 
 
     //<editor-fold desc="Office">
@@ -482,7 +490,7 @@ public class ModelWebTransformationService {
     //</editor-fold>
 
     //<editor-fold desc="Period">
-    public PeriodWeb periodToPeriodWeb(Period period) {
+    public PeriodWeb periodToPeriodWeb(Period period, boolean simple) {
         if (period == null) {
             return null;
         }
@@ -491,34 +499,40 @@ public class ModelWebTransformationService {
         periodWeb.setYear(period.getYear());
         periodWeb.setState(period.getState());
 
+        if (simple)
+            return periodWeb;
+
         for (PeriodAgeDissagregationOption option : period.getPeriodAgeDissagregationOptions()) {
-            if(option.getState().equals(State.ACTIVO)){
+            if (option.getState().equals(State.ACTIVO)) {
                 periodWeb.getPeriodAgeDissagregationOptions().add(this.standardDissagregationOptionToStandardDissagregationOptionWeb(option.getDissagregationOption()));
             }
         }
 
         for (PeriodGenderDissagregationOption option : period.getPeriodGenderDissagregationOptions()) {
-            if(option.getState().equals(State.ACTIVO)){
+            if (option.getState().equals(State.ACTIVO)) {
                 periodWeb.getPeriodGenderDissagregationOptions().add(this.standardDissagregationOptionToStandardDissagregationOptionWeb(option.getDissagregationOption()));
             }
         }
 
         for (PeriodPopulationTypeDissagregationOption option : period.getPeriodPopulationTypeDissagregationOptions()) {
-            if(option.getState().equals(State.ACTIVO)){
+            if (option.getState().equals(State.ACTIVO)) {
                 periodWeb.getPeriodPopulationTypeDissagregationOptions().add(this.standardDissagregationOptionToStandardDissagregationOptionWeb(option.getDissagregationOption()));
             }
         }
 
         for (PeriodDiversityDissagregationOption option : period.getPeriodDiversityDissagregationOptions()) {
-            if(option.getState().equals(State.ACTIVO)){
+            if (option.getState().equals(State.ACTIVO)) {
                 periodWeb.getPeriodDiversityDissagregationOptions().add(this.standardDissagregationOptionToStandardDissagregationOptionWeb(option.getDissagregationOption()));
             }
         }
 
         for (PeriodCountryOfOriginDissagregationOption option : period.getPeriodCountryOfOriginDissagregationOptions()) {
-            if(option.getState().equals(State.ACTIVO)){
+            if (option.getState().equals(State.ACTIVO)) {
                 periodWeb.getPeriodCountryOfOriginDissagregationOptions().add(this.standardDissagregationOptionToStandardDissagregationOptionWeb(option.getDissagregationOption()));
             }
+        }
+        if (period.getGeneralIndicator() != null) {
+            periodWeb.setGeneralIndicator(this.generalIndicatorToGeneralIndicatorWeb(period.getGeneralIndicator()));
         }
 
         return periodWeb;
@@ -536,10 +550,10 @@ public class ModelWebTransformationService {
         return period;
     }
 
-    public List<PeriodWeb> periodsToPeriodsWeb(List<Period> periods) {
+    public List<PeriodWeb> periodsToPeriodsWeb(List<Period> periods, boolean simple) {
         List<PeriodWeb> r = new ArrayList<>();
         for (Period period : periods) {
-            r.add(this.periodToPeriodWeb(period));
+            r.add(this.periodToPeriodWeb(period, simple));
         }
         return r;
     }
@@ -773,7 +787,7 @@ public class ModelWebTransformationService {
         PeriodStatementAsignationWeb paw = new PeriodStatementAsignationWeb();
         paw.setId(periodStatementAsignation.getId());
         paw.setState(periodStatementAsignation.getState());
-        paw.setPeriod(this.periodToPeriodWeb(periodStatementAsignation.getPeriod()));
+        paw.setPeriod(this.periodToPeriodWeb(periodStatementAsignation.getPeriod(), true));
         return paw;
     }
 
@@ -793,7 +807,7 @@ public class ModelWebTransformationService {
         w.setId(project.getId());
         w.setName(project.getName());
         w.setCode(project.getCode());
-        w.setPeriod(this.periodToPeriodWeb(project.getPeriod()));
+        w.setPeriod(this.periodToPeriodWeb(project.getPeriod(), true));
         w.setOrganization(this.organizationToOrganizationWeb(project.getOrganization()));
         w.setStartDate(project.getStartDate());
         w.setEndDate(project.getEndDate());
@@ -931,7 +945,7 @@ public class ModelWebTransformationService {
         indicatorWeb.setDescription(indicator.getDescription());
         indicatorWeb.setState(indicator.getState());
         indicatorWeb.setMeasureType(indicator.getMeasureType());
-        indicatorWeb.setPeriod(this.periodToPeriodWeb(indicator.getPeriod()));
+        indicatorWeb.setPeriod(this.periodToPeriodWeb(indicator.getPeriod(), true));
         indicatorWeb.setDissagregationAssignationsToGeneralIndicator(this.dissagregationAssignationToGeneralIndicatorsToDissagregationAssignationToGeneralIndicatorsWeb(indicator.getDissagregationAssignationsToGeneralIndicator()));
         return indicatorWeb;
     }
@@ -987,7 +1001,7 @@ public class ModelWebTransformationService {
         iw.setCompassIndicator(ie.getCompassIndicator());
         iw.setTotalExecution(ie.getTotalExecution());
         iw.setProjectStatement(this.statementToStatementWeb(ie.getProjectStatement(), false, true, true, true, false));
-        iw.setPeriod(this.periodToPeriodWeb(ie.getPeriod()));
+        iw.setPeriod(this.periodToPeriodWeb(ie.getPeriod(), true));
         iw.setKeepBudget(ie.getKeepBudget());
         iw.setAssignedBudget(ie.getAssignedBudget());
         iw.setAvailableBudget(ie.getAvailableBudget());
@@ -1009,7 +1023,7 @@ public class ModelWebTransformationService {
 
 
         } else {
-            iw.setIndicator(this.indicatorToIndicatorWeb(ie.getIndicator(),  true, true));
+            iw.setIndicator(this.indicatorToIndicatorWeb(ie.getIndicator(), true, true));
             iw.setReportingOffice(this.officeToOfficeWeb(ie.getReportingOffice(), false, false));
             iw.setSupervisorUser(this.userToUserWebSimple(ie.getSupervisorUser(), false, true));
             iw.setAssignedUser(this.userToUserWebSimple(ie.getAssignedUser(), false, true));
@@ -1387,7 +1401,6 @@ public class ModelWebTransformationService {
         return r;
 
     }
-
 
 
 }

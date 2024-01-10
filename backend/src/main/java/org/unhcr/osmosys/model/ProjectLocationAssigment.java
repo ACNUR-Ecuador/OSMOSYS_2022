@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Table(schema = "osmosys", name = "project_location_assigments",
         uniqueConstraints = @UniqueConstraint(name = "unique_project_location_assigments", columnNames = {"project_id", "canton_id"}))
-public class ProjectLocationAssigment extends BaseEntity<Long> {
+public class ProjectLocationAssigment extends BaseEntityIdState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

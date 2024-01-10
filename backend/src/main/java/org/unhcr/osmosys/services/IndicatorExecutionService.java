@@ -779,7 +779,7 @@ public class IndicatorExecutionService {
                 .stream()
                 .filter(indicatorExecution -> indicatorExecution.getQuarters().size() < 1)
                 .collect(Collectors.toList());
-        Period period = this.periodService.getWithDissagregationOptionsById(periodId);
+        Period period = this.periodService.getWithAllDataById(periodId);
         for (IndicatorExecution indicatorExecution : indicatorExecutions) {
             Indicator indicator = indicatorExecution.getIndicator();
 
@@ -842,7 +842,7 @@ public class IndicatorExecutionService {
             throw new GeneralAppException("Indicador no encontrado " + indicatorExecutionAssigmentWeb.getIndicator().getId(), Response.Status.BAD_REQUEST);
         }
         indicatorExecution.setIndicator(indicator);
-        Period period = this.periodService.getWithDissagregationOptionsById(indicatorExecutionAssigmentWeb.getPeriod().getId());
+        Period period = this.periodService.getWithAllDataById(indicatorExecutionAssigmentWeb.getPeriod().getId());
         if (period == null) {
             throw new GeneralAppException("Periodo no encontrado " + indicatorExecutionAssigmentWeb.getPeriod().getId(), Response.Status.BAD_REQUEST);
         }

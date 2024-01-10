@@ -1,27 +1,22 @@
 package org.unhcr.osmosys.webServices.model.standardDissagregations;
 
-import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.unhcr.osmosys.webServices.model.BaseWebEntity;
 
 import java.io.Serializable;
 
 
-public class StandardDissagregationOptionWeb implements Serializable {
-    private Long id;
+public class StandardDissagregationOptionWeb extends BaseWebEntity implements Serializable {
+
+    public StandardDissagregationOptionWeb() {
+        super();
+    }
+
     private String name;
     private Integer order;
     private String groupName;
-    private State state;
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -37,14 +32,6 @@ public class StandardDissagregationOptionWeb implements Serializable {
 
     public void setOrder(Integer order) {
         this.order = order;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
     }
 
     public String getGroupName() {

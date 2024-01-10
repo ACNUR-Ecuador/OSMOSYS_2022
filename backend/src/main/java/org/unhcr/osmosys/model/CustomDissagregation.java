@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.util.Set;
 
 @Entity
 @Table(schema = "osmosys", name = "custom_dissagregations")
-public class CustomDissagregation extends BaseEntity<Long> {
+public class CustomDissagregation extends BaseEntityIdState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

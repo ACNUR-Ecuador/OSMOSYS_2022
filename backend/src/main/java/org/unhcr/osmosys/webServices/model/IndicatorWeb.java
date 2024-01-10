@@ -1,7 +1,6 @@
 package org.unhcr.osmosys.webServices.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.*;
@@ -11,14 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class IndicatorWeb implements Serializable {
-    private Long id;
+public class IndicatorWeb extends BaseWebEntity implements Serializable {
+    public IndicatorWeb() {
+        super();
+    }
+
     private String code;
     private String description;
     private String category;
     private String instructions;
     private String qualitativeInstructions;
-    private State state;
     private IndicatorType indicatorType;
     private MeasureType measureType;
     private Frecuency frecuency;
@@ -35,14 +36,6 @@ public class IndicatorWeb implements Serializable {
     private List<CustomDissagregationAssignationToIndicatorWeb> customDissagregationAssignationToIndicators = new ArrayList<>();
 
     private Boolean blockAfterUpdate;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getCode() {
         return code;
@@ -74,14 +67,6 @@ public class IndicatorWeb implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
     }
 
     public IndicatorType getIndicatorType() {
@@ -205,11 +190,11 @@ public class IndicatorWeb implements Serializable {
 
         IndicatorWeb that = (IndicatorWeb) o;
 
-        return new EqualsBuilder().append(id, that.id).isEquals();
+        return new EqualsBuilder().appendSuper(super.equals(o)).append(code, that.code).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).toHashCode();
+        return new HashCodeBuilder(17, 37).appendSuper(super.hashCode()).append(code).toHashCode();
     }
 }
