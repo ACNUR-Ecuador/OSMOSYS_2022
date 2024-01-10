@@ -138,7 +138,6 @@ public class IndicatorService {
         List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsOriginals = new ArrayList<>(indicator.getDissagregationsAssignationToIndicator());
 
 
-
         // to create
         List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToCreate = this.dissagregationAssignationToIndicatorService.getToCreate(dissagregationAssignationToIndicatorsNews, dissagregationAssignationToIndicatorsOriginals);
         for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicatorsToCreate) {
@@ -169,14 +168,16 @@ public class IndicatorService {
             dissagregationAssignationToIndicator.setState(State.INACTIVO);
             // no update customs
         }
-
         // to enable
         List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToEnable = this.dissagregationAssignationToIndicatorService.getToEnable(dissagregationAssignationToIndicatorsNews, dissagregationAssignationToIndicatorsOriginals);
-        updateCustomOptions(dissagregationAssignationToIndicatorsToDisable, dissagregationAssignationToIndicatorsNews);
+        for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicatorsToEnable) {
+            dissagregationAssignationToIndicator.setState(State.ACTIVO);
 
+
+        }
+        updateCustomOptions(dissagregationAssignationToIndicatorsToDisable, dissagregationAssignationToIndicatorsNews);
         List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToKeep = this.dissagregationAssignationToIndicatorService.getToKeep(dissagregationAssignationToIndicatorsNews, dissagregationAssignationToIndicatorsOriginals);
         updateCustomOptions(dissagregationAssignationToIndicatorsToKeep, dissagregationAssignationToIndicatorsNews);
-        LOGGER.info("testing");
 
 
         List<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicatorsToEnable = new ArrayList<>();
@@ -208,8 +209,6 @@ public class IndicatorService {
                 customDissagregationAssignationToIndicatorsToCreate.add(da);
             }
         });
-
-        if (1 == 1) throw new GeneralAppException("por teminar");
         this.saveOrUpdate(indicator);
         //update dissagregations in ie
         // todo 2024
@@ -228,43 +227,47 @@ public class IndicatorService {
 
     private void updateCustomOptions(List<DissagregationAssignationToIndicator> originals, List<DissagregationAssignationToIndicatorWeb> news) throws GeneralAppException {
         for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : originals) {
-            dissagregationAssignationToIndicator.setState(State.ACTIVO);
+            Optional<DissagregationAssignationToIndicatorWeb> webOptional = news.stream()
+                    .filter(dissagregationAssignationToIndicatorWeb -> this.dissagregationAssignationToIndicatorService.equalsWebToEntity(dissagregationAssignationToIndicatorWeb, dissagregationAssignationToIndicator))
+                    .findFirst();
+
+            if (webOptional.isEmpty()) {
+                throw new GeneralAppException("Error en el manejo de segregaciones personalizadas para el indicador.", Response.Status.INTERNAL_SERVER_ERROR);
+            }
+            dissagregationAssignationToIndicator.setUseCustomAgeDissagregations(webOptional.get().getUseCustomAgeDissagregations());
             if (dissagregationAssignationToIndicator.getUseCustomAgeDissagregations()) {
-                Optional<DissagregationAssignationToIndicatorWeb> webOptional = news.stream()
-                        .filter(dissagregationAssignationToIndicatorWeb -> this.dissagregationAssignationToIndicatorService.equalsWebToEntity(dissagregationAssignationToIndicatorWeb, dissagregationAssignationToIndicator))
-                        .findFirst();
-                if (webOptional.isPresent()) {
-                    @SuppressWarnings("ExtractMethodRecommender") Set<StandardDissagregationOptionWeb> webs = webOptional.get().getCustomIndicatorOptions();
-                    if (webs.isEmpty()) {
-                        throw new GeneralAppException("Para el periodo " + dissagregationAssignationToIndicator.getPeriod().getYear() +
-                                " para la desagregación " + dissagregationAssignationToIndicator.getDissagregationType().getLabel() +
-                                " se ha activado la personalización de segregaciones pero no se han seleccionado opciones"
-                                , Response.Status.BAD_REQUEST);
-                    }
+                dissagregationAssignationToIndicator.getDissagregationAssignationToIndicatorPeriodCustomizations().size();
 
-                    //add all, in add is logic to create or activate
-                    for (StandardDissagregationOptionWeb web : webs) {
-                        AgeDissagregationOption option = (AgeDissagregationOption) this.standardDissagregationOptionService.getById(web.getId());
-                        dissagregationAssignationToIndicator.addAgeDissagregationCustomizations(option);
-                    }
-                    // to Remove
-                    List<AgeDissagregationOption> toRemove = dissagregationAssignationToIndicator.getDissagregationAssignationToIndicatorPeriodCustomizations()
-                            .stream()
-                            .map(DissagregationAssignationToIndicatorPeriodCustomization::getAgeDissagregationOption)
-                            .filter(ageDissagregationOption ->
-                                    webs.stream().noneMatch(
-                                            standardDissagregationOptionWeb -> standardDissagregationOptionWeb.getId().equals(ageDissagregationOption.getId())
-                                    )
-                            )
-                            .collect(Collectors.toList());
 
-                    for (AgeDissagregationOption ageDissagregationOption : toRemove) {
-                        dissagregationAssignationToIndicator.removeAgeDissagregationCustomizations(ageDissagregationOption);
-                    }
-
-                } else {
-                    throw new GeneralAppException("Error en el manejo de segregaciones personalizadas para el indicador.", Response.Status.INTERNAL_SERVER_ERROR);
+                Set<StandardDissagregationOptionWeb> webs = webOptional.get().getCustomIndicatorOptions();
+                if (webs.isEmpty()) {
+                    throw new GeneralAppException("Para el periodo " + dissagregationAssignationToIndicator.getPeriod().getYear() +
+                            " para la desagregación " + dissagregationAssignationToIndicator.getDissagregationType().getLabel() +
+                            " se ha activado la personalización de segregaciones pero no se han seleccionado opciones"
+                            , Response.Status.BAD_REQUEST);
                 }
+
+                //add all, in add is logic to create or activate
+                for (StandardDissagregationOptionWeb web : webs) {
+                    AgeDissagregationOption option = (AgeDissagregationOption) this.standardDissagregationOptionService.getById(web.getId());
+                    dissagregationAssignationToIndicator.addAgeDissagregationCustomizations(option);
+                }
+                // to Remove
+                List<AgeDissagregationOption> toRemove = dissagregationAssignationToIndicator.getDissagregationAssignationToIndicatorPeriodCustomizations()
+                        .stream()
+                        .map(DissagregationAssignationToIndicatorPeriodCustomization::getAgeDissagregationOption)
+                        .filter(ageDissagregationOption ->
+                                webs.stream().noneMatch(
+                                        standardDissagregationOptionWeb -> standardDissagregationOptionWeb.getId().equals(ageDissagregationOption.getId())
+                                )
+                        )
+                        .collect(Collectors.toList());
+
+                for (AgeDissagregationOption ageDissagregationOption : toRemove) {
+                    dissagregationAssignationToIndicator.removeAgeDissagregationCustomizations(ageDissagregationOption);
+                }
+
+
             }
         }
     }

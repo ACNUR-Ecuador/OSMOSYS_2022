@@ -1,6 +1,5 @@
 package org.unhcr.osmosys.model;
 
-import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -8,10 +7,12 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.standardDissagregations.DissagregationAssignationToIndicatorPeriodCustomization;
 import org.unhcr.osmosys.model.standardDissagregations.options.AgeDissagregationOption;
-import org.unhcr.osmosys.model.standardDissagregations.periodOptions.PeriodAgeDissagregationOption;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.StringJoiner;
 
 @Entity
 @Table(schema = "osmosys", name = "dissagregation_assignation_indicator",
@@ -118,7 +119,7 @@ public class DissagregationAssignationToIndicator extends BaseEntityIdState {
 
     public void addAgeDissagregationCustomizations(AgeDissagregationOption ageDissagregationOption) {
         Optional<DissagregationAssignationToIndicatorPeriodCustomization> optionalOption = this.dissagregationAssignationToIndicatorPeriodCustomizations.stream()
-                .filter(dissagregationAssignationToIndicatorPeriodCustomization -> dissagregationAssignationToIndicatorPeriodCustomization.getAgeDissagregationOption().equals(ageDissagregationOption))
+                .filter(dissagregationAssignationToIndicatorPeriodCustomization -> dissagregationAssignationToIndicatorPeriodCustomization.getAgeDissagregationOption().getId().equals(ageDissagregationOption.getId()))
                 .findFirst();
 
         if(optionalOption.isPresent()){
@@ -131,7 +132,7 @@ public class DissagregationAssignationToIndicator extends BaseEntityIdState {
 
     public void removeAgeDissagregationCustomizations(AgeDissagregationOption ageDissagregationOption) {
         Optional<DissagregationAssignationToIndicatorPeriodCustomization> optionalOption = this.dissagregationAssignationToIndicatorPeriodCustomizations.stream()
-                .filter(dissagregationAssignationToIndicatorPeriodCustomization -> dissagregationAssignationToIndicatorPeriodCustomization.getAgeDissagregationOption().equals(ageDissagregationOption))
+                .filter(dissagregationAssignationToIndicatorPeriodCustomization -> dissagregationAssignationToIndicatorPeriodCustomization.getAgeDissagregationOption().getId().equals(ageDissagregationOption.getId()))
                 .findFirst();
 
         optionalOption.ifPresent(dissagregationAssignationToIndicatorPeriodCustomization -> dissagregationAssignationToIndicatorPeriodCustomization.setState(State.INACTIVO));
