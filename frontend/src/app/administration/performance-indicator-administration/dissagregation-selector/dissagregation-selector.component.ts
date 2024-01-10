@@ -1,7 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {
-    DissagregationAssignationToIndicator, IndicatorExecution,
-    Period,
+    DissagregationAssignationToIndicator, Period,
     StandardDissagregationOption
 } from "../../../shared/model/OsmosysModel";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
@@ -186,6 +185,7 @@ export class DissagregationSelectorComponent implements OnInit {
         let dissagregationAssignationToIndicators: DissagregationAssignationToIndicator[] =
             this.formItem.get('dissagregationAssignationToIndicators').value;
         dissagregationAssignationToIndicators = dissagregationAssignationToIndicators
+            .filter(value => value.state===EnumsState.ACTIVE)
             .sort((a, b) => a.dissagregationType.localeCompare(b.dissagregationType));
         return dissagregationAssignationToIndicators;
     }

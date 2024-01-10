@@ -314,13 +314,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.formItem.get('dissagregationAssignationToIndicators').patchValue(indicator.dissagregationsAssignationToIndicator);
         this.formItem.get('customDissagregationAssignationToIndicators').patchValue(indicator.customDissagregationAssignationToIndicators);
         this.filterStatementsByAreaType(indicator.areaType as AreaType, false);
-        const dissagregationsSelectItems = indicator.dissagregationsAssignationToIndicator
-            .filter(value => {
-                return value.state === EnumsState.ACTIVE;
-            }).map(value => {
-                return value.dissagregationType + '-' + value.period.id;
-            });
-        //this.formItem.get('dissagregations').patchValue(dissagregationsSelectItems);
 
 
         this.ref.detectChanges();
@@ -610,6 +603,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
     public getdissagregationsAssignationToIndicator(period: Period): DissagregationAssignationToIndicator[] {
         let dissagregationAssignations: DissagregationAssignationToIndicator[] = this.formItem.get('dissagregationAssignationToIndicators').value;
+        if(!dissagregationAssignations){dissagregationAssignations=[]}
         let dissagregationAssignationToIndicators: DissagregationAssignationToIndicator[] = dissagregationAssignations.filter(value => value.period.id === period.id);
         if (!dissagregationAssignationToIndicators) {
             dissagregationAssignationToIndicators = [];
@@ -619,6 +613,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
     public getCustomDissagregationsAssignationToIndicator(period: Period): CustomDissagregationAssignationToIndicator[] {
         let dissagregationAssignations: CustomDissagregationAssignationToIndicator[] = this.formItem.get('customDissagregationAssignationToIndicators').value;
+        if(!dissagregationAssignations){dissagregationAssignations=[]}
         let dissagregationAssignationToIndicators: CustomDissagregationAssignationToIndicator[] =
             dissagregationAssignations.filter(value => value.period.id === period.id);
         if (!dissagregationAssignationToIndicators) {

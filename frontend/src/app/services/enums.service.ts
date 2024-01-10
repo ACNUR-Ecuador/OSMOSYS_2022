@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {EMPTY, Observable} from 'rxjs';
-import {DissagregationType, EnumsType, MonthType, SelectItemWithOrder} from '../shared/model/UtilsModel';
+import {DissagregationType, EnumsType, SelectItemWithOrder} from '../shared/model/UtilsModel';
 import {HttpClient} from '@angular/common/http';
 import {catchError, shareReplay} from 'rxjs/operators';
 
@@ -43,10 +43,6 @@ export class EnumsService {
         switch (dissagregationType) {
             case DissagregationType.EDAD:
                 return this.getByType(EnumsType.AgeType);
-            case DissagregationType.EDAD_EDUCACION_PRIMARIA:
-                return this.getByType(EnumsType.AgePrimaryEducationType);
-            case DissagregationType.EDAD_EDUCACION_TERCIARIA:
-                return this.getByType(EnumsType.AgeTertiaryEducationType);
             case DissagregationType.GENERO:
                 return this.getByType(EnumsType.GenderType);
             case DissagregationType.DIVERSIDAD:
