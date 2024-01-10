@@ -304,8 +304,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.formItem.patchValue(newItem);
         this.setDefaultIndicatorValues();
         this.formItem.get('statement').enable();
-        this.formItem.get('dissagregations').patchValue([]);
-        this.formItem.get('customDissagregations').patchValue([]);
         this.ref.detectChanges();
     }
 
@@ -520,6 +518,9 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.formItem.get('isCalculated').patchValue(
             isCalculated
         );
+
+        this.formItem.get('dissagregationAssignationToIndicators').patchValue([]);
+        this.formItem.get('customDissagregationAssignationToIndicators').patchValue([]);
         this.ref.detectChanges();
     }
 
