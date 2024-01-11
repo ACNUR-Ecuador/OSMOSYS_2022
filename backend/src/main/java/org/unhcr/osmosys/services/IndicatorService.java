@@ -14,6 +14,7 @@ import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.standardDissagregations.DissagregationAssignationToIndicatorPeriodCustomization;
 import org.unhcr.osmosys.model.standardDissagregations.options.AgeDissagregationOption;
 import org.unhcr.osmosys.services.standardDissagregations.StandardDissagregationOptionService;
+import org.unhcr.osmosys.webServices.model.CustomDissagregationAssignationToIndicatorWeb;
 import org.unhcr.osmosys.webServices.model.DissagregationAssignationToIndicatorWeb;
 import org.unhcr.osmosys.webServices.model.IndicatorWeb;
 import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
@@ -134,7 +135,7 @@ public class IndicatorService {
         this.indicatorWebToIndicator(indicatorWeb, indicator);
         // dissagregationAssiment
         List<DissagregationAssignationToIndicatorWeb> dissagregationAssignationToIndicatorsNews = indicatorWeb.getDissagregationsAssignationToIndicator();
-        // todo doing
+
         List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsOriginals = new ArrayList<>(indicator.getDissagregationsAssignationToIndicator());
 
 
@@ -180,35 +181,29 @@ public class IndicatorService {
         updateCustomOptions(dissagregationAssignationToIndicatorsToKeep, dissagregationAssignationToIndicatorsNews);
 
 
-        List<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicatorsToEnable = new ArrayList<>();
-        List<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicatorsToDisable = new ArrayList<>();
-        List<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicatorsToCreate = new ArrayList<>();
+        /////******************************************CUSTOM DISSAGREGATIONS*****************************************************/
 
-        indicatorWeb.getCustomDissagregationAssignationToIndicators().forEach(dissagregationAssignationToIndicatorWeb -> {
-            if (dissagregationAssignationToIndicatorWeb.getId() != null) {
-                Optional<CustomDissagregationAssignationToIndicator> dissagregationAssignationToIndicatorOp = indicator.getCustomDissagregationAssignationToIndicators().stream().filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicatorWeb.getId().equals(dissagregationAssignationToIndicator.getId())).findFirst();
-                //noinspection DuplicatedCode
-                dissagregationAssignationToIndicatorOp.ifPresent(customDissagregationAssignationToIndicator -> {
-                    if (!customDissagregationAssignationToIndicator.getState().equals(dissagregationAssignationToIndicatorWeb.getState())) {
-                        if (dissagregationAssignationToIndicatorWeb.getState().equals(State.ACTIVO)) {
-                            customDissagregationAssignationToIndicatorsToEnable.add(customDissagregationAssignationToIndicator);
-                        } else {
-                            customDissagregationAssignationToIndicatorsToDisable.add(customDissagregationAssignationToIndicator);
-                        }
-                    }
-                    customDissagregationAssignationToIndicator.setState(dissagregationAssignationToIndicatorWeb.getState());
+        List<CustomDissagregationAssignationToIndicatorWeb> customDissagregationAssignationToIndicatorsNews = indicatorWeb.getCustomDissagregationAssignationToIndicators();
 
-                });
-            } else {
-                // es nuevo
-                CustomDissagregationAssignationToIndicator da = new CustomDissagregationAssignationToIndicator();
-                da.setState(State.ACTIVO);
-                da.setPeriod(this.modelWebTransformationService.periodWebToPeriod(dissagregationAssignationToIndicatorWeb.getPeriod()));
-                da.setCustomDissagregation(this.modelWebTransformationService.customDissagregationWebToCustomDissagregation(dissagregationAssignationToIndicatorWeb.getCustomDissagregation()));
-                indicator.addCustomDissagregationAssignationToIndicator(da);
-                customDissagregationAssignationToIndicatorsToCreate.add(da);
-            }
-        });
+        List<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicatorsOriginals = new ArrayList<>(indicator.getCustomDissagregationAssignationToIndicators());
+
+        // to create
+        List<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicatorsToCreate = this.customDissagregationAssignationToIndicatorService.getToCreate(customDissagregationAssignationToIndicatorsNews, customDissagregationAssignationToIndicatorsOriginals);
+        for (CustomDissagregationAssignationToIndicator customDissagregationAssignationToIndicator : customDissagregationAssignationToIndicatorsToCreate) {
+            indicator.addCustomDissagregationAssignationToIndicator(customDissagregationAssignationToIndicator);
+        }
+        // to dissable
+        List<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicatorsToDisable = this.customDissagregationAssignationToIndicatorService.getToDisableTotal(customDissagregationAssignationToIndicatorsNews, customDissagregationAssignationToIndicatorsOriginals);
+        for (CustomDissagregationAssignationToIndicator customDissagregationAssignationToIndicator : customDissagregationAssignationToIndicatorsToDisable) {
+            customDissagregationAssignationToIndicator.setState(State.INACTIVO);
+        }
+        // to enable
+        List<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicatorsToEnable = this.customDissagregationAssignationToIndicatorService.getToEnable(customDissagregationAssignationToIndicatorsNews, customDissagregationAssignationToIndicatorsOriginals);
+        for (CustomDissagregationAssignationToIndicator customDissagregationAssignationToIndicator : customDissagregationAssignationToIndicatorsToEnable) {
+            customDissagregationAssignationToIndicator.setState(State.ACTIVO);
+        }
+
+
         this.saveOrUpdate(indicator);
         //update dissagregations in ie
         // todo 2024
