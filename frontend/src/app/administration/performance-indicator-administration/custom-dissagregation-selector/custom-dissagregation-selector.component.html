@@ -8,6 +8,7 @@
                            (onChange)="selectItem($event)"
                            defaultLabel="Seleccionar...."
                            scrollHeight="250px" display="chip"
+                           dataKey="id"
             >
             </p-multiSelect>
             <p-table #dt [value]="getDissagregationAssignationToIndicators()" [rows]="10" [paginator]="true"
