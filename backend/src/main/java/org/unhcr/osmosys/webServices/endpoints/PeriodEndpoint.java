@@ -64,7 +64,7 @@ public class PeriodEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public PeriodWeb getByid(@PathParam("id") Long id) {
-        return this.periodService.getWebWithAllDataById(id);
+        return this.periodService.getWebById(id);
     }
 
     @Path("/withGeneralIndicator/{id}")

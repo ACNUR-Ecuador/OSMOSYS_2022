@@ -1,20 +1,13 @@
 package org.unhcr.osmosys.model;
 
-import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.standardDissagregations.options.StandardDissagregationOption;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity(name = "Canton")
-@DiscriminatorValue("location")
+@DiscriminatorValue("Canton")
 public class Canton extends StandardDissagregationOption {
 
 
@@ -23,7 +16,7 @@ public class Canton extends StandardDissagregationOption {
     private String code;
 
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "provincia_id", foreignKey = @ForeignKey(name = "fk_cantones_provincias"))
     private Provincia provincia;
 

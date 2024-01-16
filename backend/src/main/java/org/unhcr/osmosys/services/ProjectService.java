@@ -7,8 +7,8 @@ import com.sagatechs.generics.security.servicio.UserService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
-import org.unhcr.osmosys.daos.CantonDao;
 import org.unhcr.osmosys.daos.ProjectDao;
+import org.unhcr.osmosys.daos.standardDissagregations.StandardDissagregationOptionDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.IndicatorType;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
@@ -27,7 +27,7 @@ public class ProjectService {
     @Inject
     ProjectDao projectDao;
     @Inject
-    CantonDao cantonDao;
+    StandardDissagregationOptionDao standardDissagregationOptionDao;
 
     @Inject
     PeriodService periodService;
@@ -90,7 +90,7 @@ public class ProjectService {
 
         project.setFocalPoint(focalPoint);
         List<Long> idsCanton = projectWeb.getLocations().stream().map(CantonWeb::getId).collect(Collectors.toList());
-        List<Canton> cantones = this.cantonDao.getByIds(idsCanton);
+        List<Canton> cantones = this.standardDissagregationOptionDao.getCantonByIds(idsCanton);
         for (Canton canton : cantones) {
             ProjectLocationAssigment projectLocationAssigment = new ProjectLocationAssigment();
             projectLocationAssigment.setLocation(canton);
@@ -99,8 +99,10 @@ public class ProjectService {
         }
 
         // veo si hay q crear general indicator
-        IndicatorExecution generalIndicatorIE = this.indicatorExecutionService.createGeneralIndicatorForProject(project);
-        project.addIndicatorExecution(generalIndicatorIE);
+        if (period.getGeneralIndicator() != null) {
+            IndicatorExecution generalIndicatorIE = this.indicatorExecutionService.createGeneralIndicatorForProject(project);
+            project.addIndicatorExecution(generalIndicatorIE);
+        }
         this.saveOrUpdate(project);
         return project.getId();
     }
@@ -198,7 +200,7 @@ public class ProjectService {
                 assignmentFound.get().setState(State.ACTIVO);
                 locationsToActivate.add(assignmentFound.get().getLocation());
             } else {
-                Canton canton = this.cantonDao.find(cantonWeb.getId());
+                Canton canton = (Canton) this.standardDissagregationOptionDao.find(cantonWeb.getId());
                 ProjectLocationAssigment projectLocationAssigment = new ProjectLocationAssigment();
                 projectLocationAssigment.setLocation(canton);
                 projectLocationAssigment.setState(State.ACTIVO);

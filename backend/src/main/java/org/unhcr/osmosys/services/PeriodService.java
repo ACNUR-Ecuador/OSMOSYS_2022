@@ -325,7 +325,7 @@ public class PeriodService {
     }
 
     public PeriodWeb getWebById(Long id) {
-        return this.modelWebTransformationService.periodToPeriodWeb(this.periodDao.find(id), false);
+        return this.modelWebTransformationService.periodToPeriodWeb(this.periodDao.getWithDissagregationOptionsById(id), false);
     }
 
     public Period getById(Long year) {

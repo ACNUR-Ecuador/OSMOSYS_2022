@@ -188,8 +188,7 @@ public class ProjectEndpoint {
     public List<CantonWeb> getProjectCantonAsignations(
             @PathParam("projectId") Long projectId
     ) {
-        List<CantonWeb> result = this.projectService.getProjectCantonAsignations(projectId);
-        return result;
+        return this.projectService.getProjectCantonAsignations(projectId);
     }
 
     @Path("/updateProjectLocations/{projectId}")
@@ -202,7 +201,6 @@ public class ProjectEndpoint {
     ) throws GeneralAppException {
         LOGGER.info(cantonesWeb);
         this.projectService.updateProjectLocations(Set.copyOf(cantonesWeb), projectId,true);
-        return ;
     }
 
 }

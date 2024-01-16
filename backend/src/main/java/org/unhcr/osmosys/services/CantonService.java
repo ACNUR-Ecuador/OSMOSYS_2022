@@ -3,8 +3,8 @@ package org.unhcr.osmosys.services;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import org.jboss.logging.Logger;
-import org.unhcr.osmosys.daos.CantonDao;
 import org.unhcr.osmosys.model.Canton;
+import org.unhcr.osmosys.services.standardDissagregations.StandardDissagregationOptionService;
 import org.unhcr.osmosys.webServices.model.CantonWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
@@ -17,7 +17,7 @@ import java.util.List;
 public class CantonService {
 
     @Inject
-    CantonDao cantonDao;
+    StandardDissagregationOptionService standardDissagregationOptionService;
 
     @Inject
     ModelWebTransformationService modelWebTransformationService;
@@ -26,29 +26,29 @@ public class CantonService {
     private final static Logger LOGGER = Logger.getLogger(CantonService.class);
 
     public Canton getById(Long id) {
-        return this.cantonDao.find(id);
+        return (Canton) this.standardDissagregationOptionService.getById(id);
     }
 
     public List<CantonWeb> getAll() {
-        return this.modelWebTransformationService.cantonsToCantonsWeb(this.cantonDao.findAll());
+        return this.modelWebTransformationService.cantonsToCantonsWeb(this.standardDissagregationOptionService.getAllCantonsOptions());
     }
 
     public List<CantonWeb> getByState(State state) {
-        return this.modelWebTransformationService.cantonsToCantonsWeb(this.cantonDao.getByState(state));
+        return this.standardDissagregationOptionService.getCantonWebOptionByState(state);
     }
 
     public List<Canton> getByIds(List<Long> ids) {
-        return this.cantonDao.getByIds(ids);
+        return this.standardDissagregationOptionService.getCantonByIds(ids);
     }
 
     public Canton getByCantonDescriptionAndProvinceDescription(String cantonDescription, String provinceDescription) throws GeneralAppException {
-        return this.cantonDao.getByCantonDescriptionAndProvinceDescription(cantonDescription, provinceDescription);
+        return this.standardDissagregationOptionService.getByCantonDescriptionAndProvinceDescription(cantonDescription, provinceDescription);
     }
 
     public List<CantonWeb> discoverCantones(List<CantonWeb> cantonWebs) throws GeneralAppException {
         List<CantonWeb> r = new ArrayList<>();
         for (CantonWeb cantonWeb : cantonWebs) {
-            Canton can = this.cantonDao.discoverCanton(cantonWeb.getCode(), cantonWeb.getDescription(), cantonWeb.getProvincia() != null ? cantonWeb.getProvincia().getCode() : null, cantonWeb.getProvincia() != null ? cantonWeb.getProvincia().getDescription() : null);
+            Canton can = this.standardDissagregationOptionService.discoverCanton(cantonWeb.getCode(), cantonWeb.getDescription(), cantonWeb.getProvincia() != null ? cantonWeb.getProvincia().getCode() : null, cantonWeb.getProvincia() != null ? cantonWeb.getProvincia().getDescription() : null);
             if (can != null) {
                 r.add(this.modelWebTransformationService.cantonToCantonWeb(can));
             }
