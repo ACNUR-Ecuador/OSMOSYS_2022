@@ -6,17 +6,12 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.IndicatorDao;
-import org.unhcr.osmosys.model.CustomDissagregationAssignationToIndicator;
-import org.unhcr.osmosys.model.DissagregationAssignationToIndicator;
-import org.unhcr.osmosys.model.Indicator;
-import org.unhcr.osmosys.model.Period;
+import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.standardDissagregations.DissagregationAssignationToIndicatorPeriodCustomization;
 import org.unhcr.osmosys.model.standardDissagregations.options.AgeDissagregationOption;
 import org.unhcr.osmosys.services.standardDissagregations.StandardDissagregationOptionService;
-import org.unhcr.osmosys.webServices.model.CustomDissagregationAssignationToIndicatorWeb;
-import org.unhcr.osmosys.webServices.model.DissagregationAssignationToIndicatorWeb;
-import org.unhcr.osmosys.webServices.model.IndicatorWeb;
+import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
@@ -80,6 +75,8 @@ public class IndicatorService {
         this.validate(indicatorWeb);
         Indicator indicator = new Indicator();
         indicatorWebToIndicator(indicatorWeb, indicator);
+
+
         // dissagregation assignations
         indicatorWeb.getDissagregationsAssignationToIndicator().forEach(dissagregationAssignationToIndicatorWeb -> {
             DissagregationAssignationToIndicator dia = this.dissagregationAssignationToIndicatorService.createDissagregationAssignationToIndicatorFromWeb(dissagregationAssignationToIndicatorWeb);
@@ -90,6 +87,7 @@ public class IndicatorService {
             indicator.addCustomDissagregationAssignationToIndicator(cdia);
         });
         this.saveOrUpdate(indicator);
+        this.updatePeriodStatementAssigment(indicator);
         return indicator.getId();
     }
 
@@ -205,6 +203,8 @@ public class IndicatorService {
 
 
         this.saveOrUpdate(indicator);
+
+        updatePeriodStatementAssigment(indicator);
         //update dissagregations in ie
         // todo 2024
         this.indicatorExecutionService
@@ -218,6 +218,35 @@ public class IndicatorService {
                         customDissagregationAssignationToIndicatorsToDisable,
                         customDissagregationAssignationToIndicatorsToCreate);
         return indicator.getId();
+    }
+
+    private void updatePeriodStatementAssigment(Indicator indicator) throws GeneralAppException {
+        List<Period> periodsDissagregations = indicator.getDissagregationsAssignationToIndicator().stream().map(DissagregationAssignationToIndicator::getPeriod).distinct().collect(Collectors.toList());
+        List<Period> periodsCustomsDissagregations = indicator.getCustomDissagregationAssignationToIndicators().stream().map(CustomDissagregationAssignationToIndicator::getPeriod).distinct().collect(Collectors.toList());
+        List<Period> periodsTotals  = new ArrayList<>();
+        if(!periodsDissagregations.isEmpty()) periodsTotals.addAll(periodsDissagregations);
+        if(!periodsCustomsDissagregations.isEmpty()) periodsTotals.addAll(periodsCustomsDissagregations);
+        periodsTotals = periodsTotals.stream().distinct().collect(Collectors.toList());
+        if(periodsTotals.isEmpty()) return;
+
+        StatementWeb statementWeb = this.modelWebTransformationService.statementToStatementWeb(this.statementService.find(indicator.getStatement().getId()), true, true, true, true, true);
+        List<PeriodStatementAsignationWeb> periodStatementAsignations = statementWeb.getPeriodStatementAsignations();
+        for (Period period : periodsTotals) {
+            Optional<PeriodStatementAsignationWeb> pasOptional = periodStatementAsignations.stream()
+                    .filter(periodStatementAsignationWeb -> periodStatementAsignationWeb.getPeriod().getId().equals(period.getId()))
+                    .findFirst();
+            if(pasOptional.isPresent()){
+                PeriodStatementAsignationWeb pas = pasOptional.get();
+                pas.setState(State.ACTIVO);
+            }else{
+                PeriodStatementAsignationWeb pas = new PeriodStatementAsignationWeb();
+                pas.setState(State.ACTIVO);
+                pas.setPeriod(this.modelWebTransformationService.periodToPeriodWeb(period, true));
+
+                statementWeb.getPeriodStatementAsignations().add(pas);
+            }
+        }
+        this.statementService.update(statementWeb);
     }
 
     private void updateCustomOptions(List<DissagregationAssignationToIndicator> originals, List<DissagregationAssignationToIndicatorWeb> news) throws GeneralAppException {

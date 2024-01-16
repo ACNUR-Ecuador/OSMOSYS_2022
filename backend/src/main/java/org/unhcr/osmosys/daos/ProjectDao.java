@@ -161,6 +161,7 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         }
     }
 
+    @SuppressWarnings("JpaQueryApiInspection")
     public List<QuarterStateWeb> getQuartersStateByProjectId(Long projectId) {
 
         String sql = "SELECT DISTINCT " +
