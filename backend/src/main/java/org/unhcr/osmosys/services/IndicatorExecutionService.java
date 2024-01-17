@@ -185,9 +185,10 @@ public class IndicatorExecutionService {
             cantones = this.modelWebTransformationService.cantonsWebToCantons(indicatorExecutionWeb.getLocations());
 
         }
-        List<DissagregationType> dissagregationTypes;
+        //List<DissagregationType> dissagregationTypes;
 
-        dissagregationTypes = dissagregationAssignations.stream().map(DissagregationAssignationToIndicatorExecution::getDissagregationType).collect(Collectors.toList());
+        //dissagregationTypes = dissagregationAssignations.stream().map(DissagregationAssignationToIndicatorExecution::getDissagregationType).collect(Collectors.toList());
+
 
         // location assignations
         Set<ProjectLocationAssigment> projectLocationAsignations = project.getProjectLocationAssigments();
@@ -199,7 +200,7 @@ public class IndicatorExecutionService {
         }
 
         List<CustomDissagregation> customDissagregations = customDissagregationsAssignations.stream().map(CustomDissagregationAssignationToIndicatorExecution::getCustomDissagregation).collect(Collectors.toList());
-        createQuartersInIndicatorExecution(ie, project, cantones, dissagregationTypes, customDissagregations);
+        createQuartersInIndicatorExecution(ie, project, cantones, indicator);
 
 
         this.saveOrUpdate(ie);
@@ -207,10 +208,15 @@ public class IndicatorExecutionService {
 
     }
 
-    private void createQuartersInIndicatorExecution(IndicatorExecution ie, Project project, List<Canton> cantones, List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations) throws GeneralAppException {
-        Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationTypes, customDissagregations, cantones, ie.getPeriod());
+    private void createQuartersInIndicatorExecution(IndicatorExecution ie, Project project, List<Canton> cantones,
+                                                    //List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations
+                                                    Indicator indicator
+    ) throws GeneralAppException {
+        Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), indicator, cantones, ie.getPeriod());
 
-        this.validateLocationsSegregationsAndCantons(dissagregationTypes, cantones);
+        this.validateLocationsSegregationsAndCantons(
+                indicator.getDissagregationsAssignationToIndicator().stream().filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.getState().equals(State.ACTIVO)).map(DissagregationAssignationToIndicator::getDissagregationType).collect(Collectors.toList()),
+                cantones);
         List<Quarter> qsl = setOrderInQuartersAndMonths(qs);
         for (Quarter quarter : qsl) {
             ie.addQuarter(quarter);

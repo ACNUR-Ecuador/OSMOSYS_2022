@@ -52,7 +52,8 @@ public class MonthService {
     }
 
     public List<Month> createMonthsForQuarter(Quarter quarter, LocalDate startDate, LocalDate endDate,
-                                              List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations,
+                                              //List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations,
+                                              Indicator indicator,
                                               List<Canton> cantones, Period period) throws GeneralAppException {
         QuarterEnum quarterEnum = quarter.getQuarter();
         List<MonthEnum> monthsEnums = MonthEnum.getMonthsByQuarter(quarterEnum);
@@ -68,7 +69,7 @@ public class MonthService {
             ) {
 
 
-                Month month = this.createMonth(quarter.getYear(), monthEnum, dissagregationTypes, customDissagregations, cantones, period);
+                Month month = this.createMonth(quarter.getYear(), monthEnum, indicator, cantones, period);
                 months.add(month);
             }
         }
@@ -77,7 +78,8 @@ public class MonthService {
     }
 
     public Month createMonth(Integer year, MonthEnum monthEnum,
-                             List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations,
+                             // List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations,
+                             Indicator indicator,
                              List<Canton> cantones, Period period) throws GeneralAppException {
         Month m = new Month();
         m.setState(State.ACTIVO);
@@ -86,9 +88,14 @@ public class MonthService {
         m.setBlockUpdate(Boolean.FALSE);
 
         Set<IndicatorValue> indicatorValues = new HashSet<>();
-        for (DissagregationType dissagregationType : dissagregationTypes) {
 
-            indicatorValues.addAll(this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(dissagregationType, cantones, period));
+        List<DissagregationAssignationToIndicator> dissagregationAssignationsToIndicator =
+                indicator.getDissagregationsAssignationToIndicator().stream()
+                        .filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.getPeriod().getId().equals(period.getId()))
+                        .collect(Collectors.toList());
+
+        for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : dissagregationAssignationsToIndicator) {
+            indicatorValues.addAll(this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(dissagregationAssignationToIndicator, cantones, period));
         }
 
         for (IndicatorValue indicatorValue : indicatorValues) {

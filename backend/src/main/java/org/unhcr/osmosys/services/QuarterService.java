@@ -59,8 +59,8 @@ public class QuarterService {
 
     public Quarter createQuarter(YearQuarter yearQuarter,
                                  LocalDate startDate, LocalDate endDate,
-                                 List<DissagregationType> dissagregationTypes,
-                                 List<CustomDissagregation> customDissagregations,
+                                 Indicator indicator,
+                                 // List<DissagregationType> dissagregationTypes,                                 List<CustomDissagregation> customDissagregations,
                                  List<Canton> cantones,
                                  Period period
     ) throws GeneralAppException {
@@ -72,7 +72,7 @@ public class QuarterService {
         q.setState(State.ACTIVO);
         q.setBlockUpdate(Boolean.FALSE);
         List<Month> ms = this.monthService.createMonthsForQuarter(q, startDate, endDate,
-                dissagregationTypes, customDissagregations
+                indicator
                 , cantones, period);
         for (Month month : ms) {
             q.addMonth(month);
@@ -81,7 +81,9 @@ public class QuarterService {
     }
 
 
-    public Set<Quarter> createQuarters(LocalDate startDate, LocalDate endDate, List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations,
+    public Set<Quarter> createQuarters(LocalDate startDate, LocalDate endDate,
+                                       Indicator indicator,
+                                       //List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations,
                                        List<Canton> cantones,
                                        Period period) throws GeneralAppException {
         Set<Quarter> qs = new HashSet<>();
@@ -92,7 +94,7 @@ public class QuarterService {
 
 
         for (YearQuarter yearQuarter : yearQuarters) {
-            Quarter q = this.createQuarter(yearQuarter, startDate, endDate, dissagregationTypes, customDissagregations, cantones, period);
+            Quarter q = this.createQuarter(yearQuarter, startDate, endDate, indicator, cantones, period);
             qs.add(q);
         }
         return qs;
