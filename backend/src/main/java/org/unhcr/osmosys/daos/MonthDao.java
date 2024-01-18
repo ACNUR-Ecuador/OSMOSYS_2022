@@ -2,8 +2,8 @@ package org.unhcr.osmosys.daos;
 
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
-import org.unhcr.osmosys.model.CustomDissagregationAssignationToIndicatorExecution;
-import org.unhcr.osmosys.model.DissagregationAssignationToIndicatorExecution;
+import org.unhcr.osmosys.model.CustomDissagregationAssignationToIndicator;
+import org.unhcr.osmosys.model.DissagregationAssignationToIndicator;
 import org.unhcr.osmosys.model.Month;
 import org.unhcr.osmosys.model.enums.Frecuency;
 import org.unhcr.osmosys.model.enums.MonthEnum;
@@ -64,32 +64,34 @@ public class MonthDao extends GenericDaoJpa<Month, Long> {
         }
     }
 
-    public List<DissagregationAssignationToIndicatorExecution> getDissagregationsByMonthId(Long monthId) {
+    public List<DissagregationAssignationToIndicator> getDissagregationsByMonthId(Long monthId) {
 
         String jpql = "SELECT DISTINCT o " +
-                " FROM DissagregationAssignationToIndicatorExecution o " +
-                " inner join fetch o.indicatorExecution ie " +
+                " FROM IndicatorExecution ie " +
+                " inner join fetch ie.indicator i " +
+                " inner join fetch i.dissagregationsAssignationToIndicator o " +
                 " inner join fetch ie.quarters q " +
                 " inner join fetch q.months mon " +
                 " WHERE mon.id = :monthId " +
                 " and o.state =:state ";
-        Query q = getEntityManager().createQuery(jpql, DissagregationAssignationToIndicatorExecution.class);
+        Query q = getEntityManager().createQuery(jpql, DissagregationAssignationToIndicator.class);
         q.setParameter("state", State.ACTIVO);
         q.setParameter("monthId", monthId);
         return q.getResultList();
     }
 
-    public List<CustomDissagregationAssignationToIndicatorExecution> getCustomDissagregationsByMonthId(Long monthId) {
+    public List<CustomDissagregationAssignationToIndicator> getCustomDissagregationsByMonthId(Long monthId) {
 
         String jpql = "SELECT DISTINCT o " +
-                " FROM CustomDissagregationAssignationToIndicatorExecution o " +
-                " inner join fetch o.indicatorExecution ie " +
-                " inner join fetch o.customDissagregation " +
+                " FROM  IndicatorExecution ie " +
+                " inner join fetch ie.period p " +
+                " inner join fetch p.generalIndicator gi " +
+                " inner join fetch gi.dissagregationAssignationsToGeneralIndicator o " +
                 " inner join fetch ie.quarters q " +
                 " inner join fetch q.months mon " +
                 " WHERE mon.id = :monthId " +
                 " and o.state =:state ";
-        Query q = getEntityManager().createQuery(jpql, CustomDissagregationAssignationToIndicatorExecution.class);
+        Query q = getEntityManager().createQuery(jpql, CustomDissagregationAssignationToIndicator.class);
         q.setParameter("state", State.ACTIVO);
         q.setParameter("monthId", monthId);
         return q.getResultList();
@@ -137,6 +139,7 @@ public class MonthDao extends GenericDaoJpa<Month, Long> {
         return q.getResultList();
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public List<Month> getActiveMonthsAndMonthAndYearAndBlockingStatusGeneralIndicators(MonthEnum month, int year, boolean blocked) {
         String jpql = "SELECT DISTINCT m " +
                 " FROM Month m" +
@@ -158,6 +161,7 @@ public class MonthDao extends GenericDaoJpa<Month, Long> {
         return q.getResultList();
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public List<Month> getActiveGeneralIndicatorMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(MonthEnum month, int year, boolean blocked) {
         String jpql = "SELECT DISTINCT m " +
                 " FROM Month m" +

@@ -6,7 +6,6 @@ import org.unhcr.osmosys.daos.IndicatorValueCustomDissagregationDao;
 import org.unhcr.osmosys.model.CustomDissagregation;
 import org.unhcr.osmosys.model.CustomDissagregationOption;
 import org.unhcr.osmosys.model.IndicatorValueCustomDissagregation;
-import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -20,8 +19,7 @@ public class IndicatorValueCustomDissagregationService {
     @Inject
     IndicatorValueCustomDissagregationDao indicatorValueCustomDissagregationDao;
 
-    @Inject
-    ModelWebTransformationService modelWebTransformationService;
+
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(IndicatorValueCustomDissagregationService.class);

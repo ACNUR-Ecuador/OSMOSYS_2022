@@ -6,8 +6,11 @@ import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.DissagregationType;
+import org.unhcr.osmosys.model.standardDissagregations.DissagregationAsignationInterface;
+import org.unhcr.osmosys.model.standardDissagregations.DissagregationAssignationToIndicatorPeriodCustomization;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(schema = "osmosys", name = "dissagregation_assignation_general_indicator",
@@ -15,7 +18,7 @@ import javax.persistence.*;
                 @UniqueConstraint(name = "uk_dissagregation_assignation_general_indicator", columnNames = {"general_indicator_id","dissagregation_type"})
         }
 )
-public class DissagregationAssignationToGeneralIndicator extends BaseEntityIdState {
+public class DissagregationAssignationToGeneralIndicator extends BaseEntityIdState implements DissagregationAsignationInterface {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,6 +65,16 @@ public class DissagregationAssignationToGeneralIndicator extends BaseEntityIdSta
 
     public DissagregationType getDissagregationType() {
         return dissagregationType;
+    }
+
+    @Override
+    public Boolean getUseCustomAgeDissagregations() {
+        return null;
+    }
+
+    @Override
+    public Set<DissagregationAssignationToIndicatorPeriodCustomization> getDissagregationAssignationToIndicatorPeriodCustomizations() {
+        return null;
     }
 
     public void setDissagregationType(DissagregationType dissagregationType) {

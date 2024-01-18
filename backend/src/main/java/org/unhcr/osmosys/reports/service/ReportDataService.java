@@ -1,7 +1,6 @@
 package org.unhcr.osmosys.reports.service;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
-import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -18,15 +17,13 @@ import org.apache.poi.xssf.usermodel.*;
 import org.jboss.logging.Logger;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTAutoFilter;
 import org.unhcr.osmosys.daos.ReportDao;
-import org.unhcr.osmosys.model.DissagregationAssignationToIndicatorExecution;
 import org.unhcr.osmosys.model.IndicatorExecution;
-import org.unhcr.osmosys.model.IndicatorValue;
-import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.model.enums.Frecuency;
+import org.unhcr.osmosys.model.enums.TimeStateEnum;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedDTO;
 import org.unhcr.osmosys.model.reportDTOs.LaterReportDTO;
 import org.unhcr.osmosys.reports.model.IndicatorReportProgramsDTO;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
-import org.unhcr.osmosys.services.IndicatorValueService;
 import org.unhcr.osmosys.webServices.model.IndicatorExecutionWeb;
 import org.unhcr.osmosys.webServices.model.MonthWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
@@ -34,7 +31,6 @@ import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 

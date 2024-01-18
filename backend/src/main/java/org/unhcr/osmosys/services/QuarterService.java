@@ -8,9 +8,9 @@ import org.jboss.logging.Logger;
 import org.threeten.extra.YearQuarter;
 import org.unhcr.osmosys.daos.QuarterDao;
 import org.unhcr.osmosys.model.*;
-import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
 import org.unhcr.osmosys.model.enums.TotalIndicatorCalculationType;
+import org.unhcr.osmosys.model.standardDissagregations.DissagregationAsignationInterface;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
@@ -148,12 +148,12 @@ public class QuarterService {
     }
 
     public void updateQuarterLocationsByAssignation(Quarter quarter, List<Canton> cantonesToCreate,
-                                                    List<DissagregationType> locationDissagregationTypes,
+                                                    List<DissagregationAsignationInterface> locationDissagregationAssignationsToIndicator,
                                                     Period period
 
     ) throws GeneralAppException {
         for (Month month : quarter.getMonths()) {
-            this.monthService.updateMonthLocationsByAssignation(month, cantonesToCreate, locationDissagregationTypes, period);
+            this.monthService.updateMonthLocationsByAssignation(month, cantonesToCreate, locationDissagregationAssignationsToIndicator, period);
         }
     }
 

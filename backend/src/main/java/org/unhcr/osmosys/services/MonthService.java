@@ -7,6 +7,7 @@ import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.MonthDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.model.standardDissagregations.DissagregationAsignationInterface;
 import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
@@ -52,8 +53,8 @@ public class MonthService {
     }
 
     public List<Month> createMonthsForQuarter(Quarter quarter, LocalDate startDate, LocalDate endDate,
-                                              //List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations,
-                                              Indicator indicator,
+                                              List<DissagregationAsignationInterface> dissagregationTypes,
+                                              List<CustomDissagregationAssignationToIndicator> customDissagregations,
                                               List<Canton> cantones, Period period) throws GeneralAppException {
         QuarterEnum quarterEnum = quarter.getQuarter();
         List<MonthEnum> monthsEnums = MonthEnum.getMonthsByQuarter(quarterEnum);
@@ -78,8 +79,7 @@ public class MonthService {
     }
 
     public Month createMonth(Integer year, MonthEnum monthEnum,
-                             // List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations,
-                             Indicator indicator,
+                             List<DissagregationAsignationInterface> dissagregationAsignations, List<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicators,
                              List<Canton> cantones, Period period) throws GeneralAppException {
         Month m = new Month();
         m.setState(State.ACTIVO);
@@ -89,12 +89,8 @@ public class MonthService {
 
         Set<IndicatorValue> indicatorValues = new HashSet<>();
 
-        List<DissagregationAssignationToIndicator> dissagregationAssignationsToIndicator =
-                indicator.getDissagregationsAssignationToIndicator().stream()
-                        .filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.getPeriod().getId().equals(period.getId()))
-                        .collect(Collectors.toList());
 
-        for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : dissagregationAssignationsToIndicator) {
+        for (DissagregationAsignationInterface dissagregationAssignationToIndicator : dissagregationAsignations) {
             indicatorValues.addAll(this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(dissagregationAssignationToIndicator, cantones, period));
         }
 
@@ -103,6 +99,12 @@ public class MonthService {
 
         }
         Set<IndicatorValueCustomDissagregation> indicatorValuesCustomDissagregations = new HashSet<>();
+
+        Set<CustomDissagregation> customDissagregations= customDissagregationAssignationToIndicators.stream()
+                .map(customDissagregationAssignationToIndicator -> customDissagregationAssignationToIndicator.getCustomDissagregation())
+                .filter(customDissagregation -> customDissagregation.getState().equals(State.ACTIVO))
+                .collect(Collectors.toSet());
+
         for (CustomDissagregation customDissagregation : customDissagregations) {
             indicatorValuesCustomDissagregations.addAll(this.indicatorValueCustomDissagregationService.createIndicatorValuesCustomDissagregationForMonth(customDissagregation));
         }
@@ -131,24 +133,7 @@ public class MonthService {
             return;
         }
         DissagregationType dissagregationTypeToCalculate;
-        /*// veo cualquiera menos diversidad
 
-        Optional<DissagregationType> dissagregationTypeOptional =
-                dissagregationsTypes.stream()
-                        .filter(dissagregationType1 ->
-                                {
-                                    return !dissagregationType1.getStringValue().contains("DIVERSIDAD");
-                                }
-                                *//*
-                                !dissagregationType1.equals(DissagregationType.DIVERSIDAD)
-                                        && !dissagregationType1.equals(DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD)
-                                        && !dissagregationType1.equals(DissagregationType.DIVERSIDAD_EDAD_Y_GENERO)
-                                        && !dissagregationType1.equals(DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO)
-                                        && !dissagregationType1.equals(DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO)
-                                        && !dissagregationType1.equals(DissagregationType.GENERO_Y_DIVERSIDAD)
-                                        && !dissagregationType1.equals(DissagregationType.LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO)*//*
-                        )
-                        .findFirst();*/
         dissagregationTypeToCalculate = dissagregationsTypes.iterator().next();
         DissagregationType finalDissagregationTypeToCalculate = dissagregationTypeToCalculate;
         List<IndicatorValue> ivsd = ivst.stream()
@@ -218,8 +203,9 @@ public class MonthService {
 
         List<IndicatorValueWeb> indicatorValuesWeb = this.modelWebTransformationService.indicatorsToIndicatorValuesWeb(new HashSet<>(indicatorValues));
         // Desagregaciones del IE
-        List<DissagregationAssignationToIndicatorExecution> dissagregationAsignations = this.monthDao.getDissagregationsByMonthId(monthId);
-        List<DissagregationType> dissagregationTypeAssignated = dissagregationAsignations.stream().map(DissagregationAssignationToIndicatorExecution::getDissagregationType).collect(Collectors.toList());
+        if()
+        List<DissagregationAssignationToIndicator> dissagregationAsignations = this.monthDao.getDissagregationsByMonthId(monthId);
+        List<DissagregationType> dissagregationTypeAssignated = dissagregationAsignations.stream().map(DissagregationAssignationToIndicator::getDissagregationType).collect(Collectors.toList());
         // clasifico por tipo desagreggacions
         Map<DissagregationType, List<IndicatorValueWeb>> map = new HashMap<>();
         for (DissagregationType dissagregationType : DissagregationType.values()) {
@@ -280,12 +266,12 @@ public class MonthService {
 
     }
 
-    public void updateMonthLocationsByAssignation(Month month, List<Canton> cantones, List<DissagregationType> locationDissagregationTypes,
+    public void updateMonthLocationsByAssignation(Month month, List<Canton> cantones, List<DissagregationAsignationInterface> locationDissagregationAssignationsToIndicator,
                                                   Period period
 
     ) throws GeneralAppException {
         List<IndicatorValue> newValues = new ArrayList<>();
-        for (DissagregationType locationDissagregationType : locationDissagregationTypes) {
+        for (DissagregationAsignationInterface locationDissagregationType : locationDissagregationAssignationsToIndicator) {
 
             newValues.addAll(this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(locationDissagregationType, cantones, period));
         }
@@ -342,11 +328,9 @@ public class MonthService {
         // si es enero, regreso a diciembre
 
 
-        List<Month> monthsToUpdate = new ArrayList<>();
-
         List<Month> unlockedMonthsMonthly = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(month, year, !block, Frecuency.MENSUAL);
         unlockedMonthsMonthly.forEach(month1 -> month1.setBlockUpdate(block));
-        monthsToUpdate.addAll(unlockedMonthsMonthly);
+        List<Month> monthsToUpdate = new ArrayList<>(unlockedMonthsMonthly);
 
         // general indicators
         List<Month> unlockedMonthsMonthlyGeneral = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusGeneralIndicators(month, year, !block);

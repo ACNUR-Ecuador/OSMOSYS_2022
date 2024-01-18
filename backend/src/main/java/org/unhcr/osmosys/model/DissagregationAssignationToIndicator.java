@@ -5,6 +5,7 @@ import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.DissagregationType;
+import org.unhcr.osmosys.model.standardDissagregations.DissagregationAsignationInterface;
 import org.unhcr.osmosys.model.standardDissagregations.DissagregationAssignationToIndicatorPeriodCustomization;
 import org.unhcr.osmosys.model.standardDissagregations.options.AgeDissagregationOption;
 
@@ -20,7 +21,7 @@ import java.util.StringJoiner;
                 @UniqueConstraint(name = "uk_dissagregation_assignation_indicator", columnNames = {"indicator_id", "dissagregation_type", "period_id"})
         }
 )
-public class DissagregationAssignationToIndicator extends BaseEntityIdState {
+public class DissagregationAssignationToIndicator extends BaseEntityIdState implements DissagregationAsignationInterface {
 
     public DissagregationAssignationToIndicator() {
         this.useCustomAgeDissagregations=Boolean.FALSE;
@@ -116,6 +117,8 @@ public class DissagregationAssignationToIndicator extends BaseEntityIdState {
     public void setDissagregationAssignationToIndicatorPeriodCustomizations(Set<DissagregationAssignationToIndicatorPeriodCustomization> dissagregationAssignationToIndicatorPeriodCustomizations) {
         this.dissagregationAssignationToIndicatorPeriodCustomizations = dissagregationAssignationToIndicatorPeriodCustomizations;
     }
+
+
 
     public void addAgeDissagregationCustomizations(AgeDissagregationOption ageDissagregationOption) {
         Optional<DissagregationAssignationToIndicatorPeriodCustomization> optionalOption = this.dissagregationAssignationToIndicatorPeriodCustomizations.stream()
