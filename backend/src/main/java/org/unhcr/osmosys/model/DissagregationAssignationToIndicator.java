@@ -20,7 +20,7 @@ import java.util.StringJoiner;
                 @UniqueConstraint(name = "uk_dissagregation_assignation_indicator", columnNames = {"indicator_id", "dissagregation_type", "period_id"})
         }
 )
-public class DissagregationAssignationToIndicator extends BaseEntityIdState {
+public class DissagregationAssignationToIndicator extends BaseEntityIdState  implements  DissagregationAssignationToIndicatorInterface{
 
     public DissagregationAssignationToIndicator() {
         this.useCustomAgeDissagregations=Boolean.FALSE;

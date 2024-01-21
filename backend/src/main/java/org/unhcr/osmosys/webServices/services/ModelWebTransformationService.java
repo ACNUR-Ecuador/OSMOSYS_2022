@@ -346,9 +346,7 @@ public class ModelWebTransformationService {
         Set<StandardDissagregationOptionWeb> customIndicatorOptions = d.getDissagregationAssignationToIndicatorPeriodCustomizations()
                 .stream()
                 .filter(dissagregationAssignationToIndicatorPeriodCustomization -> dissagregationAssignationToIndicatorPeriodCustomization.getState().equals(State.ACTIVO))
-                .map(dissagregationAssignationToIndicatorPeriodCustomization -> {
-                    return this.standardDissagregationOptionToStandardDissagregationOptionWeb(dissagregationAssignationToIndicatorPeriodCustomization.getAgeDissagregationOption());
-                }).collect(Collectors.toSet());
+                .map(dissagregationAssignationToIndicatorPeriodCustomization -> this.standardDissagregationOptionToStandardDissagregationOptionWeb(dissagregationAssignationToIndicatorPeriodCustomization.getAgeDissagregationOption())).collect(Collectors.toSet());
         w.setCustomIndicatorOptions(customIndicatorOptions);
         return w;
     }
@@ -1378,6 +1376,7 @@ public class ModelWebTransformationService {
     /////////////////******** standar dissagregations*********///////////////////////////////
 
     public <D extends StandardDissagregationOption> StandardDissagregationOptionWeb standardDissagregationOptionToStandardDissagregationOptionWeb(D dissagregationOption) {
+        if(dissagregationOption==null)return null;
         StandardDissagregationOptionWeb d = new StandardDissagregationOptionWeb();
         d.setId(dissagregationOption.getId());
         d.setState(dissagregationOption.getState());

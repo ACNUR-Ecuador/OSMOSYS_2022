@@ -3,6 +3,7 @@ package org.unhcr.osmosys.services;
 import com.sagatechs.generics.persistence.model.State;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.CustomDissagregationAssignationToIndicatorDao;
+import org.unhcr.osmosys.model.CustomDissagregation;
 import org.unhcr.osmosys.model.CustomDissagregationAssignationToIndicator;
 import org.unhcr.osmosys.webServices.model.CustomDissagregationAssignationToIndicatorWeb;
 
@@ -30,9 +31,9 @@ public class CustomDissagregationAssignationToIndicatorService {
     public CustomDissagregationAssignationToIndicator find(Long id) {
         return this.dissagregationAssignationToIndicatorDao.find(id);
     }
-    
+
     public CustomDissagregationAssignationToIndicator createCustomDissagregationAssignationToIndicatorFromWeb(
-            CustomDissagregationAssignationToIndicatorWeb customCissagregationAssignationToIndicatorWeb){
+            CustomDissagregationAssignationToIndicatorWeb customCissagregationAssignationToIndicatorWeb) {
         CustomDissagregationAssignationToIndicator cdai = new CustomDissagregationAssignationToIndicator();
         cdai.setPeriod(this.periodService.find(customCissagregationAssignationToIndicatorWeb.getPeriod().getId()));
         cdai.setState(customCissagregationAssignationToIndicatorWeb.getState());
@@ -172,5 +173,14 @@ public class CustomDissagregationAssignationToIndicatorService {
     }
 
 
+    /**********************************/
+    public List<CustomDissagregationAssignationToIndicator> getActiveCustomDissagregationAssignationsByIndicatorExecutionId(Long ieId, Long periodId) {
+        return this.dissagregationAssignationToIndicatorDao.getActiveCustomDissagregationAssignationsByIndicatorExecutionId(ieId, periodId);
+    }
 
+    public List<CustomDissagregation> getActiveCustomDissagregationsByIndicatorExecutionId(Long ieId, Long periodId) {
+        return this.getActiveCustomDissagregationAssignationsByIndicatorExecutionId(ieId, periodId).stream()
+                .map(CustomDissagregationAssignationToIndicator::getCustomDissagregation)
+                .collect(Collectors.toList());
+    }
 }

@@ -34,6 +34,15 @@ public class MonthService {
     IndicatorValueCustomDissagregationService indicatorValueCustomDissagregationService;
 
     @Inject
+    GeneralIndicatorService generalIndicatorService;
+
+    @Inject
+    DissagregationAssignationToIndicatorService dissagregationAssignationToIndicatorService;
+
+    @Inject
+    CustomDissagregationAssignationToIndicatorService customDissagregationAssignationToIndicatorService;
+
+    @Inject
     UtilsService utilsService;
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(MonthService.class);
@@ -50,6 +59,9 @@ public class MonthService {
         }
         return month;
     }
+
+
+
 
     public List<Month> createMonthsForQuarter(Quarter quarter, LocalDate startDate, LocalDate endDate,
                                               List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations,
@@ -201,77 +213,8 @@ public class MonthService {
 
     }
 
-    public MonthValuesWeb getMonthValuesWeb(Long monthId, State state) {
-
-        List<IndicatorValue> indicatorValues = this.indicatorValueService.getIndicatorValuesByMonthId(monthId, state);
 
 
-        List<IndicatorValueCustomDissagregation> indicatorValuesCustomDissagregation =
-                this.indicatorValueCustomDissagregationService.getIndicatorValuesByMonthId(monthId, state);
-
-        List<IndicatorValueWeb> indicatorValuesWeb = this.modelWebTransformationService.indicatorsToIndicatorValuesWeb(new HashSet<>(indicatorValues));
-        // Desagregaciones del IE
-        List<DissagregationAssignationToIndicatorExecution> dissagregationAsignations = this.monthDao.getDissagregationsByMonthId(monthId);
-        List<DissagregationType> dissagregationTypeAssignated = dissagregationAsignations.stream().map(DissagregationAssignationToIndicatorExecution::getDissagregationType).collect(Collectors.toList());
-        // clasifico por tipo desagreggacions
-        Map<DissagregationType, List<IndicatorValueWeb>> map = new HashMap<>();
-        for (DissagregationType dissagregationType : DissagregationType.values()) {
-            map.put(dissagregationType, new ArrayList<>());
-            // los filtros
-            List<IndicatorValueWeb> values = indicatorValuesWeb.stream().filter(indicatorValue -> indicatorValue.getDissagregationType().equals(dissagregationType)).collect(Collectors.toList());
-            if (CollectionUtils.isEmpty(values)) {
-                map.put(dissagregationType, null);
-            } else {
-                map.put(dissagregationType, values);
-            }
-        }
-        // valido segregaciones, si no hay mando con array vacio
-        for (DissagregationType dissagregationType : dissagregationTypeAssignated) {
-            map.computeIfAbsent(dissagregationType, k -> new ArrayList<>());
-        }
-
-        MonthValuesWeb r = new MonthValuesWeb();
-        if (CollectionUtils.isNotEmpty(indicatorValues)) {
-            r.setMonth(this.modelWebTransformationService.monthToMonthWeb(indicatorValues.get(0).getMonth()));
-        } else if (CollectionUtils.isNotEmpty(indicatorValuesCustomDissagregation)) {
-            r.setMonth(this.modelWebTransformationService.monthToMonthWeb(indicatorValuesCustomDissagregation.get(0).getMonth()));
-        } else {
-            r.setMonth(this.modelWebTransformationService.monthToMonthWeb(this.monthDao.find(monthId)));
-        }
-
-        r.setIndicatorValuesMap(map);
-        // clasifico por desagregaciones
-        List<CustomDissagregationAssignationToIndicatorExecution> customDissagregationAsignations = this.monthDao.getCustomDissagregationsByMonthId(monthId);
-        List<CustomDissagregation> customDissagregationTypeAssignated = customDissagregationAsignations
-                .stream()
-                .map(CustomDissagregationAssignationToIndicatorExecution::getCustomDissagregation)
-                .collect(Collectors.toList());
-        if (CollectionUtils.isNotEmpty(indicatorValuesCustomDissagregation)) {
-            r.setCustomDissagregationValues(new ArrayList<>());
-            Map<CustomDissagregation, Set<IndicatorValueCustomDissagregation>> mapCustom = new HashMap<>();
-            // saco un set de disegraciones
-            Set<CustomDissagregation> setCustomDissagegations = indicatorValuesCustomDissagregation.stream()
-                    .map(indicatorValueCustomDissagregation -> indicatorValueCustomDissagregation.getCustomDissagregationOption().getCustomDissagregation()).collect(Collectors.toSet());
-            setCustomDissagegations.forEach(customDissagregation -> {
-                Set<IndicatorValueCustomDissagregation> values = indicatorValuesCustomDissagregation.stream().filter(indicatorValueCustomDissagregation -> indicatorValueCustomDissagregation.getCustomDissagregationOption().getCustomDissagregation().getId().equals(customDissagregation.getId())).collect(Collectors.toSet());
-                mapCustom.put(customDissagregation, values);
-            });
-            mapCustom.forEach((customDissagregation, indicatorValueCustomDissagregations) -> {
-                CustomDissagregationValuesWeb customDissagregationValuesWeb = new CustomDissagregationValuesWeb();
-                customDissagregationValuesWeb.setCustomDissagregation(this.modelWebTransformationService.customDissagregationWebToCustomDissagregation(customDissagregation));
-
-                List<IndicatorValueCustomDissagregationWeb> values = this.modelWebTransformationService.indicatorValueCustomDissagregationsToIndicatorValueCustomDissagregationWebs(indicatorValueCustomDissagregations);
-                customDissagregationValuesWeb.setIndicatorValuesCustomDissagregation(values);
-                r.getCustomDissagregationValues().add(customDissagregationValuesWeb);
-            });
-            // valido segregaciones, si no hay mando con array vacio
-            for (CustomDissagregation customDissagregation : customDissagregationTypeAssignated) {
-                mapCustom.computeIfAbsent(customDissagregation, k -> new HashSet<>());
-            }
-        }
-        return r;
-
-    }
 
     public void updateMonthLocationsByAssignation(Month month, List<Canton> cantones, List<DissagregationType> locationDissagregationTypes,
                                                   Period period
@@ -422,5 +365,89 @@ public class MonthService {
             }
             this.saveOrUpdate(month);
         }
+    }
+
+
+    /**************************************************/
+
+    /**
+     * crea el dto  MonthValuesWeb
+     * @param monthId id del mes
+     * @param state esado, siempre Activos
+     * @return MonthValuesWeb
+     */
+    public MonthValuesWeb getMonthValuesWeb(Long monthId, State state) throws GeneralAppException {
+
+        IndicatorExecution ie = this.monthDao.getIndicatorExecutionByMonthId(monthId);
+
+        List<IndicatorValue> indicatorValues = this.indicatorValueService.getIndicatorValuesByMonthId(monthId, state);
+
+
+        List<IndicatorValueCustomDissagregation> indicatorValuesCustomDissagregation =
+                this.indicatorValueCustomDissagregationService.getIndicatorValuesByMonthId(monthId, state);
+
+        List<IndicatorValueWeb> indicatorValuesWeb = this.modelWebTransformationService.indicatorsToIndicatorValuesWeb(new HashSet<>(indicatorValues));
+
+        // verifico las tipo desagregaciones asignadas al indicador
+
+
+        // Desagregaciones del IE
+        List<DissagregationType> dissagregationTypeAssignated = ie.getIndicatorType().equals(IndicatorType.GENERAL)? this.generalIndicatorService.getActiveGeneralIndicatorDissagregationTypeByPeriodId(ie.getPeriod().getId()) : this.dissagregationAssignationToIndicatorService.getActiveDissagregationsByIndicatorExecutionId(ie.getId(),ie.getPeriod().getId());
+
+        // clasifico por tipo desagreggacions
+        Map<DissagregationType, List<IndicatorValueWeb>> map = new HashMap<>();
+        for (DissagregationType dissagregationType : DissagregationType.values()) {
+            map.put(dissagregationType, new ArrayList<>());
+            // los filtros
+            List<IndicatorValueWeb> values = indicatorValuesWeb.stream().filter(indicatorValue -> indicatorValue.getDissagregationType().equals(dissagregationType)).collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(values)) {
+                map.put(dissagregationType, null);
+            } else {
+                map.put(dissagregationType, values);
+            }
+        }
+        // valido segregaciones, si no hay mando con array vacio
+        for (DissagregationType dissagregationType : dissagregationTypeAssignated) {
+            map.computeIfAbsent(dissagregationType, k -> new ArrayList<>());
+        }
+
+        MonthValuesWeb r = new MonthValuesWeb();
+        if (CollectionUtils.isNotEmpty(indicatorValues)) {
+            r.setMonth(this.modelWebTransformationService.monthToMonthWeb(indicatorValues.get(0).getMonth()));
+        } else if (CollectionUtils.isNotEmpty(indicatorValuesCustomDissagregation)) {
+            r.setMonth(this.modelWebTransformationService.monthToMonthWeb(indicatorValuesCustomDissagregation.get(0).getMonth()));
+        } else {
+            r.setMonth(this.modelWebTransformationService.monthToMonthWeb(this.monthDao.find(monthId)));
+        }
+
+        r.setIndicatorValuesMap(map);
+        // clasifico por desagregaciones
+        //List<CustomDissagregationAssignationToIndicator> customDissagregationAsignations = this.customDissagregationAssignationToIndicatorService.getCustomDissagregationAssignationsByIndicatorExecutionId(ie.getId(), ie.getPeriod().getId());
+        List<CustomDissagregation> customDissagregationTypeAssignated =  this.customDissagregationAssignationToIndicatorService.getActiveCustomDissagregationsByIndicatorExecutionId(ie.getId(),ie.getPeriod().getId());
+        if (CollectionUtils.isNotEmpty(indicatorValuesCustomDissagregation)) {
+            r.setCustomDissagregationValues(new ArrayList<>());
+            Map<CustomDissagregation, Set<IndicatorValueCustomDissagregation>> mapCustom = new HashMap<>();
+            // saco un set de disegraciones
+            Set<CustomDissagregation> setCustomDissagegations = indicatorValuesCustomDissagregation.stream()
+                    .map(indicatorValueCustomDissagregation -> indicatorValueCustomDissagregation.getCustomDissagregationOption().getCustomDissagregation()).collect(Collectors.toSet());
+            setCustomDissagegations.forEach(customDissagregation -> {
+                Set<IndicatorValueCustomDissagregation> values = indicatorValuesCustomDissagregation.stream().filter(indicatorValueCustomDissagregation -> indicatorValueCustomDissagregation.getCustomDissagregationOption().getCustomDissagregation().getId().equals(customDissagregation.getId())).collect(Collectors.toSet());
+                mapCustom.put(customDissagregation, values);
+            });
+            mapCustom.forEach((customDissagregation, indicatorValueCustomDissagregations) -> {
+                CustomDissagregationValuesWeb customDissagregationValuesWeb = new CustomDissagregationValuesWeb();
+                customDissagregationValuesWeb.setCustomDissagregation(this.modelWebTransformationService.customDissagregationWebToCustomDissagregation(customDissagregation));
+
+                List<IndicatorValueCustomDissagregationWeb> values = this.modelWebTransformationService.indicatorValueCustomDissagregationsToIndicatorValueCustomDissagregationWebs(indicatorValueCustomDissagregations);
+                customDissagregationValuesWeb.setIndicatorValuesCustomDissagregation(values);
+                r.getCustomDissagregationValues().add(customDissagregationValuesWeb);
+            });
+            // valido segregaciones, si no hay mando con array vacio
+            for (CustomDissagregation customDissagregation : customDissagregationTypeAssignated) {
+                mapCustom.computeIfAbsent(customDissagregation, k -> new HashSet<>());
+            }
+        }
+        return r;
+
     }
 }

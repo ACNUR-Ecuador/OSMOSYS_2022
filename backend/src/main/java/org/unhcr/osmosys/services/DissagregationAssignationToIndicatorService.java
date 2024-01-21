@@ -4,6 +4,7 @@ import com.sagatechs.generics.persistence.model.State;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.DissagregationAssignationToIndicatorDao;
 import org.unhcr.osmosys.model.DissagregationAssignationToIndicator;
+import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.standardDissagregations.options.AgeDissagregationOption;
 import org.unhcr.osmosys.services.standardDissagregations.StandardDissagregationOptionService;
 import org.unhcr.osmosys.webServices.model.DissagregationAssignationToIndicatorWeb;
@@ -12,7 +13,6 @@ import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissa
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -183,6 +183,20 @@ public class DissagregationAssignationToIndicatorService {
 
         return dai;
     }
+
+
+    /************************/
+
+    public List<DissagregationAssignationToIndicator> getActiveDissagregationAssignationsByMonthId(Long ieId,Long periodId) {
+        return this.dissagregationAssignationToIndicatorDao.getActiveDissagregationAssignationsByIndicatorExecutionId(ieId, periodId);
+    }
+
+    public List<DissagregationType> getActiveDissagregationsByIndicatorExecutionId(Long ieId,Long periodId) {
+        return this.getActiveDissagregationAssignationsByMonthId(ieId, periodId).stream()
+                .map(DissagregationAssignationToIndicator::getDissagregationType)
+                .collect(Collectors.toList());
+    }
+
 
 
 }

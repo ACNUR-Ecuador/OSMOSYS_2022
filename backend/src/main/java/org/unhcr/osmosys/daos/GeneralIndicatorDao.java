@@ -70,4 +70,5 @@ public class GeneralIndicatorDao extends GenericDaoJpa<GeneralIndicator, Long> {
         }
     }
 
+
 }
