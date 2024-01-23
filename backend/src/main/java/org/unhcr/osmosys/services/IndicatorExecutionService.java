@@ -75,9 +75,6 @@ public class IndicatorExecutionService {
     IndicatorValueService indicatorValueService;
 
     @Inject
-    IndicatorValueCustomDissagregationService indicatorValueCustomDissagregationService;
-
-    @Inject
     UtilsService utilsService;
 
     @EJB
@@ -143,13 +140,12 @@ public class IndicatorExecutionService {
         //noinspection DuplicatedCode
 
 
-        List<CustomDissagregationAssignationToIndicatorExecution> customDissagregationsAssignations = indicator.getCustomDissagregationAssignationToIndicators().stream().filter(customDissagregationAssignationToIndicator -> customDissagregationAssignationToIndicator.getState().equals(State.ACTIVO) && customDissagregationAssignationToIndicator.getPeriod().getId().equals(ie.getPeriod().getId())).map(customDissagregationAssignationToIndicator -> {
-            CustomDissagregationAssignationToIndicatorExecution da = new CustomDissagregationAssignationToIndicatorExecution();
-            da.setCustomDissagregation(customDissagregationAssignationToIndicator.getCustomDissagregation());
-            da.setState(State.ACTIVO);
-            return da;
-        }).collect(Collectors.toList());
-        customDissagregationsAssignations.forEach(ie::addCustomDissagregationAssignationToIndicatorExecution);
+        List<CustomDissagregationAssignationToIndicator> customDissagregationsAssignations = indicator.getCustomDissagregationAssignationToIndicators()
+                .stream()
+                .filter(customDissagregationAssignationToIndicator ->
+                        customDissagregationAssignationToIndicator.getState().equals(State.ACTIVO) &&
+                                customDissagregationAssignationToIndicator.getPeriod().getId().equals(ie.getPeriod().getId()))
+                .collect(Collectors.toList());
 
 
         ie.setProject(project);
@@ -158,7 +154,7 @@ public class IndicatorExecutionService {
         // manejo de desagregaciones
         Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationsMap = this.getDissagregationTypeOptionsMap(new ArrayList<>(dissagregationAssignations), cantones, indicator, period, ie);
 
-        List<CustomDissagregation> customDissagregations = customDissagregationsAssignations.stream().map(CustomDissagregationAssignationToIndicatorExecution::getCustomDissagregation).collect(Collectors.toList());
+        List<CustomDissagregation> customDissagregations = customDissagregationsAssignations.stream().map(CustomDissagregationAssignationToIndicator::getCustomDissagregation).collect(Collectors.toList());
 
 
         this.createQuartersInIndicatorExecution(ie, project, dissagregationsMap, customDissagregations);
@@ -622,9 +618,11 @@ public class IndicatorExecutionService {
                                 && dissagregationAssignationToIndicator.getPeriod().getId().equals(period.getId()))
                         .collect(Collectors.toList());
 
-                customDissagregations = indicatorExecution
-                        .getCustomDissagregationAssignationToIndicatorExecutions().stream()
-                        .filter(customDissagregationAssignationToIndicatorExecution -> customDissagregationAssignationToIndicatorExecution.getState().equals(State.ACTIVO)).map(CustomDissagregationAssignationToIndicatorExecution::getCustomDissagregation).collect(Collectors.toList());
+                customDissagregations = indicator
+                        .getCustomDissagregationAssignationToIndicators().stream()
+                        .filter(customDissagregationAssignationToIndicatorExecution ->
+                                customDissagregationAssignationToIndicatorExecution.getState().equals(State.ACTIVO))
+                        .map(CustomDissagregationAssignationToIndicator::getCustomDissagregation).collect(Collectors.toList());
             }
 
             // manejo de desagregaciones
@@ -781,7 +779,9 @@ public class IndicatorExecutionService {
         indicatorExecution.setKeepBudget(indicatorExecutionAssigmentWeb.getKeepBudget());
         indicatorExecution.setAssignedBudget(indicatorExecutionAssigmentWeb.getAssignedBudget());
         // actualizo locations
-        if (CollectionUtils.isNotEmpty(
+
+        // todo 2024
+        /*if (CollectionUtils.isNotEmpty(
                 indicatorExecution.getDissagregationsAssignationsToIndicatorExecutions().stream()
                         .filter(dissagregationAssignationToIndicatorExecution ->
                                 dissagregationAssignationToIndicatorExecution.getDissagregationType().isLocationsDissagregation()
@@ -794,7 +794,7 @@ public class IndicatorExecutionService {
             this.updateIndicatorExecutionLocations(indicatorExecution, result.locationsToActivate, result.locationsToDissable);
 
 
-        }
+        }*/
         this.updateIndicatorExecutionTotals(indicatorExecution);
         this.saveOrUpdate(indicatorExecution);
         return indicatorExecution.getId();
@@ -848,18 +848,13 @@ public class IndicatorExecutionService {
                 // manejo de desagregaciones
                 Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationsMap = this.getDissagregationTypeOptionsMap(new ArrayList<>(dissagregationAssignations), cantones, indicator, period, indicatorExecution);
 
-                List<CustomDissagregationAssignationToIndicatorExecution> customDissagregationsAssignations = indicator.getCustomDissagregationAssignationToIndicators().stream().filter(customDissagregationAssignationToIndicator -> customDissagregationAssignationToIndicator.getState().equals(State.ACTIVO) && customDissagregationAssignationToIndicator.getPeriod().getId().equals(indicatorExecution.getPeriod().getId())).map(customDissagregationAssignationToIndicator -> {
-                    CustomDissagregationAssignationToIndicatorExecution da = new CustomDissagregationAssignationToIndicatorExecution();
-                    da.setCustomDissagregation(customDissagregationAssignationToIndicator.getCustomDissagregation());
-                    da.setState(State.ACTIVO);
-                    return da;
-                }).collect(Collectors.toList());
-                customDissagregationsAssignations.forEach(indicatorExecution::addCustomDissagregationAssignationToIndicatorExecution);
-
-
-                List<CustomDissagregation> customDissagregations = customDissagregationsAssignations.stream().map(CustomDissagregationAssignationToIndicatorExecution::getCustomDissagregation).collect(Collectors.toList());
-
-
+                List<CustomDissagregationAssignationToIndicator> customDissagregationsAssignations = indicator.getCustomDissagregationAssignationToIndicators()
+                        .stream()
+                        .filter(customDissagregationAssignationToIndicator ->
+                                customDissagregationAssignationToIndicator.getState().equals(State.ACTIVO) &&
+                                        customDissagregationAssignationToIndicator.getPeriod().getId().equals(indicatorExecution.getPeriod().getId()))
+                        .collect(Collectors.toList());
+                List<CustomDissagregation> customDissagregations = customDissagregationsAssignations.stream().map(CustomDissagregationAssignationToIndicator::getCustomDissagregation).collect(Collectors.toList());
 
                 this.validateLocationsLocationsInLocationsDissagregations(dissagregationsMap);
                 Set<Quarter> qs = this.quarterService.createQuarters(project.getStartDate(), project.getEndDate(), dissagregationsMap, customDissagregations);
@@ -896,19 +891,17 @@ public class IndicatorExecutionService {
                     .map(IndicatorExecutionLocationAssigment::getLocation).collect(Collectors.toList());
             Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationsMap = this.getDissagregationTypeOptionsMap(new ArrayList<>(dissagregationAssignations), cantones, indicator, period, indicatorExecution);
 
-            List<CustomDissagregationAssignationToIndicatorExecution> customDissagregationsAssignations = indicator.getCustomDissagregationAssignationToIndicators().stream().filter(customDissagregationAssignationToIndicator -> customDissagregationAssignationToIndicator.getState().equals(State.ACTIVO) && customDissagregationAssignationToIndicator.getPeriod().getId().equals(indicatorExecution.getPeriod().getId())).map(customDissagregationAssignationToIndicator -> {
-                CustomDissagregationAssignationToIndicatorExecution da = new CustomDissagregationAssignationToIndicatorExecution();
-                da.setCustomDissagregation(customDissagregationAssignationToIndicator.getCustomDissagregation());
-                da.setState(State.ACTIVO);
-                return da;
-            }).collect(Collectors.toList());
-            customDissagregationsAssignations
-                    .forEach(indicatorExecution::addCustomDissagregationAssignationToIndicatorExecution);
+            List<CustomDissagregationAssignationToIndicator> customDissagregationsAssignations = indicator.getCustomDissagregationAssignationToIndicators()
+                    .stream()
+                    .filter(customDissagregationAssignationToIndicator ->
+                            customDissagregationAssignationToIndicator.getState().equals(State.ACTIVO)
+                                    && customDissagregationAssignationToIndicator.getPeriod().getId().equals(indicatorExecution.getPeriod().getId()))
+                    .collect(Collectors.toList());
 
 
             List<CustomDissagregation> customDissagregations = customDissagregationsAssignations
                     .stream()
-                    .map(CustomDissagregationAssignationToIndicatorExecution::getCustomDissagregation)
+                    .map(CustomDissagregationAssignationToIndicator::getCustomDissagregation)
                     .collect(Collectors.toList());
 
             LocalDate startDate = LocalDate.of(period.getYear(), 1, 1);
@@ -971,25 +964,20 @@ public class IndicatorExecutionService {
         Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationsMap = this.getDissagregationTypeOptionsMap(new ArrayList<>(dissagregationAssignations), cantones, indicator, period, indicatorExecution);
 
 
-        List<CustomDissagregationAssignationToIndicatorExecution> customDissagregationsAssignations =
+        List<CustomDissagregationAssignationToIndicator> customDissagregationsAssignations =
                 indicator.getCustomDissagregationAssignationToIndicators()
                         .stream()
                         .filter(customDissagregationAssignationToIndicator ->
                                 customDissagregationAssignationToIndicator.getState().equals(State.ACTIVO)
                                         && customDissagregationAssignationToIndicator.getPeriod().getId().equals(indicatorExecution.getPeriod().getId())
-                        ).map(customDissagregationAssignationToIndicator -> {
-                            CustomDissagregationAssignationToIndicatorExecution da = new CustomDissagregationAssignationToIndicatorExecution();
-                            da.setCustomDissagregation(customDissagregationAssignationToIndicator.getCustomDissagregation());
-                            da.setState(State.ACTIVO);
-                            return da;
-                        }).collect(Collectors.toList());
-        customDissagregationsAssignations.forEach(indicatorExecution::addCustomDissagregationAssignationToIndicatorExecution);
+                        ).collect(Collectors.toList());
+
 
 
         List<CustomDissagregation> customDissagregations =
                 customDissagregationsAssignations
                         .stream()
-                        .map(CustomDissagregationAssignationToIndicatorExecution::getCustomDissagregation)
+                        .map(CustomDissagregationAssignationToIndicator::getCustomDissagregation)
                         .collect(Collectors.toList());
         LocalDate startDate = LocalDate.of(period.getYear(), 1, 1);
         LocalDate endDate = LocalDate.of(period.getYear(), 12, 31);
@@ -1203,7 +1191,9 @@ public class IndicatorExecutionService {
             List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToCreate
     ) throws GeneralAppException {
         List<IndicatorExecution> iesToUpdateTotals = new ArrayList<>();
-        for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicatorsToEnable) {
+
+       // todo 2024
+       /* for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicatorsToEnable) {
             List<IndicatorExecution> iesToEnable = this.indicatorExecutionDao.getByPeriodIdAndIndicatorId(dissagregationAssignationToIndicator.getPeriod().getId(), dissagregationAssignationToIndicator.getIndicator().getId());
             iesToUpdateTotals.addAll(iesToEnable);
             enableDissagregationAssignationIndIndicatorExecution(iesToEnable, dissagregationAssignationToIndicator.getDissagregationType());
@@ -1212,7 +1202,7 @@ public class IndicatorExecutionService {
             List<IndicatorExecution> iesToDisable = this.indicatorExecutionDao.getByPeriodIdAndIndicatorId(dissagregationAssignationToIndicator.getPeriod().getId(), dissagregationAssignationToIndicator.getIndicator().getId());
             iesToUpdateTotals.addAll(iesToDisable);
             disableDissagregationAsignationInIndicatiorExecution(iesToDisable, dissagregationAssignationToIndicator.getDissagregationType());
-        }
+        }*/
 
         for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicatorsToCreate) {
             List<IndicatorExecution> iesToCreate = this.indicatorExecutionDao.getByPeriodIdAndIndicatorId(dissagregationAssignationToIndicator.getPeriod().getId(), dissagregationAssignationToIndicator.getIndicator().getId());
@@ -1233,18 +1223,21 @@ public class IndicatorExecutionService {
         for (CustomDissagregationAssignationToIndicator dissagregationAssignationToIndicator : customDissagregationAssignationToIndicatorsToEnable) {
             List<IndicatorExecution> iesToEnable = this.indicatorExecutionDao.getByPeriodIdAndIndicatorId(dissagregationAssignationToIndicator.getPeriod().getId(), dissagregationAssignationToIndicator.getIndicator().getId());
             iesToUpdateTotals.addAll(iesToEnable);
-            enableCustomDissagregationAssignationIndIndicatorExecution(iesToEnable, dissagregationAssignationToIndicator.getCustomDissagregation());
+            // todo 2024
+            // enableCustomDissagregationAssignationIndIndicatorExecution(iesToEnable, dissagregationAssignationToIndicator.getCustomDissagregation());
         }
         for (CustomDissagregationAssignationToIndicator dissagregationAssignationToIndicator : customDissagregationAssignationToIndicatorsToDisable) {
             List<IndicatorExecution> iesToDisable = this.indicatorExecutionDao.getByPeriodIdAndIndicatorId(dissagregationAssignationToIndicator.getPeriod().getId(), dissagregationAssignationToIndicator.getIndicator().getId());
             iesToUpdateTotals.addAll(iesToDisable);
-            disableCustomDissagregationAsignationInIndicatiorExecution(iesToDisable, dissagregationAssignationToIndicator.getCustomDissagregation());
+            // todo 2024
+            // disableCustomDissagregationAsignationInIndicatiorExecution(iesToDisable, dissagregationAssignationToIndicator.getCustomDissagregation());
         }
 
         for (CustomDissagregationAssignationToIndicator dissagregationAssignationToIndicator : customDissagregationAssignationToIndicatorsToCreate) {
             List<IndicatorExecution> iesToCreate = this.indicatorExecutionDao.getByPeriodIdAndIndicatorId(dissagregationAssignationToIndicator.getPeriod().getId(), dissagregationAssignationToIndicator.getIndicator().getId());
             iesToUpdateTotals.addAll(iesToCreate);
-            createCustomDissagregationAsignationInIndicatiorExecution(iesToCreate, dissagregationAssignationToIndicator.getCustomDissagregation());
+            // todo 2024
+            //createCustomDissagregationAsignationInIndicatiorExecution(iesToCreate, dissagregationAssignationToIndicator.getCustomDissagregation());
         }
 
         for (IndicatorExecution ieToUpdateTotal : iesToUpdateTotals) {
@@ -1253,100 +1246,10 @@ public class IndicatorExecutionService {
         }
     }
 
-    private void createCustomDissagregationAsignationInIndicatiorExecution(List<IndicatorExecution> iesToCreate, CustomDissagregation customDissagregation) {
-        for (IndicatorExecution indicatorExecution : iesToCreate) {
-            CustomDissagregationAssignationToIndicatorExecution dissagregationAssignationToIndicatorExecution = new CustomDissagregationAssignationToIndicatorExecution();
-            dissagregationAssignationToIndicatorExecution.setState(State.ACTIVO);
-            dissagregationAssignationToIndicatorExecution.setCustomDissagregation(customDissagregation);
-            indicatorExecution.addCustomDissagregationAssignationToIndicatorExecution(dissagregationAssignationToIndicatorExecution);
-            List<Month> months = indicatorExecution.getQuarters().stream().flatMap(quarter -> quarter.getMonths().stream()).collect(Collectors.toList());
-            for (Month month : months) {
-                List<IndicatorValueCustomDissagregation> ivs = this.indicatorValueCustomDissagregationService.createIndicatorValuesCustomDissagregationForMonth(customDissagregation);
-                for (IndicatorValueCustomDissagregation iv : ivs) {
-                    month.addIndicatorValueCustomDissagregation(iv);
-                }
-            }
-        }
-    }
 
-    private void disableCustomDissagregationAsignationInIndicatiorExecution(List<IndicatorExecution> iesToDisable, CustomDissagregation customDissagregation) {
-        for (IndicatorExecution indicatorExecution : iesToDisable) {
-            indicatorExecution.getCustomDissagregationAssignationToIndicatorExecutions()
-                    .stream()
-                    .filter(dissagregationAssignationToIndicatorExecution ->
-                            dissagregationAssignationToIndicatorExecution.getCustomDissagregation().getId()
-                                    .equals(customDissagregation.getId()))
-                    .findFirst()
-                    .ifPresent(dissagregationAssignationToIndicatorExecution -> {
-                        dissagregationAssignationToIndicatorExecution.setState(State.INACTIVO);
-                        indicatorExecution.getQuarters()
-                                .stream().flatMap(quarter -> quarter.getMonths().stream())
-                                .flatMap(month -> month.getIndicatorValuesIndicatorValueCustomDissagregations().stream())
-                                .filter(indicatorValue -> indicatorValue.getCustomDissagregationOption().getCustomDissagregation().getId().equals(customDissagregation.getId()))
-                                .forEach(indicatorValue -> indicatorValue.setState(State.INACTIVO));
-                    });
-        }
-    }
 
-    private void enableCustomDissagregationAssignationIndIndicatorExecution(List<IndicatorExecution> iesToEnable, CustomDissagregation customDissagregation) {
-        for (IndicatorExecution indicatorExecution : iesToEnable) {
-            indicatorExecution.getCustomDissagregationAssignationToIndicatorExecutions()
-                    .stream()
-                    .filter(customDissagregationAssignationToIndicatorExecution ->
-                            customDissagregationAssignationToIndicatorExecution.getCustomDissagregation().getId()
-                                    .equals(customDissagregation.getId()))
-                    .findFirst()
-                    .ifPresent(customDissagregationAssignationToIndicatorExecution -> {
-                        customDissagregationAssignationToIndicatorExecution.setState(State.ACTIVO);
-                        indicatorExecution.getQuarters()
-                                .stream().flatMap(quarter -> quarter.getMonths().stream())
-                                .flatMap(month -> month.getIndicatorValuesIndicatorValueCustomDissagregations().stream())
-                                .filter(indicatorValue -> indicatorValue.getCustomDissagregationOption().getCustomDissagregation().getId().equals(customDissagregation.getId()))
-                                .forEach(indicatorValue -> indicatorValue.setState(State.ACTIVO));
-                    });
-        }
-    }
 
-    private void disableDissagregationAsignationInIndicatiorExecution(List<IndicatorExecution> iesToDisable, DissagregationType dissagregationType
-    ) {
-        for (IndicatorExecution indicatorExecution : iesToDisable) {
-            indicatorExecution.getDissagregationsAssignationsToIndicatorExecutions()
-                    .stream()
-                    .filter(dissagregationAssignationToIndicatorExecution ->
-                            dissagregationAssignationToIndicatorExecution.getDissagregationType()
-                                    .equals(dissagregationType))
-                    .findFirst()
-                    .ifPresent(dissagregationAssignationToIndicatorExecution -> {
-                        dissagregationAssignationToIndicatorExecution.setState(State.INACTIVO);
-                        indicatorExecution.getQuarters()
-                                .stream().flatMap(quarter -> quarter.getMonths().stream())
-                                .flatMap(month -> month.getIndicatorValues().stream())
-                                .filter(indicatorValue -> indicatorValue.getDissagregationType().equals(dissagregationType))
-                                .forEach(indicatorValue -> indicatorValue.setState(State.INACTIVO));
-                    });
-        }
-    }
 
-    private void enableDissagregationAssignationIndIndicatorExecution(List<IndicatorExecution> iesToEnable,
-                                                                      DissagregationType dissagregationType
-    ) {
-        for (IndicatorExecution indicatorExecution : iesToEnable) {
-            indicatorExecution.getDissagregationsAssignationsToIndicatorExecutions()
-                    .stream()
-                    .filter(dissagregationAssignationToIndicatorExecution ->
-                            dissagregationAssignationToIndicatorExecution.getDissagregationType()
-                                    .equals(dissagregationType))
-                    .findFirst()
-                    .ifPresent(dissagregationAssignationToIndicatorExecution -> {
-                        dissagregationAssignationToIndicatorExecution.setState(State.ACTIVO);
-                        indicatorExecution.getQuarters()
-                                .stream().flatMap(quarter -> quarter.getMonths().stream())
-                                .flatMap(month -> month.getIndicatorValues().stream())
-                                .filter(indicatorValue -> indicatorValue.getDissagregationType().equals(dissagregationType))
-                                .forEach(indicatorValue -> indicatorValue.setState(State.ACTIVO));
-                    });
-        }
-    }
 
     public void updateIndicatorExecutionLocations(
             IndicatorExecution indicatorExecution,
@@ -1403,7 +1306,9 @@ public class IndicatorExecutionService {
     ) throws GeneralAppException {
         List<IndicatorExecution> iesToUpdate = this.indicatorExecutionDao.getGeneralIndicatorExecutionsByPeriodId(periodId);
         List<IndicatorExecution> iesToUpdateTotals = new ArrayList<>(iesToUpdate);
-        for (DissagregationAssignationToGeneralIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicatorsToEnable) {
+
+        // todo 2024
+        /*for (DissagregationAssignationToGeneralIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicatorsToEnable) {
             enableDissagregationAssignationIndIndicatorExecution(iesToUpdate, dissagregationAssignationToIndicator.getDissagregationType());
 
         }
@@ -1413,7 +1318,7 @@ public class IndicatorExecutionService {
 
         for (DissagregationAssignationToGeneralIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicatorsToCreate) {
             createDissagregationAsignationInIndicatiorExecution(iesToUpdate, dissagregationAssignationToIndicator.getDissagregationType());
-        }
+        }*/
 
         for (IndicatorExecution ieToUpdateTotal : iesToUpdateTotals) {
             this.updateIndicatorExecutionTotals(ieToUpdateTotal);

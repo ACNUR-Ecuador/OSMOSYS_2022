@@ -21,7 +21,7 @@ public class IndicatorValueWeb extends BaseWebEntity implements Serializable {
     private StandardDissagregationOptionWeb ageType;
     private StandardDissagregationOptionWeb diversityType;
     private CantonWeb location;
-    private Boolean showValue;
+
     private BigDecimal value;
     private BigDecimal denominatorValue;
     private BigDecimal numeratorValue;
@@ -88,14 +88,6 @@ public class IndicatorValueWeb extends BaseWebEntity implements Serializable {
 
     public void setLocation(CantonWeb location) {
         this.location = location;
-    }
-
-    public Boolean getShowValue() {
-        return showValue;
-    }
-
-    public void setShowValue(Boolean showValue) {
-        this.showValue = showValue;
     }
 
     public BigDecimal getValue() {

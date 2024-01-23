@@ -1299,7 +1299,6 @@ public class ModelWebTransformationService {
         q.setDiversityType(this.standardDissagregationOptionToStandardDissagregationOptionWeb(indicatorValue.getDiversityType()));
         q.setAgeType(this.standardDissagregationOptionToStandardDissagregationOptionWeb(indicatorValue.getAgeType()));
         q.setLocation(this.cantonToCantonWeb(indicatorValue.getLocation()));
-        q.setShowValue(indicatorValue.getShowValue());
         q.setValue(indicatorValue.getValue());
         q.setNumeratorValue(indicatorValue.getNumeratorValue());
         q.setDenominatorValue(indicatorValue.getDenominatorValue());

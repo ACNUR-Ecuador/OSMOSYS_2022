@@ -1,9 +1,9 @@
 package org.unhcr.osmosys.model;
 
-import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
-import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.model.enums.DissagregationType;
+import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.model.standardDissagregations.options.*;
 
 import javax.persistence.*;
@@ -64,9 +64,6 @@ public class IndicatorValue extends BaseEntityIdState {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "canton_id", foreignKey = @ForeignKey(name = "fk_indicator_values_cantones"))
     private Canton location;
-
-    @Column(name = "show_value", nullable = false)
-    private Boolean showValue;
 
     @Column(name = "value")
     private BigDecimal value;
@@ -180,14 +177,6 @@ public class IndicatorValue extends BaseEntityIdState {
         this.numeratorValue = numeratorValue;
     }
 
-    public Boolean getShowValue() {
-        return showValue;
-    }
-
-    public void setShowValue(Boolean showValue) {
-        this.showValue = showValue;
-    }
-
     public DiversityDissagregationOption getDiversityType() {
         return diversityType;
     }
@@ -225,7 +214,6 @@ public class IndicatorValue extends BaseEntityIdState {
                 ", ageType=" + ageType +
                 ", diversityType=" + diversityType +
                 ", location=" + location +
-                ", showValue=" + showValue +
                 ", value=" + value +
                 '}';
     }

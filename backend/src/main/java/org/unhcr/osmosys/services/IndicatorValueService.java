@@ -2,18 +2,18 @@ package org.unhcr.osmosys.services;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
-import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.IndicatorValueDao;
-import org.unhcr.osmosys.model.*;
-import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.model.Canton;
+import org.unhcr.osmosys.model.IndicatorExecution;
+import org.unhcr.osmosys.model.IndicatorValue;
+import org.unhcr.osmosys.model.Period;
+import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.standardDissagregations.options.*;
 import org.unhcr.osmosys.model.standardDissagregations.periodOptions.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,7 +62,7 @@ public class IndicatorValueService {
                         .stream()
                         .sorted(
                                 Comparator.comparingInt(StandardDissagregationOption::getOrder)).collect(Collectors.toList());
-                ;
+
                 optionsLists.add(optionsList);
             }
 
@@ -91,10 +91,7 @@ public class IndicatorValueService {
             }
         }
 
-        values.forEach(value -> {
-            value.setDissagregationType(dissagregationType);
-            value.setShowValue(true);
-        });
+        values.forEach(value -> value.setDissagregationType(dissagregationType));
         return values;
 
     }
@@ -129,7 +126,6 @@ public class IndicatorValueService {
     }
 
 
-    /***************************************************************************************************************************************************************************************************/
     private List<IndicatorValue> createIndicatorValueDissagregationStandardForMonth1Dissagregations(List<List<StandardDissagregationOption>> optionsLists, List<DissagregationType> simpleDissagregations) throws GeneralAppException {
         List<IndicatorValue> r = new ArrayList<>();
         List<StandardDissagregationOption> listOptions0 = optionsLists.get(0);
@@ -262,6 +258,8 @@ public class IndicatorValueService {
         return r;
     }
 
+    /***************************************************************************************************************************************************************************************************/
+
     private List<StandardDissagregationOption> getPeriodStandardDissagregationOptionsFromPeriod(Period period, DissagregationType dissagregationType) throws GeneralAppException {
 
         switch (dissagregationType) {
@@ -311,7 +309,6 @@ public class IndicatorValueService {
         IndicatorValue iv = new IndicatorValue();
         iv.setState(State.ACTIVO);
         iv.setDissagregationType(dt);
-        iv.setShowValue(true);
         r.add(iv);
         return r;
     }
@@ -335,7 +332,7 @@ public class IndicatorValueService {
             Set<Canton> locationsToActivateIe,
             Set<Canton> locationsToDissableIe
     ) throws GeneralAppException {
-        Set<DissagregationAssignationToIndicatorExecution> dissagregationAssigments = indicatorExecution.getDissagregationsAssignationsToIndicatorExecutions();
+        /*Set<DissagregationAssignationToIndicatorExecution> dissagregationAssigments = indicatorExecution.getDissagregationsAssignationsToIndicatorExecutions();
 
         List<IndicatorValue> indicatorValues =
                 indicatorExecution.getQuarters().stream()
@@ -409,8 +406,8 @@ public class IndicatorValueService {
 
                 }
                 // activo o desactivo segun estado de desagregacion
-                /*indicatorValuesDissagregation
-                        .forEach(indicatorValue -> indicatorValue.setState(dissagregationState));*/
+                *//*indicatorValuesDissagregation
+                        .forEach(indicatorValue -> indicatorValue.setState(dissagregationState));*//*
 
                 if (dissagregationState.equals(State.INACTIVO)) {
                     indicatorValuesDissagregation
@@ -430,6 +427,7 @@ public class IndicatorValueService {
                     unvalidCantonts + " en los siguientes meses: " + unvalidMonths + " Para eliminar el cantón, primero vaya a estos meses y ponga en 0 (cero) los valores de estos cantones. ";
             throw new GeneralAppException(message, Response.Status.BAD_REQUEST);
         }
+        */
     }
 
     public List<IndicatorValue> getByIndicatorExecutionId(Long indicatorExecutionId) {

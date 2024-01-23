@@ -1,6 +1,5 @@
 package org.unhcr.osmosys.model;
 
-import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
@@ -65,12 +64,6 @@ public class IndicatorExecution extends BaseEntityIdState {
 
     @OneToMany(mappedBy = "indicatorExecution", cascade = CascadeType.ALL)
     private Set<Quarter> quarters = new HashSet<>();
-
-    @OneToMany(mappedBy = "indicatorExecution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<DissagregationAssignationToIndicatorExecution> dissagregationsAssignationsToIndicatorExecutions = new HashSet<>();
-
-    @OneToMany(mappedBy = "indicatorExecution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<CustomDissagregationAssignationToIndicatorExecution> customDissagregationAssignationToIndicatorExecutions = new HashSet<>();
 
     /*socios ii*/
     @ManyToOne(fetch = FetchType.LAZY)
@@ -151,34 +144,7 @@ public class IndicatorExecution extends BaseEntityIdState {
         this.period = period;
     }
 
-    public void addDissagregationAssignationToIndicatorExecution(DissagregationAssignationToIndicatorExecution dissagregationAssignationToIndicatorExecution) {
-        dissagregationAssignationToIndicatorExecution.setIndicatorExecution(this);
-        dissagregationAssignationToIndicatorExecution.setState(State.ACTIVO);
-        if (!this.dissagregationsAssignationsToIndicatorExecutions.add(dissagregationAssignationToIndicatorExecution)) {
-            this.dissagregationsAssignationsToIndicatorExecutions.remove(dissagregationAssignationToIndicatorExecution);
-            this.dissagregationsAssignationsToIndicatorExecutions.add(dissagregationAssignationToIndicatorExecution);
-        }
-    }
 
-
-    public void removeDissagregationAssignationToIndicatorExecution(DissagregationAssignationToIndicatorExecution dissagregationAssignationToIndicatorExecution) {
-
-        if (dissagregationAssignationToIndicatorExecution.getId() != null) {
-            dissagregationAssignationToIndicatorExecution.setIndicatorExecution(this);
-            dissagregationAssignationToIndicatorExecution.setState(State.INACTIVO);
-        } else {
-            this.dissagregationsAssignationsToIndicatorExecutions.remove(dissagregationAssignationToIndicatorExecution);
-        }
-    }
-
-
-    public Set<DissagregationAssignationToIndicatorExecution> getDissagregationsAssignationsToIndicatorExecutions() {
-        return dissagregationsAssignationsToIndicatorExecutions;
-    }
-
-    public void setDissagregationsAssignationsToIndicatorExecutions(Set<DissagregationAssignationToIndicatorExecution> dissagregationsAssignationsToIndicatorExecutions) {
-        this.dissagregationsAssignationsToIndicatorExecutions = dissagregationsAssignationsToIndicatorExecutions;
-    }
 
     public Project getProject() {
         return project;
@@ -236,24 +202,6 @@ public class IndicatorExecution extends BaseEntityIdState {
             this.quarters.add(quarter);
         }
     }
-
-    public Set<CustomDissagregationAssignationToIndicatorExecution> getCustomDissagregationAssignationToIndicatorExecutions() {
-        return customDissagregationAssignationToIndicatorExecutions;
-    }
-
-    public void setCustomDissagregationAssignationToIndicatorExecutions(Set<CustomDissagregationAssignationToIndicatorExecution> customDissagregationAssignationToIndicatorExecutions) {
-        this.customDissagregationAssignationToIndicatorExecutions = customDissagregationAssignationToIndicatorExecutions;
-    }
-
-    public void addCustomDissagregationAssignationToIndicatorExecution(CustomDissagregationAssignationToIndicatorExecution dissagregationAssignationToIndicatorExecution) {
-        dissagregationAssignationToIndicatorExecution.setIndicatorExecution(this);
-        dissagregationAssignationToIndicatorExecution.setState(State.ACTIVO);
-        if (!this.customDissagregationAssignationToIndicatorExecutions.add(dissagregationAssignationToIndicatorExecution)) {
-            this.customDissagregationAssignationToIndicatorExecutions.remove(dissagregationAssignationToIndicatorExecution);
-            this.customDissagregationAssignationToIndicatorExecutions.add(dissagregationAssignationToIndicatorExecution);
-        }
-    }
-
     public BigDecimal getTarget() {
         return target;
     }
