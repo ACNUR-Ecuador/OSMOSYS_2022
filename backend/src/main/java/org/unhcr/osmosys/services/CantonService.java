@@ -29,6 +29,13 @@ public class CantonService {
         return (Canton) this.standardDissagregationOptionService.getById(id);
     }
 
+    public List<Canton> getByIds(List<Long> ids) {
+        return this.standardDissagregationOptionService.getCantonByIds(ids);
+    }
+
+
+    /********************************************/
+
     public List<CantonWeb> getAll() {
         return this.modelWebTransformationService.cantonsToCantonsWeb(this.standardDissagregationOptionService.getAllCantonsOptions());
     }
@@ -37,9 +44,7 @@ public class CantonService {
         return this.standardDissagregationOptionService.getCantonWebOptionByState(state);
     }
 
-    public List<Canton> getByIds(List<Long> ids) {
-        return this.standardDissagregationOptionService.getCantonByIds(ids);
-    }
+
 
     public Canton getByCantonDescriptionAndProvinceDescription(String cantonDescription, String provinceDescription) throws GeneralAppException {
         return this.standardDissagregationOptionService.getByCantonDescriptionAndProvinceDescription(cantonDescription, provinceDescription);

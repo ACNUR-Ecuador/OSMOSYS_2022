@@ -13,6 +13,15 @@ import javax.persistence.*;
         uniqueConstraints = @UniqueConstraint(name = "unique_indicator_execution_location_assigments", columnNames = {"indicator_execution_id", "canton_id"}))
 public class IndicatorExecutionLocationAssigment extends BaseEntityIdState {
 
+    public IndicatorExecutionLocationAssigment() {
+        this.state = State.ACTIVO;
+    }
+
+    public IndicatorExecutionLocationAssigment(Canton location) {
+        this.location = location;
+        this.state = State.ACTIVO;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

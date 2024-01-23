@@ -7,6 +7,7 @@ import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.MonthDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.model.standardDissagregations.options.StandardDissagregationOption;
 import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
@@ -61,11 +62,10 @@ public class MonthService {
     }
 
 
-
-
     public List<Month> createMonthsForQuarter(Quarter quarter, LocalDate startDate, LocalDate endDate,
-                                              List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations,
-                                              List<Canton> cantones, Period period) throws GeneralAppException {
+                                              Map<DissagregationType,Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationMap,
+                                              List<CustomDissagregation> customDissagregations
+                                              ) throws GeneralAppException {
         QuarterEnum quarterEnum = quarter.getQuarter();
         List<MonthEnum> monthsEnums = MonthEnum.getMonthsByQuarter(quarterEnum);
         // solo los meses q enten dentro del periodo
@@ -80,7 +80,7 @@ public class MonthService {
             ) {
 
 
-                Month month = this.createMonth(quarter.getYear(), monthEnum, dissagregationTypes, customDissagregations, cantones, period);
+                Month month = this.createMonth(quarter.getYear(), monthEnum,dissagregationMap, customDissagregations);
                 months.add(month);
             }
         }
@@ -89,8 +89,11 @@ public class MonthService {
     }
 
     public Month createMonth(Integer year, MonthEnum monthEnum,
-                             List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations,
-                             List<Canton> cantones, Period period) throws GeneralAppException {
+                             Map<DissagregationType,Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationsMap,
+                             List<CustomDissagregation> customDissagregations
+
+
+    ) throws GeneralAppException {
         Month m = new Month();
         m.setState(State.ACTIVO);
         m.setYear(year);
@@ -98,9 +101,9 @@ public class MonthService {
         m.setBlockUpdate(Boolean.FALSE);
 
         Set<IndicatorValue> indicatorValues = new HashSet<>();
-        for (DissagregationType dissagregationType : dissagregationTypes) {
+        for (DissagregationType dissagregationType : dissagregationsMap.keySet()) {
 
-            indicatorValues.addAll(this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(dissagregationType, cantones, period));
+            indicatorValues.addAll(this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(dissagregationType, dissagregationsMap.get(dissagregationType)));
         }
 
         for (IndicatorValue indicatorValue : indicatorValues) {
@@ -116,6 +119,8 @@ public class MonthService {
         }
         return m;
     }
+
+    /****************************************************************************************************************************************/
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     public void updateMonthTotals(Month month, TotalIndicatorCalculationType totalIndicatorCalculationType) throws GeneralAppException {
@@ -214,16 +219,13 @@ public class MonthService {
     }
 
 
-
-
-    public void updateMonthLocationsByAssignation(Month month, List<Canton> cantones, List<DissagregationType> locationDissagregationTypes,
-                                                  Period period
+    public void updateMonthLocationsByAssignation(Month month, Map<DissagregationType,Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationMap
 
     ) throws GeneralAppException {
         List<IndicatorValue> newValues = new ArrayList<>();
-        for (DissagregationType locationDissagregationType : locationDissagregationTypes) {
+        for (DissagregationType locationDissagregationType : dissagregationMap.keySet()) {
 
-            newValues.addAll(this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(locationDissagregationType, cantones, period));
+            newValues.addAll(this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(locationDissagregationType,dissagregationMap.get(locationDissagregationType)));
         }
         newValues.forEach(month::addIndicatorValue);
     }
@@ -372,8 +374,9 @@ public class MonthService {
 
     /**
      * crea el dto  MonthValuesWeb
+     *
      * @param monthId id del mes
-     * @param state esado, siempre Activos
+     * @param state   esado, siempre Activos
      * @return MonthValuesWeb
      */
     public MonthValuesWeb getMonthValuesWeb(Long monthId, State state) throws GeneralAppException {
@@ -392,7 +395,7 @@ public class MonthService {
 
 
         // Desagregaciones del IE
-        List<DissagregationType> dissagregationTypeAssignated = ie.getIndicatorType().equals(IndicatorType.GENERAL)? this.generalIndicatorService.getActiveGeneralIndicatorDissagregationTypeByPeriodId(ie.getPeriod().getId()) : this.dissagregationAssignationToIndicatorService.getActiveDissagregationsByIndicatorExecutionId(ie.getId(),ie.getPeriod().getId());
+        List<DissagregationType> dissagregationTypeAssignated = ie.getIndicatorType().equals(IndicatorType.GENERAL) ? this.generalIndicatorService.getActiveGeneralIndicatorDissagregationTypeByPeriodId(ie.getPeriod().getId()) : this.dissagregationAssignationToIndicatorService.getActiveDissagregationsByIndicatorExecutionId(ie.getId(), ie.getPeriod().getId());
 
         // clasifico por tipo desagreggacions
         Map<DissagregationType, List<IndicatorValueWeb>> map = new HashMap<>();
@@ -423,7 +426,7 @@ public class MonthService {
         r.setIndicatorValuesMap(map);
         // clasifico por desagregaciones
         //List<CustomDissagregationAssignationToIndicator> customDissagregationAsignations = this.customDissagregationAssignationToIndicatorService.getCustomDissagregationAssignationsByIndicatorExecutionId(ie.getId(), ie.getPeriod().getId());
-        List<CustomDissagregation> customDissagregationTypeAssignated =  this.customDissagregationAssignationToIndicatorService.getActiveCustomDissagregationsByIndicatorExecutionId(ie.getId(),ie.getPeriod().getId());
+        List<CustomDissagregation> customDissagregationTypeAssignated = this.customDissagregationAssignationToIndicatorService.getActiveCustomDissagregationsByIndicatorExecutionId(ie.getId(), ie.getPeriod().getId());
         if (CollectionUtils.isNotEmpty(indicatorValuesCustomDissagregation)) {
             r.setCustomDissagregationValues(new ArrayList<>());
             Map<CustomDissagregation, Set<IndicatorValueCustomDissagregation>> mapCustom = new HashMap<>();

@@ -42,8 +42,7 @@ public class IndicatorValueService {
 
     public List<IndicatorValue> createIndicatorValueDissagregationStandardForMonth(
             DissagregationType dissagregationType,
-            List<Canton> cantones,
-            Period period
+            Map<DissagregationType, List<StandardDissagregationOption>> simpleDissagregationOptionsMap
     ) throws GeneralAppException {
 
 
@@ -51,28 +50,32 @@ public class IndicatorValueService {
         if (dissagregationType.equals(DissagregationType.SIN_DESAGREGACION)) {
             return this.createIndicatorValueDissagregationStandardForNoDissagregation();
         } else {
-            Integer numberOdDissagregations = dissagregationType.getNumberOfDissagregationTypes();
+            Integer numberOfDissagregations = dissagregationType.getNumberOfDissagregationTypes();
 
             List<DissagregationType> simpleDissagregations = dissagregationType.getSimpleDissagregations();
+            simpleDissagregations= simpleDissagregations.stream().sorted(Comparator.comparingInt(DissagregationType::getOrder)).collect(Collectors.toList());
             List<List<StandardDissagregationOption>> optionsLists = new ArrayList<>();
 
             for (DissagregationType simpleDissagregation : simpleDissagregations) {
-                List<StandardDissagregationOption> optionsList = this.getPeriodStandardDissagregationOptionsFromPeriod(period, simpleDissagregation);
-                if (optionsList == null && simpleDissagregation.equals(DissagregationType.LUGAR)) {
-                    optionsList = cantones.stream().map(canton -> (StandardDissagregationOption) canton).collect(Collectors.toList());
-                }
+                List<StandardDissagregationOption> optionsList = simpleDissagregationOptionsMap.get(simpleDissagregation).stream().sorted(Comparator.comparingInt(StandardDissagregationOption::getOrder)).collect(Collectors.toList());;
                 optionsLists.add(optionsList);
             }
 
-            switch (numberOdDissagregations) {
+            switch (numberOfDissagregations) {
                 case 1:
                     return this.createIndicatorValueDissagregationStandardForMonth1Dissagregations(optionsLists, simpleDissagregations);
                 case 2:
                     return this.createIndicatorValueDissagregationStandardForMonth2Dissagregations(optionsLists, simpleDissagregations);
                 case 3:
                     return this.createIndicatorValueDissagregationStandardForMonth3Dissagregations(optionsLists, simpleDissagregations);
+                case 4:
+                    return this.createIndicatorValueDissagregationStandardForMonth4Dissagregations(optionsLists, simpleDissagregations);
+                case 5:
+                    return this.createIndicatorValueDissagregationStandardForMonth5Dissagregations(optionsLists, simpleDissagregations);
+                case 6:
+                    return this.createIndicatorValueDissagregationStandardForMonth6Dissagregations(optionsLists, simpleDissagregations);
                 default:
-                    throw new GeneralAppException("No implementado para " + numberOdDissagregations + " desagregaciones");
+                    throw new GeneralAppException("No implementado para " + numberOfDissagregations + " desagregaciones");
 
             }
         }
@@ -108,6 +111,8 @@ public class IndicatorValueService {
 
     }
 
+
+    /***************************************************************************************************************************************************************************************************/
     private List<IndicatorValue> createIndicatorValueDissagregationStandardForMonth1Dissagregations(List<List<StandardDissagregationOption>> optionsLists, List<DissagregationType> simpleDissagregations) throws GeneralAppException {
         List<IndicatorValue> r = new ArrayList<>();
         List<StandardDissagregationOption> listOptions0 = optionsLists.get(0);
@@ -150,6 +155,90 @@ public class IndicatorValueService {
                     this.setValueDissagregation(indicatorValue, simpleDissagregations.get(1), standardDissagregationOption1);
                     this.setValueDissagregation(indicatorValue, simpleDissagregations.get(2), standardDissagregationOption2);
                     r.add(indicatorValue);
+                }
+            }
+        }
+        return r;
+    }
+
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForMonth4Dissagregations(List<List<StandardDissagregationOption>> optionsLists, List<DissagregationType> simpleDissagregations) throws GeneralAppException {
+        List<IndicatorValue> r = new ArrayList<>();
+        List<StandardDissagregationOption> listOptions0 = optionsLists.get(0);
+        List<StandardDissagregationOption> listOptions1 = optionsLists.get(1);
+        List<StandardDissagregationOption> listOptions2 = optionsLists.get(2);
+        List<StandardDissagregationOption> listOptions3 = optionsLists.get(3);
+        for (StandardDissagregationOption standardDissagregationOption0 : listOptions0) {
+            for (StandardDissagregationOption standardDissagregationOption1 : listOptions1) {
+                for (StandardDissagregationOption standardDissagregationOption2 : listOptions2) {
+                    for (StandardDissagregationOption standardDissagregationOption3 : listOptions3) {
+                        IndicatorValue indicatorValue = new IndicatorValue();
+                        indicatorValue.setState(State.ACTIVO);
+                        this.setValueDissagregation(indicatorValue, simpleDissagregations.get(0), standardDissagregationOption0);
+                        this.setValueDissagregation(indicatorValue, simpleDissagregations.get(1), standardDissagregationOption1);
+                        this.setValueDissagregation(indicatorValue, simpleDissagregations.get(2), standardDissagregationOption2);
+                        this.setValueDissagregation(indicatorValue, simpleDissagregations.get(3), standardDissagregationOption3);
+                        r.add(indicatorValue);
+                    }
+                }
+            }
+        }
+        return r;
+    }
+
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForMonth5Dissagregations(List<List<StandardDissagregationOption>> optionsLists, List<DissagregationType> simpleDissagregations) throws GeneralAppException {
+        List<IndicatorValue> r = new ArrayList<>();
+        List<StandardDissagregationOption> listOptions0 = optionsLists.get(0);
+        List<StandardDissagregationOption> listOptions1 = optionsLists.get(1);
+        List<StandardDissagregationOption> listOptions2 = optionsLists.get(2);
+        List<StandardDissagregationOption> listOptions3 = optionsLists.get(3);
+        List<StandardDissagregationOption> listOptions4 = optionsLists.get(4);
+        for (StandardDissagregationOption standardDissagregationOption0 : listOptions0) {
+            for (StandardDissagregationOption standardDissagregationOption1 : listOptions1) {
+                for (StandardDissagregationOption standardDissagregationOption2 : listOptions2) {
+                    for (StandardDissagregationOption standardDissagregationOption3 : listOptions3) {
+                        for (StandardDissagregationOption standardDissagregationOption4 : listOptions4) {
+                            IndicatorValue indicatorValue = new IndicatorValue();
+                            indicatorValue.setState(State.ACTIVO);
+                            this.setValueDissagregation(indicatorValue, simpleDissagregations.get(0), standardDissagregationOption0);
+                            this.setValueDissagregation(indicatorValue, simpleDissagregations.get(1), standardDissagregationOption1);
+                            this.setValueDissagregation(indicatorValue, simpleDissagregations.get(2), standardDissagregationOption2);
+                            this.setValueDissagregation(indicatorValue, simpleDissagregations.get(3), standardDissagregationOption3);
+                            this.setValueDissagregation(indicatorValue, simpleDissagregations.get(4), standardDissagregationOption4);
+                            r.add(indicatorValue);
+                        }
+                    }
+                }
+            }
+        }
+        return r;
+    }
+
+    private List<IndicatorValue> createIndicatorValueDissagregationStandardForMonth6Dissagregations(List<List<StandardDissagregationOption>> optionsLists, List<DissagregationType> simpleDissagregations) throws GeneralAppException {
+        List<IndicatorValue> r = new ArrayList<>();
+        List<StandardDissagregationOption> listOptions0 = optionsLists.get(0);
+        List<StandardDissagregationOption> listOptions1 = optionsLists.get(1);
+        List<StandardDissagregationOption> listOptions2 = optionsLists.get(2);
+        List<StandardDissagregationOption> listOptions3 = optionsLists.get(3);
+        List<StandardDissagregationOption> listOptions4 = optionsLists.get(4);
+        List<StandardDissagregationOption> listOptions5 = optionsLists.get(5);
+        for (StandardDissagregationOption standardDissagregationOption0 : listOptions0) {
+            for (StandardDissagregationOption standardDissagregationOption1 : listOptions1) {
+                for (StandardDissagregationOption standardDissagregationOption2 : listOptions2) {
+                    for (StandardDissagregationOption standardDissagregationOption3 : listOptions3) {
+                        for (StandardDissagregationOption standardDissagregationOption4 : listOptions4) {
+                            for (StandardDissagregationOption standardDissagregationOption5 : listOptions5) {
+                                IndicatorValue indicatorValue = new IndicatorValue();
+                                indicatorValue.setState(State.ACTIVO);
+                                this.setValueDissagregation(indicatorValue, simpleDissagregations.get(0), standardDissagregationOption0);
+                                this.setValueDissagregation(indicatorValue, simpleDissagregations.get(1), standardDissagregationOption1);
+                                this.setValueDissagregation(indicatorValue, simpleDissagregations.get(2), standardDissagregationOption2);
+                                this.setValueDissagregation(indicatorValue, simpleDissagregations.get(3), standardDissagregationOption3);
+                                this.setValueDissagregation(indicatorValue, simpleDissagregations.get(4), standardDissagregationOption4);
+                                this.setValueDissagregation(indicatorValue, simpleDissagregations.get(5), standardDissagregationOption5);
+                                r.add(indicatorValue);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -223,6 +312,9 @@ public class IndicatorValueService {
         this.indicatorValueDao.updateGeneralIndicatorStateByPeriodIdAndDissagregationType(periodId, dissagregationType, state);
     }
 
+
+
+
     public void updateIndicatorValuesLocationsForIndicatorExecution(
             IndicatorExecution indicatorExecution,
             Set<Canton> locationsToActivateIe,
@@ -273,7 +365,7 @@ public class IndicatorValueService {
                         for (Month month : months) {
                             List<IndicatorValue> newIndicatorValues =
                                     // todo se agrego null en 2024
-                                    this.createIndicatorValueDissagregationStandardForMonth(dissagregationType, cantones, null);
+                                    this.createIndicatorValueDissagregationStandardForMonth(dissagregationType, null);
                             newIndicatorValues.forEach(indicatorValue -> {
                                         month.addIndicatorValue(indicatorValue);
                                         indicatorValuesDissagregation.add(indicatorValue);
