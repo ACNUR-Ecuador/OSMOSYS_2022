@@ -233,7 +233,7 @@ public class IndicatorExecutionService {
                                 .filter(option -> option.getState().equals(State.ACTIVO))
                                 .map(PeriodPopulationTypeDissagregationOption::getDissagregationOption)
                                 .collect(Collectors.toList());
-                        simpleDissagregationsMap.put(DissagregationType.PAIS_ORIGEN, new ArrayList<>(populationTypesOptions));
+                        simpleDissagregationsMap.put(DissagregationType.TIPO_POBLACION, new ArrayList<>(populationTypesOptions));
                         break;
 
                     default:
@@ -263,7 +263,7 @@ public class IndicatorExecutionService {
     private void validateLocationsLocationsInLocationsDissagregations(Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationsMap) throws GeneralAppException {
         for (DissagregationType dissagregationType : dissagregationsMap.keySet()) {
             if (dissagregationType.isLocationsDissagregation()) {
-                if (CollectionUtils.isEmpty(dissagregationsMap.get(dissagregationsMap).get(DissagregationType.LUGAR))) {
+                if (CollectionUtils.isEmpty(dissagregationsMap.get(dissagregationType).get(DissagregationType.LUGAR))) {
                     throw new GeneralAppException("No se puede crear una desagregación de lugar sin Lugares ", Response.Status.BAD_REQUEST);
                 }
             }
