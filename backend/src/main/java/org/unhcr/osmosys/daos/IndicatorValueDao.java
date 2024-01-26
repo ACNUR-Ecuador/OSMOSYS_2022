@@ -26,6 +26,48 @@ public class IndicatorValueDao extends GenericDaoJpa<IndicatorValue, Long> {
         return q.getResultList();
     }
 
+
+
+    public List<IndicatorValue> getIndicatorValuesByMonthIdAndDissagregationTypeAndState(Long monthId, DissagregationType dissagregationType, State state) {
+        String jpql = "SELECT DISTINCT o FROM IndicatorValue o " +
+                "left join fetch o.ageType " +
+                "left join fetch o.genderType " +
+                "left join fetch o.diversityType " +
+                "left join fetch o.populationType " +
+                "left join fetch o.location " +
+                "left join fetch o.location l " +
+                "left join fetch l.provincia " +
+                "left join fetch o.countryOfOrigin " +
+                "WHERE o.month.id  = :monthId " +
+                " and o.dissagregationType =:dissagregationType " +
+                " and o.state =:state ";
+        Query q = getEntityManager().createQuery(jpql, IndicatorValue.class);
+        q.setParameter("monthId", monthId);
+        q.setParameter("dissagregationType", dissagregationType);
+        q.setParameter("state", state);
+
+        return q.getResultList();
+    }
+
+    public List<IndicatorValue> getIndicatorValuesByMonthId(Long monthId) {
+        String jpql = "SELECT DISTINCT o FROM IndicatorValue o " +
+                "left join fetch o.ageType " +
+                "left join fetch o.genderType " +
+                "left join fetch o.diversityType " +
+                "left join fetch o.populationType " +
+                "left join fetch o.location " +
+                "left join fetch o.location l " +
+                "left join fetch l.provincia " +
+                "left join fetch o.countryOfOrigin " +
+                "WHERE o.month.id  = :monthId ";
+        Query q = getEntityManager().createQuery(jpql, IndicatorValue.class);
+        q.setParameter("monthId", monthId);
+        return q.getResultList();
+    }
+
+    /***************************************************************************/
+
+
     public List<IndicatorValue> getIndicatorValuesByMonthIdAndState(Long monthId, State state) {
 // todo mejorar esta consulta
         String jpql = "SELECT DISTINCT o FROM IndicatorValue o " +
@@ -97,7 +139,7 @@ public class IndicatorValueDao extends GenericDaoJpa<IndicatorValue, Long> {
                 " and ie.state = :state " +
                 " and q.state = :state " +
                 " and m.state = :state " +
-                " and o.state = :state " ;
+                " and o.state = :state ";
 
         Query q = getEntityManager().createQuery(jpql, IndicatorValue.class);
         q.setParameter("state", State.ACTIVO);

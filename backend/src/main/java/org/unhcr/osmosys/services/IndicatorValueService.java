@@ -258,6 +258,78 @@ public class IndicatorValueService {
         return r;
     }
 
+    public List<IndicatorValue> getIndicatorValuesByMonthId(Long monthId) {
+        return this.indicatorValueDao.getIndicatorValuesByMonthId(monthId);
+    }
+
+
+    public Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> getDissagregationMapIndicatorValuesByMonthId(List<IndicatorValue> indicatorValues) {
+        // extraigo todos los tipos de desagregación
+        List<DissagregationType> dissagregationTypes = indicatorValues.stream().map(IndicatorValue::getDissagregationType).distinct().collect(Collectors.toList());
+        // esta estructura será el resultado
+        Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationMap = new HashMap<>();
+        for (DissagregationType dissagregationType : dissagregationTypes) {
+            Map<DissagregationType, List<StandardDissagregationOption>> simpleDissagregationMap = getSimpleDissagregationMapByDissagregationType(indicatorValues, dissagregationType);
+            dissagregationMap.put(dissagregationType, simpleDissagregationMap);
+        }
+
+        return dissagregationMap;
+
+
+    }
+
+    private Map<DissagregationType, List<StandardDissagregationOption>> getSimpleDissagregationMapByDissagregationType(List<IndicatorValue> indicatorValues, DissagregationType dissagregationType) {
+        List<DissagregationType> simpleDissagregations = dissagregationType.getSimpleDissagregations();
+        List<IndicatorValue> dissagregationValues = indicatorValues.stream()
+                .filter(value -> value.getDissagregationType().equals(dissagregationType)).collect(Collectors.toList());
+        Map<DissagregationType, List<StandardDissagregationOption>> simpleDissagregationMap = new HashMap<>();
+        for (DissagregationType simpleDissagregation : simpleDissagregations) {
+            List<StandardDissagregationOption> options = dissagregationValues.stream()
+                    .map(value -> this.getValueDissagregationFromIndicatorValue(value, simpleDissagregation))
+                    .distinct()
+                    .collect(Collectors.toList());
+            simpleDissagregationMap.put(simpleDissagregation, options);
+        }
+        return simpleDissagregationMap;
+    }
+
+    public Map<DissagregationType, List<StandardDissagregationOption>> getIndicatorValuesByMonthIdAndDissagregationTypeAndState(Long monthId, DissagregationType dissagregationType, State state) {
+        // recupero todos los iv del mes
+        List<IndicatorValue> indicatorValues = this.indicatorValueDao.getIndicatorValuesByMonthIdAndDissagregationTypeAndState(monthId, dissagregationType, state);
+        // esta estructura será el resultado
+        List<DissagregationType> simpleDissagregations = dissagregationType.getSimpleDissagregations();
+        Map<DissagregationType, List<StandardDissagregationOption>> simpleDissagregationMap = new HashMap<>();
+        for (DissagregationType simpleDissagregation : simpleDissagregations) {
+            List<StandardDissagregationOption> options = indicatorValues.stream()
+                    .map(value -> this.getValueDissagregationFromIndicatorValue(value, simpleDissagregation))
+                    .distinct()
+                    .collect(Collectors.toList());
+            simpleDissagregationMap.put(simpleDissagregation, options);
+        }
+        return simpleDissagregationMap;
+    }
+
+    private StandardDissagregationOption getValueDissagregationFromIndicatorValue(IndicatorValue value, DissagregationType dissagregationType) {
+
+        switch (dissagregationType) {
+            case EDAD:
+                return value.getAgeType();
+            case GENERO:
+                return value.getGenderType();
+            case TIPO_POBLACION:
+                return value.getPopulationType();
+            case DIVERSIDAD:
+                return value.getDiversityType();
+            case PAIS_ORIGEN:
+                return value.getCountryOfOrigin();
+            case LUGAR:
+                return value.getLocation();
+        }
+
+        return null;
+    }
+
+
     /***************************************************************************************************************************************************************************************************/
 
     private List<StandardDissagregationOption> getPeriodStandardDissagregationOptionsFromPeriod(Period period, DissagregationType dissagregationType) throws GeneralAppException {
@@ -314,7 +386,7 @@ public class IndicatorValueService {
     }
 
 
-    public List<IndicatorValue> getIndicatorValuesByMonthId(Long monthId, State state) {
+    public List<IndicatorValue> getIndicatorValuesByMonthIdAndState(Long monthId, State state) {
         return this.indicatorValueDao.getIndicatorValuesByMonthIdAndState(monthId, state);
     }
 

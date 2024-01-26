@@ -120,7 +120,7 @@ public class IndicatorExecutionEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public Long updateAssignPerformanceIndicatoToProject(IndicatorExecutionAssigmentWeb indicatorExecutionAssigmentWeb) throws GeneralAppException {
-        return this.indicatorExecutionService.updateAssignPerformanceIndicatoToProject(indicatorExecutionAssigmentWeb);
+        return this.indicatorExecutionService.updateAssignPerformanceIndicatorToProject(indicatorExecutionAssigmentWeb);
 
     }
 

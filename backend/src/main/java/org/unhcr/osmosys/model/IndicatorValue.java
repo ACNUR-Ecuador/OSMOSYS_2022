@@ -19,8 +19,7 @@ public class IndicatorValue extends BaseEntityIdState {
     private Long id;
 
 
-
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "month_id", foreignKey = @ForeignKey(name = "fk_value_month"))
     private Month month;
 
@@ -105,8 +104,8 @@ public class IndicatorValue extends BaseEntityIdState {
     }
 
     public void setMonthEnum(MonthEnum monthEnum) {
-        if(monthEnum !=null){
-            this.monthYearOrder=monthEnum.getOrder();
+        if (monthEnum != null) {
+            this.monthYearOrder = monthEnum.getOrder();
         } else {
             this.monthYearOrder = null;
         }
@@ -216,5 +215,26 @@ public class IndicatorValue extends BaseEntityIdState {
                 ", location=" + location +
                 ", value=" + value +
                 '}';
+    }
+
+
+    @Transient()
+    public IndicatorValueOptionsDTO indicatorValueOptionsDTO = null;
+
+    public IndicatorValueOptionsDTO getDissagregationDTO() {
+        if (this.indicatorValueOptionsDTO == null) {
+            this.indicatorValueOptionsDTO = new IndicatorValueOptionsDTO(this.populationType,this.countryOfOrigin,this.genderType, this.ageType, this.diversityType, this.location);
+            this.indicatorValueOptionsDTO.setAgeType(ageType);
+        }
+        return this.getDissagregationDTO();
+    }
+
+    public void setBytDTO(IndicatorValueOptionsDTO indicatorValueOptionsDTO){
+        this.populationType=indicatorValueOptionsDTO.getPopulationType();
+        this.countryOfOrigin=indicatorValueOptionsDTO.getCountryOfOrigin();
+        this.genderType=indicatorValueOptionsDTO.getGenderType();
+        this.ageType=indicatorValueOptionsDTO.getAgeType();
+        this.diversityType=indicatorValueOptionsDTO.getDiversityType();
+        this.location=indicatorValueOptionsDTO.getLocation();
     }
 }

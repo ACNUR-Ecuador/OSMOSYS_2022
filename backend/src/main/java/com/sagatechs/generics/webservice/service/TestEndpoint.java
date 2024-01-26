@@ -8,7 +8,7 @@ import com.sagatechs.generics.utils.DateUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.ReportDao;
 import org.unhcr.osmosys.model.Period;
-import org.unhcr.osmosys.model.TesterBaseEntity;
+import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.standardDissagregations.options.*;
 import org.unhcr.osmosys.model.standardDissagregations.periodOptions.*;
 import org.unhcr.osmosys.reports.service.ReportService;
@@ -33,8 +33,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 
@@ -128,38 +128,20 @@ public class TestEndpoint {
     @Path("tester")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String tester() throws GeneralAppException {
+    public  Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>>  tester() throws GeneralAppException {
 
-        /*List<TesterBaseEntity> listCreate = new ArrayList<>();
-        TesterBaseEntity t1 = new TesterBaseEntity();
-        t1.setCode("a");
-        t1.setState(State.ACTIVO);
-        listCreate.add(t1);
-        TesterBaseEntity t2 = new TesterBaseEntity(State.INACTIVO, "b");
-        listCreate.add(t2);
-        TesterBaseEntity t3 = new TesterBaseEntity(State.ACTIVO, "c");
-        listCreate.add(t3);
-        TesterBaseEntity t4 = new TesterBaseEntity(State.INACTIVO, "d");
-        listCreate.add(t4);
+        //return this.indicatorValueService.getDissagregationMapIndicatorValuesByMonthId(1772l);
 
-        for (TesterBaseEntity testerBaseEntity : listCreate) {
-            this.testerService.saveOrUpdate(testerBaseEntity);
-        }*/
+        return null;
 
-        List<TesterBaseEntity> list1 = this.testerService.getAll();
-        LOGGER.info("-------------------ALL");
-        list1.forEach(testerBaseEntity -> LOGGER.info(testerBaseEntity));
+    }
+    @Path("tester2")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public  Map<DissagregationType, List<StandardDissagregationOption>>  tester2() throws GeneralAppException {
 
-        List<TesterBaseEntity> list2 = this.testerService.getByState(State.ACTIVO);
-        LOGGER.info("-------------------ACTIVOS");
-        list2.forEach(testerBaseEntity -> LOGGER.info(testerBaseEntity));
+        return this.indicatorValueService.getIndicatorValuesByMonthIdAndDissagregationTypeAndState(1772l,DissagregationType.LUGAR_TIPO_POBLACION_DIVERSIDAD_GENERO,State.ACTIVO);
 
-
-        TesterBaseEntity tester1 = this.testerService.getById(1L);
-        LOGGER.info("-------------------1L id");
-        LOGGER.info(tester1);
-
-        return "ya";
     }
 
     @Path("setPeriod")

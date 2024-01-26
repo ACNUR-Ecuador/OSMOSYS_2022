@@ -730,7 +730,7 @@ public class ModelWebTransformationService {
             statement.setCode(statementWeb.getCode());
             statement.setProductCode(statementWeb.getProductCode());
             if (statementWeb.getArea() != null) { // todo controlar
-                statement.setAreaType(statementWeb.getArea().getAreaType());
+                statement.setAreaType(statementWeb.getAreaType());
             }
             /*statement.setParentStatement(this.statementWebToStatement(statementWeb.getParentStatement()));
             statement.setArea(this.areaToAreaWeb(statementWeb.getArea()));*/

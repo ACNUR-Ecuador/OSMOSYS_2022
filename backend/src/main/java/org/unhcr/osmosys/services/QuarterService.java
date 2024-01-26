@@ -93,6 +93,16 @@ public class QuarterService {
         return q;
     }
 
+    public void updateQuarterDissagregations(IndicatorExecution ie, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationTypeMapMap) {
+        Set<Quarter> quarters = ie.getQuarters();
+        for (Quarter quarter : quarters) {
+            Set<Month> months = quarter.getMonths();
+            for (Month month : months) {
+                this.monthService.updateMonthDissagregations(month, dissagregationTypeMapMap);
+            }
+        }
+
+    }
 
     /*************************************************************************************/
 
@@ -170,4 +180,6 @@ public class QuarterService {
             this.saveOrUpdate(quarter);
         }
     }
+
+
 }
