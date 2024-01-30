@@ -7,6 +7,7 @@ import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.MonthDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.model.standardDissagregations.options.IndicatorValueOptionsDTO;
 import org.unhcr.osmosys.model.standardDissagregations.options.StandardDissagregationOption;
 import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
@@ -146,13 +147,13 @@ public class MonthService {
         for (DissagregationType dissagregationType : dissagregationsToDissable) {
             indicatorValues.stream().filter(value -> value.getDissagregationType().equals(dissagregationType)).forEach(value -> value.setState(State.INACTIVO));
         }
+
+
         // activo
         for (DissagregationType dissagregationType : dissagregationsToEnable) {
             indicatorValues.stream().filter(value -> value.getDissagregationType().equals(dissagregationType)).forEach(value -> value.setState(State.ACTIVO));
         }
 
-
-        xxxxxx
 
 
         // actualizar opciones
@@ -166,6 +167,14 @@ public class MonthService {
 
     }
 
+    /**
+     * @param month
+     * @param indicatorValues                      solo los correspondientes a la desagregación q se está trabajando
+     * @param dissagregationType
+     * @param newSimpleDissagregationOptionMap
+     * @param currentSimpleDissagregationOptionMap
+     * @throws GeneralAppException
+     */
     private void updatedDissagregationOptions(Month month, List<IndicatorValue> indicatorValues, DissagregationType dissagregationType,
                                               Map<DissagregationType, List<StandardDissagregationOption>> newSimpleDissagregationOptionMap,
                                               Map<DissagregationType, List<StandardDissagregationOption>> currentSimpleDissagregationOptionMap
@@ -176,13 +185,15 @@ public class MonthService {
         for (DissagregationType simpleDissagregationType : simpleDissagregation) {
             List<StandardDissagregationOption> currentOptions = currentSimpleDissagregationOptionMap.get(simpleDissagregationType);
             List<StandardDissagregationOption> newOptions = newSimpleDissagregationOptionMap.get(simpleDissagregationType);
+
+            // to create
             List<StandardDissagregationOption> toCreate = new ArrayList<>(CollectionUtils.subtract(newOptions, currentOptions));
-            Map<DissagregationType, List<StandardDissagregationOption>> simpleDissagregationOptionsMapTmp= new HashMap<>();
+            Map<DissagregationType, List<StandardDissagregationOption>> simpleDissagregationOptionsMapTmp = new HashMap<>();
             for (DissagregationType dissagregationTypeTmp : simpleDissagregation) {
-                if(dissagregationTypeTmp.equals(simpleDissagregationType)){
+                if (dissagregationTypeTmp.equals(simpleDissagregationType)) {
                     simpleDissagregationOptionsMapTmp.put(dissagregationTypeTmp, toCreate);
-                }else {
-                    simpleDissagregationOptionsMapTmp.put(dissagregationTypeTmp,currentSimpleDissagregationOptionMap.get(dissagregationTypeTmp));
+                } else {
+                    simpleDissagregationOptionsMapTmp.put(dissagregationTypeTmp, currentSimpleDissagregationOptionMap.get(dissagregationTypeTmp));
                 }
             }
             List<IndicatorValue> newValues = this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(dissagregationType, simpleDissagregationOptionsMapTmp);
@@ -191,20 +202,76 @@ public class MonthService {
             currentSimpleDissagregationOptionMap.get(simpleDissagregationType).addAll(toCreate);
 
 
+           /* // to dissable
             List<StandardDissagregationOption> toDisable = new ArrayList<>(CollectionUtils.subtract(currentOptions, newOptions));
+            this.dissableDissagregationOptions(dissagregationType,simpleDissagregationType,toDisable,indicatorValues);
 
 
 
             List<StandardDissagregationOption> toEnable = new ArrayList<>(CollectionUtils.intersection(currentOptions, newOptions));
-
-
+            this.enableDissagregationOptions(dissagregationType,simpleDissagregationType,toDisable,indicatorValues);
+*/
 
 
         }
 
+        // una vez creados, activo y desactivo con los valores actuales
+        // estos deberían estar activos
+        List<IndicatorValueOptionsDTO> indicatorValuesDTOs = this.indicatorValueService.getIndicatorValueOptionsDTOS(dissagregationType, newSimpleDissagregationOptionMap);
+
+        // me aseguro q solo esten con la desagregación q trabajo
+        for (IndicatorValue indicatorValue : indicatorValues) {
+            if (indicatorValue.getDissagregationType().equals(dissagregationType)) {
+                throw new GeneralAppException("Error, se est´´a processando una valor fuera de rango para la actualización de segregaciones y opciones");
+            }
+            boolean found = indicatorValuesDTOs.stream().anyMatch(indicatorValueOptionsDTO -> indicatorValueOptionsDTO.equals(indicatorValue.getDissagregationDTO()));
+            if (found){
+                indicatorValue.setState(State.ACTIVO);
+            }else {
+                indicatorValue.setState(State.INACTIVO);
+            }
+        }
 
 
-        // ahora buscto cuales hay que crear,
+    }
+
+    private void dissableDissagregationOptions(DissagregationType dissagregationType, DissagregationType simpleDissagregationType, List<StandardDissagregationOption> optionToDissable, List<IndicatorValue> indicatorValues) {
+
+        indicatorValues.stream().filter(value -> value.getDissagregationType().equals(dissagregationType)).forEach(value -> {
+            switch (simpleDissagregationType) {
+                case DIVERSIDAD:
+                    if (value.getDiversityType() != null && optionToDissable.contains(value.getDiversityType())) {
+                        value.setState(State.INACTIVO);
+                    }
+                    break;
+                case LUGAR:
+                    if (value.getLocation() != null && optionToDissable.contains(value.getLocation())) {
+                        value.setState(State.INACTIVO);
+                    }
+                    break;
+                case EDAD:
+                    if (value.getAgeType() != null && optionToDissable.contains(value.getAgeType())) {
+                        value.setState(State.INACTIVO);
+                    }
+                    break;
+                case PAIS_ORIGEN:
+                    if (value.getCountryOfOrigin() != null && optionToDissable.contains(value.getCountryOfOrigin())) {
+                        value.setState(State.INACTIVO);
+                    }
+                    break;
+                case TIPO_POBLACION:
+                    if (value.getPopulationType() != null && optionToDissable.contains(value.getPopulationType())) {
+                        value.setState(State.INACTIVO);
+                    }
+                    break;
+                case GENERO:
+                    if (value.getGenderType() != null && optionToDissable.contains(value.getGenderType())) {
+                        value.setState(State.INACTIVO);
+                    }
+                    break;
+            }
+        });
+
     }
 
 
@@ -368,11 +435,9 @@ public class MonthService {
         // si es enero, regreso a diciembre
 
 
-        List<Month> monthsToUpdate = new ArrayList<>();
-
         List<Month> unlockedMonthsMonthly = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(month, year, !block, Frecuency.MENSUAL);
         unlockedMonthsMonthly.forEach(month1 -> month1.setBlockUpdate(block));
-        monthsToUpdate.addAll(unlockedMonthsMonthly);
+        List<Month> monthsToUpdate = new ArrayList<>(unlockedMonthsMonthly);
 
         // general indicators
         List<Month> unlockedMonthsMonthlyGeneral = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusGeneralIndicators(month, year, !block);
@@ -430,7 +495,7 @@ public class MonthService {
 
     public void updateCustomDissagregationsOptions(CustomDissagregation customDissagregation) {
         List<Month> months = this.monthDao.getbyCustomDissagregationId(customDissagregation.getId());
-        List<CustomDissagregationOption> optionsTotal = customDissagregation.getCustomDissagregationOptions().stream().collect(Collectors.toList());
+        List<CustomDissagregationOption> optionsTotal = new ArrayList<>(customDissagregation.getCustomDissagregationOptions());
         List<CustomDissagregationOption> optionsToDissable = customDissagregation.getCustomDissagregationOptions().stream().filter(customDissagregationOption -> customDissagregationOption.getState().equals(State.INACTIVO)).collect(Collectors.toList());
         List<CustomDissagregationOption> optionsToEnable = customDissagregation.getCustomDissagregationOptions().stream().filter(customDissagregationOption -> customDissagregationOption.getState().equals(State.ACTIVO)).collect(Collectors.toList());
         for (Month month : months) {

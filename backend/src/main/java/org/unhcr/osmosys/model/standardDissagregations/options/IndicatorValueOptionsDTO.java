@@ -1,10 +1,15 @@
 package org.unhcr.osmosys.model.standardDissagregations.options;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.unhcr.osmosys.model.Canton;
 
-public class IndicatorValueOptionsDTO {
+import java.io.Serializable;
+
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class IndicatorValueOptionsDTO implements Serializable {
 
     public IndicatorValueOptionsDTO() {
     }
@@ -78,6 +83,18 @@ public class IndicatorValueOptionsDTO {
 
     public void setLocation(Canton location) {
         this.location = location;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("populationType", populationType==null?null:populationType.getName())
+                .append("countryOfOrigin", countryOfOrigin==null?null:countryOfOrigin.getName())
+                .append("genderType", genderType==null?null:genderType.getName())
+                .append("ageType", ageType==null?null:ageType.getName())
+                .append("diversityType", diversityType==null?null:diversityType.getName())
+                .append("location", location==null?null:location.getName())
+                .toString();
     }
 
     @Override

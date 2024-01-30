@@ -6,12 +6,13 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING, length = 20)
 @Table(schema = "dissagregations", name = "standard_dissagregation_options")
-public abstract class StandardDissagregationOption extends BaseEntityIdState {
+public abstract class StandardDissagregationOption extends BaseEntityIdState implements Serializable {
 
     public StandardDissagregationOption() {
     }

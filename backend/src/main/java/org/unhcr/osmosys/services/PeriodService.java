@@ -33,6 +33,9 @@ public class PeriodService {
     @Inject
     GeneralIndicatorService generalIndicatorService;
 
+    @Inject
+    IndicatorExecutionService indicatorExecutionService;
+
 
     @Inject
     StandardDissagregationOptionService standardDissagregationOptionService;
@@ -284,8 +287,14 @@ public class PeriodService {
         }
 
 
+
+
         this.validate(periodWeb);
+
+        this.indicatorExecutionService.updateAllIndicatorExecutionsDissagregationsByPeriod(period);
         this.saveOrUpdate(period);
+
+
         if (periodWeb.getGeneralIndicator() != null) {
             this.generalIndicatorService.validate(periodWeb.getGeneralIndicator());
             if (periodWeb.getGeneralIndicator().getId() != null) {

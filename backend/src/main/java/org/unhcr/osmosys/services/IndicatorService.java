@@ -6,12 +6,12 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.IndicatorDao;
-import org.unhcr.osmosys.model.*;
-import org.unhcr.osmosys.model.enums.DissagregationType;
+import org.unhcr.osmosys.model.CustomDissagregationAssignationToIndicator;
+import org.unhcr.osmosys.model.DissagregationAssignationToIndicator;
+import org.unhcr.osmosys.model.Indicator;
+import org.unhcr.osmosys.model.Period;
 import org.unhcr.osmosys.model.standardDissagregations.DissagregationAssignationToIndicatorPeriodCustomization;
 import org.unhcr.osmosys.model.standardDissagregations.options.AgeDissagregationOption;
-import org.unhcr.osmosys.model.standardDissagregations.options.StandardDissagregationOption;
-import org.unhcr.osmosys.model.standardDissagregations.periodOptions.*;
 import org.unhcr.osmosys.services.standardDissagregations.StandardDissagregationOptionService;
 import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
@@ -20,7 +20,10 @@ import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -41,7 +44,7 @@ public class IndicatorService {
     @Inject
     ModelWebTransformationService modelWebTransformationService;
 
-    @Inject
+   @Inject
     IndicatorExecutionService indicatorExecutionService;
 
     @Inject
@@ -201,11 +204,10 @@ public class IndicatorService {
 
         this.saveOrUpdate(indicator);
 
+        // todo 2024 puedo evitar etsta llamada?
+
         updatePeriodStatementAssigment(indicator);
-        //update dissagregations in ie
-        // todo 2024
-        *****
-        this.updateIndicatorExecutionsDissagregations(
+        this.updateIndicatorExecutionsDissagregationsByIndicator(
                 indicator
         );
         this.indicatorExecutionService
@@ -216,74 +218,21 @@ public class IndicatorService {
         return indicator.getId();
     }
 
-    private Map<Period, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>>> updateIndicatorExecutionsDissagregations(Indicator indicator) throws GeneralAppException {
+    /**
+     * updates dissagregations for all ie that uses this indicator
+     * @param indicator
+     * @throws GeneralAppException
+     */
+    private void updateIndicatorExecutionsDissagregationsByIndicator(Indicator indicator) throws GeneralAppException {
 
-        List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicators = indicator.getDissagregationsAssignationToIndicator().stream()
-                .filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.getState().equals(State.ACTIVO))
-                .collect(Collectors.toList());
-        // obtengo periodos por periodo
-        Map<Period, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>>> periodDissagregationMap = this.getPeriodDessagregationMapMap(dissagregationAssignationToIndicators);
-        for (Period period : periodDissagregationMap.keySet()) {
-            this.indicatorExecutionService.updateIndicatorExecutionsDissagregations(period,indicator, periodDissagregationMap.get(period));
+        List<Period> periods = indicator.getDissagregationsAssignationToIndicator().stream().map(DissagregationAssignationToIndicator::getPeriod).distinct().collect(Collectors.toList());
+        for (Period period : periods) {
+            this.indicatorExecutionService.updatePerformanceIndicatorExecutionsDissagregations(period,indicator);
         }
 
-        return periodDissagregationMap;
-
     }
 
-    private Map<Period, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>>> getPeriodDessagregationMapMap(List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicators) throws GeneralAppException {
-        List<Period> periods = dissagregationAssignationToIndicators.stream().map(DissagregationAssignationToIndicator::getPeriod).collect(Collectors.toList());
-        Map<Period,Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>>> periodDissagregationMap = new HashMap<>();
-        for (Period period : periods) {
-            Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationMap = new HashMap<>();
-            List<DissagregationAssignationToIndicator> dissagregationsforPeriod = dissagregationAssignationToIndicators.stream().filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.getPeriod().getId().equals(period.getId())).collect(Collectors.toList());
-            for (DissagregationAssignationToIndicator dai : dissagregationsforPeriod) {
-                DissagregationType dissagregationType = dai.getDissagregationType();
-                List<StandardDissagregationOption> options;
-                Map<DissagregationType, List<StandardDissagregationOption>> dissagegationSimpleOptionsMap = new HashMap<>();
-                for (DissagregationType simpleDissagregation : dissagregationType.getSimpleDissagregations()) {
-                    if (simpleDissagregation.equals(DissagregationType.EDAD)) {
-                        if (dai.getUseCustomAgeDissagregations()) {
-                            options = dai.getDissagregationAssignationToIndicatorPeriodCustomizations()
-                                    .stream()
-                                    .filter(dissagregationAssignationToIndicatorPeriodCustomization -> dissagregationAssignationToIndicatorPeriodCustomization.getState().equals(State.ACTIVO))
-                                    .map(DissagregationAssignationToIndicatorPeriodCustomization::getAgeDissagregationOption)
-                                    .collect(Collectors.toList());
-                        } else {
-                            options = period.getPeriodAgeDissagregationOptions().stream()
-                                    .filter(option -> option.getState().equals(State.ACTIVO))
-                                    .map(PeriodAgeDissagregationOption::getDissagregationOption).collect(Collectors.toList());
-                        }
-                    } else if (simpleDissagregation.equals(DissagregationType.LUGAR)) {
-                        // dejo en null porq dependerá del indicator execution
-                        options = null;
-                    } else if (simpleDissagregation.equals(DissagregationType.GENERO)) {
-                        options = period.getPeriodGenderDissagregationOptions().stream()
-                                .filter(option -> option.getState().equals(State.ACTIVO))
-                                .map(PeriodGenderDissagregationOption::getDissagregationOption).collect(Collectors.toList());
-                    } else if (simpleDissagregation.equals(DissagregationType.DIVERSIDAD)) {
-                        options = period.getPeriodDiversityDissagregationOptions().stream()
-                                .filter(option -> option.getState().equals(State.ACTIVO))
-                                .map(PeriodDiversityDissagregationOption::getDissagregationOption).collect(Collectors.toList());
-                    } else if (simpleDissagregation.equals(DissagregationType.TIPO_POBLACION)) {
-                        options = period.getPeriodPopulationTypeDissagregationOptions().stream()
-                                .filter(option -> option.getState().equals(State.ACTIVO))
-                                .map(PeriodPopulationTypeDissagregationOption::getDissagregationOption).collect(Collectors.toList());
-                    } else if (simpleDissagregation.equals(DissagregationType.PAIS_ORIGEN)) {
-                        options = period.getPeriodCountryOfOriginDissagregationOptions().stream()
-                                .filter(option -> option.getState().equals(State.ACTIVO))
-                                .map(PeriodCountryOfOriginDissagregationOption::getDissagregationOption).collect(Collectors.toList());
-                    } else {
-                        throw new GeneralAppException("Error en la actualización de desagregaciones, extracción de desagregacoines del indicador", Response.Status.INTERNAL_SERVER_ERROR)
-                    }
-                    dissagegationSimpleOptionsMap.put(simpleDissagregation, options);
-                }
-                dissagregationMap.put(dissagregationType,dissagegationSimpleOptionsMap);
-            }
-            periodDissagregationMap.put(period, dissagregationMap);
 
-        } return periodDissagregationMap;
-    }
 
 
     private void updatePeriodStatementAssigment(Indicator indicator) throws GeneralAppException {
@@ -330,7 +279,6 @@ public class IndicatorService {
             dissagregationAssignationToIndicator.setUseCustomAgeDissagregations(webOptional.get().getUseCustomAgeDissagregations());
             if (dissagregationAssignationToIndicator.getUseCustomAgeDissagregations()) {
                 dissagregationAssignationToIndicator.getDissagregationAssignationToIndicatorPeriodCustomizations().size();
-
 
                 Set<StandardDissagregationOptionWeb> webs = webOptional.get().getCustomIndicatorOptions();
                 if (webs.isEmpty()) {
@@ -426,38 +374,6 @@ public class IndicatorService {
         return this.indicatorDao.getByCodeList(codeList);
     }
 
-    public void addDissagregationToIndicator(Indicator indicator, Period period, DissagregationType dissagregationType) throws GeneralAppException {
-        DissagregationAssignationToIndicator dissagregationAssignationToIndicator = new DissagregationAssignationToIndicator();
-        dissagregationAssignationToIndicator.setState(State.ACTIVO);
-        dissagregationAssignationToIndicator.setDissagregationType(dissagregationType);
-        dissagregationAssignationToIndicator.setPeriod(period);
-        indicator.addDissagregationAssignationToIndicator(dissagregationAssignationToIndicator);
-        this.saveOrUpdate(indicator);
-        List<DissagregationAssignationToIndicator> toDisable = new ArrayList<>();
-        List<DissagregationAssignationToIndicator> toEnable = new ArrayList<>();
-        List<DissagregationAssignationToIndicator> toCreate = new ArrayList<>();
-        toCreate.add(dissagregationAssignationToIndicator);
-        this.indicatorExecutionService.updateIndicatorExecutionsDissagregations(
-                toEnable, toDisable, toCreate);
-
-    }
-
-    public void dissableDissagregationsToIndicator(Indicator indicator, Period period, List<DissagregationType> dissagregationTypes) throws GeneralAppException {
-        List<DissagregationAssignationToIndicator> toDisable =
-                indicator.getDissagregationsAssignationToIndicator()
-                        .stream()
-                        .filter(
-                                dissagregationAssignationToIndicator -> dissagregationTypes.contains(dissagregationAssignationToIndicator.getDissagregationType()) && dissagregationAssignationToIndicator.getPeriod().getId().equals(period.getId())
-                        )
-                        .collect(Collectors.toList());
-        this.saveOrUpdate(indicator);
-        // List<DissagregationAssignationToIndicator> toDisable = new ArrayList<>();
-        List<DissagregationAssignationToIndicator> toEnable = new ArrayList<>();
-        List<DissagregationAssignationToIndicator> toCreate = new ArrayList<>();
-        this.indicatorExecutionService.updateIndicatorExecutionsDissagregations(
-                toEnable, toDisable, toCreate);
-
-    }
 
 
     public List<Indicator> getByPeriodYearAssignmentAndState(int year) {

@@ -219,7 +219,7 @@ public class IndicatorValue extends BaseEntityIdState {
 
 
     @Transient()
-    public IndicatorValueOptionsDTO indicatorValueOptionsDTO = null;
+    private IndicatorValueOptionsDTO indicatorValueOptionsDTO = null;
 
     public IndicatorValueOptionsDTO getDissagregationDTO() {
         if (this.indicatorValueOptionsDTO == null) {

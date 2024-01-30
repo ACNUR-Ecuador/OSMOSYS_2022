@@ -37,6 +37,8 @@ public class StandardDissagregationOptionDao extends GenericDaoJpa<StandardDissa
         return q.getResultList();
     }
 
+
+
     public List<AgeDissagregationOption> getAgeOptionsByState(State state) {
 
         String jpql = "SELECT DISTINCT o FROM AgeOption o " +
@@ -107,6 +109,7 @@ public class StandardDissagregationOptionDao extends GenericDaoJpa<StandardDissa
     public List<Canton> getCantonByIds(List<Long> ids) {
 
         String jpql = "SELECT DISTINCT o FROM Canton o " +
+                " left join fetch o.provincia p " +
                 "WHERE o.id in (:ids)";
         Query q = getEntityManager().createQuery(jpql, Canton.class);
         q.setParameter("ids", ids);

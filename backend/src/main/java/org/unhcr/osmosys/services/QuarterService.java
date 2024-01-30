@@ -7,12 +7,14 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.threeten.extra.YearQuarter;
 import org.unhcr.osmosys.daos.QuarterDao;
-import org.unhcr.osmosys.model.*;
+import org.unhcr.osmosys.model.CustomDissagregation;
+import org.unhcr.osmosys.model.IndicatorExecution;
+import org.unhcr.osmosys.model.Month;
+import org.unhcr.osmosys.model.Quarter;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
 import org.unhcr.osmosys.model.enums.TotalIndicatorCalculationType;
 import org.unhcr.osmosys.model.standardDissagregations.options.StandardDissagregationOption;
-import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -59,7 +61,7 @@ public class QuarterService {
                                        ) throws GeneralAppException {
         Set<Quarter> qs = new HashSet<>();
         List<YearQuarter> yearQuarters = this.dateUtils.calculateQuarter(startDate, endDate);
-        if (yearQuarters.size() < 1) {
+        if (yearQuarters.isEmpty()) {
             throw new GeneralAppException("Error al crear los trimestres ", Response.Status.INTERNAL_SERVER_ERROR);
         }
 
@@ -93,7 +95,7 @@ public class QuarterService {
         return q;
     }
 
-    public void updateQuarterDissagregations(IndicatorExecution ie, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationTypeMapMap) {
+    public void updateQuarterDissagregations(IndicatorExecution ie, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationTypeMapMap) throws GeneralAppException {
         Set<Quarter> quarters = ie.getQuarters();
         for (Quarter quarter : quarters) {
             Set<Month> months = quarter.getMonths();

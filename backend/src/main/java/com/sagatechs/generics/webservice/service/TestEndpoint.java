@@ -100,8 +100,6 @@ public class TestEndpoint {
     StandardDissagregationOptionService standardDissagregationOptionService;
 
 
-
-
     @Path("test")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -128,21 +126,24 @@ public class TestEndpoint {
     @Path("tester")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public  Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>>  tester() throws GeneralAppException {
+    public Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> tester() throws GeneralAppException {
 
         //return this.indicatorValueService.getDissagregationMapIndicatorValuesByMonthId(1772l);
 
         return null;
 
     }
+
     @Path("tester2")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public  Map<DissagregationType, List<StandardDissagregationOption>>  tester2() throws GeneralAppException {
+    public List<IndicatorValueOptionsDTO> tester2() throws GeneralAppException {
 
-        return this.indicatorValueService.getIndicatorValuesByMonthIdAndDissagregationTypeAndState(1772l,DissagregationType.LUGAR_TIPO_POBLACION_DIVERSIDAD_GENERO,State.ACTIVO);
+        this.indicatorValueService.testerDTOS();
+        return null;
 
     }
+
 
     @Path("setPeriod")
     @GET
