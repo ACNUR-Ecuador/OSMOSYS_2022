@@ -208,6 +208,7 @@ export class StandardDissagregationOption {
     public order: number;
     public groupName: string;
     public state: string;
+    public type?: string;
 }
 
 export class CustomDissagregationAssignationToIndicator {
@@ -472,6 +473,7 @@ export class IndicatorValueCustomDissagregationWeb {
     numeratorValue: number;
 }
 
+
 export class IndicatorValue {
     public id: string;
     public state: string;
@@ -482,7 +484,7 @@ export class IndicatorValue {
     public genderType: StandardDissagregationOption;
     public ageType: StandardDissagregationOption;
     public diversityType: StandardDissagregationOption;
-    public location: Canton;
+    public location: StandardDissagregationOption;
     public showValue: boolean;
     public value: number;
     public denominatorValue: number;
@@ -529,5 +531,14 @@ export class YearMonth {
     public monthYearOrder: number;
 }
 
+export class EnumWeb {
+    public  value: string;
+    public  label: string;
+    public  order: number;
+    public  isLocationsDissagregation?: boolean;
+    public  isAgeDissagregation?: boolean;
+    public  standardDissagregationTypes?: string[];
+    public  numberOfDissagregations?: number;
+}
 
 

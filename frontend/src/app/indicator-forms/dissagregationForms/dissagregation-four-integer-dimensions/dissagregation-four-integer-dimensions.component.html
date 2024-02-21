@@ -3,7 +3,7 @@
         <div class="flex w-full">
             <div
                 class="flex-grow-1 justify-content-start">
-                Desagregación por {{this.enumsService.resolveLabel($any('DissagregationType'), dissagregationType)}}
+                Desagregación por {{dissagregationType.label}}
             </div>
             <div
                 class="flex-grow-1 justify-content-start" *ngIf="showImportButton">
@@ -34,7 +34,7 @@
                 <div class="flex w-full">
                     <div
                         class="flex-grow-1 justify-content-start">
-                        {{groupL1.label}}
+                        {{groupL1.name}}
                     </div>
                     <div
                         class="flex-auto mx-2  max-w-10rem"
@@ -58,7 +58,7 @@
                             <div class="flex w-full">
                                 <div
                                     class="flex-grow-1 justify-content-start">
-                                    {{groupL2.label}}
+                                    {{groupL2.name}}
                                 </div>
                                 <div
                                     class="flex-auto mx-2 max-w-10rem"
@@ -82,13 +82,13 @@
                                 <ng-template pTemplate="header">
                                     <tr>
                                         <th></th>
-                                        <th *ngFor="let col of dissagregationOptionsColumns">{{col.label}}</th>
+                                        <th *ngFor="let col of dissagregationOptionsColumns">{{col.name}}</th>
                                         <th>Totales</th>
                                     </tr>
                                 </ng-template>
                                 <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
                                     <tr>
-                                        <td class="table-title">{{dissagregationOptionsRows[rowIndex].label}}</td>
+                                        <td class="table-title">{{dissagregationOptionsRows[rowIndex].name}}</td>
                                         <td pEditableColumn
                                             *ngFor="let rowOp of dissagregationOptionsColumns; index as indexColumn"
                                             class="text-right">

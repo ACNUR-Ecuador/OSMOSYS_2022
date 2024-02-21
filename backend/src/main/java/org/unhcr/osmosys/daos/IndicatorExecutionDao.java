@@ -72,6 +72,11 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                     " left join fetch q.months m " +
                     " left join fetch m.sources sou " +
                     " left join fetch o.period p " +
+                    " left join fetch p.periodAgeDissagregationOptions " +
+                    " left join fetch p.periodCountryOfOriginDissagregationOptions " +
+                    " left join fetch p.periodDiversityDissagregationOptions " +
+                    " left join fetch p.periodGenderDissagregationOptions " +
+                    " left join fetch p.periodPopulationTypeDissagregationOptions " +
                     " left join fetch p.generalIndicator " +
                     " left join fetch o.indicator ";
     public static final String jpqlDirectImplementationIndicators =

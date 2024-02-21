@@ -30,6 +30,11 @@ public class StatementDao extends GenericDaoJpa<Statement, Long> {
                 " left outer join fetch o.situation " +
                 " left outer join fetch o.periodStatementAsignations psa " +
                 " left outer join fetch psa.period pe " +
+                " left outer join fetch pe.periodAgeDissagregationOptions " +
+                " left outer join fetch pe.periodCountryOfOriginDissagregationOptions " +
+                " left outer join fetch pe.periodDiversityDissagregationOptions " +
+                " left outer join fetch pe.periodGenderDissagregationOptions " +
+                " left outer join fetch pe.periodPopulationTypeDissagregationOptions " +
                 " left outer join fetch pe.generalIndicator gi " +
                 " left outer join fetch gi.dissagregationAssignationsToGeneralIndicator " +
                 " WHERE o.state = :state";
@@ -118,12 +123,17 @@ public class StatementDao extends GenericDaoJpa<Statement, Long> {
     public List<Statement> getByPeriodIdAndState(Long periodId, State state){
         String jpql = "SELECT DISTINCT o" +
                 " FROM Statement o" +
-                " inner join  o.periodStatementAsignations psa " +
-                " inner join  psa.period per  " +
+                " left outer join fetch o.periodStatementAsignations psa " +
+                " left outer join fetch  psa.period p  " +
+                " left outer join fetch p.periodPopulationTypeDissagregationOptions " +
+                " left outer join fetch p.periodGenderDissagregationOptions " +
+                " left outer join fetch p.periodDiversityDissagregationOptions " +
+                " left outer join fetch p.periodCountryOfOriginDissagregationOptions " +
+                " left outer join fetch p.periodAgeDissagregationOptions "+
                 " WHERE " +
-                " per.id = :periodId" +
+                " p.id = :periodId" +
                 " and o.state=:state " +
-                " and per.state=:state ";
+                " and p.state=:state ";
         Query q = getEntityManager().createQuery(jpql, Statement.class);
         q.setParameter("state", state);
         q.setParameter("periodId", periodId);

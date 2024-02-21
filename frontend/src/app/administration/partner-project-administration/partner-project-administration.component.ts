@@ -925,8 +925,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             if (indicatorExecution.locations.length < 1 && this.indicatorHasLocationDissagregation(indicatorExecution.indicator)) {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Seleccione al menos un lugar',
-                    detail: 'Este indicador tiene desagregación por lugar, es necesario activar al menos un lugar',
+                    summary: 'Seleccione al menos un municipio',
+                    detail: 'Este indicador tiene desagregación por lugar, es necesario activar al menos un municipio',
                     life: 3000
                 });
                 return;

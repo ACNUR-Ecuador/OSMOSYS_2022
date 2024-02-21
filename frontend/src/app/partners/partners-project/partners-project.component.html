@@ -153,7 +153,7 @@
 
                         </app-partners-project-general-indicator-list>
                     </p-tabPanel>
-                    <p-tabPanel header="Indicadores de Producto">
+                    <p-tabPanel header="Indicadores de Producto" [selected]="true">
                         <app-partners-project-performance-indicator-list
                             (callMonthParent)="viewDesagregationPerformanceIndicator($event)"
                             [project]="project"

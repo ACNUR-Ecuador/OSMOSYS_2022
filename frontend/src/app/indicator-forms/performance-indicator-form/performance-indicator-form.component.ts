@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {
-    CustomDissagregationValues,
+    CustomDissagregationValues, EnumWeb,
     IndicatorExecution,
     IndicatorValue,
     Month,
@@ -8,7 +8,7 @@ import {
 } from '../../shared/model/OsmosysModel';
 import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {MessageService, SelectItem} from 'primeng/api';
-import {DissagregationType, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
+import {EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {IndicatorExecutionService} from '../../services/indicator-execution.service';
 import {MonthService} from '../../services/month.service';
@@ -35,11 +35,13 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     monthCustomDissagregatoinValues: CustomDissagregationValues[];
     formItem: FormGroup;
 
-    oneDimentionDissagregations: DissagregationType[] = [];
-    twoDimentionDissagregations: DissagregationType[] = [];
-    threeDimentionDissagregations: DissagregationType[] = [];
-    fourDimentionDissagregations: DissagregationType[] = [];
-    noDimentionDissagregations: DissagregationType[] = [];
+    noDimentionDissagregations: EnumWeb[] = [];
+    oneDimentionDissagregations: EnumWeb[] = [];
+    twoDimentionDissagregations: EnumWeb[] = [];
+    threeDimentionDissagregations: EnumWeb[] = [];
+    fourDimentionDissagregations: EnumWeb[] = [];
+    fiveDimentionDissagregations: EnumWeb[] = [];
+    sixDimentionDissagregations: EnumWeb[] = [];
 
     sourceTypes: SelectItemWithOrder<any>[];
 
@@ -132,39 +134,41 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     }
 
     loadMonthValues(monthId: number) {
-        this.monthService.getMonthIndicatorValueByMonthId(monthId).subscribe(value => {
-            this.monthValues = value as MonthValues;
-            this.month = value.month;
-            this.setRoles();
-            this.monthValuesMap = value.indicatorValuesMap;
-            this.monthCustomDissagregatoinValues = value.customDissagregationValues;
-            this.formItem.get('commentary').patchValue(this.month.commentary);
-            this.formItem.get('sources').patchValue(this.month.sources);
-            this.formItem.get('checked').patchValue(this.month.checked);
-            if (this.indicatorExecution.keepBudget) {
-                this.formItem.get('usedBudget').patchValue(this.month.usedBudget);
-                this.formItem.get('usedBudget').setValidators(Validators.required);
-            } else {
-                this.formItem.get('usedBudget').clearValidators();
-            }
-            if (this.isProjectFocalPoint || this.isAdmin) {
-                this.formItem.get('checked').enable();
-            } else {
-                this.formItem.get('checked').disable();
-            }
-            this.setOtherSource(this.formItem.get('sources').value);
-            this.enumsService.getByType(EnumsType.SourceType).subscribe(value1 => {
-                this.sourceTypes = value1;
+        this.monthService.getMonthIndicatorValueByMonthId(monthId)
+            .subscribe(value => {
+                this.monthValues = value as MonthValues;
+                this.month = value.month;
+                this.setRoles();
+                this.monthValuesMap = value.indicatorValuesMap;
+                this.monthCustomDissagregatoinValues = value.customDissagregationValues;
+                this.formItem.get('commentary').patchValue(this.month.commentary);
+                this.formItem.get('sources').patchValue(this.month.sources);
+                this.formItem.get('checked').patchValue(this.month.checked);
+                if (this.indicatorExecution.keepBudget) {
+                    this.formItem.get('usedBudget').patchValue(this.month.usedBudget);
+                    this.formItem.get('usedBudget').setValidators(Validators.required);
+                } else {
+                    this.formItem.get('usedBudget').clearValidators();
+                }
+                if (this.isProjectFocalPoint || this.isAdmin) {
+                    this.formItem.get('checked').enable();
+                } else {
+                    this.formItem.get('checked').disable();
+                }
+                this.setOtherSource(this.formItem.get('sources').value);
+                this.enumsService.getByType(EnumsType.SourceType).subscribe(value1 => {
+                    this.sourceTypes = value1;
+                });
+                this.setDimentionsDissagregations();
+            },error => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los valores del mes',
+                    detail: error.error.message,
+                    life: 3000
+                });
             });
-            this.setDimentionsDissagregations();
-        }, error => {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error al cargar los valores del mes',
-                detail: error.error.message,
-                life: 3000
-            });
-        });
+
     }
 
     saveMonth() {
@@ -217,14 +221,22 @@ export class PerformanceIndicatorFormComponent implements OnInit {
 
     setDimentionsDissagregations(): void {
         this.render = false;
-        const dimensionsMap: Map<number, DissagregationType[]> = this.utilsService.setDimentionsDissagregations(
+        this.monthValuesMap.forEach((value, key) => {
+            if (value && value.length>0){
+                console.log(key);
+            }
+        });
+        const dimensionsMap: Map<number, EnumWeb[]> = this.utilsService.setDimentionsDissagregationsV2(
             this.monthValuesMap
         );
+
         this.noDimentionDissagregations = dimensionsMap.get(0);
         this.oneDimentionDissagregations = dimensionsMap.get(1);
         this.twoDimentionDissagregations = dimensionsMap.get(2);
         this.threeDimentionDissagregations = dimensionsMap.get(3);
         this.fourDimentionDissagregations = dimensionsMap.get(4);
+        this.fiveDimentionDissagregations = dimensionsMap.get(5);
+        this.sixDimentionDissagregations = dimensionsMap.get(6);
         this.render = true;
     }
 

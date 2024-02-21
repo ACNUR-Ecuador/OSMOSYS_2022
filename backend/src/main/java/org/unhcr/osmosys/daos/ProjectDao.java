@@ -145,6 +145,11 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
                 " left outer join fetch fp.organization " +
                 " left outer join fetch fp.office " +
                 " left outer join fetch o.period pe " +
+                " left outer join fetch pe.periodPopulationTypeDissagregationOptions " +
+                " left outer join fetch pe.periodGenderDissagregationOptions " +
+                " left outer join fetch pe.periodDiversityDissagregationOptions " +
+                " left outer join fetch pe.periodCountryOfOriginDissagregationOptions " +
+                " left outer join fetch pe.periodAgeDissagregationOptions " +
                 " left outer join fetch pe.generalIndicator " +
                 " left outer join fetch o.projectLocationAssigments pla " +
                 " left outer join fetch pla.location " +

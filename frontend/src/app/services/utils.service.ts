@@ -6,7 +6,7 @@ import * as FileSaver from 'file-saver';
 import {FormGroup} from '@angular/forms';
 import {
     ColumnTable,
-    DissagregationType,
+    DissagregationType, EnumsIndicatorType,
     EnumsState,
     EnumsType,
     QuarterType,
@@ -14,24 +14,29 @@ import {
 } from '../shared/model/UtilsModel';
 import {
     Canton,
-    CustomDissagregationValues,
+    CustomDissagregationValues, EnumWeb,
     IndicatorExecution,
     IndicatorValue,
     IndicatorValueCustomDissagregationWeb,
     Period,
     Quarter,
-    QuarterMonthResume
+    QuarterMonthResume, StandardDissagregationOption
 } from '../shared/model/OsmosysModel';
 import {HttpResponse} from '@angular/common/http';
 import {TableColumnProperties} from 'exceljs';
 import {SortEvent} from "primeng/api";
+import {EnumsService} from "./enums.service";
+import {lastValueFrom} from "rxjs";
+import {SimpleDissagregationEnum} from "./standardDissagregations.service";
 
 @Injectable({
     providedIn: 'root'
 })
 export class UtilsService {
 
-    constructor() {
+    constructor(
+        public enumsService: EnumsService
+    ) {
     }
 
 
@@ -548,14 +553,45 @@ export class UtilsService {
         }
     }
 
+    setDimentionsDissagregationsV2(
+        monthValuesMap: Map<string, IndicatorValue[]>): Map<number, EnumWeb[]> {
+        const results: Map<number, EnumWeb[]> = new Map<number, EnumWeb[]>();
+        results.set(0, []);
+        results.set(1, []);
+        results.set(2, []);
+        results.set(3, []);
+        results.set(4, []);
+        results.set(5, []);
+        results.set(6, []);
+
+
+        monthValuesMap
+            .forEach((value, key) => {
+                if (value && value.length > 0) {
+                    let dissagregationWeb = this.enumsService.resolveEnumWeb(EnumsType.DissagregationType, key);
+                    const numberOfDissagregations = dissagregationWeb.numberOfDissagregations;
+                    if (numberOfDissagregations >= 0 && numberOfDissagregations <= 6) {
+                        results.get(numberOfDissagregations)?.push(dissagregationWeb);
+                    }
+                }
+            });
+
+
+        return results;
+    }
+
+    // todo 2024 eliminar por v2
     setDimentionsDissagregations(
         monthValuesMap: Map<string, IndicatorValue[]>): Map<number, DissagregationType[]> {
 
+        const noDimentionDissagregations: DissagregationType[] = [];
         const oneDimentionDissagregations: DissagregationType[] = [];
         const twoDimentionDissagregations: DissagregationType[] = [];
         const threeDimentionDissagregations: DissagregationType[] = [];
         const fourDimentionDissagregations: DissagregationType[] = [];
-        const noDimentionDissagregations: DissagregationType[] = [];
+        const fiveDimentionDissagregations: DissagregationType[] = [];
+        const sixDimentionDissagregations: DissagregationType[] = [];
+
 
         const totalOneDimentions = this.getOneDimentionsDissagregationTypes();
         const totalTwoDimentions = this.getTwoDimentionsDissagregationTypes();
@@ -596,22 +632,20 @@ export class UtilsService {
         return results;
     }
 
-    getIndicatorValueByDissagregationType(dissagregationType: DissagregationType, value: IndicatorValue): string | Canton {
-        const dissagregationTypeE = DissagregationType[dissagregationType];
-        switch (dissagregationTypeE) {
-            // todo 2024
-            /*case DissagregationType.TIPO_POBLACION:
+    getIndicatorValueByDissagregationType(dissagregationType: EnumWeb, value: IndicatorValue): StandardDissagregationOption {
+        switch (dissagregationType.value) {
+            case 'TIPO_POBLACION':
                 return value.populationType;
-            case DissagregationType.EDAD:
+            case 'EDAD':
                 return value.ageType;
-            case DissagregationType.GENERO:
+            case 'GENERO':
                 return value.genderType;
-            case DissagregationType.LUGAR:
+            case 'LUGAR':
                 return value.location;
-            case DissagregationType.PAIS_ORIGEN:
+            case 'PAIS_ORIGEN':
                 return value.countryOfOrigin;
-            case DissagregationType.DIVERSIDAD:
-                return value.diversityType;*/
+            case 'DIVERSIDAD':
+                return value.diversityType;
             default:
                 return null;
         }
@@ -920,6 +954,30 @@ export class UtilsService {
 
             return (event.order * result);
         });
+    }
+
+    getOptionsFromValuesByDissagregationType(values: IndicatorValue[], dissagregationType: EnumWeb): StandardDissagregationOption[] {
+
+
+        let options = values
+            .map(value => this.getIndicatorValueByDissagregationType(dissagregationType, value));
+
+        const uniquesSet = [...new Map(options.map(item =>
+            [item['id'], item])).values()];
+
+        let result = Array.from(uniquesSet);
+        result.sort((a, b) => a.order-b.order);
+        return result;
+
+    }
+
+    getSimpleDissagregationEnumFromString(value: string): SimpleDissagregationEnum | undefined {
+        for (const key in SimpleDissagregationEnum) {
+            if (SimpleDissagregationEnum[key] === value) {
+                return SimpleDissagregationEnum[key];
+            }
+        }
+        return undefined; // Return undefined if no matching value is found
     }
 }
 

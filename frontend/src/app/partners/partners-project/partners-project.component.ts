@@ -193,11 +193,15 @@ export class PartnersProjectComponent implements OnInit {
             }
         );
         // noinspection JSUnusedLocalSymbols
-        ref.onClose.subscribe(() => {
-            this.loadProject(this.idProjectParam);
-        }, error => {
-            this.loadProject(this.idProjectParam);
-        });
+        ref.onClose.subscribe({
+            next: value => {
+                this.loadProject(this.idProjectParam);
+            }, error: error => {
+                this.loadProject(this.idProjectParam);
+            }
+        })
+
+
     }
 
     private getRoleTitle(): string {
@@ -461,7 +465,7 @@ export class PartnersProjectComponent implements OnInit {
             this.projectService.updateProjectLocations(this.project.id, cantones)
                 .subscribe({
                     next: value => {
-                        this.showLocationsDialog=false;
+                        this.showLocationsDialog = false;
                     }, error: err => {
                         this.messageService.add({
                             severity: 'error',

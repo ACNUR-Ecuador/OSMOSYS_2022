@@ -177,6 +177,7 @@ public class IndicatorService {
 
         }
         updateCustomOptions(dissagregationAssignationToIndicatorsToDisable, dissagregationAssignationToIndicatorsNews);
+
         List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToKeep = this.dissagregationAssignationToIndicatorService.getToKeep(dissagregationAssignationToIndicatorsNews, dissagregationAssignationToIndicatorsOriginals);
         updateCustomOptions(dissagregationAssignationToIndicatorsToKeep, dissagregationAssignationToIndicatorsNews);
 
@@ -270,14 +271,15 @@ public class IndicatorService {
     private void updateCustomOptions(List<DissagregationAssignationToIndicator> originals, List<DissagregationAssignationToIndicatorWeb> news) throws GeneralAppException {
         for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : originals) {
             Optional<DissagregationAssignationToIndicatorWeb> webOptional = news.stream()
-                    .filter(dissagregationAssignationToIndicatorWeb -> this.dissagregationAssignationToIndicatorService.equalsWebToEntity(dissagregationAssignationToIndicatorWeb, dissagregationAssignationToIndicator))
+                    .filter(dissagregationAssignationToIndicatorWeb ->
+                            this.dissagregationAssignationToIndicatorService.equalsWebToEntity(dissagregationAssignationToIndicatorWeb, dissagregationAssignationToIndicator))
                     .findFirst();
 
             if (webOptional.isEmpty()) {
                 throw new GeneralAppException("Error en el manejo de segregaciones personalizadas para el indicador.", Response.Status.INTERNAL_SERVER_ERROR);
             }
             dissagregationAssignationToIndicator.setUseCustomAgeDissagregations(webOptional.get().getUseCustomAgeDissagregations());
-            if (dissagregationAssignationToIndicator.getUseCustomAgeDissagregations()) {
+            if (dissagregationAssignationToIndicator.getUseCustomAgeDissagregations()!=null && dissagregationAssignationToIndicator.getUseCustomAgeDissagregations()) {
                 dissagregationAssignationToIndicator.getDissagregationAssignationToIndicatorPeriodCustomizations().size();
 
                 Set<StandardDissagregationOptionWeb> webs = webOptional.get().getCustomIndicatorOptions();

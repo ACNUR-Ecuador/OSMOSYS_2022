@@ -1,12 +1,12 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {DissagregationType, SelectItemWithOrder} from '../../../shared/model/UtilsModel';
-import {Canton, IndicatorValue} from '../../../shared/model/OsmosysModel';
-import {forkJoin, Observable, of} from 'rxjs';
+import {EnumsType, SelectItemWithOrder} from '../../../shared/model/UtilsModel';
+import {Canton, EnumWeb, IndicatorValue, StandardDissagregationOption} from '../../../shared/model/OsmosysModel';
 import {UtilsService} from '../../../services/utils.service';
 import {EnumsService} from '../../../services/enums.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import * as XLSX from "xlsx";
 import {WorkBook} from "xlsx";
+import {StandardDissagregationsService} from "../../../services/standardDissagregations.service";
 
 @Component({
     selector: 'app-dissagregation-four-integer-dimensions',
@@ -15,27 +15,28 @@ import {WorkBook} from "xlsx";
 })
 export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnChanges {
 
+
     @Input()
     implementationType: string;
     @Input()
-    dissagregationType: DissagregationType;
+    dissagregationType: EnumWeb;
     @Input()
     values: IndicatorValue[];
     @Input()
     editable: boolean;
 
-    dissagregationGroupsL1Type: DissagregationType;
-    dissagregationGroupsL2Type: DissagregationType;
-    dissagregationRowsType: DissagregationType;
-    dissagregationColumnsType: DissagregationType;
+    dissagregationGroupsL1Type: EnumWeb;
+    dissagregationGroupsL2Type: EnumWeb;
+    dissagregationRowsType: EnumWeb;
+    dissagregationColumnsType: EnumWeb;
 
 
-    dissagregationOptionsGroupsL1: SelectItemWithOrder<string | Canton>[];
-    dissagregationOptionsGroupsL2: SelectItemWithOrder<string | Canton>[];
-    dissagregationOptionsColumns: SelectItemWithOrder<string | Canton>[];
-    dissagregationOptionsRows: SelectItemWithOrder<string | Canton>[];
+    dissagregationOptionsGroupsL1: StandardDissagregationOption[];
+    dissagregationOptionsGroupsL2: StandardDissagregationOption[];
+    dissagregationOptionsColumns: StandardDissagregationOption[];
+    dissagregationOptionsRows: StandardDissagregationOption[];
 
-    valuesGroupRowsMap: Map<SelectItemWithOrder<string | Canton>, Map<SelectItemWithOrder<string | Canton>, IndicatorValue[][]>>;
+    valuesGroupRowsMap: Map<StandardDissagregationOption, Map<StandardDissagregationOption, IndicatorValue[][]>>;
     importForm: FormGroup;
     showImportDialog: boolean = false;
     showImportButton: boolean = false;
@@ -49,13 +50,14 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
     constructor(
         public utilsService: UtilsService,
         public enumsService: EnumsService,
+        public standardDissagregationsService: StandardDissagregationsService,
         private fb: FormBuilder
     ) {
     }
 
     ngOnInit(): void {
         this.processDissagregationValues();
-        this.showImportButton = this.dissagregationType === DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO && this.implementationType === 'directImplementation';
+        this.showImportButton = false;//this.dissagregationType === DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO && this.implementationType === 'directImplementation';
         this.importForm = this.fb.group({
             fileName: new FormControl('', [Validators.required]),
             file: new FormControl(''),
@@ -69,17 +71,41 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
     }
 
     processDissagregationValues() {
-        const dissagregationsTypesRyC: DissagregationType[] =
-            this.utilsService.getDissagregationTypesByDissagregationType(this.dissagregationType);
-        this.dissagregationGroupsL1Type = dissagregationsTypesRyC[0];
-        this.dissagregationGroupsL2Type = dissagregationsTypesRyC[1];
-        this.dissagregationRowsType = dissagregationsTypesRyC[2];
-        this.dissagregationColumnsType = dissagregationsTypesRyC[3];
+        const dissagregationsTypesRyC: string[] = this.dissagregationType.standardDissagregationTypes;
+        const dissagregationsTypesRyCEnum: EnumWeb[] = this.dissagregationType.standardDissagregationTypes
+            .map(value => {
+                return this.enumsService.resolveEnumWeb(EnumsType.DissagregationType, value)
+            });
 
-        const dissagregationOptionsGroupsL1Obj = this.getOptions(this.dissagregationGroupsL1Type);
-        const dissagregationOptionsGroupsL2Obj = this.getOptions(this.dissagregationGroupsL2Type);
-        const dissagregationOptionsRowsObj = this.getOptions(this.dissagregationRowsType);
-        const dissagregationOptionsColumnsObj = this.getOptions(this.dissagregationColumnsType);
+        this.dissagregationGroupsL1Type = dissagregationsTypesRyCEnum[0];
+        this.dissagregationGroupsL2Type = dissagregationsTypesRyCEnum[1];
+        this.dissagregationRowsType = dissagregationsTypesRyCEnum[2];
+        this.dissagregationColumnsType = dissagregationsTypesRyCEnum[3];
+
+        // obtiene las opciones // todo+
+        this.dissagregationOptionsGroupsL1 =this.utilsService.getOptionsFromValuesByDissagregationType(this.values,this.dissagregationGroupsL1Type);
+        this.dissagregationOptionsGroupsL2 = this.utilsService.getOptionsFromValuesByDissagregationType(this.values,this.dissagregationGroupsL2Type);
+        this.dissagregationOptionsRows = this.utilsService.getOptionsFromValuesByDissagregationType(this.values,this.dissagregationRowsType);
+        this.dissagregationOptionsColumns = this.utilsService.getOptionsFromValuesByDissagregationType(this.values,this.dissagregationColumnsType);
+
+
+        // hace un mapa
+        this.valuesGroupRowsMap = new Map<StandardDissagregationOption, Map<StandardDissagregationOption, IndicatorValue[][]>>();
+        // para el nivel 1
+        this.dissagregationOptionsGroupsL1.forEach(itemL1 => {
+            // por cada nivel 1
+            const groupL2Map: Map<StandardDissagregationOption, IndicatorValue[][]> = new Map<StandardDissagregationOption, IndicatorValue[][]>();
+
+            this.dissagregationOptionsGroupsL2.forEach(itemL2 => {
+                //po cada nivel 2
+                const rows = this.getRowsByGroups(itemL1, itemL2);
+                groupL2Map.set(itemL2, rows);
+            });
+            this.valuesGroupRowsMap.set(itemL1, groupL2Map);
+        });
+
+        /*
+
         forkJoin([dissagregationOptionsGroupsL1Obj, dissagregationOptionsGroupsL2Obj,
             dissagregationOptionsRowsObj, dissagregationOptionsColumnsObj])
             .subscribe(results => {
@@ -87,18 +113,25 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
                 this.dissagregationOptionsGroupsL2 = results[1] as SelectItemWithOrder<any>[];
                 this.dissagregationOptionsRows = results[2] as SelectItemWithOrder<any>[];
                 this.dissagregationOptionsColumns = results[3] as SelectItemWithOrder<any>[];
+                // hace un mapa
                 this.valuesGroupRowsMap = new Map<SelectItemWithOrder<any>, Map<SelectItemWithOrder<any>, IndicatorValue[][]>>();
+                // para el nivel 1
                 this.dissagregationOptionsGroupsL1.forEach(itemL1 => {
-                    const groupL2Map: Map<SelectItemWithOrder<any>, IndicatorValue[][]> =
-                        new Map<SelectItemWithOrder<any>, IndicatorValue[][]>();
+                    // por cada nivel 1
+                    const groupL2Map: Map<SelectItemWithOrder<any>, IndicatorValue[][]> = new Map<SelectItemWithOrder<any>, IndicatorValue[][]>();
+
                     this.dissagregationOptionsGroupsL2.forEach(itemL2 => {
+                        //po cada nivel 2
                         const rows = this.getRowsByGroups(itemL1, itemL2);
                         groupL2Map.set(itemL2, rows);
                     });
                     this.valuesGroupRowsMap.set(itemL1, groupL2Map);
                 });
             });
+
+         */
     }
+/*
 
     getOptions(dissagregationType: DissagregationType): Observable<SelectItemWithOrder<any>[]> {
         if (dissagregationType !== DissagregationType.LUGAR) {
@@ -121,35 +154,34 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
 
         }
     }
+*/
 
-    getRowsByGroups(itemL1: SelectItemWithOrder<any>, itemL2: SelectItemWithOrder<any>): Array<Array<IndicatorValue>> {
+    getRowsByGroups(itemL1: StandardDissagregationOption, itemL2: StandardDissagregationOption): Array<Array<IndicatorValue>> {
         let indicatorValues: IndicatorValue[];
+
+
         // level 1
-        indicatorValues = this.getValuesByDissagregationValues(this.values, this.dissagregationGroupsL1Type, itemL1.value);
+        indicatorValues = this.getValuesByDissagregationValues(this.values, this.dissagregationGroupsL1Type, itemL1);
         // level 2
-        indicatorValues = this.getValuesByDissagregationValues(indicatorValues, this.dissagregationGroupsL2Type, itemL2.value);
+        indicatorValues = this.getValuesByDissagregationValues(indicatorValues, this.dissagregationGroupsL2Type, itemL2);
         // ordeno y clasifico
         return this.getRowsByValues(this.dissagregationOptionsRows, this.dissagregationOptionsColumns, indicatorValues);
     }
 
-    getValuesByDissagregationValues(values: IndicatorValue[], dissagregationType: DissagregationType, value: string | Canton) {
+    getValuesByDissagregationValues(values: IndicatorValue[], dissagregationType: EnumWeb, value: StandardDissagregationOption | Canton) {
+        // filtra por los 2 niveles
         return values.filter(indicatorValue => {
-            if (dissagregationType === DissagregationType.LUGAR) {
-                value = value as Canton;
-                const valueOption = this.utilsService.getIndicatorValueByDissagregationType(dissagregationType, indicatorValue) as Canton;
-                return valueOption.id === value.id;
-            } else {
-                const valueOption = this.utilsService.getIndicatorValueByDissagregationType(dissagregationType, indicatorValue) as string;
-                return valueOption === value;
-            }
+            const valueOption = this.utilsService.getIndicatorValueByDissagregationType(dissagregationType, indicatorValue) ;
+            return valueOption.id === value.id;
+
         });
     }
 
-    getRowsByValues(dissagregationOptionsRows: SelectItemWithOrder<any>[],
-                    dissagregationOptionsColumns: SelectItemWithOrder<any>[],
+    getRowsByValues(dissagregationOptionsRows: StandardDissagregationOption[],
+                    dissagregationOptionsColumns: StandardDissagregationOption[],
                     indicatorValues: IndicatorValue[]): IndicatorValue[][] {
         const rows = new Array<Array<IndicatorValue>>();
-        if (this.dissagregationRowsType !== DissagregationType.LUGAR) {
+        /*if (this.dissagregationRowsType !== DissagregationType.LUGAR) {
             dissagregationOptionsRows.forEach(option => {
                 const row: IndicatorValue[] = indicatorValues.filter(indicatorValue => {
                     const value = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationRowsType, indicatorValue);
@@ -159,17 +191,17 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
                 this.sortRow(row);
                 rows.push(row);
             });
-        } else {
-            this.dissagregationOptionsRows.forEach(option => {
-                const row = indicatorValues.filter(indicatorValue => {
-                    const value = this.utilsService
-                        .getIndicatorValueByDissagregationType(this.dissagregationRowsType, indicatorValue) as Canton;
-                    return value.id === (option.value as Canton).id;
-                });
-                this.sortRow(row);
-                rows.push(row);
+        } else {*/
+        this.dissagregationOptionsRows.forEach(option => {
+            const row = indicatorValues.filter(indicatorValue => {
+                const value = this.utilsService
+                    .getIndicatorValueByDissagregationType(this.dissagregationRowsType, indicatorValue);
+                return value.id === option.id;
             });
-        }
+            this.sortRow(row);
+            rows.push(row);
+        });
+        //}
         return rows;
     }
 
@@ -177,21 +209,15 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
         row.sort((a, b) => {
             const valueA = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationColumnsType, a);
             const valueB = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationColumnsType, b);
-            if (typeof valueA === 'string' || typeof valueB === 'string') {
-                const orderA = this.utilsService.getOrderByDissagregationOption(valueA as string,
-                    this.dissagregationOptionsColumns);
-                const orderB = this.utilsService.getOrderByDissagregationOption(valueB as string,
-                    this.dissagregationOptionsColumns);
-                return orderA - orderB;
-            } else {
-                const orderA = (valueA as Canton).code;
-                const orderB = (valueB as Canton).code;
+
+                const orderA = valueA.order;
+                const orderB = valueB.order;
                 return orderA > orderB ? -1 : 1;
-            }
+
         });
     }
 
-    getTotalIndicatorValuesMap(map: Map<SelectItemWithOrder<string | Canton>, IndicatorValue[][]>) {
+    getTotalIndicatorValuesMap(map: Map<StandardDissagregationOption, IndicatorValue[][]>) {
         let total = 0;
         map.forEach(value => {
             total += this.utilsService.getTotalIndicatorValuesArrayArray(value);
@@ -199,7 +225,8 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
         return total;
     }
 
-    getTotalIndicator(map: Map<SelectItemWithOrder<string | Canton>, Map<SelectItemWithOrder<string | Canton>, IndicatorValue[][]>>) {
+
+    getTotalIndicator(map: Map<StandardDissagregationOption, Map<StandardDissagregationOption, IndicatorValue[][]>>) {
         if (!map) {
             return null;
         }
@@ -259,10 +286,8 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
         const data = XLSX.utils.sheet_to_json(ws);
 
         const valuesDissagregation = this.values.filter(value => {
-            console.log(value.dissagregationType);
-            console.log(this.dissagregationType);
-            console.log(value.dissagregationType === this.dissagregationType);
-            return value.dissagregationType === this.dissagregationType;
+
+            return value.dissagregationType === this.dissagregationType.value;
 
         });
         this.importErroMessage = [];
@@ -278,7 +303,7 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
             const valor: number = value['valor'];
 
             // todo 2024
-            const indicatorValues=[];
+            const indicatorValues = [];
             /*const indicatorValues = valuesDissagregation.filter(value1 => {
                 return value1.location.code === canton_codigo
                     && value1.populationType === tipo_poblacion
@@ -312,6 +337,7 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
             this.showImportDialog = false;
         }
     }
+
 
     cancelImportDialog() {
         this.showImportDialog = false;

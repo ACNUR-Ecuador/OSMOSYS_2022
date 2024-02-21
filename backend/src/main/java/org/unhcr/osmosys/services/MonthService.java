@@ -155,7 +155,6 @@ public class MonthService {
         }
 
 
-
         // actualizar opciones
         for (DissagregationType dissagregationType : newDissagregationMap.keySet()) {
             List<IndicatorValue> dissagregationValues = indicatorValues.stream().filter(value -> value.getDissagregationType().equals(dissagregationType)).collect(Collectors.toList());
@@ -180,11 +179,20 @@ public class MonthService {
                                               Map<DissagregationType, List<StandardDissagregationOption>> currentSimpleDissagregationOptionMap
     ) throws GeneralAppException {
 
+        // todo 2024 no actualiza sin desagregación
+        if (dissagregationType.equals(DissagregationType.SIN_DESAGREGACION))  return;
+
         // newSimpleDissagregationOptionMap
         List<DissagregationType> simpleDissagregation = dissagregationType.getSimpleDissagregations();
         for (DissagregationType simpleDissagregationType : simpleDissagregation) {
-            List<StandardDissagregationOption> currentOptions = currentSimpleDissagregationOptionMap.get(simpleDissagregationType);
+            List<StandardDissagregationOption> currentOptions ;
+            if(currentSimpleDissagregationOptionMap ==null ){
+                currentSimpleDissagregationOptionMap = new HashMap<>();
+            }
+            currentOptions = currentSimpleDissagregationOptionMap.get(simpleDissagregationType);
+            if(currentOptions==null) currentOptions= new ArrayList<>();
             List<StandardDissagregationOption> newOptions = newSimpleDissagregationOptionMap.get(simpleDissagregationType);
+            if (newOptions == null) return;
 
             // to create
             List<StandardDissagregationOption> toCreate = new ArrayList<>(CollectionUtils.subtract(newOptions, currentOptions));
@@ -202,35 +210,25 @@ public class MonthService {
             currentSimpleDissagregationOptionMap.get(simpleDissagregationType).addAll(toCreate);
 
 
-           /* // to dissable
-            List<StandardDissagregationOption> toDisable = new ArrayList<>(CollectionUtils.subtract(currentOptions, newOptions));
-            this.dissableDissagregationOptions(dissagregationType,simpleDissagregationType,toDisable,indicatorValues);
-
-
-
-            List<StandardDissagregationOption> toEnable = new ArrayList<>(CollectionUtils.intersection(currentOptions, newOptions));
-            this.enableDissagregationOptions(dissagregationType,simpleDissagregationType,toDisable,indicatorValues);
-*/
-
-
         }
 
-        // una vez creados, activo y desactivo con los valores actuales
-        // estos deberían estar activos
-        List<IndicatorValueOptionsDTO> indicatorValuesDTOs = this.indicatorValueService.getIndicatorValueOptionsDTOS(dissagregationType, newSimpleDissagregationOptionMap);
+            // una vez creados, activo y desactivo con los valores actuales
+            // estos deberían estar activos
+            List<IndicatorValueOptionsDTO> indicatorValuesDTOs = this.indicatorValueService.getIndicatorValueOptionsDTOS(dissagregationType, newSimpleDissagregationOptionMap);
 
-        // me aseguro q solo esten con la desagregación q trabajo
-        for (IndicatorValue indicatorValue : indicatorValues) {
-            if (indicatorValue.getDissagregationType().equals(dissagregationType)) {
-                throw new GeneralAppException("Error, se est´´a processando una valor fuera de rango para la actualización de segregaciones y opciones");
+            // me aseguro q solo esten con la desagregación q trabajo
+            for (IndicatorValue indicatorValue : indicatorValues) {
+                if (indicatorValue.getDissagregationType().equals(dissagregationType)) {
+                    throw new GeneralAppException("Error, se est´´a processando una valor fuera de rango para la actualización de segregaciones y opciones");
+                }
+                boolean found = indicatorValuesDTOs.stream().anyMatch(indicatorValueOptionsDTO -> indicatorValueOptionsDTO.equals(indicatorValue.getDissagregationDTO()));
+                if (found) {
+                    indicatorValue.setState(State.ACTIVO);
+                } else {
+                    indicatorValue.setState(State.INACTIVO);
+                }
             }
-            boolean found = indicatorValuesDTOs.stream().anyMatch(indicatorValueOptionsDTO -> indicatorValueOptionsDTO.equals(indicatorValue.getDissagregationDTO()));
-            if (found){
-                indicatorValue.setState(State.ACTIVO);
-            }else {
-                indicatorValue.setState(State.INACTIVO);
-            }
-        }
+
 
 
     }

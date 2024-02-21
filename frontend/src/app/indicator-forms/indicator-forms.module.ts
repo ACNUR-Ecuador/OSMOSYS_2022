@@ -1,9 +1,11 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ChartIndicatorExecutionComponent} from './chart-indicator-execution/chart-indicator-execution.component';
+/*
 import {
     DirectImplementationPerformanceIndicatorFormComponent
 } from './direct-implementation-performance-indicator-form/direct-implementation-performance-indicator-form.component';
+*/
 import {GeneralIndicatorFormComponent} from './general-indicator-form/general-indicator-form.component';
 import {PerformanceIndicatorFormComponent} from './performance-indicator-form/performance-indicator-form.component';
 import {
@@ -15,12 +17,12 @@ import {
 import {
     DissagregationNoDissagregationIntegerComponent
 } from './dissagregationForms/dissagregation-no-dissagregation-integer/dissagregation-no-dissagregation-integer.component';
-import {
+/*import {
     DissagregationThreeIntegerDimensionsComponent
 } from './dissagregationForms/dissagregation-three-integer-dimensions/dissagregation-three-integer-dimensions.component';
 import {
     DissagregationTwoIntegerDimentionsComponent
-} from './dissagregationForms/dissagregation-two-integer-dimentions/dissagregation-two-integer-dimentions.component';
+} from './dissagregationForms/dissagregation-two-integer-dimentions/dissagregation-two-integer-dimentions.component';*/
 import {ChartModule} from 'primeng/chart';
 import {CardModule} from 'primeng/card';
 import {ToastModule} from 'primeng/toast';
@@ -34,9 +36,9 @@ import {DialogModule} from 'primeng/dialog';
 import {TableModule} from 'primeng/table';
 import {SharedModule} from '../shared/shared.module';
 import {PickListModule} from 'primeng/picklist';
-import {
+/*import {
     DissagregationOneIntegerDimensionsComponent
-} from './dissagregationForms/dissagregation-one-integer-dimensions/dissagregation-one-integer-dimensions.component';
+} from './dissagregationForms/dissagregation-one-integer-dimensions/dissagregation-one-integer-dimensions.component';*/
 import {EnumValuesToLabelPipe} from '../shared/pipes/enum-values-to-label.pipe';
 import {PanelModule} from 'primeng/panel';
 import {AccordionModule} from 'primeng/accordion';
@@ -51,15 +53,15 @@ import {FileUploadModule} from "primeng/fileupload";
 @NgModule({
     declarations: [
         ChartIndicatorExecutionComponent,
-        DirectImplementationPerformanceIndicatorFormComponent,
+        //DirectImplementationPerformanceIndicatorFormComponent,
         GeneralIndicatorFormComponent,
         PerformanceIndicatorFormComponent,
         CustomDissagregationIntegerComponent,
         DissagregationFourIntegerDimensionsComponent,
         DissagregationNoDissagregationIntegerComponent,
-        DissagregationThreeIntegerDimensionsComponent,
-        DissagregationTwoIntegerDimentionsComponent,
-        DissagregationOneIntegerDimensionsComponent
+        //DissagregationThreeIntegerDimensionsComponent,
+        //DissagregationTwoIntegerDimentionsComponent,
+        //DissagregationOneIntegerDimensionsComponent
     ],
     imports: [
         CommonModule,
@@ -88,15 +90,15 @@ import {FileUploadModule} from "primeng/fileupload";
     ],
     exports: [
         ChartIndicatorExecutionComponent,
-        DirectImplementationPerformanceIndicatorFormComponent,
+        //DirectImplementationPerformanceIndicatorFormComponent,
         GeneralIndicatorFormComponent,
         PerformanceIndicatorFormComponent,
         CustomDissagregationIntegerComponent,
         DissagregationFourIntegerDimensionsComponent,
         DissagregationNoDissagregationIntegerComponent,
-        DissagregationThreeIntegerDimensionsComponent,
-        DissagregationTwoIntegerDimentionsComponent,
-        DissagregationOneIntegerDimensionsComponent
+        //DissagregationThreeIntegerDimensionsComponent,
+        //DissagregationTwoIntegerDimentionsComponent,
+        //DissagregationOneIntegerDimensionsComponent
     ],
     providers: [EnumValuesToLabelPipe]
 })

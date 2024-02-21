@@ -70,22 +70,6 @@ export enum DissagregationType {
     PAIS_ORIGEN_EDAD_Y_GENERO = 'PAIS_ORIGEN_EDAD_Y_GENERO',
     }
 
-
-export enum MonthType {
-    ENERO = 'Enero',
-    FEBRERO = 'Febrero',
-    MARZO = 'Marzo',
-    ABRIL = 'Abril',
-    MAYO = 'Mayo',
-    JUNIO = 'Junio',
-    JULIO = 'Julio',
-    AGOSTO = 'Agosto',
-    SEPTIEMBRE = 'Septiembre',
-    OCTUBRE = 'Octubre',
-    NOVIEMBRE = 'Noviembre',
-    DICIEMBRE = 'Diciembre',
-}
-
 export enum QuarterType {
     I = 'I',
     II = 'II',

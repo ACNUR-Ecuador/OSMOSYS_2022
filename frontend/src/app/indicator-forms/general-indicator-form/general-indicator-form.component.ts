@@ -278,7 +278,8 @@ export class GeneralIndicatorFormComponent implements OnInit {
                         .filter(value2 => value2.state === EnumsState.ACTIVE)
                         .filter(value2 => value2.location)
                         .map(value2 => value2.location);
-                    cantonesCurrent = cantonesCurrent.concat(cantones);
+                    // todo 2024 restaurar
+                    //cantonesCurrent = cantonesCurrent.concat(cantones);
                 }
 
             });

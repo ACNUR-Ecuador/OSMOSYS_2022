@@ -19,13 +19,17 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
     private static final String indicatorJpql =
             " SELECT DISTINCT o" +
                     " FROM Indicator o " +
-                    " left outer join o.statement sta " +
-                    " left join sta.periodStatementAsignations psa " +
-                    " left outer join o.customDissagregationAssignationToIndicators cda " +
-                    " left outer join cda.customDissagregation " +
-
-                    " left outer join o.dissagregationsAssignationToIndicator da " +
-                    " left join psa.period p ";
+                    " left join fetch o.statement sta " +
+                    " left join fetch sta.periodStatementAsignations psa " +
+                    " left join fetch o.customDissagregationAssignationToIndicators cda " +
+                    " left join fetch cda.customDissagregation " +
+                    " left join fetch o.dissagregationsAssignationToIndicator da " +
+                    " left join fetch psa.period p " +
+                    " left join fetch p.periodPopulationTypeDissagregationOptions " +
+                    " left join fetch p.periodGenderDissagregationOptions " +
+                    " left join fetch p.periodDiversityDissagregationOptions " +
+                    " left join fetch p.periodCountryOfOriginDissagregationOptions " +
+                    " left join fetch p.periodAgeDissagregationOptions " ;
 
     public IndicatorDao() {
         super(Indicator.class, Long.class);
@@ -55,7 +59,7 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
     }
 
     public List<Indicator> getByPeriodDissagregationAssignment(Long periodId) {
-        String jpql =  " SELECT DISTINCT o" +
+        String jpql = " SELECT DISTINCT o" +
                 " FROM Indicator o " +
                 " left join fetch o.dissagregationsAssignationToIndicator dai " +
                 " left join fetch dai.period p " +
@@ -65,6 +69,7 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
         return q.getResultList();
 
     }
+
     public List<Indicator> getByPeriodAssignmentAndState(Long periodId, State state) {
         String jpql = IndicatorDao.indicatorJpql +
                 " WHERE p.id = :periodId and psa.state =:state and o.state =:state";
@@ -106,6 +111,12 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
                 " left outer join fetch cda.customDissagregation " +
                 " left outer join fetch o.dissagregationsAssignationToIndicator da " +
                 " left join fetch psa.period p " +
+                " left join fetch p.periodPopulationTypeDissagregationOptions " +
+                " left join fetch p.periodGenderDissagregationOptions " +
+                " left join fetch p.periodDiversityDissagregationOptions " +
+                " left join fetch p.periodCountryOfOriginDissagregationOptions " +
+                " left join fetch p.periodAgeDissagregationOptions " +
+
                 " WHERE o.code in (:codeList)";
         Query q = getEntityManager().createQuery(jpql, Indicator.class);
         q.setParameter("codeList", codeList);
@@ -162,7 +173,7 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
             return null;
         } catch (NonUniqueResultException e) {
             throw new GeneralAppException("Se encontró más de un item con el código  " + code
-                    + " y la descripción "+ description, Response.Status.INTERNAL_SERVER_ERROR);
+                    + " y la descripción " + description, Response.Status.INTERNAL_SERVER_ERROR);
         }
 
     }

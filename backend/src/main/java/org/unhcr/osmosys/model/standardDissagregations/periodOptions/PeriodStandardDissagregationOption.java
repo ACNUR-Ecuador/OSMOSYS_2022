@@ -27,6 +27,7 @@ public abstract class PeriodStandardDissagregationOption<T extends StandardDissa
 
     public PeriodStandardDissagregationOption(Period period) {
         this.period = period;
+        this.state = State.ACTIVO;
     }
 
     @Id

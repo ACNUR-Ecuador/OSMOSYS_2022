@@ -4,9 +4,11 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.RoleType;
 import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.services.standardDissagregations.StandardDissagregationOptionService;
 import org.unhcr.osmosys.webServices.model.EnumWeb;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -25,6 +27,9 @@ public class EnumsEndpoint {
 
     private static final Logger logger = Logger.getLogger(EnumsEndpoint.class.getName());
 
+    @Inject
+    StandardDissagregationOptionService standardDissagregationOptionService;
+
     @Path("/{type}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -33,21 +38,6 @@ public class EnumsEndpoint {
 
             case "AreaType":
                 return this.EnumsToEnumsWeb(AreaType.values());
-            case "AgeType":
-                // todo
-                // return this.EnumsToEnumsWeb(AgeType.values());
-            case "CountryOfOrigin":
-                // todo
-                // return this.EnumsToEnumsWeb(CountryOfOrigin.values());
-            case "GenderType":
-                // todo
-                // return this.EnumsToEnumsWeb(GenderType.values());
-            case "PopulationType":
-                // todo
-                // return this.EnumsToEnumsWeb(PopulationType.values());
-            case "DiversityType":
-                // todo
-                // return this.EnumsToEnumsWeb(DiversityType.values());
             case "DissagregationType":
                 return this.EnumsToEnumsWeb(DissagregationType.values());
             case "Frecuency":

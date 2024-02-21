@@ -4,6 +4,7 @@ import {EMPTY, Observable} from 'rxjs';
 import {DissagregationType, EnumsType, SelectItemWithOrder} from '../shared/model/UtilsModel';
 import {HttpClient} from '@angular/common/http';
 import {catchError, shareReplay} from 'rxjs/operators';
+import {EnumWeb} from "../shared/model/OsmosysModel";
 
 const mainServiceUrl = environment.base_url + '/enums';
 
@@ -35,6 +36,7 @@ export class EnumsService {
         }
     }
 
+    // todo 2024 reemplazar por opciones
     public getByDissagregationType(dissagregationType: DissagregationType): Observable<SelectItemWithOrder<any>[]> {
         if (!dissagregationType) {
             // @ts-ignore
@@ -93,6 +95,18 @@ export class EnumsService {
             });
         if (enumerador && enumerador.length > 0) {
             return enumerador[0]
+        } else {
+            return null;
+        }
+    }
+
+    resolveEnumWeb(enumName: EnumsType, value: string): EnumWeb {
+        const enumerador = this.cacheMap.get(enumName).filter(
+            enume => {
+                return enume.value === value;
+            });
+        if (enumerador && enumerador.length > 0) {
+            return enumerador[0] as EnumWeb
         } else {
             return null;
         }

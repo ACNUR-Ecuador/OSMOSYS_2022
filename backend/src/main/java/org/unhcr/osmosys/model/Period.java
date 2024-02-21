@@ -29,19 +29,19 @@ public class Period extends BaseEntityIdState {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "period")
     private GeneralIndicator generalIndicator;
 
-    @OneToMany(mappedBy = "period", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, targetEntity = PeriodAgeDissagregationOption.class)
+    @OneToMany(mappedBy = "period", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, targetEntity = PeriodAgeDissagregationOption.class)
     private Set<PeriodAgeDissagregationOption> periodAgeDissagregationOptions = new HashSet<>();
 
-    @OneToMany(mappedBy = "period", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, targetEntity = PeriodGenderDissagregationOption.class)
+    @OneToMany(mappedBy = "period", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, targetEntity = PeriodGenderDissagregationOption.class)
     private Set<PeriodGenderDissagregationOption> periodGenderDissagregationOptions = new HashSet<>();
 
-    @OneToMany(mappedBy = "period", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, targetEntity = PeriodPopulationTypeDissagregationOption.class)
+    @OneToMany(mappedBy = "period", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, targetEntity = PeriodPopulationTypeDissagregationOption.class)
     private Set<PeriodPopulationTypeDissagregationOption> periodPopulationTypeDissagregationOptions = new HashSet<>();
 
-    @OneToMany(mappedBy = "period", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, targetEntity = PeriodDiversityDissagregationOption.class)
+    @OneToMany(mappedBy = "period", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, targetEntity = PeriodDiversityDissagregationOption.class)
     private Set<PeriodDiversityDissagregationOption> periodDiversityDissagregationOptions = new HashSet<>();
 
-    @OneToMany(mappedBy = "period", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, targetEntity = PeriodCountryOfOriginDissagregationOption.class)
+    @OneToMany(mappedBy = "period", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, targetEntity = PeriodCountryOfOriginDissagregationOption.class)
     private Set<PeriodCountryOfOriginDissagregationOption> periodCountryOfOriginDissagregationOptions = new HashSet<>();
 
     @Override

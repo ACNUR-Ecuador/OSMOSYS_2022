@@ -19,9 +19,11 @@ import {FilterUtilsService} from "../../services/filter-utils.service";
 import {DialogService} from "primeng/dynamicdialog";
 import {Table} from "primeng/table";
 import {OverlayPanel} from "primeng/overlaypanel";
+/*
 import {
     DirectImplementationPerformanceIndicatorFormComponent
 } from "../../indicator-forms/direct-implementation-performance-indicator-form/direct-implementation-performance-indicator-form.component";
+*/
 import {PercentPipe} from "@angular/common";
 
 @Component({
@@ -176,7 +178,9 @@ export class IndicatorsListComponent implements OnInit {
     viewDesagregationPerformanceIndicator(parameters: Map<string, number | IndicatorExecution>) {
         const monthId = parameters.get('monthId') as number;
         const indicatorExecution = parameters.get('indicator') as IndicatorExecution;
-        const ref = this.dialogService.open(DirectImplementationPerformanceIndicatorFormComponent, {
+// todo 2024 restaurar
+        const ref = null;
+        /*        const ref = this.dialogService.open(DirectImplementationPerformanceIndicatorFormComponent, {
                 header: 'Indicador: ' + this.getHeaderIndicatorForm(indicatorExecution),
                 width: '90%',
                 height: '90%',
@@ -196,6 +200,8 @@ export class IndicatorsListComponent implements OnInit {
         }, error => {
             this.loadIndicatorExecutions();
         });
+
+         */
     }
 
     private getHeaderIndicatorForm(indicatorExecution: IndicatorExecution) {

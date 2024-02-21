@@ -69,25 +69,28 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
 
     private loadPerformanceIndicators(idProject: number) {
         this.indicatorExecutionService.getPerformanceIndicatorResume(idProject)
-            .subscribe(value => {
-                this.performanceIndicators = value
-                    .sort((a, b) => {
-                        return a.id-b.id;
-                    }).sort((a, b) => {
-                        return a.indicator.code.localeCompare(b.indicator.code);
-                    })
-                    .sort((a, b) => {
-                        return a.projectStatement.code.localeCompare(b.projectStatement.code);
+            .subscribe({
+                next: value => {
+                    this.performanceIndicators = value
+                        .sort((a, b) => {
+                            return a.id - b.id;
+                        }).sort((a, b) => {
+                            return a.indicator.code.localeCompare(b.indicator.code);
+                        })
+                        .sort((a, b) => {
+                            return a.projectStatement.code.localeCompare(b.projectStatement.code);
+                        });
+                    this.createPerformanceIndicatorColumns();
+                }, error: error => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al cargar indicadores',
+                        detail: error.error.message,
+                        life: 3000
                     });
-                this.createPerformanceIndicatorColumns();
-            }, error => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error al cargar indicadores',
-                    detail: error.error.message,
-                    life: 3000
-                });
+                }
             });
+
     }
 
     private createPerformanceIndicatorColumns() {
@@ -95,18 +98,33 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
         this.colsGeneralIndicators = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
             {field: 'indicatorType', header: 'Tipo', type: ColumnDataType.text},
-            {field: 'projectStatement', header: 'Declaración de Producto', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
+            {
+                field: 'projectStatement',
+                header: 'Declaración de Producto',
+                type: ColumnDataType.text,
+                pipeRef: this.codeDescriptionPipe
+            },
             {field: 'indicator', header: 'Indicador', type: ColumnDataType.text, pipeRef: this.indicatorPipe},
             {field: 'indicator.frecuency', header: 'Frecuencia de Reporte', type: ColumnDataType.text},
             {field: 'activityDescription', header: 'Descripción de la actividad', type: ColumnDataType.text},
             {field: 'target', header: 'Meta', type: ColumnDataType.numeric},
             {field: 'totalExecution', header: 'Ejecución Actual', type: ColumnDataType.numeric},
-            {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric, pipeRef: this.percentPipe},
-            {field: 'lastReportedMonth', header: 'Último mes reportado', type: ColumnDataType.text, pipeRef: this.monthPipe},
+            {
+                field: 'executionPercentage',
+                header: 'Porcentaje de ejecución',
+                type: ColumnDataType.numeric,
+                pipeRef: this.percentPipe
+            },
+            {
+                field: 'lastReportedMonth',
+                header: 'Último mes reportado',
+                type: ColumnDataType.text,
+                pipeRef: this.monthPipe
+            },
 
         ];
 
-        const hiddenColumns: string[] = ['id', 'indicatorType','indicator.frecuency'];
+        const hiddenColumns: string[] = ['id', 'indicatorType', 'indicator.frecuency'];
         this._selectedColumnsPerformanceIndicators = this.colsGeneralIndicators.filter(value => !hiddenColumns.includes(value.field));
         this.registerFilters();
     }
@@ -138,6 +156,7 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
         this.selectedIndicator = null;
     }
 
+    // todo 2024 rremplazar por v2
     callMonth(parameters: Map<string, number | string>, overlayPanel: OverlayPanel) {
         overlayPanel.hide();
         const parametersMap = new Map<string, number | string | IndicatorExecution>();
@@ -162,6 +181,7 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
         this.loadPerformanceIndicators(this.project.id);
     }
 
+    // todo 2024 rremplazar por v2
     refreshDataV2(monthId: number) {
         this.loadPerformanceIndicators(this.project.id);
     }
