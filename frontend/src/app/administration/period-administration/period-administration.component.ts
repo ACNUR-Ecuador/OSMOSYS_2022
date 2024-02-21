@@ -5,9 +5,9 @@ import {
     Period,
     StandardDissagregationOption
 } from '../../shared/model/OsmosysModel';
-import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
+import {ColumnDataType, ColumnTable, EnumsState, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
+import {MessageService, SelectItem} from 'primeng/api';
 import {UtilsService} from '../../services/utils.service';
 import {EnumsService} from '../../services/enums.service';
 import {Table} from 'primeng/table';
@@ -21,11 +21,11 @@ import {StandardDissagregationsService} from "../../services/standardDissagregat
 })
 export class PeriodAdministrationComponent implements OnInit {
     items: Period[];
-    ageOptions: StandardDissagregationOption[];
-    genderOptions: StandardDissagregationOption[];
-    populationTypeOptions: StandardDissagregationOption[];
-    diversityOptions: StandardDissagregationOption[];
-    countryOfOriginOptions: StandardDissagregationOption[];
+    populationTypeOptions: SelectItemWithOrder<StandardDissagregationOption>[];
+    ageOptions: SelectItemWithOrder<StandardDissagregationOption>[];
+    genderOptions: SelectItemWithOrder<StandardDissagregationOption>[];
+    diversityOptions: SelectItemWithOrder<StandardDissagregationOption>[];
+    countryOfOriginOptions: SelectItemWithOrder<StandardDissagregationOption>[];
     cols: ColumnTable[];
     showDialog = false;
     private submitted = false;
@@ -38,7 +38,6 @@ export class PeriodAdministrationComponent implements OnInit {
 
     constructor(
         private messageService: MessageService,
-        private confirmationService: ConfirmationService,
         private fb: FormBuilder,
         public utilsService: UtilsService,
         private enumsService: EnumsService,
@@ -99,7 +98,7 @@ export class PeriodAdministrationComponent implements OnInit {
     private loadDissagregationOptions() {
         this.standardDissagregationsService.getActiveAgeOptions().subscribe({
             next: value => {
-                this.ageOptions = value;
+                this.ageOptions = this.utilsService.standandarDissagregationOptionsToSelectItems(value);
                 console.log(this.ageOptions);
             },
             error: err => {
@@ -114,7 +113,7 @@ export class PeriodAdministrationComponent implements OnInit {
 
         this.standardDissagregationsService.getActiveGenderOptions().subscribe({
             next: value => {
-                this.genderOptions = value;
+                this.genderOptions = this.utilsService.standandarDissagregationOptionsToSelectItems(value);
             },
             error: err => {
                 this.messageService.add({
@@ -127,7 +126,7 @@ export class PeriodAdministrationComponent implements OnInit {
         });
         this.standardDissagregationsService.getActivePopulationTypeOptions().subscribe({
             next: value => {
-                this.populationTypeOptions = value;
+                this.populationTypeOptions = this.utilsService.standandarDissagregationOptionsToSelectItems(value);
             },
             error: err => {
                 this.messageService.add({
@@ -140,7 +139,7 @@ export class PeriodAdministrationComponent implements OnInit {
         });
         this.standardDissagregationsService.getActiveDiversityOptions().subscribe({
             next: value => {
-                this.diversityOptions = value;
+                this.diversityOptions = this.utilsService.standandarDissagregationOptionsToSelectItems(value);
             },
             error: err => {
                 this.messageService.add({
@@ -153,7 +152,7 @@ export class PeriodAdministrationComponent implements OnInit {
         });
         this.standardDissagregationsService.getActiveCountryOfOriginOptions().subscribe({
             next: value => {
-                this.countryOfOriginOptions = value;
+                this.countryOfOriginOptions = this.utilsService.standandarDissagregationOptionsToSelectItems(value);
             },
             error: err => {
                 this.messageService.add({
@@ -165,6 +164,8 @@ export class PeriodAdministrationComponent implements OnInit {
             }
         });
     }
+
+
 
     private loadOptions() {
         this.enumsService.getByType(EnumsType.MeasureType).subscribe(value => {
@@ -255,9 +256,9 @@ export class PeriodAdministrationComponent implements OnInit {
             console.log(this.formItem.value);
         }
         this.formItem.patchValue({
-            ageOptions: period.periodAgeDissagregationOptions,
+            ageOptions: period.periodAgeDissagregationOptions ,
             genderOptions: period.periodGenderDissagregationOptions,
-            populationTypeOptions: period.periodPopulationTypeDissagregationOptions,
+            populationTypeOptions: period.periodPopulationTypeDissagregationOptions as StandardDissagregationOption[],
             diversityOptions: period.periodDiversityDissagregationOptions,
             countryOfOriginOptions: period.periodCountryOfOriginDissagregationOptions
         });

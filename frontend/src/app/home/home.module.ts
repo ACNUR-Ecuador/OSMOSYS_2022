@@ -16,6 +16,8 @@ import {ChartModule} from "primeng/chart";
 import {UserPipe} from "../shared/pipes/user.pipe";
 import {OfficeOrganizationPipe} from "../shared/pipes/office-organization.pipe";
 import {IndicatorPipe} from "../shared/pipes/indicator.pipe";
+import {CheckboxModule} from "primeng/checkbox";
+import {RippleModule} from "primeng/ripple";
 
 
 @NgModule({
@@ -35,7 +37,9 @@ import {IndicatorPipe} from "../shared/pipes/indicator.pipe";
         MessagesModule,
         ToastModule,
         FormsModule,
-        ChartModule
+        ChartModule,
+        CheckboxModule,
+        RippleModule
     ],
     providers:[
         UserPipe,

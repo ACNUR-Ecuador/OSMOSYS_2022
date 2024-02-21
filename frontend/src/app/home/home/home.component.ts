@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../services/user.service";
-import {ProjectService} from "../../services/project.service";
 import {VersionCheckService} from "../../services/version-check.service";
 import {environment} from '../../../environments/environment';
 import {UtilsService} from "../../services/utils.service";
@@ -25,19 +24,21 @@ export class HomeComponent implements OnInit {
     periods: Period[];
 
 
+
     constructor(
         private userService: UserService,
-        private projectService: ProjectService,
         private utilsService: UtilsService,
         private periodService: PeriodService,
         private versionCheckService: VersionCheckService,
         private messageService: MessageService
+
     ) {
     }
 
     ngOnInit(): void {
         this.loadPeriods();
         this.versionCheckService.checkVersion(environment.versionCheckURL);
+
     }
 
     loadUsers() {
@@ -64,6 +65,5 @@ export class HomeComponent implements OnInit {
             }
         });
     }
-
 
 }

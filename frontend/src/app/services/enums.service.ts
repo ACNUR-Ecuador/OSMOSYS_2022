@@ -36,7 +36,7 @@ export class EnumsService {
         }
     }
 
-    // todo 2024 reemplazar por opciones
+  /*  // todo 2024 reemplazar por opciones
     public getByDissagregationType(dissagregationType: DissagregationType): Observable<SelectItemWithOrder<any>[]> {
         if (!dissagregationType) {
             // @ts-ignore
@@ -58,7 +58,7 @@ export class EnumsService {
                 return null;
         }
     }
-
+*/
     public getByTypeFromServer(type: EnumsType): Observable<SelectItemWithOrder<any>[]> {
         return this.http.get<SelectItemWithOrder<any>[]>(`${mainServiceUrl}/${type}`);
     }

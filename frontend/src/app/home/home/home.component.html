@@ -1,31 +1,21 @@
 <p-card>
-
-<!--    <div class="grid" *ngIf="isAcnurUser">
-        <div class="col-12 border_div">
-            <p-button label="Ver mis actividades pendientes" icon="pi pi-calendar-times"
-                      [routerLink]="'/reports/lateReportsComponent'"
-
-                      styleClass="p-button-success col-12 mb-2"></p-button>
-        </div>
-    </div>-->
-
     <app-home-dashboard-focal-point
-        *ngIf="render && (isFocalPoint || isPartner || isAdmin)"
-        [currentPeriod]="currentPeriod"
-        [periods]="periods"
-        [isFocalPoint]="isFocalPoint"
-        [isAcnurUser]="isAcnurUser"
-        [isAdmin]="isAdmin"
-        [isPartner]="isPartner"
-        [focalPointProjectsIds]="focalPointProjectsIds"
+            *ngIf="render && (isFocalPoint || isPartner || isAdmin)"
+            [currentPeriod]="currentPeriod"
+            [periods]="periods"
+            [isFocalPoint]="isFocalPoint"
+            [isAcnurUser]="isAcnurUser"
+            [isAdmin]="isAdmin"
+            [isPartner]="isPartner"
+            [focalPointProjectsIds]="focalPointProjectsIds"
     >
 
     </app-home-dashboard-focal-point>
     <app-home-dashboard-direct-implementation
-        *ngIf="render && ( isAcnurUser || isAdmin)"
+            *ngIf="render && ( isAcnurUser || isAdmin)"
 
-        [currentPeriod]="currentPeriod"
-        [periods]="periods"
-        [isAdmin]="isAdmin"
+            [currentPeriod]="currentPeriod"
+            [periods]="periods"
+            [isAdmin]="isAdmin"
     ></app-home-dashboard-direct-implementation>
 </p-card>

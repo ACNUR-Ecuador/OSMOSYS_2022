@@ -244,119 +244,6 @@ export class UtilsService {
         return date;
     }
 
-    getEnymTypesByDissagregationTypes(dissagregationType: DissagregationType): EnumsType[] {
-        const dissagregationTypeE = DissagregationType[dissagregationType];
-        const result: EnumsType[] = [];
-        switch (dissagregationTypeE) {
-            case DissagregationType.TIPO_POBLACION: {
-                result.push(EnumsType.PopulationType);
-                return result;
-            }
-            case DissagregationType.EDAD: {
-                result.push(EnumsType.AgeType);
-                return result;
-            }
-
-            case DissagregationType.GENERO: {
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.LUGAR: {
-                return result;
-            }
-            case DissagregationType.PAIS_ORIGEN: {
-                result.push(EnumsType.CountryOfOrigin);
-                return result;
-            }
-            case DissagregationType.DIVERSIDAD: {
-                result.push(EnumsType.DiversityType);
-                return result;
-            }
-            case DissagregationType.SIN_DESAGREGACION: {
-                return result;
-            }
-            case DissagregationType.GENERO_Y_EDAD: {
-                result.push(EnumsType.AgeType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.GENERO_Y_DIVERSIDAD: {
-                result.push(EnumsType.DiversityType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_Y_GENERO: {
-                result.push(EnumsType.GenderType);
-                result.push(EnumsType.PopulationType);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_Y_EDAD: {
-                result.push(EnumsType.AgeType);
-                result.push(EnumsType.PopulationType);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD: {
-                result.push(EnumsType.DiversityType);
-                result.push(EnumsType.PopulationType);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN: {
-                result.push(EnumsType.CountryOfOrigin);
-                result.push(EnumsType.PopulationType);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_Y_LUGAR: {
-                result.push(null);
-                result.push(EnumsType.PopulationType);
-                return result;
-            }
-            case DissagregationType.LUGAR_EDAD_Y_GENERO: {
-                result.push(null);
-                result.push(EnumsType.AgeType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.DIVERSIDAD_EDAD_Y_GENERO: {
-                result.push(EnumsType.DiversityType);
-                result.push(EnumsType.AgeType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO: {
-                result.push(EnumsType.PopulationType);
-                result.push(null);
-                result.push(EnumsType.AgeType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-
-
-            case DissagregationType.LUGAR_Y_GENERO: {
-                result.push(null);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.LUGAR_Y_DIVERSIDAD: {
-                result.push(null);
-                result.push(EnumsType.DiversityType);
-                return result;
-            }
-            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO: {
-                result.push(null);
-                result.push(EnumsType.CountryOfOrigin);
-                result.push(EnumsType.AgeType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.PAIS_ORIGEN_EDAD_Y_GENERO: {
-                result.push(EnumsType.CountryOfOrigin);
-                result.push(EnumsType.AgeType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-
-        }
-    }
 
     // noinspection JSUnusedGlobalSymbols
     //todo 2024 eliminar
@@ -966,7 +853,7 @@ export class UtilsService {
             [item['id'], item])).values()];
 
         let result = Array.from(uniquesSet);
-        result.sort((a, b) => a.order-b.order);
+        result.sort((a, b) => a.order - b.order);
         return result;
 
     }
@@ -978,6 +865,25 @@ export class UtilsService {
             }
         }
         return undefined; // Return undefined if no matching value is found
+    }
+
+    standandarDissagregationOptionsToSelectItems(value1: StandardDissagregationOption[]): SelectItemWithOrder<StandardDissagregationOption>[] {
+        let result:SelectItemWithOrder<StandardDissagregationOption>[] = [];
+        value1.forEach(value => {
+            result.push(this.standandarDissagregationOptionToSelectItem(value));
+        });
+        result.sort((a, b) => a.value.order-b.value.order);
+        return result;
+    }
+
+    standandarDissagregationOptionToSelectItem(value1: StandardDissagregationOption): SelectItemWithOrder<StandardDissagregationOption> {
+        let option = new SelectItemWithOrder<StandardDissagregationOption>();
+        delete value1.type;
+        option.value = value1;
+        option.label = value1.name;
+        option.order = value1.order;
+        option.title = value1.groupName
+        return option;
     }
 }
 

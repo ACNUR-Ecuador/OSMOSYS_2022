@@ -25,11 +25,11 @@ export enum EnumsState {
 }
 
 export enum EnumsType {
-    AgeType = 'AgeType',
+    /*AgeType = 'AgeType',
     CountryOfOrigin = 'CountryOfOrigin',
     GenderType = 'GenderType',
     DiversityType = 'DiversityType',
-    PopulationType = 'PopulationType',
+    PopulationType = 'PopulationType',*/
     AreaType = 'AreaType',
     DissagregationType = 'DissagregationType',
     Frecuency = 'Frecuency',
