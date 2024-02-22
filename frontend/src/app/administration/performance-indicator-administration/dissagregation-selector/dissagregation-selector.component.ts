@@ -127,7 +127,6 @@ export class DissagregationSelectorComponent implements OnInit {
         this.standardDissagregationsService.getActiveAgeOptions().subscribe({
             next: value => {
                 this.ageOptions = value;
-                console.log(this.ageOptions);
             },
             error: err => {
                 this.messageService.add({

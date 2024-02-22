@@ -252,12 +252,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.indicatorService.getAll().subscribe({
             next: value => {
                 this.items = value;
-
-                for (let item of this.items) {
-                    if (item.id === 8) {
-                        console.log(item);
-                    }
-                }
             },
             error: err => {
                 this.messageService.add({
@@ -373,7 +367,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             indicator.state = 'INACTIVO';
         }
         // process assignation dissagregations
-        console.log(indicator);
+
 
         if (indicator.id) {
             // tslint:disable-next-line:no-shadowed-variable

@@ -57,6 +57,7 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
 
     ngOnInit(): void {
         this.processDissagregationValues();
+        // todo 2024 importación de datos
         this.showImportButton = false;//this.dissagregationType === DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO && this.implementationType === 'directImplementation';
         this.importForm = this.fb.group({
             fileName: new FormControl('', [Validators.required]),
@@ -82,11 +83,11 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
         this.dissagregationRowsType = dissagregationsTypesRyCEnum[2];
         this.dissagregationColumnsType = dissagregationsTypesRyCEnum[3];
 
-        // obtiene las opciones // todo+
-        this.dissagregationOptionsGroupsL1 =this.utilsService.getOptionsFromValuesByDissagregationType(this.values,this.dissagregationGroupsL1Type);
-        this.dissagregationOptionsGroupsL2 = this.utilsService.getOptionsFromValuesByDissagregationType(this.values,this.dissagregationGroupsL2Type);
-        this.dissagregationOptionsRows = this.utilsService.getOptionsFromValuesByDissagregationType(this.values,this.dissagregationRowsType);
-        this.dissagregationOptionsColumns = this.utilsService.getOptionsFromValuesByDissagregationType(this.values,this.dissagregationColumnsType);
+        // obtiene las opciones
+        this.dissagregationOptionsGroupsL1 = this.utilsService.getOptionsFromValuesByDissagregationType(this.values, this.dissagregationGroupsL1Type);
+        this.dissagregationOptionsGroupsL2 = this.utilsService.getOptionsFromValuesByDissagregationType(this.values, this.dissagregationGroupsL2Type);
+        this.dissagregationOptionsRows = this.utilsService.getOptionsFromValuesByDissagregationType(this.values, this.dissagregationRowsType);
+        this.dissagregationOptionsColumns = this.utilsService.getOptionsFromValuesByDissagregationType(this.values, this.dissagregationColumnsType);
 
 
         // hace un mapa
@@ -104,57 +105,7 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
             this.valuesGroupRowsMap.set(itemL1, groupL2Map);
         });
 
-        /*
-
-        forkJoin([dissagregationOptionsGroupsL1Obj, dissagregationOptionsGroupsL2Obj,
-            dissagregationOptionsRowsObj, dissagregationOptionsColumnsObj])
-            .subscribe(results => {
-                this.dissagregationOptionsGroupsL1 = results[0] as SelectItemWithOrder<any>[];
-                this.dissagregationOptionsGroupsL2 = results[1] as SelectItemWithOrder<any>[];
-                this.dissagregationOptionsRows = results[2] as SelectItemWithOrder<any>[];
-                this.dissagregationOptionsColumns = results[3] as SelectItemWithOrder<any>[];
-                // hace un mapa
-                this.valuesGroupRowsMap = new Map<SelectItemWithOrder<any>, Map<SelectItemWithOrder<any>, IndicatorValue[][]>>();
-                // para el nivel 1
-                this.dissagregationOptionsGroupsL1.forEach(itemL1 => {
-                    // por cada nivel 1
-                    const groupL2Map: Map<SelectItemWithOrder<any>, IndicatorValue[][]> = new Map<SelectItemWithOrder<any>, IndicatorValue[][]>();
-
-                    this.dissagregationOptionsGroupsL2.forEach(itemL2 => {
-                        //po cada nivel 2
-                        const rows = this.getRowsByGroups(itemL1, itemL2);
-                        groupL2Map.set(itemL2, rows);
-                    });
-                    this.valuesGroupRowsMap.set(itemL1, groupL2Map);
-                });
-            });
-
-         */
     }
-/*
-
-    getOptions(dissagregationType: DissagregationType): Observable<SelectItemWithOrder<any>[]> {
-        if (dissagregationType !== DissagregationType.LUGAR) {
-            return this.enumsService.getByDissagregationType(dissagregationType);
-        } else {
-            let locations: SelectItemWithOrder<any>[] = this.values
-                .map(value => {
-                    return value.location;
-                }).map(value => {
-                    const selectITem = new SelectItemWithOrder();
-                    selectITem.label = value.provincia.description + ' - ' + value.description;
-                    selectITem.value = value;
-                    return selectITem;
-                }).sort((a, b) => a.label.localeCompare(b.label));
-            locations = locations.filter((thing, j, arr) => {
-                return arr.indexOf(arr.find(t => t.value.id === thing.value.id)) === j;
-            });
-            locations.forEach((value, index) => value.order = index);
-            return of(locations);
-
-        }
-    }
-*/
 
     getRowsByGroups(itemL1: StandardDissagregationOption, itemL2: StandardDissagregationOption): Array<Array<IndicatorValue>> {
         let indicatorValues: IndicatorValue[];
@@ -171,7 +122,7 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
     getValuesByDissagregationValues(values: IndicatorValue[], dissagregationType: EnumWeb, value: StandardDissagregationOption | Canton) {
         // filtra por los 2 niveles
         return values.filter(indicatorValue => {
-            const valueOption = this.utilsService.getIndicatorValueByDissagregationType(dissagregationType, indicatorValue) ;
+            const valueOption = this.utilsService.getIndicatorValueByDissagregationType(dissagregationType, indicatorValue);
             return valueOption.id === value.id;
 
         });
@@ -209,10 +160,9 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
         row.sort((a, b) => {
             const valueA = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationColumnsType, a);
             const valueB = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationColumnsType, b);
-
-                const orderA = valueA.order;
-                const orderB = valueB.order;
-                return orderA > orderB ? -1 : 1;
+            const orderA = valueA.order;
+            const orderB = valueB.order;
+            return orderA > orderB ? -1 : 1;
 
         });
     }

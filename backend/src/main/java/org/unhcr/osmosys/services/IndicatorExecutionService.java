@@ -321,7 +321,7 @@ public class IndicatorExecutionService {
         // recupero todos los indicadores afectados
         List<Indicator> indicatorsToUpdate = this.indicatorDao.getByPeriodDissagregationAssignment(period.getId());
         for (Indicator indicator : indicatorsToUpdate) {
-            this.updatePerformanceIndicatorExecutionsDissagregations(period,indicator);
+            this.updatePerformanceIndicatorExecutionsDissagregations(period, indicator);
         }
 
     }
@@ -332,6 +332,8 @@ public class IndicatorExecutionService {
 
         List<IndicatorExecution> ies = this.indicatorExecutionDao.getByIndicatorIdAndPeriodId(period.getId(), indicator.getId());
         for (IndicatorExecution ie : ies) {
+            // debo agregar localizaciones si es el caso
+            this.setStandardDissagregationOptionsForIndicatorExucutions(ie, periodDissagregationMap);
             this.quarterService.updateQuarterDissagregations(ie, periodDissagregationMap);
             this.updateIndicatorExecutionTotals(ie);
             this.saveOrUpdate(ie);
@@ -339,10 +341,28 @@ public class IndicatorExecutionService {
 
     }
 
+    private static void setStandardDissagregationOptionsForIndicatorExucutions(IndicatorExecution ie, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> periodDissagregationMap) {
+        List<StandardDissagregationOption> locations = ie.getIndicatorExecutionLocationAssigments()
+                .stream()
+                .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getState().equals(State.ACTIVO))
+                .map(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getLocation()).collect(Collectors.toList());
+
+        periodDissagregationMap.forEach((dissagregationType, dissagregationTypeListMap) -> {
+            if (dissagregationType.isLocationsDissagregation()) {
+                dissagregationTypeListMap.forEach((dissagregationType1, standardDissagregationOptions) -> {
+                    if (dissagregationType1.equals(DissagregationType.LUGAR)) {
+                        periodDissagregationMap.get(dissagregationType).put(DissagregationType.LUGAR,locations);
+                    }
+                });
+            }
+        });
+    }
+
     public void updateGeneralIndicatorExecutionsDissagregations(Period period, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationTypeMapMap) throws GeneralAppException {
         // busco los ies que pueden ser actualizados
         List<IndicatorExecution> iesToUpdate = this.indicatorExecutionDao.getGeneralIndicatorsExecutionsByPeriodId(period.getId());
         for (IndicatorExecution ie : iesToUpdate) {
+            this.setStandardDissagregationOptionsForIndicatorExucutions(ie, dissagregationTypeMapMap);
             this.quarterService.updateQuarterDissagregations(ie, dissagregationTypeMapMap);
             this.updateIndicatorExecutionTotals(ie);
             this.saveOrUpdate(ie);
