@@ -6,8 +6,7 @@ import * as FileSaver from 'file-saver';
 import {FormGroup} from '@angular/forms';
 import {
     ColumnTable,
-    DissagregationType, EnumsIndicatorType,
-    EnumsState,
+    DissagregationType, EnumsState,
     EnumsType,
     QuarterType,
     SelectItemWithOrder
@@ -26,7 +25,6 @@ import {HttpResponse} from '@angular/common/http';
 import {TableColumnProperties} from 'exceljs';
 import {SortEvent} from "primeng/api";
 import {EnumsService} from "./enums.service";
-import {lastValueFrom} from "rxjs";
 import {SimpleDissagregationEnum} from "./standardDissagregations.service";
 
 @Injectable({
@@ -854,6 +852,9 @@ export class UtilsService {
 
         let result = Array.from(uniquesSet);
         result.sort((a, b) => a.order - b.order);
+        if (dissagregationType.value === 'LUGAR') {
+            options.forEach(value => value.name = (value as unknown as Canton).provincia.description + " - " + (value as unknown as Canton).description)
+        }
         return result;
 
     }
@@ -868,11 +869,11 @@ export class UtilsService {
     }
 
     standandarDissagregationOptionsToSelectItems(value1: StandardDissagregationOption[]): SelectItemWithOrder<StandardDissagregationOption>[] {
-        let result:SelectItemWithOrder<StandardDissagregationOption>[] = [];
+        let result: SelectItemWithOrder<StandardDissagregationOption>[] = [];
         value1.forEach(value => {
             result.push(this.standandarDissagregationOptionToSelectItem(value));
         });
-        result.sort((a, b) => a.value.order-b.value.order);
+        result.sort((a, b) => a.value.order - b.value.order);
         return result;
     }
 

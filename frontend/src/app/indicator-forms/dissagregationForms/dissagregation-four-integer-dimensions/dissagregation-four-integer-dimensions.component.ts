@@ -1,12 +1,11 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {EnumsType, SelectItemWithOrder} from '../../../shared/model/UtilsModel';
+import {EnumsType} from '../../../shared/model/UtilsModel';
 import {Canton, EnumWeb, IndicatorValue, StandardDissagregationOption} from '../../../shared/model/OsmosysModel';
 import {UtilsService} from '../../../services/utils.service';
 import {EnumsService} from '../../../services/enums.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import * as XLSX from "xlsx";
 import {WorkBook} from "xlsx";
-import {StandardDissagregationsService} from "../../../services/standardDissagregations.service";
 
 @Component({
     selector: 'app-dissagregation-four-integer-dimensions',
@@ -50,13 +49,13 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
     constructor(
         public utilsService: UtilsService,
         public enumsService: EnumsService,
-        public standardDissagregationsService: StandardDissagregationsService,
         private fb: FormBuilder
     ) {
     }
 
     ngOnInit(): void {
         this.processDissagregationValues();
+        console.log(this.values);
         // todo 2024 importación de datos
         this.showImportButton = false;//this.dissagregationType === DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO && this.implementationType === 'directImplementation';
         this.importForm = this.fb.group({
@@ -72,7 +71,6 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
     }
 
     processDissagregationValues() {
-        const dissagregationsTypesRyC: string[] = this.dissagregationType.standardDissagregationTypes;
         const dissagregationsTypesRyCEnum: EnumWeb[] = this.dissagregationType.standardDissagregationTypes
             .map(value => {
                 return this.enumsService.resolveEnumWeb(EnumsType.DissagregationType, value)
@@ -235,18 +233,13 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
         const ws: XLSX.WorkSheet = workbook.Sheets[spreedsheetname];
         const data = XLSX.utils.sheet_to_json(ws);
 
-        const valuesDissagregation = this.values.filter(value => {
-
-            return value.dissagregationType === this.dissagregationType.value;
-
-        });
         this.importErroMessage = [];
         this.showImportErroMessage = false;
 
 
         console.log(data);
         data.forEach(value => {
-            const canton_codigo: string = value['canton_codigo'];
+            // const canton_codigo: string = value['canton_codigo'];
             const tipo_poblacion: string = value['tipo_poblacion'];
             const tipo_genero: string = value['tipo_genero'];
             const tipo_edad: string = value['tipo_edad'];
