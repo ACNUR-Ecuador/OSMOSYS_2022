@@ -226,7 +226,7 @@ public class IndicatorValue extends BaseEntityIdState {
             this.indicatorValueOptionsDTO = new IndicatorValueOptionsDTO(this.populationType,this.countryOfOrigin,this.genderType, this.ageType, this.diversityType, this.location);
             this.indicatorValueOptionsDTO.setAgeType(ageType);
         }
-        return this.getDissagregationDTO();
+        return this.indicatorValueOptionsDTO;
     }
 
     public void setBytDTO(IndicatorValueOptionsDTO indicatorValueOptionsDTO){
