@@ -15,7 +15,7 @@ import {WorkBook} from "xlsx";
 export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnChanges {
 
 
-    @Input()
+    @Input() // todo quitar?
     implementationType: string;
     @Input()
     dissagregationType: EnumWeb;
@@ -114,7 +114,7 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
         // level 2
         indicatorValues = this.getValuesByDissagregationValues(indicatorValues, this.dissagregationGroupsL2Type, itemL2);
         // ordeno y clasifico
-        return this.getRowsByValues(this.dissagregationOptionsRows, this.dissagregationOptionsColumns, indicatorValues);
+        return this.getRowsByValues( indicatorValues);
     }
 
     getValuesByDissagregationValues(values: IndicatorValue[], dissagregationType: EnumWeb, value: StandardDissagregationOption | Canton) {
@@ -126,21 +126,9 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
         });
     }
 
-    getRowsByValues(dissagregationOptionsRows: StandardDissagregationOption[],
-                    dissagregationOptionsColumns: StandardDissagregationOption[],
-                    indicatorValues: IndicatorValue[]): IndicatorValue[][] {
+    getRowsByValues(indicatorValues: IndicatorValue[]): IndicatorValue[][] {
         const rows = new Array<Array<IndicatorValue>>();
-        /*if (this.dissagregationRowsType !== DissagregationType.LUGAR) {
-            dissagregationOptionsRows.forEach(option => {
-                const row: IndicatorValue[] = indicatorValues.filter(indicatorValue => {
-                    const value = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationRowsType, indicatorValue);
-                    return value === option.value;
-                });
-                // ordeno las columnas
-                this.sortRow(row);
-                rows.push(row);
-            });
-        } else {*/
+
         this.dissagregationOptionsRows.forEach(option => {
             const row = indicatorValues.filter(indicatorValue => {
                 const value = this.utilsService

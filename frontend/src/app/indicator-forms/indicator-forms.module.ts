@@ -48,6 +48,9 @@ import {InputTextModule} from 'primeng/inputtext';
 import {InputTextareaModule} from 'primeng/inputtextarea';
 import {TooltipModule} from "primeng/tooltip";
 import {FileUploadModule} from "primeng/fileupload";
+import {
+    DissagregationThreeIntegerDimensionsComponent
+} from "./dissagregationForms/dissagregation-three-integer-dimensions/dissagregation-three-integer-dimensions.component";
 
 
 @NgModule({
@@ -59,7 +62,7 @@ import {FileUploadModule} from "primeng/fileupload";
         CustomDissagregationIntegerComponent,
         DissagregationFourIntegerDimensionsComponent,
         DissagregationNoDissagregationIntegerComponent,
-        //DissagregationThreeIntegerDimensionsComponent,
+        DissagregationThreeIntegerDimensionsComponent,
         //DissagregationTwoIntegerDimentionsComponent,
         //DissagregationOneIntegerDimensionsComponent
     ],

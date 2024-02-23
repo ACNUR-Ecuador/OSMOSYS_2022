@@ -482,7 +482,7 @@ export class IndicatorValue {
     public genderType: StandardDissagregationOption;
     public ageType: StandardDissagregationOption;
     public diversityType: StandardDissagregationOption;
-    public location: StandardDissagregationOption;
+    public location: StandardDissagregationOption|Canton;
     public showValue: boolean;
     public value: number;
     public denominatorValue: number;

@@ -35,24 +35,22 @@
                 <div class="grid m-0" *ngIf="render">
                     <div class="col-12 md:col-6" *ngFor="let dissagregation of fourDimentionDissagregations">
                         <app-dissagregation-four-integer-dimensions
-                            *ngIf="monthValuesMap.get(dissagregation.value)"
-                            [dissagregationType]="dissagregation"
-                            [values]="monthValuesMap.get(dissagregation.value)"
-                            [editable]="editable"
-                            implementationType="partnerImplementation"
+                                *ngIf="monthValuesMap.get(dissagregation.value)"
+                                [dissagregationType]="dissagregation"
+                                [values]="monthValuesMap.get(dissagregation.value)"
+                                [editable]="editable"
+                                implementationType="partnerImplementation"
                         ></app-dissagregation-four-integer-dimensions>
                     </div>
-
-
-                    <!--
                     <div class="col-12 md:col-6" *ngFor="let dissagregation of threeDimentionDissagregations">
                         <app-dissagregation-three-integer-dimensions
-                            *ngIf="monthValuesMap.get(dissagregation)"
-                            [dissagregationType]="dissagregation"
-                            [values]="monthValuesMap.get(dissagregation)"
-                            [editable]="editable"
+                                *ngIf="monthValuesMap.get(dissagregation.value)"
+                                [dissagregationType]="dissagregation"
+                                [values]="monthValuesMap.get(dissagregation.value)"
+                                [editable]="editable"
                         ></app-dissagregation-three-integer-dimensions>
                     </div>
+                    <!--
                     <div class="col-12 md:col-6" *ngFor="let dissagregation of noDimentionDissagregations">
                         <app-dissagregation-no-dissagregation-integer
                             *ngIf="monthValuesMap.get(dissagregation)"
@@ -87,9 +85,9 @@
                     <div class="col-12 md:col-6"
                          *ngFor="let monthCustomDissagregatoinValue of monthCustomDissagregatoinValues">
                         <app-custom-dissagregation-integer
-                            [values]="monthCustomDissagregatoinValue.indicatorValuesCustomDissagregation"
-                            [customDissagregation]="monthCustomDissagregatoinValue.customDissagregation"
-                            [editable]="editable"
+                                [values]="monthCustomDissagregatoinValue.indicatorValuesCustomDissagregation"
+                                [customDissagregation]="monthCustomDissagregatoinValue.customDissagregation"
+                                [editable]="editable"
                         ></app-custom-dissagregation-integer>
                     </div>
                 </div>
@@ -99,14 +97,14 @@
                         <label class="col-4" for="assignedBudgetI">Presupuesto Asignado: </label>
                         <div class="col-6">
                             <label
-                                for="assignedBudgetI">{{indicatorExecution.assignedBudget | currency:'USD':true:'1.2-2'}}</label>
+                                    for="assignedBudgetI">{{indicatorExecution.assignedBudget | currency:'USD':true:'1.2-2'}}</label>
                         </div>
                     </div>
                     <div class="field grid">
                         <label class="col-4" for="assignedBudgetI">Presupuesto Ejecutado: </label>
                         <div class="col-6">
                             <label
-                                for="assignedBudgetI">{{indicatorExecution.availableBudget| currency:'USD':true:'1.2-2'}}</label>
+                                    for="assignedBudgetI">{{indicatorExecution.availableBudget| currency:'USD':true:'1.2-2'}}</label>
                         </div>
 
                     </div>
@@ -115,11 +113,11 @@
                             Mes:: </label>
                         <div class="col-6">
                             <p-inputNumber
-                                id="assignedBudgetI"
-                                formControlName="usedBudget"
-                                mode="currency"
-                                currency="USD"
-                                locale="en-US"
+                                    id="assignedBudgetI"
+                                    formControlName="usedBudget"
+                                    mode="currency"
+                                    currency="USD"
+                                    locale="en-US"
                             ></p-inputNumber>
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('usedBudget',formItem)">
@@ -224,7 +222,8 @@
     <div *ngIf="showErrorResume">
         <div class="grid">
             <div class="col-12">
-                <h5 class="p-error">Existen errores en los valores. Los valores totales de cada desagregación en la tabla
+                <h5 class="p-error">Existen errores en los valores. Los valores totales de cada desagregación en la
+                    tabla
                     deberían ser
                     iguales.</h5>
 
