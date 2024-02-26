@@ -577,11 +577,8 @@ export class UtilsService {
     }
 
     shouldvalidate(dissagregationType: string): boolean {
-        console.log(dissagregationType);
         const dissagregationTypeE = this.enumsService.resolveEnumWeb(EnumsType.DissagregationType, dissagregationType);
-        console.log(dissagregationTypeE.standardDissagregationTypes);
         let result= !(dissagregationTypeE.standardDissagregationTypes.lastIndexOf('DIVERSIDAD') >= 1);
-        console.log(result);
         return result;
     }
 

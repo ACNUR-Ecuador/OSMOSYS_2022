@@ -51,6 +51,7 @@ import {
 import {
     DissagregationOneIntegerDimensionsComponent
 } from "./dissagregationForms/dissagregation-one-integer-dimensions/dissagregation-one-integer-dimensions.component";
+import { DissagregationFiveIntegerDimensionsComponent } from './dissagregationForms/dissagregation-five-integer-dimensions/dissagregation-five-integer-dimensions.component';
 
 
 @NgModule({
@@ -64,7 +65,8 @@ import {
         DissagregationNoDissagregationIntegerComponent,
         DissagregationThreeIntegerDimensionsComponent,
         DissagregationTwoIntegerDimentionsComponent,
-        DissagregationOneIntegerDimensionsComponent
+        DissagregationOneIntegerDimensionsComponent,
+        DissagregationFiveIntegerDimensionsComponent
     ],
     imports: [
         CommonModule,

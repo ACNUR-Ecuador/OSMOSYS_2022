@@ -33,7 +33,13 @@
         <div class="card p-0">
             <fieldset style="border-style: none; margin: unset; padding: unset" [disabled]="!editable">
                 <div class="grid m-0" *ngIf="render">
-                    <div class="col-12 md:col-6" *ngFor="let dissagregation of fourDimentionDissagregations">
+                    <div class="col-12 md:col-6" *ngFor="let dissagregation of fiveDimentionDissagregations">
+                        <app-dissagregation-five-integer-dimensions
+                                *ngIf="monthValuesMap.get(dissagregation.value)"
+                                [dissagregationType]="dissagregation"
+                                [values]="monthValuesMap.get(dissagregation.value)"
+                                [editable]="editable"
+                        ></app-dissagregation-five-integer-dimensions>
                         <app-dissagregation-four-integer-dimensions
                             *ngIf="monthValuesMap.get(dissagregation.value)"
                             [dissagregationType]="dissagregation"
