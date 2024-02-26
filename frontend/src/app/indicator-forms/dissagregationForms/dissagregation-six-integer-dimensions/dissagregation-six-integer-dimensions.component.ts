@@ -55,6 +55,7 @@ export class DissagregationSixIntegerDimensionsComponent implements OnInit {
                 return this.enumsService.resolveEnumWeb(EnumsType.DissagregationType, value)
             });
 
+
         this.dissagregationGroupsL1Type = dissagregationsTypesRyCEnum[0];
         this.dissagregationGroupsL2Type = dissagregationsTypesRyCEnum[1];
         this.dissagregationGroupsL3Type = dissagregationsTypesRyCEnum[2];
