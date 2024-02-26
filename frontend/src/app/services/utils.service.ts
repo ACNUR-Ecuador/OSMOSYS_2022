@@ -482,6 +482,8 @@ export class UtilsService {
         const totalTwoDimentions = this.getTwoDimentionsDissagregationTypes();
         const totalThreeDimentions = this.getThreeDimentionsDissagregationTypes();
         const totalFourDimentions = this.getFourDimentionsDissagregationTypes();
+        const totalFiveDimentions = this.getFourDimentionsDissagregationTypes();
+        const totalSixDimentions = this.getFourDimentionsDissagregationTypes();
         const totalNoDimentions = this.getNoDimentionsDissagregationTypes();
         totalOneDimentions.forEach(key => {
             if (monthValuesMap.get(key) !== null && monthValuesMap.get(key).length > 0) {
@@ -508,12 +510,24 @@ export class UtilsService {
                 noDimentionDissagregations.push(DissagregationType[key]);
             }
         });
+        totalFiveDimentions.forEach(key => {
+            if (monthValuesMap.get(key) !== null && monthValuesMap.get(key).length > 0) {
+                fiveDimentionDissagregations.push(DissagregationType[key]);
+            }
+        });
+        totalSixDimentions.forEach(key => {
+            if (monthValuesMap.get(key) !== null && monthValuesMap.get(key).length > 0) {
+                sixDimentionDissagregations.push(DissagregationType[key]);
+            }
+        });
         const results: Map<number, DissagregationType[]> = new Map<number, DissagregationType[]>();
         results.set(0, noDimentionDissagregations);
         results.set(1, oneDimentionDissagregations);
         results.set(2, twoDimentionDissagregations);
         results.set(3, threeDimentionDissagregations);
         results.set(4, fourDimentionDissagregations);
+        results.set(5, fiveDimentionDissagregations);
+        results.set(6, sixDimentionDissagregations);
         return results;
     }
 
@@ -750,7 +764,7 @@ export class UtilsService {
         return cantones.sort((a, b) => {
             const x = a.provincia.description.localeCompare(b.provincia.description);
             if (x === 0) {
-                return a.description.localeCompare(b.description);
+                return a.name.localeCompare(b.name);
             } else {
                 return x;
             }
@@ -855,7 +869,7 @@ export class UtilsService {
         let result = Array.from(uniquesSet);
         result.sort((a, b) => a.order - b.order);
         if (dissagregationType.value === 'LUGAR') {
-            options.forEach(value => value.name = (value as unknown as Canton).provincia.description + " - " + (value as unknown as Canton).description)
+            options.forEach(value => value.name = (value as unknown as Canton).provincia.description + " - " + (value as unknown as Canton).name)
         }
         return result;
 

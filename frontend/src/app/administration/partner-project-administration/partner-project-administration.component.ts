@@ -579,7 +579,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             const deletedLocations = locationsBefore.filter((canton1) => !cantonesG.find(canton2 => canton1.id === canton2.id));
             if (agregatedLocation.length > 0) {
                 const cantonesList = agregatedLocation.map(value => {
-                    return value.description + '-' + value.provincia.description;
+                    return value.name + '-' + value.provincia.description;
                 }).join('<br>');
                 if (this.idProjectParam) {
                     this.confirmationService.confirm({

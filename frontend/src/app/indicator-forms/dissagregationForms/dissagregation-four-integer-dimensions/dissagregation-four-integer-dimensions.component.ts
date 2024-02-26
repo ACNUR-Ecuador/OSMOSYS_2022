@@ -55,7 +55,6 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
 
     ngOnInit(): void {
         this.processDissagregationValues();
-        console.log(this.values);
         // todo 2024 importación de datos
         this.showImportButton = false;//this.dissagregationType === DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO && this.implementationType === 'directImplementation';
         this.importForm = this.fb.group({

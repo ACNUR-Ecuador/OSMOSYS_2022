@@ -279,11 +279,9 @@ export class MonthState {
     public blockUpdate: boolean;
 }
 
-export class Canton {
-    public id: number;
+export class Canton extends StandardDissagregationOption{
+
     public code: string;
-    public description: string;
-    public state: string;
     public provincia: Provincia;
     public office: Office;
 }
