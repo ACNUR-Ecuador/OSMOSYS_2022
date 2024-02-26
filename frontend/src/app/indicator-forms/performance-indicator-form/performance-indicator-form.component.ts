@@ -135,40 +135,40 @@ export class PerformanceIndicatorFormComponent implements OnInit {
 
     loadMonthValues(monthId: number) {
         this.monthService.getMonthIndicatorValueByMonthId(monthId)
-            .subscribe(value => {
-                this.monthValues = value as MonthValues;
-                this.month = value.month;
-                this.setRoles();
-                this.monthValuesMap = value.indicatorValuesMap;
-                this.monthCustomDissagregatoinValues = value.customDissagregationValues;
-                this.formItem.get('commentary').patchValue(this.month.commentary);
-                this.formItem.get('sources').patchValue(this.month.sources);
-                this.formItem.get('checked').patchValue(this.month.checked);
-                if (this.indicatorExecution.keepBudget) {
-                    this.formItem.get('usedBudget').patchValue(this.month.usedBudget);
-                    this.formItem.get('usedBudget').setValidators(Validators.required);
-                } else {
-                    this.formItem.get('usedBudget').clearValidators();
-                }
-                if (this.isProjectFocalPoint || this.isAdmin) {
-                    this.formItem.get('checked').enable();
-                } else {
-                    this.formItem.get('checked').disable();
-                }
-                this.setOtherSource(this.formItem.get('sources').value);
-                this.enumsService.getByType(EnumsType.SourceType).subscribe(value1 => {
-                    this.sourceTypes = value1;
-                });
-                this.setDimentionsDissagregations();
-            },error => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error al cargar los valores del mes',
-                    detail: error.error.message,
-                    life: 3000
-                });
-            });
-
+            .subscribe({next:value => {
+                    this.monthValues = value as MonthValues;
+                    this.month = value.month;
+                    this.setRoles();
+                    this.monthValuesMap = value.indicatorValuesMap;
+                    this.monthCustomDissagregatoinValues = value.customDissagregationValues;
+                    this.formItem.get('commentary').patchValue(this.month.commentary);
+                    this.formItem.get('sources').patchValue(this.month.sources);
+                    this.formItem.get('checked').patchValue(this.month.checked);
+                    if (this.indicatorExecution.keepBudget) {
+                        this.formItem.get('usedBudget').patchValue(this.month.usedBudget);
+                        this.formItem.get('usedBudget').setValidators(Validators.required);
+                    } else {
+                        this.formItem.get('usedBudget').clearValidators();
+                    }
+                    if (this.isProjectFocalPoint || this.isAdmin) {
+                        this.formItem.get('checked').enable();
+                    } else {
+                        this.formItem.get('checked').disable();
+                    }
+                    this.setOtherSource(this.formItem.get('sources').value);
+                    this.enumsService.getByType(EnumsType.SourceType).subscribe(value1 => {
+                        this.sourceTypes = value1;
+                    });
+                    this.setDimentionsDissagregations();
+                },
+                error:error => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al cargar los valores del mes',
+                        detail: error.error.message,
+                        life: 3000
+                    });
+                }});
     }
 
     saveMonth() {
@@ -221,11 +221,6 @@ export class PerformanceIndicatorFormComponent implements OnInit {
 
     setDimentionsDissagregations(): void {
         this.render = false;
-        this.monthValuesMap.forEach((value, key) => {
-            if (value && value.length>0){
-                console.log(key);
-            }
-        });
         const dimensionsMap: Map<number, EnumWeb[]> = this.utilsService.setDimentionsDissagregationsV2(
             this.monthValuesMap
         );

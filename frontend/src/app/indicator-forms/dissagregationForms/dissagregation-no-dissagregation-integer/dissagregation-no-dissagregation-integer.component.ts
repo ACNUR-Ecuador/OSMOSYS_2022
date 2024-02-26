@@ -1,6 +1,5 @@
 import {Component, Input, OnChanges, OnInit} from '@angular/core';
-import {DissagregationType} from '../../../shared/model/UtilsModel';
-import {IndicatorValue, Month} from '../../../shared/model/OsmosysModel';
+import {EnumWeb, IndicatorValue, Month} from '../../../shared/model/OsmosysModel';
 import {EnumsService} from '../../../services/enums.service';
 
 @Component({
@@ -10,7 +9,7 @@ import {EnumsService} from '../../../services/enums.service';
 })
 export class DissagregationNoDissagregationIntegerComponent implements OnInit, OnChanges {
     @Input()
-    dissagregationType: DissagregationType;
+    dissagregationType: EnumWeb;
     @Input()
     values: IndicatorValue[];
     @Input()
