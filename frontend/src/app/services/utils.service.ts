@@ -662,7 +662,6 @@ export class UtilsService {
     }
 
 
-
     setZerosCustomMonthValues(monthCustomDissagregatoinValues: CustomDissagregationValues[]) {
         if (monthCustomDissagregatoinValues !== null && monthCustomDissagregatoinValues.length
             > 0) {
@@ -897,9 +896,16 @@ export class UtilsService {
         let result = Array.from(uniquesOptions);
 
         if (dissagregationType.value === 'LUGAR') {
-            result.forEach(value => value.name = (value as unknown as Canton).provincia.description + " - " + (value as unknown as Canton).name)
-            result.sort((a, b) =>(a as unknown as Canton).code.localeCompare((b as unknown as Canton).code));
-        }else {
+            result.forEach(value => {
+
+                if(value.name && !value.name.includes('--')){
+                    value.name = (value as unknown as Canton).provincia.description + " -- " + (value as unknown as Canton).name;
+                }
+
+                }
+            );
+            result.sort((a, b) => (a as unknown as Canton).code.localeCompare((b as unknown as Canton).code));
+        } else {
             result.sort((a, b) => a.order - b.order);
         }
         return result;

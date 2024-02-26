@@ -48,6 +48,9 @@ import {
 import {
     DissagregationTwoIntegerDimentionsComponent
 } from "./dissagregationForms/dissagregation-two-integer-dimentions/dissagregation-two-integer-dimentions.component";
+import {
+    DissagregationOneIntegerDimensionsComponent
+} from "./dissagregationForms/dissagregation-one-integer-dimensions/dissagregation-one-integer-dimensions.component";
 
 
 @NgModule({
@@ -61,7 +64,7 @@ import {
         DissagregationNoDissagregationIntegerComponent,
         DissagregationThreeIntegerDimensionsComponent,
         DissagregationTwoIntegerDimentionsComponent,
-        //DissagregationOneIntegerDimensionsComponent
+        DissagregationOneIntegerDimensionsComponent
     ],
     imports: [
         CommonModule,
@@ -96,9 +99,9 @@ import {
         CustomDissagregationIntegerComponent,
         DissagregationFourIntegerDimensionsComponent,
         DissagregationNoDissagregationIntegerComponent,
-        //DissagregationThreeIntegerDimensionsComponent,
+        DissagregationThreeIntegerDimensionsComponent,
         DissagregationTwoIntegerDimentionsComponent,
-        //DissagregationOneIntegerDimensionsComponent
+        DissagregationOneIntegerDimensionsComponent
     ],
     providers: [EnumValuesToLabelPipe]
 })

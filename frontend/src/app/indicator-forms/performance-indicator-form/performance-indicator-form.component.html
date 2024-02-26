@@ -60,16 +60,17 @@
                             [editable]="editable"
                         ></app-dissagregation-no-dissagregation-integer>
                     </div>
+                    -->
                     <div class="col-12 md:col-6"
                          *ngFor="let dissagregation of oneDimentionDissagregations ">
                         <app-dissagregation-one-integer-dimensions
-                            *ngIf="monthValuesMap.get(dissagregation)"
+                            *ngIf="monthValuesMap.get(dissagregation.value)"
                             [dissagregationType]="dissagregation"
-                            [values]="monthValuesMap.get(dissagregation)"
+                            [values]="monthValuesMap.get(dissagregation.value)"
                             [editable]="editable"
                         ></app-dissagregation-one-integer-dimensions>
                     </div>
-                    -->
+
                     <div class="col-12 md:col-6" *ngFor="let dissagregation of twoDimentionDissagregations">
                         <app-dissagregation-two-integer-dimentions
                             *ngIf="monthValuesMap.get(dissagregation.value)"
