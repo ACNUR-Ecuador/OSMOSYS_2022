@@ -371,7 +371,7 @@ public class ProjectsImportService {
         int firstCol = tableOptions.getArea().getFirstCell().getCol();
 
         List<CantonWeb> cantons = this.cantonService.getByState(State.ACTIVO);
-        List<String> values = cantons.stream().map(cantonWeb -> cantonWeb.getProvincia().getDescription() + "-" + cantonWeb.getDescription())
+        List<String> values = cantons.stream().map(cantonWeb -> cantonWeb.getProvincia().getDescription() + "-" + cantonWeb.getName())
                 .sorted().collect(Collectors.toList());
 
 

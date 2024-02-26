@@ -53,7 +53,7 @@ public class CantonService {
     public List<CantonWeb> discoverCantones(List<CantonWeb> cantonWebs) throws GeneralAppException {
         List<CantonWeb> r = new ArrayList<>();
         for (CantonWeb cantonWeb : cantonWebs) {
-            Canton can = this.standardDissagregationOptionService.discoverCanton(cantonWeb.getCode(), cantonWeb.getDescription(), cantonWeb.getProvincia() != null ? cantonWeb.getProvincia().getCode() : null, cantonWeb.getProvincia() != null ? cantonWeb.getProvincia().getDescription() : null);
+            Canton can = this.standardDissagregationOptionService.discoverCanton(cantonWeb.getCode(), cantonWeb.getName(), cantonWeb.getProvincia() != null ? cantonWeb.getProvincia().getCode() : null, cantonWeb.getProvincia() != null ? cantonWeb.getProvincia().getDescription() : null);
             if (can != null) {
                 r.add(this.modelWebTransformationService.cantonToCantonWeb(can));
             }

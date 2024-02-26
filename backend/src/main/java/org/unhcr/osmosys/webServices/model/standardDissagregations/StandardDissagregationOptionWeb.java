@@ -13,9 +13,9 @@ public class StandardDissagregationOptionWeb extends BaseWebEntity implements Se
         super();
     }
 
-    private String name;
-    private Integer order;
-    private String groupName;
+    protected String name;
+    protected Integer order;
+    protected String groupName;
 
 
     public String getName() {

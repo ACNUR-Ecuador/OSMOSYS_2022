@@ -2,19 +2,18 @@ package org.unhcr.osmosys.webServices.model;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
 
 import java.io.Serializable;
 
 
-public class CantonWeb extends BaseWebEntity  implements Serializable {
+public class CantonWeb extends StandardDissagregationOptionWeb implements Serializable {
 
     public CantonWeb() {
         super();
     }
 
     private String code;
-
-    private String description;
 
 
     private ProvinciaWeb provincia;
@@ -29,13 +28,6 @@ public class CantonWeb extends BaseWebEntity  implements Serializable {
         this.code = code;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
 
 
@@ -63,11 +55,11 @@ public class CantonWeb extends BaseWebEntity  implements Serializable {
 
         CantonWeb cantonWeb = (CantonWeb) o;
 
-        return new EqualsBuilder().append(id, cantonWeb.id).append(code, cantonWeb.code).append(description, cantonWeb.description).append(provincia, cantonWeb.provincia).isEquals();
+        return new EqualsBuilder().append(id, cantonWeb.id).append(code, cantonWeb.code).append(name, cantonWeb.name).append(provincia, cantonWeb.provincia).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(code).append(description).append(provincia).toHashCode();
+        return new HashCodeBuilder(17, 37).append(id).append(code).append(name).append(provincia).toHashCode();
     }
 }
