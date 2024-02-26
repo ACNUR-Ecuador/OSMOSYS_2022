@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {EnumsType, SelectItemWithOrder} from '../../../shared/model/UtilsModel';
-import {Canton, EnumWeb, IndicatorValue, StandardDissagregationOption} from '../../../shared/model/OsmosysModel';
+import {EnumsType} from '../../../shared/model/UtilsModel';
+import {EnumWeb, IndicatorValue, StandardDissagregationOption} from '../../../shared/model/OsmosysModel';
 import {UtilsService} from '../../../services/utils.service';
 import {EnumsService} from '../../../services/enums.service';
 
@@ -62,57 +62,27 @@ export class DissagregationThreeIntegerDimensionsComponent implements OnInit, On
         this.valuesGroupRowsMap = new Map<StandardDissagregationOption, IndicatorValue[][]>();
 
         // para el nivel 1
-        this.dissagregationOptionsGroups.forEach(itemL1 => {
+        this.dissagregationOptionsGroups.forEach(optionL1 => {
             // por cada nivel 1
 
-            const rows = this.getRowsByGroups(itemL1);
+            let rows = this.getByL1Options(optionL1, this.dissagregationGroupsType, this.values);
+            const rowsT = this.utilsService.getRowsAndColumnsFromValues(
+                this.dissagregationColumnsType,
+                this.dissagregationRowsType,
+                this.dissagregationOptionsRows,
+                this.dissagregationOptionsColumns,
+                rows);
 
-
-            this.valuesGroupRowsMap.set(itemL1, rows);
+            this.valuesGroupRowsMap.set(optionL1, rowsT);
         });
 
     }
 
-    getRowsByGroups(itemL1: StandardDissagregationOption): Array<Array<IndicatorValue>> {
-        let indicatorValues: IndicatorValue[];
+    getByL1Options(optionL1: StandardDissagregationOption,dissagregationGroupsL1Type: EnumWeb, values:IndicatorValue[]  ):IndicatorValue[]{
+        return values.filter(value => {
 
-        // level 1
-        indicatorValues = this.getValuesByDissagregationValues(this.values, this.dissagregationGroupsType, itemL1);
-
-        return this.getRowsByValues( indicatorValues);
-    }
-
-    getValuesByDissagregationValues(values: IndicatorValue[], dissagregationType: EnumWeb, value: StandardDissagregationOption | Canton) {
-        return values.filter(indicatorValue => {
-            const valueOption = this.utilsService.getIndicatorValueByDissagregationType(dissagregationType, indicatorValue);
-            return valueOption.id === value.id;
-
-        });
-    }
-
-    getRowsByValues(indicatorValues: IndicatorValue[]): IndicatorValue[][] {
-        const rows = new Array<Array<IndicatorValue>>();
-
-        this.dissagregationOptionsRows.forEach(option => {
-            const row = indicatorValues.filter(indicatorValue => {
-                const value = this.utilsService
-                    .getIndicatorValueByDissagregationType(this.dissagregationRowsType, indicatorValue);
-                return value.id === option.id;
-            });
-            this.sortRow(row);
-            rows.push(row);
-        });
-
-        return rows;
-    }
-
-    sortRow(row: IndicatorValue[]) {
-        row.sort((a, b) => {
-            const valueA = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationColumnsType, a);
-            const valueB = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationColumnsType, b);
-            const orderA = valueA.order;
-            const orderB = valueB.order;
-            return orderA > orderB ? -1 : 1;
+            const valueOption1 = this.utilsService.getIndicatorValueByDissagregationType(dissagregationGroupsL1Type, value);
+            return valueOption1.id === optionL1.id;
         });
     }
 

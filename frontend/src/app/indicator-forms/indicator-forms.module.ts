@@ -17,12 +17,6 @@ import {
 import {
     DissagregationNoDissagregationIntegerComponent
 } from './dissagregationForms/dissagregation-no-dissagregation-integer/dissagregation-no-dissagregation-integer.component';
-/*import {
-    DissagregationThreeIntegerDimensionsComponent
-} from './dissagregationForms/dissagregation-three-integer-dimensions/dissagregation-three-integer-dimensions.component';
-import {
-    DissagregationTwoIntegerDimentionsComponent
-} from './dissagregationForms/dissagregation-two-integer-dimentions/dissagregation-two-integer-dimentions.component';*/
 import {ChartModule} from 'primeng/chart';
 import {CardModule} from 'primeng/card';
 import {ToastModule} from 'primeng/toast';
@@ -51,6 +45,9 @@ import {FileUploadModule} from "primeng/fileupload";
 import {
     DissagregationThreeIntegerDimensionsComponent
 } from "./dissagregationForms/dissagregation-three-integer-dimensions/dissagregation-three-integer-dimensions.component";
+import {
+    DissagregationTwoIntegerDimentionsComponent
+} from "./dissagregationForms/dissagregation-two-integer-dimentions/dissagregation-two-integer-dimentions.component";
 
 
 @NgModule({
@@ -63,7 +60,7 @@ import {
         DissagregationFourIntegerDimensionsComponent,
         DissagregationNoDissagregationIntegerComponent,
         DissagregationThreeIntegerDimensionsComponent,
-        //DissagregationTwoIntegerDimentionsComponent,
+        DissagregationTwoIntegerDimentionsComponent,
         //DissagregationOneIntegerDimensionsComponent
     ],
     imports: [
@@ -100,7 +97,7 @@ import {
         DissagregationFourIntegerDimensionsComponent,
         DissagregationNoDissagregationIntegerComponent,
         //DissagregationThreeIntegerDimensionsComponent,
-        //DissagregationTwoIntegerDimentionsComponent,
+        DissagregationTwoIntegerDimentionsComponent,
         //DissagregationOneIntegerDimensionsComponent
     ],
     providers: [EnumValuesToLabelPipe]

@@ -465,6 +465,34 @@ export class UtilsService {
         return results;
     }
 
+    getRowsAndColumnsFromValues(
+        dissagregationColumnsType: EnumWeb,
+        dissagregationRowsType: EnumWeb,
+        dissagregationOptionsRows: StandardDissagregationOption[],
+        dissagregationOptionsColumns: StandardDissagregationOption[],
+        values: IndicatorValue[]) {
+        let rows = new Array<Array<IndicatorValue>>();
+        dissagregationOptionsRows.forEach(rowOption => {
+            const rowOrdered = new Array<IndicatorValue>();
+            const rowTotal = values.filter(value => {
+                const valueOption = this.getIndicatorValueByDissagregationType(dissagregationRowsType, value);
+                return valueOption.id === rowOption.id;
+            });
+            dissagregationOptionsColumns.forEach(colOptions => {
+
+                const val = rowTotal.find(value => {
+                    const optionCol = this.getIndicatorValueByDissagregationType(dissagregationColumnsType, value);
+                    return optionCol.id === colOptions.id
+                });
+                rowOrdered.push(val);
+            });
+
+            rows.push(rowOrdered);
+        });
+
+        return rows;
+    }
+
     // todo 2024 eliminar por v2
     setDimentionsDissagregations(
         monthValuesMap: Map<string, IndicatorValue[]>): Map<number, DissagregationType[]> {
@@ -863,13 +891,16 @@ export class UtilsService {
         let options = values
             .map(value => this.getIndicatorValueByDissagregationType(dissagregationType, value));
 
-        const uniquesSet = [...new Map(options.map(item =>
+        const uniquesOptions = [...new Map(options.map(item =>
             [item['id'], item])).values()];
 
-        let result = Array.from(uniquesSet);
-        result.sort((a, b) => a.order - b.order);
+        let result = Array.from(uniquesOptions);
+
         if (dissagregationType.value === 'LUGAR') {
-            options.forEach(value => value.name = (value as unknown as Canton).provincia.description + " - " + (value as unknown as Canton).name)
+            result.forEach(value => value.name = (value as unknown as Canton).provincia.description + " - " + (value as unknown as Canton).name)
+            result.sort((a, b) =>(a as unknown as Canton).code.localeCompare((b as unknown as Canton).code));
+        }else {
+            result.sort((a, b) => a.order - b.order);
         }
         return result;
 
