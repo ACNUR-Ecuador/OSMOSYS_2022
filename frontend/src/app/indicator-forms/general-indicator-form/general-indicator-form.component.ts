@@ -1,8 +1,8 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {Canton, IndicatorExecution, IndicatorValue, Month, MonthValues} from '../../shared/model/OsmosysModel';
+import {Canton, EnumWeb, IndicatorExecution, IndicatorValue, Month, MonthValues} from '../../shared/model/OsmosysModel';
 import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {MessageService, SelectItem} from 'primeng/api';
-import {DissagregationType, EnumsState, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
+import {EnumsState, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {IndicatorExecutionService} from '../../services/indicator-execution.service';
 import {MonthService} from '../../services/month.service';
@@ -37,11 +37,15 @@ export class GeneralIndicatorFormComponent implements OnInit {
     showOtherSource: boolean;
     totalsValidation: Map<string, number> = null;
 
-    oneDimentionDissagregations: DissagregationType[] = [];
-    twoDimentionDissagregations: DissagregationType[] = [];
-    threeDimentionDissagregations: DissagregationType[] = [];
-    fourDimentionDissagregations: DissagregationType[] = [];
-    noDimentionDissagregations: DissagregationType[] = [];
+    noDimentionDissagregations: EnumWeb[] = [];
+    oneDimentionDissagregations: EnumWeb[] = [];
+    twoDimentionDissagregations: EnumWeb[] = [];
+    threeDimentionDissagregations: EnumWeb[] = [];
+    fourDimentionDissagregations: EnumWeb[] = [];
+    fiveDimentionDissagregations: EnumWeb[] = [];
+    sixDimentionDissagregations: EnumWeb[] = [];
+
+
     chekedOptions: SelectItem[];
 
     hasLocationDissagregation: boolean;
@@ -211,14 +215,17 @@ export class GeneralIndicatorFormComponent implements OnInit {
 
     setDimentionsDissagregations(): void {
         this.render = false;
-        const dimensionsMap: Map<number, DissagregationType[]> = this.utilsService.setDimentionsDissagregations(
+        const dimensionsMap: Map<number, EnumWeb[]> = this.utilsService.setDimentionsDissagregationsV2(
             this.monthValuesMap
         );
+
         this.noDimentionDissagregations = dimensionsMap.get(0);
         this.oneDimentionDissagregations = dimensionsMap.get(1);
         this.twoDimentionDissagregations = dimensionsMap.get(2);
         this.threeDimentionDissagregations = dimensionsMap.get(3);
         this.fourDimentionDissagregations = dimensionsMap.get(4);
+        this.fiveDimentionDissagregations = dimensionsMap.get(5);
+        this.sixDimentionDissagregations = dimensionsMap.get(6);
         this.render = true;
     }
 
@@ -242,7 +249,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
         for (const entry of Array.from(this.monthValuesMap.entries())) {
             const key = entry[0];
             const value = entry[1];
-            if (value && this.utilsService.isLocationDissagregation(key as DissagregationType)) {
+            if (value && this.utilsService.isLocationDissagregation(key)) {
                 this.hasLocationDissagregation = true;
                 this.validateSegregations();
                 return;
@@ -273,7 +280,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
             // noinspection JSMismatchedCollectionQueryUpdate
             let cantonesCurrent: Canton[] = [];
             this.monthValuesMap.forEach((value1, key) => {
-                if (this.utilsService.isLocationDissagregation(key as DissagregationType) && value1) {
+                if (this.utilsService.isLocationDissagregation(key) && value1) {
                     const cantones = value1
                         .filter(value2 => value2.state === EnumsState.ACTIVE)
                         .filter(value2 => value2.location)
@@ -319,7 +326,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
         if (!cantones || cantones.length < 1) {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Selecciona al menos un municipio',
+                summary: 'Selecciona al menos un lugar',
                 life: 3000
             });
         } else {
@@ -331,7 +338,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
                 }, error => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al guardar los cantones',
+                        summary: 'Error al guardar los lugar',
                         detail: error.error.message,
                         sticky: true
                     });

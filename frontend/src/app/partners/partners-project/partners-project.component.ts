@@ -458,7 +458,7 @@ export class PartnersProjectComponent implements OnInit {
         if (!cantones || cantones.length < 1) {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Selecciona al menos un municipio',
+                summary: 'Selecciona al menos un lugar',
                 life: 3000
             });
         } else {
@@ -469,7 +469,7 @@ export class PartnersProjectComponent implements OnInit {
                     }, error: err => {
                         this.messageService.add({
                             severity: 'error',
-                            summary: 'Selecciona al menos un municipio',
+                            summary: 'Selecciona al menos un lugar',
                             detail: err.error.message,
                             life: 3000
                         });

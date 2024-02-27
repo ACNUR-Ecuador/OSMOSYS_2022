@@ -24,7 +24,6 @@ import {
 
     ColumnDataType,
     ColumnTable,
-    DissagregationType,
     EnumsIndicatorType,
     EnumsState,
     EnumsType
@@ -323,7 +322,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 error: error => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al cargar los municipios',
+                        summary: 'Error al cargar los lugares',
                         detail: error.error.message,
                         life: 3000
                     });
@@ -491,7 +490,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         if (!locations || locations.length < 1) {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Agrega al menos un municipio'
+                summary: 'Agrega al menos un lugar'
             });
             return;
         }
@@ -583,7 +582,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 }).join('<br>');
                 if (this.idProjectParam) {
                     this.confirmationService.confirm({
-                        message: 'Quieres agregar los municipios nuevos a todos los indicadores de producto?<br>' + cantonesList,
+                        message: 'Quieres agregar los lugares nuevos a todos los indicadores de producto?<br>' + cantonesList,
                         header: 'Actualización de indicadores',
                         closeOnEscape: false,
                         icon: 'pi pi-exclamation-triangle',
@@ -661,12 +660,12 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     private createTables() {
         this.cols = [
             {field: 'provincia.description', header: 'Departamento', type: ColumnDataType.text},
-            {field: 'description', header: 'Municipio', type: ColumnDataType.text}
+            {field: 'description', header: 'Lugar', type: ColumnDataType.text}
         ];
 
         this.colsCantonList = [
             {field: 'provincia.description', header: 'Departamento', type: ColumnDataType.text},
-            {field: 'description', header: 'Municipio', type: ColumnDataType.text},
+            {field: 'description', header: 'Lugar', type: ColumnDataType.text},
             {field: 'enabled', header: 'Activo', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe}
         ];
         this.colsCantonListNotEditable = this.colsCantonList.filter(value => {
@@ -925,8 +924,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             if (indicatorExecution.locations.length < 1 && this.indicatorHasLocationDissagregation(indicatorExecution.indicator)) {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Seleccione al menos un municipio',
-                    detail: 'Este indicador tiene desagregación por lugar, es necesario activar al menos un municipio',
+                    summary: 'Seleccione al menos un lugar',
+                    detail: 'Este indicador tiene desagregación por lugar, es necesario activar al menos un lugar',
                     life: 3000
                 });
                 return;
@@ -967,8 +966,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             if (indicatorExecution.locations.length < 1 && this.indicatorHasLocationDissagregation(indicatorExecution.indicator)) {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Seleccione al menos un municipio',
-                    detail: 'Este indicador tiene desagregación por lugar, es necesario activar al menos un municipio',
+                    summary: 'Seleccione al menos un lugar',
+                    detail: 'Este indicador tiene desagregación por lugar, es necesario activar al menos un lugar',
                     life: 3000
                 });
                 return;
@@ -1131,8 +1130,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     return value.state === EnumsState.ACTIVE;
                 })
                 .filter(value => {
-                    const dissagregationTypeE = DissagregationType[value.dissagregationType];
-                    return this.utilsService.isLocationDissagregation(dissagregationTypeE);
+                    const dissagregationTypeE =this.enumsService.resolveEnumWeb(EnumsType.DissagregationType, value.dissagregationType);
+                    return dissagregationTypeE.isLocationsDissagregation;
                 }).length > 0;
         } else {
             return false;

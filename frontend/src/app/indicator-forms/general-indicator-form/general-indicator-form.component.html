@@ -3,7 +3,8 @@
     <p-messages></p-messages>
     <div class="card p-0 border-primary font-bold text-lg text-primary">
         <div class="fluid">
-            <p class="text-primary text-xl">Para el reporte de este indicador general, recuerde que <b><u>una persona beneficiaria debe
+            <p class="text-primary text-xl">Para el reporte de este indicador general, recuerde que <b><u>una persona
+                beneficiaria debe
                 contabilizarse
                 solamente una vez</u></b>, a pesar de que haya recibido diferentes servicios por parte del proyecto.
                 <b><u>No se considerarán como parte de la población objetivo del proyecto a funcionarios públicos o
@@ -27,68 +28,84 @@
     </div>
     <form #myForm="ngForm" [formGroup]="formItem" (ngSubmit)="saveMonth()">
         <div class="card p-0">
-                    <div *ngIf="render">
-                        <app-chart-indicator-execution *ngIf="render"
-                                                       [month]="month"
-                                                       [indicatorExecution]="indicatorExecution"
-                        ></app-chart-indicator-execution>
-                    </div>
+            <div *ngIf="render">
+                <app-chart-indicator-execution *ngIf="render"
+                                               [month]="month"
+                                               [indicatorExecution]="indicatorExecution"
+                ></app-chart-indicator-execution>
+            </div>
         </div>
         <div class="p-card p-0">
             <fieldset style="border-style: none; margin: unset; padding: unset" [disabled]="!editable">
                 <div class="grid m-0" *ngIf="render">
-                    <div class="col-12 md:col-6" *ngFor="let dissagregation of fourDimentionDissagregations">
-                        <!--// todo 2024 restaurar
-                            [dissagregationType]="dissagregation"
-                            -->
-                        <app-dissagregation-four-integer-dimensions
-                            *ngIf="monthValuesMap.get(dissagregation)"
 
-                            [dissagregationType]=null
-                            [values]="monthValuesMap.get(dissagregation)"
-                            [editable]="editable"
-                            implementationType="partnerImplementation"
+
+                    <div class="col-12 md:col-6" *ngFor="let dissagregation of sixDimentionDissagregations">
+                        <app-dissagregation-six-integer-dimensions
+                                *ngIf="monthValuesMap.get(dissagregation.value)"
+                                [dissagregationType]="dissagregation"
+                                [values]="monthValuesMap.get(dissagregation.value)"
+                                [editable]="editable"
+                        ></app-dissagregation-six-integer-dimensions>
+                    </div>
+                    <div class="col-12 md:col-6" *ngFor="let dissagregation of fiveDimentionDissagregations">
+                        <app-dissagregation-five-integer-dimensions
+                                *ngIf="monthValuesMap.get(dissagregation.value)"
+                                [dissagregationType]="dissagregation"
+                                [values]="monthValuesMap.get(dissagregation.value)"
+                                [editable]="editable"
+                        ></app-dissagregation-five-integer-dimensions>
+                    </div>
+
+                    <div class="col-12 md:col-6" *ngFor="let dissagregation of fourDimentionDissagregations">
+                        <app-dissagregation-four-integer-dimensions
+                                *ngIf="monthValuesMap.get(dissagregation.value)"
+                                [dissagregationType]="dissagregation"
+                                [values]="monthValuesMap.get(dissagregation.value)"
+                                [editable]="editable"
+                                implementationType="partnerImplementation"
                         ></app-dissagregation-four-integer-dimensions>
                     </div>
-                    <!--// todo 2024 restaurar-->
-                   <!-- <div class="col-12 md:col-6" *ngFor="let dissagregation of threeDimentionDissagregations">
+                    <div class="col-12 md:col-6" *ngFor="let dissagregation of threeDimentionDissagregations">
                         <app-dissagregation-three-integer-dimensions
-                            *ngIf="monthValuesMap.get(dissagregation)"
-                            [dissagregationType]="dissagregation"
-                            [values]="monthValuesMap.get(dissagregation)"
-                            [editable]="editable"
+                                *ngIf="monthValuesMap.get(dissagregation.value)"
+                                [dissagregationType]="dissagregation"
+                                [values]="monthValuesMap.get(dissagregation.value)"
+                                [editable]="editable"
                         ></app-dissagregation-three-integer-dimensions>
-                    </div>--><!--
-                    <div class="col-12 md:col-6" *ngFor="let dissagregation of noDimentionDissagregations">
-                        <app-dissagregation-no-dissagregation-integer
-                            *ngIf="monthValuesMap.get(dissagregation)"
-                            [month]="month"
-                            [dissagregationType]="dissagregation"
-                            [values]="monthValuesMap.get(dissagregation)"
-                            [editable]="editable"
-                        ></app-dissagregation-no-dissagregation-integer>
-                    </div>-->
-                    <!--// todo 2024 restaurar-->
-                    <!--<div class="col-12 md:col-6"
-                         *ngFor="let dissagregation of oneDimentionDissagregations ">
-                        <app-dissagregation-one-integer-dimensions
-                            *ngIf="monthValuesMap.get(dissagregation)"
-                            [dissagregationType]="dissagregation"
-                            [values]="monthValuesMap.get(dissagregation)"
-                            [editable]="editable"
-                        ></app-dissagregation-one-integer-dimensions>
+                    </div>
+
+
+                    <div class="col-12 md:col-6" *ngFor="let dissagregation of twoDimentionDissagregations">
+                        <app-dissagregation-two-integer-dimentions
+                                *ngIf="monthValuesMap.get(dissagregation.value)"
+                                [dissagregationType]="dissagregation"
+                                [values]="monthValuesMap.get(dissagregation.value)"
+                                [editable]="editable"
+                        ></app-dissagregation-two-integer-dimentions>
                     </div>
                     <div class="col-12 md:col-6"
-                         *ngFor="let dissagregation of twoDimentionDissagregations">
-                        <div *ngIf="monthValuesMap.get(dissagregation)">
-                            <app-dissagregation-two-integer-dimentions
-                                *ngIf="monthValuesMap.get(dissagregation)"
+                         *ngFor="let dissagregation of oneDimentionDissagregations ">
+                        <app-dissagregation-one-integer-dimensions
+                                *ngIf="monthValuesMap.get(dissagregation.value)"
                                 [dissagregationType]="dissagregation"
-                                [values]="monthValuesMap.get(dissagregation)"
+                                [values]="monthValuesMap.get(dissagregation.value)"
                                 [editable]="editable"
-                            ></app-dissagregation-two-integer-dimentions>
-                        </div>
-                    </div>-->
+                        ></app-dissagregation-one-integer-dimensions>
+                    </div>
+
+
+                    <div class="col-12 md:col-6" *ngFor="let dissagregation of noDimentionDissagregations">
+                        <app-dissagregation-no-dissagregation-integer
+                                *ngIf="monthValuesMap.get(dissagregation.value)"
+                                [month]="month"
+                                [dissagregationType]="dissagregation"
+                                [values]="monthValuesMap.get(dissagregation.value)"
+                                [editable]="editable"
+                        ></app-dissagregation-no-dissagregation-integer>
+                    </div>
+
+
                 </div>
                 <div class="card">
                     <div class="p-fluid p-formgrid grid">
@@ -191,7 +208,7 @@
         <div class="grid">
             <div class="col-12">
                 <h5 class="p-error">
-                Existen errores en los valores. Los valores totales de cada desagregación en la tabla deberían ser
+                    Existen errores en los valores. Los valores totales de cada desagregación en la tabla deberían ser
                     iguales.</h5>
             </div>
             <div class="col-12">

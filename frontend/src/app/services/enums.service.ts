@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {EMPTY, Observable} from 'rxjs';
-import {DissagregationType, EnumsType, SelectItemWithOrder} from '../shared/model/UtilsModel';
+import {EnumsType, SelectItemWithOrder} from '../shared/model/UtilsModel';
 import {HttpClient} from '@angular/common/http';
 import {catchError, shareReplay} from 'rxjs/operators';
 import {EnumWeb} from "../shared/model/OsmosysModel";
