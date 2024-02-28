@@ -16,10 +16,11 @@ import {IndicatorTrendsComponent} from "./2022/indicator-trends/indicator-trends
 import {ProductIndicators2021Component} from "./2021/product-indicators2021/product-indicators2021.component";
 import {Beneficiaries2021Component} from "./2021/beneficiaries2021/beneficiaries2021.component";
 import {DataExportComponent} from "./data-export/data-export.component";
-import { PiIndicators2023Component } from './2023/pi-indicators2023/pi-indicators2023.component';
 
 
 import {GeneralIndicatorComponent} from "./powerbi/2023/general-indicator/general-indicator.component";
+import {PerfilesDePoblacionComponent} from "./2024/perfiles-de-poblacion/perfiles-de-poblacion.component";
+import {ComunidadesComponent} from "./2024/comunidades/comunidades.component";
 
 const routes: Routes = [
     {
@@ -29,7 +30,10 @@ const routes: Routes = [
             {path: 'lateReports', component: LateReportsComponent},
             {path: 'lateReports', component: LateReportsComponent},
             {path: 'dataExport', component: DataExportComponent},
+            //2024 sv
             // powerbi sv
+            {path: 'powerbi/perfilesDePoblacion', component: PerfilesDePoblacionComponent},
+            {path: 'powerbi/mapaComunidades', component: ComunidadesComponent},
             {path: 'powerbi/productIndicators2023', component: ProductIndicatorsComponent},
             {path: 'powerbi/generalIndicator2023', component: GeneralIndicatorComponent},
             //2023

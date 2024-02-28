@@ -32,6 +32,8 @@ import { ProductIndicators2023Component } from './2023/product-indicators2023/pr
 import { TrendsIndicators2023Component } from './2023/trends-indicators2023/trends-indicators2023.component';
 import { GeneralIndicatorComponent } from './powerbi/2023/general-indicator/general-indicator.component';
 import {ProductIndicatorsComponent} from "./powerbi/2023/product-indicators/product-indicators.component";
+import { PerfilesDePoblacionComponent } from './2024/perfiles-de-poblacion/perfiles-de-poblacion.component';
+import { ComunidadesComponent } from './2024/comunidades/comunidades.component';
 
 
 @NgModule({
@@ -56,6 +58,8 @@ import {ProductIndicatorsComponent} from "./powerbi/2023/product-indicators/prod
     ProductIndicators2023Component,
     TrendsIndicators2023Component,
     GeneralIndicatorComponent,
+    PerfilesDePoblacionComponent,
+    ComunidadesComponent,
 
   ],
     imports: [
