@@ -1,11 +1,6 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ChartIndicatorExecutionComponent} from './chart-indicator-execution/chart-indicator-execution.component';
-/*
-import {
-    DirectImplementationPerformanceIndicatorFormComponent
-} from './direct-implementation-performance-indicator-form/direct-implementation-performance-indicator-form.component';
-*/
 import {GeneralIndicatorFormComponent} from './general-indicator-form/general-indicator-form.component';
 import {PerformanceIndicatorFormComponent} from './performance-indicator-form/performance-indicator-form.component';
 import {
@@ -30,9 +25,6 @@ import {DialogModule} from 'primeng/dialog';
 import {TableModule} from 'primeng/table';
 import {SharedModule} from '../shared/shared.module';
 import {PickListModule} from 'primeng/picklist';
-/*import {
-    DissagregationOneIntegerDimensionsComponent
-} from './dissagregationForms/dissagregation-one-integer-dimensions/dissagregation-one-integer-dimensions.component';*/
 import {EnumValuesToLabelPipe} from '../shared/pipes/enum-values-to-label.pipe';
 import {PanelModule} from 'primeng/panel';
 import {AccordionModule} from 'primeng/accordion';
@@ -53,12 +45,15 @@ import {
 } from "./dissagregationForms/dissagregation-one-integer-dimensions/dissagregation-one-integer-dimensions.component";
 import { DissagregationFiveIntegerDimensionsComponent } from './dissagregationForms/dissagregation-five-integer-dimensions/dissagregation-five-integer-dimensions.component';
 import { DissagregationSixIntegerDimensionsComponent } from './dissagregationForms/dissagregation-six-integer-dimensions/dissagregation-six-integer-dimensions.component';
+import {
+    DirectImplementationPerformanceIndicatorFormComponent
+} from "./direct-implementation-performance-indicator-form/direct-implementation-performance-indicator-form.component";
 
 
 @NgModule({
     declarations: [
         ChartIndicatorExecutionComponent,
-        //DirectImplementationPerformanceIndicatorFormComponent,
+        DirectImplementationPerformanceIndicatorFormComponent,
         GeneralIndicatorFormComponent,
         PerformanceIndicatorFormComponent,
         CustomDissagregationIntegerComponent,
@@ -97,7 +92,7 @@ import { DissagregationSixIntegerDimensionsComponent } from './dissagregationFor
     ],
     exports: [
         ChartIndicatorExecutionComponent,
-        //DirectImplementationPerformanceIndicatorFormComponent,
+        DirectImplementationPerformanceIndicatorFormComponent,
         GeneralIndicatorFormComponent,
         PerformanceIndicatorFormComponent,
         CustomDissagregationIntegerComponent,
