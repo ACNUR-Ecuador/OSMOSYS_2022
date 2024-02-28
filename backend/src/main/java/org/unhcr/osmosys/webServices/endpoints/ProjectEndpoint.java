@@ -200,7 +200,7 @@ public class ProjectEndpoint {
             List<CantonWeb> cantonesWeb
     ) throws GeneralAppException {
         LOGGER.info(cantonesWeb);
-        this.projectService.updateProjectLocations(Set.copyOf(cantonesWeb), projectId,true);
+        this.projectService.updateProjectLocations(Set.copyOf(cantonesWeb), projectId);
     }
 
 }

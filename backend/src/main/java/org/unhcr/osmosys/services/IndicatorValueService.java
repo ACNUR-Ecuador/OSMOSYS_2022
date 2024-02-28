@@ -96,6 +96,7 @@ public class IndicatorValueService {
 
         switch (numberOfDissagregations) {
             case 0:
+
                 throw new GeneralAppException("Error programación: No implementado para " + numberOfDissagregations + " desagregaciones");
 
             case 1:

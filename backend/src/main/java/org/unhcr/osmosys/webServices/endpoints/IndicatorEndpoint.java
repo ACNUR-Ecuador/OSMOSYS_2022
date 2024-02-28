@@ -51,7 +51,7 @@ public class IndicatorEndpoint {
 
     @Path("/")
     @GET
-    //@Secured
+    @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public List<IndicatorWeb> getAll() {
         return this.indicatorService.getAll();

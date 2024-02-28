@@ -205,9 +205,6 @@ public class IndicatorService {
 
 
         this.saveOrUpdate(indicator);
-
-        // todo 2024 puedo evitar etsta llamada?
-
         updatePeriodStatementAssigment(indicator);
         this.updateIndicatorExecutionsDissagregationsByIndicator(
                 indicator
@@ -229,7 +226,7 @@ public class IndicatorService {
 
         List<Period> periods = indicator.getDissagregationsAssignationToIndicator().stream().map(DissagregationAssignationToIndicator::getPeriod).distinct().collect(Collectors.toList());
         for (Period period : periods) {
-            LOGGER.info("updating period: "+period.getYear());
+
             this.indicatorExecutionService.updatePerformanceIndicatorExecutionsDissagregations(period,indicator);
         }
 

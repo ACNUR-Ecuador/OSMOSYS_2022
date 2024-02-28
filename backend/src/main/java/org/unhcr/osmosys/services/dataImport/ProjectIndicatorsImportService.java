@@ -257,7 +257,7 @@ public class ProjectIndicatorsImportService {
             List<CantonWeb> totalLocaltionWeb = this.modelWebTransformationService.cantonsToCantonsWeb(new ArrayList<>(totalLocations));
             projectWebOrg.setLocations(new HashSet<>(totalLocaltionWeb));
 
-            this.projectService.updateProjectLocations(projectWebOrg.getLocations(), project, false);
+            this.projectService.updateProjectLocations(projectWebOrg.getLocations(), project.getId());
 
             for (IndicatorExecutionAssigmentWeb indicatorExecutionAssigmentWeb : indicatorExecutionAssigmentWebs) {
                 IndicatorExecution ie = this.indicatorExecutionService.assignPerformanceIndicatoToProject(indicatorExecutionAssigmentWeb);

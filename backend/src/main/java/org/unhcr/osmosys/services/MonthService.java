@@ -157,6 +157,7 @@ public class MonthService {
 
         // actualizar opciones
         for (DissagregationType dissagregationType : newDissagregationMap.keySet()) {
+            if(dissagregationType.equals(DissagregationType.SIN_DESAGREGACION)) continue;
             List<IndicatorValue> dissagregationValues = indicatorValues.stream().filter(value -> value.getDissagregationType().equals(dissagregationType)).collect(Collectors.toList());
             updatedDissagregationOptions(month, dissagregationValues,
                     dissagregationType,
@@ -179,7 +180,7 @@ public class MonthService {
                                               Map<DissagregationType, List<StandardDissagregationOption>> currentSimpleDissagregationOptionMap
     ) throws GeneralAppException {
         // si no hay current es porq es nuevo , no actgualizo se debe haber creado
-        if(currentSimpleDissagregationOptionMap==null) return;
+        if (currentSimpleDissagregationOptionMap == null) return;
 
         // newSimpleDissagregationOptionMap
         List<DissagregationType> simpleDissagregation = dissagregationType.getSimpleDissagregations();
@@ -209,21 +210,26 @@ public class MonthService {
         // una vez creados, activo y desactivo con los valores actuales
         // estos deberían estar activos
         // llamada 1********************
-        List<IndicatorValueOptionsDTO> indicatorValuesDTOs = this.indicatorValueService.getIndicatorValueOptionsDTOS(dissagregationType, newSimpleDissagregationOptionMap);
 
-        // me aseguro q solo esten con la desagregación q trabajo
-        for (IndicatorValue indicatorValue : indicatorValues) {
-            if (!indicatorValue.getDissagregationType().equals(dissagregationType)) {
-                throw new GeneralAppException("Error, se está procesando una valor fuera de rango para la actualización de segregaciones y opciones");
-            }
-            boolean found = indicatorValuesDTOs.stream().anyMatch(indicatorValueOptionsDTO -> indicatorValueOptionsDTO.equals(indicatorValue.getDissagregationDTO()));
-            if (found) {
-                indicatorValue.setState(State.ACTIVO);
-            } else {
-                indicatorValue.setState(State.INACTIVO);
+
+
+        if (dissagregationType.equals(DissagregationType.SIN_DESAGREGACION)) {
+            throw new GeneralAppException("testing");
+        } else {
+            List<IndicatorValueOptionsDTO> indicatorValuesDTOs = this.indicatorValueService.getIndicatorValueOptionsDTOS(dissagregationType, newSimpleDissagregationOptionMap);
+            // me aseguro q solo esten con la desagregación q trabajo
+            for (IndicatorValue indicatorValue : indicatorValues) {
+                if (!indicatorValue.getDissagregationType().equals(dissagregationType)) {
+                    throw new GeneralAppException("Error, se está procesando una valor fuera de rango para la actualización de segregaciones y opciones");
+                }
+                boolean found = indicatorValuesDTOs.stream().anyMatch(indicatorValueOptionsDTO -> indicatorValueOptionsDTO.equals(indicatorValue.getDissagregationDTO()));
+                if (found) {
+                    indicatorValue.setState(State.ACTIVO);
+                } else {
+                    indicatorValue.setState(State.INACTIVO);
+                }
             }
         }
-
 
     }
 
