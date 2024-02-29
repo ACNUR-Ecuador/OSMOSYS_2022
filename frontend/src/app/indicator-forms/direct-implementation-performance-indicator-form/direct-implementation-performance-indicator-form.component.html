@@ -1,13 +1,15 @@
 <div class="card p-0" *ngIf="render">
     <p-toast key="dialogToast" position="top-center"></p-toast>
     <p-messages></p-messages>
+
+    asfasdfasdf: {{hasLocationDissagregation}}
     <div class="card p-2" *ngIf="hasLocationDissagregation || indicatorExecution.activityDescription">
         <div class="flex justify-content-end">
             <p-message severity="warn"
                        *ngIf="disableSave"
-                       text="Primero agrega municipios para poder reportar"
+                       text="Primero agrega lugares para poder reportar"
             ></p-message>
-            <button pButton *ngIf="hasLocationDissagregation" type="button" pRipple label="Agregar Municipios"
+            <button pButton *ngIf="hasLocationDissagregation" type="button" pRipple label="Agregar Lugares de Ejecución"
                     icon="pi pi-plus"
                     (click)="openLocationsDialog()"></button>
         </div>
@@ -288,9 +290,9 @@
                             [dragdrop]="true"
                             [responsive]="true"
                             [sourceStyle]="{'height':'25rem'}" [targetStyle]="{'height':'25rem'}"
-                            filterBy="description,provincia.description"
-                            sourceFilterPlaceholder="Buscar por municipio o departamento"
-                            targetFilterPlaceholder="Buscar por municipio o departamento"
+                            filterBy="name,provincia.description"
+                            sourceFilterPlaceholder="Buscar por lugar"
+                            targetFilterPlaceholder="Buscar por lugar"
                             [showSourceControls]="false"
                             [showTargetControls]="false"
 
@@ -298,7 +300,7 @@
                     <ng-template let-canton pTemplate="item">
                         <div class="flex justify-content-between flex-wrap ">
                                         <span
-                                            style="font-size:14px;font-weight: 800;vertical-align: middle;">{{canton.description}}
+                                            style="font-size:14px;font-weight: 800;vertical-align: middle;">{{canton.name}}
                                         </span>
 
                             <span style="font-size:10px;font-weight: 600;vertical-align: middle;"><i

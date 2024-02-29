@@ -245,7 +245,9 @@ export class UtilsService {
 
 
     isLocationDissagregation(dissagregationType: string): boolean {
-        return this.enumsService.resolveEnumWeb(EnumsType.DissagregationType, dissagregationType).isLocationsDissagregation;
+
+        let dissagregation= this.enumsService.resolveEnumWeb(EnumsType.DissagregationType, dissagregationType);
+        return dissagregation.locationsDissagregation;
     }
 
 

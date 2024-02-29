@@ -29,7 +29,7 @@ public class PeriodEndpoint {
 
     @Path("/")
     @PUT
-    //@Secured
+    @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public Long update(PeriodWeb periodWeb) throws GeneralAppException {
         return this.periodService.update(periodWeb);

@@ -218,7 +218,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             const key = entry[0];
             const value = entry[1];
             if (value && this.utilsService.isLocationDissagregation(key)) {
-                this.hasLocationDissagregation = true || this.hasLocationDissagregation;
+                this.hasLocationDissagregation = true;
                 this.validateSegregations();
                 return;
             }
@@ -376,7 +376,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
         if (!cantones || cantones.length < 1) {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Selecciona al menos un municipio',
+                summary: 'Selecciona al menos un lugar',
                 life: 3000
             });
         } else {

@@ -531,8 +531,8 @@ export class EnumWeb {
     public  value: string;
     public  label: string;
     public  order: number;
-    public  isLocationsDissagregation?: boolean;
-    public  isAgeDissagregation?: boolean;
+    public  locationsDissagregation?: boolean;
+    public  ageDissagregation?: boolean;
     public  standardDissagregationTypes?: string[];
     public  numberOfDissagregations?: number;
 }

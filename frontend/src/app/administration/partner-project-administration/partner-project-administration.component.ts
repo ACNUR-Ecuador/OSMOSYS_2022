@@ -1131,7 +1131,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 })
                 .filter(value => {
                     const dissagregationTypeE =this.enumsService.resolveEnumWeb(EnumsType.DissagregationType, value.dissagregationType);
-                    return dissagregationTypeE.isLocationsDissagregation;
+                    return dissagregationTypeE.locationsDissagregation;
                 }).length > 0;
         } else {
             return false;
