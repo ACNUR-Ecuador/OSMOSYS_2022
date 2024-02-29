@@ -260,7 +260,7 @@ public class ProjectsImportService {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
             throw new GeneralAppException(ExceptionUtils.getMessage(e), Response.Status.BAD_REQUEST);
 
 

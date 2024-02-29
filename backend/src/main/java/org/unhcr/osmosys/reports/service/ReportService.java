@@ -180,13 +180,13 @@ public class ReportService {
 
             return bos;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
             throw new GeneralAppException("Error al Generar el reporte", Response.Status.INTERNAL_SERVER_ERROR);
         } finally {
             try {
                 bos.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error(ExceptionUtils.getStackTrace(e));
             }
         }
     }
@@ -197,13 +197,13 @@ public class ReportService {
             workbook.write(bos);
             return bos;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
             throw new GeneralAppException("Error al Generar el reporte", Response.Status.INTERNAL_SERVER_ERROR);
         } finally {
             try {
                 bos.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error(ExceptionUtils.getStackTrace(e));
             }
         }
     }

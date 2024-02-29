@@ -3,6 +3,7 @@ package com.sagatechs.generics.service;
 import com.sagatechs.generics.appConfiguration.AppConfigurationKey;
 import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jboss.logging.Logger;
 
 import javax.activation.DataHandler;
@@ -96,7 +97,7 @@ public class EmailService {
             LOGGER.debug("----------------enviado");
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
         }
 
     }
@@ -144,7 +145,7 @@ public class EmailService {
             LOGGER.debug("----------------enviado");
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
         }
 
     }
@@ -158,7 +159,7 @@ public class EmailService {
                 msg = msg.replace(entry.getKey().trim(), entry.getValue().trim());
             }
         } catch (Exception exception) {
-            exception.printStackTrace();
+            LOGGER.error(ExceptionUtils.getStackTrace(exception));
         }
         return msg;
     }
@@ -182,7 +183,7 @@ public class EmailService {
                 }
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
         return contents.toString();
     }

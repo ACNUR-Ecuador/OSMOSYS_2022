@@ -74,7 +74,6 @@ public class AuthenticationBasicFilter implements ContainerRequestFilter {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
 			abortWithUnauthorized(requestContext);
 		}
 	}

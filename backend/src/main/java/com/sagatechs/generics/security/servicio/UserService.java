@@ -20,6 +20,7 @@ import io.jsonwebtoken.security.SignatureException;
 import io.jsonwebtoken.security.WeakKeyException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.Office;
@@ -359,7 +360,7 @@ public class UserService implements Serializable {
             }
             return key;
         } catch (WeakKeyException e) {
-            e.printStackTrace();
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
         }
         return null;
 
@@ -388,7 +389,7 @@ public class UserService implements Serializable {
                 try {
                     id = ((Integer) jws.getBody().get("id")).longValue();
                 } catch (NumberFormatException e) {
-                    e.printStackTrace();
+                    LOGGER.error(ExceptionUtils.getStackTrace(e));
                 }
             }
 

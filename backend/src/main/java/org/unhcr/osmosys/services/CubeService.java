@@ -111,7 +111,7 @@ public class CubeService {
                     Thread.sleep(100);
                     // LOGGER.info("waiting: "+i);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    LOGGER.error("Error en getFactTablePaginatedByPeriodYearAsync");
                 }
             }
 

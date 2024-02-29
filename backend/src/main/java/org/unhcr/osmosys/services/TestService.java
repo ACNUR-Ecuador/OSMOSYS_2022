@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.services;
 
 import com.sagatechs.generics.webservice.service.TestEndpoint;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jboss.logging.Logger;
 
 import javax.annotation.Resource;
@@ -25,7 +26,7 @@ public class TestService {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                LOGGER.error(ExceptionUtils.getStackTrace(e));
             }
             LOGGER.info("donw"+futureResult.isDone());
             LOGGER.info("donw"+futureResult1.isDone());
