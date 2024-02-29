@@ -659,13 +659,13 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
     private createTables() {
         this.cols = [
-            {field: 'provincia.description', header: 'Departamento', type: ColumnDataType.text},
-            {field: 'description', header: 'Lugar', type: ColumnDataType.text}
+            {field: 'provincia.description', header: 'Nivel Administrativo 1', type: ColumnDataType.text},
+            {field: 'name', header: 'Lugar', type: ColumnDataType.text}
         ];
 
         this.colsCantonList = [
-            {field: 'provincia.description', header: 'Departamento', type: ColumnDataType.text},
-            {field: 'description', header: 'Lugar', type: ColumnDataType.text},
+            {field: 'provincia.description', header: 'Nivel Administrativo 1', type: ColumnDataType.text},
+            {field: 'name', header: 'Lugar', type: ColumnDataType.text},
             {field: 'enabled', header: 'Activo', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe}
         ];
         this.colsCantonListNotEditable = this.colsCantonList.filter(value => {

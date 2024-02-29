@@ -195,7 +195,8 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
                     });
                     this.setDimentionsDissagregations();
 
-                    this.getHasLocationDissagregation();+
+                    this.getHasLocationDissagregation();
+
 
                     this.cd.detectChanges();
                 },
@@ -217,7 +218,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             const key = entry[0];
             const value = entry[1];
             if (value && this.utilsService.isLocationDissagregation(key)) {
-                this.hasLocationDissagregation = true;
+                this.hasLocationDissagregation = true || this.hasLocationDissagregation;
                 this.validateSegregations();
                 return;
             }
@@ -304,16 +305,19 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
         if (this.isResponsible && this.monthValues.month.checked === false) {
             this.monthValues.month.checked = null;
         }
-        this.indicatorExecutionService.updateMonthValues(this.indicatorExecution.id, this.monthValues).subscribe(() => {
-            this.messageService.add({severity: 'success', summary: 'Guardado con éxito', detail: ''});
-            this.ref.close({test: 1});
-        }, error => {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error al guardar los valores:',
-                detail: error.error.message
+        this.indicatorExecutionService.updateMonthValues(this.indicatorExecution.id, this.monthValues)
+            .subscribe({
+                next: () => {
+                    this.messageService.add({severity: 'success', summary: 'Guardado con éxito', detail: ''});
+                    this.ref.close({test: 1});
+                }, error: error => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al guardar los valores:',
+                        detail: error.error.message
+                    });
+                }
             });
-        });
     }
 
     closeErrorDialog() {
@@ -322,43 +326,48 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
 
     openLocationsDialog() {
         this.messageService.clear();
-        this.cantonService.getByState(EnumsState.ACTIVE).subscribe(value => {
-            this.cantonesOptions = this.utilsService.sortCantones(value);
-            // noinspection JSMismatchedCollectionQueryUpdate
-            let cantonesCurrent: Canton[] = [];
-            this.monthValuesMap.forEach((value1, key) => {
-                if (this.utilsService.isLocationDissagregation(key) && value1) {
-                    const cantones = value1
-                        .filter(value2 => value2.state === EnumsState.ACTIVE)
-                        .filter(value2 => value2.location)
-                        .map(value2 => value2.location  as Canton);
-                    cantonesCurrent = cantonesCurrent.concat(cantones);
+        this.cantonService.getByState(EnumsState.ACTIVE)
+            .subscribe({
+                next: value => {
+                    this.cantonesOptions = this.utilsService.sortCantones(value);
+                    // noinspection JSMismatchedCollectionQueryUpdate
+                    let cantonesCurrent: Canton[] = [];
+                    this.monthValuesMap.forEach((value1, key) => {
+                        if (this.utilsService.isLocationDissagregation(key) && value1) {
+                            const cantones = value1
+                                .filter(value2 => value2.state === EnumsState.ACTIVE)
+                                .filter(value2 => value2.location)
+                                .map(value2 => value2.location as Canton);
+                            cantonesCurrent = cantonesCurrent.concat(cantones);
+                        }
+
+                    });
+                    const keyId = 'id';
+                    const cantonesCurrentUnique: Canton[] = [...new Map(cantonesCurrent.map(item =>
+                        [item[keyId], item])).values()];
+
+
+                    if (!cantonesCurrentUnique || cantonesCurrentUnique.length < 1) {
+                        this.formLocations.get('locationsSelected').patchValue([]);
+                        this.cantonesAvailable = this.utilsService.sortCantones(this.cantonesOptions);
+                    } else {
+                        this.formLocations.get('locationsSelected').patchValue(this.utilsService.sortCantones(cantonesCurrentUnique));
+                        this.cantonesAvailable =
+                            this.cantonesOptions.filter((canton1) => !cantonesCurrentUnique.find(canton2 => canton1.id === canton2.id));
+                    }
+                    this.showLocationsDialog = true;
+                    this.cd.detectChanges();
+                },
+                error: error => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al cargar los cantones',
+                        detail: error.error.message,
+                        life: 3000
+                    });
                 }
-
             });
-            const keyId = 'id';
-            const cantonesCurrentUnique: Canton[] = [...new Map(cantonesCurrent.map(item =>
-                [item[keyId], item])).values()];
 
-
-            if (!cantonesCurrentUnique || cantonesCurrentUnique.length < 1) {
-                this.formLocations.get('locationsSelected').patchValue([]);
-                this.cantonesAvailable = this.utilsService.sortCantones(this.cantonesOptions);
-            } else {
-                this.formLocations.get('locationsSelected').patchValue(this.utilsService.sortCantones(cantonesCurrentUnique));
-                this.cantonesAvailable =
-                    this.cantonesOptions.filter((canton1) => !cantonesCurrentUnique.find(canton2 => canton1.id === canton2.id));
-            }
-            this.showLocationsDialog = true;
-            this.cd.detectChanges();
-        }, error => {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error al cargar los cantones',
-                detail: error.error.message,
-                life: 3000
-            });
-        });
 
     }
 
@@ -373,16 +382,21 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
         } else {
             this.indicatorExecutionService
                 .updateDirectImplementationIndicatorExecutionLocationAssigment(this.indicatorExecution.id, cantones)
-                .subscribe(() => {
-                    this.loadMonthValues(this.monthId);
-                    this.showLocationsDialog = false;
-                }, error => {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error al guardar los cantones',
-                        detail: error.error.message,
-                        sticky: true
-                    });
+                .subscribe({
+                    next: () => {
+                        this.loadMonthValues(this.monthId);
+                        this.showLocationsDialog = false;
+
+                    },
+                    error: error => {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error al guardar los cantones',
+                            detail: error.error.message,
+                            sticky: true
+                        });
+
+                    }
                 });
         }
     }
@@ -477,7 +491,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             const arrayBuffer: any = fileReader.result;
             let data = new Uint8Array(arrayBuffer);
             let arr = [];
-            for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
+            for (let i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
             let bstr = arr.join("");
             let workbook: WorkBook;
             workbook = XLSX.read(bstr, {type: "binary"});

@@ -462,13 +462,14 @@
                                 [showSourceControls]="false"
                                 [showTargetControls]="false"
                     >
-                        <ng-template let-product pTemplate="item">
-                            <div class="p-d-flex p-jc-between">
+                        <ng-template let-canton pTemplate="item">
+                            <div class="flex justify-content-between flex-wrap ">
                                         <span
-                                            style="font-size:14px;font-weight: 800;vertical-align: middle;">{{product.description}}</span>
+                                            style="font-size:14px;font-weight: 800;vertical-align: middle;">{{canton.name}}
+                                        </span>
 
                                 <span style="font-size:10px;font-weight: 600;vertical-align: middle;"><i
-                                    class="pi pi-map-marker product-category-icon"></i>{{product.provincia.description}}</span>
+                                    class="pi pi-map-marker product-category-icon"></i>{{canton.provincia.description}}</span>
                             </div>
 
                         </ng-template>
