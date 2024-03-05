@@ -545,10 +545,6 @@ public class UserService implements Serializable {
                     "<p>&nbsp;</p>" +
                     "<p>&nbsp;</p>";
             LOGGER.debug("------------------llamo");
-            /*Future<String> futureMail = this.emailService.sendEmailMessage(user.getEmail(), null,
-                    "Bienvenid@ al Sistema de Monitoreo de Programas.",
-                    message
-            );*/
             this.asyncService.sendEmail(user.getEmail(), null,
                     "Bienvenid@ al Sistema de Monitoreo de Programas.",
                     message);

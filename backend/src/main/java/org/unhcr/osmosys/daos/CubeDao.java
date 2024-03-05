@@ -33,7 +33,8 @@ public class CubeDao {
     private static final String DissagregationTypeTable = "SELECT " +
             "* " +
             "from  " +
-            "cube.dissagregation_type t";
+            "cube.dissagregation_type t " ;
+
     private static final String DiversityTypeTable = "SELECT " +
             "* " +
             "from  " +
@@ -42,14 +43,7 @@ public class CubeDao {
             "* " +
             "from  " +
             "cube.age_type t";
-    private static final String AgePrimaryEducationTypeTable = "SELECT " +
-            "* " +
-            "from  " +
-            "cube.age_primary_education_type t";
-    private static final String AgeTertiaryEducationTable = "SELECT " +
-            "* " +
-            "from  " +
-            "cube.age_tertiary_education_type t";
+
     private static final String GenderTypeTable = "SELECT " +
             "* " +
             "from  " +
@@ -117,7 +111,7 @@ public class CubeDao {
             "cube.indicator_execution_dissagregation_simple t";
     private static final String indicatorMainDissagregationTable =
             "SELECT " +
-                    "i.id indicator_id, dai.period_id, dai.dissagregation_type " +
+                    "i.id as indicator_id, dai.period_id, dai.dissagregation_type " +
                     "FROM " +
                     "osmosys.indicators i " +
                     "INNER JOIN osmosys.dissagregation_assignation_indicator dai on i.id=dai.indicator_id " +
@@ -168,38 +162,29 @@ public class CubeDao {
         return q.getResultList();
     }
 
-    public List<DiversityTypeDTO> getDiversityTypeTable() {
-        Query q = this.entityManager.createNativeQuery(CubeDao.DiversityTypeTable, "DiversityTypeDTOMapping");
+    public List<StandardDissagregationOptionDTO> getDiversityTypeTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.DiversityTypeTable, "StandardDissagregationOptionDTOMapping");
         return q.getResultList();
     }
 
-    public List<AgeTypeDTO> getAgeTypeTable() {
-        Query q = this.entityManager.createNativeQuery(CubeDao.AgeTypeTable, "AgeTypeDTOMapping");
+    public List<StandardDissagregationOptionDTO> getAgeTypeTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.AgeTypeTable, "StandardDissagregationOptionDTOMapping");
         return q.getResultList();
     }
 
-    public List<AgePrimaryEducationTypeDTO> getAgePrimaryEducationTypeTable() {
-        Query q = this.entityManager.createNativeQuery(CubeDao.AgePrimaryEducationTypeTable, "AgePrimaryEducationTypeDTOMapping");
+
+    public List<StandardDissagregationOptionDTO> getGenderTypeTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.GenderTypeTable, "StandardDissagregationOptionDTOMapping");
         return q.getResultList();
     }
 
-    public List<AgeTertiaryEducationTypeDTO> getAgeTertiaryEducationTypeTable() {
-        Query q = this.entityManager.createNativeQuery(CubeDao.AgeTertiaryEducationTable, "AgeTertiaryEducationTypeDTOMapping");
+    public List<StandardDissagregationOptionDTO> getCountryOfOriginTypeTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.CountryOfOriginTypeTable, "StandardDissagregationOptionDTOMapping");
         return q.getResultList();
     }
 
-    public List<GenderTypeDTO> getGenderTypeTable() {
-        Query q = this.entityManager.createNativeQuery(CubeDao.GenderTypeTable, "GenderTypeDTOMapping");
-        return q.getResultList();
-    }
-
-    public List<CountryOfOriginTypeDTO> getCountryOfOriginTypeTable() {
-        Query q = this.entityManager.createNativeQuery(CubeDao.CountryOfOriginTypeTable, "CountryOfOriginDTOMapping");
-        return q.getResultList();
-    }
-
-    public List<PopulationTypeDTO> getPopulationTypeTable() {
-        Query q = this.entityManager.createNativeQuery(CubeDao.PopulationTypeTable, "PopulationTypeDTOMapping");
+    public List<StandardDissagregationOptionDTO> getPopulationTypeTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.PopulationTypeTable, "StandardDissagregationOptionDTOMapping");
         return q.getResultList();
     }
 

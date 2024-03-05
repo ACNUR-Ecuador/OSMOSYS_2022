@@ -6,8 +6,6 @@ import org.unhcr.osmosys.daos.CubeDao;
 import org.unhcr.osmosys.model.cubeDTOs.*;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 
-import javax.ejb.AsyncResult;
-import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.*;
@@ -138,31 +136,24 @@ public class CubeService {
         return this.cubeDao.getDissagregationTypeTable();
     }
 
-    public List<DiversityTypeDTO> getDiversityTypeTable() {
+    public List<StandardDissagregationOptionDTO> getDiversityTypeTable() {
         return this.cubeDao.getDiversityTypeTable();
     }
 
-    public List<AgeTypeDTO> getAgeTypeTable() {
+    public List<StandardDissagregationOptionDTO> getAgeTypeTable() {
         return this.cubeDao.getAgeTypeTable();
     }
 
-    public List<AgePrimaryEducationTypeDTO> getAgePrimaryEducationTypeTable() {
-        return this.cubeDao.getAgePrimaryEducationTypeTable();
-    }
 
-    public List<AgeTertiaryEducationTypeDTO> getAgeTertiaryEducationTypeTable() {
-        return this.cubeDao.getAgeTertiaryEducationTypeTable();
-    }
-
-    public List<GenderTypeDTO> getGenderTypeTable() {
+    public List<StandardDissagregationOptionDTO> getGenderTypeTable() {
         return this.cubeDao.getGenderTypeTable();
     }
 
-    public List<CountryOfOriginTypeDTO> getCountryOfOriginTypeTable() {
+    public List<StandardDissagregationOptionDTO> getCountryOfOriginTypeTable() {
         return this.cubeDao.getCountryOfOriginTypeTable();
     }
 
-    public List<PopulationTypeDTO> getPopulationTypeTable() {
+    public List<StandardDissagregationOptionDTO> getPopulationTypeTable() {
         return this.cubeDao.getPopulationTypeTable();
     }
 

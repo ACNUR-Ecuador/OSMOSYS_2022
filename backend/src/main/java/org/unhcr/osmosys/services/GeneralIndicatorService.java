@@ -134,10 +134,10 @@ public class GeneralIndicatorService {
             });
         }
         this.saveOrUpdate(generalfound);
-        this.indicatorExecutionService.updateIndicatorExecutionsGeneralDissagregations(generalIndicatorWeb.getPeriod().getId(),
+        /*this.indicatorExecutionService.updateIndicatorExecutionsGeneralDissagregations(generalIndicatorWeb.getPeriod().getId(),
                 dissagregationAssignationToGeneralIndicatorToActivate,
                 dissagregationAssignationToGeneralIndicatorToDisable,
-                dissagregationAssignationToGeneralIndicatorNew);
+                dissagregationAssignationToGeneralIndicatorNew);*/
 
         return generalfound;
     }
