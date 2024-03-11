@@ -234,7 +234,7 @@ public class CubeService {
 
             for (Map.Entry<Long, List<IndicatorMainDissagregationDTO>> entry1 : entry.getValue().entrySet()) {
                 LOGGER.debug(" by indicator_id" + entry1.getKey());
-                if(entry1.getKey()==67){
+                if (entry1.getKey() == 67) {
                     LOGGER.debug("este");
                 }
                 this.setMainDissagregation(entry1.getValue());
@@ -255,25 +255,30 @@ public class CubeService {
         DissagregationType mainDissagregation = null;
         Set<DissagregationType> dissagregations = ies.stream().map(IndicatorMainDissagregationDTO::getDissagregation_type).collect(Collectors.toSet());
 
+        // retiro las de diversidad
         List<DissagregationType> notDiversityDissagregations = dissagregations.stream()
-                .filter(dissagregationType -> !dissagregationType.getStringValue().contains("DIVERSIDAD"))
+                .filter(dissagregationType ->
+                        !dissagregationType.getSimpleDissagregations().contains(DissagregationType.DIVERSIDAD)
+                )
                 .collect(Collectors.toList());
 
+        // sies
         if (notDiversityDissagregations.size() < 2) {
+            // si solo tiene 1 asigno directamente
             Optional<DissagregationType> mainDissagregationOptional = notDiversityDissagregations.stream().findFirst();
-            if(mainDissagregationOptional.isPresent()){
-                mainDissagregation=mainDissagregationOptional.get();
-            }else {
-                mainDissagregation=dissagregations.stream().findFirst().get();
+            if (mainDissagregationOptional.isPresent()) {
+                mainDissagregation = mainDissagregationOptional.get();
+            } else {
+                mainDissagregation = dissagregations.stream().findFirst().get();
             }
         } else {
             List<DissagregationType> mainDissagregationLugarList = notDiversityDissagregations.stream()
-                    .filter(dissagregationType -> dissagregationType.getStringValue()
-                            .contains("LUGAR"))
+                    .filter(dissagregationType -> dissagregationType.getSimpleDissagregations().contains(DissagregationType.LUGAR)
+                            )
                     .collect(Collectors.toList());
-            if(CollectionUtils.isNotEmpty(mainDissagregationLugarList)){
-               mainDissagregation= mainDissagregationLugarList.stream().findFirst().get();
-            }else {
+            if (CollectionUtils.isNotEmpty(mainDissagregationLugarList)) {
+                mainDissagregation = mainDissagregationLugarList.stream().findFirst().get();
+            } else {
                 mainDissagregation = notDiversityDissagregations.stream().findFirst().get();
             }
         }

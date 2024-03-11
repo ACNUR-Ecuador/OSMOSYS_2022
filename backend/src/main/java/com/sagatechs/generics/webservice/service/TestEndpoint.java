@@ -32,6 +32,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
@@ -100,6 +101,34 @@ public class TestEndpoint {
     StandardDissagregationOptionService standardDissagregationOptionService;
 
 
+    @Path("health")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response health() throws GeneralAppException {
+
+        return Response.ok().entity("Test Healthy").build();
+
+
+    }
+
+    @Path("timeTest")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response timeTest() throws GeneralAppException {
+
+        try {
+            // Pause the execution for 4 minutes (4 * 60 * 1000 milliseconds)
+            Thread.sleep(4 * 60 * 1000);
+            System.out.println("Method execution completed after 4 minutes.");
+            return Response.ok().entity("Test time ok").build();
+        } catch (InterruptedException e) {
+            System.out.println("Thread interrupted: " + e.getMessage());
+            return Response.ok().entity("Test time fail").build();
+        }
+
+
+
+    }
     @Path("test")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
