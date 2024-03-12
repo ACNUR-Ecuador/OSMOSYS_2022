@@ -4,7 +4,6 @@ import {HttpClient} from '@angular/common/http';
 import {EMPTY, Observable} from 'rxjs';
 import {StandardDissagregationOption} from '../shared/model/OsmosysModel';
 import {catchError, map, shareReplay} from "rxjs/operators";
-import {EnumsType} from "../shared/model/UtilsModel";
 
 const mainServiceUrl = environment.base_url + '/standardDissagregations';
 
@@ -24,6 +23,7 @@ export class StandardDissagregationsService {
         return this.http.get<StandardDissagregationOption[]>(`${mainServiceUrl}/options/active/age`)
             .pipe(map(value => {
                 value.forEach(value1 => value1.type = 'age')
+                // value.sort((a, b) => a.order-b.order);
                 return value;
             }));
     }

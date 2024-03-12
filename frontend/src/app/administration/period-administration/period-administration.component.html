@@ -142,7 +142,7 @@
 
                                 >
                                 </p-checkbox>
-                                <label [for]="option.label">{{option.label}} [grupo:{{option.title}} ]</label>
+                                <label [for]="option.label">{{option.label}} [grupo: {{option.title}} ]</label>
                             </div>
                         </p-panel>
 
@@ -155,7 +155,7 @@
                                             [formControl]="$any(formItem).controls['genderOptions']"
                                 >
                                 </p-checkbox>
-                                <label [for]="option.label">{{option.label}} [grupo:{{option.title}} ]</label>
+                                <label [for]="option.label">{{option.label}} [grupo: {{option.title}} ]</label>
                             </div>
                         </p-panel>
 
@@ -168,7 +168,7 @@
                                             [formControl]="$any(formItem.controls['ageOptions'])"
                                 >
                                 </p-checkbox>
-                                <label [for]="option.label">{{option.label}} [grupo:{{option.title}}]</label>
+                                <label [for]="option.label">{{option.label}} [grupo: {{option.title}}]</label>
                             </div>
                         </p-panel>
                         <p-panel class="col-6" header="Diversidad" [toggleable]="true">
@@ -180,7 +180,7 @@
                                             [formControl]="$any(formItem).controls['diversityOptions']"
                                 >
                                 </p-checkbox>
-                                <label [for]="option.label">{{option.label}} [grupo:{{option.title}}]</label>
+                                <label [for]="option.label">{{option.label}} [grupo: {{option.title}}]</label>
                             </div>
                         </p-panel>
                         <p-panel class="col-6" header="País de Origen" [toggleable]="true">
@@ -192,7 +192,7 @@
                                             [formControl]="$any(formItem).controls['countryOfOriginOptions']"
                                 >
                                 </p-checkbox>
-                                <label [for]="option.label">{{option.label}} [grupo:{{option.title}}]</label>
+                                <label [for]="option.label">{{option.label}} [grupo: {{option.title}}]</label>
                             </div>
                         </p-panel>
                     </div>
@@ -249,25 +249,54 @@
 
                             </div>
                             <div class="field col-12 md:col-12">
-                                <label>Desagregaciones Globales</label>
-                                <div class="field col-12 md:col-12" style="border: 1px solid #ced4da;">
-                                    <p-scrollPanel [style]="{width: '100%', height: '400px'}">
-                                        <div class="p-fluid p-formgrid grid">
-                                            <div class="field-checkbox col-12 md:col-4"
-                                                 *ngFor="let category of dissagregationTypes">
-                                                <!--suppress AngularInvalidExpressionResultType -->
-                                                <p-checkbox name="group1" [inputId]="category.value"
-                                                            [value]="category.value"
-                                                            [formControl]="$any(formItem).controls['generalIndicatorDissagregations']">
-                                                </p-checkbox>
-                                                <label [for]="category.value">{{category.label}}</label>
-                                            </div>
+                                <label>Desagregaciones del Indicador General (Globales para todos los proyectos)</label>
+                                <div class="field col-12 md:col-12"
+                                     style="border: 1px solid #ced4da;">
+                                    <p-multiSelect [options]="dissagregationTypes" [group]="true"
+                                                   formControlName="selectedGeneralIndicatorDissagregations"
+                                                   filterBy="label, numberOfDissagregations"
+                                                   (onChange)="selectItemGeneralDissagregation($event)"
 
-                                        </div>
-                                    </p-scrollPanel>
+                                                   defaultLabel="Seleccionar...."
+                                                   scrollHeight="250px" display="chip">
+                                        <ng-template let-group pTemplate="group">
+                                            <div class="flex align-items-center">
+                                                <span>{{group.label}}</span>
+                                            </div>
+                                        </ng-template>
+                                    </p-multiSelect>
+
+                                    <p-table #dt [value]="getDissagregationAssignationToIndicators()" [rows]="10" [paginator]="true"
+                                             [rowHover]="true" dataKey="id"
+                                             [columns]="colsDissagregation"
+                                             currentPageReportTemplate=" {first} a {last} de {totalRecords} "
+                                             [showCurrentPageReport]="true"
+                                    >
+                                        <ng-template pTemplate="header" let-columns>
+                                            <tr>
+
+                                                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                                                    {{col.header}}
+                                                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                                                </th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-rowData let-columns="columns">
+                                            <tr>
+                                                <td *ngFor="let col of columns"
+                                                    [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
+                                                >
+                                                    {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field)}}
+                                                </td>
+
+                                            </tr>
+                                        </ng-template>
+
+                                    </p-table>
+
                                 </div>
                                 <small class="p-error"
-                                       *ngIf="utilsService.showErrorForm('generalIndicatorDissagregations',formItem)">{{utilsService.getErrorMessageForm('generalIndicatorDissagregations', formItem)}}</small>
+                                       *ngIf="utilsService.showErrorForm('selectedGeneralIndicatorDissagregations',formItem)">{{utilsService.getErrorMessageForm('generalIndicatorDissagregations', formItem)}}</small>
                             </div>
                         </div>
                     </div>

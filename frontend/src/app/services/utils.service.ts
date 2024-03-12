@@ -638,6 +638,8 @@ export class UtilsService {
             result.push(this.standandarDissagregationOptionToSelectItem(value));
         });
         result.sort((a, b) => a.value.order - b.value.order);
+        result.sort((a, b) => a.value.groupName.localeCompare(b.value.groupName));
+
         return result;
     }
 

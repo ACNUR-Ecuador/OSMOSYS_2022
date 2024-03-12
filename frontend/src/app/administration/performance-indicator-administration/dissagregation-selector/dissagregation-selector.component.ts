@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {
-    DissagregationAssignationToIndicator, Period,
+    DissagregationAssignationToIndicator,
+    Period,
     StandardDissagregationOption
 } from "../../../shared/model/OsmosysModel";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
@@ -157,24 +158,14 @@ export class DissagregationSelectorComponent implements OnInit {
             }
         });
 
-        let final =
-            this.dissagregationAssignationToIndicators.filter(value => {
-                console.log("value: " + value.dissagregationType);
-                let result = selectValues.some(value1 => {
-                    console.log("value:1 " + value1);
-                    let result2 = value1 === value.dissagregationType
-                    console.log('result2: ' + result2);
-                    return result2;
+        this.dissagregationAssignationToIndicators = this.dissagregationAssignationToIndicators.filter(value => {
+            return selectValues.some(value1 => {
+                return value1 === value.dissagregationType;
 
-                });
-                console.log('result: ' + result);
-                return result;
             });
+        });
 
 
-        this.dissagregationAssignationToIndicators = final;
-
-        console.log(final);
         this.formItem.get('dissagregationAssignationToIndicators').patchValue(this.dissagregationAssignationToIndicators);
         this.parametersMap.set('asignations',this.dissagregationAssignationToIndicators);
         this.newDissagregationAssignationToIndicators.emit(this.parametersMap);
