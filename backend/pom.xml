@@ -8,6 +8,39 @@
     <version>4.0</version>
     <packaging>war</packaging>
     <name>OSMOSYS backend 2024</name>
+    <profiles>
+        <profile>
+            <id>development</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <datasource.name>osmosys</datasource.name>
+                <context-root>osmosys</context-root>
+                <hibernate.show_sql>true</hibernate.show_sql>
+                <warName>osmosys</warName>
+            </properties>
+        </profile>
+        <profile>
+            <id>sv</id>
+            <properties>
+                <datasource.name>osmosys</datasource.name>
+                <context-root>osmosys</context-root>
+                <hibernate.show_sql>false</hibernate.show_sql>
+                <warName>osmosys</warName>
+            </properties>
+        </profile>
+        <profile>
+            <id>ec</id>
+            <properties>
+                <datasource.name>osmosys_ec</datasource.name>
+                <context-root>osmosys_ec</context-root>
+                <hibernate.show_sql>false</hibernate.show_sql>
+                <warName>osmosys_ec</warName>
+            </properties>
+        </profile>
+    </profiles>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
@@ -29,6 +62,7 @@
         <hibernate-types-52.version>2.5.0</hibernate-types-52.version>
         <!--jwt ..-->
         <version.io.jsonwebtoken>0.10.7</version.io.jsonwebtoken>
+
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -82,7 +116,6 @@
             <artifactId>resteasy-multipart-provider</artifactId>
             <scope>provided</scope>
         </dependency>
-
 
 
         <!-- Import the CDI API. -->
@@ -327,13 +360,23 @@
 
     </dependencies>
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources/META-INF</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/webapp/WEB-INF</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.3.2</version>
                 <configuration>
-                    <warName>osmosys</warName>
+                    <warName>${warName}</warName>
                 </configuration>
             </plugin>
             <plugin>
