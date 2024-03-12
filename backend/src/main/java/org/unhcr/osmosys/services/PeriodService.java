@@ -106,6 +106,8 @@ public class PeriodService {
         if (periodWeb.getGeneralIndicator() != null) {
             this.generalIndicatorService.validate(periodWeb.getGeneralIndicator());
             period.setGeneralIndicator(this.modelWebTransformationService.generalIndicatorWebToGeneralIndicator(periodWeb.getGeneralIndicator()));
+            // quito los q no esten activos, para no crear de gana
+            period.getGeneralIndicator().setDissagregationAssignationsToGeneralIndicator(period.getGeneralIndicator().getDissagregationAssignationsToGeneralIndicator().stream().filter(dissagregationAssignationToGeneralIndicator -> dissagregationAssignationToGeneralIndicator.getState().equals(State.ACTIVO)).collect(Collectors.toSet()));
             period.getGeneralIndicator().setPeriod(period);
             this.generalIndicatorService.saveOrUpdate(period.getGeneralIndicator());
         }
@@ -130,7 +132,7 @@ public class PeriodService {
         Period period = this.periodDao.getWithDissagregationOptionsById(periodWeb.getId());
 
 
-        /********************************************age***************/
+        //********************************************age***************/
         Set<Long> optionsIdsWeb = periodWeb.getPeriodAgeDissagregationOptions().stream().map(StandardDissagregationOptionWeb::getId).collect(Collectors.toSet());
         Set<Long> optionsIds = period.getPeriodAgeDissagregationOptions().stream().map(option -> option.getDissagregationOption().getId()).collect(Collectors.toSet());
         //los nuevos
@@ -161,7 +163,7 @@ public class PeriodService {
             }
         }
 
-        /********************************************Gender***************/
+        //********************************************Gender***************/
         optionsIdsWeb = periodWeb.getPeriodGenderDissagregationOptions().stream().map(StandardDissagregationOptionWeb::getId).collect(Collectors.toSet());
         optionsIds = period.getPeriodGenderDissagregationOptions().stream().map(option -> option.getDissagregationOption().getId()).collect(Collectors.toSet());
         //los nuevos
@@ -192,7 +194,7 @@ public class PeriodService {
             }
         }
 
-        /********************************************Population type***************/
+        //********************************************Population type***************/
         optionsIdsWeb = periodWeb.getPeriodPopulationTypeDissagregationOptions().stream().map(StandardDissagregationOptionWeb::getId).collect(Collectors.toSet());
         optionsIds = period.getPeriodPopulationTypeDissagregationOptions().stream().map(option -> option.getDissagregationOption().getId()).collect(Collectors.toSet());
         //los nuevos
@@ -223,7 +225,7 @@ public class PeriodService {
             }
         }
 
-        /********************************************Diversity***************/
+        //********************************************Diversity***************/
 
         optionsIdsWeb = periodWeb.getPeriodDiversityDissagregationOptions().stream().map(StandardDissagregationOptionWeb::getId).collect(Collectors.toSet());
         optionsIds = period.getPeriodDiversityDissagregationOptions().stream().map(option -> option.getDissagregationOption().getId()).collect(Collectors.toSet());
@@ -255,7 +257,7 @@ public class PeriodService {
             }
         }
 
-        /********************************************Country of Origin***************/
+        //********************************************Country of Origin***************/
         optionsIdsWeb = periodWeb.getPeriodCountryOfOriginDissagregationOptions().stream().map(StandardDissagregationOptionWeb::getId).collect(Collectors.toSet());
         optionsIds = period.getPeriodCountryOfOriginDissagregationOptions().stream().map(option -> option.getDissagregationOption().getId()).collect(Collectors.toSet());
         //los nuevos
