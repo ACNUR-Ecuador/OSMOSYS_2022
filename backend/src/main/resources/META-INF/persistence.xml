@@ -5,6 +5,7 @@
              version="2.2">
     <persistence-unit name="main-persistence-unit" transaction-type="JTA">
         <jta-data-source>java:jboss/datasources/${datasource.name}</jta-data-source>
+        <!--<jta-data-source>java:jboss/datasources/osmosys_ec</jta-data-source>-->
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <validation-mode>AUTO</validation-mode>
         <!--<shared-cache-mode>NONE</shared-cache-mode>-->
@@ -14,6 +15,7 @@
             <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisPG95Dialect" />
             <!--Write all SQL statements to console. This is an alternative to setting the log category org.hibernate.SQL to debug.-->
             <property name="hibernate.show_sql" value="${hibernate.show_sql}"/>
+            <!--<property name="hibernate.show_sql" value="true"/>-->
             <!--Pretty print the SQL in the log and console. e.g. true | false-->
             <property name="hibernate.format_sql" value="true"/>
             <!--If enabled, Hibernate will collect statistics useful for performance tuning. e.g. true | false-->

@@ -15,7 +15,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <datasource.name>osmosys</datasource.name>
+                <datasource.name>osmosys_ec</datasource.name>
                 <context-root>osmosys</context-root>
                 <hibernate.show_sql>true</hibernate.show_sql>
                 <warName>osmosys</warName>
@@ -62,7 +62,6 @@
         <hibernate-types-52.version>2.5.0</hibernate-types-52.version>
         <!--jwt ..-->
         <version.io.jsonwebtoken>0.10.7</version.io.jsonwebtoken>
-
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -361,15 +360,19 @@
     </dependencies>
     <build>
         <resources>
-            <resource>
-                <directory>src/main/resources/META-INF</directory>
+            <!--<resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>META-INF/persistence.xml</include>
+                </includes>
                 <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/webapp/WEB-INF</directory>
-                <filtering>true</filtering>
-            </resource>
+            </resource>-->
+            <!--            <resource>
+                            <directory>src/main/webapp/WEB-INF</directory>
+                            <filtering>true</filtering>
+                        </resource>-->
         </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -377,6 +380,24 @@
                 <version>3.3.2</version>
                 <configuration>
                     <warName>${warName}</warName>
+                    <webResources>
+                        <resource>
+                            <filtering>true</filtering>
+                            <directory>src/main/resources/META-INF</directory>
+                            <includes>
+                                <include>**/persistence.xml</include>
+                            </includes>
+                            <targetPath>WEB-INF/classes/META-INF</targetPath>
+                        </resource>
+                        <resource>
+                            <filtering>true</filtering>
+                            <directory>src/main/webapp/WEB-INF</directory>
+                            <includes>
+                                <include>**/jboss-web.xml</include>
+                            </includes>
+                            <targetPath>WEB-INF</targetPath>
+                        </resource>
+                    </webResources>
                 </configuration>
             </plugin>
             <plugin>

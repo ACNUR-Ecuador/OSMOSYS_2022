@@ -195,6 +195,22 @@
                         <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter"/>
                     </validation>
                 </datasource>
+                <datasource jta="true" jndi-name="java:jboss/datasources/osmosys_ec" pool-name="osmosys_ec" enabled="true" use-ccm="true" statistics-enabled="true">
+                    <connection-url>jdbc:postgresql://localhost:5432/osmosys_v4_ec</connection-url>
+                    <driver>postgresql-driver</driver>
+                    <pool>
+                        <max-pool-size>100</max-pool-size>
+                    </pool>
+                    <security>
+                        <user-name>postgres</user-name>
+                        <password>A1a2a3a4$</password>
+                    </security>
+                    <validation>
+                        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"/>
+                        <background-validation>true</background-validation>
+                        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter"/>
+                    </validation>
+                </datasource>
                 <drivers>
                     <driver name="h2" module="com.h2database.h2">
                         <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
@@ -568,7 +584,7 @@
         </outbound-socket-binding>
     </socket-binding-group>
     <deployments>
-        <deployment name="osmosys_backend-3.0" runtime-name="osmosys_backend-3.0.war">
+        <deployment name="osmosys_backend-3.0" runtime-name="osmosys_backend-3.0.war" enabled="false">
             <fs-exploded path="D:\Proyectos\0OSMOSYS_2024\backend\target\osmosys_backend-3.0"/>
         </deployment>
     </deployments>
