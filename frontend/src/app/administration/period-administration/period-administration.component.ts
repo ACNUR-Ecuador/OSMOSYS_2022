@@ -285,6 +285,8 @@ export class PeriodAdministrationComponent implements OnInit {
                 selectedGeneralIndicatorDissagregations
             });
             console.log(this.formItem.value);
+        }else {
+            this.formItem.get('hasGeneralIndicator').patchValue(false);
         }
         this.formItem.patchValue({
             ageOptions: period.periodAgeDissagregationOptions,
@@ -293,7 +295,6 @@ export class PeriodAdministrationComponent implements OnInit {
             diversityOptions: period.periodDiversityDissagregationOptions,
             countryOfOriginOptions: period.periodCountryOfOriginDissagregationOptions
         });
-        console.log(this.formItem.value);
     }
 
 
@@ -473,7 +474,7 @@ export class PeriodAdministrationComponent implements OnInit {
 
     getDissagregationAssignationToIndicators(): DissagregationAssignationToGeneralIndicator[] {
         let dissagregationAssignationToIndicators: DissagregationAssignationToGeneralIndicator[] =
-            this.formItem.get('totalGeneralIndicatorDissagregations').value;
+            this.formItem.get('totalGeneralIndicatorDissagregations').value?this.formItem.get('totalGeneralIndicatorDissagregations').value:[];
         dissagregationAssignationToIndicators = dissagregationAssignationToIndicators
             .filter(value => value.state===EnumsState.ACTIVE)
             .sort((a, b) => a.dissagregationType.localeCompare(b.dissagregationType));

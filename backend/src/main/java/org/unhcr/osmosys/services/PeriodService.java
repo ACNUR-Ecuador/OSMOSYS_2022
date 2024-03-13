@@ -289,30 +289,32 @@ public class PeriodService {
         }
 
 
-
-
         this.validate(periodWeb);
-
-        this.indicatorExecutionService.updateAllIndicatorExecutionsDissagregationsByPeriod(period);
-        this.saveOrUpdate(period);
-
-
         if (periodWeb.getGeneralIndicator() != null) {
             this.generalIndicatorService.validate(periodWeb.getGeneralIndicator());
             if (periodWeb.getGeneralIndicator().getId() != null) {
                 periodWeb.getGeneralIndicator().setPeriod(new PeriodWeb());
                 periodWeb.getGeneralIndicator().getPeriod().setId(period.getId());
-                this.generalIndicatorService.update(periodWeb.getGeneralIndicator());
+
             } else {
                 period.setGeneralIndicator(this.modelWebTransformationService.generalIndicatorWebToGeneralIndicator(periodWeb.getGeneralIndicator()));
                 period.getGeneralIndicator().setPeriod(period);
                 periodWeb.getGeneralIndicator().setPeriod(new PeriodWeb());
                 periodWeb.getGeneralIndicator().getPeriod().setId(period.getId());
-                this.generalIndicatorService.saveOrUpdate(this.modelWebTransformationService.generalIndicatorWebToGeneralIndicator(periodWeb.getGeneralIndicator()));
+
             }
 
 
         }
+        this.saveOrUpdate(period);
+        if(period.getGeneralIndicator().getId()!=null){
+            periodWeb.getGeneralIndicator().setId(period.getGeneralIndicator().getId());
+            this.generalIndicatorService.update(periodWeb.getGeneralIndicator());
+        }else {
+            this.generalIndicatorService.saveOrUpdate(this.modelWebTransformationService.generalIndicatorWebToGeneralIndicator(periodWeb.getGeneralIndicator()));
+        }
+
+        this.indicatorExecutionService.updateAllIndicatorExecutionsDissagregationsByPeriod(period);
 
 
         return period.getId();

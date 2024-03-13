@@ -26,7 +26,7 @@ public class Period extends BaseEntityIdState {
     @Enumerated(EnumType.STRING)
     private State state;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "period")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "period", cascade = CascadeType.ALL)
     private GeneralIndicator generalIndicator;
 
     @OneToMany(mappedBy = "period", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, targetEntity = PeriodAgeDissagregationOption.class)
