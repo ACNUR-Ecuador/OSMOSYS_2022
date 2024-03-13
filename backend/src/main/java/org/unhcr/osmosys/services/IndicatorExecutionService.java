@@ -322,10 +322,11 @@ public class IndicatorExecutionService {
         Period period = this.periodService.getWithAllDataById(indicatorExecution.getPeriod().getId());
         if (indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)) {
             periodDissagregationMap = this.getPeriodDessagregationMap(true, period, indicatorExecution.getIndicator());
+
         } else {
             periodDissagregationMap = this.getPeriodDessagregationMap(false, period, indicatorExecution.getIndicator());
         }
-
+        if(periodDissagregationMap==null) return;
         this.updateIndicatorExecutionLocationsAssignations(indicatorExecution, locationsToActivate, locationsToDesactive);
         this.setStandardDissagregationOptionsForIndicatorExecutions(indicatorExecution, periodDissagregationMap);
         this.quarterService.updateQuarterDissagregations(indicatorExecution, periodDissagregationMap);
@@ -336,7 +337,7 @@ public class IndicatorExecutionService {
     public void updatePerformanceIndicatorExecutionsDissagregations(Period period, Indicator indicator) throws GeneralAppException {
 
         Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> periodDissagregationMap = this.getPeriodDessagregationMap(false, period, indicator);
-
+        if(periodDissagregationMap==null) return;
         List<IndicatorExecution> ies = this.indicatorExecutionDao.getByIndicatorIdAndPeriodId(period.getId(), indicator.getId());
         for (IndicatorExecution ie : ies) {
             // debo agregar localizaciones si es el caso
@@ -393,7 +394,10 @@ public class IndicatorExecutionService {
         final Period periodFulldata = this.periodService.getWithAllDataById(period.getId());
         Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationMap = new HashMap<>();
         List<DissagregationAssignationToIndicatorInterface> dissagregationsForPeriod;
-        if (isGeneralIndicator) {
+        if (isGeneralIndicator && periodFulldata.getGeneralIndicator()==null) {
+            return null;
+        }
+        else if (isGeneralIndicator && periodFulldata.getGeneralIndicator()!=null) {
             dissagregationsForPeriod = periodFulldata.getGeneralIndicator().getDissagregationAssignationsToGeneralIndicator()
                     .stream()
                     .filter(dissagregationAssignationToGeneralIndicator -> dissagregationAssignationToGeneralIndicator.getState().equals(State.ACTIVO))

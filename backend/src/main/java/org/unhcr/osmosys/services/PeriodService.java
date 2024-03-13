@@ -5,6 +5,7 @@ import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.PeriodDao;
+import org.unhcr.osmosys.model.GeneralIndicator;
 import org.unhcr.osmosys.model.Period;
 import org.unhcr.osmosys.model.standardDissagregations.options.*;
 import org.unhcr.osmosys.model.standardDissagregations.periodOptions.*;
@@ -290,30 +291,26 @@ public class PeriodService {
 
 
         this.validate(periodWeb);
-        if (periodWeb.getGeneralIndicator() != null) {
-            this.generalIndicatorService.validate(periodWeb.getGeneralIndicator());
-            if (periodWeb.getGeneralIndicator().getId() != null) {
-                periodWeb.getGeneralIndicator().setPeriod(new PeriodWeb());
-                periodWeb.getGeneralIndicator().getPeriod().setId(period.getId());
+        this.saveOrUpdate(period);
+        // indicador general
+        if(periodWeb.getGeneralIndicator()!=null){
 
-            } else {
-                period.setGeneralIndicator(this.modelWebTransformationService.generalIndicatorWebToGeneralIndicator(periodWeb.getGeneralIndicator()));
-                period.getGeneralIndicator().setPeriod(period);
-                periodWeb.getGeneralIndicator().setPeriod(new PeriodWeb());
-                periodWeb.getGeneralIndicator().getPeriod().setId(period.getId());
+            // hay un indicador general
+            if(periodWeb.getGeneralIndicator().getId()!=null){
+                //actualiza
+                GeneralIndicator   generalIndicator= this.generalIndicatorService.update(periodWeb.getGeneralIndicator());
+                period.setGeneralIndicator(generalIndicator);
+
+            }else {
+                //crea
+                GeneralIndicator generalIndicator=this.modelWebTransformationService.generalIndicatorWebToGeneralIndicator(periodWeb.getGeneralIndicator());
+                generalIndicator.setPeriod(period);
+                period.setGeneralIndicator(generalIndicator);
+                this.generalIndicatorService.saveOrUpdate(generalIndicator);
+
 
             }
-
-
         }
-        this.saveOrUpdate(period);
-        if(period.getGeneralIndicator().getId()!=null){
-            periodWeb.getGeneralIndicator().setId(period.getGeneralIndicator().getId());
-            this.generalIndicatorService.update(periodWeb.getGeneralIndicator());
-        }else {
-            this.generalIndicatorService.saveOrUpdate(this.modelWebTransformationService.generalIndicatorWebToGeneralIndicator(periodWeb.getGeneralIndicator()));
-        }
-
         this.indicatorExecutionService.updateAllIndicatorExecutionsDissagregationsByPeriod(period);
 
 
@@ -348,6 +345,7 @@ public class PeriodService {
     public Period getById(Long year) {
         return this.periodDao.find(year);
     }
+
     public PeriodWeb getWebWithAllDataById(Long id) {
 
         Period period = this.periodDao.getWithGeneralIndicatorById(id);
@@ -358,26 +356,23 @@ public class PeriodService {
         }
         return periodWeb;
     }
+
     public Period getWithAllDataById(Long id) {
         return this.periodDao.getWithDissagregationOptionsById(id);
     }
 
 
-
-
     public List<PeriodWeb> getWithGeneralIndicatorAll() {
         List<Period> periods = this.periodDao.getAllWithDissagregationOptions();
 
-        return this.modelWebTransformationService.periodsToPeriodsWeb(periods,false);
+        return this.modelWebTransformationService.periodsToPeriodsWeb(periods, false);
 
     }
-
 
 
     public Period getByYear(Integer year) {
         return this.periodDao.getByYear(year);
     }
-
 
 
 }

@@ -86,7 +86,7 @@ public enum DissagregationType implements EnumInterface {
     private final int order;
 
     private String label = null;
-    private Integer numberOfDissagregations = null;
+    private Integer numberOfDissagregations;
 
     private final String[] standardDissagregationTypes;
 
@@ -118,7 +118,6 @@ public enum DissagregationType implements EnumInterface {
         DissagregationType enumeLast = list.get(list.size() - 1);
         // Add the last element with "and"
         label.append("y ").append(enumeLast.getLabel());
-        System.out.println("Generando label: " + label);
         return label.toString();
     }
 
