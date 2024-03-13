@@ -57,6 +57,27 @@
                             ],
                             "outputHashing": "all"
                         },
+                        "production_ec": {
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "1mb",
+                                    "maximumError": "5mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "2kb",
+                                    "maximumError": "4kb"
+                                }
+                            ],
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod_ec.ts"
+                                }
+                            ],
+                            "outputHashing": "all"
+                        },
                         "development": {
                             "buildOptimizer": false,
                             "optimization": false,
