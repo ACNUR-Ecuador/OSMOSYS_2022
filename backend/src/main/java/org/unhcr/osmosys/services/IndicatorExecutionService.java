@@ -421,7 +421,9 @@ public class IndicatorExecutionService {
                                 .collect(Collectors.toList());
 
                     } else {
-                        if (((DissagregationAssignationToIndicator) dai).getUseCustomAgeDissagregations()) {
+
+                        Boolean userCustomDissagregation=((DissagregationAssignationToIndicator) dai).getUseCustomAgeDissagregations();
+                        if (userCustomDissagregation) {
                             options = ((DissagregationAssignationToIndicator) dai).getDissagregationAssignationToIndicatorPeriodCustomizations()
                                     .stream()
                                     .filter(dissagregationAssignationToIndicatorPeriodCustomization -> dissagregationAssignationToIndicatorPeriodCustomization.getState().equals(State.ACTIVO))
