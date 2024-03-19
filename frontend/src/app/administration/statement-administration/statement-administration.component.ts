@@ -414,7 +414,7 @@ export class StatementAdministrationComponent implements OnInit {
             value:value,
             label:  "(" + (value.periodStatementAsignations.map(value1 => {
                 return value1.period.year
-            }).join("-")) + ") "+value.code + ' - ' + value.description,
+            }).join("-")) + ") "+value.code + ' - ' + value.description
         }
     }
 
