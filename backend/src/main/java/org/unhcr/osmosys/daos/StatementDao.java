@@ -59,7 +59,7 @@ public class StatementDao extends GenericDaoJpa<Statement, Long> {
     }
 
     public Statement getByCodeAndPeriodYearAndAreaType(String code, AreaType areaType, int year) throws GeneralAppException {
-        LOGGER.debug(code);
+        // LOGGER.debug(code);
         String jpql = "SELECT DISTINCT o" +
                 " FROM Statement o" +
                 " inner join  o.periodStatementAsignations psa " +

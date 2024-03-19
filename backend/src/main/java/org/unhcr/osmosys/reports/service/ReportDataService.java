@@ -437,12 +437,6 @@ public class ReportDataService {
             case "Diversidad":
                 cell.setCellValue(ie.getDiversity_type());
                 break;
-            case "Edad - Educación Primaria":
-                cell.setCellValue(ie.getAge_primary_education_type());
-                break;
-            case "Edad - Educación Terciaria":
-                cell.setCellValue(ie.getAge_tertiary_education_type());
-                break;
             case "Desagregación Personalizada":
                 cell.setCellValue(ie.getCustom_dissagregacion());
                 break;

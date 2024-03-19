@@ -395,7 +395,7 @@ public class ReportService {
         Connection connection;
         try {
             InitialContext initialContext = new InitialContext();
-            DataSource dataSource = (DataSource) initialContext.lookup("java:jboss/datasources/osmosys_sv");
+            DataSource dataSource = (DataSource) initialContext.lookup("java:jboss/datasources/osmosys");
             connection = dataSource.getConnection();
             return connection;
         } catch (NamingException | SQLException e) {

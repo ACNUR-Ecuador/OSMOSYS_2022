@@ -7,7 +7,7 @@ public class IndicatorExecutionDetailedDTO {
     public IndicatorExecutionDetailedDTO() {
     }
 
-    public IndicatorExecutionDetailedDTO(Long ie_id, Long period_id, Long project_id, Long reporting_office_id, Long organization_id, Long performance_indicator_id, String implementation_type, String area, String statement, String statement_project, String indicator_type, String indicator, String category, String frecuency, String project, String implementers, BigDecimal total_execution, BigDecimal target, BigDecimal execution_percentage, Integer quarter_order, String quarter, BigDecimal quarter_execution, BigDecimal quarter_target, BigDecimal quarter_percentage, String month_order, String month, BigDecimal month_execution, Long iv_id, Long ivc_id, String dissagregation_type, String lugar_canton, String lugar_provincia, String population_type, String gender_type, String age_type, String country_of_origin, String diversity_type, String age_primary_education_type, String age_tertiary_education_type, String custom_dissagregacion, BigDecimal value) {
+    public IndicatorExecutionDetailedDTO(Long ie_id, Long period_id, Long project_id, Long reporting_office_id, Long organization_id, Long performance_indicator_id, String implementation_type, String area, String statement, String statement_project, String indicator_type, String indicator, String category, String frecuency, String project, String implementers, BigDecimal total_execution, BigDecimal target, BigDecimal execution_percentage, Integer quarter_order, String quarter, BigDecimal quarter_execution, BigDecimal quarter_target, BigDecimal quarter_percentage, String month_order, String month, BigDecimal month_execution, Long iv_id, Long ivc_id, String dissagregation_type, String lugar_canton, String lugar_provincia, String population_type, String gender_type, String age_type, String country_of_origin, String diversity_type, String custom_dissagregacion, BigDecimal value) {
         this.ie_id = ie_id;
         this.period_id = period_id;
         this.project_id = project_id;
@@ -45,8 +45,6 @@ public class IndicatorExecutionDetailedDTO {
         this.age_type = age_type;
         this.country_of_origin = country_of_origin;
         this.diversity_type = diversity_type;
-        this.age_primary_education_type = age_primary_education_type;
-        this.age_tertiary_education_type = age_tertiary_education_type;
         this.custom_dissagregacion = custom_dissagregacion;
         this.value = value;
     }
@@ -88,8 +86,6 @@ public class IndicatorExecutionDetailedDTO {
     private String age_type;
     private String country_of_origin;
     private String diversity_type;
-    private String age_primary_education_type;
-    private String age_tertiary_education_type;
     private String custom_dissagregacion;
     private BigDecimal value;
 
@@ -379,22 +375,6 @@ public class IndicatorExecutionDetailedDTO {
 
     public void setDiversity_type(String diversity_type) {
         this.diversity_type = diversity_type;
-    }
-
-    public String getAge_primary_education_type() {
-        return age_primary_education_type;
-    }
-
-    public void setAge_primary_education_type(String age_primary_education_type) {
-        this.age_primary_education_type = age_primary_education_type;
-    }
-
-    public String getAge_tertiary_education_type() {
-        return age_tertiary_education_type;
-    }
-
-    public void setAge_tertiary_education_type(String age_tertiary_education_type) {
-        this.age_tertiary_education_type = age_tertiary_education_type;
     }
 
     public String getCustom_dissagregacion() {

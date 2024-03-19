@@ -54,8 +54,6 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "age_type", type = String.class),
                                 @ColumnResult(name = "country_of_origin", type = String.class),
                                 @ColumnResult(name = "diversity_type", type = String.class),
-                                @ColumnResult(name = "age_primary_education_type", type = String.class),
-                                @ColumnResult(name = "age_tertiary_education_type", type = String.class),
                                 @ColumnResult(name = "custom_dissagregacion", type = String.class),
                                 @ColumnResult(name = "value", type = BigDecimal.class)
                         }
@@ -105,8 +103,6 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "age_type", type = String.class),
                                 @ColumnResult(name = "country_of_origin", type = String.class),
                                 @ColumnResult(name = "diversity_type", type = String.class),
-                                @ColumnResult(name = "age_primary_education_type", type = String.class),
-                                @ColumnResult(name = "age_tertiary_education_type", type = String.class),
                                 @ColumnResult(name = "custom_dissagregacion", type = String.class),
                                 @ColumnResult(name = "value", type = BigDecimal.class),
                                 @ColumnResult(name = "iv_id_office", type = Long.class),
