@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {ImportFile, Period, PeriodStatementAsignation, Pillar, Statement} from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
@@ -18,6 +18,7 @@ import {
     StatementPeriodStatementAsignationsListPipe
 } from "../../shared/pipes/statement-period-statement-asignations-list.pipe";
 import {HttpResponse} from "@angular/common/http";
+import {EnumValuesToLabelPipe} from "../../shared/pipes/enum-values-to-label.pipe";
 
 
 @Component({
@@ -35,9 +36,10 @@ export class StatementAdministrationComponent implements OnInit {
     areasItems: SelectItem[];
     pillarsItems: SelectItem[];
     situationsItems: SelectItem[];
-    periodsItems: SelectItem[];
+    periodsItems: SelectItem<Period>[];
     parentStatementsItemsFiltered: SelectItem[];
     parentStatementsItems: SelectItem[];
+    areaTypesItems: SelectItem[];
 
 
     // tslint:disable-next-line:variable-name
@@ -61,7 +63,9 @@ export class StatementAdministrationComponent implements OnInit {
         private periodService: PeriodService,
         private codeShortDescriptionPipe: CodeShortDescriptionPipe,
         private codeDescriptionPipe: CodeDescriptionPipe,
-        private statementPeriodStatementAsignationsListPipe: StatementPeriodStatementAsignationsListPipe
+        private statementPeriodStatementAsignationsListPipe: StatementPeriodStatementAsignationsListPipe,
+        private enumValuesToLabelPipe: EnumValuesToLabelPipe,
+        private cd: ChangeDetectorRef
     ) {
     }
 
@@ -70,7 +74,8 @@ export class StatementAdministrationComponent implements OnInit {
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
             {field: 'code', header: 'Código', type: ColumnDataType.text},
-            {field: 'productCode', header: 'Código de Producto', type: ColumnDataType.text},
+            {field: 'areaType', header: 'Tipo', type: ColumnDataType.text, pipeRef: this.enumValuesToLabelPipe,arg1:  EnumsType.AreaType},
+            //{field: 'productCode', header: 'Código de Producto', type: ColumnDataType.text},
             {field: 'description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
             {
@@ -105,6 +110,7 @@ export class StatementAdministrationComponent implements OnInit {
             state: new FormControl('', Validators.required),
             parentStatement: new FormControl(''),
             area: new FormControl(''),
+            areaType: new FormControl(''),
             pillar: new FormControl('', Validators.required),
             situation: new FormControl('', Validators.required),
             periods: new FormControl('', Validators.required),
@@ -114,6 +120,9 @@ export class StatementAdministrationComponent implements OnInit {
 
         this.enumsService.getByType(EnumsType.State).subscribe(value => {
             this.states = value;
+        });
+        this.enumsService.getByType(EnumsType.AreaType).subscribe(value => {
+            this.areaTypesItems = value;
         });
 
         this.importForm = this.fb.group({
@@ -141,10 +150,7 @@ export class StatementAdministrationComponent implements OnInit {
             next: value => {
                 this.items = value;
                 this.parentStatementsItems = this.items.map(value1 => {
-                    return {
-                        label: this.codeDescriptionPipe.transform(value1),
-                        value: value1
-                    };
+                    return this.statementToSelectItem(value1);
                 });
                 this.loadAreas();
             },
@@ -267,10 +273,7 @@ export class StatementAdministrationComponent implements OnInit {
 
     createItem() {
         this.parentStatementsItems = this.items.map(value => {
-            return {
-                label: value.code + ' - ' + value.description,
-                value
-            };
+            return this.statementToSelectItem(value);
         });
         this.messageService.clear();
         this.utilsService.resetForm(this.formItem);
@@ -284,23 +287,25 @@ export class StatementAdministrationComponent implements OnInit {
         this.parentStatementsItems = this.items.filter(value => {
             return value.id !== statement.id;
         }).map(value => {
-            return {
-                label: value.code + ' - ' + value.description,
-                value
-            };
+            return this.statementToSelectItem(value);
         });
         this.utilsService.resetForm(this.formItem);
         this.submitted = false;
         this.showDialog = true;
 
-        const assignedPeriods = statement.periodStatementAsignations.filter(value => {
+        const periodStatementAsignations: PeriodStatementAsignation[] =
+            statement.periodStatementAsignations;
+        const assignedPeriods: Period[] = statement.periodStatementAsignations.filter(value => {
             return value.state === EnumsState.ACTIVE;
         }).map(value => {
             return value.period;
         });
 
-        this.formItem.get('periods').patchValue(assignedPeriods);
+
         this.formItem.patchValue(statement);
+        this.formItem.get('periodStatementAsignations').patchValue(periodStatementAsignations);
+        this.formItem.get('periods').patchValue(assignedPeriods);
+        this.cd.detectChanges();
     }
 
 
@@ -321,6 +326,7 @@ export class StatementAdministrationComponent implements OnInit {
             periodStatementAsignations
         }
             = this.formItem.value;
+
         const statement: Statement = {
             id,
             code,
@@ -397,13 +403,19 @@ export class StatementAdministrationComponent implements OnInit {
 
     cancelDialog() {
         this.parentStatementsItems = this.items.map(value => {
-            return {
-                label: value.code + ' - ' + value.description,
-                value
-            };
+            return this.statementToSelectItem(value);
         });
         this.showDialog = false;
         this.submitted = false;
+    }
+
+    statementToSelectItem(value:Statement):SelectItem{
+        return {
+            value:value,
+            label:  "(" + (value.periodStatementAsignations.map(value1 => {
+                return value1.period.year
+            }).join("-")) + ") "+value.code + ' - ' + value.description,
+        }
     }
 
     @Input() get selectedColumns(): any[] {
@@ -497,13 +509,15 @@ export class StatementAdministrationComponent implements OnInit {
                 return value2.period.id
             });
             for (let selectedPeriod of selectedPeriods) {
-                if(periodIds.includes(selectedPeriod.id)){
+                if (periodIds.includes(selectedPeriod.id)) {
                     return true;
-                }else {
+                } else {
                     return false;
                 }
             }
             return false;
         });
+
+
     }
 }

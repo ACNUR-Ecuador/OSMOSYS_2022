@@ -52,14 +52,15 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     unitTypes: SelectItem[];
     totalIndicatorCalculationTypes: SelectItem[];
     statements: Statement[];
-    filteredStatements: {
+    filteredStatements: SelectItem<Statement>[]; /*{
         labelItem: string,
         valueItem: Statement
-    }[];
+    }[];*/
     customDissagregations: CustomDissagregation[];
     isMonitoredOptions: any[];
     isCalculatedOptions: any[];
     periods: Period[];
+    periodsForStatements: Period[];
     periodsSelectItems: SelectItem[];
 
     // tslint:disable-next-line:variable-name
@@ -186,7 +187,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             isCalculated: new FormControl('', Validators.required),
             totalIndicatorCalculationType: new FormControl('', Validators.required),
             compassIndicator: new FormControl('', Validators.required),
-            statement: new FormControl(''),
+            statement: new FormControl(null,Validators.required),
             dissagregationAssignationToIndicators: new FormControl(''),
             customDissagregationAssignationToIndicators: new FormControl(''),
             blockAfterUpdate: new FormControl(''),
@@ -289,6 +290,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
 
     createItem() {
+        this.setPeriodForStatment(null);
 
         this.messageService.clear();
         this.utilsService.resetForm(this.formItem);
@@ -302,6 +304,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     }
 
     editItem(indicator: Indicator) {
+        this.setPeriodForStatment(indicator.statement);
         this.utilsService.resetForm(this.formItem);
         this.showDialog = true;
         this.formItem.patchValue(indicator);
@@ -454,17 +457,25 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             return value.areaType === areaType;
         }).sort((a, b) => a.code.localeCompare(b.code))
             .map(value => {
-                return {
-                    labelItem: value.code + '-' + value.description +
+                let selectItem: SelectItem<Statement> = {
+                    label: value.code + '-' + value.description +
                         "(" + (value.periodStatementAsignations.map(value1 => {
                             return value1.period.year
                         }).join("-")) + ")",
-                    valueItem: value
+                    value: value,
                 };
+                return selectItem
             });
+        this.filteredStatements.sort((a, b) => a.label.localeCompare(b.label));
+
 
         this.formItem.get('statement').enable();
         if (clearStatements) {
+            let emptyItem: SelectItem<Statement> = {
+                label: 'Selecciona una declaración.... ',
+                value: null,
+            };
+            this.filteredStatements.push(emptyItem);
             this.formItem.get('statement').patchValue(null);
         }
     }
@@ -597,7 +608,9 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
     public getdissagregationsAssignationToIndicator(period: Period): DissagregationAssignationToIndicator[] {
         let dissagregationAssignations: DissagregationAssignationToIndicator[] = this.formItem.get('dissagregationAssignationToIndicators').value;
-        if(!dissagregationAssignations){dissagregationAssignations=[]}
+        if (!dissagregationAssignations) {
+            dissagregationAssignations = []
+        }
         let dissagregationAssignationToIndicators: DissagregationAssignationToIndicator[] = dissagregationAssignations.filter(value => value.period.id === period.id);
         if (!dissagregationAssignationToIndicators) {
             dissagregationAssignationToIndicators = [];
@@ -607,7 +620,9 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
     public getCustomDissagregationsAssignationToIndicator(period: Period): CustomDissagregationAssignationToIndicator[] {
         let dissagregationAssignations: CustomDissagregationAssignationToIndicator[] = this.formItem.get('customDissagregationAssignationToIndicators').value;
-        if(!dissagregationAssignations){dissagregationAssignations=[]}
+        if (!dissagregationAssignations) {
+            dissagregationAssignations = []
+        }
         let dissagregationAssignationToIndicators: CustomDissagregationAssignationToIndicator[] =
             dissagregationAssignations.filter(value => value.period.id === period.id);
         if (!dissagregationAssignationToIndicators) {
@@ -638,8 +653,18 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         // remuevo los editados
         oldDissagregationAssignationToIndicators = oldDissagregationAssignationToIndicators
             .filter(value => value.period.id !== period.id);
-        oldDissagregationAssignationToIndicators = oldDissagregationAssignationToIndicators.concat(parametersMap.get('asignations') as  CustomDissagregationAssignationToIndicator[]);
+        oldDissagregationAssignationToIndicators = oldDissagregationAssignationToIndicators.concat(parametersMap.get('asignations') as CustomDissagregationAssignationToIndicator[]);
         this.formItem.get('customDissagregationAssignationToIndicators').patchValue(oldDissagregationAssignationToIndicators);
+
+    }
+
+    setPeriodForStatment(value:Statement) {
+        if(!value){
+            this.periodsForStatements=[];
+        }else {
+            this.periodsForStatements=value.periodStatementAsignations.filter(value1 => value1.state===EnumsState.ACTIVE).map(value1 => value1.period);
+        }
+
 
     }
 }

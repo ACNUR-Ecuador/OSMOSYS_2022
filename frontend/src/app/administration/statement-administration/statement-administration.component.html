@@ -77,6 +77,20 @@
                                     </p-dropdown>
                                 </ng-template>
                             </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'areaType'" type="equals" [field]="col.field"
+                                            [showMenu]="false"
+                            >
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown [ngModel]="value" [options]="areaTypesItems"
+                                                (onChange)="filter($event.value)"
+                                                placeholder="Selecciona..." [showClear]="true">
+                                        <ng-template let-option pTemplate="item">
+                                            <span
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
                             <p-columnFilter *ngSwitchCase="'area'" type="equals" [field]="col.field"
                                             [showMenu]="false" [matchMode]="'objectIdFilter'"
                             >
@@ -166,7 +180,8 @@
                 </ng-template>
                 <ng-template pTemplate="summary">
                     <div class="p-d-flex p-ai-center p-jc-between">
-                        {{dt.filteredValue?dt.filteredValue.length:dt.totalRecords}} de {{items?items.length:0}} declaraciones.
+                        {{dt.filteredValue ? dt.filteredValue.length : dt.totalRecords}} de {{items ? items.length : 0}}
+                        declaraciones.
                     </div>
                 </ng-template>
             </p-table>
@@ -183,15 +198,33 @@
                 <div class="p-fluid p-formgrid grid">
                     <div class="field col-4 md:col4 p-sm-12">
                         <label for="periodsI">Periodos *</label>
-
-                        <p-multiSelect id="periodsI" [options]="periodsItems" appendTo="body"
+                        <p-multiSelect id="periodsI"
+                                       [options]="periodsItems"
+                                       appendTo="body"
                                        formControlName="periods"
+                                       [dataKey]="'id'"
                                        (onChange)="filterStatementsByPeriod($event.value)"
+                                       placeholder="Selecciona..."
+
                         >
 
                         </p-multiSelect>
 
                         <small class="p-error" *ngIf="utilsService.showErrorForm('situation',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+                    <div class="field col-4 md:col-4">
+                        <label for="areaTypeI">Tipo *</label>
+                        <p-dropdown id="areaTypeI"
+                                    formControlName="areaType"
+                                    [options]="areaTypesItems"
+                                    placeholder="Selecciona..."
+                                    [filter]=true
+                                    appendTo="body"
+                                    [panelStyle]="{'width':'80%'}"
+                        >
+                        </p-dropdown>
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('parentStatement',formItem)">Campo
                             obligatorio.</small>
                     </div>
                     <div class="field col-4 md:col-4">
