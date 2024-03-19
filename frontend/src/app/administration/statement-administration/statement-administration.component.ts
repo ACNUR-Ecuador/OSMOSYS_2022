@@ -74,7 +74,13 @@ export class StatementAdministrationComponent implements OnInit {
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
             {field: 'code', header: 'Código', type: ColumnDataType.text},
-            {field: 'areaType', header: 'Tipo', type: ColumnDataType.text, pipeRef: this.enumValuesToLabelPipe,arg1:  EnumsType.AreaType},
+            {
+                field: 'areaType',
+                header: 'Tipo',
+                type: ColumnDataType.text,
+                pipeRef: this.enumValuesToLabelPipe,
+                arg1: EnumsType.AreaType
+            },
             //{field: 'productCode', header: 'Código de Producto', type: ColumnDataType.text},
             {field: 'description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
@@ -284,11 +290,14 @@ export class StatementAdministrationComponent implements OnInit {
     }
 
     editItem(statement: Statement) {
-        this.parentStatementsItems = this.items.filter(value => {
+        /*this.parentStatementsItems = this.items.filter(value => {
             return value.id !== statement.id;
         }).map(value => {
             return this.statementToSelectItem(value);
-        });
+        });*/
+        // obtengo los periods
+        let periods= statement.periodStatementAsignations.map(value => value.period);
+        this.filterStatementsByPeriod(periods);
         this.utilsService.resetForm(this.formItem);
         this.submitted = false;
         this.showDialog = true;
@@ -409,12 +418,12 @@ export class StatementAdministrationComponent implements OnInit {
         this.submitted = false;
     }
 
-    statementToSelectItem(value:Statement):SelectItem{
+    statementToSelectItem(value: Statement): SelectItem {
         return {
-            value:value,
-            label:  "(" + (value.periodStatementAsignations.map(value1 => {
+            value: value,
+            label: value.areaType + "(" + (value.periodStatementAsignations.map(value1 => {
                 return value1.period.year
-            }).join("-")) + ") "+value.code + ' - ' + value.description
+            }).join("-")) + ") " + value.code + ' - ' + value.description
         }
     }
 
@@ -503,21 +512,20 @@ export class StatementAdministrationComponent implements OnInit {
 
     filterStatementsByPeriod(value) {
         let selectedPeriods: Period[] = value;
-        this.parentStatementsItemsFiltered = this.parentStatementsItems.filter(value1 => {
-            let statementTmp: Statement = value1.value;
-            let periodIds = statementTmp.periodStatementAsignations.map(value2 => {
-                return value2.period.id
-            });
-            for (let selectedPeriod of selectedPeriods) {
-                if (periodIds.includes(selectedPeriod.id)) {
-                    return true;
-                } else {
-                    return false;
+        if (selectedPeriods && selectedPeriods.length > 0 ) {
+            this.parentStatementsItemsFiltered = this.items
+                .filter(statementTmp => {
+                let periodIds = statementTmp.periodStatementAsignations.map(value2 => {
+                    return value2.period.id
+                });
+                for (let selectedPeriod of selectedPeriods) {
+                    return periodIds.includes(selectedPeriod.id);
                 }
-            }
-            return false;
-        });
-
+                return false;
+            }).map(value1 => this.statementToSelectItem(value1));
+        } else {
+            this.parentStatementsItemsFiltered = [];
+        }
 
     }
 }
