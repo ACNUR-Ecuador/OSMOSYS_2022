@@ -314,7 +314,7 @@ public class ModelWebTransformationService {
         indicatorWeb.setUnit(indicator.getUnit());
         indicatorWeb.setBlockAfterUpdate(indicator.getBlockAfterUpdate());
         if (getStatement) {
-            indicatorWeb.setStatement(this.statementToStatementWeb(indicator.getStatement(), false, true, false, false, false));
+            indicatorWeb.setStatement(this.statementToStatementWeb(indicator.getStatement(), true, true, false, false, false));
         }
         if (getDissagregations) {
             indicatorWeb.setDissagregationsAssignationToIndicator(this.dissagregationAssignationToIndicatorsToDissagregationAssignationToIndicatorsWeb(indicator.getDissagregationsAssignationToIndicator()));
