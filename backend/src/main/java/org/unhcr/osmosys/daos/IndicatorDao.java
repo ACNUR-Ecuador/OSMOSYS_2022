@@ -144,7 +144,9 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
     }
 
     public Indicator getByPeriodAndCode(Long periodId, String code) throws GeneralAppException {
-        String jpql = IndicatorDao.indicatorJpql +
+        String jpql = "select o from Indicator o " +
+                " left join o.dissagregationsAssignationToIndicator dai " +
+                " left join dai.period p " +
                 " WHERE p.id = :periodId and o.code =:code";
         Query q = getEntityManager().createQuery(jpql, Indicator.class);
         q.setParameter("periodId", periodId);

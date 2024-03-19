@@ -705,7 +705,6 @@ public class ModelWebTransformationService {
             statement.setDescription(statementWeb.getDescription());
             statement.setCode(statementWeb.getCode());
             statement.setProductCode(statementWeb.getProductCode());
-            statement.setAreaType(statementWeb.getArea().getAreaType());
             /*
             statement.setParentStatement(this.statementWebToStatement(statementWeb.getParentStatement()));
 
@@ -729,9 +728,6 @@ public class ModelWebTransformationService {
             statement.setDescription(statementWeb.getDescription());
             statement.setCode(statementWeb.getCode());
             statement.setProductCode(statementWeb.getProductCode());
-            if (statementWeb.getArea() != null) { // todo controlar
-                statement.setAreaType(statementWeb.getAreaType());
-            }
             /*statement.setParentStatement(this.statementWebToStatement(statementWeb.getParentStatement()));
             statement.setArea(this.areaToAreaWeb(statementWeb.getArea()));*/
             if (statementWeb.getParentStatement() != null && statementWeb.getParentStatement().getId() != null) {
@@ -759,6 +755,7 @@ public class ModelWebTransformationService {
                 statement.addPeriodStatementAsignation(psa);
             }
         }
+        statement.setAreaType(statementWeb.getAreaType());
         return statement;
     }
 
@@ -770,14 +767,6 @@ public class ModelWebTransformationService {
         return r;
     }
 
-    @SuppressWarnings("unused")
-    public Set<Statement> statementsWebToStatements(List<StatementWeb> statementsWebs) {
-        Set<Statement> r = new HashSet<>();
-        for (StatementWeb statementWeb : statementsWebs) {
-            r.add(this.statementWebToStatement(statementWeb));
-        }
-        return r;
-    }
     //</editor-fold>
 
     //<editor-fold desc="PeriodStatementAsignation">
