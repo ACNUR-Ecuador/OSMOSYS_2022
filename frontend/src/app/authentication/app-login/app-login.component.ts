@@ -4,13 +4,18 @@ import {UserService} from '../../services/user.service';
 import {MessageService} from 'primeng/api';
 import {Router} from '@angular/router';
 import {User} from '../../shared/model/User';
+import {environment} from "../../../environments/environment";
+
 
 @Component({
     selector: 'app-app-login',
     templateUrl: './app-login.component.html',
     styleUrls: ['./app-login.component.scss']
 })
-export class AppLoginComponent {
+export class AppLoginComponent{
+    loginPhotoFile=`assets/layout/images/${environment.loginPhoto}`;
+    flagLoginFile=`assets/layout/images/${environment.flagLoginFile}`;
+
 
     constructor(
         public router: Router,
@@ -53,4 +58,6 @@ export class AppLoginComponent {
 
         }
     }
+
+
 }

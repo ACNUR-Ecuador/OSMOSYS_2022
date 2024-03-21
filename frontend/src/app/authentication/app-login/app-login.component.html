@@ -11,7 +11,7 @@
             </div>
             <form [formGroup]="loginForm" class="flex flex-column align-items-center gap-4" (ngSubmit)="login()">
                 <input pInputText id="username" placeholder="usuario" formControlName="username" class="w-20rem"/>
-                <p-password id="password" placeholder="Contraseña" [feedback]="true" formControlName="password"
+                <p-password id="password" placeholder="Contraseña" [feedback]="false" [toggleMask]="true" formControlName="password"
                             inputStyleClass="w-20rem"></p-password>
                 <button pButton label="Ingresar" class="w-20rem"></button>
                 <p-messages></p-messages>
@@ -22,17 +22,17 @@
                                                                            class="text-primary hover:underline cursor-pointer font-medium">Escríbenos</a>.
         </p>
         <div>
-            <img [src]="'assets/layout/images/el-salvador-flag.png'" class="mt-4 align-items-center" alt="osmosys"
+            <img [src]=flagLoginFile class="mt-4 align-items-center" alt="osmosys"
                  style="max-height: 10%;width: fit-content;"/>
         </div>
     </div>
     <div
         class="w-8 hidden lg:flex flex-column justify-content-between align-items-center px-6 py-6 bg-cover bg-norepeat"
-        style="background-image: url('assets/layout/images/unhcr_photo.jpg')">
-        <div class="mt-auto  flex align-content-end flex-wrap">
-            <!--<span class="block text-white text-7xl font-semibold">Access to your <br/>Diamond <br/>Account</span>
-            <span class="block text-white text-3xl mt-4">Lorem ipsum dolor sit amet, consectetur<br/> adipiscing elit. Donec posuere velit nec enim<br/> sodales, nec placerat erat tincidunt. </span>-->
+        [ngStyle]="{ 'background-image': 'url(' + loginPhotoFile + ')'}">
+        <!--<div class="mt-auto  flex align-content-end flex-wrap">
+            &lt;!&ndash;<span class="block text-white text-7xl font-semibold">Access to your <br/>Diamond <br/>Account</span>&ndash;&gt;
+            <span class="block text-white text-3xl mt-4">Desarrollado por Gestión de Informacion<br/> El Salvador<br/>  </span>
 
-        </div>
+        </div>-->
     </div>
 </div>

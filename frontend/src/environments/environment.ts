@@ -9,6 +9,9 @@ export const environment = {
     base_url: 'http://localhost:8080/osmosys/api',
     app_code: 'OSMOSYS_SV',
     versionCheckURL : 'https://datos-elsalvador.unhcr.org/osmosys/version.json',
+    loginPhoto : 'unhcr_photo_sv.jpg',
+    flagLoginFile : 'flag_sv.png',
+    flagToolbarFile : 'flag_sv.png',
 };
 
 /*

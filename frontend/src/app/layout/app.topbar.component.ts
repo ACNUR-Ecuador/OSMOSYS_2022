@@ -2,12 +2,14 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {LayoutService} from 'src/app/layout/service/app.layout.service';
 import {AppSidebarComponent} from './app.sidebar.component';
 import {UserService} from "../services/user.service";
+import {environment} from "../../environments/environment";
 
 @Component({
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html'
 })
 export class AppTopbarComponent implements OnInit {
+    flagToolbarFile=`assets/layout/images/${environment.flagToolbarFile}`;
 
     @ViewChild('menubutton') menuButton!: ElementRef;
 
