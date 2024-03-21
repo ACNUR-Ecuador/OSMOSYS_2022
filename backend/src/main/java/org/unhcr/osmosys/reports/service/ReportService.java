@@ -542,7 +542,6 @@ public class ReportService {
             String jrxmlFile = "program_partner_report.jrxml";
             Map<String, Object> parameters = new HashMap<>();
             InputStream file = this.getReportFile(jrxmlFile);
-
             // todo
             // List<IndicatorReportProgramsDTO> dtos = this.reportDataService.getIndicatorReportProgramsByProjectId(projectId);
             List<IndicatorReportProgramsDTO> dtos=null;
