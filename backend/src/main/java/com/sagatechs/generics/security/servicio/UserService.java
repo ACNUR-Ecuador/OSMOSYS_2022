@@ -1,5 +1,7 @@
 package com.sagatechs.generics.security.servicio;
 
+import com.sagatechs.generics.appConfiguration.AppConfigurationKey;
+import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.AccessDeniedException;
 import com.sagatechs.generics.exceptions.AuthorizationException;
 import com.sagatechs.generics.exceptions.GeneralAppException;
@@ -76,6 +78,8 @@ public class UserService implements Serializable {
 
     @Inject
     ModelWebTransformationService modelWebTransformationService;
+    @Inject
+    AppConfigurationService appConfigurationService;
 
 
     private static final int EXPIRATION_TIME_SECONDS = 6400;
@@ -144,15 +148,15 @@ public class UserService implements Serializable {
         // send email
         String message = "<p>Bienvenid@:</p>" +
                 "<p>Se ha creado un nuevo usuario para su acceso Osmosys.</p>" +
-                "<p>Puede acceder al sistema utilizando los siguientes datos:</p>" +
-                "<p>Direcci&oacute;n: <a href=\"https://imecuador.unhcr.org/osmosys_sv\">" + "https://imecuador.unhcr.org/osmosys_sv" + "</a> (Se recomienda el uso de Google Chrome)</p>" +
+                "<p>Puede acceder al sistema utilizando los siguientes datos:</p>"+
+                "<p>Direcci&oacute;n: <a href=\""+this.appConfigurationService.getAppUrl()+"\">" + this.appConfigurationService.getAppUrl() + "</a> (Se recomienda el uso de Google Chrome)</p>" +
                 "<p>Nombre de usuario: " + user.getUsername() + "</p>" +
                 "<p>Contrase&ntilde;a: " + password + "</p>" +
                 "<p>&nbsp;</p>" +
 
                 "<p>Al ingresar al sistema, comprende y acepta que la informaci&oacute;n presentada es de uso interno de la organización y no ha de ser reproducida/compartida con otros actores sin consentimiento por escrito por parte del equipo de IM-ACNUR.</p>" +
                 "<p>&nbsp;</p>" +
-                "<p>Si necesitas ayuda por favor cont&aacute;ctate con la Unidad de Gesti&oacute;n de la Informaci&oacute;n con <a href=\"\\&quot;mailto:salazart@unhcr.org\\&quot;\">salazart@unhcr.org.</a></p>";
+                "<p>Si necesitas ayuda por favor cont&aacute;ctate con la Unidad de Gesti&oacute;n de la Informaci&oacute;n con <a href=\"\\&quot;mailto:"+this.appConfigurationService.findValorByClave(AppConfigurationKey.IM_EMAIL)+"\\&quot;\">"+this.appConfigurationService.findValorByClave(AppConfigurationKey.IM_EMAIL)+".</a></p>";
 
         // todo quitar email
         this.asyncService.sendEmail(
@@ -417,7 +421,7 @@ public class UserService implements Serializable {
 
             @SuppressWarnings("rawtypes")
             LinkedHashMap organizationMap = (LinkedHashMap) jws.getBody().get("organization");
-            if (organizationMap != null && organizationMap.size() > 0) {
+            if (organizationMap != null && !organizationMap.isEmpty()) {
                 OrganizationWeb organizationWeb = new OrganizationWeb();
                 organizationWeb.setId(Long.valueOf((Integer) organizationMap.get("id")));
                 organizationWeb.setState(State.valueOf((String) organizationMap.get("state")));
@@ -428,7 +432,7 @@ public class UserService implements Serializable {
             }
             @SuppressWarnings("rawtypes")
             LinkedHashMap officeMap = (LinkedHashMap) jws.getBody().get("office");
-            if (officeMap != null && officeMap.size() > 0) {
+            if (officeMap != null && !officeMap.isEmpty()) {
                 OfficeWeb officeWeb = new OfficeWeb();
                 officeWeb.setId(Long.valueOf((Integer) officeMap.get("id")));
                 officeWeb.setState(State.valueOf((String) officeMap.get("state")));
@@ -439,13 +443,13 @@ public class UserService implements Serializable {
             }
             @SuppressWarnings("unchecked")
             List<Long> focalPointProjectsMap = (List<Long>) jws.getBody().get("focalPointProjects");
-            if (focalPointProjectsMap != null && focalPointProjectsMap.size() > 0) {
+            if (focalPointProjectsMap != null && !focalPointProjectsMap.isEmpty()) {
                 user.setFocalPointProjects(focalPointProjectsMap);
             } else {
                 user.setFocalPointProjects(null);
             }
             List<OfficeWeb> administratedOffices = (List<OfficeWeb>) jws.getBody().get("administratedOffices");
-            if (administratedOffices != null && administratedOffices.size() > 0) {
+            if (administratedOffices != null && !administratedOffices.isEmpty()) {
                 user.setAdministratedOffices(administratedOffices);
             } else {
                 user.setFocalPointProjects(null);
@@ -539,7 +543,7 @@ public class UserService implements Serializable {
             String message = "<p>Bienvenid@:</p>" +
                     "<p>Se ha generado una nueva contraseña para el acceso al Osmosys.</p>" +
                     "<p>Puede acceder al sistema utilizando los siguientes datos:</p>" +
-                    "<p>Direcci&oacute;n: <a href=\"https://imecuador.unhcr.org/osmosys_sv\">" + "https://imecuador.unhcr.org/osmosys_sv" + "</a> (Se recomienda el uso de Google Chrome)</p>" +
+                    "<p>Direcci&oacute;n: <a href=\""+this.appConfigurationService.getAppUrl()+"\">" + this.appConfigurationService.getAppUrl() + "</a> (Se recomienda el uso de Google Chrome)</p>" +
                     "<p>Nombre de usuario: " + user.getUsername() + "</p>" +
                     "<p>Contraseña: " + password + "</p>" +
                     "<p>&nbsp;</p>" +

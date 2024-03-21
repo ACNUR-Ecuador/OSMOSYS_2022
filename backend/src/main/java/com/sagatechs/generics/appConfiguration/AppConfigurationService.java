@@ -94,6 +94,11 @@ public class AppConfigurationService {
             return Integer.parseInt(valusS);
         }
     }
+    public String getAppUrl() {
+        return this.findValorByClave(AppConfigurationKey.APP_URL);
+
+
+    }
 
     public List<Integer> getReminderDays() {
         String valusS = this.findValorByClave(AppConfigurationKey.REMINDER_DAYS);
