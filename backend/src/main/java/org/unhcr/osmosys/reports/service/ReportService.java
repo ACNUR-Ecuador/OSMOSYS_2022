@@ -24,13 +24,12 @@ import javax.sql.DataSource;
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Stateless
 public class ReportService {
@@ -394,14 +393,21 @@ public class ReportService {
     private Connection getConexion() throws GeneralAppException {
         Connection connection;
         try {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            InputStream resource = classLoader.getResourceAsStream("app.properties");
+            Properties p = new Properties();
+            p.load( resource );
             InitialContext initialContext = new InitialContext();
-            DataSource dataSource = (DataSource) initialContext.lookup("java:jboss/datasources/osmosys");
+            String datsourceName = p.getProperty("datasource.name");
+            DataSource dataSource = (DataSource) initialContext.lookup("java:jboss/datasources/"+datsourceName);
             connection = dataSource.getConnection();
             return connection;
         } catch (NamingException | SQLException e) {
             LOGGER.error("error al crear conexión");
             LOGGER.error(ExceptionUtils.getStackTrace(e));
             throw new GeneralAppException("Error al conectarse a la base de datos, comunícate con el administrador", Response.Status.INTERNAL_SERVER_ERROR);
+        } catch (IOException e) {
+            throw new GeneralAppException("Error al conectarse a la base de datos, comunícate con el administrador, archiv properties", Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 

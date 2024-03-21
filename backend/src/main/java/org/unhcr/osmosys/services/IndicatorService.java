@@ -275,7 +275,9 @@ public class IndicatorService {
                     .findFirst();
 
             if (webOptional.isEmpty()) {
-                throw new GeneralAppException("Error en el manejo de segregaciones personalizadas para el indicador.", Response.Status.INTERNAL_SERVER_ERROR);
+                // no existe en los nuevos, // no actualizo
+                break;
+                //throw new GeneralAppException("Error en el manejo de segregaciones personalizadas para el indicador.", Response.Status.INTERNAL_SERVER_ERROR);
             }
             dissagregationAssignationToIndicator.setUseCustomAgeDissagregations(webOptional.get().getUseCustomAgeDissagregations());
             if (dissagregationAssignationToIndicator.getUseCustomAgeDissagregations()!=null && dissagregationAssignationToIndicator.getUseCustomAgeDissagregations()) {
