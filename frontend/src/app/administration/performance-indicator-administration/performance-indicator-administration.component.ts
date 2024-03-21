@@ -662,7 +662,9 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         if(!value){
             this.periodsForStatements=[];
         }else {
-            this.periodsForStatements=value.periodStatementAsignations.filter(value1 => value1.state===EnumsState.ACTIVE).map(value1 => value1.period);
+            this.periodsForStatements=value.periodStatementAsignations.filter(value1 => value1.state===EnumsState.ACTIVE)
+                .map(value1 => value1.period)
+                .sort((a, b) => a.year-b.year);
         }
 
 
