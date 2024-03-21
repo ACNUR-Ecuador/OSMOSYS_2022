@@ -33,10 +33,10 @@
         <profile>
             <id>ec</id>
             <properties>
-                <datasource.name>osmosys_ec</datasource.name>
-                <context-root>osmosys_ec</context-root>
+                <datasource.name>osmosys_ec_test</datasource.name>
+                <context-root>osmosys_ec_test</context-root>
                 <hibernate.show_sql>false</hibernate.show_sql>
-                <warName>osmosys_ec</warName>
+                <warName>osmosys_ec_test</warName>
             </properties>
         </profile>
     </profiles>
@@ -359,19 +359,19 @@
 
     </dependencies>
     <build>
-        <resources>
-            <!--<resource>
+        <!--<resources>
+            <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>META-INF/persistence.xml</include>
+                    <include>app.properties</include>
                 </includes>
+                <excludes>
+                    <exclude>src/main/resources/reports/*</exclude>
+                    <exclude>src/main/resources/templates/*</exclude>
+                </excludes>
                 <filtering>true</filtering>
-            </resource>-->
-            <!--            <resource>
-                            <directory>src/main/webapp/WEB-INF</directory>
-                            <filtering>true</filtering>
-                        </resource>-->
-        </resources>
+            </resource>
+        </resources>-->
 
         <plugins>
             <plugin>
@@ -397,6 +397,15 @@
                             </includes>
                             <targetPath>WEB-INF</targetPath>
                         </resource>
+                        <resource>
+                            <filtering>true</filtering>
+                            <directory>src/main/resources/</directory>
+                            <includes>
+                                <include>**/app.properties</include>
+                            </includes>
+                            <targetPath>WEB-INF/classes</targetPath>
+                        </resource>
+
                     </webResources>
                 </configuration>
             </plugin>
@@ -408,6 +417,23 @@
                     <source>11</source>
                     <target>11</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.zeroturnaround</groupId>
+                <artifactId>jrebel-maven-plugin</artifactId>
+                <version>1.1.7</version>
+                <configuration>
+                    <addResourcesDirToRebelXml>true</addResourcesDirToRebelXml>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>generate-rebel-xml</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

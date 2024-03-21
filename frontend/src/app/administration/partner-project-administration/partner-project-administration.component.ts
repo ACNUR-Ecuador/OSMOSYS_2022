@@ -528,7 +528,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             // tslint:disable-next-line:no-shadowed-variable
             this.projectService.save(project)
                 .subscribe({
-                    next: () => {
+                    next: value => {
                         this.formItem.reset();
                         this.messageService.add({
                             severity: 'success',
@@ -536,7 +536,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                             life: 3000
                         });
                         this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-                            this.router.navigate(['/administration/partnerProjectAdministration', {projectId: id}])
+                            this.router.navigate(['/administration/partnerProjectAdministration', {projectId: value}])
                         );
 
                     },
