@@ -31,6 +31,13 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
                     " left join fetch p.periodCountryOfOriginDissagregationOptions " +
                     " left join fetch p.periodAgeDissagregationOptions " ;
 
+    private static final String indicatorJpqlProjectAdm =
+            " SELECT DISTINCT o" +
+                    " FROM Indicator o " +
+                    " LEFT OUTER JOIN o.statement sta "+
+                    " LEFT OUTER JOIN sta.periodStatementAsignations psa "
+                    ;
+
     public IndicatorDao() {
         super(Indicator.class, Long.class);
     }
@@ -71,8 +78,8 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
     }
 
     public List<Indicator> getByPeriodAssignmentAndState(Long periodId, State state) {
-        String jpql = IndicatorDao.indicatorJpql +
-                " WHERE p.id = :periodId and psa.state =:state and o.state =:state";
+        String jpql = IndicatorDao.indicatorJpqlProjectAdm +
+                " WHERE psa.period.id = :periodId and psa.state =:state and o.state =:state";
         Query q = getEntityManager().createQuery(jpql, Indicator.class);
         q.setParameter("periodId", periodId);
         q.setParameter("state", state);

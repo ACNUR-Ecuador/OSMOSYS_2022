@@ -369,8 +369,10 @@ public class IndicatorService {
         }
     }
 
+
     public List<IndicatorWeb> getByPeriodAssignmentAndState(Long periodId, State state) {
-        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getByPeriodAssignmentAndState(periodId, state), true, true);
+        List<Indicator> indicators = this.indicatorDao.getByPeriodAssignmentAndState(periodId, state);
+        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(indicators, true, true);
     }
 
     public List<Indicator> getByCodeList(List<String> codeList) {

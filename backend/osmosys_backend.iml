@@ -6,27 +6,13 @@
         <option name="ideModuleStorage">
           <map>
             <entry key="com.zeroturnaround.jrebel.FormatVersion" value="7.0.0" />
-            <entry key="com.zeroturnaround.jrebel.remoting.DeleteUnindexedFiles" value="false" />
             <entry key="jrebelEnabled" value="true" />
-            <entry key="lastExternalPluginCheckTime" value="1710370811805" />
-            <entry key="rebelXmlGenerationInvariantToken" value="PGFwcGxpY2F0aW9uIGdlbmVyYXRlZC1ieT0iaW50ZWxsaWoiPjxpZD5vc21vc3lzX2JhY2tlbmQ8L2lkPjxjbGFzc3BhdGg+PGRpciBuYW1lPSIke3JlYmVsLnByb2plY3RwYXRoLm9zbW9zeXNfYmFja2VuZH0vdGFyZ2V0L2NsYXNzZXMiPjwvZGlyPjwvY2xhc3NwYXRoPjx3ZWI+PGxpbmsgdGFyZ2V0PSIvIj48ZGlyIG5hbWU9IiR7cmViZWwucHJvamVjdHBhdGgub3Ntb3N5c19iYWNrZW5kfS9zcmMvbWFpbi93ZWJhcHAiPjwvZGlyPjwvbGluaz48L3dlYj48L2FwcGxpY2F0aW9uPg==" />
+            <entry key="lastExternalPluginCheckTime" value="1711402173138" />
+            <entry key="rebelXmlGenerationInvariantToken" value="PGFwcGxpY2F0aW9uIGdlbmVyYXRlZC1ieT0iaW50ZWxsaWoiPjxpZD5vc21vc3lzX2JhY2tlbmQ8L2lkPjxjbGFzc3BhdGg+PGRpciBuYW1lPSJEOi9Qcm95ZWN0b3MvME9TTU9TWVNfMjAyNC9iYWNrZW5kL3RhcmdldC9jbGFzc2VzIj48L2Rpcj48L2NsYXNzcGF0aD48d2ViPjxsaW5rIHRhcmdldD0iLyI+PGRpciBuYW1lPSJEOi9Qcm95ZWN0b3MvME9TTU9TWVNfMjAyNC9iYWNrZW5kL3NyYy9tYWluL3dlYmFwcCI+PC9kaXI+PC9saW5rPjxsaW5rIHRhcmdldD0iL1dFQi1JTkYiPjxkaXIgbmFtZT0iRDovUHJveWVjdG9zLzBPU01PU1lTXzIwMjQvYmFja2VuZC9zcmMvbWFpbi93ZWJhcHAvV0VCLUlORiI+PC9kaXI+PC9saW5rPjxsaW5rIHRhcmdldD0iL1dFQi1JTkYvY2xhc3NlcyI+PGRpciBuYW1lPSJEOi9Qcm95ZWN0b3MvME9TTU9TWVNfMjAyNC9iYWNrZW5kL3NyYy9tYWluL3Jlc291cmNlcyI+PC9kaXI+PC9saW5rPjxsaW5rIHRhcmdldD0iL1dFQi1JTkYvY2xhc3Nlcy9NRVRBLUlORiI+PGRpciBuYW1lPSJEOi9Qcm95ZWN0b3MvME9TTU9TWVNfMjAyNC9iYWNrZW5kL3NyYy9tYWluL3Jlc291cmNlcy9NRVRBLUlORiI+PC9kaXI+PC9saW5rPjwvd2ViPjwvYXBwbGljYXRpb24+" />
             <entry key="rebelXmlGenerationType" value="ide" />
           </map>
         </option>
-        <option name="version" value="117" />
-        <option name="useRelativePathsInXml" value="true" />
-        <option name="xmlDir" value="src/main/resources/" />
-      </configuration>
-    </facet>
-    <facet type="jpa" name="JPA">
-      <configuration>
-        <setting name="validation-enabled" value="true" />
-        <setting name="provider-name" value="Hibernate" />
-        <datasource-mapping>
-          <factory-entry name="main-persistence-unit" value="80402fe1-add6-4614-aad8-693a5a7ac0a3" />
-        </datasource-mapping>
-        <naming-strategy-map />
-        <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
+        <option name="version" value="25" />
       </configuration>
     </facet>
   </component>

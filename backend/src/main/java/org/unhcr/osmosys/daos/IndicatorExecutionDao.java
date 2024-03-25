@@ -79,6 +79,17 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                     " left join fetch p.periodPopulationTypeDissagregationOptions " +
                     " left join fetch p.generalIndicator " +
                     " left join fetch o.indicator ";
+    public static final String jpqlProjectIndicatorsSimplified =
+            " SELECT DISTINCT o FROM IndicatorExecution o " +
+                    " left join fetch o.indicator i " +
+                    " left join fetch o.project pr "
+                   ;
+
+    public static final String jpqlProjectIndicatorsAdmin =
+            " SELECT DISTINCT o FROM IndicatorExecution o " +
+                    " left join fetch o.indicator i " +
+                    " left join fetch o.project pr " ;
+
     public static final String jpqlDirectImplementationIndicators =
             "SELECT DISTINCT o FROM IndicatorExecution o " +
                     " left join fetch o.indicatorExecutionLocationAssigments iela " +
@@ -145,7 +156,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
 
     public List<IndicatorExecution> getPerformanceIndicatorExecutionsByProjectId(Long projectId) {
         IndicatorType indicatorType = IndicatorType.GENERAL;
-        String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
+        String jpql = IndicatorExecutionDao.jpqlProjectIndicatorsAdmin +
                 " WHERE pr.id = :projectId" +
                 " and o.indicatorType <>: generalType ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
@@ -156,7 +167,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
 
     public List<IndicatorExecution> getPerformanceIndicatorExecutionsByProjectIdAndState(Long projectId, State state) {
         IndicatorType indicatorType = IndicatorType.GENERAL;
-        String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
+        String jpql = IndicatorExecutionDao.jpqlProjectIndicatorsSimplified +
 
                 " WHERE pr.id = :projectId" +
                 " and o.indicatorType <> :generalType " +
