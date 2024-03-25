@@ -50,7 +50,7 @@ public class IndicatorExecutionEndpoint {
 
     @Path("/performanceAdminByProject/{projectId}")
     @GET
-   // @Secured
+    @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public List<IndicatorExecutionWeb> getPerformanceIndicatorExecutionsAdminByProjectId(@PathParam("projectId") Long projectId) throws GeneralAppException {
         return this.indicatorExecutionService.getPerformanceIndicatorExecutionsAdministrationByProjectId(projectId);
@@ -58,7 +58,7 @@ public class IndicatorExecutionEndpoint {
 
     @Path("/performanceByProjectId/{projectId}")
     @GET
-    //@Secured
+    @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public List<IndicatorExecutionWeb> getPerformanceIndicatorExecutionsByProjectId(@PathParam("projectId") Long projectId) throws GeneralAppException {
 
