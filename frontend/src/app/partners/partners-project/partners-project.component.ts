@@ -1,11 +1,9 @@
 import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
-import {FilterService, MenuItem, MessageService, SelectItem} from 'primeng/api';
+import {MenuItem, MessageService, SelectItem} from 'primeng/api';
 import {ActivatedRoute} from '@angular/router';
 import {Canton, IndicatorExecution, MonthState, Project} from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsState} from '../../shared/model/UtilsModel';
-import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
-import {EnumValuesToLabelPipe} from '../../shared/pipes/enum-values-to-label.pipe';
 import {DialogService} from 'primeng/dynamicdialog';
 import {
     GeneralIndicatorFormComponent
@@ -16,9 +14,7 @@ import {
 import {IndicatorPipe} from '../../shared/pipes/indicator.pipe';
 import {HttpResponse} from '@angular/common/http';
 import {UtilsService} from '../../services/utils.service';
-import {FilterUtilsService} from '../../services/filter-utils.service';
 import {ProjectService} from '../../services/project.service';
-import {IndicatorExecutionService} from '../../services/indicator-execution.service';
 import {UserService} from '../../services/user.service';
 import {ReportsService} from '../../services/reports.service';
 import {CantonService} from "../../services/canton.service";
@@ -36,6 +32,8 @@ export class PartnersProjectComponent implements OnInit {
     public states: SelectItem[];
     public project: Project;
     public monthsState: MonthState[];
+    public viewGeneralIndicators: Boolean;
+
 
     // tslint:disable-next-line:variable-name
     _selectedColumnsGeneralIndicators: ColumnTable[];
@@ -56,13 +54,8 @@ export class PartnersProjectComponent implements OnInit {
     constructor(
         public dialogService: DialogService,
         public utilsService: UtilsService,
-        private filterService: FilterService,
-        private filterUtilsService: FilterUtilsService,
         private messageService: MessageService,
         private projectService: ProjectService,
-        private indicatorExecutionService: IndicatorExecutionService,
-        private codeDescriptionPipe: CodeDescriptionPipe,
-        private enumValuesToLabelPipe: EnumValuesToLabelPipe,
         private indicatorPipe: IndicatorPipe,
         private route: ActivatedRoute,
         private reportsService: ReportsService,
@@ -464,7 +457,7 @@ export class PartnersProjectComponent implements OnInit {
         } else {
             this.projectService.updateProjectLocations(this.project.id, cantones)
                 .subscribe({
-                    next: value => {
+                    next: () => {
                         this.showLocationsDialog = false;
                     }, error: err => {
                         this.messageService.add({
@@ -476,5 +469,9 @@ export class PartnersProjectComponent implements OnInit {
                     }
                 });
         }
+    }
+
+    setViewGeneralIndicators($event: number) {
+        this.viewGeneralIndicators = $event && $event > 0;
     }
 }

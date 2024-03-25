@@ -39,6 +39,12 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnC
     @Output()
     callMonthParent = new EventEmitter<Map<string, number | string | IndicatorExecution>>();
 
+    @Output()
+    callGeneralIndicatorCount = new EventEmitter<number>();
+
+
+
+
     public generalIndicators: IndicatorExecution[];
     // tslint:disable-next-line:variable-name
     _selectedColumnsGeneralIndicators: ColumnTable[];
@@ -76,17 +82,20 @@ export class PartnersProjectGeneralIndicatorListComponent implements OnInit, OnC
 
     private loadGeneralIndicators(idProject: number) {
         this.indicatorExecutionService.getGeneralIndicatorResume(idProject)
-            .subscribe(value => {
-                this.generalIndicators = value;
-                this.createGeneralIndicatorColumns();
-            }, error => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error al cargar indicadores generales',
-                    detail: error.error.message,
-                    life: 3000
-                });
-            });
+            .subscribe({
+                next:value => {
+                    this.generalIndicators = value;
+                    this.callGeneralIndicatorCount.emit(value?value.length:0);
+                    this.createGeneralIndicatorColumns();
+                },error:error => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al cargar indicadores generales',
+                        detail: error.error.message,
+                        life: 3000
+                    });
+                }});
+
     }
 
     private createGeneralIndicatorColumns() {

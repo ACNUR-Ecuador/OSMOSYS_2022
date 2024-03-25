@@ -58,6 +58,7 @@
                             "outputHashing": "all"
                         },
                         "production_ec": {
+                            "baseHref": "/osmosys_ec_test/",
                             "budgets": [
                                 {
                                     "type": "initial",
