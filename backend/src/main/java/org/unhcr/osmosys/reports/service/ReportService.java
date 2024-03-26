@@ -394,6 +394,7 @@ public class ReportService {
         Connection connection;
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            //URL resourceUrl = classLoader.getResource("app.properties");
             InputStream resource = classLoader.getResourceAsStream("app.properties");
             Properties p = new Properties();
             p.load( resource );

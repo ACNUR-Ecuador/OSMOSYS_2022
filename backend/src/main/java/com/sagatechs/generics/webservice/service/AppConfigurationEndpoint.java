@@ -41,4 +41,10 @@ public class AppConfigurationEndpoint {
     public void save(AppConfiguration appConfiguration) {
         this.appConfigurationService.updateAppConfiguration(appConfiguration.getId(), appConfiguration.getValor());
     }
+    @Path("/reload")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public void appconfiguration() {
+        this.appConfigurationService.llenarAppConfigurationCache();
+    }
 }

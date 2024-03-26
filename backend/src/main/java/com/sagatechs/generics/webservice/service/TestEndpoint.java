@@ -1,6 +1,7 @@
 package com.sagatechs.generics.webservice.service;
 
 
+import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.servicio.UserService;
@@ -46,6 +47,8 @@ public class TestEndpoint {
 
     @Inject
     UserService userService;
+    @Inject
+    AppConfigurationService appConfigurationService;
 
     @Inject
     IndicatorService indicatorService;
@@ -335,6 +338,13 @@ public class TestEndpoint {
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
     public String updateAllDirectImplementationTotals() throws GeneralAppException {
         this.indicatorExecutionService.updateAllDirectImplementationTotals(1l);
+        return "terimnado generales";
+    }
+    @Path("updateAppConf")
+    @GET
+    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    public String updateAppConf() throws GeneralAppException {
+        this.appConfigurationService.llenarAppConfigurationCache();
         return "terimnado generales";
     }
 
