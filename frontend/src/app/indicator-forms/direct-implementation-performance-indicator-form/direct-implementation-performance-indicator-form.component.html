@@ -2,14 +2,13 @@
     <p-toast key="dialogToast" position="top-center"></p-toast>
     <p-messages></p-messages>
 
-    asfasdfasdf: {{hasLocationDissagregation}}
     <div class="card p-2" *ngIf="hasLocationDissagregation || indicatorExecution.activityDescription">
         <div class="flex justify-content-end">
             <p-message severity="warn"
-                       *ngIf="disableSave"
+                       *ngIf="disableSave && canEditLocation"
                        text="Primero agrega lugares para poder reportar"
             ></p-message>
-            <button pButton *ngIf="hasLocationDissagregation" type="button" pRipple label="Agregar Lugares de Ejecución"
+            <button pButton *ngIf="hasLocationDissagregation && canEditLocation" type="button" pRipple label="Agregar Lugares de Ejecución"
                     icon="pi pi-plus"
                     (click)="openLocationsDialog()"></button>
         </div>

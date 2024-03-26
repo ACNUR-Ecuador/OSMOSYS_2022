@@ -8,6 +8,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import {VersionCheckService} from "./services/version-check.service";
 import {environment} from "../environments/environment";
 import {StandardDissagregationsService} from "./services/standardDissagregations.service";
+import {AppConfigurationService} from "./services/app-configuration.service";
 
 @Component({
     selector: 'app-root',
@@ -25,6 +26,7 @@ export class AppComponent implements OnInit {
         private primengConfig: PrimeNGConfig,
         private layoutService: LayoutService,
         private enumsService: EnumsService,
+        private appConfigurationService: AppConfigurationService,
         private standardDissagregationsService: StandardDissagregationsService,
         private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
         private versionCheckService: VersionCheckService) {
@@ -52,6 +54,7 @@ export class AppComponent implements OnInit {
 
         this.enumsService.loadcache();
         this.standardDissagregationsService.loadcache();
+        this.appConfigurationService.loadcache();
 
         this.versionCheckService.initVersionCheck(environment.versionCheckURL);
         this.versionCheckService.checkVersion(environment.versionCheckURL);

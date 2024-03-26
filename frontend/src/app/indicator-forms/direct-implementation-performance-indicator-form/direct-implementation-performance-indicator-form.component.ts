@@ -19,6 +19,7 @@ import {UserService} from '../../services/user.service';
 import {MonthService} from '../../services/month.service';
 import {WorkBook} from "xlsx";
 import * as XLSX from "xlsx";
+import {AppConfigurationService} from "../../services/app-configuration.service";
 
 @Component({
     selector: 'app-direct-implementation-performance-indicator-form',
@@ -66,6 +67,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     sheetOptions: string[];
     importCantonesErroMessage: string[];
     showImportCantonesErroMessage: boolean;
+    canEditLocation: boolean;
 
     constructor(public ref: DynamicDialogRef,
                 public config: DynamicDialogConfig,
@@ -76,6 +78,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
                 private cantonService: CantonService,
                 private messageService: MessageService,
                 private userService: UserService,
+                private appConfigurationService: AppConfigurationService,
                 private fb: FormBuilder,
                 private cd: ChangeDetectorRef
     ) {
@@ -84,6 +87,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     ngOnInit(): void {
         this.indicatorExecution = this.config.data.indicatorExecution;
         this.monthId = this.config.data.monthId;
+        this.canEditLocation=this.appConfigurationService.getCanDirectImplementacionEditLocations();
 
         this.formItem = this.fb.group({
             commentary: new FormControl('', [Validators.maxLength(1000), Validators.required]),

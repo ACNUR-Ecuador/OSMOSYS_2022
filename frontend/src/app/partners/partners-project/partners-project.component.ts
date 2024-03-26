@@ -18,6 +18,7 @@ import {ProjectService} from '../../services/project.service';
 import {UserService} from '../../services/user.service';
 import {ReportsService} from '../../services/reports.service';
 import {CantonService} from "../../services/canton.service";
+import {AppConfigurationService} from "../../services/app-configuration.service";
 
 @Component({
     selector: 'app-partners-project',
@@ -46,8 +47,10 @@ export class PartnersProjectComponent implements OnInit {
 
     colsMonthState: ColumnTable[];
 
+
     public cantonesOptions: Canton[];
     cantonesAvailable: Canton[];
+    canEditCantons: boolean;
     public formLocations: FormGroup;
     showLocationsDialog = false;
 
@@ -61,6 +64,7 @@ export class PartnersProjectComponent implements OnInit {
         private reportsService: ReportsService,
         private userService: UserService,
         private cantonService: CantonService,
+        private appConfigurationService: AppConfigurationService,
         private fb: FormBuilder,
         private cd: ChangeDetectorRef
     ) {
@@ -318,6 +322,14 @@ export class PartnersProjectComponent implements OnInit {
         this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
         this.isProjectFocalPoint = this.project.focalPoint && this.project.focalPoint.id === userId;
         this.isEjecutor = this.project.organization.id === orgId && this.userService.hasRole('EJECUTOR_PROYECTOS');
+
+        if (this.isAdmin || this.isProjectFocalPoint) {
+            this.canEditCantons = true;
+        } else {
+            this.canEditCantons =
+                this.appConfigurationService.getCanPartnerEditLocations();
+        }
+
     }
 
 

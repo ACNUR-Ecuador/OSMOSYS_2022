@@ -36,29 +36,6 @@ export class EnumsService {
         }
     }
 
-  /*  // todo 2024 reemplazar por opciones
-    public getByDissagregationType(dissagregationType: DissagregationType): Observable<SelectItemWithOrder<any>[]> {
-        if (!dissagregationType) {
-            // @ts-ignore
-            return null;
-        }
-        switch (dissagregationType) {
-            case DissagregationType.EDAD:
-                return this.getByType(EnumsType.AgeType);
-            case DissagregationType.GENERO:
-                return this.getByType(EnumsType.GenderType);
-            case DissagregationType.DIVERSIDAD:
-                return this.getByType(EnumsType.DiversityType);
-            case DissagregationType.TIPO_POBLACION:
-                return this.getByType(EnumsType.PopulationType);
-            case DissagregationType.PAIS_ORIGEN:
-                return this.getByType(EnumsType.CountryOfOrigin);
-            default:
-                // @ts-ignore
-                return null;
-        }
-    }
-*/
     public getByTypeFromServer(type: EnumsType): Observable<SelectItemWithOrder<any>[]> {
         return this.http.get<SelectItemWithOrder<any>[]>(`${mainServiceUrl}/${type}`);
     }
@@ -67,12 +44,12 @@ export class EnumsService {
         Object.keys(EnumsType).map(key => {
             // @ts-ignore
             const enumname: EnumsType = EnumsType[key];
-            this.getByTypeFromServer(enumname).subscribe(value => {
-                this.cacheMap.set(enumname, value);
-            }, error => {
-                console.log('Error cache: ' + error);
-            }, () => {
-            });
+            this.getByTypeFromServer(enumname)
+                .subscribe({next:value => {
+                        this.cacheMap.set(enumname, value);
+                    },error:error => {
+                        console.log('Error cache: ' + error);
+                    }});
         });
     }
 
