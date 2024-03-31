@@ -23,7 +23,6 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("DuplicatedCode")
@@ -221,7 +220,10 @@ public class MenuItemService {
     public List<MenuItemWeb> getMenuStructure() {
         List<MenuItem> menuItem = this.menuItemDao.getMainMenus();
 
-        List<MenuItemWeb> menuWebs = this.itemsToItemWebs(menuItem, true);
-        return menuWebs;
+        return this.itemsToItemWebs(menuItem, true);
+    }
+
+    public MenuItemWeb getByIdWeb(Long id) {
+        return this.itemToItemWeb(this.getById(id),false);
     }
 }
