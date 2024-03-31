@@ -34,6 +34,8 @@ import { GeneralIndicatorComponent } from './powerbi/2023/general-indicator/gene
 import {ProductIndicatorsComponent} from "./powerbi/2023/product-indicators/product-indicators.component";
 import { PerfilesDePoblacionComponent } from './2024/perfiles-de-poblacion/perfiles-de-poblacion.component';
 import { ComunidadesComponent } from './2024/comunidades/comunidades.component';
+import { PowerBiReportTemplateComponent } from './power-bi-report-template/power-bi-report-template.component';
+import {SharedModule} from "../shared/shared.module";
 
 
 @NgModule({
@@ -60,6 +62,7 @@ import { ComunidadesComponent } from './2024/comunidades/comunidades.component';
     GeneralIndicatorComponent,
     PerfilesDePoblacionComponent,
     ComunidadesComponent,
+    PowerBiReportTemplateComponent,
 
   ],
     imports: [
@@ -74,7 +77,8 @@ import { ComunidadesComponent } from './2024/comunidades/comunidades.component';
         ButtonModule,
         FormsModule,
         CardModule,
-        SplitButtonModule
+        SplitButtonModule,
+        SharedModule
     ]
 })
 export class ReportsModule { }

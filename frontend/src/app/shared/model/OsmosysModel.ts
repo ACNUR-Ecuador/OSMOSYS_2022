@@ -1,5 +1,6 @@
 import {EnumsIndicatorType, EnumsState} from './UtilsModel';
 import {User} from './User';
+import {MenuItem} from "primeng/api";
 
 export class Organization {
     constructor() {
@@ -279,7 +280,7 @@ export class MonthState {
     public blockUpdate: boolean;
 }
 
-export class Canton extends StandardDissagregationOption{
+export class Canton extends StandardDissagregationOption {
 
     public code: string;
     public provincia: Provincia;
@@ -480,7 +481,7 @@ export class IndicatorValue {
     public genderType: StandardDissagregationOption;
     public ageType: StandardDissagregationOption;
     public diversityType: StandardDissagregationOption;
-    public location: StandardDissagregationOption|Canton;
+    public location: StandardDissagregationOption | Canton;
     public showValue: boolean;
     public value: number;
     public denominatorValue: number;
@@ -528,13 +529,43 @@ export class YearMonth {
 }
 
 export class EnumWeb {
-    public  value: string;
-    public  label: string;
-    public  order: number;
-    public  locationsDissagregation?: boolean;
-    public  ageDissagregation?: boolean;
-    public  standardDissagregationTypes?: string[];
-    public  numberOfDissagregations?: number;
+    public value: string;
+    public label: string;
+    public order: number;
+    public locationsDissagregation?: boolean;
+    public ageDissagregation?: boolean;
+    public standardDissagregationTypes?: string[];
+    public numberOfDissagregations?: number;
 }
 
 
+export class MenuItemBackend {
+
+    constructor() {
+        this.state = 'ACTIVO';
+        this.powerBi = false;
+        this.restricted = false;
+        this.openInNewTab = false;
+    }
+
+    public id: number;
+    public state: string;
+    public label: string;
+    public icon: string;
+    public assignedRoles: string[];
+    public powerBi: boolean;
+    public restricted: boolean;
+    public order: number;
+    public organizations: Organization[];
+    public url: string;
+    public parent: MenuItemBackend;
+    public openInNewTab: boolean;
+    public children?: MenuItemBackend[];
+}
+
+export interface Menu extends MenuItem {
+    roles?: string[];
+    items?: Menu[];
+    target?: string;
+    idItem?: number;
+}

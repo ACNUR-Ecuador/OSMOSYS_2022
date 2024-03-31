@@ -44,7 +44,7 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
 
     public List<Indicator> getByState(State state) {
 
-        String jpql = IndicatorDao.indicatorJpql +
+        String jpql = IndicatorDao.indicatorJpqlProjectAdm +
                 "WHERE o.state = :state";
         Query q = getEntityManager().createQuery(jpql, Indicator.class);
         q.setParameter("state", state);
@@ -104,7 +104,7 @@ public class IndicatorDao extends GenericDaoJpa<Indicator, Long> {
 
     public List<Indicator> getAllWithData() {
 
-        Query q = getEntityManager().createQuery(IndicatorDao.indicatorJpql, Indicator.class);
+        Query q = getEntityManager().createQuery(IndicatorDao.indicatorJpqlProjectAdm, Indicator.class);
         return q.getResultList();
     }
 

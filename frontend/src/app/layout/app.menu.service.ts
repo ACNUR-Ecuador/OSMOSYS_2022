@@ -3,13 +3,15 @@ import {Subject} from 'rxjs';
 import {MenuChangeEvent} from './api/menuchangeevent';
 import {UserService} from '../services/user.service';
 import {NgxPermissionsObject, NgxPermissionsService} from 'ngx-permissions';
+import {MenuItem} from "primeng/api";
 
-export interface Menu {
+/*export interface Menu {
     label?: string;
     icon?: string;
     roles?: string[];
 
     routerLink?: string[];
+    queryParams?
     routerLinkActiveOptions?;
     items?: Menu[];
     separator?: boolean;
@@ -17,6 +19,11 @@ export interface Menu {
     url?;
     target?: string;
     visible?: boolean;
+}*/
+
+interface Menu extends MenuItem{
+    roles?: string[];
+    items?: Menu[];
 }
 
 @Injectable({
@@ -32,8 +39,11 @@ export class MenuService {
 
     constructor(
         private userService: UserService,
-        private ngxPermissionsService: NgxPermissionsService
+        private ngxPermissionsService: NgxPermissionsService,
+
     ) {
+
+
 
         ngxPermissionsService.permissions$.subscribe((permissions) => {
             this.setCanChow(this.MENUITEMS, permissions);
@@ -183,6 +193,12 @@ export class MenuService {
                     roles: ['SUPER_ADMINISTRADOR']
                 },
                 {
+                    label: 'Menu',
+                    icon: 'pi pi-fw pi-cog',
+                    routerLink: ['/administration/menuItemsAdministration'],
+                    roles: ['SUPER_ADMINISTRADOR']
+                },
+                {
                     label: 'Configuración Global',
                     icon: 'pi pi-fw pi-cog',
                     routerLink: ['/administration/appconfiguration'],
@@ -283,5 +299,23 @@ export class MenuService {
                 }
             ]
         },
+        {separator: true},
+/*
+        {
+            label: 'tester',
+            icon: 'pi pi-info-circle',
+            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'PUNTO_FOCAL'],
+            items: [
+                {
+                    label: 'tester',
+                    icon: 'pi pi-fw pi-user',
+                    routerLink: ['/reports/powerbiReportTemplate'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'PUNTO_FOCAL'],
+                    queryParams:{'recent': 'https://app.powerbi.com/view?r=eyJrIjoiZTJhNzhmZDUtMTA5MS00YjgxLTk0YmItZGU0OTE4ZGJmNWJlIiwidCI6ImU1YzM3OTgxLTY2NjQtNDEzNC04YTBjLTY1NDNkMmFmODBiZSIsImMiOjh9&pageName=ReportSectiond86c1c7752280a23a22a'}
+
+                }
+            ]
+        },
+*/
     ];
 }

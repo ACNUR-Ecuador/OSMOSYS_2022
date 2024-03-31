@@ -31,7 +31,7 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
     @Input()
     focalPointProjectsIds: number[];
 
-    projectIds: number[] = [];
+
 
     @ViewChild('chartBeneficirios', {static: false}) chartBeneficiarios: UIChart;
 
@@ -157,10 +157,12 @@ export class HomeDashboardFocalPointComponent implements OnInit, AfterViewInit {
         this.indicatorExecutionService.getGeneralIndicatorResume(projectId).subscribe(value => {
             if (value && value.length > 0) {
                 this.generalIndicator = value[0];
+                this.loadGeneralIndicatorMonths(projectId, this.generalIndicator.id);
                 this.generalIndicatorLate = this.generalIndicator.late === 'LATE';
+                this.createGeneralTargetChart(this.generalIndicator);
             }
-            this.loadGeneralIndicatorMonths(projectId, this.generalIndicator.id);
-            this.createGeneralTargetChart(this.generalIndicator);
+
+
             this.loadPerformanceIndicators(projectId);
         }, error => {
             this.messageService.add({

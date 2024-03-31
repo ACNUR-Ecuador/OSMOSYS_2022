@@ -31,7 +31,7 @@
             <!--Automatically validates or exports schema DDL to the database when the SessionFactory is created.
             With create-drop, the database schema will be dropped when the SessionFactory is closed explicitly.
             e.g. validate | update | create | create-drop-->
-            <!--<property name="hibernate.hbm2ddl.auto" value="update"/>-->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
             <!--File order matters, the statements of a give file are executed before the statements of the following files.
             These statements are only executed if the schema is created ie if hibernate.hbm2ddl.auto is set to create or create-drop.
             e.g. /humans.sql,/dogs.sql-->

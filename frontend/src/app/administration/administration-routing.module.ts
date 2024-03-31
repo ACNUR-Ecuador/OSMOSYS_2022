@@ -24,6 +24,7 @@ import {
 import {AppconfigurationComponent} from './appconfiguration/appconfiguration.component';
 import {MassMailingComponent} from "./mass-mailing/mass-mailing.component";
 import {MassBlockingComponent} from "./mass-blocking/mass-blocking.component";
+import {MenuItemsComponent} from "./menu-items/menu-items.component";
 
 const routes: Routes = [
     {
@@ -45,6 +46,7 @@ const routes: Routes = [
             {path: 'appconfiguration', component: AppconfigurationComponent},
             {path: 'massMailing', component: MassMailingComponent},
             {path: 'massBlocking', component: MassBlockingComponent},
+            {path: 'menuItemsAdministration', component: MenuItemsComponent},
         ]
     }
 ];

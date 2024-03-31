@@ -84,6 +84,7 @@ import { MassBlockingComponent } from './mass-blocking/mass-blocking.component';
 import { DissagregationSelectorComponent } from './performance-indicator-administration/dissagregation-selector/dissagregation-selector.component';
 import {StandardDissagreationListPipe} from "../shared/pipes/standard-dissagreation-list.pipe";
 import { CustomDissagregationSelectorComponent } from './performance-indicator-administration/custom-dissagregation-selector/custom-dissagregation-selector.component';
+import { MenuItemsComponent } from './menu-items/menu-items.component';
 
 
 @NgModule({
@@ -105,7 +106,8 @@ import { CustomDissagregationSelectorComponent } from './performance-indicator-a
         MassMailingComponent,
         MassBlockingComponent,
         DissagregationSelectorComponent,
-        CustomDissagregationSelectorComponent
+        CustomDissagregationSelectorComponent,
+        MenuItemsComponent
     ],
     imports: [
         CommonModule,

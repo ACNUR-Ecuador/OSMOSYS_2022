@@ -21,11 +21,13 @@ import {DataExportComponent} from "./data-export/data-export.component";
 import {GeneralIndicatorComponent} from "./powerbi/2023/general-indicator/general-indicator.component";
 import {PerfilesDePoblacionComponent} from "./2024/perfiles-de-poblacion/perfiles-de-poblacion.component";
 import {ComunidadesComponent} from "./2024/comunidades/comunidades.component";
+import {PowerBiReportTemplateComponent} from "./power-bi-report-template/power-bi-report-template.component";
 
 const routes: Routes = [
     {
         path: '',
         children: [
+            {path: 'powerbiReportTemplate', component: PowerBiReportTemplateComponent},
             {path: 'indicatorsCatalog', component: IndicatorCatalogReportsComponent},
             {path: 'lateReports', component: LateReportsComponent},
             {path: 'lateReports', component: LateReportsComponent},

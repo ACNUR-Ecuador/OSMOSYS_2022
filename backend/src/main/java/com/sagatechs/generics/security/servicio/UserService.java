@@ -46,6 +46,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
+@SuppressWarnings("JavadocDeclaration")
 @Stateless
 public class UserService implements Serializable {
 
@@ -384,6 +385,7 @@ public class UserService implements Serializable {
             Jws<Claims> jws = Jwts.parser() // (1)
                     // .deserializeJsonWith(deserializer)
                     .setSigningKey(getSecretKey()) // (2)
+                    .build()
                     .parseClaimsJws(token); // (3)
 
             // hasta ahi se valida el token*

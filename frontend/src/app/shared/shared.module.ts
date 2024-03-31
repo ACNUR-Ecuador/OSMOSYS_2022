@@ -21,6 +21,8 @@ import {
 import { PeriodsFromIndicatorPipe } from './pipes/periods-from-indicator.pipe';
 import { StatementPeriodStatementAsignationsListPipe } from './pipes/statement-period-statement-asignations-list.pipe';
 import { StandardDissagreationListPipe } from './pipes/standard-dissagreation-list.pipe';
+import { SafePipe } from './pipes/safe.pipe';
+
 
 
 @NgModule({
@@ -44,7 +46,8 @@ import { StandardDissagreationListPipe } from './pipes/standard-dissagreation-li
         PeriodsFromIndicatorPipe,
         StatementPeriodStatementAsignationsListPipe,
         OfficeOrganizationPipe,
-        StandardDissagreationListPipe
+        StandardDissagreationListPipe,
+        SafePipe
     ],
     imports: [
         CommonModule
@@ -57,7 +60,8 @@ import { StandardDissagreationListPipe } from './pipes/standard-dissagreation-li
         EnumValuesToLabelPipe,
         ValuesStatePipe,
         EnumValuesToLabelPipe,
-        OfficeOrganizationPipe
+        OfficeOrganizationPipe,
+        SafePipe
     ],
     providers: [
         MessageService,

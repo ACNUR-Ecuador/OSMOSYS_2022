@@ -9,6 +9,7 @@ import org.unhcr.osmosys.services.IndicatorService;
 import org.unhcr.osmosys.services.dataImport.IndicatorsImportService;
 import org.unhcr.osmosys.webServices.model.ImportFileWeb;
 import org.unhcr.osmosys.webServices.model.IndicatorWeb;
+import org.unhcr.osmosys.webServices.model.SituationWeb;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -51,7 +52,7 @@ public class IndicatorEndpoint {
 
     @Path("/")
     @GET
-    @Secured
+    //@Secured
     @Produces(MediaType.APPLICATION_JSON)
     public List<IndicatorWeb> getAll() {
         return this.indicatorService.getAll();
@@ -94,6 +95,14 @@ public class IndicatorEndpoint {
     public Response importStatementsCatalog(ImportFileWeb importFileWeb) throws GeneralAppException {
         this.indicatorsImportService.indicatorsImport(importFileWeb);
         return null;
+    }
+
+    @Path("/byState/{state}")
+    @GET
+   // @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<IndicatorWeb> getByState(@PathParam("state") State state) {
+        return this.indicatorService.getWebByState(state);
     }
 
 }

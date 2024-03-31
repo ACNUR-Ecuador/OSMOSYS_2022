@@ -116,12 +116,15 @@ public class IndicatorService {
     }
 
     public List<IndicatorWeb> getAll() {
-        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getAllWithData(), true, true);
+        List<Indicator> allIndicators = this.indicatorDao.getAllWithData();
+        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(allIndicators, true, true);
     }
 
+/*
     public List<IndicatorWeb> getByState(State state) {
         return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getByState(state), true, true);
     }
+*/
 
     public Long update(IndicatorWeb indicatorWeb) throws GeneralAppException {
         if (indicatorWeb == null) {
@@ -396,5 +399,9 @@ public class IndicatorService {
 
     public Indicator getByCode(String code) throws GeneralAppException {
         return this.indicatorDao.getByCode(code);
+    }
+
+    public List<IndicatorWeb> getWebByState(State state) {
+        return this.modelWebTransformationService.indicatorsToIndicatorsWeb(this.indicatorDao.getByState(state),true, false);
     }
 }
