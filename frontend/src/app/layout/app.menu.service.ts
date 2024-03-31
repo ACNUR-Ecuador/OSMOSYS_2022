@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
-import {Subject} from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
 import {MenuChangeEvent} from './api/menuchangeevent';
 import {UserService} from '../services/user.service';
 import {NgxPermissionsObject, NgxPermissionsService} from 'ngx-permissions';
 import {MenuItem} from "primeng/api";
+import {MenuItemsService} from "../services/menu-items.service";
 
 /*export interface Menu {
     label?: string;
@@ -21,7 +22,7 @@ import {MenuItem} from "primeng/api";
     visible?: boolean;
 }*/
 
-interface Menu extends MenuItem{
+interface Menu extends MenuItem {
     roles?: string[];
     items?: Menu[];
 }
@@ -33,20 +34,35 @@ export class MenuService {
 
     private menuSource = new Subject<MenuChangeEvent>();
     private resetSource = new Subject();
+    private menuModel = new BehaviorSubject<Menu[]>([]);
 
     menuSource$ = this.menuSource.asObservable();
     resetSource$ = this.resetSource.asObservable();
+    menuModel$ = this.menuModel.asObservable();
 
     constructor(
         private userService: UserService,
         private ngxPermissionsService: NgxPermissionsService,
-
+        private menuItemsService: MenuItemsService,
     ) {
 
 
-
         ngxPermissionsService.permissions$.subscribe((permissions) => {
-            this.setCanChow(this.MENUITEMS, permissions);
+
+            this.menuItemsService.getMenuStructure().subscribe({
+                next: value => {
+                    console.log(value);
+                    let extraMenu=this.menuItemsService.processMenusItem(value);
+                    console.log('------------------------extraMenu');
+                    console.log(extraMenu);
+                    let presettedMenu=this.MENUITEMS.concat(extraMenu);
+                    console.log('------------------------presettedMenu');
+                    console.log(presettedMenu);
+                    let settedMenu = this.setCanChow(presettedMenu, permissions);
+                    this.menuModel.next(settedMenu);
+                }
+            });
+
         });
 
     }
@@ -89,7 +105,7 @@ export class MenuService {
                     label: 'Usuarios',
                     icon: 'pi pi-fw pi-user',
                     routerLink: ['/administration/users'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR','PUNTO_FOCAL','ADMINISTRADOR_OFICINA']
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL', 'ADMINISTRADOR_OFICINA']
                 },
                 {
                     label: 'Configuración del sistema',
@@ -152,12 +168,12 @@ export class MenuService {
                     icon: 'pi pi-fw pi-cog',
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'],
                     items: [
-/*                        {
-                            label: 'Marcadores',
-                            icon: 'pi pi-fw pi-cog',
-                            routerLink: ['/administration/marker'],
-                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
-                        },*/
+                        /*                        {
+                                                    label: 'Marcadores',
+                                                    icon: 'pi pi-fw pi-cog',
+                                                    routerLink: ['/administration/marker'],
+                                                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
+                                                },*/
                         // tslint:disable-next-line:max-line-length
                         {
                             label: 'Indicadores de Producto',
@@ -178,7 +194,7 @@ export class MenuService {
                     label: 'Implementación Directa',
                     icon: 'pi pi-fw pi-cog',
                     routerLink: ['/administration/directImplementationAdministration'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR','ADMINISTRADOR_OFICINA']
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'ADMINISTRADOR_OFICINA']
                 },
                 {
                     label: 'Envío Masivo de Correos',
@@ -300,22 +316,102 @@ export class MenuService {
             ]
         },
         {separator: true},
-/*
-        {
-            label: 'tester',
-            icon: 'pi pi-info-circle',
-            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'PUNTO_FOCAL'],
-            items: [
+        /*
                 {
                     label: 'tester',
-                    icon: 'pi pi-fw pi-user',
-                    routerLink: ['/reports/powerbiReportTemplate'],
+                    icon: 'pi pi-info-circle',
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'PUNTO_FOCAL'],
-                    queryParams:{'recent': 'https://app.powerbi.com/view?r=eyJrIjoiZTJhNzhmZDUtMTA5MS00YjgxLTk0YmItZGU0OTE4ZGJmNWJlIiwidCI6ImU1YzM3OTgxLTY2NjQtNDEzNC04YTBjLTY1NDNkMmFmODBiZSIsImMiOjh9&pageName=ReportSectiond86c1c7752280a23a22a'}
+                    items: [
+                        {
+                            label: 'tester',
+                            icon: 'pi pi-fw pi-user',
+                            routerLink: ['/reports/powerbiReportTemplate'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'PUNTO_FOCAL'],
+                            queryParams:{'recent': 'https://app.powerbi.com/view?r=eyJrIjoiZTJhNzhmZDUtMTA5MS00YjgxLTk0YmItZGU0OTE4ZGJmNWJlIiwidCI6ImU1YzM3OTgxLTY2NjQtNDEzNC04YTBjLTY1NDNkMmFmODBiZSIsImMiOjh9&pageName=ReportSectiond86c1c7752280a23a22a'}
 
+                        }
+                    ]
+                },
+        */
+    ];
+
+    MENUITEMS2 = [
+        {
+            "id": 4,
+            "state": "ACTIVO",
+            "label": "Tableros de Control",
+            "icon": "pi pi-chart-line",
+            "assignedRoles": [
+                "ADMINISTRADOR",
+                "EJECUTOR_ID",
+                "MONITOR_ID",
+                "MONITOR_PROYECTOS",
+                "EJECUTOR_PROYECTOS",
+                "SUPER_ADMINISTRADOR"
+            ],
+            "powerBi": false,
+            "restricted": false,
+            "order": 1,
+            "organizations": [],
+            "url": null,
+            "parent": null,
+            "children": [
+                {
+                    "id": 5,
+                    "state": "ACTIVO",
+                    "label": "2023",
+                    "icon": "pi pi-chart-line",
+                    "assignedRoles": [
+                        "ADMINISTRADOR",
+                        "MONITOR_ID",
+                        "EJECUTOR_ID",
+                        "PUNTO_FOCAL",
+                        "SUPER_ADMINISTRADOR"
+                    ],
+                    "powerBi": false,
+                    "restricted": false,
+                    "order": 1,
+                    "organizations": [],
+                    "url": null,
+                    "parent": null,
+                    "children": [
+                        {
+                            "id": 6,
+                            "state": "ACTIVO",
+                            "label": "Indicadores de Producto",
+                            "icon": "pi pi-chart-line",
+                            "assignedRoles": [
+                                "ADMINISTRADOR",
+                                "MONITOR_ID",
+                                "MONITOR_PROYECTOS",
+                                "EJECUTOR_ID",
+                                "EJECUTOR_PROYECTOS",
+                                "PUNTO_FOCAL",
+                                "ADMINISTRADOR_OFICINA",
+                                "SUPER_ADMINISTRADOR"
+                            ],
+                            "powerBi": true,
+                            "restricted": true,
+                            "order": 1,
+                            "organizations": [
+                                {
+                                    "id": 1,
+                                    "state": "ACTIVO",
+                                    "code": "0000000",
+                                    "description": "Agencia de la ONU para los Refugiados",
+                                    "acronym": "ACNUR"
+                                }
+                            ],
+                            "url": "https://app.powerbi.com/view?r=eyJrIjoiNTJmMmM1YjQtYzI0Yi00ZTM5LWFkN2ItOGMzMjIzMTNiNzRjIiwidCI6ImU1YzM3OTgxLTY2NjQtNDEzNC04YTBjLTY1NDNkMmFmODBiZSIsImMiOjh9&pageName=ReportSection",
+                            "parent": null,
+                            "children": [],
+                            "openInNewTab": false
+                        }
+                    ],
+                    "openInNewTab": false
                 }
-            ]
-        },
-*/
+            ],
+            "openInNewTab": false
+        }
     ];
 }

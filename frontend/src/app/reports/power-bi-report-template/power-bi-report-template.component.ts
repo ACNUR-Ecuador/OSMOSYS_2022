@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
+import {MenuItemsService} from "../../services/menu-items.service";
 
 @Component({
     selector: 'app-power-bi-report-template',
@@ -8,19 +8,30 @@ import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
     styleUrls: ['./power-bi-report-template.component.scss']
 })
 export class PowerBiReportTemplateComponent implements OnInit {
-    recentParam: SafeUrl;
+    itemId: number;
+
+    iframeDef;
 
     constructor(private route: ActivatedRoute,
-                protected _sanitizer: DomSanitizer) {
+                private menuItemsService: MenuItemsService
+    ) {
     }
 
     ngOnInit(): void {
-        console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-        this.route.queryParams.subscribe(params => {
+         this.route.queryParams.subscribe(params => {
             // Access the query parameters here
-            this.recentParam = params['recent']; // Access the 'recent' query parameter
+            this.itemId = params['itemId']; // Access the 'recent' query parameter
+            console.log(this.itemId);
+            this.menuItemsService.getById(this.itemId).subscribe({
+                next: value => {
+                    const recentParamv2: string = value.url;
+
+                    this.iframeDef = `<iframe class="powerbi-total-hidde" style=" width: 98%;" src=" ${recentParamv2}"> </iframe>`;
+                }
+            });
+
             // You can now use the value of the query parameter as needed
-            console.log(this.recentParam); // Output the value of the 'recent' query parameter
+
         });
     }
 
