@@ -3,6 +3,7 @@ import {environment} from "../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Menu, MenuItemBackend} from "../shared/model/OsmosysModel";
+import {UserService} from "./user.service";
 
 
 const mainServiceUrl = environment.base_url + '/menuItem';
@@ -12,7 +13,8 @@ const mainServiceUrl = environment.base_url + '/menuItem';
 })
 export class MenuItemsService {
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient,
+                private userService:UserService) {
     }
 
     public getAll(): Observable<MenuItemBackend[]> {
@@ -38,6 +40,16 @@ export class MenuItemsService {
         let result:Menu[]=[];
         for (let item of items) {
             if(item.state==='ACTIVO'){
+                if(item.restricted){
+                    if(!item.organizations|| item.organizations.length<1){
+                        continue;
+                    }
+                    const allowedOrganizationIds=item.organizations.map(value => value.id);
+                    const currentOrganization=this.userService.getLogedUsername().organization.id;
+                    if(!allowedOrganizationIds.includes(currentOrganization)){
+                        continue;
+                    }
+                }
                 let itemMenu=this.processMenuItemService(item);
                 if(item.children && item.children.length>0){
                     itemMenu.items=this.processMenusItem(item.children);

@@ -48,7 +48,7 @@ export class DissagregationSelectorComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.parametersMap.set('period',this.period);
+        this.parametersMap.set('period', this.period);
         this.formItem = this.fb.group({
             dissagregationAssignationToIndicators: new FormControl(''),
             selectedDissagregations: new FormControl(''),
@@ -167,7 +167,7 @@ export class DissagregationSelectorComponent implements OnInit {
 
 
         this.formItem.get('dissagregationAssignationToIndicators').patchValue(this.dissagregationAssignationToIndicators);
-        this.parametersMap.set('asignations',this.dissagregationAssignationToIndicators);
+        this.parametersMap.set('asignations', this.dissagregationAssignationToIndicators);
         this.newDissagregationAssignationToIndicators.emit(this.parametersMap);
     }
 
@@ -175,7 +175,7 @@ export class DissagregationSelectorComponent implements OnInit {
         let dissagregationAssignationToIndicators: DissagregationAssignationToIndicator[] =
             this.formItem.get('dissagregationAssignationToIndicators').value;
         dissagregationAssignationToIndicators = dissagregationAssignationToIndicators
-            .filter(value => value.state===EnumsState.ACTIVE)
+            .filter(value => value.state === EnumsState.ACTIVE)
             .sort((a, b) => a.dissagregationType.localeCompare(b.dissagregationType));
         return dissagregationAssignationToIndicators;
     }
@@ -185,9 +185,7 @@ export class DissagregationSelectorComponent implements OnInit {
     }
 
     customizeAge(rowData: DissagregationAssignationToIndicator) {
-        console.log(rowData);
         let dissaObj = this.enumsService.resolveEnum(EnumsType.DissagregationType, rowData.dissagregationType);
-        console.log(dissaObj);
         this.messageService.clear();
         this.utilsService.resetForm(this.formAge);
         this.showDialogAges = true;

@@ -394,7 +394,6 @@ export class PeriodAdministrationComponent implements OnInit {
     cancelDialog() {
         this.showDialog = false;
         this.submitted = false;
-        console.log(this.formItem);
     }
 
     @Input() get selectedColumns(): any[] {

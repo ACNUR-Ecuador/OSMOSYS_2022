@@ -28,7 +28,6 @@ export class AppconfigurationComponent implements OnInit {
         this.appConfigurationService.getAll().subscribe({
             next: value => {
                 this.items = value;
-                console.log(this.items);
             },
             error: err => {
                 this.messageService.add({

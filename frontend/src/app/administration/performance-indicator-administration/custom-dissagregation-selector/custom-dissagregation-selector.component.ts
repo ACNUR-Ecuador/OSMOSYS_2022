@@ -26,7 +26,7 @@ export class CustomDissagregationSelectorComponent implements OnInit {
     customDissagregations: SelectItemWithOrder<any>[];
     formItem: FormGroup;
     cols: ColumnTable[];
-    parametersMap= new Map<string, Period | CustomDissagregationAssignationToIndicator[]>();
+    parametersMap = new Map<string, Period | CustomDissagregationAssignationToIndicator[]>();
 
     constructor(
         private customDissagregationService: CustomDissagregationService,
@@ -87,10 +87,10 @@ export class CustomDissagregationSelectorComponent implements OnInit {
                             }
                         )
                     ;
-                    let selectedOptions=this.customDissagregationAssignationToIndicators.filter(
-                        value => value.state===EnumsState.ACTIVE
-                    ).map(value => value.customDissagregation)
-                        ;
+                    let selectedOptions = this.customDissagregationAssignationToIndicators.filter(
+                            value => value.state === EnumsState.ACTIVE
+                        ).map(value => value.customDissagregation)
+                    ;
                     this.formItem.get('selectedDissagregations').patchValue(selectedOptions);
                 },
                 error: err => {
@@ -126,16 +126,12 @@ export class CustomDissagregationSelectorComponent implements OnInit {
 
         });
 
-        let final =
-            this.customDissagregationAssignationToIndicators.filter(value => {
-                return newDA.some(value1 => {
-                    return value1.id === value.customDissagregation.id;
+        this.customDissagregationAssignationToIndicators = this.customDissagregationAssignationToIndicators.filter(value => {
+            return newDA.some(value1 => {
+                return value1.id === value.customDissagregation.id;
 
-                });
             });
-
-
-        this.customDissagregationAssignationToIndicators = final;
+        });
         this.formItem.get('dissagregationAssignationToIndicators').patchValue(this.customDissagregationAssignationToIndicators);
         this.parametersMap.set('asignations', this.customDissagregationAssignationToIndicators);
         this.newDissagregationAssignationToIndicators.emit(this.parametersMap);
@@ -149,7 +145,6 @@ export class CustomDissagregationSelectorComponent implements OnInit {
         dissagregationAssignationToIndicators = dissagregationAssignationToIndicators
             .filter(value => value.state === EnumsState.ACTIVE)
             .sort((a, b) => {
-                console.log(a.customDissagregation.name);
                 return a.customDissagregation.name.localeCompare(b.customDissagregation.name)
             });
         return dissagregationAssignationToIndicators;

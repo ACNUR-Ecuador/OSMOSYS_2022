@@ -51,13 +51,8 @@ export class MenuService {
 
             this.menuItemsService.getMenuStructure().subscribe({
                 next: value => {
-                    console.log(value);
                     let extraMenu=this.menuItemsService.processMenusItem(value);
-                    console.log('------------------------extraMenu');
-                    console.log(extraMenu);
-                    let presettedMenu=this.MENUITEMS.concat(extraMenu);
-                    console.log('------------------------presettedMenu');
-                    console.log(presettedMenu);
+                   let presettedMenu=this.MENUITEMS.concat(extraMenu);
                     let settedMenu = this.setCanChow(presettedMenu, permissions);
                     this.menuModel.next(settedMenu);
                 }

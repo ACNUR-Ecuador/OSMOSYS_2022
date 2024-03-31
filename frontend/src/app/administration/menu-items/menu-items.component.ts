@@ -188,11 +188,10 @@ export class MenuItemsComponent implements OnInit {
             openInNewTab
         };
 
-        console.log(item);
         // item.id = this.formItem.get('id').value;
         if (item.id) {
             this.menuItemsService.update(item).subscribe({
-                next: value => {
+                next: () => {
                     this.cancelDialog();
                     this.loadItems();
                 }, error: err => {
@@ -208,7 +207,7 @@ export class MenuItemsComponent implements OnInit {
             });
         } else {
             this.menuItemsService.save(item).subscribe({
-                next: value => {
+                next: () => {
                     this.cancelDialog();
                     this.loadItems();
                 }, error: err => {

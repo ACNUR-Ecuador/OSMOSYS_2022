@@ -632,7 +632,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     }
 
     setDissagregationAssignationsToIndicator(parametersMap: Map<string, Period | DissagregationAssignationToIndicator[]>) {
-        console.log(parametersMap);
         let oldDissagregationAssignationToIndicators: DissagregationAssignationToIndicator[] = this.formItem.get('dissagregationAssignationToIndicators').value;
 
         let period: Period = parametersMap.get('period') as Period;
@@ -645,8 +644,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     }
 
     setCustomDissagregationAssignationsToIndicator(parametersMap: Map<string, Period | CustomDissagregationAssignationToIndicator[]>) {
-        console.log(parametersMap);
-
         let period: Period = parametersMap.get('period') as Period;
         let oldDissagregationAssignationToIndicators: CustomDissagregationAssignationToIndicator[] =
             this.formItem.get('customDissagregationAssignationToIndicators').value;

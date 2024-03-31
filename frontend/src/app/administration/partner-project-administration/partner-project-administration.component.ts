@@ -840,7 +840,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         if (this.quarterGroups) {
             this.quarterGroups.patchValue([]);
         }
-        console.log(this.formTargets.controls);
+
         // this.showTargetDialog = false;
     }
 

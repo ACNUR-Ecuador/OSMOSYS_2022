@@ -232,11 +232,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     validateSegregations() {
         this.disableSave = false;
         this.monthValuesMap.forEach((value, key) => {
-            console.log(key);
-            console.log(value);
-
             if (value && value.length === 0) {
-                console.log(value.length);
                 /* this.messageService.add({
                      severity: 'error',
                      summary: 'Actualiza los valores para ' + this.enumsService.resolveLabel(EnumsType.DissagregationType, key),
@@ -415,14 +411,10 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
 
     importCantonesFile() {
         let workbook = this.importCantonesForm.get('workbook').value as XLSX.WorkBook;
-        workbook.SheetNames.forEach(value => {
-            console.log(value);
-        });
+
         let spreedsheetname = this.importCantonesForm.get('sheet').value;
-        console.log(spreedsheetname);
         const ws: XLSX.WorkSheet = workbook.Sheets[spreedsheetname];
         const data = XLSX.utils.sheet_to_json(ws);
-        console.log(data);
         const cantones: Canton[] = [];
         data.forEach(value => {
             const canton_code: string = value['canton_codigo'];
