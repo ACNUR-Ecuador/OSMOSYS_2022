@@ -75,6 +75,7 @@ export class PartnersProjectComponent implements OnInit {
         this.formLocations = this.fb.group({
             locationsSelected: new FormControl('')
         });
+        this.viewGeneralIndicators = true;
 
     }
 
@@ -484,6 +485,8 @@ export class PartnersProjectComponent implements OnInit {
     }
 
     setViewGeneralIndicators($event: number) {
+        console.log('--------------------------------------');
+        console.log($event);
         this.viewGeneralIndicators = $event && $event > 0;
     }
 }

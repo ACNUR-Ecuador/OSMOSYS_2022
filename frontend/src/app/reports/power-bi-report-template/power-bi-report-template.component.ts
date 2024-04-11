@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {MenuItemsService} from "../../services/menu-items.service";
 
@@ -21,7 +21,6 @@ export class PowerBiReportTemplateComponent implements OnInit {
          this.route.queryParams.subscribe(params => {
             // Access the query parameters here
             this.itemId = params['itemId']; // Access the 'recent' query parameter
-            console.log(this.itemId);
             this.menuItemsService.getById(this.itemId).subscribe({
                 next: value => {
                     const recentParamv2: string = value.url;

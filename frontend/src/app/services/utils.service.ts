@@ -420,7 +420,7 @@ export class UtilsService {
 
     shouldvalidate(dissagregationType: string): boolean {
         const dissagregationTypeE = this.enumsService.resolveEnumWeb(EnumsType.DissagregationType, dissagregationType);
-        return !(dissagregationTypeE.standardDissagregationTypes.lastIndexOf('DIVERSIDAD') >= 1);
+        return !(dissagregationTypeE.standardDissagregationTypes.lastIndexOf('DIVERSIDAD') >= 0);
     }
 
     getTargetNeedUpdate(indicatorExecution: IndicatorExecution) {
