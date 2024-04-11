@@ -61,14 +61,14 @@ COALESCE (offf.acronym, org.acronym) implementers,
 string_agg(DISTINCT da.dissagregation_type,', ') dissagregations,
 string_agg(DISTINCT cd.description,', ') custom_dissagregations
 FROM osmosys.indicators i
-LEFT JOIN osmosys.dissagregation_assignation_indicator da on i.id=da.indicator_id and da.state='ACTIVO'
-LEFT JOIN osmosys.custom_dissagregation_assignation_indicator dac on i.id=dac.indicator_id and dac.state='ACTIVO'
+INNER JOIN osmosys.dissagregation_assignation_indicator da on i.id=da.indicator_id and da.state='ACTIVO' and da.period_id=$P{periodId}  
+LEFT JOIN osmosys.custom_dissagregation_assignation_indicator dac on i.id=dac.indicator_id and dac.state='ACTIVO' and dac.period_id=$P{periodId}  
 LEFT JOIN osmosys.custom_dissagregations cd on dac.custom_dissagregation_id=cd.id
 LEFT JOIN osmosys.indicator_executions ie  on ie.performance_indicator_id=i.id and ie."state"='ACTIVO' AND IE.performance_indicator_id IS NOT NULL and ie.period_id =$P{periodId} 
 LEFT JOIN osmosys.statements st on i.statement_id = st.id
 LEFT JOIN osmosys.areas ar on st.area_id=ar."id"
 LEFT JOIN osmosys.offices offf on ie.reporting_office_id=offf."id"
-LEFT JOIN osmosys.projects pr on ie.project_id=pr."id"
+LEFT JOIN osmosys.projects pr on ie.project_id=pr."id" and pr.period_id=$P{periodId}  
 LEFT JOIN osmosys.organizations org on pr.organization_id=org."id"
 WHERE da.period_id=$P{periodId}  or dac.period_id= $P{periodId} 
 GROUP BY ar.id,1,2,3,4,5,6
