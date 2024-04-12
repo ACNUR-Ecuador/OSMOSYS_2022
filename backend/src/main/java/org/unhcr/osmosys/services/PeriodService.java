@@ -358,7 +358,13 @@ public class PeriodService {
     }
 
     public Period getWithAllDataById(Long id) {
-        return this.periodDao.getWithDissagregationOptionsById(id);
+        Period period = this.periodDao.getWithDissagregationOptionsById(id);
+        LOGGER.info(period.getPeriodGenderDissagregationOptions().size());
+        LOGGER.info(period.getPeriodAgeDissagregationOptions().size());
+        LOGGER.info(period.getPeriodCountryOfOriginDissagregationOptions().size());
+        LOGGER.info(period.getPeriodDiversityDissagregationOptions().size());
+        LOGGER.info(period.getPeriodPopulationTypeDissagregationOptions().size());
+        return period;
     }
 
 

@@ -72,13 +72,12 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                     " left join fetch q.months m " +
                     " left join fetch m.sources sou " +
                     " left join fetch o.period p " +
-                    " left join fetch p.periodAgeDissagregationOptions " +
+                    /*" left join fetch p.periodAgeDissagregationOptions " +
                     " left join fetch p.periodCountryOfOriginDissagregationOptions " +
                     " left join fetch p.periodDiversityDissagregationOptions " +
                     " left join fetch p.periodGenderDissagregationOptions " +
-                    " left join fetch p.periodPopulationTypeDissagregationOptions " +
-                    " left join fetch p.generalIndicator " +
-                    " left join fetch o.indicator ";
+                    " left join fetch p.periodPopulationTypeDissagregationOptions " +*/
+                    " left join fetch p.generalIndicator " ;
     public static final String jpqlProjectIndicatorsSimplified =
             " SELECT DISTINCT o FROM IndicatorExecution o " +
                     " left join fetch o.indicator i " +
@@ -180,19 +179,45 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
     }
 
     public List<IndicatorExecution> getActivePartnersIndicatorExecutionsByPeriodId(Long periodId) {
-        String jpql = IndicatorExecutionDao.jpqlProjectIndicators +
-                " left join fetch fpu.organization fpuorg " +
+
+        String jpql= " " +
+                "SELECT DISTINCT o FROM IndicatorExecution o " +
+                " left join fetch o.indicator i " +
+                " left join fetch o.project pr " +
                 " left join fetch pr.projectLocationAssigments pla" +
+                " left join fetch o.quarters q " +
+                " left join fetch q.months m " +
+                " left join fetch pr.organization org " +
+                " left join fetch o.projectStatement pst " +
+               /*
+
+                " left join fetch pr.focalPoint fpu " +
+
+                " left join fetch i.statement ist " +
+                " left join fetch ist.area " +
+
+                " left join fetch o.indicatorExecutionLocationAssigments iela " +
+                " left join fetch iela.location can " +
+                " left join fetch can.provincia prov " +
+                " left join fetch pst.area psta" +
+                " left join fetch pst.situation pstsit " +
+                " left join fetch pst.pillar  pstpil" +
+
+                " left join fetch m.sources sou " +
+                " left join fetch o.period p "+
+                " left join fetch fpu.organization fpuorg " +
+
                 " left join fetch pla.location canpl" +
-                " left join fetch canpl.provincia " +
-                " WHERE o.project.state =:state " +
+                " left join fetch canpl.provincia " +*/
+                " WHERE " +
+                "  o.period.id =:periodId " +
                 " and o.state =:state " +
+                " and o.project.state =:state " +
                 " and (pla.state is null or pla.state =:state )" +
                 " and (q.state is null or q.state =:state )" +
                 " and (m.state is null or m.state =:state )" +
-                " and p.id =:periodId " +
                 " order by org.acronym, org.description, " +
-                " pr.code, pr.name, o.indicatorType, o.projectStatement.code , i.code  ";
+                " pr.code, pr.name, o.indicatorType, pst.code , i.code  ";
         Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
         q.setParameter("state", State.ACTIVO);
         q.setParameter("periodId", periodId);

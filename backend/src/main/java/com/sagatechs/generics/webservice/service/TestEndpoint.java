@@ -19,6 +19,8 @@ import org.unhcr.osmosys.services.dataImport.ProjectsImportService;
 import org.unhcr.osmosys.services.dataImport.StatementImportService;
 import org.unhcr.osmosys.services.scheduledTasks.MessageReminderService;
 import org.unhcr.osmosys.services.standardDissagregations.StandardDissagregationOptionService;
+import org.unhcr.osmosys.webServices.model.IndicatorExecutionWeb;
+import org.unhcr.osmosys.webServices.model.PeriodWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.inject.Inject;
@@ -135,13 +137,13 @@ public class TestEndpoint {
     @Path("test")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String test2() throws GeneralAppException {
+    public PeriodWeb test2() throws GeneralAppException {
         // this.importService.catalogImport();
         LOGGER.info("inicio");
-        Period period = this.periodService.getWithAllDataById(2L);
+        PeriodWeb period = this.periodService.getWebById(2L);
         LOGGER.info(period.getPeriodGenderDissagregationOptions());
         LOGGER.info(period.getPeriodPopulationTypeDissagregationOptions());
-        LOGGER.info(period.getPeriodGenderDissagregationOptions());
+             LOGGER.info(period.getPeriodGenderDissagregationOptions());
 // indicator values creation
 /*        Period period = this.periodService.getWithDissagregationOptionsById(2L);
 
@@ -152,7 +154,7 @@ public class TestEndpoint {
             LOGGER.info(indicatorValue);
         }*/
 
-        return "result";
+        return period;
     }
 
     @Path("tester")
@@ -325,19 +327,26 @@ public class TestEndpoint {
     }
 
 
-    @Path("updateAllPartnersTotals")
+    @Path("testq")
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
-    public String updateAllPartnersTotals() throws GeneralAppException {
-        this.indicatorExecutionService.updateAllPartnersTotals(2l);
+    public String testq() throws GeneralAppException {
+        List<IndicatorExecutionWeb> q = this.indicatorExecutionService.getActiveProjectIndicatorExecutionsByPeriodId(2l);
+        return "terimnado generales" +q.size();
+    }
+    @Path("updateAllPartnersTotals/{periodId}")
+    @GET
+    @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+    public String updateAllPartnersTotals(@PathParam("periodId") Long periodId) throws GeneralAppException {
+        this.indicatorExecutionService.updateAllPartnersTotals(periodId);
         return "terimnado generales";
     }
 
-    @Path("updateAllDirectImplementationTotals")
+    @Path("updateAllDirectImplementationTotals/{periodId}")
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
-    public String updateAllDirectImplementationTotals() throws GeneralAppException {
-        this.indicatorExecutionService.updateAllDirectImplementationTotals(2l);
+    public String updateAllDirectImplementationTotals(@PathParam("periodId") Long periodId) throws GeneralAppException {
+        this.indicatorExecutionService.updateAllDirectImplementationTotals(periodId);
         return "terimnado generales";
     }
     @Path("updateAppConf")

@@ -83,11 +83,16 @@ public class PeriodDao extends GenericDaoJpa<Period, Long> {
     public Period getWithDissagregationOptionsById(Long id) {
 
         String jpql = "SELECT DISTINCT o FROM Period o left join fetch o.generalIndicator gi " +
-                " left join fetch o.periodPopulationTypeDissagregationOptions " +
-                " left join fetch o.periodAgeDissagregationOptions " +
-                " left join fetch o.periodGenderDissagregationOptions " +
-                " left join fetch o.periodDiversityDissagregationOptions " +
-                " left join fetch o.periodCountryOfOriginDissagregationOptions " +
+                " left join fetch o.periodPopulationTypeDissagregationOptions p " +
+                " left join fetch p.populationTypeDissagregationOption " +
+                " left join fetch o.periodAgeDissagregationOptions a" +
+                " left join fetch a.ageDissagregationOption " +
+                " left join fetch o.periodGenderDissagregationOptions g " +
+                " left join fetch g.genderDissagregationOption " +
+                " left join fetch o.periodDiversityDissagregationOptions d " +
+                " left join fetch d.diversityDissagregationOption  " +
+                " left join fetch o.periodCountryOfOriginDissagregationOptions c " +
+                " left join fetch  c.countryOfOriginDissagregationOption " +
                 " WHERE o.id = :id " +
                 " order by o.year";
         Query q = getEntityManager().createQuery(jpql, Period.class);
