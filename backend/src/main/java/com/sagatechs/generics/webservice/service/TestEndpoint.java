@@ -329,7 +329,7 @@ public class TestEndpoint {
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
     public String updateAllPartnersTotals() throws GeneralAppException {
-        this.indicatorExecutionService.updateAllPartnersTotals(1l);
+        this.indicatorExecutionService.updateAllPartnersTotals(2l);
         return "terimnado generales";
     }
 
@@ -337,7 +337,7 @@ public class TestEndpoint {
     @GET
     @Produces(javax.ws.rs.core.MediaType.TEXT_PLAIN)
     public String updateAllDirectImplementationTotals() throws GeneralAppException {
-        this.indicatorExecutionService.updateAllDirectImplementationTotals(1l);
+        this.indicatorExecutionService.updateAllDirectImplementationTotals(2l);
         return "terimnado generales";
     }
     @Path("updateAppConf")

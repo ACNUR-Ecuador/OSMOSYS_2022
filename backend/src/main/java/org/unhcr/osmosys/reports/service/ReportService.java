@@ -29,7 +29,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 @Stateless
 public class ReportService {
@@ -394,7 +397,7 @@ public class ReportService {
         Connection connection;
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            //URL resourceUrl = classLoader.getResource("app.properties");
+            URL resourceUrl = classLoader.getResource("app.properties");
             InputStream resource = classLoader.getResourceAsStream("app.properties");
             Properties p = new Properties();
             p.load( resource );

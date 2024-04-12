@@ -27,7 +27,7 @@
                         <artifactId>jrebel-maven-plugin</artifactId>
                         <version>1.2.0</version>
                         <configuration>
-                            <addResourcesDirToRebelXml>false</addResourcesDirToRebelXml>
+                            <addResourcesDirToRebelXml>true</addResourcesDirToRebelXml>
                         </configuration>
                         <executions>
                             <execution>
@@ -73,7 +73,7 @@
         <primefaces.version>7.0</primefaces.version>
         <primefaces-extensions.version>7.0.1</primefaces-extensions.version>
         <omnifaces.version>3.3</omnifaces.version>
-        <version.commons-io>2.11.0</version.commons-io>
+        <version.commons-io>2.16.1</version.commons-io>
         <version.apache.poi>5.2.5</version.apache.poi>
         <version.itext>2.1.7</version.itext>
         <version.commons-fileupload>1.5</version.commons-fileupload>
