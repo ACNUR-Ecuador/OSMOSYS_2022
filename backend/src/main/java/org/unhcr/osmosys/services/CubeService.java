@@ -1,6 +1,5 @@
 package org.unhcr.osmosys.services;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.CubeDao;
 import org.unhcr.osmosys.model.cubeDTOs.*;
@@ -12,6 +11,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Stateless
 public class CubeService {
@@ -26,6 +26,16 @@ public class CubeService {
         long lStartTime = System.nanoTime();
         LOGGER.info("start getFactTableByPeriodYear dao: ");
         List<FactDTO> r = this.cubeDao.getFactTableByPeriodYear(periodYear);
+        LOGGER.info("end getFactTableByPeriodYear dao: ");
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds getFactTableByPeriodYear dao: " + (lEndTime - lStartTime) / 1000000000);
+        return r;
+    }
+
+    public Object getFactTableByPeriodYearText(Integer periodYear) {
+        long lStartTime = System.nanoTime();
+        LOGGER.info("start getFactTableByPeriodYear dao: ");
+        Object r = this.cubeDao.getFactTableByPeriodYearText(periodYear);
         LOGGER.info("end getFactTableByPeriodYear dao: ");
         long lEndTime = System.nanoTime();
         LOGGER.info("Elapsed time in seconds getFactTableByPeriodYear dao: " + (lEndTime - lStartTime) / 1000000000);
@@ -104,7 +114,7 @@ public class CubeService {
                 i++;
             }
 
-            while (thrds.stream().filter(listFuture -> !listFuture.isDone()).count() == 0) {
+            while (thrds.stream().noneMatch(listFuture -> !listFuture.isDone())) {
                 try {
                     Thread.sleep(100);
                     // LOGGER.info("waiting: "+i);
@@ -219,36 +229,75 @@ public class CubeService {
 
 
     public List<IndicatorMainDissagregationDTO> getIndicatorMainDissagregationDTOTable() {
-        List<IndicatorMainDissagregationDTO> r = this.cubeDao.getIndicatorMainDissagregationDTOTable();
+        List<IndicatorMainDissagregationDTO> performanceIndicators = this.cubeDao.getIndicatorMainDissagregationDTOTable();
 
-        Map<Long, Map<Long, List<IndicatorMainDissagregationDTO>>> grouped = r.stream()
+        Map<Long, Map<Long, List<IndicatorMainDissagregationDTO>>> grouped = performanceIndicators.stream()
                 .collect(
                         Collectors.groupingBy(IndicatorMainDissagregationDTO::getPeriod_id,
                                 Collectors.groupingBy(IndicatorMainDissagregationDTO::getIndicator_id))
                 );
 
-        LOGGER.debug(" by getPeriod_id");
+
         for (Map.Entry<Long, Map<Long, List<IndicatorMainDissagregationDTO>>> entry : grouped.entrySet()) {
             LOGGER.debug("getPeriod_id: " + entry.getKey());
             LOGGER.debug(" by indicator_id");
 
             for (Map.Entry<Long, List<IndicatorMainDissagregationDTO>> entry1 : entry.getValue().entrySet()) {
                 LOGGER.debug(" by indicator_id" + entry1.getKey());
-                if (entry1.getKey() == 67) {
-                    LOGGER.debug("este");
-                }
+                entry1.getValue().forEach(indicatorMainDissagregationDTO -> indicatorMainDissagregationDTO.setIndicatorType("PRODUCTO"));
+                entry1.getValue().forEach(indicatorMainDissagregationDTO -> indicatorMainDissagregationDTO.setIndicatorlabel(indicatorMainDissagregationDTO.getDissagregation_type().getLabel()));
                 this.setMainDissagregation(entry1.getValue());
             }
         }
-        return r;
 
-        /*Map<Long, List<IndicatorExecutionDissagregationSimpleDTO>> groupedByIeId =
-                r.stream().collect(Collectors.groupingBy(IndicatorExecutionDissagregationSimpleDTO::getIe_id));
+        List<IndicatorMainDissagregationDTO> generalIndicators = this.cubeDao.getGeneralIndicatorMainDissagregationDTOTable();
+        Map<Long, Map<Long, List<IndicatorMainDissagregationDTO>>> groupedGeneral = generalIndicators.stream()
+                .collect(
+                        Collectors.groupingBy(IndicatorMainDissagregationDTO::getPeriod_id,
+                                Collectors.groupingBy(IndicatorMainDissagregationDTO::getIndicator_id))
+                );
 
-        for (Map.Entry<Long, List<IndicatorExecutionDissagregationSimpleDTO>> entry : groupedByIeId.entrySet()) {
-            DissagregationType mainDissagregationType = this.setMainDissagregation(entry.getValue());
-            LOGGER.debug(entry.getKey() + "-" + mainDissagregationType);
-        }*/
+
+        for (Map.Entry<Long, Map<Long, List<IndicatorMainDissagregationDTO>>> entry : groupedGeneral.entrySet()) {
+            LOGGER.debug("getPeriod_id: " + entry.getKey());
+            LOGGER.debug(" by indicator_id");
+
+            for (Map.Entry<Long, List<IndicatorMainDissagregationDTO>> entry1 : entry.getValue().entrySet()) {
+                LOGGER.debug(" by indicator_id" + entry1.getKey());
+                entry1.getValue().forEach(indicatorMainDissagregationDTO -> indicatorMainDissagregationDTO.setIndicator_id(0L));
+                entry1.getValue().forEach(indicatorMainDissagregationDTO -> indicatorMainDissagregationDTO.setIndicatorType("GENERAL"));
+                entry1.getValue().forEach(indicatorMainDissagregationDTO -> indicatorMainDissagregationDTO.setIndicatorlabel(indicatorMainDissagregationDTO.getDissagregation_type().getLabel()));
+                this.setMainDissagregation(entry1.getValue());
+            }
+        }
+
+        List<IndicatorMainDissagregationDTO> customIndicators = this.cubeDao.getCustomMainDissagregationDTOTable();
+        Map<Long, Map<Long, List<IndicatorMainDissagregationDTO>>> groupedCustom = customIndicators.stream()
+                .collect(
+                        Collectors.groupingBy(IndicatorMainDissagregationDTO::getPeriod_id,
+                                Collectors.groupingBy(IndicatorMainDissagregationDTO::getIndicator_id))
+                );
+
+
+        for (Map.Entry<Long, Map<Long, List<IndicatorMainDissagregationDTO>>> entry : groupedCustom.entrySet()) {
+            LOGGER.debug("getPeriod_id: " + entry.getKey());
+            LOGGER.debug(" by indicator_id");
+
+            for (Map.Entry<Long, List<IndicatorMainDissagregationDTO>> entry1 : entry.getValue().entrySet()) {
+                LOGGER.debug(" by indicator_id" + entry1.getKey());
+                entry1.getValue().forEach(indicatorMainDissagregationDTO -> indicatorMainDissagregationDTO.setOrder(0));
+                entry1.getValue().forEach(indicatorMainDissagregationDTO -> indicatorMainDissagregationDTO.setMainDissagregation(Boolean.FALSE));
+            }
+        }
+
+
+        List<IndicatorMainDissagregationDTO> total = Stream.concat(generalIndicators.stream(), performanceIndicators.stream())
+                .collect(Collectors.toList());
+
+      total = Stream.concat(total.stream(), customIndicators.stream())
+                .collect(Collectors.toList());
+
+        return  total;
     }
 
     private DissagregationType setMainDissagregation(List<IndicatorMainDissagregationDTO> ies) {
@@ -261,32 +310,20 @@ public class CubeService {
                         !dissagregationType.getSimpleDissagregations().contains(DissagregationType.DIVERSIDAD)
                 )
                 .collect(Collectors.toList());
-
-        // sies
-        if (notDiversityDissagregations.size() < 2) {
-            // si solo tiene 1 asigno directamente
-            Optional<DissagregationType> mainDissagregationOptional = notDiversityDissagregations.stream().findFirst();
-            if (mainDissagregationOptional.isPresent()) {
-                mainDissagregation = mainDissagregationOptional.get();
-            } else {
-                mainDissagregation = dissagregations.stream().findFirst().get();
-            }
-        } else {
-            List<DissagregationType> mainDissagregationLugarList = notDiversityDissagregations.stream()
-                    .filter(dissagregationType -> dissagregationType.getSimpleDissagregations().contains(DissagregationType.LUGAR)
-                            )
-                    .collect(Collectors.toList());
-            if (CollectionUtils.isNotEmpty(mainDissagregationLugarList)) {
-                mainDissagregation = mainDissagregationLugarList.stream().findFirst().get();
-            } else {
-                mainDissagregation = notDiversityDissagregations.stream().findFirst().get();
-            }
+        // busco la de mayor detalle
+        Optional<DissagregationType> mainDissagregationOp = notDiversityDissagregations.stream().sorted((o1, o2) -> o2.getNumberOfDissagregationTypes() - o1.getNumberOfDissagregationTypes()).findFirst();
+        if(mainDissagregationOp.isPresent()){
+            mainDissagregation=mainDissagregationOp.get();
         }
+
+
         for (IndicatorMainDissagregationDTO dto : ies) {
             if (dto.getDissagregation_type().equals(mainDissagregation)) {
                 dto.setMainDissagregation(Boolean.TRUE);
+                dto.setOrder(dto.getDissagregation_type().getNumberOfDissagregationTypes());
             } else {
                 dto.setMainDissagregation(Boolean.FALSE);
+                dto.setOrder(dto.getDissagregation_type().getNumberOfDissagregationTypes());
             }
         }
 
@@ -297,4 +334,9 @@ public class CubeService {
         return this.cubeDao.getImplementersTable();
     }
 
+    public List<CustomDissagregationDTO> getCustomDissagregationsTable() {
+        return this.cubeDao.getCustomDissagregationsTable();
+
+
+    }
 }

@@ -236,6 +236,13 @@ public class TestEndpoint {
         this.userService.changePasswordTest(username, "1234");
         return "ya!!!";
     }
+    @Path("testcube/{year}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public String tescube(@PathParam("year") Integer year) throws GeneralAppException {
+        Object r = this.cubeService.getFactTableByPeriodYearText(year);
+        return (String) r;
+    }
 
 
     @Path("testAmazonEmail")

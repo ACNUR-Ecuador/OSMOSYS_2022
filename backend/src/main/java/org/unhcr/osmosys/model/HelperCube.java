@@ -39,6 +39,7 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "population_type", type = Long.class),
                                 @ColumnResult(name = "diversity_type", type = Long.class),
                                 @ColumnResult(name = "canton_id", type = Long.class),
+                                @ColumnResult(name = "custom_dissagregation_id", type = Long.class),
                                 @ColumnResult(name = "responsable_office_id", type = Long.class),
                                 @ColumnResult(name = "implementer_office_id", type = Long.class),
                                 @ColumnResult(name = "implementer_id", type = String.class),
@@ -266,6 +267,17 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "period_id", type = Long.class),
                                 @ColumnResult(name = "dissagregation_type", type = String.class)
                         })})
+@SqlResultSetMapping(
+        name = "IndicatorMainDissagregationCustomDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = IndicatorMainDissagregationDTO.class,
+                        columns = {
+                                @ColumnResult(name = "indicator_id", type = Long.class),
+                                @ColumnResult(name = "period_id", type = Long.class),
+                                @ColumnResult(name = "indicatorlabel", type = String.class),
+                                @ColumnResult(name = "indicatorType", type = String.class)
+                        })})
 
 @SqlResultSetMapping(
         name = "ImplementerDTOMapping",
@@ -279,6 +291,22 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "parent_acronym", type = String.class),
                                 @ColumnResult(name = "parent_name", type = String.class),
                                 @ColumnResult(name = "implementation_type", type = String.class)
+                        })})
+@SqlResultSetMapping(
+        name = "CustomDissagregationDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = CustomDissagregationDTO.class,
+                        columns = {
+                                @ColumnResult(name = "dissagregation_id", type = Long.class),
+                                @ColumnResult(name = "dissagregation_control", type = Boolean.class),
+                                @ColumnResult(name = "dissagregation_description", type = String.class),
+                                @ColumnResult(name = "dissagregation_name", type = String.class),
+                                @ColumnResult(name = "dissagregation_state", type = String.class),
+                                @ColumnResult(name = "option_id", type = Long.class),
+                                @ColumnResult(name = "option_description", type = String.class),
+                                @ColumnResult(name = "option_name", type = String.class),
+                                @ColumnResult(name = "option_state", type = String.class)
                         })})
 public class HelperCube extends BaseEntity<Long> {
 

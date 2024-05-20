@@ -8,8 +8,10 @@ public class FactDTO {
     public FactDTO() {
     }
 
-    public FactDTO(Long id, Long ie_id, Long period_id, Integer period_year, String implementation_type, Long assigned_user_id, Long assigned_user_backup_id, Long indicator_id, Long statement_id, Long project_statement_id, String indicator_type, Long organization_id, Long supervisor_id, Long office_id, Long project_id, String month_year_id, Long month_id, String dissagregation_type, Long age_type,  Long gender_type, Long country_of_origin, Long population_type, Long diversity_type,
+    public FactDTO(Long id, Long ie_id, Long period_id, Integer period_year, String implementation_type, Long assigned_user_id, Long assigned_user_backup_id, Long indicator_id, Long statement_id, Long project_statement_id, String indicator_type, Long organization_id, Long supervisor_id, Long office_id, Long project_id, String month_year_id, Long month_id,
+                   String dissagregation_type, Long age_type,  Long gender_type, Long country_of_origin, Long population_type, Long diversity_type,
                    Long canton_id,
+                   Long custom_dissagregation_id,
                    Long responsable_office_id,
                    Long implementer_office_id,
                    String implementer_id,
@@ -38,6 +40,7 @@ public class FactDTO {
         this.population_type = population_type;
         this.diversity_type = diversity_type;
         this.canton_id = canton_id;
+        this.custom_dissagregation_id= custom_dissagregation_id;
         this.responsable_office_id = responsable_office_id;
         this.implementer_office_id = implementer_office_id;
         this.implementer_id = implementer_id;
@@ -75,6 +78,8 @@ public class FactDTO {
     private Long population_type;
     private Long diversity_type;
     private Long canton_id;
+
+    private Long custom_dissagregation_id;
 
     private Long responsable_office_id;
     private Long implementer_office_id;
@@ -369,5 +374,13 @@ public class FactDTO {
 
     public void setImplementer_id(String implementer_id) {
         this.implementer_id = implementer_id;
+    }
+
+    public Long getCustom_dissagregation_id() {
+        return custom_dissagregation_id;
+    }
+
+    public void setCustom_dissagregation_id(Long custom_dissagregation_id) {
+        this.custom_dissagregation_id = custom_dissagregation_id;
     }
 }

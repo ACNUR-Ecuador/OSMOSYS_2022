@@ -1,5 +1,6 @@
 package org.unhcr.osmosys.daos;
 
+import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.cubeDTOs.*;
 
 import javax.ejb.Stateless;
@@ -14,6 +15,7 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 @Stateless
 public class CubeDao {
+    private static final Logger LOGGER = Logger.getLogger(CubeDao.class);
     @PersistenceContext(unitName = "main-persistence-unit")
     protected EntityManager entityManager;
 
@@ -118,10 +120,30 @@ public class CubeDao {
                     "WHERE dai.state='ACTIVO' " +
                     "ORDER BY dai.period_id, dai.indicator_id, dai.dissagregation_type";
 
+    private static final String generalndicatorMainDissagregationTable =
+           "SELECT " +
+                   "i.id as indicator_id  , i.periodo_id period_id , dai.dissagregation_type " +
+                   "FROM " +
+                   "osmosys.general_indicators i " +
+                   "INNER JOIN osmosys.dissagregation_assignation_general_indicator dai on i.id=dai.general_indicator_id " +
+                   "WHERE dai.state='ACTIVO' " +
+                   "ORDER BY  i.periodo_id,  dai.dissagregation_type";
+
+    private static final String customMainDissagregationTable =
+           "SELECT " +
+                   "cdai.indicator_id as indicator_id, cdai.period_id , cd.name indicatorlabel, 'PERSONALIZADO' AS indicatorType " +
+                   "FROM " +
+                   "osmosys.custom_dissagregation_assignation_indicator cdai " +
+                   "INNER JOIN osmosys.custom_dissagregations cd on cdai.custom_dissagregation_id=cd.id";
+
     private static final String implementersTable = "SELECT " +
             "* " +
             "from  " +
             "cube.implementers t";
+    private static final String customDissagregationTable = "SELECT " +
+            "* " +
+            "from  " +
+            "cube.custom_dissagregation_table t";
 
 
     public List<FactDTO> getFactTableByPeriodYear(Integer year) {
@@ -130,6 +152,13 @@ public class CubeDao {
         Query q = this.entityManager.createNativeQuery(sql, "FactDTOMapping");
         q.setParameter("year", year);
         return q.getResultList();
+    }
+    public Object getFactTableByPeriodYearText(Integer year) {
+
+        String sql = "SELECT CAST(json_agg(t) as VARCHAR) jsono FROM (SELECT * from cube.fact_table t where t.period_year  =:year  ) t ";
+        Query q = this.entityManager.createNativeQuery(sql);
+        q.setParameter("year", year);
+        return q.getSingleResult();
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -264,8 +293,21 @@ public class CubeDao {
         Query q = this.entityManager.createNativeQuery(CubeDao.indicatorMainDissagregationTable , "IndicatorMainDissagregationDTOMapping");
         return q.getResultList();
     }
+    public List<IndicatorMainDissagregationDTO> getGeneralIndicatorMainDissagregationDTOTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.generalndicatorMainDissagregationTable , "IndicatorMainDissagregationDTOMapping");
+        return q.getResultList();
+    }
+    public List<IndicatorMainDissagregationDTO> getCustomMainDissagregationDTOTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.customMainDissagregationTable , "IndicatorMainDissagregationCustomDTOMapping");
+        return q.getResultList();
+    }
     public List<ImplementerDTO> getImplementersTable() {
         Query q = this.entityManager.createNativeQuery(CubeDao.implementersTable , "ImplementerDTOMapping");
+        return q.getResultList();
+    }
+
+    public List<CustomDissagregationDTO> getCustomDissagregationsTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.customDissagregationTable , "CustomDissagregationDTOMapping");
         return q.getResultList();
     }
 }
