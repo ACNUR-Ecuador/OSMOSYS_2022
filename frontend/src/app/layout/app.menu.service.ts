@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Subject} from 'rxjs';
 import {MenuChangeEvent} from './api/menuchangeevent';
-import {UserService} from '../services/user.service';
 import {NgxPermissionsObject, NgxPermissionsService} from 'ngx-permissions';
 import {MenuItem} from "primeng/api";
 import {MenuItemsService} from "../services/menu-items.service";
@@ -41,7 +40,6 @@ export class MenuService {
     menuModel$ = this.menuModel.asObservable();
 
     constructor(
-        private userService: UserService,
         private ngxPermissionsService: NgxPermissionsService,
         private menuItemsService: MenuItemsService,
     ) {
@@ -270,143 +268,6 @@ export class MenuService {
             ]
         },
         {separator: true},
-        /*{
-            label: 'Tableros de Control',
-            icon: 'pi pi-chart-line',
-            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
-            items: [
-                {
-                    label: 'Indicadores de Producto',
-                    icon: 'pi pi-fw pi-chart-bar',
-                    routerLink: ['/reports/powerbi/productIndicators2023'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
-                },
-                {
-                    label: 'Beneficiarios Alcanzados por Socios',
-                    icon: 'pi pi-fw pi-chart-bar',
-                    routerLink: ['/reports/powerbi/generalIndicator2023'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL']
-                }
-
-            ]
-        },
-        {separator: true},
-        {
-            label: 'Información',
-            icon: 'pi pi-info-circle',
-            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'PUNTO_FOCAL'],
-            items: [
-                {
-                    label: 'Perfiles de Población',
-                    icon: 'pi pi-fw pi-user',
-                    routerLink: ['/reports/powerbi/perfilesDePoblacion'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'PUNTO_FOCAL'],
-                },
-                {
-                    label: 'Comunidades Priorizadas',
-                    icon: 'pi pi-fw pi-map',
-                    routerLink: ['/reports/powerbi/mapaComunidades'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'PUNTO_FOCAL'],
-                }
-            ]
-        },
-        {separator: true},*/
-        /*
-                {
-                    label: 'tester',
-                    icon: 'pi pi-info-circle',
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'PUNTO_FOCAL'],
-                    items: [
-                        {
-                            label: 'tester',
-                            icon: 'pi pi-fw pi-user',
-                            routerLink: ['/reports/powerbiReportTemplate'],
-                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'PUNTO_FOCAL'],
-                            queryParams:{'recent': 'https://app.powerbi.com/view?r=eyJrIjoiZTJhNzhmZDUtMTA5MS00YjgxLTk0YmItZGU0OTE4ZGJmNWJlIiwidCI6ImU1YzM3OTgxLTY2NjQtNDEzNC04YTBjLTY1NDNkMmFmODBiZSIsImMiOjh9&pageName=ReportSectiond86c1c7752280a23a22a'}
-
-                        }
-                    ]
-                },
-        */
     ];
 
-    MENUITEMS2 = [
-        {
-            "id": 4,
-            "state": "ACTIVO",
-            "label": "Tableros de Control",
-            "icon": "pi pi-chart-line",
-            "assignedRoles": [
-                "ADMINISTRADOR",
-                "EJECUTOR_ID",
-                "MONITOR_ID",
-                "MONITOR_PROYECTOS",
-                "EJECUTOR_PROYECTOS",
-                "SUPER_ADMINISTRADOR"
-            ],
-            "powerBi": false,
-            "restricted": false,
-            "order": 1,
-            "organizations": [],
-            "url": null,
-            "parent": null,
-            "children": [
-                {
-                    "id": 5,
-                    "state": "ACTIVO",
-                    "label": "2023",
-                    "icon": "pi pi-chart-line",
-                    "assignedRoles": [
-                        "ADMINISTRADOR",
-                        "MONITOR_ID",
-                        "EJECUTOR_ID",
-                        "PUNTO_FOCAL",
-                        "SUPER_ADMINISTRADOR"
-                    ],
-                    "powerBi": false,
-                    "restricted": false,
-                    "order": 1,
-                    "organizations": [],
-                    "url": null,
-                    "parent": null,
-                    "children": [
-                        {
-                            "id": 6,
-                            "state": "ACTIVO",
-                            "label": "Indicadores de Producto",
-                            "icon": "pi pi-chart-line",
-                            "assignedRoles": [
-                                "ADMINISTRADOR",
-                                "MONITOR_ID",
-                                "MONITOR_PROYECTOS",
-                                "EJECUTOR_ID",
-                                "EJECUTOR_PROYECTOS",
-                                "PUNTO_FOCAL",
-                                "ADMINISTRADOR_OFICINA",
-                                "SUPER_ADMINISTRADOR"
-                            ],
-                            "powerBi": true,
-                            "restricted": true,
-                            "order": 1,
-                            "organizations": [
-                                {
-                                    "id": 1,
-                                    "state": "ACTIVO",
-                                    "code": "0000000",
-                                    "description": "Agencia de la ONU para los Refugiados",
-                                    "acronym": "ACNUR"
-                                }
-                            ],
-                            "url": "https://app.powerbi.com/view?r=eyJrIjoiNTJmMmM1YjQtYzI0Yi00ZTM5LWFkN2ItOGMzMjIzMTNiNzRjIiwidCI6ImU1YzM3OTgxLTY2NjQtNDEzNC04YTBjLTY1NDNkMmFmODBiZSIsImMiOjh9&pageName=ReportSection",
-                            "parent": null,
-                            "children": [],
-                            "openInNewTab": false
-                        }
-                    ],
-                    "openInNewTab": false
-                }
-            ],
-            "openInNewTab": false
-        }
-    ];
 }
