@@ -5,21 +5,6 @@ import {NgxPermissionsObject, NgxPermissionsService} from 'ngx-permissions';
 import {MenuItem} from "primeng/api";
 import {MenuItemsService} from "../services/menu-items.service";
 
-/*export interface Menu {
-    label?: string;
-    icon?: string;
-    roles?: string[];
-
-    routerLink?: string[];
-    queryParams?
-    routerLinkActiveOptions?;
-    items?: Menu[];
-    separator?: boolean;
-    class?: string;
-    url?;
-    target?: string;
-    visible?: boolean;
-}*/
 
 interface Menu extends MenuItem {
     roles?: string[];
@@ -49,8 +34,8 @@ export class MenuService {
 
             this.menuItemsService.getMenuStructure().subscribe({
                 next: value => {
-                    let extraMenu=this.menuItemsService.processMenusItem(value);
-                   let presettedMenu=this.MENUITEMS.concat(extraMenu);
+                    let extraMenu = this.menuItemsService.processMenusItem(value);
+                    let presettedMenu = this.MENUITEMS.concat(extraMenu);
                     let settedMenu = this.setCanChow(presettedMenu, permissions);
                     this.menuModel.next(settedMenu);
                 }
@@ -91,7 +76,9 @@ export class MenuService {
     // tslint:disable-next-line
     MENUITEMS: Menu[] = [
         {
-            label: 'Administración', icon: 'pi pi-cog', roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL', 'ADMINISTRADOR_OFICINA'],
+            label: 'Administración',
+            icon: 'pi pi-cog',
+            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL', 'ADMINISTRADOR_OFICINA'],
             items: [
                 // {label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']},
                 {

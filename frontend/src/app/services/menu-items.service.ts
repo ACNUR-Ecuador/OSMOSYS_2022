@@ -38,6 +38,8 @@ export class MenuItemsService {
 
     public processMenusItem(items: MenuItemBackend[]): Menu[] {
         let result:Menu[]=[];
+        items.sort((a, b) => a.order-b.order);
+
         for (let item of items) {
             if(item.state==='ACTIVO'){
                 if(item.restricted){
