@@ -42,5 +42,4 @@ public class IndicatorValueCustomDissagregationDao extends GenericDaoJpa<Indicat
         return q.getResultList();
     }
 
-
 }

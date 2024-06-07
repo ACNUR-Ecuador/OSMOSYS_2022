@@ -7,10 +7,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.threeten.extra.YearQuarter;
 import org.unhcr.osmosys.daos.QuarterDao;
-import org.unhcr.osmosys.model.CustomDissagregation;
-import org.unhcr.osmosys.model.IndicatorExecution;
-import org.unhcr.osmosys.model.Month;
-import org.unhcr.osmosys.model.Quarter;
+import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
 import org.unhcr.osmosys.model.enums.TotalIndicatorCalculationType;
@@ -95,12 +92,17 @@ public class QuarterService {
         return q;
     }
 
-    public void updateQuarterDissagregations(IndicatorExecution ie, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationTypeMapMap) throws GeneralAppException {
+    public void updateQuarterDissagregations(IndicatorExecution ie, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationTypeMapMap,
+                                             Set<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicators) throws GeneralAppException {
         Set<Quarter> quarters = ie.getQuarters();
         for (Quarter quarter : quarters) {
             Set<Month> months = quarter.getMonths();
             for (Month month : months) {
                 this.monthService.updateMonthDissagregations(month, dissagregationTypeMapMap);
+
+                this.monthService.updateMonthCustomDissagregations(month, customDissagregationAssignationToIndicators);
+
+
             }
         }
 
@@ -156,14 +158,7 @@ public class QuarterService {
         }
     }
 
-    public void updateQuarterLocationsByAssignation(Quarter quarter,
-                                                    Map<DissagregationType,Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationMap
 
-    ) throws GeneralAppException {
-        for (Month month : quarter.getMonths()) {
-            this.monthService.updateMonthLocationsByAssignation(month,  dissagregationMap);
-        }
-    }
 
     public void blockQuarterStateByProjectId(Long projectId, QuarterEnum quarterEnum, Integer year, Boolean blockUpdate) {
         List<Quarter> quarters = this.quarterDao.getQuarterByProjectIdQuarterEnumAndYear(projectId, quarterEnum, year);

@@ -157,13 +157,70 @@ public class MonthService {
 
         // actualizar opciones
         for (DissagregationType dissagregationType : newDissagregationMap.keySet()) {
-            if(dissagregationType.equals(DissagregationType.SIN_DESAGREGACION)) continue;
+            if (dissagregationType.equals(DissagregationType.SIN_DESAGREGACION)) continue;
             List<IndicatorValue> dissagregationValues = indicatorValues.stream().filter(value -> value.getDissagregationType().equals(dissagregationType)).collect(Collectors.toList());
             updatedDissagregationOptions(month, dissagregationValues,
                     dissagregationType,
                     newDissagregationMap.get(dissagregationType), currentDissagregationMap.get(dissagregationType));
 
         }
+
+    }
+
+    /**
+     * Actualiza las segregaciones de un mes en base a las asisgnaciones de segregaciones personalizadas asignadas a su indicador
+     *
+     * @param month
+     * @param customDissagregationAssignationToIndicators
+     */
+    public void updateMonthCustomDissagregations(Month month, Set<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicators) {
+
+        if(customDissagregationAssignationToIndicators == null) return;
+        // obtengo todos los values
+        Set<IndicatorValueCustomDissagregation> currentIndicatorValues = month.getIndicatorValuesIndicatorValueCustomDissagregations(); // this.indicatorValueCustomDissagregationService.getIndicatorValueCustomDissagregationsByMonthId(month.getId());
+
+        Set<CustomDissagregation> currentDissagregations = currentIndicatorValues.stream().map(indicatorValueCustomDissagregation -> indicatorValueCustomDissagregation.getCustomDissagregationOption().getCustomDissagregation()).collect(Collectors.toSet());
+        Set<CustomDissagregation> newDissagregations = customDissagregationAssignationToIndicators.stream().map(CustomDissagregationAssignationToIndicator::getCustomDissagregation).collect(Collectors.toSet());
+        // busco las opciones q debo crear
+
+        Set<CustomDissagregation> dissagregationsToCreate = new HashSet<>(CollectionUtils.subtract(newDissagregations, currentDissagregations));
+        // creo
+        Set<IndicatorValueCustomDissagregation> indicatorValuesCustomDissagregations = new HashSet<>();
+        for (CustomDissagregation customDissagregation : dissagregationsToCreate) {
+            indicatorValuesCustomDissagregations.addAll(this.indicatorValueCustomDissagregationService.createIndicatorValuesCustomDissagregationForMonth(customDissagregation));
+            currentDissagregations.add(customDissagregation);
+        }
+        for (IndicatorValueCustomDissagregation indicatorValuesCustomDissagregation : indicatorValuesCustomDissagregations) {
+            month.addIndicatorValueCustomDissagregation(indicatorValuesCustomDissagregation);
+        }
+
+        // ahora acualizo según los estados
+        // activos todas para luego desactivar segun el caso
+        month.getIndicatorValuesIndicatorValueCustomDissagregations().forEach(indicatorValueCustomDissagregation -> indicatorValueCustomDissagregation.setState(State.ACTIVO));
+        // desactivo según el caso
+        Set<IndicatorValueCustomDissagregation> valuesToDisable = new HashSet<>();
+        for (CustomDissagregationAssignationToIndicator customDissagregationAssignationToIndicator : customDissagregationAssignationToIndicators) {
+            // si la asignación esta inactiva desactivo todos los valores
+            if (customDissagregationAssignationToIndicator.getState().equals(State.INACTIVO) || customDissagregationAssignationToIndicator.getCustomDissagregation().getState().equals(State.INACTIVO)) {
+                Set<Long> optionsToDisableIds = customDissagregationAssignationToIndicator.getCustomDissagregation().getCustomDissagregationOptions().stream().map(CustomDissagregationOption::getId).collect(Collectors.toSet());
+                Set<IndicatorValueCustomDissagregation> subValuesToDissable = month
+                        .getIndicatorValuesIndicatorValueCustomDissagregations().stream()
+                        .filter(indicatorValueCustomDissagregation -> optionsToDisableIds.contains(indicatorValueCustomDissagregation.getCustomDissagregationOption().getId()))
+                        .collect(Collectors.toSet());
+                valuesToDisable.addAll(subValuesToDissable);
+            } else {
+                // ahora por opción
+                for (CustomDissagregationOption customDissagregationOption : customDissagregationAssignationToIndicator.getCustomDissagregation().getCustomDissagregationOptions()) {
+                    if (customDissagregationOption.getState().equals(State.INACTIVO)) {
+                        Set<IndicatorValueCustomDissagregation> subValuesToDissable = month.getIndicatorValuesIndicatorValueCustomDissagregations().stream().filter(indicatorValueCustomDissagregation -> indicatorValueCustomDissagregation.getCustomDissagregationOption().getId().equals(customDissagregationOption.getId())).collect(Collectors.toSet());
+                        valuesToDisable.addAll(subValuesToDissable);
+                    }
+                }
+            }
+        }
+
+        valuesToDisable.forEach(indicatorValueCustomDissagregation -> indicatorValueCustomDissagregation.setState(State.INACTIVO));
+
 
     }
 
@@ -212,7 +269,6 @@ public class MonthService {
         // llamada 1********************
 
 
-
         if (dissagregationType.equals(DissagregationType.SIN_DESAGREGACION)) {
             throw new GeneralAppException("testing");
         } else {
@@ -230,45 +286,6 @@ public class MonthService {
                 }
             }
         }
-
-    }
-
-    private void dissableDissagregationOptions(DissagregationType dissagregationType, DissagregationType simpleDissagregationType, List<StandardDissagregationOption> optionToDissable, List<IndicatorValue> indicatorValues) {
-
-        indicatorValues.stream().filter(value -> value.getDissagregationType().equals(dissagregationType)).forEach(value -> {
-            switch (simpleDissagregationType) {
-                case DIVERSIDAD:
-                    if (value.getDiversityType() != null && optionToDissable.contains(value.getDiversityType())) {
-                        value.setState(State.INACTIVO);
-                    }
-                    break;
-                case LUGAR:
-                    if (value.getLocation() != null && optionToDissable.contains(value.getLocation())) {
-                        value.setState(State.INACTIVO);
-                    }
-                    break;
-                case EDAD:
-                    if (value.getAgeType() != null && optionToDissable.contains(value.getAgeType())) {
-                        value.setState(State.INACTIVO);
-                    }
-                    break;
-                case PAIS_ORIGEN:
-                    if (value.getCountryOfOrigin() != null && optionToDissable.contains(value.getCountryOfOrigin())) {
-                        value.setState(State.INACTIVO);
-                    }
-                    break;
-                case TIPO_POBLACION:
-                    if (value.getPopulationType() != null && optionToDissable.contains(value.getPopulationType())) {
-                        value.setState(State.INACTIVO);
-                    }
-                    break;
-                case GENERO:
-                    if (value.getGenderType() != null && optionToDissable.contains(value.getGenderType())) {
-                        value.setState(State.INACTIVO);
-                    }
-                    break;
-            }
-        });
 
     }
 
@@ -372,25 +389,12 @@ public class MonthService {
     }
 
 
-    public void updateMonthLocationsByAssignation(Month month, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationMap
-
-    ) throws GeneralAppException {
-        List<IndicatorValue> newValues = new ArrayList<>();
-        for (DissagregationType locationDissagregationType : dissagregationMap.keySet()) {
-
-            newValues.addAll(this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(locationDissagregationType, dissagregationMap.get(locationDissagregationType)));
-        }
-        newValues.forEach(month::addIndicatorValue);
-    }
-
     public List<MonthWeb> getMonthsIndicatorExecutionId(Long indicatorExecutionId, State state) {
         List<Month> months = this.monthDao.getMonthsIndicatorExecutionId(indicatorExecutionId, state);
         return this.modelWebTransformationService.monthsToMonthsWeb(new HashSet<>(months));
     }
 
-    public List<Month> getMonthsIndicatorExecutionId(Long indicatorExecutionId) {
-        return this.monthDao.getMonthsIndicatorExecutionId(indicatorExecutionId);
-    }
+
 
     public Long changeMonthBlockedState(Long monthId, Boolean blockinState) {
         Month month = this.monthDao.find(monthId);
@@ -502,7 +506,9 @@ public class MonthService {
             Collection<CustomDissagregationOption> newOptions = CollectionUtils.removeAll(optionsTotal, indicatorValues.stream().map(IndicatorValueCustomDissagregation::getCustomDissagregationOption).collect(Collectors.toList()));
             for (CustomDissagregationOption newOption : newOptions) {
                 IndicatorValueCustomDissagregation indicatorValueCustomDissagregation = new IndicatorValueCustomDissagregation();
-                indicatorValueCustomDissagregation.setCustomDissagregationOption(customDissagregation.getCustomDissagregationOptions().stream().filter(customDissagregationOption -> customDissagregationOption.equals(newOption)).findFirst().get());
+                //noinspection OptionalGetWithoutIsPresent
+                indicatorValueCustomDissagregation.setCustomDissagregationOption(customDissagregation.getCustomDissagregationOptions().stream()
+                        .filter(customDissagregationOption -> customDissagregationOption.equals(newOption)).findFirst().get());
                 indicatorValueCustomDissagregation.setMonthEnum(month.getMonth());
                 indicatorValueCustomDissagregation.setState(State.ACTIVO);
                 indicatorValueCustomDissagregation.setMonthYearOrder(month.getMonthYearOrder());

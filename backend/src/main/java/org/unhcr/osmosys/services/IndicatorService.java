@@ -212,11 +212,8 @@ public class IndicatorService {
         this.updateIndicatorExecutionsDissagregationsByIndicator(
                 indicator
         );
-        this.indicatorExecutionService
-                .updateIndicatorExecutionsCustomDissagregations(
-                        customDissagregationAssignationToIndicatorsToEnable,
-                        customDissagregationAssignationToIndicatorsToDisable,
-                        customDissagregationAssignationToIndicatorsToCreate);
+
+
         return indicator.getId();
     }
 
@@ -284,6 +281,7 @@ public class IndicatorService {
             }
             dissagregationAssignationToIndicator.setUseCustomAgeDissagregations(webOptional.get().getUseCustomAgeDissagregations());
             if (dissagregationAssignationToIndicator.getUseCustomAgeDissagregations()!=null && dissagregationAssignationToIndicator.getUseCustomAgeDissagregations()) {
+                //noinspection ResultOfMethodCallIgnored
                 dissagregationAssignationToIndicator.getDissagregationAssignationToIndicatorPeriodCustomizations().size();
 
                 Set<StandardDissagregationOptionWeb> webs = webOptional.get().getCustomIndicatorOptions();
@@ -378,10 +376,6 @@ public class IndicatorService {
         return this.modelWebTransformationService.indicatorsToIndicatorsWeb(indicators, true, true);
     }
 
-    public List<Indicator> getByCodeList(List<String> codeList) {
-        return this.indicatorDao.getByCodeList(codeList);
-    }
-
 
 
     public List<Indicator> getByPeriodYearAssignmentAndState(int year) {
@@ -392,10 +386,6 @@ public class IndicatorService {
         return this.indicatorDao.getByPeriodAndCode(periodId, code);
     }
 
-    public Indicator getByCodeAndDescription(String code, String description) throws GeneralAppException {
-        LOGGER.info(code + "-" + description);
-        return this.indicatorDao.getByCodeAndDescription(code, description);
-    }
 
     public Indicator getByCode(String code) throws GeneralAppException {
         return this.indicatorDao.getByCode(code);
