@@ -5,13 +5,15 @@ import {HomeDashboardFocalPointComponent} from "./home-dashboard-focal-point/hom
 import {
     HomeDashboardDirectImplementationComponent
 } from "./home-dashboard-direct-implementation/home-dashboard-direct-implementation.component";
+import {AboutUsComponent} from "./about-us/about-us.component";
 
 const routes: Routes = [{
     path: '',
     children: [
         {path: 'home', component: HomeComponent},
         {path: 'homeDashboardFocalPoint', component: HomeDashboardFocalPointComponent},
-        {path: 'homeDashboardDirectImplementation', component: HomeDashboardDirectImplementationComponent}
+        {path: 'homeDashboardDirectImplementation', component: HomeDashboardDirectImplementationComponent},
+        {path: 'about-us', component: AboutUsComponent}
     ]
 }];
 

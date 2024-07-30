@@ -180,14 +180,14 @@
                     </security>
                 </datasource>
                 <datasource jta="true" jndi-name="java:jboss/datasources/osmosys" pool-name="osmosys" enabled="true" use-ccm="true" statistics-enabled="true">
-                    <connection-url>jdbc:postgresql://localhost:5432/osmosys_v4_sv</connection-url>
+                    <connection-url>jdbc:postgresql://localhost:5432/osmosys_sv</connection-url>
                     <driver>postgresql-driver</driver>
                     <pool>
                         <max-pool-size>100</max-pool-size>
                     </pool>
                     <security>
                         <user-name>postgres</user-name>
-                        <password>A1a2a3a4$</password>
+                        <password>a1a2a3a4a5a6</password>
                     </security>
                     <validation>
                         <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"/>
@@ -196,14 +196,14 @@
                     </validation>
                 </datasource>
                 <datasource jta="true" jndi-name="java:jboss/datasources/osmosys_ec" pool-name="osmosys_ec" enabled="true" use-ccm="true" statistics-enabled="true">
-                    <connection-url>jdbc:postgresql://localhost:5432/osmosys_v4_ec</connection-url>
+                    <connection-url>jdbc:postgresql://localhost:5432/osmosys_ec</connection-url>
                     <driver>postgresql-driver</driver>
                     <pool>
                         <max-pool-size>100</max-pool-size>
                     </pool>
                     <security>
                         <user-name>postgres</user-name>
-                        <password>A1a2a3a4$</password>
+                        <password>a1a2a3a4a5a6</password>
                     </security>
                     <validation>
                         <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"/>
@@ -583,4 +583,9 @@
             <remote-destination host="localhost" port="25"/>
         </outbound-socket-binding>
     </socket-binding-group>
+    <deployments>
+        <deployment name="osmosys_backend-4.1" runtime-name="osmosys_backend-4.1.war">
+            <fs-exploded path="C:\Proyectos\OSMOSYS_2022\backend\target\osmosys_backend-4.1"/>
+        </deployment>
+    </deployments>
 </server>

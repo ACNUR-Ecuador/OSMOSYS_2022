@@ -18,13 +18,15 @@ import {OfficeOrganizationPipe} from "../shared/pipes/office-organization.pipe";
 import {IndicatorPipe} from "../shared/pipes/indicator.pipe";
 import {CheckboxModule} from "primeng/checkbox";
 import {RippleModule} from "primeng/ripple";
+import { AboutUsComponent } from './about-us/about-us.component';
 
 
 @NgModule({
   declarations: [
     HomeComponent,
     HomeDashboardDirectImplementationComponent,
-    HomeDashboardFocalPointComponent
+    HomeDashboardFocalPointComponent,
+    AboutUsComponent
   ],
     imports: [
         CommonModule,

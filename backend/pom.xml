@@ -15,7 +15,7 @@
             </activation>
             <properties>
                 <!--<datasource.name>osmosys_ec</datasource.name>-->
-                <datasource.name>osmosys</datasource.name>
+                <datasource.name>osmosys_ec</datasource.name>
                 <context-root>osmosys</context-root>
                 <hibernate.show_sql>true</hibernate.show_sql>
                 <warName>osmosys</warName>

@@ -13,76 +13,83 @@
     <app-sidebar></app-sidebar>
     <div class="layout-mask modal-in"></div>
     <div style="display: flex; align-items: center; flex-grow: 2; justify-content: center;">
-        <img class="osmosys-logo" [routerLink]="['/']" [src]="'assets/layout/images/Logo_osmosys_white.png'"
+        <img class="osmosys-logo" [routerLink]="['/home/about-us']" [src]="'assets/layout/images/Logo_osmosys_white.png'"
              alt="osmosys"/>
-        <img class="osmosys-logo " style="margin-left: 3rem;" [routerLink]="['/']" [src]=flagToolbarFile
+        <img class="osmosys-logo " style="margin-left: 3rem;" [routerLink]="['/home/about-us']" [src]=flagToolbarFile
              alt="osmosys"/>
     </div>
 
     <div class="topbar-right">
+
+
         <ul class="topbar-menu">
-            <!--            <li class="search-item">
-                <a tabindex="0" (click)="onSearchClick()" class="p-trigger">
-                    <i class="pi pi-search"></i>
+            <li class="search-item">
+                <a pRipple
+                   [routerLink]="['/home/about-us']"
+                   class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                    <i class="pi pi-info-circle mr-3"></i>
+                    <span class="flex flex-column">
+                                <span class="font-semibold">Cambiar contraseña</span>
+                            </span>
                 </a>
-                        </li>-->
-
-<!--
-
-            <li class="static sm:relative">
-                <a tabindex="0" pStyleClass="@next" enterClass="hidden" enterActiveClass="scalein" leaveToClass="hidden"
-                   leaveActiveClass="fadeout" [hideOnOutsideClick]="true">
-                    <i class="pi pi-bell"></i>
-                    <span class="topbar-badge">5</span>
-                </a>
-                <ul class="list-none p-3 m-0 border-round shadow-2 absolute surface-overlay hidden origin-top w-full sm:w-19rem mt-2 left-0 top-auto"
-                    style="left:-70px !important; background-color: #0072BC !important;">
-                    <li>
-                        <a pRipple
-                           class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
-                            <i class="pi pi-shopping-cart mr-3"></i>
-                            <span class="flex flex-column">
-                                <span class="font-semibold">New Order</span>
-                                <span class="text-color-secondary">You have <strong>3</strong> new orders.</span>
-                            </span>
-                        </a>
-                        <a pRipple
-                           class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
-                            <i class="pi pi-check-square mr-3"></i>
-                            <span class="flex flex-column">
-                                <span class="font-semibold">Withdrawn Completed</span>
-                                <span class="text-color-secondary">Funds are on their way.</span>
-                            </span>
-                        </a>
-                        <a pRipple
-                           class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
-                            <i class="pi pi-chart-line mr-3"></i>
-                            <span class="flex flex-column">
-                                <span class="font-semibold">Monthly Reports</span>
-                                <span class="text-color-secondary">Monthly Reports are ready.</span>
-                            </span>
-                        </a>
-                        <a pRipple
-                           class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
-                            <i class="pi pi-comments mr-3"></i>
-                            <span class="flex flex-column">
-                                <span class="font-semibold">Comments</span>
-                                <span class="text-color-secondary"><strong>2</strong> new comments.</span>
-                            </span>
-                        </a>
-                        <a pRipple
-                           class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
-                            <i class="pi pi-exclamation-circle mr-3"></i>
-                            <span class="flex flex-column">
-                                <span class="font-semibold">Chargeback Request</span>
-                                <span class="text-color-secondary"><strong>1</strong> to review.</span>
-                            </span>
-                        </a>
-                    </li>
-                </ul>
             </li>
 
--->
+            <!--
+
+                        <li class="static sm:relative">
+                            <a tabindex="0" pStyleClass="@next" enterClass="hidden" enterActiveClass="scalein" leaveToClass="hidden"
+                               leaveActiveClass="fadeout" [hideOnOutsideClick]="true">
+                                <i class="pi pi-bell"></i>
+                                <span class="topbar-badge">5</span>
+                            </a>
+                            <ul class="list-none p-3 m-0 border-round shadow-2 absolute surface-overlay hidden origin-top w-full sm:w-19rem mt-2 left-0 top-auto"
+                                style="left:-70px !important; background-color: #0072BC !important;">
+                                <li>
+                                    <a pRipple
+                                       class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                                        <i class="pi pi-shopping-cart mr-3"></i>
+                                        <span class="flex flex-column">
+                                            <span class="font-semibold">New Order</span>
+                                            <span class="text-color-secondary">You have <strong>3</strong> new orders.</span>
+                                        </span>
+                                    </a>
+                                    <a pRipple
+                                       class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                                        <i class="pi pi-check-square mr-3"></i>
+                                        <span class="flex flex-column">
+                                            <span class="font-semibold">Withdrawn Completed</span>
+                                            <span class="text-color-secondary">Funds are on their way.</span>
+                                        </span>
+                                    </a>
+                                    <a pRipple
+                                       class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                                        <i class="pi pi-chart-line mr-3"></i>
+                                        <span class="flex flex-column">
+                                            <span class="font-semibold">Monthly Reports</span>
+                                            <span class="text-color-secondary">Monthly Reports are ready.</span>
+                                        </span>
+                                    </a>
+                                    <a pRipple
+                                       class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                                        <i class="pi pi-comments mr-3"></i>
+                                        <span class="flex flex-column">
+                                            <span class="font-semibold">Comments</span>
+                                            <span class="text-color-secondary"><strong>2</strong> new comments.</span>
+                                        </span>
+                                    </a>
+                                    <a pRipple
+                                       class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                                        <i class="pi pi-exclamation-circle mr-3"></i>
+                                        <span class="flex flex-column">
+                                            <span class="font-semibold">Chargeback Request</span>
+                                            <span class="text-color-secondary"><strong>1</strong> to review.</span>
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+            -->
 
             <li class="profile-item static sm:relative">
                 <a tabindex="0" pStyleClass="@next" enterClass="hidden" enterActiveClass="scalein" leaveToClass="hidden"
@@ -93,7 +100,7 @@
                     ></p-avatar>
                 </a>
                 <ul class="list-none p-3 m-0 border-round shadow-2 absolute surface-overlay hidden origin-top w-full sm:w-24rem mt-2 top-auto"
-                style="left:-80px !important; background-color: #0072BC !important;">
+                    style="left:-80px !important; background-color: #0072BC !important;">
                     <li>
                         <a pRipple
                            [routerLink]="['/users/userProfile']"
