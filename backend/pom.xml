@@ -54,10 +54,10 @@
         <profile>
             <id>ec</id>
             <properties>
-                <datasource.name>osmosys</datasource.name>
-                <context-root>osmosys</context-root>
+                <datasource.name>osmosys_ec</datasource.name>
+                <context-root>osmosys_ec</context-root>
                 <hibernate.show_sql>false</hibernate.show_sql>
-                <warName>osmosys</warName>
+                <warName>osmosys_ec</warName>
             </properties>
         </profile>
     </profiles>
