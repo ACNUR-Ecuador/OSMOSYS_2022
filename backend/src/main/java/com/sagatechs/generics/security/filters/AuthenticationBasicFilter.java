@@ -17,13 +17,14 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
 import java.lang.reflect.Method;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
 @BasicSecured
-//@Provider
+@Provider
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationBasicFilter implements ContainerRequestFilter {
 
