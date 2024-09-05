@@ -584,8 +584,8 @@
         </outbound-socket-binding>
     </socket-binding-group>
     <deployments>
-        <deployment name="osmosys_backend-4.1" runtime-name="osmosys_backend-4.1.war">
-            <fs-exploded path="C:\Proyectos\OSMOSYS_2022\backend\target\osmosys_backend-4.1"/>
+        <deployment name="osmosys_ec.war" runtime-name="osmosys_ec.war">
+            <fs-archive path="C:\Proyectos\OSMOSYS_2022\backend\target\osmosys_ec.war"/>
         </deployment>
     </deployments>
 </server>

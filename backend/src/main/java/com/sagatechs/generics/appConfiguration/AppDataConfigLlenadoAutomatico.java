@@ -48,9 +48,9 @@ public class AppDataConfigLlenadoAutomatico {
     @PostConstruct
     private void init() throws GeneralAppException {
         LOGGER.debug("Iniciando llenado automatico");
-        this.createAppConfigs();
-        this.cargarRoles();
-        this.cargarUsuarios();
+         this.createAppConfigs();
+        // this.cargarRoles();
+        //this.cargarUsuarios();
         // this.createFileAppConfigs();
         LOGGER.debug("Terminado llenado automático");
     }

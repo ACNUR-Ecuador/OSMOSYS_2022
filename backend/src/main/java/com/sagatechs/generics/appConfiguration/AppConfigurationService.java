@@ -28,7 +28,8 @@ public class AppConfigurationService {
     @PostConstruct
     public void init() {
         // Arracar el sistema
-        LOGGER.info("Cargando configuración del sistema");
+        LOGGER.info("Cargando configuración del sistema --------");
+        LOGGER.info("****** no cargar");
         llenarAppConfigurationCache();
         LOGGER.info("Terminado Cargando configuración del sistema");
 
