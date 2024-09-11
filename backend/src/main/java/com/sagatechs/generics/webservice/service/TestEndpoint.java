@@ -260,11 +260,11 @@ public class TestEndpoint {
 
         // Replace smtp_username with your Amazon SES SMTP user name.
 
-        final String SMTP_USERNAME = "AKIAUDY3XMXWWVOMXJLU";
+        final String SMTP_USERNAME = "AKIAUDY3XMXWXXSTIVPZ";
 
         // Replace smtp_password with your Amazon SES SMTP password.
 
-        final String SMTP_PASSWORD = "BI5H+kwvGjPLfieVHRZNb0YBw1LBDQ1LikYI9fm0RNzF";
+        final String SMTP_PASSWORD = "BDnV4JxUvoDGoToPAnTSfPwLnnAIqSVjV/tBDkNoQgHz";
 
         // The name of the Configuration Set to use for this message.
         // If you comment out or remove this variable, you will also need to
@@ -279,7 +279,7 @@ public class TestEndpoint {
         // The port you will connect to on the Amazon SES SMTP endpoint.
         final int PORT = 587;
 
-        final String SUBJECT = "Amazon SES test (SMTP interface accessed using Java)";
+        final String SUBJECT = "Amazon SES test by el salvador";
 
         final String BODY = String.join(
                 System.getProperty("line.separator"),
