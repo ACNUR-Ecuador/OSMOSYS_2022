@@ -16,11 +16,14 @@ import {SituationService} from './situation.service';
 import {StatementService} from './statement.service';
 import {UserService} from './user.service';
 import {UtilsService} from './utils.service';
+import { TagService } from './tag.service';
 
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    
+  ],
   imports: [
     CommonModule
   ]
@@ -45,7 +48,8 @@ export class ServicesModule {
                 StatementService,
                 UserService,
                 UtilsService,
-                EnumsService
+                EnumsService,
+                TagService
             ]
         };
     }

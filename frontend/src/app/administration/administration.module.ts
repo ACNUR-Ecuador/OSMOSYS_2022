@@ -85,6 +85,8 @@ import { DissagregationSelectorComponent } from './performance-indicator-adminis
 import {StandardDissagreationListPipe} from "../shared/pipes/standard-dissagreation-list.pipe";
 import { CustomDissagregationSelectorComponent } from './performance-indicator-administration/custom-dissagregation-selector/custom-dissagregation-selector.component';
 import { MenuItemsComponent } from './menu-items/menu-items.component';
+import { TagsAdministrationComponent } from './tags-administration/tags-administration.component';
+import { TagPeriodTagAsignationsListPipe } from '../shared/pipes/tag-period-tag-asignations-list.pipe';
 
 
 @NgModule({
@@ -107,7 +109,8 @@ import { MenuItemsComponent } from './menu-items/menu-items.component';
         MassBlockingComponent,
         DissagregationSelectorComponent,
         CustomDissagregationSelectorComponent,
-        MenuItemsComponent
+        MenuItemsComponent,
+        TagsAdministrationComponent
     ],
     imports: [
         CommonModule,
@@ -165,7 +168,8 @@ import { MenuItemsComponent } from './menu-items/menu-items.component';
         DissagregationsAssignationToIndicatorPipe,
         CustomDissagregationsAssignationToIndicatorPipe,
         PeriodsFromIndicatorPipe,
-        StandardDissagreationListPipe
+        StandardDissagreationListPipe,
+        TagPeriodTagAsignationsListPipe
     ]
 
 })

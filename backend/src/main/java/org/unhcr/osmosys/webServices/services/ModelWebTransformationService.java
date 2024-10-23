@@ -9,6 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.AreaDao;
 import org.unhcr.osmosys.daos.StatementDao;
+import org.unhcr.osmosys.daos.TagsDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.*;
 import org.unhcr.osmosys.model.standardDissagregations.options.AgeDissagregationOption;
@@ -35,6 +36,9 @@ public class ModelWebTransformationService {
 
     @Inject
     AreaDao areaDao;
+
+    @Inject
+    TagsDao tagsDao;
 
     @Inject
     AppConfigurationService appConfigurationService;
@@ -1357,10 +1361,91 @@ public class ModelWebTransformationService {
 
     }
 
-
     //</editor-fold>
 
+    //<editor-fold desc="Tags">
+    public List<TagsWeb> tagsToTagsWeb(List<Tags> tags) {
+        List<TagsWeb> r = new ArrayList<>();
+        for (Tags tag : tags) {
+            r.add(this.tagToTagWeb(tag));
+        }
+        return r;
+    }
 
+    public TagsWeb tagToTagWeb(Tags tag) {
+        if (tag == null) {
+            return null;
+        }
+        TagsWeb tagweb = new TagsWeb();
+        tagweb.setId(tag.getId());
+        tagweb.setName(tag.getName());
+        tagweb.setDescription(tag.getDescription());
+        tagweb.setPeriodTagAsignations(this.periodTagAsignationsToPeriodTagAsignationsWeb(tag.getPeriodTagAssignations()));
+        tagweb.setState(tag.getState());
+
+        return tagweb;
+    }
+
+    @SuppressWarnings("unused")
+    public List<Tags> tagsWebToTags(List<TagsWeb> tagsWebs) {
+        List<Tags> r = new ArrayList<>();
+        for (TagsWeb tagWeb : tagsWebs) {
+            r.add(this.tagWebToTag(tagWeb));
+        }
+        return r;
+    }
+
+
+    public Tags tagWebToTag(TagsWeb tagWeb) {
+        if (tagWeb == null) {
+            return null;
+        }
+        Tags tag;
+        if(tagWeb.getId()==null){
+            tag = new Tags();
+        } else {
+            tag = tagsDao.find(tagWeb.getId());
+        }
+
+        tag.setName(tagWeb.getName().toUpperCase());
+        tag.setDescription(tagWeb.getDescription());
+        tag.setState(tagWeb.getState());
+
+        for (PeriodTagAsignationWeb periodTagAsignationWeb : tagWeb.getPeriodTagAsignations()) {
+            Optional<PeriodTagAssignation> assignation = tag.getPeriodTagAssignations().stream().filter(periodTagAssignation -> periodTagAssignation.getPeriod().getId().equals(periodTagAsignationWeb.getPeriod().getId())).findFirst();
+            if (assignation.isPresent()) {
+                assignation.get().setState(periodTagAsignationWeb.getState());
+            } else {
+                PeriodTagAssignation psa = new PeriodTagAssignation();
+                psa.setState(periodTagAsignationWeb.getState());
+                psa.setPeriod(this.periodWebToPeriod(periodTagAsignationWeb.getPeriod()));
+                tag.addPeriodTagAssignation(psa);
+            }
+        }
+
+        return tag;
+    }
+    //</editor-fold>
+    //<editor-fold desc="PeriodTagAsignation">}
+    private PeriodTagAsignationWeb periodTagAsignationToPeriodTagAsignationWeb(PeriodTagAssignation periodTagAsignation) {
+        PeriodTagAsignationWeb paw = new PeriodTagAsignationWeb();
+        paw.setId(periodTagAsignation.getId());
+        paw.setState(periodTagAsignation.getState());
+        paw.setPeriod(this.periodToPeriodWeb(periodTagAsignation.getPeriod(), true));
+        return paw;
+    }
+    private List<PeriodTagAsignationWeb> periodTagAsignationsToPeriodTagAsignationsWeb(Set<PeriodTagAssignation> periodTagAssignations) {
+        List<PeriodTagAsignationWeb> periodTagAsignationWebs = new ArrayList<>();
+        for (PeriodTagAssignation periodTagAssignation : periodTagAssignations) {
+            periodTagAsignationWebs.add(this.periodTagAsignationToPeriodTagAsignationWeb(periodTagAssignation));
+
+        }
+        return periodTagAsignationWebs;
+    }
+
+
+
+    //</editor-fold>
     /////////////////******** standar dissagregations*********///////////////////////////////
 
     public <D extends StandardDissagregationOption> StandardDissagregationOptionWeb standardDissagregationOptionToStandardDissagregationOptionWeb(D dissagregationOption) {
