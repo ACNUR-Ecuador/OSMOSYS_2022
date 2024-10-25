@@ -99,6 +99,12 @@ export class MenuService {
                             roles: ['SUPER_ADMINISTRADOR']
                         },
                         {
+                            label: 'Tags',
+                            icon: 'pi pi-fw pi-cog',
+                            routerLink: ['/administration/tags'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
+                        },
+                        {
                             label: 'Pilares',
                             icon: 'pi pi-fw pi-cog',
                             routerLink: ['/administration/pillars'],
