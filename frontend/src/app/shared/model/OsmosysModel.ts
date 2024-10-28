@@ -570,3 +570,27 @@ export interface Menu extends MenuItem {
     target?: string;
     idItem?: number;
 }
+
+export class Tag {
+
+    constructor() {
+        this.state = 'ACTIVO';
+    }
+
+    public id: number;
+    public state: string;
+    public name: string;
+    public description: string;
+    public periodTagAsignations: PeriodTagAsignation[];
+}
+
+export class PeriodTagAsignation {
+    constructor() {
+        this.state = 'ACTIVO';
+    }
+
+    public id: string;
+    public state: string;
+    public period: Period;
+}
+
