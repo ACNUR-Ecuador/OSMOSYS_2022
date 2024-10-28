@@ -42,6 +42,52 @@ public class ModelWebTransformationService {
     @Inject
     UtilsService utilsService;
 
+    //<editor-fold desc="FocalPointAssignation">
+    public FocalPointAssignationWeb focalPointerAssignationToFocalPointerAssignationWeb(FocalPointAssignation focalPointAssignation) {
+        if (focalPointAssignation == null) {
+            return null;
+        }
+        FocalPointAssignationWeb focalPointAssignationWeb = new FocalPointAssignationWeb();
+        focalPointAssignationWeb.setId(focalPointAssignation.getId());
+        focalPointAssignationWeb.setFocalPointer(focalPointAssignation.getFocalPointer());
+        focalPointAssignationWeb.setProject(focalPointAssignation.getProject());
+        focalPointAssignationWeb.setMainFocalPointer(focalPointAssignation.getMainFocalPointer());
+        focalPointAssignationWeb.setState(focalPointAssignation.getState());
+
+        return focalPointAssignationWeb;
+    }
+
+    public FocalPointAssignation focalPointerAssignationWebToFocalPointerAssignation(FocalPointAssignationWeb focalPointAssignationWeb) {
+        if (focalPointAssignationWeb == null) {
+            return null;
+        }
+        FocalPointAssignation focalPointAssignation = new FocalPointAssignation();
+        focalPointAssignation.setId(focalPointAssignationWeb.getId());
+        focalPointAssignation.setState(focalPointAssignationWeb.getState());
+        focalPointAssignation.setFocalPointer(focalPointAssignationWeb.getFocalPointer());
+        focalPointAssignation.setMainFocalPointer(focalPointAssignationWeb.getMainFocalPointer());
+        focalPointAssignation.setProject(focalPointAssignationWeb.getProject());
+        return focalPointAssignation;
+    }
+
+    public List<FocalPointAssignationWeb> focalPointerAssignationsToFocalPointerAssignationWeb(List<FocalPointAssignation> focalPointAssignations) {
+        List<FocalPointAssignationWeb> r = new ArrayList<>();
+        for (FocalPointAssignation focalPointAssignation : focalPointAssignations) {
+            r.add(this.focalPointerAssignationToFocalPointerAssignationWeb(focalPointAssignation));
+        }
+        return r;
+    }
+
+    public List<FocalPointAssignation> focalPointerAssignationWebsToFocalPointerAssignations(List<FocalPointAssignationWeb> focalPointAssignationWebs) {
+        List<FocalPointAssignation> r = new ArrayList<>();
+        for (FocalPointAssignationWeb focalPointAssignationWeb : focalPointAssignationWebs) {
+            r.add(this.focalPointerAssignationWebToFocalPointerAssignation(focalPointAssignationWeb));
+        }
+        return r;
+    }
+
+    //</editor-fold>
+
     //<editor-fold desc="Areas">
     public List<AreaWeb> areasToAreasWeb(List<Area> areas) {
         List<AreaWeb> r = new ArrayList<>();
@@ -799,7 +845,11 @@ public class ModelWebTransformationService {
         w.setStartDate(project.getStartDate());
         w.setEndDate(project.getEndDate());
         w.setState(project.getState());
-        w.setFocalPoint(this.userToUserWebSimple(project.getFocalPoint(), true, true));
+        List<User> focalPoints = project.getFocalPointAssignations().stream()
+                .filter(focalPointAssignation -> focalPointAssignation.getState().equals(State.ACTIVO)).map(FocalPointAssignation::getFocalPointer).filter(user -> user.getState().equals(State.ACTIVO)).collect(Collectors.toList());
+
+        w.setFocalPoints(new HashSet<>(this.usersToUsersWebSimple(focalPoints, true, true)));
+
         Set<Canton> cantones = project.getProjectLocationAssigments().stream()
                 .filter(projectLocationAssigment -> projectLocationAssigment.getState().equals(State.ACTIVO))
                 .map(ProjectLocationAssigment::getLocation).collect(Collectors.toSet());

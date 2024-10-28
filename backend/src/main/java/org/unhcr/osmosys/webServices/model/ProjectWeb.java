@@ -31,7 +31,7 @@ public class ProjectWeb extends BaseWebEntity implements Serializable {
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate endDate;
-    public UserWeb focalPoint;
+    public Set<UserWeb> focalPoints = new HashSet<>();
 
     private Boolean updateAllLocationsIndicators;
 
@@ -93,12 +93,12 @@ public class ProjectWeb extends BaseWebEntity implements Serializable {
         this.endDate = endDate;
     }
 
-    public UserWeb getFocalPoint() {
-        return focalPoint;
+    public Set<UserWeb> getFocalPoints() {
+        return focalPoints;
     }
 
-    public void setFocalPoint(UserWeb focalPoint) {
-        this.focalPoint = focalPoint;
+    public void setFocalPoints(Set<UserWeb> focalPoints) {
+        this.focalPoints = focalPoints;
     }
 
     public Boolean getUpdateAllLocationsIndicators() {

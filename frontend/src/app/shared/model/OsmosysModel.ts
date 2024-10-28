@@ -239,6 +239,7 @@ export class Project {
     constructor() {
         this.state = EnumsState.ACTIVE;
         this.locations = [];
+        this.focalPoints = [];
     }
 
     public id: number;
@@ -250,7 +251,7 @@ export class Project {
     public startDate: Date;
     public endDate: Date;
     public locations: Canton[];
-    public focalPoint?: User;
+    public focalPoints: User[];
     public updateAllLocationsIndicators?: boolean;
 }
 
