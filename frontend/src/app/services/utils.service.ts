@@ -38,6 +38,23 @@ export class UtilsService {
     ) {
     }
 
+    /***
+     * Recorre un Json por cada valor y llave independiente de la profundidad de sus componentes
+     */
+    traverseJson(json: any, callback: (value: any, key?: string, parent?: any) => void, parent?: any, key?: string) {
+        if (Array.isArray(json)) {
+            for (let i = 0; i < json.length; i++) {
+            this.traverseJson(json[i], callback, json, i.toString());
+            }
+        } else if (json !== null && typeof json === 'object') {
+            for (const [currentKey, value] of Object.entries(json)) {
+            callback(value, currentKey, json);
+            this.traverseJson(value, callback, json, currentKey);
+            }
+        } else {
+            callback(json, key, parent);
+        }
+    }    
 
     exportTableAsExcel(selectedColumns: ColumnTable[], items: any[], filename: string) {
         // const Excel = require('exceljs');
@@ -651,6 +668,194 @@ export class UtilsService {
         option.order = value1.order;
         option.title = value1.groupName
         return option;
+    }
+
+    getDissagregationKey(dissagregation:string){
+        switch (dissagregation) {
+            case 'TIPO_POBLACION':
+                return 'populationType';
+            case 'EDAD':
+                return 'ageType';
+            case 'GENERO':
+                return 'genderType';
+            case 'LUGAR':
+                return 'location';
+            case 'PAIS_ORIGEN':
+                return 'countryOfOrigin';
+            case 'DIVERSIDAD':
+                return 'diversityType';
+            default:
+                return null;
+        }
+    }
+    getDissagregationlabelByKey(key:string){
+        switch (key) {
+            case 'populationType':
+                return 'Tipo de Población';
+            case 'ageType':
+                return 'Edad';
+            case 'genderType':
+                return 'Género';
+            case 'location':
+                return 'Lugar';
+            case 'countryOfOrigin':
+                return 'País de Origen';
+            case 'diversityType':
+                return 'Diversidad';
+            case 'value':
+                return 'Valor'
+            default:
+                return null;
+        }
+    }
+
+    //Data Month Report Values Import Validations
+
+    validateDataImportValues(dataFile:{}[],dissagregationCatalogue:any[]){
+        if(this.validateUniqueRowsInFile(dataFile).length>0){
+            return this.validateUniqueRowsInFile(dataFile) 
+        }else if(this.validateRowsValues(dataFile,dissagregationCatalogue).length>0){
+            return this.validateRowsValues(dataFile,dissagregationCatalogue)
+        }else{
+            return []
+        }
+
+    }
+
+    validateRowsValues(dataFile:{}[],dissagregationCatalogue:any[]){
+       const importErroMessage:string[]=[];
+         // Validar que ningun campo sea nulo y que cada dato corresponda a la columna correspondiente
+         dataFile.forEach((item, index) => { 
+            Object.keys(item).forEach(key => {
+                const keyLabel=this.getDissagregationlabelByKey(key)
+                // Validar que ninguna clave o valor sea null
+                if ( item[key] === null || item[key] === undefined) {
+                    importErroMessage.push(`Error en la fila ${index+2}: El valor de de la columna ${keyLabel} es nulo`)
+                    
+                    //Validar que el valor de la clave pertenezca a la desagregacion
+                }else if(key!=='value'){
+                    const isValidOption=this.validateDissagregationTypeOption(key,item[key],dissagregationCatalogue)
+                    if(isValidOption===false){
+                    importErroMessage.push(`Error en la fila ${index+2}: El valor de la columna ${keyLabel}: '${item[key]}', no pertenece a las opciones de desagregación`)
+                    }
+                }else{
+                    if(typeof item[key] !== 'number' || !Number.isInteger(item[key]) || item[key]<0){
+                        importErroMessage.push(`Error en la fila ${index+2}: El valor de de la columna ${keyLabel}: '${item[key]}', no es un número entero válido`)
+                    }
+                }  
+            });
+        });
+        
+        return importErroMessage
+
+    }
+
+    validateUniqueRowsInFile(dataFile:{}[]){
+        //validar que ningun objeto se repita
+        const importErroMessage:string[]=[];
+        const objetosVistos = new Set<string>();
+        const posicionesRepetidas: number[] = [];
+        for (let i = 0; i < dataFile.length; i++) {
+            const objeto = dataFile[i];
+            // Crear un nuevo objeto sin el campo 'value'
+            //@ts-ignore
+            const { value, ...objetoSinValue } = objeto;
+            const claveUnica = JSON.stringify(objetoSinValue);
+            console.log(claveUnica)
+
+            if (objetosVistos.has(claveUnica)) {
+                posicionesRepetidas.push(i+2); 
+            } else {
+                objetosVistos.add(claveUnica);
+            }
+        }
+        if (posicionesRepetidas.length === 1) {
+            const mensaje = `Error: Los valores de la fila: ${posicionesRepetidas.join(', ')} ya han sido reportados anteriormente en filas previas.`;
+            importErroMessage.push(mensaje);
+        }else if(posicionesRepetidas.length > 1){
+            const mensaje = `Error: Los valores de las filas: ${posicionesRepetidas.join(', ')} ya han sido reportados anteriormente en filas previas.`;
+            importErroMessage.push(mensaje);
+        }
+        return importErroMessage
+
+    }
+
+    validateDissagregationTypeOption(dissagregation:string,option:string,dissagregationCatalogue:any[]){
+        let isvalid:boolean=false;
+        if(dissagregation==='location'){
+         option=option.replace("-", " -- ");
+        }
+        dissagregationCatalogue.forEach(diss=>{
+            const key=Object.keys(diss)
+            const dissKey=this.getDissagregationKey(key[0])
+            if(dissKey===dissagregation){
+                diss[key[0]].options.forEach(opt=>{
+                    if(opt.name===option){
+                        isvalid=true
+                    }
+                })
+            }
+        })
+        return isvalid;
+
+        
+    }
+
+    validateCustomDataImportValues(dataFile:{}[],dissagregationCatalogue:any[]){
+        if(this.validateUniqueRowsInFile(dataFile).length>0){
+            return this.validateUniqueRowsInFile(dataFile) 
+        }else if(this.validateCustomRowsValues(dataFile,dissagregationCatalogue).length>0){
+            return this.validateCustomRowsValues(dataFile,dissagregationCatalogue)
+        }else{
+            return []
+        }
+
+    }
+
+    validateCustomRowsValues(dataFile:{}[],dissagregationCatalogue:any[]){
+        const importErroMessage:string[]=[];
+          // Validar que ningun campo sea nulo y que cada dato corresponda a la columna correspondiente
+          dataFile.forEach((item, index) => { 
+             Object.keys(item).forEach(key => {
+                 const keyLabel=key
+                 // Validar que ninguna clave o valor sea null
+                 if ( item[key] === null || item[key] === undefined) {
+                     importErroMessage.push(`Error en la fila ${index+2}: El valor de de la columna ${keyLabel} es nulo`)
+                     
+                     //Validar que el valor de la clave pertenezca a la desagregacion
+                 }else if(key!=='value'){
+                     const isValidOption=this.validateCustomDissagregationTypeOption(key,item[key],dissagregationCatalogue)
+                     if(isValidOption===false){
+                     importErroMessage.push(`Error en la fila ${index+2}: El valor de la columna ${keyLabel}: '${item[key]}', no pertenece a las opciones de desagregación`)
+                     }
+                 }else{
+                     if(typeof item[key] !== 'number' || !Number.isInteger(item[key]) || item[key]<0){
+                         importErroMessage.push(`Error en la fila ${index+2}: El valor de de la columna ${keyLabel}: '${item[key]}', no es un número entero válido`)
+                     }
+                 }  
+             });
+         });
+         
+         return importErroMessage
+ 
+     }
+
+
+
+    validateCustomDissagregationTypeOption(dissagregation:string,option:string,dissagregationCatalogue:any[]){
+        let isvalid:boolean=false;
+        dissagregationCatalogue.forEach(diss=>{
+            const key=Object.keys(diss)
+            const dissKey=key[0]
+            if(dissKey===dissagregation){
+                diss[key[0]].options.forEach(opt=>{
+                    if(opt.name===option){
+                        isvalid=true
+                    }
+                })
+            }
+        })
+        return isvalid;
     }
 }
 

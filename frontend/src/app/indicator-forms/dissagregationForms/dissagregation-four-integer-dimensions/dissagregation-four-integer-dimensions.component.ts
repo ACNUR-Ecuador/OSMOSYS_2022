@@ -1,11 +1,12 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {EnumsType} from '../../../shared/model/UtilsModel';
-import {EnumWeb, IndicatorValue, StandardDissagregationOption} from '../../../shared/model/OsmosysModel';
-import {UtilsService} from '../../../services/utils.service';
-import {EnumsService} from '../../../services/enums.service';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { EnumsType } from '../../../shared/model/UtilsModel';
+import { EnumWeb, IndicatorValue, StandardDissagregationOption } from '../../../shared/model/OsmosysModel';
+import { UtilsService } from '../../../services/utils.service';
+import { EnumsService } from '../../../services/enums.service';
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import * as XLSX from "xlsx";
-import {WorkBook} from "xlsx";
+import { WorkBook } from "xlsx";
+import { TemplateGeneratorService } from 'src/app/services/template-generator.service';
 
 @Component({
     selector: 'app-dissagregation-four-integer-dimensions',
@@ -23,6 +24,7 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
     values: IndicatorValue[];
     @Input()
     editable: boolean;
+    
 
     dissagregationGroupsL1Type: EnumWeb;
     dissagregationGroupsL2Type: EnumWeb;
@@ -38,31 +40,33 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
     valuesGroupRowsMap: Map<StandardDissagregationOption, Map<StandardDissagregationOption, IndicatorValue[][]>>;
     importForm: FormGroup;
     showImportDialog: boolean = false;
-    showImportButton: boolean = false;
     sheetOptions: string[];
     importErroMessage: string[];
-    showImportErroMessage: boolean;
-
+    showImportErrorLogs: boolean;
+    currentTimestamp: string;
+    
     // private workbook: XLSX.WorkBook;
 
 
     constructor(
         public utilsService: UtilsService,
         public enumsService: EnumsService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        public templateService: TemplateGeneratorService
     ) {
     }
 
     ngOnInit(): void {
         this.processDissagregationValues();
-        // todo 2024 importación de datos
-        this.showImportButton = false;//this.dissagregationType === DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO && this.implementationType === 'directImplementation';
+        //this.dissagregationType === DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO && this.implementationType === 'directImplementation';
         this.importForm = this.fb.group({
             fileName: new FormControl('', [Validators.required]),
             file: new FormControl(''),
             sheet: new FormControl('', [Validators.required]),
             workbook: new FormControl('', [Validators.required]),
         });
+
+
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -79,6 +83,7 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
         this.dissagregationGroupsL2Type = dissagregationsTypesRyCEnum[1];
         this.dissagregationRowsType = dissagregationsTypesRyCEnum[2];
         this.dissagregationColumnsType = dissagregationsTypesRyCEnum[3];
+
 
         // obtiene las opciones
         this.dissagregationOptionsGroupsL1 = this.utilsService.getOptionsFromValuesByDissagregationType(this.values, this.dissagregationGroupsL1Type);
@@ -111,7 +116,7 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
 
     }
 
-    getByL1AndL2Options(optionL1: StandardDissagregationOption,dissagregationGroupsL1Type: EnumWeb,  optionL2: StandardDissagregationOption, dissagregationGroupsL2Type: EnumWeb,values:IndicatorValue[]  ):IndicatorValue[]{
+    getByL1AndL2Options(optionL1: StandardDissagregationOption, dissagregationGroupsL1Type: EnumWeb, optionL2: StandardDissagregationOption, dissagregationGroupsL2Type: EnumWeb, values: IndicatorValue[]): IndicatorValue[] {
         return values.filter(value => {
 
             const valueOption1 = this.utilsService.getIndicatorValueByDissagregationType(dissagregationGroupsL1Type, value);
@@ -148,7 +153,6 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
         const file = event.files[0];
         this.importForm.get('fileName').setValue(file.name);
         this.importForm.get('fileName').markAsTouched();
-        console.log(file);
         const fileReader = new FileReader();
 
         fileReader.readAsArrayBuffer(file);
@@ -160,14 +164,12 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
             for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
             let bstr = arr.join("");
             let workbook: WorkBook;
-            workbook = XLSX.read(bstr, {type: "binary"});
+            workbook = XLSX.read(bstr, { type: "binary" });
             this.importForm.get('workbook').patchValue(workbook);
             this.sheetOptions = [];
             workbook.SheetNames.forEach(value => {
-                console.log(value);
                 this.sheetOptions.push(value);
             });
-            console.log(this.sheetOptions);
             this.importForm.get('sheet').patchValue(null);
             this.importForm.get('sheet').markAsTouched();
         };
@@ -177,69 +179,167 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
 
     showImportDialogF() {
         this.showImportDialog = true;
+        this.sheetOptions = [];
+        this.showImportErrorLogs = false;
     }
 
     importFile() {
+        this.showImportErrorLogs = false;
         let workbook = this.importForm.get('workbook').value as XLSX.WorkBook;
-        workbook.SheetNames.forEach(value => {
-            console.log(value);
-        });
         let spreedsheetname = this.importForm.get('sheet').value;
-        console.log(spreedsheetname);
         const ws: XLSX.WorkSheet = workbook.Sheets[spreedsheetname];
         const data = XLSX.utils.sheet_to_json(ws);
-
         this.importErroMessage = [];
-        this.showImportErroMessage = false;
+        this.showImportErrorLogs = false;
 
+        // Verificar que el arreglo no esté vacío
+        if (data.length === 0) {
+            this.importErroMessage.push('Error: El archivo se encuentra vacío')
+            this.showImportErrorLogs = true;
+            return
+        }
+        //creo el arrays de keys para la desagregacion especifica
+        const dissagregationKeys = this.dissagregationType.standardDissagregationTypes.map(value => {
+            return this.utilsService.getDissagregationKey(value)
+        })
 
-        console.log(data);
-        data.forEach(value => {
-            // const canton_codigo: string = value['canton_codigo'];
-            const tipo_poblacion: string = value['tipo_poblacion'];
-            const tipo_genero: string = value['tipo_genero'];
-            const tipo_edad: string = value['tipo_edad'];
-            const valor: number = value['valor'];
+        let dissagregationLabels = dissagregationKeys.map(key => {
+            return this.utilsService.getDissagregationlabelByKey(key);
+        })
+        dissagregationLabels = [
+            ...dissagregationLabels,
+            'Valor'
+        ]
 
-            // todo 2024
-            const indicatorValues = [];
-            /*const indicatorValues = valuesDissagregation.filter(value1 => {
-                return value1.location.code === canton_codigo
-                    && value1.populationType === tipo_poblacion
-                    && value1.genderType === tipo_genero
-                    && value1.ageType === tipo_edad
-            });*/
-            if (indicatorValues.length < 1) {
-
-                this.importErroMessage.push('Error en la fila con los siguientes datos ' +
-                    ' provincia: ' + value['provincia'] +
-                    ' canton: ' + value['canton'] +
-                    ' tipo de población: ' + tipo_poblacion +
-                    ' tipo de género: ' + tipo_genero +
-                    ' tipo de edad: ' + tipo_edad +
-                    ' tipo de valor: ' + valor
-                );
-                this.showImportErroMessage = true;
-            } else {
-                if (valor) {
-                    indicatorValues[0].value = valor;
-                } else {
-                    indicatorValues[0].value = 0;
-                }
+        //transformo la data en un array de desagregaciones
+        const indicatorValues = data.map(value => {
+            //@ts-ignore
+            const allExist = Object.keys(value).every(item => dissagregationLabels.includes(item))
+            if (!allExist) {
+                const allowedColumnsString = dissagregationLabels.join(', ');
+                this.importErroMessage.push('Error: Uno de los encabezados en el archivo importado se encuentra mal escrito o no corresponde al tipo de desagregación, los encabezados validos son: ' +
+                    allowedColumnsString)
+                return this.showImportErrorLogs = true
 
             }
+            const obj = {};
+            dissagregationKeys.forEach(key => {
+                let cellValue = value[this.utilsService.getDissagregationlabelByKey(key)];
+                if (cellValue !== undefined) {
+                    cellValue = cellValue.replace(/;/g, ',')
+                }
+                obj[key] = cellValue
+
+            });
+            obj['value'] = value['Valor'];
+            return obj;
+
         });
-        if (this.showImportErroMessage) {
-            console.log(this.importErroMessage);
-            console.log(this.importErroMessage.length);
-        } else {
-            this.showImportDialog = false;
+
+        if (this.importErroMessage.length > 0) {
+            this.showImportErrorLogs = true;
+            return
         }
+
+        //validar los valores en cada fila
+        const validationMessages = this.utilsService.validateDataImportValues(indicatorValues, this.createdisagregationCatalogue())
+        if (validationMessages.length > 0) {
+            this.importErroMessage = validationMessages
+            this.showImportErrorLogs = true;
+            return
+        }
+
+        //Asignar los valores del array de excel creado a los valores en la tabla
+        this.valuesGroupRowsMap.forEach(L1 => {
+            L1.forEach(L2 => {
+                L2.forEach(Row => {
+                    Row.forEach(Col => {
+                        // Para cada objeto en valuesRowsMap, buscamos coincidencias en indicatorValues
+                        indicatorValues.forEach(item => {
+                            // Extraigo el valor de cada objeto de IndicatorValues
+                            const value2 = item['value'];
+
+                            // creo un arreglo sin value para comparar los keys
+                            const comparisonValues = Object.keys(item).reduce((acc, key) => {
+                                if (key !== 'value') {
+                                    if (key === 'location') {
+                                        const [provincia, canton] = item['location'].split('-')
+                                        acc['provincia'] = provincia
+                                        acc['canton'] = canton
+
+                                    } else {
+                                        acc[key] = item[key];
+                                    }
+                                }
+                                return acc;
+                            }, {});
+
+                            // Comparo cada valor de las claves en comparisionValues con cada objeto de valuesRowsMap
+                            const isMatch = Object.keys(comparisonValues).every(key => {
+                                if (key === 'provincia') {
+                                    return comparisonValues[key] === Col.location['provincia'].description
+                                } else if (key === 'canton') {
+                                    return comparisonValues[key] === Col.location.name
+                                } else {
+                                    return comparisonValues[key] === Col[key].name
+                                }
+                            });
+                            if (isMatch) {
+                                Col.value = value2;
+                            }
+                        });
+                    });
+
+                });
+            });
+        });
+
+        this.showImportDialog = false;
+
     }
 
 
     cancelImportDialog() {
         this.showImportDialog = false;
         this.importForm.reset();
+    }
+
+
+    createdisagregationCatalogue() {
+        const dissagregationTypes = [
+            this.dissagregationGroupsL1Type,
+            this.dissagregationGroupsL2Type,
+            this.dissagregationRowsType,
+            this.dissagregationColumnsType,
+        ]
+        const dissagregationOptions = [
+            this.dissagregationOptionsGroupsL1,
+            this.dissagregationOptionsGroupsL2,
+            this.dissagregationOptionsRows,
+            this.dissagregationOptionsColumns,
+        ];
+
+        const dissagregationCatalogue = dissagregationTypes.map((diss, index) => ({
+            [diss.value]: {
+                label: diss.label,
+                options: dissagregationOptions[index]
+            },
+        }));
+        return dissagregationCatalogue
+    }
+    updateTimestamp() {
+        const now = new Date();
+        this.currentTimestamp = `Error al Importar - ${now.toLocaleString()}`;
+    }
+
+    onDialogShow() {
+        this.updateTimestamp(); 
+    }
+
+    generarExcel() {
+        console.log(this.createdisagregationCatalogue())
+        this.templateService.generateExcel(this.createdisagregationCatalogue())
+            .then(() => console.log('Archivo Excel generado exitosamente.'))
+            .catch(error => console.error('Error al generar el archivo:', error));
     }
 }
