@@ -4,6 +4,7 @@ import {
     CustomDissagregationAssignationToIndicator, CustomDissagregationOption,
     DissagregationAssignationToIndicator,
     Period, PeriodStatementAsignation,
+    PeriodTagAsignation,
     Statement
 } from '../shared/model/OsmosysModel';
 import {EnumsService} from './enums.service';
@@ -227,5 +228,34 @@ export class FilterUtilsService {
         }
         return result;
     }
+
+    periodTagAsignationsFilter(value: PeriodTagAsignation[], filter: Period[]): boolean {
+
+        if (filter === undefined || filter === null || filter.length === 0) {
+            return true;
+        }
+
+        if (value === undefined || value === null || value.length === 0) {
+            return false;
+        }
+        let result = false;
+
+        const periodsVal: Period[] = value
+            .map(value1 => {
+                return value1.period;
+            })
+            .filter(value1 => {
+                return value1.state === EnumsState.ACTIVE;
+            });
+        for (let periodFilter of filter) {
+            for (let periodVal of periodsVal) {
+                if (periodVal.id === periodFilter.id) {
+                    result = true;
+                }
+            }
+        }
+        return result;
+    }
+
 
 }

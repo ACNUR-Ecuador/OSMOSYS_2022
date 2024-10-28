@@ -22,6 +22,7 @@ import { PeriodsFromIndicatorPipe } from './pipes/periods-from-indicator.pipe';
 import { StatementPeriodStatementAsignationsListPipe } from './pipes/statement-period-statement-asignations-list.pipe';
 import { StandardDissagreationListPipe } from './pipes/standard-dissagreation-list.pipe';
 import { SafePipe } from './pipes/safe.pipe';
+import { TagPeriodTagAsignationsListPipe } from './pipes/tag-period-tag-asignations-list.pipe';
 
 
 
@@ -47,7 +48,8 @@ import { SafePipe } from './pipes/safe.pipe';
         StatementPeriodStatementAsignationsListPipe,
         OfficeOrganizationPipe,
         StandardDissagreationListPipe,
-        SafePipe
+        SafePipe,
+        TagPeriodTagAsignationsListPipe
     ],
     imports: [
         CommonModule
