@@ -4,6 +4,7 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.security.servicio.UserService;
+import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
@@ -17,10 +18,7 @@ import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -86,8 +84,9 @@ public class ProjectService {
         project.setStartDate(projectWeb.getStartDate());
         project.setEndDate(projectWeb.getEndDate());
         User focalPoint = null;
-        if (projectWeb.getFocalPoint() != null) {
-            focalPoint = this.userService.getById(projectWeb.getFocalPoint().getId());
+
+        if(!projectWeb.focalPoints.isEmpty()){
+            this.setFocalPointsInProject(project, new ArrayList<>(projectWeb.getFocalPoints()));
         }
 
         project.setFocalPoint(focalPoint);
@@ -126,12 +125,12 @@ public class ProjectService {
         project.setPeriod(this.modelWebTransformationService.periodWebToPeriod(projectWeb.getPeriod()));
         project.setState(projectWeb.getState());
         project.setName(projectWeb.getName());
-        User focalPoint = null;
-        if (projectWeb.getFocalPoint() != null) {
-            focalPoint = this.userService.getById(projectWeb.getFocalPoint().getId());
+        Set<FocalPointAssignation> focalPointAssignations = new HashSet<>();
+        if (projectWeb.getFocalPoints() != null && !projectWeb.getFocalPoints().isEmpty()) {
+//            Set<User> focalPoints  = projectWeb.getFocalPoints().stream().map(fpw-> this.userService.getById(fpw.getId())).collect(Collectors.toSet());
+//            focalPointAssignations = focalPoints.stream().map(user -> new FocalPointAssignation(user,project,false)).collect(Collectors.toSet());
         }
 
-        project.setFocalPoint(focalPoint);
         Boolean projectDatesChanged = Boolean.FALSE;
         if (!project.getStartDate().isEqual(projectWeb.getStartDate()) || !project.getEndDate().isEqual(projectWeb.getEndDate())) {
             projectDatesChanged = Boolean.TRUE;
@@ -142,7 +141,10 @@ public class ProjectService {
         if (projectDatesChanged) {
             this.indicatorExecutionService.updateIndicatorExecutionProjectDates(project, project.getStartDate(), project.getEndDate());
         }
-        // las localidades
+        // update focal points
+        this.updateProjectFocalPoints(projectWeb.focalPoints, project.getId());
+
+        // update localidades
         this.updateProjectLocations(projectWeb.getLocations(), project.getId());
 
         this.saveOrUpdate(project);
@@ -151,7 +153,7 @@ public class ProjectService {
     }
 
 
-    // todo 2024 remove
+        // todo 2024 remove
 /*    public void updateProjectLocations(Set<CantonWeb> cantonWebs, Project project, Boolean updateAllLocationsIndicators) throws GeneralAppException {
 
         LocationToActivateDesativate result = this.setLocationsInProject(project, List.copyOf(cantonWebs));
@@ -168,6 +170,45 @@ public class ProjectService {
         }
     }*/
 
+
+
+    public void updateProjectFocalPoints(Set<UserWeb> userWebs, Long projectId) throws GeneralAppException {
+        Project project = this.getById(projectId);
+        this.setFocalPointsInProject(project, List.copyOf(userWebs));
+    }
+
+    public void setFocalPointsInProject(Project project, List<UserWeb> userWebs) {
+        // ***********project focalPoints assigments
+        // busco los cantones a desactivar
+
+        project.getFocalPointAssignations().forEach(focalPointAssignation -> {
+                focalPointAssignation.setState(State.INACTIVO);
+        });
+
+        Set<FocalPointAssignation> focalPointAssignations = new HashSet<>();
+
+       // busco los focal points a activar o crear
+        userWebs.forEach(userWeb -> {
+            Optional<FocalPointAssignation> assignmentFound = project.getFocalPointAssignations()
+                    .stream()
+                    .filter(focalPointAssignation ->
+                            focalPointAssignation.getFocalPointer().getId()
+                                    .equals(userWeb.getId()))
+                    .findFirst();
+            if (assignmentFound.isPresent()) {
+                assignmentFound.get().setState(State.ACTIVO);
+            } else {
+                User user = (User) this.userService.getById(userWeb.getId());
+
+                FocalPointAssignation focalPointAssignation = new FocalPointAssignation(user,project,false);
+                focalPointAssignation.setState(State.ACTIVO);
+                focalPointAssignations.add(focalPointAssignation);
+            }
+        });
+
+        project.setFocalPointAssignations(focalPointAssignations);
+    }
+
     public void updateProjectLocations(Set<CantonWeb> cantonWebs, Long projectId) throws GeneralAppException {
         Project project = this.getById(projectId);
         // recupero el proyecto
@@ -176,7 +217,6 @@ public class ProjectService {
             this.indicatorExecutionService.updateIndicatorExecutionsLocations(indicatorExecution, locationsToActivateDesactive.locationsToActivate, locationsToActivateDesactive.locationsToDissable);
         }
     }
-
     public LocationToActivateDesativate setLocationsInProject(Project project, List<CantonWeb> cantonsWeb) {
         Set<Canton> locationsToActivate = new HashSet<>();
         Set<Canton> locationsToDissable = new HashSet<>();
@@ -242,125 +282,135 @@ public class ProjectService {
         }
     }
 
+    static class FocalPointsToActivateDesativate {
+        public final Set<User> focalPointsToActivate;
+        public final Set<User> focalPointsToDissable;
 
-    public List<ProjectWeb> getAll() {
-        return this.modelWebTransformationService.projectsToProjectsWeb(this.projectDao.findAll());
+        public FocalPointsToActivateDesativate(Set<User> focalPointsToActivate, Set<User> focalPointsToDissable) {
+            this.focalPointsToActivate = focalPointsToActivate;
+            this.focalPointsToDissable = focalPointsToDissable;
+        }
     }
 
 
-    public List<ProjectWeb> getByState(State state) {
-        return this.modelWebTransformationService.projectsToProjectsWeb(this.projectDao.getByState(state));
-    }
-
-
-    public void validate(ProjectWeb projectWeb) throws GeneralAppException {
-        if (projectWeb == null) {
-            throw new GeneralAppException("Proyecto es nulo", Response.Status.BAD_REQUEST);
+        public List<ProjectWeb> getAll() {
+            return this.modelWebTransformationService.projectsToProjectsWeb(this.projectDao.findAll());
         }
 
-        if (StringUtils.isBlank(projectWeb.getCode())) {
-            throw new GeneralAppException("Código no válido", Response.Status.BAD_REQUEST);
+
+        public List<ProjectWeb> getByState(State state) {
+            return this.modelWebTransformationService.projectsToProjectsWeb(this.projectDao.getByState(state));
         }
-        if (StringUtils.isBlank(projectWeb.getName())) {
-            throw new GeneralAppException("Descripción no válida", Response.Status.BAD_REQUEST);
+
+
+        public void validate(ProjectWeb projectWeb) throws GeneralAppException {
+            if (projectWeb == null) {
+                throw new GeneralAppException("Proyecto es nulo", Response.Status.BAD_REQUEST);
+            }
+
+            if (StringUtils.isBlank(projectWeb.getCode())) {
+                throw new GeneralAppException("Código no válido", Response.Status.BAD_REQUEST);
+            }
+            if (StringUtils.isBlank(projectWeb.getName())) {
+                throw new GeneralAppException("Descripción no válida", Response.Status.BAD_REQUEST);
+            }
+            if (CollectionUtils.isEmpty(projectWeb.getLocations())) {
+                throw new GeneralAppException("No tiene asignado sitios/cantones de trabajo", Response.Status.BAD_REQUEST);
+            }
+            if (projectWeb.getOrganization() == null) {
+                throw new GeneralAppException("No tiene asignado una organización", Response.Status.BAD_REQUEST);
+            }
+            if (projectWeb.getState() == null) {
+                throw new GeneralAppException("Estádo no válido", Response.Status.BAD_REQUEST);
+            }
+            if (projectWeb.getPeriod() == null) {
+                throw new GeneralAppException("Periodo no válido", Response.Status.BAD_REQUEST);
+            }
+            if (projectWeb.getStartDate() == null || projectWeb.getEndDate() == null) {
+                throw new GeneralAppException("Las fechas de inicio y fin del proyecto son datos obligatorios", Response.Status.BAD_REQUEST);
+            } else {
+                if (projectWeb.getEndDate().isBefore(projectWeb.getStartDate())) {
+                    throw new GeneralAppException("La fecha de fin del proyecto debe ser posterior a la fecha de inicio", Response.Status.BAD_REQUEST);
+                }
+            }
+
+            Project itemRecovered = this.projectDao.getByCode(projectWeb.getCode());
+            if (itemRecovered != null) {
+                if (projectWeb.getId() == null || !projectWeb.getId().equals(itemRecovered.getId())) {
+                    throw new GeneralAppException("Ya existe un proyecto con este código", Response.Status.BAD_REQUEST);
+                }
+            }
+
+            itemRecovered = this.projectDao.getByNameAndPeriodId(projectWeb.getName(), projectWeb.getPeriod().getId());
+            if (itemRecovered != null) {
+                if (projectWeb.getId() == null || !projectWeb.getId().equals(itemRecovered.getId())) {
+                    throw new GeneralAppException("Ya existe un proyecto con esta descripción corta", Response.Status.BAD_REQUEST);
+                }
+            }
+
         }
-        if (CollectionUtils.isEmpty(projectWeb.getLocations())) {
-            throw new GeneralAppException("No tiene asignado sitios/cantones de trabajo", Response.Status.BAD_REQUEST);
+
+
+        public List<ProjectResumeWeb> getProjectResumenWebByPeriodId(Long periodId) {
+            return this.projectDao.getProjectResumenWebByPeriodId(periodId);
         }
-        if (projectWeb.getOrganization() == null) {
-            throw new GeneralAppException("No tiene asignado una organización", Response.Status.BAD_REQUEST);
+
+        public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndOrganizationId(Long periodId, Long organizationId) {
+            return this.projectDao.getProjectResumenWebByPeriodIdAndOrganizationId(periodId, organizationId);
         }
-        if (projectWeb.getState() == null) {
-            throw new GeneralAppException("Estádo no válido", Response.Status.BAD_REQUEST);
+
+        public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndFocalPointId(Long periodId, Long focalPointId) {
+            return this.projectDao.getProjectResumenWebByPeriodIdAndFocalPointId(periodId, focalPointId);
         }
-        if (projectWeb.getPeriod() == null) {
-            throw new GeneralAppException("Periodo no válido", Response.Status.BAD_REQUEST);
+
+        public ProjectWeb getWebById(Long id) {
+            Project project = this.projectDao.findWithData(id);
+            return this.modelWebTransformationService.projectToProjectWeb(project);
         }
-        if (projectWeb.getStartDate() == null || projectWeb.getEndDate() == null) {
-            throw new GeneralAppException("Las fechas de inicio y fin del proyecto son datos obligatorios", Response.Status.BAD_REQUEST);
-        } else {
-            if (projectWeb.getEndDate().isBefore(projectWeb.getStartDate())) {
-                throw new GeneralAppException("La fecha de fin del proyecto debe ser posterior a la fecha de inicio", Response.Status.BAD_REQUEST);
+
+        public List<ProjectWeb> getWebByIds(List<Long> ids) {
+            return this.modelWebTransformationService.projectsToProjectsWeb(this.projectDao.getByIds(ids));
+        }
+
+        public List<Project> getByPeriodId(Long periodId) {
+            return this.projectDao.getByPeriodId(periodId);
+        }
+
+        public void createProjectGeneralStatements(Long periodId) throws GeneralAppException {
+            List<Project> projects = this.getByPeriodId(periodId);
+            for (Project project : projects) {
+                IndicatorExecution ieg = this.indicatorExecutionService.createGeneralIndicatorForProject(project);
+                this.indicatorExecutionService.saveOrUpdate(ieg);
             }
         }
 
-        Project itemRecovered = this.projectDao.getByCode(projectWeb.getCode());
-        if (itemRecovered != null) {
-            if (projectWeb.getId() == null || !projectWeb.getId().equals(itemRecovered.getId())) {
-                throw new GeneralAppException("Ya existe un proyecto con este código", Response.Status.BAD_REQUEST);
-            }
+        public List<Project> getByPeriodIdWithDataToUpdateGeneralIndicator(Long periodId) {
+            return this.projectDao.getByPeriodIdWithDataToUpdateGeneralIndicator(periodId);
         }
 
-        itemRecovered = this.projectDao.getByNameAndPeriodId(projectWeb.getName(), projectWeb.getPeriod().getId());
-        if (itemRecovered != null) {
-            if (projectWeb.getId() == null || !projectWeb.getId().equals(itemRecovered.getId())) {
-                throw new GeneralAppException("Ya existe un proyecto con esta descripción corta", Response.Status.BAD_REQUEST);
-            }
+        public List<QuarterStateWeb> getQuartersStateByProjectId(Long projectId) {
+            return this.projectDao.getQuartersStateByProjectId(projectId);
         }
 
-    }
+        public List<MonthStateWeb> getMonthsStateByProjectId(Long projectId) {
+            return this.projectDao.getMonthsStateByProjectId(projectId);
+        }
 
+        public List<QuarterStateWeb> blockQuarterStateByProjectId(Long projectId, QuarterStateWeb quarterStateWeb) {
+            this.quarterService.blockQuarterStateByProjectId(projectId, QuarterEnum.valueOf(quarterStateWeb.getQuarter()), quarterStateWeb.getYear(), quarterStateWeb.getBlockUpdate());
+            return this.getQuartersStateByProjectId(projectId);
+        }
 
-    public List<ProjectResumeWeb> getProjectResumenWebByPeriodId(Long periodId) {
-        return this.projectDao.getProjectResumenWebByPeriodId(periodId);
-    }
+        public void changeMonthStateByProjectId(Long projectId, MonthStateWeb monthStateWeb) {
+            // recupero todos los meses del proyecto
+            this.monthService.getActiveMonthsByProjectIdAndMonthAndYear(projectId, monthStateWeb.getMonth(), monthStateWeb.getYear(), monthStateWeb.getBlockUpdate());
+        }
 
-    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndOrganizationId(Long periodId, Long organizationId) {
-        return this.projectDao.getProjectResumenWebByPeriodIdAndOrganizationId(periodId, organizationId);
-    }
+        public Project getByCode(String code) throws GeneralAppException {
+            return this.projectDao.getByCode(code);
+        }
 
-    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndFocalPointId(Long periodId, Long focalPointId) {
-        return this.projectDao.getProjectResumenWebByPeriodIdAndFocalPointId(periodId, focalPointId);
-    }
-
-    public ProjectWeb getWebById(Long id) {
-        Project project = this.projectDao.findWithData(id);
-        return this.modelWebTransformationService.projectToProjectWeb(project);
-    }
-
-    public List<ProjectWeb> getWebByIds(List<Long> ids) {
-        return this.modelWebTransformationService.projectsToProjectsWeb(this.projectDao.getByIds(ids));
-    }
-
-    public List<Project> getByPeriodId(Long periodId) {
-        return this.projectDao.getByPeriodId(periodId);
-    }
-
-    public void createProjectGeneralStatements(Long periodId) throws GeneralAppException {
-        List<Project> projects = this.getByPeriodId(periodId);
-        for (Project project : projects) {
-            IndicatorExecution ieg = this.indicatorExecutionService.createGeneralIndicatorForProject(project);
-            this.indicatorExecutionService.saveOrUpdate(ieg);
+        public List<User> getFocalPointByPeriodId(Long periodId) {
+            return this.projectDao.getFocalPointByPeriodId(periodId);
         }
     }
-
-    public List<Project> getByPeriodIdWithDataToUpdateGeneralIndicator(Long periodId) {
-        return this.projectDao.getByPeriodIdWithDataToUpdateGeneralIndicator(periodId);
-    }
-
-    public List<QuarterStateWeb> getQuartersStateByProjectId(Long projectId) {
-        return this.projectDao.getQuartersStateByProjectId(projectId);
-    }
-
-    public List<MonthStateWeb> getMonthsStateByProjectId(Long projectId) {
-        return this.projectDao.getMonthsStateByProjectId(projectId);
-    }
-
-    public List<QuarterStateWeb> blockQuarterStateByProjectId(Long projectId, QuarterStateWeb quarterStateWeb) {
-        this.quarterService.blockQuarterStateByProjectId(projectId, QuarterEnum.valueOf(quarterStateWeb.getQuarter()), quarterStateWeb.getYear(), quarterStateWeb.getBlockUpdate());
-        return this.getQuartersStateByProjectId(projectId);
-    }
-
-    public void changeMonthStateByProjectId(Long projectId, MonthStateWeb monthStateWeb) {
-        // recupero todos los meses del proyecto
-        this.monthService.getActiveMonthsByProjectIdAndMonthAndYear(projectId, monthStateWeb.getMonth(), monthStateWeb.getYear(), monthStateWeb.getBlockUpdate());
-    }
-
-    public Project getByCode(String code) throws GeneralAppException {
-        return this.projectDao.getByCode(code);
-    }
-
-    public List<User> getFocalPointByPeriodId(Long periodId) {
-        return this.projectDao.getFocalPointByPeriodId(periodId);
-    }
-}
