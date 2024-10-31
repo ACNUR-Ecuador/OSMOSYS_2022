@@ -105,6 +105,12 @@ export class MenuService {
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
                         },
                         {
+                            label: 'Auditoria',
+                            icon: 'pi pi-fw pi-cog',
+                            routerLink: ['/administration/audits'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
+                        },
+                        {
                             label: 'Pilares',
                             icon: 'pi pi-fw pi-cog',
                             routerLink: ['/administration/pillars'],

@@ -19,7 +19,7 @@
                     <div class="p-fluid p-formgrid grid">
                         <div class="field col-12 md:col-4">
                             <!--suppress HtmlUnknownAttribute -->
-                            <label htmlFor="codeI">Código</label>
+                            <label htmlFor="codeI">Número de Acuerdo</label>
                             <input type="text" pInputText id="codeI"
                                    formControlName="code" autofocus/>
                             <small class="p-error"
@@ -27,7 +27,7 @@
 
                         </div>
                         <div class="field col-12 md:col-8">
-                            <label htmlFor="nameI">Tìtulo</label>
+                            <label htmlFor="nameI">Nombre del Acuerdo</label>
                             <input type="text" pInputText id="nameI"
                                    formControlName="name" autofocus/>
                             <small class="p-error"
@@ -46,7 +46,7 @@
 
                         </div>
                         <div class="field col-12 md:col-4">
-                            <label htmlFor="organizationI">Organización</label>
+                            <label htmlFor="organizationI">Socio</label>
 
                             <p-dropdown id="organizationI"
                                         formControlName="organization"
@@ -59,7 +59,7 @@
 
                         </div>
                         <div class="field col-12 md:col-4">
-                            <label htmlFor="periodI">Periodo</label>
+                            <label htmlFor="periodI">Año de Implementación</label>
 
                             <p-dropdown id="periodI"
                                         formControlName="period"
@@ -73,7 +73,7 @@
 
                         </div>
                         <div class="field col-12 md:col-4">
-                            <label htmlFor="startDateI">Fecha de Inicio del Proyecto</label>
+                            <label htmlFor="startDateI">Fecha de Inicio de Implementación</label>
                             <p-calendar id="startDateI"
                                         formControlName="startDate" dateFormat="dd/mm/yy"
                                         [showIcon]="true"
@@ -86,7 +86,7 @@
                                    *ngIf="utilsService.showErrorForm('startDate',formItem)">{{utilsService.getErrorMessageForm('startDate', formItem)}}</small>
                         </div>
                         <div class="field col-12 md:col-4">
-                            <label htmlFor="endDateI">Fecha de Fin del Proyecto</label>
+                            <label htmlFor="endDateI">Fecha de Fin de Implementación</label>
                             <p-calendar id="endDateI" formControlName="endDate" dateFormat="dd/mm/yy"
                                         [showIcon]="true"
                                         [monthNavigator]="true"

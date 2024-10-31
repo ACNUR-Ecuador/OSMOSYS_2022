@@ -41,7 +41,8 @@ export enum EnumsType {
     RoleType = 'RoleType',
     SourceType = 'SourceType',
     UnitType = 'UnitType',
-    TimeStateEnum = 'TimeStateEnum'
+    TimeStateEnum = 'TimeStateEnum',
+    AuditAction='AuditAction'
 }
 
 

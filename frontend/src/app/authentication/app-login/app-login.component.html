@@ -1,16 +1,18 @@
 <div class="flex h-screen">
-    <div class="w-full lg:w-4 h-full text-center px-6 py-6 flex flex-column justify-content-between">
-        <img [src]="'assets/layout/images/logo_osmosys_blue.png'" class="mt-4" alt="osmosys"/>
+    <div class="w-full lg:w-4 h-full text-center px-6 py-6 flex flex-column align-items-center">
+        
 
-        <div class="flex flex-column align-items-center gap-4">
-            <div class="mb-3">
-                <h2>Ingresa a tu cuenta</h2>
-                <p>¿Olvidaste tu contraseña? <a class="text-primary hover:underline cursor-pointer font-medium"
-                                                (click)="router.navigate(['/auth/recover_password'])">Haz clic
-                    aquí</a> para recuperarla.</p>
-            </div>
-            <form [formGroup]="loginForm" class="flex flex-column align-items-center gap-4" (ngSubmit)="login()">
-                <input pInputText id="username" placeholder="usuario" formControlName="username" class="w-20rem"/>
+        <img [src]=flagLoginFile class="mt-4 align-items-center" alt="osmosys" style="max-height: 10%;width: fit-content;"/>    
+        <h5 style="color: rgb(104, 104, 104); margin-top: 0.5rem;">El Salvador</h5>                
+        <img [src]="'assets/layout/images/logo_osmosys_blue.png'" class="mt-4 " alt="osmosys" style="width: 60%"/>
+
+        <div class="flex flex-column align-items-center gap-6">
+
+
+           
+            <form [formGroup]="loginForm" class="flex flex-column align-items-center gap-4" style="margin-top: 5rem; color: rgb(109, 109, 109);" (ngSubmit)="login()">
+                <h2>Ingresar</h2> 
+                <input pInputText id="username" placeholder="Usuario" formControlName="username" class="w-20rem"/>
                 <p-password id="password" placeholder="Contraseña" [feedback]="false" [toggleMask]="true" formControlName="password"
                             inputStyleClass="w-20rem"></p-password>
                 <button pButton label="Ingresar" class="w-20rem"></button>
@@ -18,13 +20,13 @@
             </form>
         </div>
 
-        <p class="text-color-secondary font-semibold">¿Necesitas ayuda? <a href="mailto:salazart@unhcr.org"
-                                                                           class="text-primary hover:underline cursor-pointer font-medium">Escríbenos</a>.
-        </p>
-        <div>
-            <img [src]=flagLoginFile class="mt-4 align-items-center" alt="osmosys"
-                 style="max-height: 10%;width: fit-content;"/>
-        </div>
+        <p class="text-color-secondary font-semibold">
+            <br>
+            ¿Necesitas ayuda? <a href="mailto:salazart@unhcr.org" class="text-primary hover:underline cursor-pointer font-medium">Escríbenos</a>.
+            <br>
+            ¿Olvidaste tu contraseña? <a class="text-primary hover:underline cursor-pointer font-medium"
+            (click)="router.navigate(['/auth/recover_password'])">Haz clic aquí</a> para recuperarla.</p>
+        
     </div>
     <div
         class="w-8 hidden lg:flex flex-column justify-content-between align-items-center px-6 py-6 bg-cover bg-norepeat"
@@ -35,4 +37,11 @@
 
         </div>-->
     </div>
+    <!--
+        <div>
+            <button pButton label="Exportar" class="w-20rem" (click)="export()"></button>
+        </div>
+    
+    -->
+
 </div>

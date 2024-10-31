@@ -1,9 +1,14 @@
 package org.unhcr.osmosys.services;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.AuditAction;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.CustomPrincipal;
+import com.sagatechs.generics.security.UserSecurityContext;
+import com.sagatechs.generics.security.dao.UserDao;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.security.servicio.UserService;
+import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
@@ -16,7 +21,10 @@ import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +57,15 @@ public class ProjectService {
     @Inject
     MonthService monthService;
 
+    @Context
+    private SecurityContext securityContext;
+
+    @Inject
+    UserDao userDao;
+
+    @Inject
+    AuditService auditService;
+
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(ProjectService.class);
 
@@ -74,6 +91,10 @@ public class ProjectService {
             throw new GeneralAppException("No se puede crear un project con id", Response.Status.BAD_REQUEST);
         }
         this.validate(projectWeb);
+
+        UserWeb principal = UserSecurityContext.getCurrentUser();
+
+        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
 
 
         Project project = new Project();
@@ -106,6 +127,9 @@ public class ProjectService {
             project.addIndicatorExecution(generalIndicatorIE);
         }
         this.saveOrUpdate(project);
+
+        // Registrar auditoría
+        auditService.logAction("Proyecto", project.getId(), AuditAction.INSERT,responsibleUser , null, project, State.ACTIVO);
         return project.getId();
     }
 
@@ -118,6 +142,11 @@ public class ProjectService {
         }
         this.validate(projectWeb);
         Project project = this.projectDao.find(projectWeb.getId());
+
+        Project oldProject = this.projectDao.find(projectWeb.getId()).deepCopy();
+        UserWeb principal = UserSecurityContext.getCurrentUser();
+        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
+
         if (project == null) {
             throw new GeneralAppException("No se puede encontrar el proyecto con id " + projectWeb.getId(), Response.Status.NOT_FOUND);
         }
@@ -145,7 +174,12 @@ public class ProjectService {
         // las localidades
         this.updateProjectLocations(projectWeb.getLocations(), project.getId());
 
+        // Registrar auditoría
+        auditService.logAction("Proyecto", project.getId(), AuditAction.UPDATE, responsibleUser, oldProject, project, State.ACTIVO);
+
         this.saveOrUpdate(project);
+
+
 
         return project.getId();
     }
@@ -362,5 +396,17 @@ public class ProjectService {
 
     public List<User> getFocalPointByPeriodId(Long periodId) {
         return this.projectDao.getFocalPointByPeriodId(periodId);
+    }
+
+    public User getCurrentUser(HttpServletRequest request) {
+        CustomPrincipal principal = (CustomPrincipal) request.getAttribute("userPrincipal");
+        if (principal != null) {
+            UserWeb userWeb = principal.getUser();
+            User responsibleUser = userWeb != null ? userDao.findByUserName(userWeb.getUsername()) : null;
+            return responsibleUser;
+        } else {
+            throw new IllegalStateException("No authenticated user found.");
+
+        }
     }
 }

@@ -3,6 +3,7 @@ package org.unhcr.osmosys.webServices.services;
 import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.dao.UserDao;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
@@ -45,6 +46,8 @@ public class ModelWebTransformationService {
 
     @Inject
     UtilsService utilsService;
+    @Inject
+    UserDao userDao;
 
     //<editor-fold desc="Areas">
     public List<AreaWeb> areasToAreasWeb(List<Area> areas) {
@@ -1443,8 +1446,61 @@ public class ModelWebTransformationService {
         return periodTagAsignationWebs;
     }
 
+    //</editor-fold>
+    //<editor-fold desc="Audit">}
+    public List<AuditWeb> auditsToAuditsWeb(List<Audit> audits) {
+        List<AuditWeb> r = new ArrayList<>();
+        for (Audit audit : audits) {
+            r.add(this.auditToAuditWeb(audit));
+        }
+        return r;
+    }
+
+    public AuditWeb auditToAuditWeb(Audit audit) {
+        if (audit == null) {
+            return null;
+        }
+        AuditWeb auditWeb = new AuditWeb();
+        auditWeb.setId(audit.getId());
+        auditWeb.setEntity(audit.getEntity());
+        auditWeb.setRecordId(audit.getRecordId());
+        auditWeb.setAction(audit.getAction());
+        auditWeb.setResponsibleUser(userToUserWebSimple(audit.getResponsibleUser(),true,true));
+        auditWeb.setChangeDate(audit.getChangeDate());
+        auditWeb.setOldData(audit.getOldData());
+        auditWeb.setNewData(audit.getNewData());
+        auditWeb.setState(audit.getState());
 
 
+        return auditWeb;
+    }
+
+    @SuppressWarnings("unused")
+    public List<Audit> auditsWebToAudits(List<AuditWeb> auditWebs) {
+        List<Audit> r = new ArrayList<>();
+        for (AuditWeb auditWeb : auditWebs) {
+            r.add(this.auditWebToAudit(auditWeb));
+        }
+        return r;
+    }
+
+    public Audit auditWebToAudit(AuditWeb auditWeb) {
+        if (auditWeb == null) {
+            return null;
+        }
+        Audit audit = new Audit();
+        audit.setId(auditWeb.getId());
+        audit.setEntity(auditWeb.getEntity());
+        audit.setRecordId(auditWeb.getRecordId());
+        audit.setAction(auditWeb.getAction());
+        audit.setResponsibleUser(userDao.find(auditWeb.getResponsibleUser().getId()));
+        audit.setChangeDate(auditWeb.getChangeDate());
+        audit.setOldData(auditWeb.getOldData());
+        audit.setNewData(auditWeb.getNewData());
+        audit.setState(auditWeb.getState());
+
+        return audit;
+    }
     //</editor-fold>
     /////////////////******** standar dissagregations*********///////////////////////////////
 

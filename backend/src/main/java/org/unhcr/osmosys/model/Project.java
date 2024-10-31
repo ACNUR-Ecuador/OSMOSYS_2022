@@ -193,6 +193,23 @@ public class Project extends BaseEntityIdState {
         this.focalPoint = focalPoint;
     }
 
+    public Project deepCopy() {
+        Project copy = new Project();
+        copy.setId(this.id);
+        copy.setOrganization(this.organization); // Si es una entidad compleja, considera también copiar
+        copy.setCode(this.code);
+        copy.setPeriod(this.period);
+        copy.setState(this.state);
+        copy.setName(this.name);
+        copy.setFocalPoint(this.focalPoint); // Igual que arriba, verifica si necesitas una copia
+        copy.setStartDate(this.startDate);
+        copy.setEndDate(this.endDate);
+        copy.setIndicatorExecutions(this.indicatorExecutions);
+        copy.setProjectLocationAssigments(this.projectLocationAssigments);
+
+        return copy;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
