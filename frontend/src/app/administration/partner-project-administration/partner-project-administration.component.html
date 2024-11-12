@@ -96,21 +96,28 @@
                                    *ngIf="utilsService.showErrorForm('endDate',formItem)">{{utilsService.getErrorMessageForm('endDate', formItem)}}</small>
                         </div>
                         <div class="field col-12 md:col-4">
-                            <label htmlFor="focalPointI">Punto focal</label>
-                            <p-dropdown id="focalPointI" formControlName="focalPoint" [options]="focalPoints"
-                                        placeholder="Selecciona..." [showClear]="true"
-                                        [filter]="true" filterBy="name"
-                                        appendTo="body"
-                            >
-                                <ng-template pTemplate="item" let-item>
-                                    {{item.name + ' ' + item.organization.acronym}}
-                                </ng-template>
-                                <ng-template pTemplate="selectedItem" let-item>
-                                    {{item.name + ' ' + item.organization.acronym}}
-                                </ng-template>
-                            </p-dropdown>
-                            <small class="p-error"
-                                   *ngIf="utilsService.showErrorForm('endDate',formItem)">{{utilsService.getErrorMessageForm('endDate', formItem)}}</small>
+                            <label for="periodsI">Puntos focales</label>
+                            <p-multiSelect id="periodsI"
+                                    [options]="focalPoints"
+                                    appendTo="body"
+                                    formControlName="focalPoints"
+                                    [dataKey]="'id'"
+                                    placeholder="Selecciona..."
+                                    [showClear]="true"
+                                    optionLabel="name"
+                        >
+                        <ng-template pTemplate="item" let-item>
+                            {{item.name + ' ' + item.organization.acronym}}
+                        </ng-template>
+                        <ng-template pTemplate="selectedItem" let-item>
+                            {{item.name + ' ' + item.organization.acronym}}
+                        </ng-template>
+
+                        </p-multiSelect>
+
+                
+                        <small class="p-error"
+                                *ngIf="utilsService.showErrorForm('endDate',formItem)">{{utilsService.getErrorMessageForm('endDate', formItem)}}</small>
                         </div>
                         <div class="field col-12 md:col-12">
                             <p-panel [toggleable]="true">

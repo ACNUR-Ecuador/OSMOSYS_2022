@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.reports.service;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -961,7 +962,7 @@ public class ReportDataService {
                     iew.getIndicator().getDescription(),
                     iew.getIndicator().getCategory(),
                     lateMonths,
-                    iew.getProject().getFocalPoint().getName()
+                    iew.getProject().getFocalPoints().stream().map(UserWeb::getName).collect(Collectors.joining())
             );
         } else {
             return new LaterReportDTO(

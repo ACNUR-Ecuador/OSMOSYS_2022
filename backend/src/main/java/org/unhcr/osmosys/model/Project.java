@@ -1,6 +1,5 @@
 package org.unhcr.osmosys.model;
 
-import com.sagatechs.generics.persistence.model.BaseEntity;
 import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
@@ -76,6 +75,9 @@ public class Project extends BaseEntityIdState {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "focal_point_id", foreignKey = @ForeignKey(name = "fk_project_focal_point"))
     private User focalPoint;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL)
+    private Set<FocalPointAssignation> focalPointAssignations = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "period_id", foreignKey = @ForeignKey(name = "fk_project_period"))
@@ -208,6 +210,12 @@ public class Project extends BaseEntityIdState {
         copy.setProjectLocationAssigments(this.projectLocationAssigments);
 
         return copy;
+    public Set<FocalPointAssignation> getFocalPointAssignations() {
+        return focalPointAssignations;
+    }
+
+    public void setFocalPointAssignations(Set<FocalPointAssignation> focalPointAssignations) {
+        this.focalPointAssignations = focalPointAssignations;
     }
 
     @Override

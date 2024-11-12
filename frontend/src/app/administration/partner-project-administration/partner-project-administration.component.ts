@@ -195,7 +195,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                         startDate,
                         endDate,
                         locations,
-                        focalPoint
+                        focalPoints
                     } = value;
                     this.utilsService.sortCantones(locations);
                     const originalLocations = [];
@@ -210,7 +210,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                         startDate,
                         endDate,
                         locations,
-                        focalPoint,
+                        focalPoints,
                         originalLocations,
                         updateAllLocationsIndicators: false
                     });
@@ -425,7 +425,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             period: new FormControl('', Validators.required),
             startDate: new FormControl('', Validators.required),
             endDate: new FormControl('', Validators.required),
-            focalPoint: new FormControl('', Validators.required),
+            focalPoints: new FormControl('', Validators.required),
             locations: new FormControl(''),
             originalLocations: new FormControl(''),
             updateAllLocationsIndicators: new FormControl('')
@@ -471,7 +471,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             startDate,
             endDate,
             locations,
-            focalPoint,
+            focalPoints,
             updateAllLocationsIndicators
         } = this.formItem.value;
         const project: Project = {
@@ -483,7 +483,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             period,
             startDate,
             endDate,
-            focalPoint,
+            focalPoints: [],
             locations: [],
             updateAllLocationsIndicators
         };
@@ -495,10 +495,22 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             return;
         }
 
+        if (!focalPoints || focalPoints.length < 1) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Agrega al menos un punto focal'
+            });
+            return;
+        }
+
         project.locations = (locations as any[]).map(value1 => {
             delete value1.provinciaDescription;
             delete value1.enabled;
             return value1 as Canton;
+        });
+
+        project.focalPoints = (focalPoints as any[]).map(value1 => {
+            return value1 as User;
         });
 
         if (project.id) {
