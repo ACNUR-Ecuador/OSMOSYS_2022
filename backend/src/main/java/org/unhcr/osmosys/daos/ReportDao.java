@@ -2,15 +2,24 @@ package org.unhcr.osmosys.daos;
 
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.IndicatorExecution;
+import org.unhcr.osmosys.model.Office;
+import org.unhcr.osmosys.model.Period;
+import org.unhcr.osmosys.model.Tags;
+import org.unhcr.osmosys.model.cubeDTOs.OfficeDTO;
 import org.unhcr.osmosys.model.enums.IndicatorType;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedDTO;
+import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionTagDTO;
 import org.unhcr.osmosys.model.reportDTOs.LaterReportDTO;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 @Stateless
@@ -98,6 +107,25 @@ public class ReportDao {
         sql += ReportDao.detailedIndicatorExecutionsOrder;
         Query q = this.entityManager.createNativeQuery(sql, "IndicatorExecutionDetailedMapping");
         q.setParameter("periodId", periodId);
+        return q.getResultList();
+    }
+
+    public List<IndicatorExecutionTagDTO> getTagReport(Tags tag, Period period) {
+
+        String jpql = "SELECT i.performance_indicator_id, i.indicator, i.period_id , i.quarter, i.month, i.month_order,  sum(i.value) as value  " +
+                "FROM osmosys.ie_detailed i " +
+                "WHERE i.project_id IS NOT NULL " +
+                "AND i.performance_indicator_id IS NOT NULL " +
+                "AND i.period_id = :periodId " +
+                "AND i.value > 0 " +
+                "AND i.performance_indicator_id IN :indicatorIds " +
+                "GROUP BY i.performance_indicator_id, i.indicator, i.period_id, i.quarter, i.month, i.month_order " +
+                "ORDER BY i.month_order";
+
+        Query q = this.entityManager.createNativeQuery(jpql, "IndicatorExecutionTagDTOMapping");
+        List<Long> streams = tag.getIndicatorTagAssignations().stream().filter(ie -> ie.getState().equals(State.ACTIVO)).map(ia -> ia.getIndicator().getId()).collect(Collectors.toList());
+        q.setParameter("periodId", period.getId());
+        q.setParameter("indicatorIds", streams);
         return q.getResultList();
     }
 

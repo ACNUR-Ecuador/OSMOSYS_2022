@@ -3,40 +3,33 @@
         <p-toast></p-toast>
         <div class="card px-6 py-6">
             <div class="card">
-                <h3 class="page-title">Administración de Pilares</h3>
-                <p-toolbar styleClass="mb-4">
-                    <ng-template pTemplate="left">
-                        <button pButton pRipple label="Crear" icon="pi pi-plus" class="p-button-success mr-2 mb-2"
-                                (click)="createItem()"></button>
-                    </ng-template>
-
-                    <ng-template pTemplate="right">
-                        <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel(dt)"
-                                class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
-                    </ng-template>
-                </p-toolbar>
+               
 
                 <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true"
-                         [rowHover]="true" dataKey="id"
+                         [rowHover]="true" dataKey="id" styleClass="p-datatable-striped" 
                          styleClass="p-datatable-customers"
                          currentPageReportTemplate=" {first} a {last} de {totalRecords} "
                          [showCurrentPageReport]="true">
                     <ng-template pTemplate="caption">
-                        <div class="flex card-container overflow-hidden">
+                        <div class="grid">
                             <div
-                                class="flex-none flex align-items-center justify-content-center m-2 px-5  border-round">
-                                <h5 class="m-0">Pilares</h5>
+                                class="col-12 md:col-4 sm:col-12 justify-content-start">
+                                <h3 class="m-0">Administración de Pilares</h3>
                             </div>
                             <div
-                                class="flex-grow-1 flex align-items-center justify-content-center px-5  border-round"></div>
-                            <div
-                                class="flex-none flex align-items-center justify-content-center px-5  border-round">
+                                
+                                class="col-12 md:col sm:col-12 flex justify-content-end">
 
                                 <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
-                                               selectedItemsLabel="{0} columnas seleccionadas"
-                                               [style]="{minWidth: '200px',color:'#6c757d'}"
-                                               placeholder="Seleccione las columnas"
-                                               appendTo="body"></p-multiSelect>
+                                            selectedItemsLabel="{0} columnas seleccionadas"
+                                            [style]="{minWidth: '200px',color:'#6c757d'}"
+                                            placeholder="Seleccione las columnas"
+                                            appendTo="body"></p-multiSelect>
+                                <button pButton pRipple label="Crear" icon="pi pi-plus" class="main-button mr-2 mb-2"
+                                (click)="createItem()" style="margin-left: 2rem;" pTooltip="Crear un Área" tooltipPosition="bottom"></button>
+
+                                <button pButton pRipple label="Exportar" icon="pi pi-file-excel" class="second-button mr-2 mb-2"
+                                (click)="exportExcel(dt)" style="margin-left: 1rem;" pTooltip="Exportar a Excel" tooltipPosition="bottom"></button>
                             </div>
                         </div>
                     </ng-template>
@@ -86,7 +79,7 @@
                             </td>
                             <td>
                                 <button pButton pRipple icon="pi pi-pencil"
-                                        class="p-button-rounded p-button-success mr-2"
+                                        class="p-button-rounded p-button-info mr-2"
                                         (click)="editItem(rowData)"></button>
 
                             </td>

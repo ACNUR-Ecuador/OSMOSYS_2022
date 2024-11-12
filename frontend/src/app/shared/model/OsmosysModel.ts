@@ -68,9 +68,8 @@ export class Period {
     public periodPopulationTypeDissagregationOptions?: StandardDissagregationOption[];
     public periodDiversityDissagregationOptions?: StandardDissagregationOption[];
     public periodCountryOfOriginDissagregationOptions?: StandardDissagregationOption[];
-
-
 }
+
 
 export class Pillar {
     constructor() {
@@ -580,8 +579,10 @@ export class Tag {
     public id: number;
     public state: string;
     public name: string;
+    public operation: string;
     public description: string;
     public periodTagAsignations: PeriodTagAsignation[];
+    public indicatorTagAsignations: IndicatorTagAsignation[];
 }
 
 export class PeriodTagAsignation {
@@ -592,5 +593,17 @@ export class PeriodTagAsignation {
     public id: string;
     public state: string;
     public period: Period;
+}
+
+
+export class IndicatorTagAsignation {
+    constructor() {
+        this.state = 'ACTIVO';
+    }
+
+    public id: string;
+    public state: string;
+    public period: Period;
+    public indicator: Indicator;
 }
 

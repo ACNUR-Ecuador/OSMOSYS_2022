@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.reports.service;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,10 +19,12 @@ import org.apache.poi.xssf.usermodel.*;
 import org.jboss.logging.Logger;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTAutoFilter;
 import org.unhcr.osmosys.daos.ReportDao;
-import org.unhcr.osmosys.model.IndicatorExecution;
+import org.unhcr.osmosys.model.*;
+import org.unhcr.osmosys.model.cubeDTOs.OfficeDTO;
 import org.unhcr.osmosys.model.enums.Frecuency;
 import org.unhcr.osmosys.model.enums.TimeStateEnum;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedDTO;
+import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionTagDTO;
 import org.unhcr.osmosys.model.reportDTOs.LaterReportDTO;
 import org.unhcr.osmosys.reports.model.IndicatorReportProgramsDTO;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
@@ -32,6 +35,8 @@ import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -171,6 +176,121 @@ public class ReportDataService {
         return getReportFromIndicatorExecutionDetailedDTO(resultData, columnsToRemove);
     }
 
+    private SXSSFWorkbook getReportFromIndicatorExecutionTagdDTO(List<IndicatorExecutionTagDTO> resultData, Tags tag, Period period) {
+        List<Integer> titlesWidth = Arrays.asList(3000,3000,5000,3000,3000,3000,3000);
+
+        List<Indicator> tagIndicators = tag.getIndicatorTagAssignations().stream().filter(ie -> ie.getState().equals(State.ACTIVO)).map(IndicatorTagAssignation::getIndicator).collect(Collectors.toList());
+
+        List<String> indicators = tagIndicators.stream().map(Indicator::getCode).collect(Collectors.toList());
+        List<String> titles = new ArrayList<>(Arrays.asList("Periodo", "Trimestre", "Mes"));
+        titles.addAll(indicators);
+        if(!tag.getOperation().isEmpty())
+            titles.add(tag.getOperation());
+
+        List<List<String>> indicatorsList = new ArrayList<>();
+        indicators.forEach(indicator -> {
+            List<String> ind = new ArrayList<>();
+            ind.add(indicator);
+            for (int i = 1; i <= 12; i++) {
+                int finalI = i;
+                Optional<IndicatorExecutionTagDTO> first = resultData.stream().filter(r -> r.getMonthOrder() == finalI && r.getIndicator().startsWith(indicator)).findFirst();
+                if (first.isPresent()) {
+                    String value = first.get().getTotalValue().toString();
+                    System.out.println (i + " - " + indicator + " - " + value);
+                    ind.add(value);
+                }
+                else {
+                    ind.add("0");
+                }
+            }
+            //resultData.stream().filter(r -> r.getMonthOrder() == finalI && r.getIndicator().startsWith(indicator));
+            indicatorsList.add(ind);
+        });
+        SXSSFWorkbook wb = new SXSSFWorkbook();
+        SXSSFSheet sheet = wb.createSheet();
+        // Set which area the table should be placed in
+        int NB_ROWS = resultData.size();
+        int NB_COLS = titles.size() - 1;
+        AreaReference reference = wb.getCreationHelper()
+                .createAreaReference(
+                        new CellReference(0, 0),
+                        new CellReference(NB_ROWS, NB_COLS));
+        // title rows
+        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
+        // Create
+        DataFormat format = wb.createDataFormat();
+        CellStyle cellStylePercentage;
+        cellStylePercentage = wb.createCellStyle();
+        cellStylePercentage.setDataFormat(format.getFormat("0%"));
+        // Set the values for the table
+
+        Row rowTitle = sheet.createRow(0);
+        for (int i = 0; i < titles.size(); i++) {
+            Cell cell = rowTitle.createCell(i);
+            cell.setCellValue(titles.get(i));
+//            if(titlesWidth.size() < titles.size())
+//                sheet.setColumnWidth(i, titlesWidth.get(i));
+//            else
+                sheet.setColumnWidth(i, 3000);
+        }
+
+        long lStartTime2 = System.nanoTime();
+        for (int i = 1; i <= 12; i++) {
+            SXSSFRow rowData = sheet.createRow(i);
+            String mesEnEspanol = Month.of(i).getDisplayName(TextStyle.FULL, new Locale("es", "ES"));
+
+            //Títulos de los indicadores
+            for (int j = 0; j < indicatorsList.size(); j++) {
+                List<String> indReport = indicatorsList.get(j);
+                if(!indReport.get(0).isEmpty()) {
+                    Cell cell = rowData.createCell(3 +j);
+                    cell.setCellValue(indReport.get(i));
+                }
+            }
+            //Totales
+            switch (tag.getOperation()) {
+                case "Suma":
+                    Cell cell = rowData.createCell(3 + indicatorsList.size());
+                    cell.setCellValue("Suma" + i);
+                    break;
+                case "max":
+                    Cell cell1 = rowData.createCell(3 + indicatorsList.size());
+                    cell1.setCellValue("max" + i);
+                    break;
+                case "min":
+                    Cell cell2 = rowData.createCell(3 + indicatorsList.size());
+                    cell2.setCellValue("min" + i);
+                    break;
+                case "promedio":
+                    Cell cell3 = rowData.createCell(3 + indicatorsList.size());
+                    cell3.setCellValue("promedio" + i);
+                    break;
+                default:
+                    break;
+            }
+
+            //Filas de periodos, trimestre, mes
+            for (int j = 0; j <= titles.size(); j++) {
+                if(j == 0){
+                    Cell cell = rowData.createCell(j);
+                    cell.setCellValue(period.getYear());
+
+                }
+                if(j == 1){
+                    Cell cell = rowData.createCell(j);
+                    cell.setCellValue(i);
+                }
+                if(j == 2){
+                    Cell cell = rowData.createCell(j);
+                    cell.setCellValue(mesEnEspanol);
+                }
+            }
+        }
+        long lEndTime2 = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds(excel construction): " + (lEndTime2 - lStartTime2) / 1000000000);
+        return wb;
+    }
+
     private SXSSFWorkbook getReportFromIndicatorExecutionDetailedDTO(List<IndicatorExecutionDetailedDTO> resultData, List<Integer> columnsToRemove) {
         List<Integer> titlesWidth = this.getTitlesWidthIndicatorExecutionDetailedDTO(columnsToRemove);
 
@@ -283,6 +403,14 @@ public class ReportDataService {
 
         return getReportFromIndicatorExecutionDetailedDTO(resultData, columnsToRemove);
 
+    }
+
+    public SXSSFWorkbook getTagReport(Tags tag, Period period) {
+        long lStartTime = System.nanoTime();
+        List<IndicatorExecutionTagDTO> resultData = this.reportDao.getTagReport(tag, period);
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds:(query))" + (lEndTime - lStartTime) / 1000000000);
+        return getReportFromIndicatorExecutionTagdDTO(resultData, tag, period);
     }
 
     public SXSSFWorkbook getPartnerDetailedByProjectId(Long projectId) {

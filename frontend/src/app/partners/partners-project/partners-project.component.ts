@@ -79,6 +79,10 @@ export class PartnersProjectComponent implements OnInit {
 
     }
 
+    getFocalPointsNames(project: Project): String {
+        return project.focalPoints.map(user => user.name).join(', ');
+    }
+
     ngOnInit(): void {
         this.loadProject(this.idProjectParam);
         this.generateItemsReportType();
@@ -174,7 +178,7 @@ export class PartnersProjectComponent implements OnInit {
         }
         const ref = this.dialogService.open(PerformanceIndicatorFormComponent, {
                 header: 'Indicador: ' + title + this.getRoleTitle(),
-                width: '90%',
+                width: '100%',
                 height: '90%',
                 closeOnEscape: false,
                 autoZIndex: false,

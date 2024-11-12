@@ -97,7 +97,7 @@ export class IndicatorsListComponent implements OnInit {
         this.cols = [
             {field: 'id', header: 'id', type: ColumnDataType.numeric},
             {field: 'reportingOffice', header: 'Oficina', type: ColumnDataType.text, pipeRef: this.officeOrganizationPipe},
-            {field: 'indicator.statement', header: 'Declaración de Producto', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
+            {field: 'indicator.statement', header: 'Enunciado de Producto', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
             {field: 'indicator', header: 'Indicador', type: ColumnDataType.text, pipeRef: this.indicatorPipe},
             {field: 'activityDescription', header: 'Descripción de la actividad', type: ColumnDataType.text},
             {field: 'indicator.frecuency', header: 'Frecuencia de Reporte', type: ColumnDataType.text},

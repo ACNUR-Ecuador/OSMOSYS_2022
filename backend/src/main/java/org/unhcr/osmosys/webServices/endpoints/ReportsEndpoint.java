@@ -591,6 +591,26 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
+    @Path("/tagReport/{tagId}/{periodId}")
+    @GET
+    @Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getTagReport(
+            @Context SecurityContext securityContext,
+            @PathParam("tagId") Long tagId,
+            @PathParam("periodId") Long periodId
+    ) throws GeneralAppException {
+        Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getTagReport:" + principal.getName());
+        long lStartTime = System.nanoTime();
+        ByteArrayOutputStream r = this.reportService.getTagReport(tagId, periodId);
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
+        String filename = "tag-" + tagId + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+    }
+
+
     @Path("/getAllIndicatorExecutionDetailedByPeriodIdAndOfficeIdAndOfficeId/{projectId}/{officeId}")
     @GET
     @Secured

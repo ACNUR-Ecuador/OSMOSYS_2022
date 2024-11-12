@@ -26,8 +26,14 @@ public class Tags extends BaseEntityIdState {
     @Column(name = "description", columnDefinition = "text", unique = true)
     private String description;
 
+    @Column(name = "operation", columnDefinition = "text")
+    private String operation;
+
     @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<PeriodTagAssignation> periodTagAssignations = new HashSet<>();
+
+    @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<IndicatorTagAssignation> indicatorTagAssignations = new HashSet<>();
 
     public void setId(Long id) {
         this.id = id;
@@ -35,6 +41,14 @@ public class Tags extends BaseEntityIdState {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
     }
 
     public String getName() {
@@ -77,6 +91,22 @@ public class Tags extends BaseEntityIdState {
             this.periodTagAssignations.remove(periodTagAssignation);
             this.periodTagAssignations.add(periodTagAssignation);
         }
+    }
+
+    public void addIndicatorTagAssignation(IndicatorTagAssignation indicatorTagAssignation) {
+        indicatorTagAssignation.setTag(this);
+        if (!this.indicatorTagAssignations.add(indicatorTagAssignation)) {
+            this.indicatorTagAssignations.remove(indicatorTagAssignation);
+            this.indicatorTagAssignations.add(indicatorTagAssignation);
+        }
+    }
+
+    public Set<IndicatorTagAssignation> getIndicatorTagAssignations() {
+        return indicatorTagAssignations;
+    }
+
+    public void setIndicatorTagAssignations(Set<IndicatorTagAssignation> indicatorTagAssignations) {
+        this.indicatorTagAssignations = indicatorTagAssignations;
     }
 
     @Override

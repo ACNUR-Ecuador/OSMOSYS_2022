@@ -79,7 +79,7 @@ export class UserAdministrationComponent implements OnInit {
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
             {field: 'name', header: 'Nombre', type: ColumnDataType.text},
-            {field: 'username', header: 'Nombre de usuario', type: ColumnDataType.text},
+            {field: 'username', header: 'Username', type: ColumnDataType.text},
             {field: 'email', header: 'Correo', type: ColumnDataType.text},
             {
                 field: 'organization',

@@ -126,12 +126,12 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
             {field: 'id', header: 'id', type: ColumnDataType.numeric},
             {field: 'code', header: 'Código', type: ColumnDataType.text},
             {field: 'name', header: 'Nombre', type: ColumnDataType.text},
-            {field: 'state', header: 'Estado', type: ColumnDataType.text},
-            {field: 'organizationId', header: 'Id Organización', type: ColumnDataType.numeric},
+            // {field: 'organizationId', header: 'Id Organización', type: ColumnDataType.numeric},
             {field: 'organizationDescription', header: 'Organización', type: ColumnDataType.text},
             {field: 'organizationAcronym', header: 'Organización Acr.', type: ColumnDataType.text},
-            {field: 'periodId', header: 'Id Periodo', type: ColumnDataType.numeric},
-            {field: 'periodYear', header: 'Periodo', type: ColumnDataType.numeric},
+            // {field: 'periodYear', header: 'Periodo', type: ColumnDataType.numeric},
+            {field: 'state', header: 'Estado', type: ColumnDataType.text},
+
         ];
 
         const hiddenColumns: string[] = ['id', 'organizationId', 'periodId'];

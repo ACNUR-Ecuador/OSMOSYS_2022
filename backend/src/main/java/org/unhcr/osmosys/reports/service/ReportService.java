@@ -13,7 +13,11 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jboss.logging.Logger;
+import org.unhcr.osmosys.model.Period;
+import org.unhcr.osmosys.model.Tags;
 import org.unhcr.osmosys.reports.model.IndicatorReportProgramsDTO;
+import org.unhcr.osmosys.services.PeriodService;
+import org.unhcr.osmosys.services.TagsService;
 import org.unhcr.osmosys.services.UtilsService;
 
 import javax.ejb.Stateless;
@@ -41,6 +45,12 @@ public class ReportService {
 
     @Inject
     ReportDataService reportDataService;
+
+    @Inject
+    TagsService tagsService;
+
+    @Inject
+    PeriodService periodService;
 
     @Inject
     UtilsService utilsService;
@@ -381,6 +391,16 @@ public class ReportService {
 
     public ByteArrayOutputStream getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(Long periodId) throws GeneralAppException {
         SXSSFWorkbook workbook = this.reportDataService.getDirectImplementationPerformanceIndicatorsDetailedByPeriodId(periodId);
+
+        return getByteArrayOutputStreamFromWorkbook(workbook);
+    }
+
+    public ByteArrayOutputStream getTagReport(Long tagId, Long periodId) throws GeneralAppException {
+
+        Tags tags = tagsService.getById(tagId);
+        Period period = periodService.find(periodId);
+        if(tags == null) return null;
+        SXSSFWorkbook workbook = this.reportDataService.getTagReport(tags, period);
 
         return getByteArrayOutputStreamFromWorkbook(workbook);
     }

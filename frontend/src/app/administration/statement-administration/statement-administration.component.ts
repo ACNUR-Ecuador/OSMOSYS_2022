@@ -81,29 +81,23 @@ export class StatementAdministrationComponent implements OnInit {
                 pipeRef: this.enumValuesToLabelPipe,
                 arg1: EnumsType.AreaType
             },
-            //{field: 'productCode', header: 'Código de Producto', type: ColumnDataType.text},
             {field: 'description', header: 'Descripción', type: ColumnDataType.text},
-            {field: 'state', header: 'Estado', type: ColumnDataType.text},
             {
                 field: 'parentStatement',
-                header: 'Declaración Padre',
+                header: 'Enunciado Padre',
                 type: ColumnDataType.text,
                 pipeRef: this.codeDescriptionPipe
             },
             {field: 'area', header: 'Área', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},
-            {field: 'pillar', header: 'Pillar', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},
-            {
-                field: 'situation',
-                header: 'Situación',
-                type: ColumnDataType.text,
-                pipeRef: this.codeShortDescriptionPipe
-            },
+            {field: 'pillar', header: 'Pillar', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},            
             {
                 field: 'periodStatementAsignations',
                 header: 'Periodos',
                 type: ColumnDataType.numeric,
                 pipeRef: this.statementPeriodStatementAsignationsListPipe
             },
+            {field: 'state', header: 'Estado', type: ColumnDataType.text},
+
         ];
         this._selectedColumns = this.cols.filter(value => value.field !== 'id');
 

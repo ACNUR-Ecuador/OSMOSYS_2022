@@ -99,11 +99,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             {field: 'code', header: 'Código', type: ColumnDataType.text},
             {field: 'description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'category', header: 'Categoría', type: ColumnDataType.text},
-            {
-                field: 'state', header: 'Estado', type: ColumnDataType.text,
-                pipeRef: this.enumValuesToLabelPipe,
-                arg1: EnumsType.IndicatorType
-            },
+            
             {
                 field: 'indicatorType',
                 header: 'Tipo',
@@ -126,12 +122,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                 pipeRef: this.enumValuesToLabelPipe,
                 arg1: EnumsType.AreaType
             },
-            {
-                field: 'compassIndicator',
-                header: 'Indicador Compass',
-                type: ColumnDataType.boolean,
-                pipeRef: this.booleanYesNoPipe
-            },
+            
             {field: 'isMonitored', header: 'Monitoreado', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
             {field: 'isCalculated', header: 'Calculado', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
             {
@@ -148,7 +139,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                 pipeRef: this.enumValuesToLabelPipe,
                 arg1: EnumsType.TotalIndicatorCalculationType
             },
-            {field: 'statement', header: 'Declaración', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
+            {field: 'statement', header: 'Enunciado', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
             {
                 field: 'dissagregationsAssignationToIndicator',
                 header: 'Desagregaciones',
@@ -165,10 +156,21 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                 field: 'instructions',
                 header: 'Instrucciones',
                 type: ColumnDataType.text
-            }
+            },
+            {
+                field: 'compassIndicator',
+                header: 'Indicador Compass',
+                type: ColumnDataType.boolean,
+                pipeRef: this.booleanYesNoPipe
+            },
+            {
+                field: 'state', header: 'Estado', type: ColumnDataType.text,
+                pipeRef: this.enumValuesToLabelPipe,
+                arg1: EnumsType.IndicatorType
+            },
         ];
 
-        const hiddenColumns: string[] = ['id', 'guideDirectImplementation', 'customDissagregationAssignationToIndicators', 'dissagregationsAssignationToIndicator', 'unit', 'instructions'];
+        const hiddenColumns: string[] = ['id', 'indicatorType', 'areaType',  'measureType', 'isMonitored', 'totalIndicatorCalculationType', 'isCalculated', 'frecuency', 'category','guideDirectImplementation', 'customDissagregationAssignationToIndicators', 'dissagregationsAssignationToIndicator', 'unit', 'instructions'];
         this._selectedColumns = this.cols.filter(value => !hiddenColumns.includes(value.field));
 
         this.formItem = this.fb.group({

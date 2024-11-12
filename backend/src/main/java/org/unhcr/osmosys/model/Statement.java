@@ -53,7 +53,7 @@ public class Statement extends BaseEntityIdState {
     @JoinColumn(name = "pillar_id", foreignKey = @ForeignKey(name = "fk_statemet_pillar"))
     private Pillar pillar;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "situation_id", foreignKey = @ForeignKey(name = "fk_statemet_situation"))
     private Situation situation;
 

@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
+import { Period, Tag } from '../shared/model/OsmosysModel';
 
 const mainServiceUrl = environment.base_url + '/reports';
 
@@ -209,6 +210,13 @@ export class ReportsService {
         });
     }
 
+    /****************indicators catalog***********/
+    public getTagReport(tag: Tag, period:Period) {
+        return this.http.get(`${mainServiceUrl}/tagReport/${tag.id}/${period.id}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
 
     /****************indicators catalog***********/
     public getIndicatorsCatalogByPeriodId(periodId: number) {

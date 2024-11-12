@@ -2,260 +2,209 @@
     <div class="col-12">
         <p-toast></p-toast>
         <div class="card" *ngIf="project">
-            <h6 class="page-title">Proyecto:</h6>
-            <h3 class="page-title">{{project.name}}</h3>
+            <h3 class="page-title">Proyecto: {{project.name}}</h3>
+
             <div class="card">
                 <div class="p-fluid p-formgrid grid">
-                    <div class="field col-12 md:col-3">
-                        <label for="periodI">Periodo</label>
-                        <input type="text" pInputText id="periodI" [disabled]="true" style="opacity: 1"
-                               value="{{project.period.year}}"
-                        />
+                    <div class="col-1 flex flex-column p-3 text-center border-right-1 surface-border ng-star-inserted">
+                        <span class="text-color text-xl font-semibold">{{project.period.year}}</span>
+                        <span class="text-color font-semibold" style="color: #0072BB !important;">Periodo</span>
                     </div>
-                    <div class="field col-12 md:col-2">
-                        <label for="codeI">Código</label>
-                        <input type="text" pInputText id="codeI" [disabled]="true" style="opacity: 1"
-                               value="{{project.code}}" autofocus/>
+                    <div class="col-1 flex flex-column p-3 text-center border-right-1 surface-border ng-star-inserted">
+                        <span class="text-color text-xl font-semibold">{{project.code}}</span>
+                        <span class="text-color font-semibold" style="color: #0072BB !important;">Código</span>
                     </div>
-                    <div class="field col-12 md:col-7">
-                        <label for="organizationI">Organización</label>
-
-                        <input type="text" pInputText id="organizationI" [disabled]="true" style="opacity: 1"
-                               value="{{project.organization | codeDescription}}"
-                        />
+                    <div class="col-4 flex flex-column p-3 text-center border-right-1 surface-border ng-star-inserted">
+                        <span class="text-color text-xl font-semibold">{{project.organization | codeDescription}}</span>
+                        <span class="text-color font-semibold" style="color: #0072BB !important;">Organización</span>
                     </div>
-                    <div class="field col-12 md:col-3">
-                        <label for="stateI">Estado</label>
-                        <input type="text" pInputText id="stateI" [disabled]="true" style="opacity: 1"
-                               value="{{project.state | enumValuesToLabel:'State'}}"
-                        />
+                    <div class="col-2 flex flex-column p-3 text-center border-right-1 surface-border ng-star-inserted">
+                        <span class="text-color text-xl font-semibold">{{getFocalPointsNames(project)}}</span>
+                        <span class="text-color font-semibold" style="color: #0072BB !important;">Puntos focales</span>
                     </div>
-                    <div class="field col-12 md:col-3">
-                        <label for="focalPointI">Puntos focales</label>
-                        <input type="text" id="focalPointI" pInputText value="{{project.focalPoints}}"
-                               style="opacity: 1" [disabled]="true"/>
+                    <div class="col-3 flex flex-column p-3 text-center border-right-1 surface-border ng-star-inserted">
+                        <span class="text-color text-xl font-semibold">Inicio: {{project.startDate | date:'longDate'
+                            }}</span>
+                        <span class="text-color text-xl font-semibold">Fin: {{project.endDate | date:'longDate'
+                            }}</span>
+                        <span class="text-color font-semibold" style="color: #0072BB !important;">Fechas del
+                            proyecto</span>
                     </div>
-
-                    <div class="field col-12 md:col-3">
-                        <label for="startDateI">Fecha de inicio</label>
-                        <input type="text" pInputText id="startDateI" [disabled]="true" style="opacity: 1"
-                               value="{{project.startDate | date:'longDate'  }}"
-                        />
-                    </div>
-                    <div class="field col-12 md:col-3">
-                        <label for="startDateI">Fecha de finalización</label>
-                        <input type="text" pInputText id="endDateI" [disabled]="true" style="opacity: 1"
-                               value="{{project.endDate | date:'longDate'  }}"
-                        />
+                    <div class="col-1 flex flex-column p-3 text-center ">
+                        <span class="text-color text-xl font-semibold">{{project.state}}</span>
+                        <span class="text-color font-semibold" style="color: #0072BB !important;">Estado</span>
                     </div>
                 </div>
             </div>
-            <div class="card">
-                <div class="flex justify-content-end flex-wrap">
-                    <div class="col-12 md:col-3" *ngIf="isAdmin || isProjectFocalPoint">
-                        <button
-                            pButton label="Bloqueo de indicadores"
-                            (click)="quarterActivation.toggle($event)"
-                            class="p-button-warning"
-                            icon="pi pi-unlock"
-                        ></button>
-                        <p-overlayPanel #quarterActivation (onHide)="reload()">
-                            <ng-template pTemplate>
-                                <p-table
-                                    [value]="monthsState" responsiveLayout="scroll" [columns]="colsMonthState">
-                                    <ng-template pTemplate="header" let-columns>
-                                        <tr>
-                                            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
-                                                {{col.header}}
-                                                <p-sortIcon [field]="col.field"></p-sortIcon>
-                                            </th>
-                                            <th>
-
-                                            </th>
-                                        </tr>
-                                    </ng-template>
-                                    <ng-template pTemplate="body" let-rowData let-columns="columns">
-                                        <tr>
-                                            <td *ngFor="let col of columns"
-                                                style="padding: 0.25rem 0.25rem !important;"
-                                                [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
-                                            >
-                                                {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
-                                            </td>
-                                            <td style="padding: 0.25rem 0.25rem !important;">
-                                                <p-toggleButton
-                                                    [ngModelOptions]="{standalone: true}"
-                                                    [ngModel]="rowData.blockUpdate"
-                                                    onLabel="{{' bloqueado'}}"
-                                                    offLabel="{{' desbloqueado'}}"
-                                                    onIcon="pi pi-lock"
-                                                    offIcon="pi pi-lock-open"
-                                                    (onChange)="changeProjectMonthBlocking(rowData,$event)"></p-toggleButton>
-
-                                            </td>
-                                        </tr>
-                                    </ng-template>
-                                </p-table>
-                            </ng-template>
-                        </p-overlayPanel>
-                        <!--<p-toggleButton styleClass="m-2" *ngFor="let quarter of quarterStates"
-                                        [ngModel]="!quarter.blockUpdate"
-                                        [ngModelOptions]="{standalone: true}"
-                                        (onChange)="changeQuarterState(quarter, $event)"
-                                        onLabel="{{quarter.quarter+'-'+quarter.year +' abierto'}}"
-                                        offLabel="{{quarter.quarter+'-'+quarter.year +' cerrado'}}"
-                                        onIcon="pi pi-lock-open"
-                                        offIcon="pi pi-lock"
-                                        [style]="{'width': '10em'}"></p-toggleButton>-->
-                    </div>
-                    <div class="col-12 md:col-3">
-                        <div
-                                *ngIf="canEditCantons"
-                            class="flex-grow-1 flex align-items-center justify-content-center">
-                            <button pButton type="button" pRipple
-                                    label="Editar lugares de ejecución"
-                                    style="max-width: 20rem"
-                                    icon="pi pi-map-marker"
-                                    class="p-button-success"
-                                    (click)="editLocations()"></button>
-                        </div>
-                    </div>
-                    <div class="col-12 md:col-3">
-                        <p-splitButton label="Generar Reporte del Proyecto" icon="pi pi-file-excel"
-                                       [model]="itemsReportTypeFull"
-                                       styleClass="p-button-primary mb-2 w-full"></p-splitButton>
-                    </div>
-
-                    <!--
-                    <div class="col-12 md:col-3">
-                        <p-button label="Generar Reporte de verificación de indicadores" icon="pi pi-check-square"
-                                  (onClick)="getPartnerLateReviewByProjectId()"
-                                  styleClass="p-button-primary mb-2 w-full"></p-button>
-                    </div>-->
-
-                    <div class="col-12 md:col-3">
-                        <p-button label="Generar reporte de retraso de indicadores" icon="pi pi-clock"
-                                  (onClick)="getPartnerLateReportByProjectId()"
-                                  styleClass="p-button-primary mb-2 w-full"></p-button>
+            
+            <div class="p-fluid p-formgrid grid">
+                <div class="col-2 flex flex-column p-3 text-center " *ngIf="isAdmin || isProjectFocalPoint">
+                    <button pButton label="Bloqueo de indicadores" (click)="quarterActivation.toggle($event)"
+                        class="p-button-warning" icon="pi pi-unlock"></button>
+                </div>
+                
+                <div class="col-2 flex flex-column p-3 text-center">
+                    <div *ngIf="canEditCantons" class="flex align-items-center justify-content-center">
+                        <button pButton type="button" pRipple label="Editar lugares de ejecución"                                 icon="pi pi-map-marker" class="p-button-success"
+                            (click)="editLocations()"></button>
                     </div>
                 </div>
-            </div>
+                <div class="col-2 flex flex-column p-3 text-center">
+                    <p-splitButton label="Reporte del Proyecto" icon="pi pi-file-excel"
+                        [model]="itemsReportTypeFull" styleClass="p-button-primary mb-2 w-full"></p-splitButton>
+                </div>
 
+                <!--
+                <div class="col-12 md:col-3">
+                    <p-button label="Generar Reporte de verificación de indicadores" icon="pi pi-check-square"
+                        (onClick)="getPartnerLateReviewByProjectId()"
+                        styleClass="p-button-primary mb-2 w-full"></p-button>
+                </div>-->
+
+                <div class="col-3 flex flex-column p-3 text-center">
+                    <p-button label="Reporte de retraso de indicadores" icon="pi pi-clock"
+                        (onClick)="getPartnerLateReportByProjectId()"
+                        styleClass="p-button-primary mb-2 w-full"></p-button>
+                </div>
+                <div class="col-2 flex flex-column p-3 text-center">
+                    <p-overlayPanel #quarterActivation (onHide)="reload()">
+                        <ng-template pTemplate>
+                            <p-table [value]="monthsState" responsiveLayout="scroll" [columns]="colsMonthState">
+                                <ng-template pTemplate="header" let-columns>
+                                    <tr>
+                                        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                                            {{col.header}}
+                                            <p-sortIcon [field]="col.field"></p-sortIcon>
+                                        </th>
+                                        <th>
+
+                                        </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                                    <tr>
+                                        <td *ngFor="let col of columns" style="padding: 0.25rem 0.25rem !important;"
+                                            [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) ">
+                                            {{ col.pipeRef ?
+                                            col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field),
+                                            col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData,
+                                            col.field) }}
+                                        </td>
+                                        <td style="padding: 0.25rem 0.25rem !important;">
+                                            <p-toggleButton [ngModelOptions]="{standalone: true}"
+                                                [ngModel]="rowData.blockUpdate" onLabel="{{' bloqueado'}}"
+                                                offLabel="{{' desbloqueado'}}" onIcon="pi pi-lock"
+                                                offIcon="pi pi-lock-open"
+                                                (onChange)="changeProjectMonthBlocking(rowData,$event)"></p-toggleButton>
+
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </ng-template>
+                    </p-overlayPanel>
+                    <!--<p-toggleButton styleClass="m-2" *ngFor="let quarter of quarterStates"
+                                    [ngModel]="!quarter.blockUpdate"
+                                    [ngModelOptions]="{standalone: true}"
+                                    (onChange)="changeQuarterState(quarter, $event)"
+                                    onLabel="{{quarter.quarter+'-'+quarter.year +' abierto'}}"
+                                    offLabel="{{quarter.quarter+'-'+quarter.year +' cerrado'}}"
+                                    onIcon="pi pi-lock-open"
+                                    offIcon="pi pi-lock"
+                                    [style]="{'width': '10em'}"></p-toggleButton>-->
+                </div>
+            </div>
+            
             <div class="card">
                 <p-tabView>
                     <p-tabPanel header="Indicador General" *ngIf="viewGeneralIndicators">
                         <app-partners-project-general-indicator-list
                             (callMonthParent)="viewDesagregationGeneralIndicator($event)"
-                            (callGeneralIndicatorCount)="setViewGeneralIndicators($event)"
-                            [project]="project"
-                            [isAdmin]="isAdmin"
-                            [isEjecutor]="isEjecutor"
-                            [isProjectFocalPoint]="isProjectFocalPoint"
-                        >
+                            (callGeneralIndicatorCount)="setViewGeneralIndicators($event)" [project]="project"
+                            [isAdmin]="isAdmin" [isEjecutor]="isEjecutor"
+                            [isProjectFocalPoint]="isProjectFocalPoint">
 
                         </app-partners-project-general-indicator-list>
                     </p-tabPanel>
                     <p-tabPanel header="Indicadores de Producto">
                         <app-partners-project-performance-indicator-list
-                            (callMonthParent)="viewDesagregationPerformanceIndicator($event)"
-                            [project]="project"
-                            [isAdmin]="isAdmin"
-                            [isProjectFocalPoint]="isProjectFocalPoint"
-                            [isEjecutor]="isEjecutor"
-                        ></app-partners-project-performance-indicator-list>
+                            (callMonthParent)="viewDesagregationPerformanceIndicator($event)" [project]="project"
+                            [isAdmin]="isAdmin" [isProjectFocalPoint]="isProjectFocalPoint"
+                            [isEjecutor]="isEjecutor"></app-partners-project-performance-indicator-list>
                     </p-tabPanel>
                 </p-tabView>
             </div>
         </div>
     </div>
-</div>
 
-<form [formGroup]="formLocations" (ngSubmit)="saveLocations()">
-    <p-dialog [(visible)]="showLocationsDialog" [modal]="true" header="Selección de lugares"
-              [style]="{width: '80%', height: '80%'}">
-        <div class="card p-0">
-            <p-messages></p-messages>
-            <div class="field col-12">
-                <p-pickList [source]="cantonesAvailable" [target]="formLocations.get('locationsSelected').value"
-                            sourceHeader="Disponibles" targetHeader="Seleccionados"
-                            [dragdrop]="true"
-                            [responsive]="true"
-                            [sourceStyle]="{'height':'25rem'}" [targetStyle]="{'height':'25rem'}"
-                            filterBy="name,provincia.description"
-                            sourceFilterPlaceholder="Buscar por lugar"
-                            targetFilterPlaceholder="Buscar por lugar"
-                            [showSourceControls]="false"
-                            [showTargetControls]="false"
+    <form [formGroup]="formLocations" (ngSubmit)="saveLocations()">
+        <p-dialog [(visible)]="showLocationsDialog" [modal]="true" header="Selección de lugares"
+            [style]="{width: '80%', height: '80%'}">
+            <div class="card p-0">
+                <p-messages></p-messages>
+                <div class="field col-12">
+                    <p-pickList [source]="cantonesAvailable" [target]="formLocations.get('locationsSelected').value"
+                        sourceHeader="Disponibles" targetHeader="Seleccionados" [dragdrop]="true" [responsive]="true"
+                        [sourceStyle]="{'height':'25rem'}" [targetStyle]="{'height':'25rem'}"
+                        filterBy="name,provincia.description" sourceFilterPlaceholder="Buscar por lugar"
+                        targetFilterPlaceholder="Buscar por lugar" [showSourceControls]="false"
+                        [showTargetControls]="false">
+                        <ng-template let-canton pTemplate="item">
+                            <div class="flex justify-content-between flex-wrap ">
+                                <span style="font-size:14px;font-weight: 800;vertical-align: middle;">{{canton.name}}
+                                </span>
 
-                >
-                    <ng-template let-canton pTemplate="item">
-                        <div class="flex justify-content-between flex-wrap ">
-                                        <span
-                                            style="font-size:14px;font-weight: 800;vertical-align: middle;">{{canton.name}}
-                                        </span>
+                                <span style="font-size:10px;font-weight: 600;vertical-align: middle;"><i
+                                        class="pi pi-map-marker product-category-icon"></i>{{canton.provincia.description}}</span>
+                            </div>
 
-                            <span style="font-size:10px;font-weight: 600;vertical-align: middle;"><i
-                                class="pi pi-map-marker product-category-icon"></i>{{canton.provincia.description}}</span>
-                        </div>
-
-                    </ng-template>
-                </p-pickList>
+                        </ng-template>
+                    </p-pickList>
+                </div>
             </div>
-        </div>
 
-        <ng-template pTemplate="footer">
-            <button pButton type="submit"
-                    [disabled]="!formLocations.valid"
-                    pRipple label="Guardar" icon="pi pi-check"
-            ></button>
-            <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
+            <ng-template pTemplate="footer">
+                <button pButton type="submit" [disabled]="!formLocations.valid" pRipple label="Guardar"
+                    icon="pi pi-check"></button>
+                <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
                     (click)="cancelLocations()"></button>
 
-        </ng-template>
-    </p-dialog>
-</form>
+            </ng-template>
+        </p-dialog>
+    </form>
 
-<form [formGroup]="formLocations" (ngSubmit)="saveLocations()">
-    <p-dialog [(visible)]="showLocationsDialog" [modal]="true" header="Selección de lugares"
-              [style]="{width: '80%', height: '80%'}">
-        <div class="card p-0">
-            <p-messages></p-messages>
-            <div class="field col-12">
-                <p-pickList [source]="cantonesAvailable" [target]="formLocations.get('locationsSelected').value"
-                            sourceHeader="Disponibles" targetHeader="Seleccionados"
-                            [dragdrop]="true"
-                            [responsive]="true"
-                            [sourceStyle]="{'height':'25rem'}" [targetStyle]="{'height':'25rem'}"
-                            filterBy="name,provincia.description"
-                            sourceFilterPlaceholder="Buscar por lugar"
-                            targetFilterPlaceholder="Buscar por lugar"
-                            [showSourceControls]="false"
-                            [showTargetControls]="false"
+    <form [formGroup]="formLocations" (ngSubmit)="saveLocations()">
+        <p-dialog [(visible)]="showLocationsDialog" [modal]="true" header="Selección de lugares"
+            [style]="{width: '80%', height: '80%'}">
+            <div class="card p-0">
+                <p-messages></p-messages>
+                <div class="field col-12">
+                    <p-pickList [source]="cantonesAvailable" [target]="formLocations.get('locationsSelected').value"
+                        sourceHeader="Disponibles" targetHeader="Seleccionados" [dragdrop]="true" [responsive]="true"
+                        [sourceStyle]="{'height':'25rem'}" [targetStyle]="{'height':'25rem'}"
+                        filterBy="name,provincia.description" sourceFilterPlaceholder="Buscar por lugar"
+                        targetFilterPlaceholder="Buscar por lugar" [showSourceControls]="false"
+                        [showTargetControls]="false">
+                        <ng-template let-canton pTemplate="item">
+                            <div class="flex justify-content-between flex-wrap ">
+                                <span style="font-size:14px;font-weight: 800;vertical-align: middle;">{{canton.name}}
+                                </span>
 
-                >
-                    <ng-template let-canton pTemplate="item">
-                        <div class="flex justify-content-between flex-wrap ">
-                                        <span
-                                            style="font-size:14px;font-weight: 800;vertical-align: middle;">{{canton.name}}
-                                        </span>
+                                <span style="font-size:10px;font-weight: 600;vertical-align: middle;"><i
+                                        class="pi pi-map-marker product-category-icon"></i>{{canton.provincia.description}}</span>
+                            </div>
 
-                            <span style="font-size:10px;font-weight: 600;vertical-align: middle;"><i
-                                class="pi pi-map-marker product-category-icon"></i>{{canton.provincia.description}}</span>
-                        </div>
-
-                    </ng-template>
-                </p-pickList>
+                        </ng-template>
+                    </p-pickList>
+                </div>
             </div>
-        </div>
 
-        <ng-template pTemplate="footer">
-            <button pButton type="submit"
-                    [disabled]="!formLocations.valid"
-                    pRipple label="Guardar" icon="pi pi-check"
-            ></button>
-            <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
+            <ng-template pTemplate="footer">
+                <button pButton type="submit" [disabled]="!formLocations.valid" pRipple label="Guardar"
+                    icon="pi pi-check"></button>
+                <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
                     (click)="cancelLocations()"></button>
 
-        </ng-template>
-    </p-dialog>
-</form>
+            </ng-template>
+        </p-dialog>
+    </form>
