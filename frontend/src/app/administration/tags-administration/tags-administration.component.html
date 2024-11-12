@@ -2,19 +2,6 @@
     <div class="col-12">
         <p-toast></p-toast>
         <div class="card px-6 py-6">
-            <h3 class="page-title">Administración de Tags</h3>
-            <p-toolbar styleClass="mb-4">
-                <ng-template pTemplate="left">
-                    <div class="my-2">
-                        <button pButton pRipple label="Crear" icon="pi pi-plus" class="p-button-success mr-2 mb-2"
-                                (click)="createItem()"></button>
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="right">
-                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel(dt)"
-                            class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
-                </ng-template>
-            </p-toolbar>
             <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true"
                      [rowHover]="true" dataKey="id"
                      currentPageReportTemplate=" {first} a {last} de {totalRecords} "
@@ -25,17 +12,22 @@
                     <div class="grid">
                         <div
                             class="col-12 md:col-4 sm:col-12 justify-content-start">
-                            <h5 class="m-0">Tags</h5>
+                        <h3 class="m-0">Administración de Tags</h3>
                         </div>
                         <div
                             class="col-12 md:col sm:col-12 flex justify-content-end">
 
                         <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
-                                           selectedItemsLabel="{0} columnas seleccionadas"
-                                           [style]="{minWidth: '150px',color:'#6c757d'}"
-                                           placeholder="Seleccione las columnas"
-                                           appendTo="body"></p-multiSelect>
-                            </div>
+                            selectedItemsLabel="{0} columnas seleccionadas"
+                            [style]="{minWidth: '150px',color:'#6c757d'}"
+                            placeholder="Seleccione las columnas"
+                            appendTo="body"></p-multiSelect>
+                        <button pButton pRipple label="Crear" icon="pi pi-plus" class="main-button mr-2 mb-2"
+                        (click)="createItem()" style="margin-left: 2rem;" pTooltip="Crear un Área" tooltipPosition="bottom"></button>
+
+                        <button pButton pRipple label="Exportar" icon="pi pi-file-excel" class="second-button mr-2 mb-2"
+                        (click)="exportExcel(dt)" style="margin-left: 1rem;" pTooltip="Exportar a Excel" tooltipPosition="bottom"></button>                        
+                    </div>
 
                     </div>
                 </ng-template>
@@ -106,6 +98,12 @@
                                     (click)="editItem(rowData)"></button>
 
                         </td>
+                        <td>
+                        <p-button label="Generar Reporte" icon="pi pi-file-excel"
+                                (onClick)="getReport(rowData)"
+                                styleClass="p-button-success p-mb-2"></p-button>
+
+                        </td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="summary">
@@ -127,37 +125,41 @@
             <p-messages></p-messages>
             <div class="card p-fluid">
                 <div class="field">
-                    <label for="nameI">Nombre</label>
+                    <label for="nameI">Nombre  *</label>
                     <input type="text" pInputText id="nameI"
-                           formControlName="name" autofocus (input)="toUpperCase()"/>
+                        formControlName="name" autofocus (input)="toUpperCase()"/>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('name',formItem)">Campo
                         obligatorio.</small>
                 </div>
                 <div class="field">
                     <label for="DescriptionI">Descripción</label>
                     <input type="text" pInputText id="DescriptionI"
-                           formControlName="description"/>
+                        formControlName="description"/>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('description',formItem)">Campo
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="periodI">Periodos *</label>
+                    <label for="periodI">Periodo *</label>
 
-                    <p-multiSelect id="periodsI"
-                                       [options]="periodsItems"
-                                       appendTo="body"
-                                       formControlName="periods"
-                                       [dataKey]="'id'"
-                                       placeholder="Selecciona..."
-
+                    <p-dropdown id="periodsI"
+                        [options]="periodsItems"
+                        appendTo="body"
+                        formControlName="period"
+                        [dataKey]="'id'"
+                        placeholder="Selecciona..." (onChange)="loadIndicators()"
                         >
 
-                        </p-multiSelect>
+                        </p-dropdown>
 
                     <small class="p-error" *ngIf="utilsService.showErrorForm('periods',formItem)">Campo
                         obligatorio.</small>
                 </div>
-               
+                <div class="field">
+                    <label for="stateI">Cálculo</label>
+                    <p-dropdown [options]="operations" formControlName="operation" ></p-dropdown>
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('state',formItem)">Campo
+                        obligatorio.</small>
+                </div>
                 <div class="field">
                     <label for="stateI">Estado</label>
 
@@ -169,8 +171,20 @@
 
                     <small class="p-error" *ngIf="utilsService.showErrorForm('state',formItem)">Campo
                         obligatorio.</small>
-                </div>
-                
+                </div>       
+              
+                <div class="field">
+                    <label for="stateI">Indicadores</label>
+
+                    <p-pickList [sourceStyle]="{'height':'20rem'}" [targetStyle]="{'height':'20rem'}"  [dragdrop]="true" [source]="indicators" [target]="selectedIndicators" filterBy="code" sourceHeader="Ind. Disponibles" targetHeader="Ind. Asignados"> 
+                        <ng-template let-indicator pTemplate="item">                                                           
+                                <div >{{indicator.code}} - {{indicator.description}}</div>                            
+                        </ng-template>
+                    </p-pickList>
+
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('state',formItem)">Campo
+                        obligatorio.</small>
+                </div> 
             </div>
 
         </ng-template>

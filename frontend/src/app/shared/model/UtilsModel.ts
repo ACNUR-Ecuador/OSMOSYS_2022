@@ -10,6 +10,7 @@ export class ColumnTable {
     arg1?: any;
     arg2?: any;
     arg3?: any;
+    width?: string;
 }
 
 export enum ColumnDataType {

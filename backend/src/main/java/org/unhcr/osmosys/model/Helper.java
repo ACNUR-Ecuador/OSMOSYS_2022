@@ -3,6 +3,7 @@ package org.unhcr.osmosys.model;
 import com.sagatechs.generics.persistence.model.BaseEntity;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedDTO;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedWithOfficesDTO;
+import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionTagDTO;
 import org.unhcr.osmosys.model.reportDTOs.LaterReportDTO;
 
 import javax.persistence.*;
@@ -132,6 +133,22 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "late_months", type = String.class),
                                 @ColumnResult(name = "focal_point", type = String.class),
                         })})
+
+@SqlResultSetMapping(
+        name = "IndicatorExecutionTagDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = IndicatorExecutionTagDTO.class,
+                        columns = {
+                                @ColumnResult(name = "performance_indicator_id", type = Long.class),
+                                @ColumnResult(name = "indicator", type = String.class),
+                                @ColumnResult(name = "period_id", type = Long.class),
+                                @ColumnResult(name = "quarter", type = String.class),
+                                @ColumnResult(name = "month", type = String.class),
+                                @ColumnResult(name = "month_order", type = Long.class),
+                                @ColumnResult(name = "value", type = Long.class),
+                        })})
+
 @SqlResultSetMapping(
         name = "LateReportMappingDTOMappingDI",
         classes = {

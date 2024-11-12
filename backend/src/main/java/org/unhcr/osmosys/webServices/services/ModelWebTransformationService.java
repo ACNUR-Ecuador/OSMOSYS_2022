@@ -3,7 +3,6 @@ package org.unhcr.osmosys.webServices.services;
 import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
-import com.sagatechs.generics.security.dao.UserDao;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
@@ -46,8 +45,6 @@ public class ModelWebTransformationService {
 
     @Inject
     UtilsService utilsService;
-    @Inject
-    UserDao userDao;
 
     //<editor-fold desc="FocalPointAssignation">
     public FocalPointAssignationWeb focalPointerAssignationToFocalPointerAssignationWeb(FocalPointAssignation focalPointAssignation) {
@@ -599,6 +596,33 @@ public class ModelWebTransformationService {
         period.setYear(periodWeb.getYear());
         period.setState(periodWeb.getState());
         return period;
+    }
+
+    public Indicator indicatorWebToIndicator(IndicatorWeb indicatorWeb) {
+        if (indicatorWeb == null) {
+            return null;
+        }
+        Indicator indicator = new Indicator();
+        indicator.setId(indicatorWeb.getId());
+        indicator.setInstructions(indicatorWeb.getInstructions());
+        indicator.setCode(indicatorWeb.getCode());
+        indicator.setDescription(indicatorWeb.getDescription());
+        indicator.setCategory(indicatorWeb.getCategory());
+        indicator.setQualitativeInstructions(indicatorWeb.getQualitativeInstructions());
+        indicator.setIndicatorType(indicatorWeb.getIndicatorType());
+        indicator.setMeasureType(indicatorWeb.getMeasureType());
+        indicator.setFrecuency(indicatorWeb.getFrecuency());
+        indicator.setAreaType(indicatorWeb.getAreaType());
+        indicator.setMonitored(indicatorWeb.getMonitored());
+        indicator.setCalculated(indicatorWeb.getCalculated());
+        indicator.setCompassIndicator(indicatorWeb.getCompassIndicator());
+        indicator.setTotalIndicatorCalculationType(indicatorWeb.getTotalIndicatorCalculationType());
+        indicator.setStatement(this.statementWebToStatement(indicatorWeb.getStatement()));
+        indicator.setUnit(indicatorWeb.getUnit());
+        indicator.setDissagregationsAssignationToIndicator(this.dissagregationAssignationToIndicatorsWebToDissagregationAssignationToIndicators(indicatorWeb.getDissagregationsAssignationToIndicator()));
+        indicator.setCustomDissagregationAssignationToIndicators(this.customDissagregationAssignationToIndicatorsWebToCustomDissagregationAssignationToIndicators(indicatorWeb.getCustomDissagregationAssignationToIndicators()));
+        indicator.setState(indicatorWeb.getState());
+        return indicator;
     }
 
     public List<PeriodWeb> periodsToPeriodsWeb(List<Period> periods, boolean simple) {
@@ -1463,6 +1487,7 @@ public class ModelWebTransformationService {
         tag.setName(tagWeb.getName().toUpperCase());
         tag.setDescription(tagWeb.getDescription());
         tag.setState(tagWeb.getState());
+        tag.setOperation(tagWeb.getOperation());
 
         for (PeriodTagAsignationWeb periodTagAsignationWeb : tagWeb.getPeriodTagAsignations()) {
             Optional<PeriodTagAssignation> assignation = tag.getPeriodTagAssignations().stream().filter(periodTagAssignation -> periodTagAssignation.getPeriod().getId().equals(periodTagAsignationWeb.getPeriod().getId())).findFirst();
@@ -1473,6 +1498,20 @@ public class ModelWebTransformationService {
                 psa.setState(periodTagAsignationWeb.getState());
                 psa.setPeriod(this.periodWebToPeriod(periodTagAsignationWeb.getPeriod()));
                 tag.addPeriodTagAssignation(psa);
+            }
+        }
+
+        List<IndicatorTagAsignationWeb> indicatorTagAsignations = tagWeb.getIndicatorTagAsignations();
+        for (int i = 0; i < indicatorTagAsignations.size(); i++) {
+            IndicatorTagAsignationWeb indicatorTagAsignationWeb = indicatorTagAsignations.get(i);
+            Optional<IndicatorTagAssignation> assignation = tag.getIndicatorTagAssignations().stream().filter(indicatorTagAssignation -> indicatorTagAssignation.getIndicator().getId().equals(indicatorTagAsignationWeb.getIndicator().getId())).findFirst();
+            if (assignation.isPresent()) {
+                assignation.get().setState(indicatorTagAsignationWeb.getState());
+            } else {
+                IndicatorTagAssignation psa = new IndicatorTagAssignation();
+                psa.setState(indicatorTagAsignationWeb.getState());
+                psa.setIndicator(this.indicatorWebToIndicator(indicatorTagAsignationWeb.getIndicator()));
+                tag.addIndicatorTagAssignation(psa);
             }
         }
 
@@ -1487,6 +1526,7 @@ public class ModelWebTransformationService {
         paw.setPeriod(this.periodToPeriodWeb(periodTagAsignation.getPeriod(), true));
         return paw;
     }
+
     private List<PeriodTagAsignationWeb> periodTagAsignationsToPeriodTagAsignationsWeb(Set<PeriodTagAssignation> periodTagAssignations) {
         List<PeriodTagAsignationWeb> periodTagAsignationWebs = new ArrayList<>();
         for (PeriodTagAssignation periodTagAssignation : periodTagAssignations) {
@@ -1495,6 +1535,27 @@ public class ModelWebTransformationService {
         }
         return periodTagAsignationWebs;
     }
+    //</editor-fold>
+
+    //<editor-fold desc="IndicatorTagAsignation">}
+    private IndicatorTagAsignationWeb indicatorTagAsignationToIndicatorTagAsignationWeb(IndicatorTagAssignation indicatorTagAsignation) {
+        IndicatorTagAsignationWeb paw = new IndicatorTagAsignationWeb();
+        paw.setId(indicatorTagAsignation.getId());
+        paw.setState(indicatorTagAsignation.getState());
+        paw.setIndicator(this.indicatorToIndicatorWeb(indicatorTagAsignation.getIndicator(), true, true));
+        //paw.setTags(this.tagToTagWeb(indicatorTagAsignation.getTag()));
+        return paw;
+    }
+
+    private List<IndicatorTagAsignationWeb> indicatorTagAsignationsToIndicatorTagAsignationsWeb(Set<IndicatorTagAssignation> indicatorTagAssignations) {
+        List<IndicatorTagAsignationWeb> indicatorTagAsignationWebs = new ArrayList<>();
+        for (IndicatorTagAssignation indicatorTagAssignation : indicatorTagAssignations) {
+            indicatorTagAsignationWebs.add(this.indicatorTagAsignationToIndicatorTagAsignationWeb(indicatorTagAssignation));
+
+        }
+        return indicatorTagAsignationWebs;
+    }
+    //</editor-fold>
 
     //</editor-fold>
     //<editor-fold desc="Audit">}

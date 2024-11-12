@@ -279,19 +279,13 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             },
             {
                 field: 'indicator.statement',
-                header: 'Declaración de Producto',
+                header: 'Enunciado de Producto',
                 type: ColumnDataType.text,
                 pipeRef: this.codeDescriptionPipe
             },
             {field: 'indicator.statement.productCode', header: 'Código Producto', type: ColumnDataType.text},
             {field: 'indicator', header: 'Indicador', type: ColumnDataType.text, pipeRef: this.indicatorPipe},
-            {
-                field: 'state',
-                header: 'Estado',
-                type: ColumnDataType.text,
-                pipeRef: this.enumValuesToLabelPipe,
-                arg1: EnumsType.State
-            },
+           
             {field: 'target', header: 'Meta', type: ColumnDataType.numeric},
             {field: 'totalExecution', header: 'Ejecución Total', type: ColumnDataType.numeric},
             {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric,pipeRef: this.percentPipe},
@@ -310,7 +304,14 @@ export class DirectImplementationAdministrationComponent implements OnInit {
                 header: 'Responsable alterno',
                 type: ColumnDataType.text,
                 pipeRef: this.userPipe
-            }
+            },
+            {
+                field: 'state',
+                header: 'Estado',
+                type: ColumnDataType.text,
+                pipeRef: this.enumValuesToLabelPipe,
+                arg1: EnumsType.State
+            },
         ];
 
         const hiddenColumns: string[] = ['id', 'indicator.statement.productCode', 'lateMonths', 'assignedUserBackup'];

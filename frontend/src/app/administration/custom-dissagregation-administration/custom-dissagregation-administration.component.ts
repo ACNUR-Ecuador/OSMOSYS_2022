@@ -55,26 +55,26 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
             {field: 'name', header: 'Nombre', type: ColumnDataType.text},
-            {field: 'description', header: 'Descripción', type: ColumnDataType.text},
             {
                 field: 'controlTotalValue',
-                header: 'Control de valores totales',
+                header: 'Valores totales',
                 type: ColumnDataType.boolean,
                 pipeRef: this.booleanYesNoPipe
             },
-            {field: 'state', header: 'Estado', type: ColumnDataType.text},
             {
                 field: 'customDissagregationOptions',
                 header: 'Desagregaciones',
                 type: ColumnDataType.text,
                 pipeRef: this.customDissagregationOptionsListPipe
-            }
+            },
+            {field: 'state', header: 'Estado', type: ColumnDataType.text},
+
         ];
         this.registerFilters();
 
         this.colOptions = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
-            {field: 'name', header: 'Nombre', type: ColumnDataType.text},
+            {field: 'name', header: 'Nombre', type: ColumnDataType.text, width: '200px'},
             {field: 'description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
         ];

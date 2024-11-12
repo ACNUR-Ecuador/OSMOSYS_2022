@@ -704,13 +704,13 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
             {
                 field: 'indicator.statement',
-                header: 'Declaración Indicador',
+                header: 'Enunciado Indicador',
                 type: ColumnDataType.text,
                 pipeRef: this.codeDescriptionPipe
             },
             {
                 field: 'projectStatement',
-                header: 'Declaración de Producto',
+                header: 'Enunciado de Producto',
                 type: ColumnDataType.text,
                 pipeRef: this.codeDescriptionPipe
             },

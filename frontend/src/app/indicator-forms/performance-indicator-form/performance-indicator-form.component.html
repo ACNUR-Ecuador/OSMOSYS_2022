@@ -1,7 +1,7 @@
-<div class="card p-0" *ngIf="render">
+<div *ngIf="render">
     <p-toast key="dialogToast" position="top-right"></p-toast>
     <p-messages></p-messages>
-    <div class="card p-0 border-primary text-primary"
+    <div class="card p-0 border-primary text-primary" style="margin-top: 1rem;"
          *ngIf="indicatorExecution.indicator.instructions || indicatorExecution.activityDescription"
     >
         <div class="fluid p-1">
@@ -20,16 +20,16 @@
         </div>
     </div>
     <form #myForm="ngForm" [formGroup]="formItem" (ngSubmit)="saveMonth()">
-        <div class="card p-0">
+        <!-- <div class="card p-0">
             <div *ngIf="render">
 
                 <app-chart-indicator-execution *ngIf="render"
-                                               [month]="month"
-                                               [indicatorExecution]="indicatorExecution"
+                    [month]="month"
+                    [indicatorExecution]="indicatorExecution"
                 ></app-chart-indicator-execution>
 
             </div>
-        </div>
+        </div> -->
         <div class="card p-0">
             <fieldset style="border-style: none; margin: unset; padding: unset" [disabled]="!editable">
                 <div class="grid m-0" *ngIf="render">
@@ -148,19 +148,19 @@
 
                 <div class="card">
                     <div class="p-fluid p-formgrid grid">
-                        <div class="field md:col-12">
+                        <!-- <div class="field md:col-12">
                             <label for="sourcesI">Herramientas de recolección de datos</label>
                             <p-multiSelect id="sourcesI"
-                                           [options]="sourceTypes"
-                                           [filter]="true"
-                                           formControlName="sources"
-                                           (onChange)="setOtherSource($event.value)"
+                                [options]="sourceTypes"
+                                [filter]="true"
+                                formControlName="sources"
+                                (onChange)="setOtherSource($event.value)"
                             ></p-multiSelect>
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('sources',formItem)">
                                 {{utilsService.getErrorMessageForm('sources', formItem)}}
                             </small>
-                        </div>
+                        </div> -->
                         <div class="field md:col-4" *ngIf="showOtherSource">
                             <label for="sourceOtherI">Otro</label>
                             <input id="sourceOtherI" type="text" pInputText formControlName="sourceOther">
@@ -175,10 +175,10 @@
                                 {{'Máximo 1.000 caracteres. '}}{{indicatorExecution.indicator.qualitativeInstructions}}
                             </small>
                             <textarea id="commentaryI"
-                                      pInputTextarea
-                                      [autoResize]="true"
-                                      style="width: 100%"
-                                      formControlName="commentary"
+                                pInputTextarea
+                                [autoResize]="true"
+                                style="width: 100%"
+                                formControlName="commentary"
                             ></textarea>
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('commentary',formItem)">
@@ -208,10 +208,10 @@
             <div class="md:col-12">
                 <p-messages></p-messages>
             </div>
-            <div class="flex justify-content-end flex-wrap" *ngIf="editable || isAdmin ">
+            <div class=" col-12 flex justify-content-end flex-wrap" *ngIf="editable || isAdmin ">
                 <p-message severity="warn"
-                           *ngIf="indicatorExecution.indicator.blockAfterUpdate"
-                           text="El indicador se bloqueará despues de guardarlo." styleClass="p-mr-2"></p-message>
+                        *ngIf="indicatorExecution.indicator.blockAfterUpdate"
+                        text="El indicador se bloqueará despues de guardarlo." styleClass="p-mr-2"></p-message>
                 <button pButton type="submit" class="mx-3"
                         pRipple label="Guardar" icon="pi pi-check"
                         [disabled]="!formItem.valid"
@@ -223,17 +223,15 @@
             <div class="flex justify-content-end "
                  *ngIf="!editable && !(isAdmin || isProjectFocalPoint && isEjecutor) ">
                 <p-message severity="warn"
-                           [text]=noEditionMessage
-                           styleClass="p-mr-2"></p-message>
+                        [text]=noEditionMessage
+                        styleClass="p-mr-2"></p-message>
                 <button pButton type="button" pRipple label="Salir" icon="pi pi-times"
                         (click)="cancel()"></button>
             </div>
-
-
         </div>
-
     </form>
 </div>
+
 <p-dialog [(visible)]="showErrorResume" [closable]="false" [closeOnEscape]="false">
     <ng-template pTemplate="header">
         Existen Errores en los Valores

@@ -5,8 +5,10 @@ import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
+import org.omnifaces.util.Messages;
 import org.unhcr.osmosys.daos.TagsDao;
 
+import org.unhcr.osmosys.model.IndicatorTagAssignation;
 import org.unhcr.osmosys.model.Tags;
 import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
@@ -15,6 +17,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 public class TagsService {
@@ -30,7 +33,12 @@ public class TagsService {
     public Tags getById(Long id) {
         return this.tagsDao.find(id);
     }
-    public Tags saveOrUpdate(Tags tag) {
+    public Tags saveOrUpdate(Tags tag) throws GeneralAppException{
+        boolean hasIndicators = !(tag.getIndicatorTagAssignations().stream().filter(tagd -> tagd.getState().equals(State.ACTIVO)).map(IndicatorTagAssignation::getIndicator).count() == 0);
+        if(!hasIndicators){
+            throw new GeneralAppException("No se puede guardar un tag ingrese al menos un indicador", Response.Status.BAD_REQUEST);
+
+        }
         if (tag.getId() == null) {
             this.tagsDao.save(tag);
         } else {
@@ -54,7 +62,8 @@ public class TagsService {
     }
 
     public List<TagsWeb> getAll() {
-        return this.modelWebTransformationService.tagsToTagsWeb(this.tagsDao.findAll());
+        List<Tags> all = this.tagsDao.findAll();
+        return this.modelWebTransformationService.tagsToTagsWeb(all);
     }
 
     public List<TagsWeb> getByState(State state) {

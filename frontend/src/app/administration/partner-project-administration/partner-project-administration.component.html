@@ -10,7 +10,7 @@
                         <ng-template pTemplate>
                             <div class="p-d-flex p-flex-column">
                                 <div *ngFor="let alert of messageAlertArray"
-                                     class="p-ml-2">{{alert}}</div>
+                                    class="p-ml-2">{{alert}}</div>
                             </div>
                         </ng-template>
                     </p-messages>
@@ -21,7 +21,7 @@
                             <!--suppress HtmlUnknownAttribute -->
                             <label htmlFor="codeI">Número de Acuerdo</label>
                             <input type="text" pInputText id="codeI"
-                                   formControlName="code" autofocus/>
+                                formControlName="code" autofocus/>
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('code',formItem)">{{utilsService.getErrorMessageForm('code', formItem)}}</small>
 
@@ -337,25 +337,22 @@
                         </ng-template>
                     </p-toolbar>
                     <p-table #dt2 [value]="performanceIndicators" [columns]="selectedColumnsPerformanceIndicators"
-                             [rowHover]="true" dataKey="id"
-                             styleClass="p-datatable-customers"
-                             currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                             [showCurrentPageReport]="true"
-                             (sortFunction)="utilsService.customSort($event, selectedColumnsPerformanceIndicators)"
-                             [customSort]="true"
-
-
-                    >
+                            [rowHover]="true" dataKey="id"
+                            styleClass="p-datatable-customers"
+                            currentPageReportTemplate=" {first} a {last} de {totalRecords} "
+                            [showCurrentPageReport]="true"
+                            (sortFunction)="utilsService.customSort($event, selectedColumnsPerformanceIndicators)"
+                            [customSort]="true">
                         <ng-template pTemplate="caption">
                             <div class="flex flex-row-reverse flex-wrap " style="width:100%">
                                 <div
                                     class="flex align-items-center">
                                     <p-multiSelect [options]="colsPerformancelIndicators"
-                                                   [(ngModel)]="selectedColumnsPerformanceIndicators"
-                                                   optionLabel="header"
-                                                   selectedItemsLabel="{0} columnas seleccionadas"
-                                                   [style]="{minWidth: '200px',color:'#6c757d'}"
-                                                   placeholder="Seleccione las columnass"></p-multiSelect>
+                                        [(ngModel)]="selectedColumnsPerformanceIndicators"
+                                        optionLabel="header"
+                                        selectedItemsLabel="{0} columnas seleccionadas"
+                                        [style]="{minWidth: '200px',color:'#6c757d'}"
+                                        placeholder="Seleccione las columnass"></p-multiSelect>
                                 </div>
                             </div>
 
@@ -612,7 +609,7 @@
 
                 </div>
                 <div class="field col-12 md-12">
-                    <label htmlFor="statementI">Declaración para el proyecto</label>
+                    <label htmlFor="statementI">Enunciado para el proyecto</label>
                     <p-dropdown id="statementI"
                                 formControlName="projectStatement"
                                 [style]="{'width':'90%'}"
@@ -787,7 +784,7 @@
             <p-table [value]="performanceIndicators" dataKey="id">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th>Declaración de producto</th>
+                        <th>Enunciado de producto</th>
                         <th>Indicador</th>
                         <th *ngFor="let quarterTitle of quarterTitles">
                             {{quarterTitle}}

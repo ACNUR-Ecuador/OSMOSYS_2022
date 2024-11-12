@@ -121,13 +121,7 @@ export class MenuService {
                             icon: 'pi pi-fw pi-cog',
                             routerLink: ['/administration/periods'],
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
-                        },
-                        {
-                            label: 'Situaciones',
-                            icon: 'pi pi-fw pi-cog',
-                            routerLink: ['/administration/situations'],
-                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
-                        },
+                        },                        
                         {
                             label: 'Oficinas',
                             icon: 'pi pi-fw pi-cog',
@@ -135,7 +129,7 @@ export class MenuService {
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
                         },
                         {
-                            label: 'Declaraciones',
+                            label: 'Enunciados',
                             icon: 'pi pi-fw pi-cog',
                             routerLink: ['/administration/statements'],
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']

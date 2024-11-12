@@ -12,6 +12,16 @@ public class TagsWeb extends BaseWebEntity implements Serializable {
     private String name;
     private String description;
     private List<PeriodTagAsignationWeb> periodTagAsignations;
+    private List<IndicatorTagAsignationWeb> indicatorTagAsignations;
+    private String operation;
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
 
     public String getName() {
         return name;
@@ -35,6 +45,14 @@ public class TagsWeb extends BaseWebEntity implements Serializable {
 
     public void setPeriodTagAsignations(List<PeriodTagAsignationWeb> periodTagAsignations) {
         this.periodTagAsignations = periodTagAsignations;
+    }
+
+    public List<IndicatorTagAsignationWeb> getIndicatorTagAsignations() {
+        return indicatorTagAsignations;
+    }
+
+    public void setIndicatorTagAsignations(List<IndicatorTagAsignationWeb> indicatorTagAsignations) {
+        this.indicatorTagAsignations = indicatorTagAsignations;
     }
 
     @Override

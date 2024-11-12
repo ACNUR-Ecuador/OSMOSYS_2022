@@ -100,7 +100,7 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
             {field: 'indicatorType', header: 'Tipo', type: ColumnDataType.text},
             {
                 field: 'projectStatement',
-                header: 'Declaración de Producto',
+                header: 'Enunciado de Producto',
                 type: ColumnDataType.text,
                 pipeRef: this.codeDescriptionPipe
             },

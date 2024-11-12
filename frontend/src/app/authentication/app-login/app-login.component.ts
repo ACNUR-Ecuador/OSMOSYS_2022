@@ -42,11 +42,6 @@ export class AppLoginComponent{
     });
 
 
-
-
-   
-    
-
     login() {
         this.messageService.clear();
         if (this.loginForm.invalid) {

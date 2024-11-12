@@ -5,8 +5,8 @@
     <div class="card p-2" *ngIf="hasLocationDissagregation || indicatorExecution.activityDescription">
         <div class="flex justify-content-end">
             <p-message severity="warn"
-                       *ngIf="disableSave && canEditLocation"
-                       text="Primero agrega lugares para poder reportar"
+                    *ngIf="disableSave && canEditLocation"
+                    text="Primero agrega lugares para poder reportar"
             ></p-message>
             <button pButton *ngIf="hasLocationDissagregation && canEditLocation" type="button" pRipple label="Agregar Lugares de Ejecución"
                     icon="pi pi-plus"
@@ -18,7 +18,7 @@
     >
         <div class="fluid p-1" *ngIf="indicatorExecution.indicator.instructions">
             <div class="field text-xl">
-                <label class="font-bold">Instrucciones del indicador:</label>
+                <label class="font-bold">Instrucciones del indicadors:</label>
                 {{indicatorExecution.indicator.instructions}}
             </div>
             <div class="field text-xl p-1" *ngIf="indicatorExecution.activityDescription">
@@ -32,8 +32,8 @@
             <div *ngIf="render">
 
                 <app-chart-indicator-execution *ngIf="render"
-                                               [month]="month"
-                                               [indicatorExecution]="indicatorExecution"
+                    [month]="month"
+                    [indicatorExecution]="indicatorExecution"
                 ></app-chart-indicator-execution>
 
             </div>
