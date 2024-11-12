@@ -3,6 +3,7 @@ package org.unhcr.osmosys.webServices.services;
 import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.dao.UserDao;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
@@ -45,6 +46,8 @@ public class ModelWebTransformationService {
 
     @Inject
     UtilsService utilsService;
+    @Inject
+    UserDao userDao;
 
     //<editor-fold desc="FocalPointAssignation">
     public FocalPointAssignationWeb focalPointerAssignationToFocalPointerAssignationWeb(FocalPointAssignation focalPointAssignation) {
