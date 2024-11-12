@@ -87,6 +87,7 @@ import { CustomDissagregationSelectorComponent } from './performance-indicator-a
 import { MenuItemsComponent } from './menu-items/menu-items.component';
 import { TagsAdministrationComponent } from './tags-administration/tags-administration.component';
 import { TagPeriodTagAsignationsListPipe } from '../shared/pipes/tag-period-tag-asignations-list.pipe';
+import { AuditAdministrationComponent } from './audit-administration/audit-administration.component';
 
 
 @NgModule({
@@ -110,7 +111,8 @@ import { TagPeriodTagAsignationsListPipe } from '../shared/pipes/tag-period-tag-
         DissagregationSelectorComponent,
         CustomDissagregationSelectorComponent,
         MenuItemsComponent,
-        TagsAdministrationComponent
+        TagsAdministrationComponent,
+        AuditAdministrationComponent
     ],
     imports: [
         CommonModule,

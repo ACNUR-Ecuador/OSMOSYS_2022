@@ -200,6 +200,22 @@ public class IndicatorValue extends BaseEntityIdState {
         this.monthYearOrder = monthYearOrder;
     }
 
+    public IndicatorValue deepCopy(){
+        IndicatorValue copy = new IndicatorValue();
+        copy.setId(this.id);
+        copy.setMonth(this.month);
+        copy.setState(this.state);
+        copy.setMonthEnum(this.monthEnum);
+        copy.setDissagregationType(this.dissagregationType);
+        copy.setPopulationType(this.populationType);
+        copy.setCountryOfOrigin(this.countryOfOrigin);
+        copy.setGenderType(this.genderType);
+        copy.setAgeType(this.ageType);
+        copy.setValue(this.value);
+        copy.setDenominatorValue(this.denominatorValue);
+        copy.setNumeratorValue(this.numeratorValue);
+        return copy;
+    }
 
     @Override
     public String toString() {

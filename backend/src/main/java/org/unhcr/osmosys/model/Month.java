@@ -201,6 +201,26 @@ public class Month extends BaseEntityIdState {
         }
     }
 
+    public Month deepCopy(){
+        Month copy = new Month();
+        copy.setId(this.getId());
+        copy.setMonth(this.getMonth());
+        copy.setMonthYearOrder(this.getMonthYearOrder());
+        copy.setYear(this.getYear());
+        copy.setOrder(this.getOrder());
+        copy.setUsedBudget(this.getUsedBudget());
+        copy.setSources(this.getSources());
+        copy.setSourceOther(this.getSourceOther());
+        copy.setChecked(this.getChecked());
+        copy.setState(this.getState());
+        copy.setCommentary(this.getCommentary());
+        copy.setQuarter(this.getQuarter());
+        copy.setBlockUpdate(this.getBlockUpdate());
+        copy.setTotalExecution(this.getTotalExecution());
+
+        return copy;
+    }
+
     public State getState() {
         return state;
     }

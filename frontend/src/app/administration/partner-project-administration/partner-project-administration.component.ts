@@ -853,7 +853,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             this.quarterGroups.patchValue([]);
         }
 
-        // this.showTargetDialog = false;
+        this.showTargetDialog = false;
     }
 
     assignNewPerformanceIndicator() {

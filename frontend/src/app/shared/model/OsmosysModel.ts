@@ -594,3 +594,23 @@ export class PeriodTagAsignation {
     public period: Period;
 }
 
+export class Audit{
+
+    constructor() {
+        this.state = 'ACTIVO';
+    }
+
+    public id:number;
+    public entity:string;
+    public recordId:number;
+    public action:string;
+    public responsibleUser:User;
+    public changeDate:Date;
+    public oldData:string;
+    public newData:string;
+    public state:string;
+
+
+}
+
+

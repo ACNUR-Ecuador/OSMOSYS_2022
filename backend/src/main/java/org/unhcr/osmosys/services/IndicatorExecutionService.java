@@ -1,17 +1,23 @@
 package org.unhcr.osmosys.services;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.AuditAction;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.UserSecurityContext;
+import com.sagatechs.generics.security.dao.UserDao;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.service.AsyncService;
 import com.sagatechs.generics.utils.DateUtils;
+import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.threeten.extra.YearQuarter;
 import org.unhcr.osmosys.daos.IndicatorDao;
 import org.unhcr.osmosys.daos.IndicatorExecutionDao;
+import org.unhcr.osmosys.daos.ProjectDao;
 import org.unhcr.osmosys.model.*;
+import org.unhcr.osmosys.model.auditDTOs.LabelValue;
 import org.unhcr.osmosys.model.enums.*;
 import org.unhcr.osmosys.model.standardDissagregations.DissagregationAssignationToIndicatorPeriodCustomization;
 import org.unhcr.osmosys.model.standardDissagregations.options.*;
@@ -77,6 +83,13 @@ public class IndicatorExecutionService {
 
     @EJB
     AsyncService asyncService;
+
+    @Inject
+    AuditService auditService;
+    @Inject
+    UserDao userDao;
+    @Inject
+    ProjectDao projectDao;
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(IndicatorExecutionService.class);
 
@@ -98,6 +111,11 @@ public class IndicatorExecutionService {
         this.validatePerformanceIndicatorAssignationToProject(indicatorExecutionWeb);
         IndicatorExecution ie = new IndicatorExecution();
         Indicator indicator = this.indicatorDao.find(indicatorExecutionWeb.getIndicator().getId());
+        Project oldProject = projectDao.find(indicatorExecutionWeb.getProject().getId()).deepCopy();
+        List<LabelValue> oldprojectAudit = auditService.convertToProjectAuditDTO(oldProject).toLabelValueList();
+
+        UserWeb principal = UserSecurityContext.getCurrentUser();
+        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
         if (indicator == null) {
             throw new GeneralAppException("Indicador no encontrado " + indicatorExecutionWeb.getIndicator().getId(), Response.Status.BAD_REQUEST);
         }
@@ -157,8 +175,13 @@ public class IndicatorExecutionService {
 
         this.createQuartersInIndicatorExecution(ie, project, dissagregationsMap, customDissagregations);
 
+        // Registrar auditoría
+        List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
+        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.UPDATE, responsibleUser, oldprojectAudit, newprojectAudit, State.ACTIVO);
 
         this.saveOrUpdate(ie);
+
+
         return ie;
 
     }
@@ -287,6 +310,14 @@ public class IndicatorExecutionService {
         if (!indicatorExecution.getProject().getId().equals(indicatorExecutionAssigmentWeb.getProject().getId())) {
             throw new GeneralAppException("El indicador no corresponde al proyecto (Id:" + indicatorExecutionAssigmentWeb.getId() + " projectId" + indicatorExecutionAssigmentWeb.getId() + ")", Response.Status.BAD_REQUEST);
         }
+
+
+        Project project = projectDao.find(indicatorExecutionAssigmentWeb.getProject().getId()).deepCopy();
+        List<LabelValue> oldprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
+
+        UserWeb principal = UserSecurityContext.getCurrentUser();
+        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
+
         indicatorExecution.setState(indicatorExecutionAssigmentWeb.getState());
 
         indicatorExecution.setProjectStatement(this.statementService.getById(indicatorExecutionAssigmentWeb.getProjectStatement().getId()));
@@ -296,6 +327,10 @@ public class IndicatorExecutionService {
 
 
         this.updateIndicatorExecutionTotals(indicatorExecution);
+        // Registrar auditoría
+        List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
+        auditService.logAction("Proyecto", project.getCode(), null, AuditAction.UPDATE, responsibleUser, oldprojectAudit, newprojectAudit, State.ACTIVO);
+
         this.saveOrUpdate(indicatorExecution);
         return indicatorExecution.getId();
     }
@@ -558,6 +593,11 @@ public class IndicatorExecutionService {
 
     public void updateTargets(TargetUpdateDTOWeb targetUpdateDTOWeb) throws GeneralAppException {
         IndicatorExecution ie = this.indicatorExecutionDao.getByIdWithIndicatorValues(targetUpdateDTOWeb.getIndicatorExecutionId());
+        Project project = projectDao.find(ie.getProject().getId()).deepCopy();
+        List<LabelValue> oldprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
+        UserWeb principal = UserSecurityContext.getCurrentUser();
+        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
+
         ie.setTarget(targetUpdateDTOWeb.getTotalTarget());
         /*
         if (ie.getIndicatorType().equals(IndicatorType.GENERAL)) {
@@ -574,8 +614,12 @@ public class IndicatorExecutionService {
         }
 
 */
-        this.updateIndicatorExecutionTotals(ie);
 
+
+        this.updateIndicatorExecutionTotals(ie);
+        // Registrar auditoría
+        List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
+        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.UPDATE, responsibleUser, oldprojectAudit, newprojectAudit, State.ACTIVO);
         this.saveOrUpdate(ie);
     }
 
@@ -710,7 +754,14 @@ public class IndicatorExecutionService {
             }
         }
 
+        UserWeb principal = UserSecurityContext.getCurrentUser();
+
+        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
+
         List<IndicatorValueWeb> totalIndicatorValueWebs = new ArrayList<>();
+        List<Object> newIndicatorValues = new ArrayList<>();
+        List<Object> oldIndicatorValues = new ArrayList<>();
+        boolean auditChange=false;
         monthValuesWeb.getIndicatorValuesMap().forEach((dissagregationType, indicatorValueWebs) -> {
             if (indicatorValueWebs != null) {
                 totalIndicatorValueWebs.addAll(indicatorValueWebs);
@@ -720,13 +771,60 @@ public class IndicatorExecutionService {
             Optional<IndicatorValue> valueToUpdateOp = monthToUpdate.getIndicatorValues().stream().filter(indicatorValue -> indicatorValue.getId().equals(indicatorValueWeb.getId())).findFirst();
             if (valueToUpdateOp.isPresent()) {
                 IndicatorValue valueToUpdate = valueToUpdateOp.get();
+                //agrego valores anteriores a lista de auditoria
+                boolean isnewValue=false;
+                DissagregationType dissagregationType = indicatorValueWeb.getDissagregationType();
+                Object oldValues;
+                if(valueToUpdate.getValue()!=null){
+                    if(valueToUpdate.getValue().compareTo(indicatorValueWeb.getValue()) !=0){
+                        if(dissagregationType==DissagregationType.SIN_DESAGREGACION){
+                                oldValues = indicatorExecutionDao.findIndicatorDirectImplementationValuesById(valueToUpdate.getId());
+                            }else {
+                                oldValues = indicatorExecutionDao.findIndicatorDissagregationValuesById(valueToUpdate.getId());
+
+                            }
+                            oldIndicatorValues.add(oldValues);
+                            isnewValue = true;
+                            auditChange = true;
+                    }
+                }else{
+                    //solo agrego cambios si el valor a actualizar es diferente de cero
+                    boolean isValueNonZero = indicatorValueWeb.getValue().compareTo(BigDecimal.ZERO) != 0;
+                    if (isValueNonZero) {
+                        if(dissagregationType==DissagregationType.SIN_DESAGREGACION){
+                            oldValues = indicatorExecutionDao.findIndicatorDirectImplementationValuesById(valueToUpdate.getId());
+                        }else {
+                            oldValues = indicatorExecutionDao.findIndicatorDissagregationValuesById(valueToUpdate.getId());
+
+                        }                        oldIndicatorValues.add(oldValues);
+                        isnewValue = true;
+                        auditChange = true;
+                    }
+
+                }
+
+                //
                 valueToUpdate.setValue(indicatorValueWeb.getValue());
                 valueToUpdate.setNumeratorValue(indicatorValueWeb.getNumeratorValue());
                 valueToUpdate.setDenominatorValue(indicatorValueWeb.getDenominatorValue());
+                //agrego valores nuevos a lista de auditoria
+                if(isnewValue){
+                    Object newValues;
+                    if(dissagregationType==DissagregationType.SIN_DESAGREGACION){
+                        newValues = indicatorExecutionDao.findIndicatorDirectImplementationValuesById(valueToUpdate.getId());
+                    }else {
+                        newValues = indicatorExecutionDao.findIndicatorDissagregationValuesById(valueToUpdate.getId());
+
+                    }
+                    newIndicatorValues.add(newValues);
+                }
+                //
             } else {
                 throw new GeneralAppException("No se pudo encontrar el valor (valueId:" + indicatorValueWeb.getId() + ")", Response.Status.BAD_REQUEST);
             }
         }
+
+
         if (CollectionUtils.isNotEmpty(monthValuesWeb.getCustomDissagregationValues())) {
             List<IndicatorValueCustomDissagregationWeb> totalIndicatorValueCustomDissagregationWebs = new ArrayList<>();
             monthValuesWeb.getCustomDissagregationValues().forEach(customDissagregationValuesWeb -> totalIndicatorValueCustomDissagregationWebs.addAll(customDissagregationValuesWeb.getIndicatorValuesCustomDissagregation()));
@@ -734,16 +832,56 @@ public class IndicatorExecutionService {
                 Optional<IndicatorValueCustomDissagregation> indicatorValueCustomDissagregationOp = monthToUpdate.getIndicatorValuesIndicatorValueCustomDissagregations().stream().filter(indicatorValueCustomDissagregation -> totalIndicatorValueCustomDissagregationWeb.getId().equals(indicatorValueCustomDissagregation.getId())).findFirst();
                 if (indicatorValueCustomDissagregationOp.isPresent()) {
                     IndicatorValueCustomDissagregation valueToUpdate = indicatorValueCustomDissagregationOp.get();
+                    //agrego valores anteriores y actuales a listas de auditoria
+                    boolean isnewValue=false;
+                    if(valueToUpdate.getValue()!=null){
+                        if(valueToUpdate.getValue().compareTo(totalIndicatorValueCustomDissagregationWeb.getValue()) !=0){
+                            // Verificar si el valor a actualizar es nulo o tiene un valor diferente
+                            Object oldValues=indicatorExecutionDao.findIndicatorCustomDissagregationValuesById(valueToUpdate.getId());
+                            oldIndicatorValues.add(oldValues);
+                            auditChange=true;
+                            isnewValue=true;
+                        }
+
+                    }else{
+                        boolean isValueNonZero = totalIndicatorValueCustomDissagregationWeb.getValue().compareTo(BigDecimal.ZERO) != 0;
+                        if (valueToUpdate.getValue() != null || isValueNonZero) {
+                            Object oldValues=indicatorExecutionDao.findIndicatorCustomDissagregationValuesById(valueToUpdate.getId());
+                            oldIndicatorValues.add(oldValues);
+                            auditChange=true;
+                            isnewValue=true;
+                        }
+
+                    }
+
+                    //
                     valueToUpdate.setValue(totalIndicatorValueCustomDissagregationWeb.getValue());
                     valueToUpdate.setNumeratorValue(totalIndicatorValueCustomDissagregationWeb.getNumeratorValue());
                     valueToUpdate.setDenominatorValue(totalIndicatorValueCustomDissagregationWeb.getDenominatorValue());
+                    //agrego valores nuevos a lista de auditoria
+                    if(isnewValue){
+                        Object newValues=indicatorExecutionDao.findIndicatorCustomDissagregationValuesById(valueToUpdate.getId());
+                        newIndicatorValues.add(newValues);
+                    }
+                    //
                 } else {
                     throw new GeneralAppException("No se pudo encontrar el valor (valueId:" + totalIndicatorValueCustomDissagregationWeb.getId() + ")", Response.Status.BAD_REQUEST);
                 }
             }
         }
         this.updateIndicatorExecutionTotals(indicatorExecution);
+        if(auditChange){
+            String projectCode=null;
+            if(indicatorExecution.getProject()!=null){
+                projectCode = indicatorExecution.getProject().getCode();
+            }
+            auditService.logAction("Reporte", projectCode, indicatorExecution.getIndicator().getCode(), AuditAction.REPORT, responsibleUser, oldIndicatorValues, newIndicatorValues, State.ACTIVO);
+        }
+
+
         this.saveOrUpdate(indicatorExecution);
+
+
         return indicatorExecution.getId();
     }
 

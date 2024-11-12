@@ -129,4 +129,18 @@ public class IndicatorValueCustomDissagregation extends BaseEntityIdState {
     public void setMonthYearOrder(Integer monthYearOrder) {
         this.monthYearOrder = monthYearOrder;
     }
+
+    public IndicatorValueCustomDissagregation deepCopy() {
+        IndicatorValueCustomDissagregation copy = new IndicatorValueCustomDissagregation();
+        copy.setId(this.id);
+        copy.setState(this.state);
+        copy.setCustomDissagregationOption(this.customDissagregationOption);
+        copy.setMonth(this.month);
+        copy.setMonthEnum(this.monthEnum);
+        copy.setMonthYearOrder(this.monthYearOrder);
+        copy.setValue(this.value);
+        copy.setNumeratorValue(this.numeratorValue);
+        copy.setDenominatorValue(this.denominatorValue);
+        return copy;
+    }
 }

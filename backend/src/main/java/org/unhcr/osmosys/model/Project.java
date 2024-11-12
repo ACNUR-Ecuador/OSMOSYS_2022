@@ -10,7 +10,9 @@ import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -195,6 +197,22 @@ public class Project extends BaseEntityIdState {
         this.focalPoint = focalPoint;
     }
 
+    public Project deepCopy() {
+        Project copy = new Project();
+        copy.setId(this.id);
+        copy.setOrganization(this.organization);
+        copy.setCode(this.code);
+        copy.setPeriod(this.period);
+        copy.setState(this.state);
+        copy.setName(this.name);
+        copy.setFocalPointAssignations(this.focalPointAssignations);
+        copy.setStartDate(this.startDate);
+        copy.setEndDate(this.endDate);
+        copy.setIndicatorExecutions(this.indicatorExecutions);
+        copy.setProjectLocationAssigments(this.projectLocationAssigments);
+
+        return copy;
+    }
     public Set<FocalPointAssignation> getFocalPointAssignations() {
         return focalPointAssignations;
     }
@@ -202,6 +220,7 @@ public class Project extends BaseEntityIdState {
     public void setFocalPointAssignations(Set<FocalPointAssignation> focalPointAssignations) {
         this.focalPointAssignations = focalPointAssignations;
     }
+
 
     @Override
     public boolean equals(Object o) {

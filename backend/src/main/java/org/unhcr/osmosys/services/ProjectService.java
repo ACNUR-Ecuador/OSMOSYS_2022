@@ -1,7 +1,11 @@
 package org.unhcr.osmosys.services;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.AuditAction;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.CustomPrincipal;
+import com.sagatechs.generics.security.UserSecurityContext;
+import com.sagatechs.generics.security.dao.UserDao;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
@@ -11,14 +15,24 @@ import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.ProjectDao;
 import org.unhcr.osmosys.daos.standardDissagregations.StandardDissagregationOptionDao;
 import org.unhcr.osmosys.model.*;
+import org.unhcr.osmosys.model.auditDTOs.LabelValue;
+import org.unhcr.osmosys.model.auditDTOs.ProjectAuditDTO;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
 import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -47,6 +61,15 @@ public class ProjectService {
     @Inject
     MonthService monthService;
 
+    @Context
+    private SecurityContext securityContext;
+
+    @Inject
+    UserDao userDao;
+
+    @Inject
+    AuditService auditService;
+
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(ProjectService.class);
 
@@ -72,6 +95,10 @@ public class ProjectService {
             throw new GeneralAppException("No se puede crear un project con id", Response.Status.BAD_REQUEST);
         }
         this.validate(projectWeb);
+
+        UserWeb principal = UserSecurityContext.getCurrentUser();
+
+        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
 
 
         Project project = new Project();
@@ -105,6 +132,10 @@ public class ProjectService {
             project.addIndicatorExecution(generalIndicatorIE);
         }
         this.saveOrUpdate(project);
+
+        // Registrar auditoría
+        List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
+        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.INSERT,responsibleUser , null, newprojectAudit, State.ACTIVO);
         return project.getId();
     }
 
@@ -117,6 +148,12 @@ public class ProjectService {
         }
         this.validate(projectWeb);
         Project project = this.projectDao.find(projectWeb.getId());
+
+        List<LabelValue> oldprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
+
+        UserWeb principal = UserSecurityContext.getCurrentUser();
+        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
+
         if (project == null) {
             throw new GeneralAppException("No se puede encontrar el proyecto con id " + projectWeb.getId(), Response.Status.NOT_FOUND);
         }
@@ -129,6 +166,7 @@ public class ProjectService {
         if (projectWeb.getFocalPoints() != null && !projectWeb.getFocalPoints().isEmpty()) {
 //            Set<User> focalPoints  = projectWeb.getFocalPoints().stream().map(fpw-> this.userService.getById(fpw.getId())).collect(Collectors.toSet());
 //            focalPointAssignations = focalPoints.stream().map(user -> new FocalPointAssignation(user,project,false)).collect(Collectors.toSet());
+
         }
 
         Boolean projectDatesChanged = Boolean.FALSE;
@@ -147,6 +185,9 @@ public class ProjectService {
         // update localidades
         this.updateProjectLocations(projectWeb.getLocations(), project.getId());
 
+        // Registrar auditoría
+        List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
+        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.UPDATE, responsibleUser, oldprojectAudit, newprojectAudit, State.ACTIVO);
         this.saveOrUpdate(project);
 
         return project.getId();
@@ -179,7 +220,7 @@ public class ProjectService {
 
     public void setFocalPointsInProject(Project project, List<UserWeb> userWebs) {
         // ***********project focalPoints assigments
-        // busco los cantones a desactivar
+            // busco los cantones a desactivar
 
         project.getFocalPointAssignations().forEach(focalPointAssignation -> {
                 focalPointAssignation.setState(State.INACTIVO);
@@ -196,7 +237,9 @@ public class ProjectService {
                                     .equals(userWeb.getId()))
                     .findFirst();
             if (assignmentFound.isPresent()) {
-                assignmentFound.get().setState(State.ACTIVO);
+                FocalPointAssignation existingAssignation = assignmentFound.get();
+                existingAssignation.setState(State.ACTIVO);
+                focalPointAssignations.add(existingAssignation);
             } else {
                 User user = (User) this.userService.getById(userWeb.getId());
 

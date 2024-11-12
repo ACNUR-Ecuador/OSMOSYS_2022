@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.webServices.endpoints;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.AuditAction;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.RoleType;
 import org.unhcr.osmosys.model.enums.*;
@@ -64,6 +65,8 @@ public class EnumsEndpoint {
                 return this.EnumsToEnumsWeb(UnitType.values());
             case "TimeStateEnum":
                 return this.EnumsToEnumsWeb(TimeStateEnum.values());
+            case "AuditAction":
+                return this.EnumsToEnumsWeb(AuditAction.values());
         }
         throw new GeneralAppException("Enumerador no soportado " + type, Response.Status.BAD_GATEWAY);
     }
