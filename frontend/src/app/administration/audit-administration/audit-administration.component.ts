@@ -78,12 +78,7 @@ export class AuditAdministrationComponent implements OnInit {
         const dateB = new Date(b.changeDate.year, b.changeDate.monthValue - 1, b.changeDate.dayOfMonth, b.changeDate.hour, b.changeDate.minute, b.changeDate.second, b.changeDate.nano / 1000000);
         return dateB.getTime() - dateA.getTime();
       });
-      /*
-        this.items = sortedItems.map(item => ({
-          ...item,
-          changeDate: this.convertDatetoString(item.changeDate)
-        }));
-      */
+     
       },
       error: err => {
         this.messageService.add({
@@ -223,11 +218,16 @@ prepareReportTableData() {
     const keys = Object.keys(item).sort();;
     keys.forEach(key => {
       const formattedKey = key.replace(/_/g, ' ');
-      tableData.push({
-        property: formattedKey,
-        oldValue: item[key] || 'N/A',  
-        newValue: this.newDataJson[index][key] || 'N/A'  
-      });
+      if(item[key]!=null || this.newDataJson[index][key]!=null ){
+        tableData.push({
+          property: formattedKey,
+          oldValue: item[key] || 'N/A',  
+          newValue: this.newDataJson[index][key] || 'N/A'  
+        });
+      }else{
+        return
+      }
+      
     });
 
     this.auditTableData.push({
@@ -345,7 +345,6 @@ showProjectListDetails(property: string, oldValue: string, newValue: string) {
     }
   });
 
- 
 
   this.dialogVisible = true;
 }
