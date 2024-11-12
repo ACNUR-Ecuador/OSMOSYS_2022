@@ -3,7 +3,7 @@ package com.sagatechs.generics.persistence.model;
 import org.unhcr.osmosys.model.enums.EnumInterface;
 
 public enum AuditAction implements EnumInterface {
-    INSERT("Inserción",1), UPDATE("Actualización",2),DEACTIVE("Desactivación",3), ACTIVE("Activación",4), LOCK("Bloqueo",5), UNLOCK("Desbloqueo",6), REPORT("Reporte", 7);
+    INSERT("Inserción",1), UPDATE("Actualización",2), LOCK("Bloqueo",5), UNLOCK("Desbloqueo",6), REPORT("Reporte", 7);
 
     private String label;
     private final int order;

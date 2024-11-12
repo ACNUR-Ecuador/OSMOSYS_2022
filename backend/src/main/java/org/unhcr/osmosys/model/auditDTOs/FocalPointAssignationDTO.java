@@ -1,9 +1,10 @@
 package org.unhcr.osmosys.model.auditDTOs;
 
-public class ProjectLocationAssigmentsDTO {
+public class FocalPointAssignationDTO {
     private Long id;
-    private String cantonId;
+    private String focalPoint;
     private String projectId;
+    private String mainFocalPoint;
     private String state;
 
     public Long getId() {
@@ -14,12 +15,12 @@ public class ProjectLocationAssigmentsDTO {
         this.id = id;
     }
 
-    public String getCantonId() {
-        return cantonId;
+    public String getFocalPoint() {
+        return focalPoint;
     }
 
-    public void setCantonId(String cantonId) {
-        this.cantonId = cantonId;
+    public void setFocalPoint(String focalPoint) {
+        this.focalPoint = focalPoint;
     }
 
     public String getProjectId() {
@@ -30,6 +31,14 @@ public class ProjectLocationAssigmentsDTO {
         this.projectId = projectId;
     }
 
+    public String getMainFocalPoint() {
+        return mainFocalPoint;
+    }
+
+    public void setMainFocalPoint(String mainFocalPoint) {
+        this.mainFocalPoint = mainFocalPoint;
+    }
+
     public String getState() {
         return state;
     }
@@ -37,12 +46,14 @@ public class ProjectLocationAssigmentsDTO {
     public void setState(String state) {
         this.state = state;
     }
+
     @Override
     public String toString() {
         return "{" +
                 "\"ID\":" + id +
-                ", \"Cantón\":\"" + cantonId + "\"" +
+                ", \"Punto Focal\":\"" + focalPoint + "\"" +
                 ", \"ID de Proyecto\":\"" + projectId + "\"" +
+                ", \"Punto Focal Principal\":\"" + mainFocalPoint + "\"" +
                 ", \"Estado\":\"" + state + "\"" +
                 '}';
     }

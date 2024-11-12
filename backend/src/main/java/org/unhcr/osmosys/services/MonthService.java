@@ -1,10 +1,18 @@
 package org.unhcr.osmosys.services;
 
-import com.sagatechs.generics.exceptions.GeneralAppException;
+import
+        com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.AuditAction;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.UserSecurityContext;
+import com.sagatechs.generics.security.dao.UserDao;
+import com.sagatechs.generics.security.model.User;
+import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
+import org.unhcr.osmosys.daos.IndicatorExecutionDao;
 import org.unhcr.osmosys.daos.MonthDao;
+import org.unhcr.osmosys.daos.ProjectDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.*;
 import org.unhcr.osmosys.model.standardDissagregations.options.IndicatorValueOptionsDTO;
@@ -46,6 +54,19 @@ public class MonthService {
 
     @Inject
     UtilsService utilsService;
+
+    @Inject
+    AuditService auditService;
+
+    @Inject
+    UserDao userDao;
+
+    @Inject
+    private IndicatorExecutionDao indicatorExecutionDao;
+
+    @Inject
+    private ProjectDao projectDao;
+
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(MonthService.class);
 
@@ -398,12 +419,29 @@ public class MonthService {
 
     public Long changeMonthBlockedState(Long monthId, Boolean blockinState) {
         Month month = this.monthDao.find(monthId);
+        Object oldMonth=monthDao.findMonthRelatedProject(monthId);
+        IndicatorExecution indicatorExecution=indicatorExecutionDao.find(month.getQuarter().getIndicatorExecution().getId());
         if (!blockinState && month.getBlockUpdate()) {
             month.setChecked(false);
             // todo send alert email
         }
 
+        UserWeb principal = UserSecurityContext.getCurrentUser();
+
+        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
+
+
         month.setBlockUpdate(blockinState);
+        Object newMonth=monthDao.findMonthRelatedProject(monthId);
+        if(blockinState) {
+            // Registrar auditoría
+            auditService.logAction("Bloqueo de Mes Indicador", indicatorExecution.getProject().getCode(), indicatorExecution.getIndicator().getCode(), AuditAction.LOCK, responsibleUser, oldMonth, newMonth, State.ACTIVO);
+        }else {
+            // Registrar auditoría
+            auditService.logAction("Bloqueo de Mes Indicador", indicatorExecution.getProject().getCode(), indicatorExecution.getIndicator().getCode(), AuditAction.UNLOCK, responsibleUser, oldMonth, newMonth, State.ACTIVO);
+
+        }
+
         this.saveOrUpdate(month);
         return month.getId();
     }
@@ -411,10 +449,24 @@ public class MonthService {
     public void getActiveMonthsByProjectIdAndMonthAndYear(Long projectId, MonthEnum month, int year, Boolean blockUpdate) {
         // get all months active by project
         List<Month> months = this.monthDao.getActiveMonthsByProjectIdAndMonthAndYear(projectId, month, year);
+        UserWeb principal = UserSecurityContext.getCurrentUser();
+        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
+        Project project=projectDao.find(projectId);
+        List<?> oldIndicatorsMonthState=monthDao.findIndicatorsRelatedProjectByMonth(projectId, month, year);
         for (Month monthE : months) {
             monthE.setBlockUpdate(blockUpdate);
             this.saveOrUpdate(monthE);
         }
+        List<?> newIndicatorsMonthState=monthDao.findIndicatorsRelatedProjectByMonth(projectId, month, year);
+        if(blockUpdate) {
+            // Registrar auditoría
+            auditService.logAction("Bloqueo de Mes Masivo", project.getCode(),null, AuditAction.LOCK, responsibleUser, oldIndicatorsMonthState, newIndicatorsMonthState, State.ACTIVO);
+        }else {
+            // Registrar auditoría
+            auditService.logAction("Bloqueo de Mes Masivo", project.getCode(),null, AuditAction.UNLOCK, responsibleUser, oldIndicatorsMonthState, newIndicatorsMonthState, State.ACTIVO);
+
+        }
+
     }
 
     public void blockMonthsAutomaticaly() throws GeneralAppException {

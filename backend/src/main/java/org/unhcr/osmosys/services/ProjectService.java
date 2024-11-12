@@ -15,6 +15,8 @@ import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.ProjectDao;
 import org.unhcr.osmosys.daos.standardDissagregations.StandardDissagregationOptionDao;
 import org.unhcr.osmosys.model.*;
+import org.unhcr.osmosys.model.auditDTOs.LabelValue;
+import org.unhcr.osmosys.model.auditDTOs.ProjectAuditDTO;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
 import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
@@ -30,6 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -131,7 +134,8 @@ public class ProjectService {
         this.saveOrUpdate(project);
 
         // Registrar auditoría
-        auditService.logAction("Proyecto", project.getId(), AuditAction.INSERT,responsibleUser , null, project, State.ACTIVO);
+        List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
+        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.INSERT,responsibleUser , null, newprojectAudit, State.ACTIVO);
         return project.getId();
     }
 
@@ -145,7 +149,8 @@ public class ProjectService {
         this.validate(projectWeb);
         Project project = this.projectDao.find(projectWeb.getId());
 
-        Project oldProject = this.projectDao.find(projectWeb.getId()).deepCopy();
+        List<LabelValue> oldprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
+
         UserWeb principal = UserSecurityContext.getCurrentUser();
         User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
 
@@ -161,6 +166,7 @@ public class ProjectService {
         if (projectWeb.getFocalPoints() != null && !projectWeb.getFocalPoints().isEmpty()) {
 //            Set<User> focalPoints  = projectWeb.getFocalPoints().stream().map(fpw-> this.userService.getById(fpw.getId())).collect(Collectors.toSet());
 //            focalPointAssignations = focalPoints.stream().map(user -> new FocalPointAssignation(user,project,false)).collect(Collectors.toSet());
+
         }
 
         Boolean projectDatesChanged = Boolean.FALSE;
@@ -180,11 +186,9 @@ public class ProjectService {
         this.updateProjectLocations(projectWeb.getLocations(), project.getId());
 
         // Registrar auditoría
-        auditService.logAction("Proyecto", project.getId(), AuditAction.UPDATE, responsibleUser, oldProject, project, State.ACTIVO);
-
+        List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
+        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.UPDATE, responsibleUser, oldprojectAudit, newprojectAudit, State.ACTIVO);
         this.saveOrUpdate(project);
-
-
 
         return project.getId();
     }
@@ -216,7 +220,7 @@ public class ProjectService {
 
     public void setFocalPointsInProject(Project project, List<UserWeb> userWebs) {
         // ***********project focalPoints assigments
-        // busco los cantones a desactivar
+            // busco los cantones a desactivar
 
         project.getFocalPointAssignations().forEach(focalPointAssignation -> {
                 focalPointAssignation.setState(State.INACTIVO);
@@ -233,7 +237,9 @@ public class ProjectService {
                                     .equals(userWeb.getId()))
                     .findFirst();
             if (assignmentFound.isPresent()) {
-                assignmentFound.get().setState(State.ACTIVO);
+                FocalPointAssignation existingAssignation = assignmentFound.get();
+                existingAssignation.setState(State.ACTIVO);
+                focalPointAssignations.add(existingAssignation);
             } else {
                 User user = (User) this.userService.getById(userWeb.getId());
 

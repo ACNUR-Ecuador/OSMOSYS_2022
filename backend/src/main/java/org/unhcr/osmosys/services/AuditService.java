@@ -1,8 +1,7 @@
 package org.unhcr.osmosys.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.gson.Gson;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.AuditAction;
 import com.sagatechs.generics.persistence.model.State;
@@ -11,12 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.AuditDao;
 import org.unhcr.osmosys.model.*;
-import org.unhcr.osmosys.model.auditDTOs.IndicatorExecutionDTO;
-import org.unhcr.osmosys.model.auditDTOs.ProjectAuditDTO;
-import org.unhcr.osmosys.model.auditDTOs.ProjectLocationAssigmentsDTO;
-import org.unhcr.osmosys.model.cubeDTOs.ProjectDTO;
+import org.unhcr.osmosys.model.auditDTOs.*;
 import org.unhcr.osmosys.model.enums.IndicatorType;
-import org.unhcr.osmosys.webServices.model.AreaWeb;
 import org.unhcr.osmosys.webServices.model.AuditWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
@@ -24,9 +19,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -93,7 +88,7 @@ public class AuditService {
         if (StringUtils.isBlank(auditWeb.getEntity())) {
             throw new GeneralAppException("Entidad no válido", Response.Status.BAD_REQUEST);
         }
-        if (auditWeb.getRecordId() == null) {
+        if (auditWeb.getProjectCode() == null) {
             throw new GeneralAppException("Registro id no válido", Response.Status.BAD_REQUEST);
         }
         if (auditWeb.getAction() == null) {
@@ -106,10 +101,10 @@ public class AuditService {
             throw new GeneralAppException("Fecha no válida", Response.Status.BAD_REQUEST);
         }
         if (StringUtils.isBlank(auditWeb.getOldData())) {
-            throw new GeneralAppException("Resgistro no válido", Response.Status.BAD_REQUEST);
+            throw new GeneralAppException("Registro no válido", Response.Status.BAD_REQUEST);
         }
         if (StringUtils.isBlank(auditWeb.getNewData())) {
-            throw new GeneralAppException("Resgistro no válido", Response.Status.BAD_REQUEST);
+            throw new GeneralAppException("Registro no válido", Response.Status.BAD_REQUEST);
         }
 
 
@@ -117,15 +112,46 @@ public class AuditService {
 
     }
 
-    public void logAction(String entity, Long recordId, AuditAction action, User responsibleUser, Object oldData, Object newData, State state) {
-        String oldDataJson = convertToJson(convertToProjectAuditDTO((Project) oldData));
-        String newDataJson = convertToJson(convertToProjectAuditDTO((Project) newData));
+    public void logAction(String entity, String projectCode, String indicatorCode, AuditAction action, User responsibleUser, Object oldData, Object newData, State state) {
+        //String oldDataJson = convertToJson(convertToProjectAuditDTO((Project) oldData));
+        //String newDataJson = convertToJson(convertToProjectAuditDTO((Project) newData));
+        Gson gson = new Gson();
+        String oldDataJson="";
+        String newDataJson="";
+
+        if(entity.equals("Proyecto")){
+            if(oldData!=null){
+                oldDataJson= gson.toJson(oldData);
+            }
+            newDataJson= gson.toJson(newData);
+        }
+        if(entity.equals("Bloqueo de Mes Indicador")){
+            if(oldData!=null){
+                oldDataJson= convertMapToString((Map)oldData);
+            }
+            newDataJson= convertMapToString((Map)newData);
+        }
+        if(entity.equals("Bloqueo de Mes Masivo")){
+            if(oldData!=null){
+                oldDataJson= convertListToString((List)oldData);
+            }
+            newDataJson= convertListToString((List)newData);
+        }
+        if(entity.equals("Reporte")){
+            if(oldData!=null){
+                oldDataJson=convertListToString((List)oldData);
+            }
+            newDataJson=convertListToString((List)newData);
+        }
+
+
 
         // Comparar las representaciones en JSON
         if (!oldDataJson.equals(newDataJson)) {
             Audit audit = new Audit();
             audit.setEntity(entity);
-            audit.setRecordId(recordId);
+            audit.setProjectCode(projectCode);
+            audit.setIndicatorCode(indicatorCode);
             audit.setAction(action);
             audit.setResponsibleUser(responsibleUser);
             audit.setChangeDate(LocalDateTime.now());
@@ -147,13 +173,25 @@ public class AuditService {
         projectAuditDTO.setStartDate(project.getStartDate().toString());
         projectAuditDTO.setEndDate(project.getEndDate().toString());
         projectAuditDTO.setOrganizationId(project.getOrganization().getId().toString());
-        projectAuditDTO.setFocalPointId(project.getFocalPoint().getId().toString());
-        projectAuditDTO.setPeriodId(project.getPeriod().getId().toString());
+        projectAuditDTO.setOrganization(project.getOrganization().getAcronym());
+        List<FocalPointAssignationDTO> focalPointAssignationDTOS= project.getFocalPointAssignations().stream()
+                        .map(focalPointAssignation -> {
+                            FocalPointAssignationDTO dto = new FocalPointAssignationDTO();
+                            dto.setId(focalPointAssignation.getId());
+                            dto.setFocalPoint(focalPointAssignation.getFocalPointer().getName());
+                            dto.setProjectId(focalPointAssignation.getProject().getId().toString());
+                            dto.setMainFocalPoint(focalPointAssignation.getMainFocalPointer().toString());
+                            dto.setState(focalPointAssignation.getState().toString());
+                            return dto;
+                        })
+                .collect(Collectors.toList());
+        projectAuditDTO.setFocalPointAssignations(focalPointAssignationDTOS);
+        projectAuditDTO.setPeriodId(project.getPeriod().getYear().toString());
         List<ProjectLocationAssigmentsDTO> projectLocationAssigmentsDTOS = project.getProjectLocationAssigments().stream()
                 .map(projectLocationAssigment -> {
                     ProjectLocationAssigmentsDTO dto = new ProjectLocationAssigmentsDTO();
                     dto.setId(projectLocationAssigment.getId());
-                    dto.setCantonId(projectLocationAssigment.getLocation().getId().toString());
+                    dto.setCantonId(projectLocationAssigment.getLocation().getName());
                     dto.setProjectId(projectLocationAssigment.getProject().getId().toString());
                     dto.setState(projectLocationAssigment.getState().toString());
                     return dto;
@@ -173,12 +211,12 @@ public class AuditService {
                                 dto.setTarget(target != null ? target.toString() : "");
                             }
                             if (indicatorExecution.getProjectStatement() != null) {
-                                Long statementId = indicatorExecution.getProjectStatement().getId();
-                                dto.setProjectStatementId(statementId != null ? statementId.toString() : "");
+                                String statement = indicatorExecution.getProjectStatement().getDescription();
+                                dto.setProjectStatement(statement != null ? statement : "");
                             }
                             if (indicatorExecution.getIndicator() != null) {
-                                Long indicatorId = indicatorExecution.getIndicator().getId();
-                                dto.setIndicatorId(indicatorId != null ? indicatorId.toString() : "");
+                                String indicatorId = indicatorExecution.getIndicator().getDescription();
+                                dto.setIndicator(indicatorId != null ? indicatorId : "");
                             }
                             if (indicatorExecution.getCompassIndicator() != null) {
                                 Boolean compassIndicator = indicatorExecution.getCompassIndicator();
@@ -193,8 +231,8 @@ public class AuditService {
                                 dto.setState(state != null ? indicatorExecution.getState().toString() : "");
                             }
                             if (indicatorExecution.getPeriod() != null) {
-                                Long periodId = indicatorExecution.getPeriod().getId();
-                                dto.setPeriodId(periodId != null ? periodId.toString() : "");
+                                Integer period = indicatorExecution.getPeriod().getYear();
+                                dto.setPeriod(period != null ? period.toString() : "");
                             }
                             if (indicatorExecution.getTotalExecution() != null) {
                                 BigDecimal totalExecution = indicatorExecution.getTotalExecution();
@@ -202,6 +240,7 @@ public class AuditService {
                             }
                             if (indicatorExecution.getExecutionPercentage() != null) {
                                 BigDecimal execution = indicatorExecution.getExecutionPercentage();
+                                execution = execution.setScale(2, RoundingMode.HALF_UP);
                                 dto.setExecutionPercentage(execution != null ? execution.toString() : "");
                             }
                             if (indicatorExecution.getProject() != null) {
@@ -209,20 +248,28 @@ public class AuditService {
                                 dto.setProjectId(projectId != null ? projectId.toString() : "");
                             }
                             if (indicatorExecution.getReportingOffice() != null) {
-                                Long reportingOfficeId = indicatorExecution.getReportingOffice().getId();
-                                dto.setReportingOfficeId(reportingOfficeId != null ? reportingOfficeId.toString() : "");
+                                String reportingOffice = indicatorExecution.getReportingOffice().getAcronym();
+                                dto.setReportingOffice(reportingOffice != null ? reportingOffice : "");
                             }
                             if (indicatorExecution.getSupervisorUser() != null) {
-                                Long supervisorId = indicatorExecution.getSupervisorUser().getId();
-                                dto.setSupervisorUserId(supervisorId != null ? supervisorId.toString() : "");
+                                String supervisor = indicatorExecution.getSupervisorUser().getName();
+                                dto.setSupervisorUser(supervisor != null ? supervisor : "");
                             }
                             if (indicatorExecution.getAssignedUser() != null) {
-                                Long assignedUserId = indicatorExecution.getAssignedUser().getId();
-                                dto.setAssignedUserId(assignedUserId != null ? assignedUserId.toString() : "");
+                                String assignedUser = indicatorExecution.getAssignedUser().getName();
+                                dto.setAssignedUser(assignedUser != null ? assignedUser.toString() : "");
                             }
                             if (indicatorExecution.getAssignedUserBackup() != null) {
-                                Long assignedUserBackupId = indicatorExecution.getAssignedUserBackup().getId();
-                                dto.setAssignedUserBackupId(assignedUserBackupId != null ? assignedUserBackupId.toString() : "");
+                                String assignedUserBackup = indicatorExecution.getAssignedUserBackup().getName();
+                                dto.setAssignedUserBackup(assignedUserBackup != null ? assignedUserBackup : "");
+                            }
+                            if (indicatorExecution.getKeepBudget() != null) {
+                                Boolean keepBudget = indicatorExecution.getKeepBudget();
+                                dto.setKeepBudget(keepBudget != null ? keepBudget.toString() : "");
+                            }
+                            if (indicatorExecution.getAssignedBudget() != null) {
+                                BigDecimal assignedBudget = indicatorExecution.getAssignedBudget();
+                                dto.setAssignedBudget(assignedBudget != null ? assignedBudget.toString() : "");
                             }
                             if (indicatorExecution.getAvailableBudget() != null) {
                                 BigDecimal availableBudget = indicatorExecution.getAvailableBudget();
@@ -231,6 +278,20 @@ public class AuditService {
                             if (indicatorExecution.getTotalUsedBudget() != null) {
                                 BigDecimal totalUsedBudget = indicatorExecution.getTotalUsedBudget();
                                 dto.setTotalUsedBudget(totalUsedBudget != null ? totalUsedBudget.toString() : "");
+                            }
+                            if (indicatorExecution.getIndicatorExecutionLocationAssigments() != null) {
+                                Set<IndicatorExecutionLocationAssigment> locationAssigments = indicatorExecution.getIndicatorExecutionLocationAssigments();
+                                StringBuilder locationString = new StringBuilder();
+
+                                for (IndicatorExecutionLocationAssigment assignment : locationAssigments) {
+                                    locationString.append(assignment.getLocation().getName()).append(", ");
+                                }
+
+                                if (locationString.length() > 0) {
+                                    locationString.setLength(locationString.length() - 2);
+                                }
+
+                                dto.setLocationAssigments(locationString.toString());
                             }
                             return dto;
                         })
@@ -241,16 +302,64 @@ public class AuditService {
 
 
 
-    private String convertToJson(Object data) {
-        if (data == null) {return null;}
+
+    public String convertListToString(List<Map<String, Object>> list) {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        if (list == null || list.isEmpty()) {
+            return "[]";
+        }
+
+        List<Map<String, Object>> simplifiedList = list.stream().map(obj -> {
+
+            Map<String, Object> simplifiedMap = objectMapper.convertValue(obj, Map.class);
+
+            simplifiedMap.keySet().forEach(key -> {
+                // Si un campo contiene un objeto, puedes reemplazarlo con su valor
+                Object value = simplifiedMap.get(key);
+                if (value != null && value instanceof Map) {
+                    // Si el valor es un objeto anidado, extraemos solo la propiedad necesaria
+                    simplifiedMap.put(key, ((Map<?, ?>) value).get("name")); // Ejemplo: solo extraemos el campo "name"
+                }
+            });
+            return simplifiedMap;
+        }).collect(Collectors.toList());
+
+
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.writeValueAsString(data);
-        } catch (JsonProcessingException e) {
+            return objectMapper.writeValueAsString(simplifiedList);
+        } catch (Exception e) {
+            // Manejo de excepciones en caso de error durante la conversión
             e.printStackTrace();
-            throw new RuntimeException("Error converting to JSON", e);
+            return "[]";
         }
     }
+
+    private String convertMapToString(Map<String, Object> map) {
+        /*ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            // Convertir el Map a una cadena JSON
+            return objectMapper.writeValueAsString(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "{}"; // En caso de error, devolver un objeto vacío
+        }*/
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            // Crear una lista que contenga el map como único objeto
+            return objectMapper.writeValueAsString(Collections.singletonList(map));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "[]"; // En caso de error, devolver un array vacío
+        }
+    }
+
+    public List<AuditWeb> getAuditsByTableName(String tableName) {
+        List<Audit> audits = auditDao.getAuditsByTableName(tableName);
+        return modelWebTransformationService.auditsToAuditsWeb(audits);
+    }
+
 
 
 

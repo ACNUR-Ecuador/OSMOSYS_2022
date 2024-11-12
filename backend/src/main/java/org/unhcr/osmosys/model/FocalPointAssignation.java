@@ -81,6 +81,7 @@ public class FocalPointAssignation extends BaseEntityIdState {
         this.state = state;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -51,6 +51,13 @@ public class AuditEndpoint {
         return this.auditService.getByState(state);
     }
 
+    @Path("/getAuditsByTableName/{tableName}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AuditWeb> getByTableName(@PathParam("tableName") String tableName) {
+        return auditService.getAuditsByTableName(tableName);
+    }
 
 
 

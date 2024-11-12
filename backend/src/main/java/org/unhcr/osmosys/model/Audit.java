@@ -21,8 +21,11 @@ public class Audit extends BaseEntityIdState {
     @Column(name = "entity",  nullable = false)
     private String entity;
 
-    @Column(name = "record_id", nullable = false)
-    private Long recordId;
+    @Column(name = "project_code")
+    private String projectCode;
+
+    @Column(name = "indicator_code")
+    private String indicatorCode;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "action", nullable = false, length = 22)
@@ -70,12 +73,12 @@ public class Audit extends BaseEntityIdState {
         this.entity = entity;
     }
 
-    public Long getRecordId() {
-        return recordId;
+    public String getProjectCode() {
+        return projectCode;
     }
 
-    public void setRecordId(Long recordId) {
-        this.recordId = recordId;
+    public void setProjectCode(String recordId) {
+        this.projectCode = recordId;
     }
 
     public AuditAction getAction() {
@@ -118,17 +121,25 @@ public class Audit extends BaseEntityIdState {
         this.newData = newData;
     }
 
+    public String getIndicatorCode() {
+        return indicatorCode;
+    }
+
+    public void setIndicatorCode(String indicatorCode) {
+        this.indicatorCode = indicatorCode;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Audit audit = (Audit) o;
-        return Objects.equals(id, audit.id) && Objects.equals(entity, audit.entity) && Objects.equals(recordId, audit.recordId) && action == audit.action && Objects.equals(responsibleUser, audit.responsibleUser) && Objects.equals(changeDate, audit.changeDate) && Objects.equals(oldData, audit.oldData) && Objects.equals(newData, audit.newData) && state == audit.state;
+        return Objects.equals(id, audit.id) && Objects.equals(entity, audit.entity) && Objects.equals(projectCode, audit.projectCode) && Objects.equals(indicatorCode, audit.indicatorCode) && action == audit.action && Objects.equals(responsibleUser, audit.responsibleUser) && Objects.equals(changeDate, audit.changeDate) && Objects.equals(oldData, audit.oldData) && Objects.equals(newData, audit.newData) && state == audit.state;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, entity, recordId, action, responsibleUser, changeDate, oldData, newData, state);
+        return Objects.hash(id, entity, projectCode, indicatorCode, action, responsibleUser, changeDate, oldData, newData, state);
     }
 
     @Override
@@ -136,7 +147,8 @@ public class Audit extends BaseEntityIdState {
         return "Audit{" +
                 "id=" + id +
                 ", entity='" + entity + '\'' +
-                ", recordId=" + recordId +
+                ", projectCode='" + projectCode + '\'' +
+                ", indicatorCode='" + indicatorCode + '\'' +
                 ", action=" + action +
                 ", responsibleUser=" + responsibleUser +
                 ", changeDate=" + changeDate +
