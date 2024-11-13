@@ -1,148 +1,172 @@
 <div class="grid">
-    <div class="col-12">
-        <p-toast></p-toast>
-        <div class="card px-6 py-6">
-            <h3 class="page-title">Auditorías</h3>
-            <p-toolbar styleClass="mb-4">
-                <div class="p-toolbar-group-center">
-                        <div class="field grid">
-                            <label for="tablaI" class="col-fixed" style="width:100px; color: white;">Auditoría:</label>
-                            <div class="p-col">
-                                <p-dropdown id="tablaI" [options]="tables"
-                                            (onChange)="onTableAuditChange($event.value)"
-                                            appendTo="body"
-                                ></p-dropdown>
-                            </div>
-                        </div>
-                    
+  <div class="col-12">
+    <p-toast></p-toast>
+    <div class="card px-6 py-6">
+
+      <p-table #dt [value]="filteredData" [columns]="selectedColumns" [rows]="10" [paginator]="true" [rowHover]="true"
+        dataKey="id" currentPageReportTemplate=" {first} a {last} de {totalRecords} " [showCurrentPageReport]="true"
+        (sortFunction)="utilsService.customSort($event, cols)" [customSort]="true">
+        <ng-template pTemplate="caption">
+          <div class="grid">
+            <div class="col-12 md:col-4 sm:col-12 justify-content-start">
+              <h3 class="m-0">Auditorías</h3>
+            </div>
+            <div class="col-12 md:col sm:col-12 flex justify-content-center">
+              <div class="field grid">
+                <label for="tablaI" class="col-fixed" style="width:80px; ">Auditoría:</label>
+                <div class="p-col mr-5">
+                  <p-dropdown id="tablaI" [options]="tables" (onChange)="onTableAuditChange($event.value)"
+                    appendTo="body"></p-dropdown>
                 </div>
-                <ng-template pTemplate="right">
-                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel(dt)"
-                        class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+              </div>
+            </div>
+            <div class="col-12 md:col sm:col-12 flex justify-content-end">
+              <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
+                selectedItemsLabel="{0} columnas seleccionadas" [style]="{minWidth: '150px',color:'#6c757d'}"
+                placeholder="Seleccione las columnas" appendTo="body"></p-multiSelect>
+
+              <button pButton pRipple icon="pi pi-file-excel" label="Exportar" (click)="exportExcel(dt)"
+                class="second-button mr-2 mb-2" style="margin-left: 1rem; height: 2.5rem; " pTooltip="Exportar a Excel"
+                tooltipPosition="bottom">
+              </button>
+            </div>
+
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+              {{col.header}}
+              <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+            <th>
+
+            </th>
+          </tr>
+
+          <tr>
+            <th *ngFor="let col of columns" [ngSwitch]="col.field">
+              <p-columnFilter *ngSwitchDefault [type]="col.type" [field]="col.field" [matchMode]="'contains'"
+                [showMenu]="false"> matchMode="contains
+              </p-columnFilter>
+
+              <p-columnFilter *ngSwitchCase="'action'" type="equals" [field]="col.field" [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown [ngModel]="value" [options]="auditActions" (onChange)="filter($event.value)"
+                    placeholder="Selecciona..." [showClear]="true">
+                    <ng-template let-option pTemplate="item">
+                      <span [class]="'customer-badge status-' + option">{{option.label}}</span>
+                    </ng-template>
+                  </p-dropdown>
                 </ng-template>
-            </p-toolbar>
-            <p-table #dt [value]="filteredData" [columns]="selectedColumns" [rows]="10" [paginator]="true" [rowHover]="true"
-                dataKey="id" currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                [showCurrentPageReport]="true" (sortFunction)="utilsService.customSort($event, cols)"
-                [customSort]="true">
-                <ng-template pTemplate="caption">
-                    <div class="grid">
-                        <div class="col-12 md:col-4 sm:col-12 justify-content-start">
-                            <h5 class="m-0">Auditorías</h5>
-                        </div>
-                        <div class="col-12 md:col sm:col-12 flex justify-content-end">
+              </p-columnFilter>
+              <p-calendar *ngSwitchCase="'changeDate'" type="equals" [showTime]="false" [monthNavigator]="true"
+                [yearNavigator]="true" [dateFormat]="'yy-mm-dd'" [(ngModel)]="selectedDate"
+                (onSelect)="onDateFilterSelect($event, col.field)" [showIcon]="true" placeholder="Filtrar por fecha">
+              </p-calendar>
 
-                            <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
-                                selectedItemsLabel="{0} columnas seleccionadas"
-                                [style]="{minWidth: '150px',color:'#6c757d'}" placeholder="Seleccione las columnas"
-                                appendTo="body"></p-multiSelect>
-                        </div>
+              <i *ngIf="selectedDate && col.field === 'changeDate'" class="pi pi-times"
+                (click)="clearDateFilter(col.field)" style="cursor: pointer; margin-left: 10px;"></i>
+            </th>
+            <th>
 
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="header" let-columns>
-                    <tr>
-                        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
-                            {{col.header}}
-                            <p-sortIcon [field]="col.field"></p-sortIcon>
-                        </th>
-                        <th>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+          <tr>
+            <td *ngFor="let col of columns"
+              [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) ">
 
-                        </th>
-                    </tr>
+              <ng-container *ngIf="col.field === 'changeDate'; else defaultContent">
+                {{ col.pipeRef ? col.pipeRef.transform(convertDatetoString(rowData.changeDate), col.arg1, col.arg2,
+                col.arg3) : convertDatetoString(rowData.changeDate) }}
+              </ng-container>
 
-                    <tr>
-                        <th *ngFor="let col of columns" [ngSwitch]="col.field">
-                            <p-columnFilter *ngSwitchDefault [type]="col.type" [field]="col.field"
-                                [matchMode]="'contains'" [showMenu]="false"> matchMode="contains
-                            </p-columnFilter>
+              <ng-template #defaultContent>
+                {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1,
+                col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
+              </ng-template>
 
-                            <p-columnFilter *ngSwitchCase="'action'" type="equals" [field]="col.field"
-                                [showMenu]="false">
-                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                    <p-dropdown [ngModel]="value" [options]="auditActions"
-                                        (onChange)="filter($event.value)" placeholder="Selecciona..."
-                                        [showClear]="true">
-                                        <ng-template let-option pTemplate="item">
-                                            <span [class]="'customer-badge status-' + option">{{option.label}}</span>
-                                        </ng-template>
-                                    </p-dropdown>
-                                </ng-template>
-                            </p-columnFilter>
-                            <p-calendar *ngSwitchCase="'changeDate'" type="equals"
-                            [showTime]="false"
-                            [monthNavigator]="true"
-                            [yearNavigator]="true"
-                            [dateFormat]="'yy-mm-dd'"
-                            [(ngModel)]="selectedDate"
-                            (onSelect)="onDateFilterSelect($event, col.field)"
-                            [showIcon]="true"
-                            placeholder="Filtrar por fecha">
-                            </p-calendar>
-                            
-                            <i *ngIf="selectedDate && col.field === 'changeDate'" 
-                            class="pi pi-times" 
-                            (click)="clearDateFilter(col.field)"
-                            style="cursor: pointer; margin-left: 10px;"></i>
-                        </th>
-                        <th>
+            </td>
+            <td>
+              <button pButton pRipple icon="pi pi-eye" label="Ver cambios"
+                class="p-button-rounded p-button-primary mr-2" (click)="changesView(rowData)"></button>
 
-                        </th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-rowData let-columns="columns">
-                    <tr>
-                        <td *ngFor="let col of columns"
-                            [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) ">
-                            
-                            <ng-container *ngIf="col.field === 'changeDate'; else defaultContent">
-                                {{ col.pipeRef ? col.pipeRef.transform(convertDatetoString(rowData.changeDate), col.arg1, col.arg2, col.arg3) : convertDatetoString(rowData.changeDate) }}
-                            </ng-container>
-                
-                            <ng-template #defaultContent>
-                                {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
-                            </ng-template>
-                                
-                        </td>
-                        <td>
-                            <button pButton pRipple icon="pi pi-eye" label="Ver cambios" class="p-button-rounded p-button-primary mr-2"
-                                (click)="changesView(rowData)"></button>
-
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="summary">
-                    <div class="p-d-flex p-ai-center p-jc-between">
-                        {{dt.filteredValue?dt.filteredValue.length:dt.totalRecords}} de {{items?items.length:0}} auditorías.
-                    </div>
-                </ng-template>
-            </p-table>
-        </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+          <div class="p-d-flex p-ai-center p-jc-between">
+            {{dt.filteredValue?dt.filteredValue.length:dt.totalRecords}} de {{items?items.length:0}} auditorías.
+          </div>
+        </ng-template>
+      </p-table>
     </div>
+  </div>
 </div>
 
 
 
-<p-dialog [(visible)]="showAuditTable" [style]="{width: '70%'}"  [modal]="true" [closable]="false">
-  
-    <ng-template pTemplate="header">
-      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-        <span style="font-weight: bold; font-size: 1.3em;">Cambios realizados</span>
-        <div *ngIf="selectedTable !== 'Reporte'" class="flex-grow-0">
-            <button pButton icon="pi pi-filter" 
-                label="{{ isFiltered ? 'Ver Todo' : 'Filtrar Diferencias' }}" 
-                (click)="toggleFilter()"></button>
+<p-dialog [(visible)]="showAuditTable" [style]="{width: '70%'}" [modal]="true" [closable]="false">
+
+  <ng-template pTemplate="header">
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+      <span style="font-weight: bold; font-size: 1.3em;">Cambios realizados</span>
+      <div *ngIf="selectedTable !== 'Reporte'" class="flex-grow-0">
+        <button pButton icon="pi pi-filter" label="{{ isFiltered ? 'Ver Todo' : 'Filtrar Diferencias' }}"
+          (click)="toggleFilter()"></button>
       </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="content">
+
+    <div *ngFor="let tableData of filteredAuditTableData; let i = index">
+      <br>
+      <div *ngIf="selectedTable == 'Reporte'">
+        <h3 style="text-align: center;">Cambio {{ i + 1 }}</h3>
       </div>
-    </ng-template>
-  
-    <ng-template pTemplate="content">
-    
-      <div *ngFor="let tableData of filteredAuditTableData; let i = index">
+      <p-table [value]="tableData.data">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 200px;">Propiedad</th>
+            <th>Valor Antiguo</th>
+            <th>Valor Nuevo</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData>
+          <tr [ngStyle]="{
+                  'background-color': rowData.oldValue !== rowData.newValue ? '#f8d7da' : 'transparent', 
+                  'color': rowData.oldValue !== rowData.newValue ? '#721c24' : 'inherit'
+              }">
+            <td class="table-title" style="width: 200px;">{{ rowData.property }}</td>
+            <td>
+              <!-- Condición para mostrar el botón de ver detalles -->
+              <ng-container *ngIf="specialProperties.includes(rowData.property)">
+                <button pButton type="button" label="Ver Detalles" icon="pi pi-info-circle"
+                  (click)="showProjectListDetails(rowData.property,rowData.oldValue, rowData.newValue)"></button>
+              </ng-container>
+              <ng-container *ngIf="!specialProperties.includes(rowData.property)">
+                {{ rowData.oldValue }}
+              </ng-container>
+            </td>
+            <td>
+              <ng-container *ngIf="!specialProperties.includes(rowData.property)">
+                {{ rowData.newValue }}
+              </ng-container>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <!-- p-dialog para mostrar los valores oldValue y newValue -->
+    <p-dialog [(visible)]="dialogVisible" [modal]="true" [closable]="false" [style]="{width: '50vw'}">
+      <p-header>{{dialogTitle}}</p-header>
+
+      <div *ngFor="let tableData of dialogData">
         <br>
-        <div *ngIf="selectedTable == 'Reporte'">
-            <h3  style="text-align: center;">Cambio {{ i + 1 }}</h3>
-        </div>
         <p-table [value]="tableData.data">
           <ng-template pTemplate="header">
             <tr>
@@ -153,68 +177,27 @@
           </ng-template>
           <ng-template pTemplate="body" let-rowData>
             <tr [ngStyle]="{
-                  'background-color': rowData.oldValue !== rowData.newValue ? '#f8d7da' : 'transparent', 
-                  'color': rowData.oldValue !== rowData.newValue ? '#721c24' : 'inherit'
-              }">
+            'background-color': rowData.oldValue !== rowData.newValue ? '#f8d7da' : 'transparent', 
+            'color': rowData.oldValue !== rowData.newValue ? '#721c24' : 'inherit'
+        }">
               <td class="table-title" style="width: 200px;">{{ rowData.property }}</td>
-              <td>
-                <!-- Condición para mostrar el botón de ver detalles -->
-                <ng-container *ngIf="specialProperties.includes(rowData.property)">
-                  <button pButton type="button" label="Ver Detalles" icon="pi pi-info-circle" (click)="showProjectListDetails(rowData.property,rowData.oldValue, rowData.newValue)"></button>
-                </ng-container>
-                <ng-container *ngIf="!specialProperties.includes(rowData.property)">
-                  {{ rowData.oldValue }}
-                </ng-container>
-              </td>
-              <td>
-                <ng-container *ngIf="!specialProperties.includes(rowData.property)">
-                  {{ rowData.newValue }}
-                </ng-container>
-              </td>
+              <td>{{ rowData.oldValue }}</td>
+              <td>{{ rowData.newValue }}</td>
             </tr>
           </ng-template>
         </p-table>
       </div>
-
-      <!-- p-dialog para mostrar los valores oldValue y newValue -->
-  <p-dialog [(visible)]="dialogVisible" [modal]="true"  [closable]="false" [style]="{width: '50vw'}">
-    <p-header>{{dialogTitle}}</p-header>
-    
-    <div *ngFor="let tableData of dialogData">
-        <br>
-    <p-table [value]="tableData.data">
-      <ng-template pTemplate="header">
-        <tr>
-          <th style="width: 200px;">Propiedad</th>
-          <th>Valor Antiguo</th>
-          <th>Valor Nuevo</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-rowData>
-        <tr [ngStyle]="{
-            'background-color': rowData.oldValue !== rowData.newValue ? '#f8d7da' : 'transparent', 
-            'color': rowData.oldValue !== rowData.newValue ? '#721c24' : 'inherit'
-        }">
-          <td class="table-title" style="width: 200px;">{{ rowData.property }}</td>
-          <td>{{ rowData.oldValue }}</td>
-          <td>{{ rowData.newValue }}</td>
-        </tr>
-      </ng-template>
-    </p-table>
-    </div>
-    <p-footer>
-      <button pButton label="Cerrar" icon="pi pi-times" (click)="dialogVisible = false"></button>
-    </p-footer>
-  </p-dialog>
+      <p-footer>
+        <button pButton label="Cerrar" icon="pi pi-times" (click)="dialogVisible = false"></button>
+      </p-footer>
+    </p-dialog>
 
 
-    </ng-template>
-  
-    <ng-template pTemplate="footer">
-      <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
-        (click)="cancelDialog()"></button>
-    </ng-template>
+  </ng-template>
 
-  </p-dialog>
+  <ng-template pTemplate="footer">
+    <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
+      (click)="cancelDialog()"></button>
+  </ng-template>
 
-  
+</p-dialog>

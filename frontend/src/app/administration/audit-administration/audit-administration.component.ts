@@ -1,8 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { el } from '@fullcalendar/core/internal-common';
-import { t } from '@fullcalendar/resource/internal-common';
-import { log } from 'console';
 import { ConfirmationService, MessageService, SelectItem } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { AuditService } from 'src/app/services/audit.service';
@@ -39,8 +36,6 @@ export class AuditAdministrationComponent implements OnInit {
   specialProperties: string[] = ['Puntos Focales', 'Lugares de Ejecución', 'Indicadores de Ejecución'];
 
   constructor(private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    private fb: FormBuilder,
     public utilsService: UtilsService,
     private enumsService: EnumsService,
     private auditService: AuditService) { }
@@ -62,7 +57,7 @@ export class AuditAdministrationComponent implements OnInit {
     this.enumsService.getByType(EnumsType.AuditAction).subscribe(value => {
       this.auditActions = value;
     });
-    
+
   }
 
   private loadItems(tableName: string) {
@@ -78,8 +73,8 @@ export class AuditAdministrationComponent implements OnInit {
           return dateB.getTime() - dateA.getTime();
         });
 
-        this.filteredData=this.items
-        console.log(this.filteredData)
+        this.filteredData = this.items
+
 
       },
       error: err => {
@@ -94,32 +89,32 @@ export class AuditAdministrationComponent implements OnInit {
 
   }
 
-  
+
 
   // Método para manejar la selección de fecha y aplicar el filtro
   onDateFilterSelect(event: any, field: string): void {
-    const selectedDate = event; 
+    const selectedDate = event;
     if (selectedDate) {
       this.selectedDate = selectedDate;
       const filtered = this.items.filter(item => {
         const itemDate = new Date(item[field].year, item[field].monthValue - 1, item[field].dayOfMonth, item[field].hour, item[field].minute, item[field].second);
         const selectedDateOnly = new Date(selectedDate);
-       
+
         return itemDate.getFullYear() === selectedDateOnly.getFullYear() &&
-               itemDate.getMonth() === selectedDateOnly.getMonth() &&
-               itemDate.getDate() === selectedDateOnly.getDate();
+          itemDate.getMonth() === selectedDateOnly.getMonth() &&
+          itemDate.getDate() === selectedDateOnly.getDate();
       });
-      
-      this.filteredData = filtered; 
-      console.log(this.filteredAuditTableData)
+
+      this.filteredData = filtered;
+
     } else {
-      this.filteredData = [...this.items]; 
+      this.filteredData = [...this.items];
     }
   }
 
   clearDateFilter(field: string): void {
     this.selectedDate = null;
-    this.filteredData = [...this.items]; 
+    this.filteredData = [...this.items];
   }
 
   convertDatetoString(changeDate: Date) {
@@ -138,14 +133,18 @@ export class AuditAdministrationComponent implements OnInit {
   }
 
   exportExcel(table: Table) {
-    const listItems = this.items.map(item => ({
+    const listItems = this.filteredData.map(item => ({
       ...item,
       changeDate: this.convertDatetoString(item.changeDate)
     }));
-    const filterItems = table.filteredValue.map(item => ({
-      ...item,
-      changeDate: this.convertDatetoString(item.changeDate)
-    }));
+    let filterItems = []
+    if (table.filteredValue) {
+      filterItems = table.filteredValue.map(item => ({
+        ...item,
+        changeDate: this.convertDatetoString(item.changeDate)
+      }));
+    }
+
     this.utilsService.exportTableAsExcel(this._selectedColumns,
       table.filteredValue ? filterItems : listItems,
       'audits');
