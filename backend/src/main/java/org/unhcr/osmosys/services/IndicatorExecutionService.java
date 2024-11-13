@@ -168,6 +168,8 @@ public class IndicatorExecutionService {
             List<Canton> locations, Indicator indicator,
             Period period, IndicatorExecution ie
     ) throws GeneralAppException {
+        period = this.periodService.getWithAllDataById(period.getId());
+        Long periodID = period.getId();
         List<DissagregationType> dissagregationTypes = dissagregationAssignations.stream().map(DissagregationAssignationToIndicatorInterface::getDissagregationType).collect(Collectors.toList());
         Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationsMap = new HashMap<>();
         for (DissagregationType dissagregationType : dissagregationTypes) {
@@ -189,7 +191,7 @@ public class IndicatorExecutionService {
                         } else {
 
                             Optional<DissagregationAssignationToIndicator> dissagregationAssignationOptional = indicator.getDissagregationsAssignationToIndicator().stream()
-                                    .filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.getPeriod().getId().equals(period.getId())
+                                    .filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.getPeriod().getId().equals(periodID)
                                             && dissagregationAssignationToIndicator.getDissagregationType().equals(dissagregationType))
                                     .findFirst();
                             @SuppressWarnings("OptionalGetWithoutIsPresent")
@@ -326,7 +328,7 @@ public class IndicatorExecutionService {
         } else {
             periodDissagregationMap = this.getPeriodDessagregationMap(false, period, indicatorExecution.getIndicator());
         }
-        if(periodDissagregationMap==null) return;
+        if (periodDissagregationMap == null) return;
         this.updateIndicatorExecutionLocationsAssignations(indicatorExecution, locationsToActivate, locationsToDesactive);
         this.setStandardDissagregationOptionsForIndicatorExecutions(indicatorExecution, periodDissagregationMap);
         this.quarterService.updateQuarterDissagregations(indicatorExecution, periodDissagregationMap, null);
@@ -397,10 +399,9 @@ public class IndicatorExecutionService {
         final Period periodFulldata = this.periodService.getWithAllDataById(period.getId());
         Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationMap = new HashMap<>();
         List<DissagregationAssignationToIndicatorInterface> dissagregationsForPeriod;
-        if (isGeneralIndicator && periodFulldata.getGeneralIndicator()==null) {
+        if (isGeneralIndicator && periodFulldata.getGeneralIndicator() == null) {
             return null;
-        }
-        else if (isGeneralIndicator && periodFulldata.getGeneralIndicator()!=null) {
+        } else if (isGeneralIndicator && periodFulldata.getGeneralIndicator() != null) {
             dissagregationsForPeriod = periodFulldata.getGeneralIndicator().getDissagregationAssignationsToGeneralIndicator()
                     .stream()
                     .filter(dissagregationAssignationToGeneralIndicator -> dissagregationAssignationToGeneralIndicator.getState().equals(State.ACTIVO))
@@ -425,7 +426,7 @@ public class IndicatorExecutionService {
 
                     } else {
 
-                        Boolean userCustomDissagregation=((DissagregationAssignationToIndicator) dai).getUseCustomAgeDissagregations();
+                        Boolean userCustomDissagregation = ((DissagregationAssignationToIndicator) dai).getUseCustomAgeDissagregations();
                         if (userCustomDissagregation) {
                             options = ((DissagregationAssignationToIndicator) dai).getDissagregationAssignationToIndicatorPeriodCustomizations()
                                     .stream()
@@ -1198,8 +1199,6 @@ public class IndicatorExecutionService {
         );
 
     }
-
-
 
 
     public void updateIndicatorExecutionLocationsAssignations(
