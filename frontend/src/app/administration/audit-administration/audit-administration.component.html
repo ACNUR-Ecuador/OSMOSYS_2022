@@ -21,7 +21,7 @@
                         class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
                 </ng-template>
             </p-toolbar>
-            <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true" [rowHover]="true"
+            <p-table #dt [value]="filteredData" [columns]="selectedColumns" [rows]="10" [paginator]="true" [rowHover]="true"
                 dataKey="id" currentPageReportTemplate=" {first} a {last} de {totalRecords} "
                 [showCurrentPageReport]="true" (sortFunction)="utilsService.customSort($event, cols)"
                 [customSort]="true">
@@ -69,17 +69,21 @@
                                     </p-dropdown>
                                 </ng-template>
                             </p-columnFilter>
-                            <p-columnFilter *ngSwitchCase="'state'" type="equals" [field]="col.field"
-                                [showMenu]="false">
-                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                    <p-dropdown [ngModel]="value" [options]="states" (onChange)="filter($event.value)"
-                                        placeholder="Selecciona..." [showClear]="true">
-                                        <ng-template let-option pTemplate="item">
-                                            <span [class]="'customer-badge status-' + option">{{option.label}}</span>
-                                        </ng-template>
-                                    </p-dropdown>
-                                </ng-template>
-                            </p-columnFilter>
+                            <p-calendar *ngSwitchCase="'changeDate'" type="equals"
+                            [showTime]="false"
+                            [monthNavigator]="true"
+                            [yearNavigator]="true"
+                            [dateFormat]="'yy-mm-dd'"
+                            [(ngModel)]="selectedDate"
+                            (onSelect)="onDateFilterSelect($event, col.field)"
+                            [showIcon]="true"
+                            placeholder="Filtrar por fecha">
+                            </p-calendar>
+                            
+                            <i *ngIf="selectedDate && col.field === 'changeDate'" 
+                            class="pi pi-times" 
+                            (click)="clearDateFilter(col.field)"
+                            style="cursor: pointer; margin-left: 10px;"></i>
                         </th>
                         <th>
 
