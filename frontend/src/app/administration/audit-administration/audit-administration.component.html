@@ -47,7 +47,7 @@
           <tr>
             <th *ngFor="let col of columns" [ngSwitch]="col.field">
               <p-columnFilter *ngSwitchDefault [type]="col.type" [field]="col.field" [matchMode]="'contains'"
-                [showMenu]="false"> matchMode="contains
+                [showMenu]="false"> 
               </p-columnFilter>
 
               <p-columnFilter *ngSwitchCase="'action'" type="equals" [field]="col.field" [showMenu]="false">

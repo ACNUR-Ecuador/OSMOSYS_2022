@@ -34,7 +34,7 @@ public class IndicatorWeb extends BaseWebEntity implements Serializable {
     private UnitType unit;
     private List<DissagregationAssignationToIndicatorWeb> dissagregationsAssignationToIndicator = new ArrayList<>();
     private List<CustomDissagregationAssignationToIndicatorWeb> customDissagregationAssignationToIndicators = new ArrayList<>();
-
+    private String periods;
     private Boolean blockAfterUpdate;
 
     public String getCode() {
@@ -180,6 +180,14 @@ public class IndicatorWeb extends BaseWebEntity implements Serializable {
 
     public void setInstructions(String instructions) {
         this.instructions = instructions;
+    }
+
+    public String getPeriods() {
+        return periods;
+    }
+
+    public void setPeriods(String periods) {
+        this.periods = periods;
     }
 
     @Override

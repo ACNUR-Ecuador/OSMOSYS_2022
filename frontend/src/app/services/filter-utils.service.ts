@@ -101,6 +101,14 @@ export class FilterUtilsService {
         }
         return result;
     }
+    customFilterPeriod(value: any, filter: any): boolean {
+        
+        if (!filter || !value) return true; 
+        
+        // Buscamos si el año seleccionado está presente dentro de la cadena de años concatenados
+        return String(value).includes(String(filter.year)); 
+      }
+
 
     dissagregationsAssignationToIndicatorFilter(value: DissagregationAssignationToIndicator[], filter): boolean {
 

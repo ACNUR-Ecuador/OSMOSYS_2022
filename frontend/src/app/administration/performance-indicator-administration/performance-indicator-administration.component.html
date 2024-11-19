@@ -66,10 +66,10 @@
                                     </p-dropdown>
                                 </ng-template>
                             </p-columnFilter>
-                            <p-columnFilter *ngSwitchCase="null" type="equals"
-                                            [field]="'dissagregationsAssignationToIndicator'"
+                            <p-columnFilter *ngSwitchCase="'periods'" type="equals"
+                                            [field]="col.field"
                                             [showMenu]="false"
-                                            [matchMode]="'periodIndicatorFilter'"
+                                            [matchMode]="'customFilterPeriod'"
                             >
                                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                                     <p-dropdown [ngModel]="value" [options]="periodsSelectItems"
@@ -126,7 +126,7 @@
 <form [formGroup]="formItem" (ngSubmit)="saveItem()">
     <p-dialog [(visible)]="showDialog" header="Indicador" [modal]="true"
               styleClass="p-fluid" [closable]="false"
-              [baseZIndex]=1000
+              [baseZIndex]=1000 [style]="{width: '95%'}"
     >
         <ng-template pTemplate="content">
             <div class="col-12">
@@ -144,7 +144,7 @@
                                         [showClear]="true"
                                         placeholder="Selecciona una declaración.... "
                                         (onChange)="setPeriodForStatment($event.value)"
-
+                                        [panelStyle]="{ 'white-space': 'nowrap', 'overflow': 'hidden', 'text-overflow': 'ellipsis',  'max-width': '80%' }"
 
                             >
                             </p-dropdown>

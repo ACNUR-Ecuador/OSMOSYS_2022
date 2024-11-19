@@ -374,8 +374,7 @@ public class IndicatorExecutionService {
         List<IndicatorExecution> ies = this.indicatorExecutionDao.getByIndicatorIdAndPeriodId(period.getId(), indicator.getId());
         Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> periodDissagregationMap = this.getPeriodDessagregationMap(false, period, indicator);
         // obtengo las segregaciones opcionales
-
-        if (periodDissagregationMap == null) return;
+        if (periodDissagregationMap == null ) return;
 
         for (IndicatorExecution ie : ies) {
             // debo agregar localizaciones si es el caso

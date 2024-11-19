@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Stateless
 public class ModelWebTransformationService {
@@ -372,6 +373,21 @@ public class ModelWebTransformationService {
         if (getDissagregations) {
             indicatorWeb.setDissagregationsAssignationToIndicator(this.dissagregationAssignationToIndicatorsToDissagregationAssignationToIndicatorsWeb(indicator.getDissagregationsAssignationToIndicator()));
             indicatorWeb.setCustomDissagregationAssignationToIndicators(this.customDissagregationAssignationToIndicatorsToCustomDissagregationAssignationToIndicatorsWeb(indicator.getCustomDissagregationAssignationToIndicators()));
+            List<DissagregationAssignationToIndicatorWeb> dissagregationAssignationToIndicatorWebs = indicatorWeb.getDissagregationsAssignationToIndicator();
+            List<CustomDissagregationAssignationToIndicatorWeb> customDissagregationAssignationToIndicatorWebs = indicatorWeb.getCustomDissagregationAssignationToIndicators();
+            String periods= Stream.concat(
+                            dissagregationAssignationToIndicatorWebs.stream()
+                                    .filter(d -> d.getPeriod() != null)
+                                    .map(d -> String.valueOf(d.getPeriod().getYear())),
+
+                            customDissagregationAssignationToIndicatorWebs.stream()
+                                    .filter(c -> c.getPeriod() != null)
+                                    .map(c -> String.valueOf(c.getPeriod().getYear()))
+                    )
+                    .distinct()  // Elimina los duplicados
+                    .sorted()    // Ordena los años
+                    .collect(Collectors.joining("-"));
+            indicatorWeb.setPeriods(periods);
         }
         return indicatorWeb;
     }
