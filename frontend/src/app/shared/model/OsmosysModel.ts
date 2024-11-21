@@ -159,6 +159,7 @@ export class Indicator {
         this.isMonitored = true;
         this.compassIndicator = false;
         this.blockAfterUpdate = false;
+        
     }
 
     public id: number;
@@ -181,6 +182,7 @@ export class Indicator {
     public blockAfterUpdate: boolean;
     public dissagregationsAssignationToIndicator: DissagregationAssignationToIndicator[];
     public customDissagregationAssignationToIndicators: CustomDissagregationAssignationToIndicator[];
+    public periods?:string;
 }
 
 export class DissagregationAssignationToIndicator {

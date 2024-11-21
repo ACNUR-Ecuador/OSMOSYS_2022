@@ -238,11 +238,11 @@
     </form>
 </div>
 
-<p-dialog [(visible)]="showErrorResume" [closable]="false" [closeOnEscape]="false">
+<p-dialog [(visible)]="showTotalErrorResume" [closable]="false" [closeOnEscape]="false">
     <ng-template pTemplate="header">
         Existen Errores en los Valores
     </ng-template>
-    <div *ngIf="showErrorResume">
+    <div *ngIf="showTotalErrorResume">
         <div class="grid">
             <div class="col-12">
                 Existen errores en los valores. Los valores totales de cada desagregación en la tabla deberían ser
@@ -261,6 +261,45 @@
                         <tr>
                             <td>{{dissagregation | enumValuesToLabel:'DissagregationType'}}</td>
                             <td>{{totalsValidation.get(dissagregation)}}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-end flex-wrap">
+            <button pButton type="button" pRipple label="Cerrar" icon="pi pi-times"
+                    (click)="closeErrorDialog()"></button>
+        </div>
+    </ng-template>
+</p-dialog>
+<p-dialog [(visible)]="showMissmatchErrorResume" [closable]="false" [closeOnEscape]="false">
+    <ng-template pTemplate="header">
+        Existen Errores en los Valores
+    </ng-template>
+    <div *ngIf="showMissmatchErrorResume">
+        <div class="grid">
+            <div class="col-12">
+                <h5 class="p-error">Existen errores en los valores. Los valores totales de cada opción de desagregación en las
+                    tablas
+                    deberían ser
+                    iguales.</h5>
+
+            </div>
+            <div class="col-12">
+                <!--suppress AngularInvalidExpressionResultType -->
+                <p-table [value]="$any(totalsValidation).keys()" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Desagregación</th>
+                            <th>Total</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-dissagregation>
+                        <tr>
+                            <td>{{missMatchMessage(dissagregation)}}</td>
+                            <td>{{ missMatchTotal(dissagregation)}}</td>
                         </tr>
                     </ng-template>
                 </p-table>
@@ -375,3 +414,4 @@
         </ng-template>
     </p-dialog>
 </form>
+

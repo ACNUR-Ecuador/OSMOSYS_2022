@@ -419,8 +419,14 @@ public class MonthService {
 
     public Long changeMonthBlockedState(Long monthId, Boolean blockinState) {
         Month month = this.monthDao.find(monthId);
-        Object oldMonth=monthDao.findMonthRelatedProject(monthId);
         IndicatorExecution indicatorExecution=indicatorExecutionDao.find(month.getQuarter().getIndicatorExecution().getId());
+        Object oldMonth;
+        if(indicatorExecution.getProject()!=null){
+            oldMonth=monthDao.findMonthRelatedProject(monthId);
+        }else{
+            oldMonth=monthDao.findMonthRelatedIndicator(monthId);
+        }
+
         if (!blockinState && month.getBlockUpdate()) {
             month.setChecked(false);
             // todo send alert email
@@ -432,14 +438,37 @@ public class MonthService {
 
 
         month.setBlockUpdate(blockinState);
-        Object newMonth=monthDao.findMonthRelatedProject(monthId);
-        if(blockinState) {
-            // Registrar auditoría
-            auditService.logAction("Bloqueo de Mes Indicador", indicatorExecution.getProject().getCode(), indicatorExecution.getIndicator().getCode(), AuditAction.LOCK, responsibleUser, oldMonth, newMonth, State.ACTIVO);
-        }else {
-            // Registrar auditoría
-            auditService.logAction("Bloqueo de Mes Indicador", indicatorExecution.getProject().getCode(), indicatorExecution.getIndicator().getCode(), AuditAction.UNLOCK, responsibleUser, oldMonth, newMonth, State.ACTIVO);
+        Object newMonth;
+        if(indicatorExecution.getProject()!=null){
+            newMonth=monthDao.findMonthRelatedProject(monthId);
+        }else{
+            newMonth=monthDao.findMonthRelatedIndicator(monthId);
+        }
 
+        if (blockinState) {
+            // Registrar auditoría con validación
+            auditService.logAction(
+                    "Bloqueo de Mes Indicador",
+                    indicatorExecution.getProject() != null ? indicatorExecution.getProject().getCode() : null,
+                    indicatorExecution.getIndicator().getCode(),
+                    AuditAction.LOCK,
+                    responsibleUser,
+                    oldMonth,
+                    newMonth,
+                    State.ACTIVO
+            );
+        } else {
+            // Registrar auditoría con validación
+            auditService.logAction(
+                    "Bloqueo de Mes Indicador",
+                    indicatorExecution.getProject() != null ? indicatorExecution.getProject().getCode() : null,
+                    indicatorExecution.getIndicator().getCode(),
+                    AuditAction.UNLOCK,
+                    responsibleUser,
+                    oldMonth,
+                    newMonth,
+                    State.ACTIVO
+            );
         }
 
         this.saveOrUpdate(month);

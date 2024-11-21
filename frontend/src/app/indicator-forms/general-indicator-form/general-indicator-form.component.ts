@@ -10,6 +10,7 @@ import {EnumsService} from '../../services/enums.service';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
 import {CantonService} from "../../services/canton.service";
+import { EnumValuesToLabelPipe } from 'src/app/shared/pipes/enum-values-to-label.pipe';
 
 @Component({
     selector: 'app-general-indicator-form',
@@ -33,10 +34,11 @@ export class GeneralIndicatorFormComponent implements OnInit {
     sourceTypes: SelectItemWithOrder<any>[];
 
     render = false;
-    showErrorResume = false;
+    
     showOtherSource: boolean;
-    totalsValidation: Map<string, number> = null;
-
+    totalsValidation: Map<string, any> = null;
+    showTotalErrorResume = false;
+    showMissmatchErrorResume = false;
     noDimentionDissagregations: EnumWeb[] = [];
     oneDimentionDissagregations: EnumWeb[] = [];
     twoDimentionDissagregations: EnumWeb[] = [];
@@ -65,7 +67,8 @@ export class GeneralIndicatorFormComponent implements OnInit {
                 private messageService: MessageService,
                 private fb: FormBuilder,
                 private cantonService: CantonService,
-                private cd: ChangeDetectorRef
+                private cd: ChangeDetectorRef,
+                private enumValuesToLabelPipe: EnumValuesToLabelPipe
     ) {
     }
 
@@ -169,7 +172,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
 
     saveMonth() {
         this.utilsService.setZerosMonthValues(this.monthValuesMap);
-        const totalsValidation = this.utilsService.validateMonth(this.monthValuesMap, null);
+        const totalsValidation = this.utilsService.validateMonthAndOptions(this.monthValuesMap, null);
         this.monthValues.month.commentary = this.formItem.get('commentary').value;
         this.monthValues.month.sources = this.formItem.get('sources').value;
         this.monthValues.month.sourceOther = this.formItem.get('sourceOther').value;
@@ -179,13 +182,41 @@ export class GeneralIndicatorFormComponent implements OnInit {
             this.monthValues.month.checked = this.formItem.get('checked').value;
         }
         if (totalsValidation) {
-            this.showErrorResume = true;
-            this.totalsValidation = totalsValidation;
+            if(totalsValidation.type=='totalsError'){
+                this.showTotalErrorResume = true;
+                this.totalsValidation = totalsValidation.value;
+            }else{
+                this.showMissmatchErrorResume = true;
+                this.totalsValidation = totalsValidation.value;
+            }
         } else {
             this.messageService.clear();
             this.totalsValidation = null;
             this.sendMonthValue();
         }
+    }
+    missMatchMessage(dissagregation){
+        const dissMap=this.totalsValidation.get(dissagregation)
+        const firstKey = dissMap?.keys().next().value;
+        const firstSubkey = dissMap.get(firstKey)?.keys().next().value;
+        const firstValue = dissMap.get(firstKey)?.get(firstSubkey);    
+
+        const result = `${this.enumValuesToLabelPipe.transform(dissagregation, 'DissagregationType')}: ${this.utilsService.getDissagregationlabelByKey(firstKey)} - ${firstSubkey}`;
+
+        return result
+
+    }
+
+    missMatchTotal(dissagregation){
+        const dissMap=this.totalsValidation.get(dissagregation)
+        const firstKey = dissMap?.keys().next().value;
+        const firstSubkey = dissMap.get(firstKey)?.keys().next().value;
+        const firstValue = dissMap.get(firstKey)?.get(firstSubkey);    
+
+        const result = `${firstValue}`;
+
+        return result
+
     }
 
     cancel() {
@@ -210,7 +241,8 @@ export class GeneralIndicatorFormComponent implements OnInit {
     }
 
     closeErrorDialog() {
-        this.showErrorResume = false;
+        this.showTotalErrorResume = false;
+        this.showMissmatchErrorResume = false;
     }
 
     setDimentionsDissagregations(): void {

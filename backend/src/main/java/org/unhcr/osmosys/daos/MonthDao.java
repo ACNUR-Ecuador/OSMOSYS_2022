@@ -273,5 +273,39 @@ public class MonthDao extends GenericDaoJpa<Month, Long> {
         return results;
     }
 
+    public Object findMonthRelatedIndicator(Long idValue) {
+        // JPQL de la consulta
+        String jpql = "SELECT new map( "
+
+                + "i.code AS Código_de_Indicador, "
+                + "i.description AS Descripción_de_Indicador, "
+                + "ie.supervisorUser.name AS Supervisor, "
+                + "ie.assignedUser.name AS Responsable ,"
+                + "q.year AS Periodo, "
+                + "q.quarter AS Trimestre, "
+                + "m.month AS Mes, "
+                + "m.blockUpdate AS Bloqueo_de_mes "
+                + ") "
+                + "FROM IndicatorExecution ie "
+                + "JOIN ie.indicator i "
+                + "JOIN ie.quarters q "
+                + "JOIN q.months m "
+                + "WHERE m.id = :idValue "
+                + "AND ie.indicator.id = i.id "
+                + "AND q.indicatorExecution.id = ie.id "
+                + "AND q.id = m.quarter.id ";
+
+        // Ejecutar la consulta con el parámetro `idValue`
+        Query query = getEntityManager().createQuery(jpql);
+        query.setParameter("idValue", idValue);
+        // Obtener los resultados como una lista de Mapas
+        List<?> results = query.getResultList();
+
+        if (results.isEmpty()) {
+            return null;
+        }
+        return results.get(0);
+    }
+
 
 }

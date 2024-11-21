@@ -95,7 +95,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.registerFilters();
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
-            {field: null, header: 'Periodos', type: ColumnDataType.text, pipeRef: this.periodsFromIndicatorPipe},
+            {field: 'periods', header: 'Periodos', type: ColumnDataType.text},
             {field: 'code', header: 'Código', type: ColumnDataType.text},
             {field: 'description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'category', header: 'Categoría', type: ColumnDataType.text},
@@ -440,6 +440,9 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         });
         this.filterService.register('periodIndicatorFilter', (value, filter): boolean => {
             return this.filterUtilsService.periodIndicatorFilter(value, filter);
+        });
+        this.filterService.register('customFilterPeriod', (value, filter): boolean => {
+            return this.filterUtilsService.customFilterPeriod(value, filter);
         });
     }
 
