@@ -248,22 +248,43 @@ public class ReportDataService {
                 }
             }
             //Totales
+            int finalI = i;
+
+            List<Integer> monthValues = indicatorsList.stream()
+                    .filter(subArray -> subArray.size() > finalI)
+                    .map(subArray -> Integer.parseInt(subArray.get(finalI))).collect(Collectors.toList());
+
             switch (tag.getOperation()) {
                 case "Suma":
                     Cell cell = rowData.createCell(3 + indicatorsList.size());
-                    cell.setCellValue("Suma" + i);
+                    cell.setCellValue(monthValues.stream().mapToInt(Integer::intValue).sum());
                     break;
-                case "max":
+                case "Máximo":
                     Cell cell1 = rowData.createCell(3 + indicatorsList.size());
-                    cell1.setCellValue("max" + i);
+                    OptionalInt maximo = monthValues.stream().mapToInt(Integer::intValue).max();
+                    if(maximo.isPresent()) {
+                        cell1.setCellValue(maximo.getAsInt());
+                    } else {
+                        cell1.setCellValue("No aplica");
+                    }
                     break;
-                case "min":
-                    Cell cell2 = rowData.createCell(3 + indicatorsList.size());
-                    cell2.setCellValue("min" + i);
-                    break;
-                case "promedio":
+                case "Mínimo":
                     Cell cell3 = rowData.createCell(3 + indicatorsList.size());
-                    cell3.setCellValue("promedio" + i);
+                    OptionalInt minimo = monthValues.stream().mapToInt(Integer::intValue).min();
+                    if(minimo.isPresent()) {
+                        cell3.setCellValue(minimo.getAsInt());
+                    } else {
+                        cell3.setCellValue("No aplica");
+                    }
+                    break;
+                case "Promedio":
+                    Cell cell4 = rowData.createCell(3 + indicatorsList.size());
+                    OptionalDouble average = monthValues.stream().mapToInt(Integer::intValue).average();
+                    if(average.isPresent()) {
+                        cell4.setCellValue(average.getAsDouble());
+                    } else {
+                        cell4.setCellValue("No aplica");
+                    }
                     break;
                 default:
                     break;

@@ -112,7 +112,7 @@ export class StatementAdministrationComponent implements OnInit {
             area: new FormControl(''),
             areaType: new FormControl(''),
             pillar: new FormControl('', Validators.required),
-            situation: new FormControl('', Validators.required),
+            situation: new FormControl(''),
             periods: new FormControl('', Validators.required),
             periodStatementAsignations: new FormControl('')
         });

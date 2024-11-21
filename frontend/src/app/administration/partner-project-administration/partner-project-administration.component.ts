@@ -1180,12 +1180,15 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
     updatePerformanceIndicatorsTargets() {
         this.showTargetsPerformanceIndicatorUpdateDialog = true;
-        const ieTemporal = this.performanceIndicators.pop();
-        const quarters = ieTemporal.quarters.sort((a, b) => a.order - b.order);
-
-        this.quarterOrders = quarters.map(value => value.order);
-        this.quarterTitles = quarters.map(value => value.quarter + '-' + value.year);
-        this.performanceIndicators.forEach(ie => ie.quarters.sort((a, b) => a.order - b.order));
+        if(this.performanceIndicators.length > 0){
+            const ieTemporal = this.performanceIndicators[0];
+            const quarters = ieTemporal.quarters.sort((a, b) => a.order - b.order);
+    
+            this.quarterOrders = quarters.map(value => value.order);
+            this.quarterTitles = quarters.map(value => value.quarter + '-' + value.year);
+            this.performanceIndicators.forEach(ie => ie.quarters.sort((a, b) => a.order - b.order));
+        }
+        
 
     }
 

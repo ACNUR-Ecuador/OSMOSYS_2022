@@ -55,12 +55,12 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
             {field: 'name', header: 'Nombre', type: ColumnDataType.text},
-            {
-                field: 'controlTotalValue',
-                header: 'Valores totales',
-                type: ColumnDataType.boolean,
-                pipeRef: this.booleanYesNoPipe
-            },
+            // {
+            //     field: 'controlTotalValue',
+            //     header: 'Valores totales',
+            //     type: ColumnDataType.boolean,
+            //     pipeRef: this.booleanYesNoPipe
+            // },
             {
                 field: 'customDissagregationOptions',
                 header: 'Desagregaciones',

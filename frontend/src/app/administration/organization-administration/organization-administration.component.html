@@ -12,7 +12,7 @@
                     <div class="grid">
                         <div
                             class="col-12 md:col-4 sm:col-12 justify-content-start">
-                            <h3 class="m-0">Administración de Organizaciones</h3>
+                            <h3 class="m-0">Administración de Socios</h3>
                         </div>                        
                         <div
                             class="col-12 md:col sm:col-12 flex justify-content-end">
@@ -91,14 +91,14 @@
     </div>
 </div>
 <form [formGroup]="formItem" (ngSubmit)="saveItem()">
-    <p-dialog [(visible)]="showDialog" [style]="{width: '450px'}" header="Orgqanización" [modal]="true"
+    <p-dialog [(visible)]="showDialog" [style]="{width: '450px'}" header="Socios" [modal]="true"
               [closable]="false">
 
         <ng-template pTemplate="content">
             <p-messages></p-messages>
             <div class="card p-fluid">
                 <div class="field">
-                    <label for="codeI">Código</label>
+                    <label for="codeI">Código del Implementador</label>
                     <input type="text" pInputText id="codeI"
                            formControlName="code" autofocus/>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('code',formItem)">Campo

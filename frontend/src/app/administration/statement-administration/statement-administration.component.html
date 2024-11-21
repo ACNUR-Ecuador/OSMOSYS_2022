@@ -12,7 +12,7 @@
                     <div class="grid">
                         <div
                             class="col-12 md:col-4 sm:col-12 justify-content-start">
-                            <h3 class="m-0">Administración de Enunciados</h3>
+                            <h3 class="m-0">Marco de Resultados</h3>
                         </div>
                         <div                           
                             class="col-12 md:col sm:col-12 flex justify-content-end">
@@ -166,32 +166,15 @@
     </div>
 </div>
 <form [formGroup]="formItem" (ngSubmit)="saveItem()">
-    <p-dialog [(visible)]="showDialog" header="Enunciado" [modal]="true"
+    <p-dialog [(visible)]="showDialog" header="Marco de Resultados" [modal]="true"
               [closable]="false">
 
         <ng-template pTemplate="content">
             <p-messages></p-messages>
             <div class="card">
                 <div class="p-fluid p-formgrid grid">
-                    <div class="field col-4 md:col4 p-sm-12">
-                        <label for="periodsI">Periodos *</label>
-                        <p-multiSelect id="periodsI"
-                                       [options]="periodsItems"
-                                       appendTo="body"
-                                       formControlName="periods"
-                                       [dataKey]="'id'"
-                                       (onChange)="filterStatementsByPeriod($event.value)"
-                                       placeholder="Selecciona"
-
-                        >
-
-                        </p-multiSelect>
-
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('situation',formItem)">Campo
-                            obligatorio.</small>
-                    </div>
                     <div class="field col-4 md:col-4">
-                        <label for="areaTypeI">Tipo *</label>
+                        <label for="areaTypeI">Nivel de Resultado *</label>
                         <p-dropdown id="areaTypeI"
                                     formControlName="areaType"
                                     [options]="areaTypesItems"
@@ -204,6 +187,38 @@
                         <small class="p-error" *ngIf="utilsService.showErrorForm('parentStatement',formItem)">Campo
                             obligatorio.</small>
                     </div>
+                    <div class="field col-4 md:col4 p-sm-12">
+                        <label for="periodsI">Periodos *</label>
+                        <p-multiSelect id="periodsI"
+                            [options]="periodsItems"
+                            appendTo="body"
+                            formControlName="periods"
+                            [dataKey]="'id'"
+                            (onChange)="filterStatementsByPeriod($event.value)"
+                            placeholder="Selecciona">
+
+                        </p-multiSelect>
+
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('situation',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+
+                    <div class="field col-3 md:col3 p-sm-12">
+                        <label for="areaI">Área</label>
+
+                        <p-dropdown id="areaI"
+                                    formControlName="area"
+                                    [options]="areasItems"
+                                    placeholder="Selecciona"
+                                    [filter]=true
+                                    appendTo="body"
+                        >
+                        </p-dropdown>
+
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('area',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+                    
                     <div class="field col-4 md:col-4">
                         <label for="areaI">Enunciado padre</label>
                         <p-dropdown id="parentStatementI"
@@ -225,6 +240,22 @@
                         <input type="text" pInputText id="codeI"
                                formControlName="code" autofocus/>
                         <small class="p-error" *ngIf="utilsService.showErrorForm('code',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+
+                    <div class="field col-3 md:col3 p-sm-12 ">
+                        <label for="pillarI">Pilar *</label>
+
+                        <p-dropdown id="pillarI"
+                                    formControlName="pillar"
+                                    [options]="pillarsItems"
+                                    placeholder="Selecciona"
+                                    [filter]=true
+                                    appendTo="body"
+                        >
+                        </p-dropdown>
+
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('pillar',formItem)">Campo
                             obligatorio.</small>
                     </div>
 
@@ -251,37 +282,9 @@
                         <small class="p-error" *ngIf="utilsService.showErrorForm('state',formItem)">Campo
                             obligatorio.</small>
                     </div>
-                    <div class="field col-3 md:col3 p-sm-12">
-                        <label for="areaI">Área</label>
-
-                        <p-dropdown id="areaI"
-                                    formControlName="area"
-                                    [options]="areasItems"
-                                    placeholder="Selecciona"
-                                    [filter]=true
-                                    appendTo="body"
-                        >
-                        </p-dropdown>
-
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('area',formItem)">Campo
-                            obligatorio.</small>
-                    </div>
-                    <div class="field col-3 md:col3 p-sm-12 ">
-                        <label for="pillarI">Pilar *</label>
-
-                        <p-dropdown id="pillarI"
-                                    formControlName="pillar"
-                                    [options]="pillarsItems"
-                                    placeholder="Selecciona"
-                                    [filter]=true
-                                    appendTo="body"
-                        >
-                        </p-dropdown>
-
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('pillar',formItem)">Campo
-                            obligatorio.</small>
-                    </div>
-                    <div class="field col-3 md:col3 p-sm-12">
+                    
+                    
+                    <!-- <div class="field col-3 md:col3 p-sm-12">
                         <label for="areaI">Situation *</label>
 
                         <p-dropdown id="situationI"
@@ -295,7 +298,7 @@
 
                         <small class="p-error" *ngIf="utilsService.showErrorForm('situation',formItem)">Campo
                             obligatorio.</small>
-                    </div>
+                    </div> -->
 
                 </div>
             </div>

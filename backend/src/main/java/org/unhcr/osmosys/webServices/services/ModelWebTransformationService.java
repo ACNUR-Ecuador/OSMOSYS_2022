@@ -1461,6 +1461,8 @@ public class ModelWebTransformationService {
         tagweb.setName(tag.getName());
         tagweb.setDescription(tag.getDescription());
         tagweb.setPeriodTagAsignations(this.periodTagAsignationsToPeriodTagAsignationsWeb(tag.getPeriodTagAssignations()));
+        tagweb.setIndicatorTagAsignations(this.indicatorTagAsignationsToIndicatorTagAsignationsWeb(tag.getIndicatorTagAssignations()));
+        tagweb.setOperation(tag.getOperation());
         tagweb.setState(tag.getState());
 
         return tagweb;

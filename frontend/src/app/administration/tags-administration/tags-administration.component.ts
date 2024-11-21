@@ -118,7 +118,7 @@ export class TagsAdministrationComponent implements OnInit {
         this.enumsService.getByType(EnumsType.State).subscribe((value) => {
             this.states = value;
         });
-        this.operations = ['Seleccione ...', 'Suma', 'Máximo', 'Mínimo'];
+        this.operations = ['Seleccione ...', 'Suma', 'Máximo', 'Mínimo', 'Promedio'];
     }
 
     private registerFilters() {
