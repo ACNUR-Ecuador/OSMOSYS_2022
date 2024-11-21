@@ -20,6 +20,7 @@ import {MonthService} from '../../services/month.service';
 import {WorkBook} from "xlsx";
 import * as XLSX from "xlsx";
 import {AppConfigurationService} from "../../services/app-configuration.service";
+import { EnumValuesToLabelPipe } from 'src/app/shared/pipes/enum-values-to-label.pipe';
 
 @Component({
     selector: 'app-direct-implementation-performance-indicator-form',
@@ -50,9 +51,11 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     sourceTypes: SelectItemWithOrder<any>[];
 
     render = false;
-    showErrorResume = false;
+    showTotalErrorResume = false;
+    showMissmatchErrorResume = false;
+
     showOtherSource: boolean;
-    totalsValidation: Map<string, number> = null;
+    totalsValidation: Map<string, any> = null;
     chekedOptions: SelectItem[];
     disableSave = false;
     hasLocationDissagregation: boolean;
@@ -80,7 +83,8 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
                 private userService: UserService,
                 private appConfigurationService: AppConfigurationService,
                 private fb: FormBuilder,
-                private cd: ChangeDetectorRef
+                private cd: ChangeDetectorRef,
+                private enumValuesToLabelPipe: EnumValuesToLabelPipe
     ) {
     }
 
@@ -277,7 +281,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     saveMonth() {
         this.utilsService.setZerosMonthValues(this.monthValuesMap);
         this.utilsService.setZerosCustomMonthValues(this.monthCustomDissagregatoinValues);
-        const totalsValidation = this.utilsService.validateMonth(this.monthValuesMap, this.monthCustomDissagregatoinValues);
+        const totalsValidation = this.utilsService.validateMonthAndOptions(this.monthValuesMap, this.monthCustomDissagregatoinValues);
         this.monthValues.month.commentary = this.formItem.get('commentary').value;
         this.monthValues.month.sources = this.formItem.get('sources').value;
         this.monthValues.month.sourceOther = this.formItem.get('sourceOther').value;
@@ -288,13 +292,41 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             this.monthValues.month.checked = this.formItem.get('checked').value;
         }
         if (totalsValidation) {
-            this.showErrorResume = true;
-            this.totalsValidation = totalsValidation;
+            if(totalsValidation.type=='totalsError'){
+                this.showTotalErrorResume = true;
+                this.totalsValidation = totalsValidation.value;
+            }else{
+                this.showMissmatchErrorResume = true;
+                this.totalsValidation = totalsValidation.value;
+            }
         } else {
             this.messageService.clear();
             this.totalsValidation = null;
             this.sendMonthValue();
         }
+    }
+    missMatchMessage(dissagregation){
+        const dissMap=this.totalsValidation.get(dissagregation)
+        const firstKey = dissMap?.keys().next().value;
+        const firstSubkey = dissMap.get(firstKey)?.keys().next().value;
+        const firstValue = dissMap.get(firstKey)?.get(firstSubkey);    
+
+        const result = `${this.enumValuesToLabelPipe.transform(dissagregation, 'DissagregationType')}: ${this.utilsService.getDissagregationlabelByKey(firstKey)} - ${firstSubkey}`;
+
+        return result
+
+    }
+
+    missMatchTotal(dissagregation){
+        const dissMap=this.totalsValidation.get(dissagregation)
+        const firstKey = dissMap?.keys().next().value;
+        const firstSubkey = dissMap.get(firstKey)?.keys().next().value;
+        const firstValue = dissMap.get(firstKey)?.get(firstSubkey);    
+
+        const result = `${firstValue}`;
+
+        return result
+
     }
 
     cancel() {
@@ -321,7 +353,8 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     }
 
     closeErrorDialog() {
-        this.showErrorResume = false;
+        this.showTotalErrorResume = false;
+        this.showMissmatchErrorResume = false;
     }
 
     openLocationsDialog() {

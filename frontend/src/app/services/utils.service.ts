@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import * as Excel from 'exceljs/dist/exceljs.min.js';
 // import * as Excel from 'exceljs';
 // import * as fs from 'file-saver';
 import * as FileSaver from 'file-saver';
-import {FormGroup} from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import {
     ColumnTable,
     EnumsState,
@@ -23,10 +23,12 @@ import {
     QuarterMonthResume,
     StandardDissagregationOption
 } from '../shared/model/OsmosysModel';
-import {HttpResponse} from '@angular/common/http';
-import {TableColumnProperties} from 'exceljs';
-import {SortEvent} from "primeng/api";
-import {EnumsService} from "./enums.service";
+import { HttpResponse } from '@angular/common/http';
+import { TableColumnProperties } from 'exceljs';
+import { SortEvent } from "primeng/api";
+import { EnumsService } from "./enums.service";
+import { Console } from 'console';
+import { options } from '@fullcalendar/core/preact';
 
 @Injectable({
     providedIn: 'root'
@@ -44,17 +46,17 @@ export class UtilsService {
     traverseJson(json: any, callback: (value: any, key?: string, parent?: any) => void, parent?: any, key?: string) {
         if (Array.isArray(json)) {
             for (let i = 0; i < json.length; i++) {
-            this.traverseJson(json[i], callback, json, i.toString());
+                this.traverseJson(json[i], callback, json, i.toString());
             }
         } else if (json !== null && typeof json === 'object') {
             for (const [currentKey, value] of Object.entries(json)) {
-            callback(value, currentKey, json);
-            this.traverseJson(value, callback, json, currentKey);
+                callback(value, currentKey, json);
+                this.traverseJson(value, callback, json, currentKey);
             }
         } else {
             callback(json, key, parent);
         }
-    }    
+    }
 
     exportTableAsExcel(selectedColumns: ColumnTable[], items: any[], filename: string) {
         // const Excel = require('exceljs');
@@ -91,11 +93,11 @@ export class UtilsService {
         this.autoWidth(worksheet, 15);
         let rowIndex = 1;
         for (rowIndex; rowIndex <= worksheet.rowCount; rowIndex++) {
-            worksheet.getRow(rowIndex).alignment = {vertical: 'top', horizontal: 'left', wrapText: true};
+            worksheet.getRow(rowIndex).alignment = { vertical: 'top', horizontal: 'left', wrapText: true };
         }
         // @ts-ignore
         workbook.xlsx.writeBuffer().then(excelData => {
-            const blob = new Blob([excelData], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+            const blob = new Blob([excelData], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
             const EXCEL_EXTENSION = '.xlsx';
             FileSaver.saveAs(blob, filename + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
 
@@ -107,7 +109,7 @@ export class UtilsService {
     autoWidth(worksheet, minimalWidth = 10, maximalWidth = 50) {
         worksheet.columns.forEach((column) => {
             let maxColumnLength = 0;
-            column.eachCell({includeEmpty: true}, (cell) => {
+            column.eachCell({ includeEmpty: true }, (cell) => {
                 maxColumnLength = Math.max(
                     maxColumnLength,
                     minimalWidth,
@@ -263,7 +265,7 @@ export class UtilsService {
 
     isLocationDissagregation(dissagregationType: string): boolean {
 
-        let dissagregation= this.enumsService.resolveEnumWeb(EnumsType.DissagregationType, dissagregationType);
+        let dissagregation = this.enumsService.resolveEnumWeb(EnumsType.DissagregationType, dissagregationType);
         return dissagregation.locationsDissagregation;
     }
 
@@ -364,8 +366,9 @@ export class UtilsService {
             .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
     }
 
-    validateMonth(monthValuesMap: Map<string, IndicatorValue[]>,
-                  customDissagregationValues: CustomDissagregationValues[]): Map<string, number> {
+
+    validateMonthAndOptions(monthValuesMap: Map<string, IndicatorValue[]>,
+        customDissagregationValues: CustomDissagregationValues[]) {
 
 
         const monthValuesTotals: Map<string, number> = new Map<string, number>();
@@ -378,7 +381,64 @@ export class UtilsService {
         });
         const totalMonth = Math.max(...monthValuesTotals.values());
 
+        //Obtengo las desagregaciones que se repiten por tabla
+        const diss=[...monthValuesTotals.keys()]
+        const dissKeysToCompare=this.dissagregationKeystoCompare(diss)
+
+        //saco las opciones para las desagregaciones en comun
+        const dissCommonOptions: Map<string,string[]> =new Map<string,string[]>()
+        dissKeysToCompare.forEach(key =>{
+            let options=[]
+            monthValuesMap.forEach((value, dissagregationType)=>{
+                let isDissagregtion=false
+                if(diss.includes(dissagregationType) && !isDissagregtion ){
+                        value.forEach(item=>{
+                            const option=item[key]!.name
+                            options.push(option)
+                            
+                        })
+                        isDissagregtion=true     
+                }
+            })
+            const uniqueOptions=new Set([...options])
+            dissCommonOptions.set(key,[...uniqueOptions])
+            
+        })
+
+        //Creo el mapa de totales por cada opcion de desagregacion
+        const dissTotalsbyCommonDissOptions: Map<string,Map<string, Map<string,number>>> =new Map<string,Map<string, Map<string,number>>>()
+        monthValuesMap.forEach((value, dissagregationType)=>{
+            if (value && value.length > 0 && this.shouldvalidate(dissagregationType)) {
+                const dissOptionValuesMap: Map<string, Map<string,number>>= new Map<string, Map<string,number>>()
+                dissCommonOptions.forEach((options, disskey)=>{
+                    const optionValueMap: Map<string,number>= new Map<string,number>()
+                    options.forEach(option=>{
+                        let total=0;
+                        value.forEach(item=>{
+                            if(item[disskey]!=null && item[disskey]!.name==option){
+                                total+=item.value
+                            }
+                        })
+                        optionValueMap.set(option,total)
+                    })
+                    if(optionValueMap.size>0){
+                        dissOptionValuesMap.set(disskey,optionValueMap)
+                    }
+                } )
+                if(dissOptionValuesMap.size>0){
+                    dissTotalsbyCommonDissOptions.set(dissagregationType,dissOptionValuesMap)
+                }
+            }
+        })
+        //comparo que los totales por opción de desagregación sean iguales entre los tipos de Desagregación en común
+        const dissUnmatchOptionValues = this.compareMapsInOuterMapWithDifferences(dissTotalsbyCommonDissOptions)
         let errorExists = false;
+        let missmatchErrorExists=false;
+        if(dissUnmatchOptionValues.size>0){
+            errorExists = true;
+            missmatchErrorExists=true;
+        }
+        
         monthValuesTotals.forEach(value => {
             if (totalMonth !== value) {
                 errorExists = true;
@@ -404,9 +464,137 @@ export class UtilsService {
             return null;
         } else {
             // error exits
-            return monthValuesTotals;
+            if(missmatchErrorExists){
+                return {
+                    type:"mismatchError",
+                    value:dissUnmatchOptionValues
+                }
+            }else{
+                return {
+                    type:"totalsError",
+                    value:monthValuesTotals
+                }
+            }
         }
     }
+
+    compareMapsInOuterMapWithDifferences(outerMap: Map<string, Map<any, any>>): Map<string, Map<any, any>> {
+        const differencesMap = new Map<string, Map<any, any>>();
+        outerMap.forEach((innerMap, groupKey) => {
+            const groupDifferences = new Map<string, Map<any, any>>();
+    
+            const keys = Array.from(innerMap.keys());
+    
+            // Si hay más de una clave, usamos los bucles anidados
+            if (keys.length > 1) {
+                // Comparamos cada clave principal entre los Mapas internos
+                for (let i = 0; i < keys.length; i++) {
+                    
+                    outerMap.forEach((otherInnerMap, otherGroupKey) => {
+                        if (otherGroupKey !== groupKey) {
+                            const otherSubMap = otherInnerMap.get(keys[i]);
+                            const diffs = this.findDifferences(innerMap.get(keys[i]), otherSubMap);
+        
+                            if (diffs.size > 0) {
+                                const keyDifferences = new Map<string, any>();
+                                diffs.forEach((diff, option) => {
+                                    keyDifferences.set(option, diff.map1); 
+                                });
+        
+                                groupDifferences.set(keys[i], keyDifferences);
+                            }
+                        }
+                    });
+                }
+            } else {
+                // Si solo hay una clave, comparamos directamente los valores
+                const key = keys[0];
+                const subMap = innerMap.get(key);
+    
+                // Compara los subMapas de la única clave entre los grupos del outerMap
+                outerMap.forEach((otherInnerMap, otherGroupKey) => {
+                    if (otherGroupKey !== groupKey) {
+                        const otherSubMap = otherInnerMap.get(key);
+    
+                        const diffs = this.findDifferences(subMap, otherSubMap);
+    
+                        if (diffs.size > 0) {
+                            const keyDifferences = new Map<string, any>();
+                            diffs.forEach((diff, option) => {
+                                keyDifferences.set(option, diff.map1); 
+                            });
+    
+                            groupDifferences.set(key, keyDifferences);
+                        }
+                    }
+                });
+            }
+    
+            if (groupDifferences.size > 0) {
+                differencesMap.set(groupKey, groupDifferences);
+            }
+        });
+    
+        return differencesMap;
+    }
+
+      findDifferences(map1: Map<any, any>, map2: Map<any, any>): Map<string, { map1: any, map2: any }> {
+        const differences = new Map<string, { map1: any, map2: any }>();
+        // Recorremos las claves y valores del primer mapa
+        for (let [key, value] of map1) {
+          if (!map2.has(key)) {
+            differences.set(key, { map1: value, map2: undefined });
+          } else {
+            const value2 = map2.get(key);
+            if (value !== value2) {
+              differences.set(key, { map1: value, map2: value2 });
+            }
+          }
+        }
+      
+        for (let [key, value] of map2) {
+          if (!map1.has(key)) {
+            differences.set(key, { map1: undefined, map2: value });
+          }
+        }
+      
+        return differences;
+      }
+    dissagregationKeystoCompare(dissagregationTypes:string[]){
+         // Objeto para almacenar las partículas que aparecen en cada índice del array
+            const particleCount: Record<string, Set<number>> = {};
+
+            // Descomponer cada cadena en partículas y contar en qué cadenas aparecen
+            dissagregationTypes.forEach((str, index) => {
+                const particles = this.splitIntoDissagregations(str);
+                particles.forEach(particle => {
+                if (!particleCount[particle]) {
+                    particleCount[particle] = new Set();
+                }
+                particleCount[particle].add(index); 
+                });
+            });
+
+            // Filtramos las partículas que aparecen en más de una cadena (más de un índice)
+            const commonDiss=Object.keys(particleCount).filter(particle => particleCount[particle].size > 1);
+            const dissKeys=commonDiss.map(item=>{
+                return this.getDissagregationKey(item);
+            })
+            return dissKeys;
+
+    }
+
+     splitIntoDissagregations(str: string): string[] {
+        const uniqueDissagregations = ["LUGAR", "TIPO_POBLACION", "PAIS_ORIGEN", "GENERO", "EDAD", "DIVERSIDAD"];
+        const foundParticles: string[] = [];
+        uniqueDissagregations.forEach(particle => {
+          if (str.includes(particle)) {
+            foundParticles.push(particle);
+          }
+        });
+        return foundParticles;
+      }
+
 
     setZerosMonthValues(monthValuesMap: Map<string, IndicatorValue[]>) {
         // noinspection JSUnusedLocalSymbols
@@ -504,7 +692,7 @@ export class UtilsService {
         const binaryData = [];
         binaryData.push(response.body);
         const downloadLink = document.createElement('a');
-        downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, {type: 'blob'}));
+        downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: 'blob' }));
         downloadLink.setAttribute('download', filename);
         document.body.appendChild(downloadLink);
         downloadLink.click();
@@ -634,11 +822,11 @@ export class UtilsService {
         if (dissagregationType.value === 'LUGAR') {
             result.forEach(value => {
 
-                    if (value.name && !value.name.includes('--')) {
-                        value.name = (value as unknown as Canton).provincia.description + " -- " + (value as unknown as Canton).name;
-                    }
-
+                if (value.name && !value.name.includes('--')) {
+                    value.name = (value as unknown as Canton).provincia.description + " -- " + (value as unknown as Canton).name;
                 }
+
+            }
             );
             result.sort((a, b) => (a as unknown as Canton).code.localeCompare((b as unknown as Canton).code));
         } else {
@@ -670,7 +858,7 @@ export class UtilsService {
         return option;
     }
 
-    getDissagregationKey(dissagregation:string){
+    getDissagregationKey(dissagregation: string) {
         switch (dissagregation) {
             case 'TIPO_POBLACION':
                 return 'populationType';
@@ -688,7 +876,7 @@ export class UtilsService {
                 return null;
         }
     }
-    getDissagregationlabelByKey(key:string){
+    getDissagregationlabelByKey(key: string) {
         switch (key) {
             case 'populationType':
                 return 'Tipo de Población';
@@ -711,48 +899,48 @@ export class UtilsService {
 
     //Data Month Report Values Import Validations
 
-    validateDataImportValues(dataFile:{}[],dissagregationCatalogue:any[]){
-        if(this.validateUniqueRowsInFile(dataFile).length>0){
-            return this.validateUniqueRowsInFile(dataFile) 
-        }else if(this.validateRowsValues(dataFile,dissagregationCatalogue).length>0){
-            return this.validateRowsValues(dataFile,dissagregationCatalogue)
-        }else{
+    validateDataImportValues(dataFile: {}[], dissagregationCatalogue: any[]) {
+        if (this.validateUniqueRowsInFile(dataFile).length > 0) {
+            return this.validateUniqueRowsInFile(dataFile)
+        } else if (this.validateRowsValues(dataFile, dissagregationCatalogue).length > 0) {
+            return this.validateRowsValues(dataFile, dissagregationCatalogue)
+        } else {
             return []
         }
 
     }
 
-    validateRowsValues(dataFile:{}[],dissagregationCatalogue:any[]){
-       const importErroMessage:string[]=[];
-         // Validar que ningun campo sea nulo y que cada dato corresponda a la columna correspondiente
-         dataFile.forEach((item, index) => { 
+    validateRowsValues(dataFile: {}[], dissagregationCatalogue: any[]) {
+        const importErroMessage: string[] = [];
+        // Validar que ningun campo sea nulo y que cada dato corresponda a la columna correspondiente
+        dataFile.forEach((item, index) => {
             Object.keys(item).forEach(key => {
-                const keyLabel=this.getDissagregationlabelByKey(key)
+                const keyLabel = this.getDissagregationlabelByKey(key)
                 // Validar que ninguna clave o valor sea null
-                if ( item[key] === null || item[key] === undefined) {
-                    importErroMessage.push(`Error en la fila ${index+2}: El valor de de la columna ${keyLabel} es nulo`)
-                    
+                if (item[key] === null || item[key] === undefined) {
+                    importErroMessage.push(`Error en la fila ${index + 2}: El valor de de la columna ${keyLabel} es nulo`)
+
                     //Validar que el valor de la clave pertenezca a la desagregacion
-                }else if(key!=='value'){
-                    const isValidOption=this.validateDissagregationTypeOption(key,item[key],dissagregationCatalogue)
-                    if(isValidOption===false){
-                    importErroMessage.push(`Error en la fila ${index+2}: El valor de la columna ${keyLabel}: '${item[key]}', no pertenece a las opciones de desagregación`)
+                } else if (key !== 'value') {
+                    const isValidOption = this.validateDissagregationTypeOption(key, item[key], dissagregationCatalogue)
+                    if (isValidOption === false) {
+                        importErroMessage.push(`Error en la fila ${index + 2}: El valor de la columna ${keyLabel}: '${item[key]}', no pertenece a las opciones de desagregación`)
                     }
-                }else{
-                    if(typeof item[key] !== 'number' || !Number.isInteger(item[key]) || item[key]<0){
-                        importErroMessage.push(`Error en la fila ${index+2}: El valor de de la columna ${keyLabel}: '${item[key]}', no es un número entero válido`)
+                } else {
+                    if (typeof item[key] !== 'number' || !Number.isInteger(item[key]) || item[key] < 0) {
+                        importErroMessage.push(`Error en la fila ${index + 2}: El valor de de la columna ${keyLabel}: '${item[key]}', no es un número entero válido`)
                     }
-                }  
+                }
             });
         });
-        
+
         return importErroMessage
 
     }
 
-    validateUniqueRowsInFile(dataFile:{}[]){
+    validateUniqueRowsInFile(dataFile: {}[]) {
         //validar que ningun objeto se repita
-        const importErroMessage:string[]=[];
+        const importErroMessage: string[] = [];
         const objetosVistos = new Set<string>();
         const posicionesRepetidas: number[] = [];
         for (let i = 0; i < dataFile.length; i++) {
@@ -761,10 +949,10 @@ export class UtilsService {
             //@ts-ignore
             const { value, ...objetoSinValue } = objeto;
             const claveUnica = JSON.stringify(objetoSinValue);
-            console.log(claveUnica)
+            
 
             if (objetosVistos.has(claveUnica)) {
-                posicionesRepetidas.push(i+2); 
+                posicionesRepetidas.push(i + 2);
             } else {
                 objetosVistos.add(claveUnica);
             }
@@ -772,7 +960,7 @@ export class UtilsService {
         if (posicionesRepetidas.length === 1) {
             const mensaje = `Error: Los valores de la fila: ${posicionesRepetidas.join(', ')} ya han sido reportados anteriormente en filas previas.`;
             importErroMessage.push(mensaje);
-        }else if(posicionesRepetidas.length > 1){
+        } else if (posicionesRepetidas.length > 1) {
             const mensaje = `Error: Los valores de las filas: ${posicionesRepetidas.join(', ')} ya han sido reportados anteriormente en filas previas.`;
             importErroMessage.push(mensaje);
         }
@@ -780,77 +968,77 @@ export class UtilsService {
 
     }
 
-    validateDissagregationTypeOption(dissagregation:string,option:string,dissagregationCatalogue:any[]){
-        let isvalid:boolean=false;
-        if(dissagregation==='location'){
-         option=option.replace("-", " -- ");
+    validateDissagregationTypeOption(dissagregation: string, option: string, dissagregationCatalogue: any[]) {
+        let isvalid: boolean = false;
+        if (dissagregation === 'location') {
+            option = option.replace("-", " -- ");
         }
-        dissagregationCatalogue.forEach(diss=>{
-            const key=Object.keys(diss)
-            const dissKey=this.getDissagregationKey(key[0])
-            if(dissKey===dissagregation){
-                diss[key[0]].options.forEach(opt=>{
-                    if(opt.name===option){
-                        isvalid=true
+        dissagregationCatalogue.forEach(diss => {
+            const key = Object.keys(diss)
+            const dissKey = this.getDissagregationKey(key[0])
+            if (dissKey === dissagregation) {
+                diss[key[0]].options.forEach(opt => {
+                    if (opt.name === option) {
+                        isvalid = true
                     }
                 })
             }
         })
         return isvalid;
 
-        
+
     }
 
-    validateCustomDataImportValues(dataFile:{}[],dissagregationCatalogue:any[]){
-        if(this.validateUniqueRowsInFile(dataFile).length>0){
-            return this.validateUniqueRowsInFile(dataFile) 
-        }else if(this.validateCustomRowsValues(dataFile,dissagregationCatalogue).length>0){
-            return this.validateCustomRowsValues(dataFile,dissagregationCatalogue)
-        }else{
+    validateCustomDataImportValues(dataFile: {}[], dissagregationCatalogue: any[]) {
+        if (this.validateUniqueRowsInFile(dataFile).length > 0) {
+            return this.validateUniqueRowsInFile(dataFile)
+        } else if (this.validateCustomRowsValues(dataFile, dissagregationCatalogue).length > 0) {
+            return this.validateCustomRowsValues(dataFile, dissagregationCatalogue)
+        } else {
             return []
         }
 
     }
 
-    validateCustomRowsValues(dataFile:{}[],dissagregationCatalogue:any[]){
-        const importErroMessage:string[]=[];
-          // Validar que ningun campo sea nulo y que cada dato corresponda a la columna correspondiente
-          dataFile.forEach((item, index) => { 
-             Object.keys(item).forEach(key => {
-                 const keyLabel=key
-                 // Validar que ninguna clave o valor sea null
-                 if ( item[key] === null || item[key] === undefined) {
-                     importErroMessage.push(`Error en la fila ${index+2}: El valor de de la columna ${keyLabel} es nulo`)
-                     
-                     //Validar que el valor de la clave pertenezca a la desagregacion
-                 }else if(key!=='value'){
-                     const isValidOption=this.validateCustomDissagregationTypeOption(key,item[key],dissagregationCatalogue)
-                     if(isValidOption===false){
-                     importErroMessage.push(`Error en la fila ${index+2}: El valor de la columna ${keyLabel}: '${item[key]}', no pertenece a las opciones de desagregación`)
-                     }
-                 }else{
-                     if(typeof item[key] !== 'number' || !Number.isInteger(item[key]) || item[key]<0){
-                         importErroMessage.push(`Error en la fila ${index+2}: El valor de de la columna ${keyLabel}: '${item[key]}', no es un número entero válido`)
-                     }
-                 }  
-             });
-         });
-         
-         return importErroMessage
- 
-     }
+    validateCustomRowsValues(dataFile: {}[], dissagregationCatalogue: any[]) {
+        const importErroMessage: string[] = [];
+        // Validar que ningun campo sea nulo y que cada dato corresponda a la columna correspondiente
+        dataFile.forEach((item, index) => {
+            Object.keys(item).forEach(key => {
+                const keyLabel = key
+                // Validar que ninguna clave o valor sea null
+                if (item[key] === null || item[key] === undefined) {
+                    importErroMessage.push(`Error en la fila ${index + 2}: El valor de de la columna ${keyLabel} es nulo`)
+
+                    //Validar que el valor de la clave pertenezca a la desagregacion
+                } else if (key !== 'value') {
+                    const isValidOption = this.validateCustomDissagregationTypeOption(key, item[key], dissagregationCatalogue)
+                    if (isValidOption === false) {
+                        importErroMessage.push(`Error en la fila ${index + 2}: El valor de la columna ${keyLabel}: '${item[key]}', no pertenece a las opciones de desagregación`)
+                    }
+                } else {
+                    if (typeof item[key] !== 'number' || !Number.isInteger(item[key]) || item[key] < 0) {
+                        importErroMessage.push(`Error en la fila ${index + 2}: El valor de de la columna ${keyLabel}: '${item[key]}', no es un número entero válido`)
+                    }
+                }
+            });
+        });
+
+        return importErroMessage
+
+    }
 
 
 
-    validateCustomDissagregationTypeOption(dissagregation:string,option:string,dissagregationCatalogue:any[]){
-        let isvalid:boolean=false;
-        dissagregationCatalogue.forEach(diss=>{
-            const key=Object.keys(diss)
-            const dissKey=key[0]
-            if(dissKey===dissagregation){
-                diss[key[0]].options.forEach(opt=>{
-                    if(opt.name===option){
-                        isvalid=true
+    validateCustomDissagregationTypeOption(dissagregation: string, option: string, dissagregationCatalogue: any[]) {
+        let isvalid: boolean = false;
+        dissagregationCatalogue.forEach(diss => {
+            const key = Object.keys(diss)
+            const dissKey = key[0]
+            if (dissKey === dissagregation) {
+                diss[key[0]].options.forEach(opt => {
+                    if (opt.name === option) {
+                        isvalid = true
                     }
                 })
             }

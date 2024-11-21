@@ -46,8 +46,7 @@ export class CustomDissagregationIntegerComponent implements OnInit {
             sheet: new FormControl('', [Validators.required]),
             workbook: new FormControl('', [Validators.required]),
         });
-        console.log(this.customDissagregation)
-        console.log(this.rows);
+        
        
     }
 
@@ -122,7 +121,7 @@ export class CustomDissagregationIntegerComponent implements OnInit {
         const data = XLSX.utils.sheet_to_json(ws);
         this.importErroMessage = [];
         this.showImportErrorLogs = false;
-        console.log(data)
+        
         // Verificar que el arreglo no esté vacío
         if (data.length === 0) {
             this.importErroMessage.push('Error: El archivo se encuentra vacío')

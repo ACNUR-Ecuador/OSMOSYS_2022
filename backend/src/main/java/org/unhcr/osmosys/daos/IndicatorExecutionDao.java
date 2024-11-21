@@ -688,13 +688,31 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 + "iv.dissagregationType AS Tipo_de_Desagregación, "
                 + "iv.value AS Valor, "
                 + "ie.supervisorUser.name AS Supervisor, "
-                + "ie.assignedUser.name AS Responsable "
+                + "ie.assignedUser.name AS Responsable ,"
+                + "iv.location.id AS Cantón_id, "
+                + "cantonOption.name AS Cantón_nombre, "
+                + "iv.populationType.id AS Tipo_de_población_id, "
+                + "populationTypeOption.name AS Tipo_de_población, "
+                + "iv.ageType.id AS Edad_id, "
+                + "ageOption.name AS Edad, "
+                + "iv.genderType.id AS Género_id, "
+                + "genderOption.name AS Género, "
+                + "iv.countryOfOrigin.id AS País_de_Origen_id, "
+                + "countryOfOriginOption.name AS País_de_Origen, "
+                + "iv.diversityType.id AS Diversidad_id, "
+                + "diversityOption.name AS Diversidad "
                 + ") "
                 + "FROM IndicatorExecution ie "
                 + "JOIN ie.indicator i "
                 + "JOIN ie.quarters q "
                 + "JOIN q.months m "
                 + "JOIN m.indicatorValues iv "
+                + "LEFT JOIN iv.location cantonOption "
+                + "LEFT JOIN iv.populationType populationTypeOption "
+                + "LEFT JOIN iv.ageType ageOption "
+                + "LEFT JOIN iv.genderType genderOption "
+                + "LEFT JOIN iv.countryOfOrigin countryOfOriginOption "
+                + "LEFT JOIN iv.diversityType diversityOption "
                 + "WHERE iv.id = :idValue "
                 + "AND ie.indicator.id = i.id "
                 + "AND q.indicatorExecution.id = ie.id "
@@ -708,6 +726,42 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         // Obtener los resultados como un único Map
         return query.getSingleResult();
     }
+
+    public Object findIndicatorDirectImplementationCustomDissValuesById(Long idValue) {
+        // JPQL de la consulta con JOIN FETCH
+        String jpql = "SELECT new map( "
+                + "i.code AS Código_de_Indicador, "
+                + "i.description AS Descripción_de_Indicador, "
+                + "q.year AS Periodo, "
+                + "q.quarter AS Trimestre, "
+                + "m.month AS Mes, "
+                + "cd.name AS Nombre_de_Desagregación, "
+                + "iv.value AS Valor, "
+                + "iv.customDissagregationOption.id AS Opción_de_Desagregación_id, "
+                + "cdo.name AS Opción_de_Desagregación "
+                + ") "
+                + "FROM IndicatorExecution ie "
+                + "JOIN ie.indicator i "
+                + "JOIN ie.quarters q "
+                + "JOIN q.months m "
+                + "JOIN m.indicatorValuesIndicatorValueCustomDissagregations iv "
+                + "JOIN iv.customDissagregationOption cdo "
+                + "JOIN cdo.customDissagregation cd "
+                + "WHERE iv.id = :idValue "
+                + "AND ie.indicator.id = i.id "
+                + "AND q.indicatorExecution.id = ie.id "
+                + "AND q.id = m.quarter.id "
+                + "AND m.id = iv.month.id";
+
+        // Ejecutar la consulta con el parámetro `idValue`
+        Query query = getEntityManager().createQuery(jpql);
+        query.setParameter("idValue", idValue);
+
+        // Obtener los resultados como un único Map
+        return query.getSingleResult();
+    }
+
+
 
 
 

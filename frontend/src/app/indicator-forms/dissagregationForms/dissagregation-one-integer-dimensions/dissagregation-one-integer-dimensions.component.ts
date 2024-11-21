@@ -49,7 +49,7 @@ export class DissagregationOneIntegerDimensionsComponent implements OnInit, OnCh
             sheet: new FormControl('', [Validators.required]),
             workbook: new FormControl('', [Validators.required]),
         });
-        console.log(this.rows)
+        
     }
 
     processDissagregationValues() {

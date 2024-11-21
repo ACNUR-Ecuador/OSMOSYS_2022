@@ -15,6 +15,8 @@ import {MonthService} from '../../services/month.service';
 import {EnumsService} from '../../services/enums.service';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
+import { EnumValuesToLabelPipe } from 'src/app/shared/pipes/enum-values-to-label.pipe';
+
 
 
 @Component({
@@ -46,9 +48,10 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     sourceTypes: SelectItemWithOrder<any>[];
 
     render = false;
-    showErrorResume = false;
+    showTotalErrorResume = false;
+    showMissmatchErrorResume = false;
     showOtherSource: boolean;
-    totalsValidation: Map<string, number> = null;
+    totalsValidation: Map<string, any> = null;
     chekedOptions: SelectItem[];
     editable: boolean;
     noEditionMessage: string = '';
@@ -62,6 +65,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
                 private messageService: MessageService,
                 private userService: UserService,
                 private fb: FormBuilder,
+                private enumValuesToLabelPipe: EnumValuesToLabelPipe
     ) {
     }
 
@@ -174,7 +178,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     saveMonth() {
         this.utilsService.setZerosMonthValues(this.monthValuesMap);
         this.utilsService.setZerosCustomMonthValues(this.monthCustomDissagregatoinValues);
-        const totalsValidation = this.utilsService.validateMonth(this.monthValuesMap, this.monthCustomDissagregatoinValues);
+        const totalsValidation = this.utilsService.validateMonthAndOptions(this.monthValuesMap, this.monthCustomDissagregatoinValues);
         this.monthValues.month.commentary = this.formItem.get('commentary').value;
         this.monthValues.month.sources = this.formItem.get('sources').value;
         this.monthValues.month.sourceOther = this.formItem.get('sourceOther').value;
@@ -185,13 +189,43 @@ export class PerformanceIndicatorFormComponent implements OnInit {
             this.monthValues.month.checked = this.formItem.get('checked').value;
         }
         if (totalsValidation) {
-            this.showErrorResume = true;
-            this.totalsValidation = totalsValidation;
+            if(totalsValidation.type=='totalsError'){
+                this.showTotalErrorResume = true;
+                this.totalsValidation = totalsValidation.value;
+            }else{
+                this.showMissmatchErrorResume = true;
+                this.totalsValidation = totalsValidation.value;
+            }
+            
         } else {
             this.messageService.clear();
             this.totalsValidation = null;
             this.sendMonthValue();
         }
+    }
+
+    missMatchMessage(dissagregation){
+        const dissMap=this.totalsValidation.get(dissagregation)
+        const firstKey = dissMap?.keys().next().value;
+        const firstSubkey = dissMap.get(firstKey)?.keys().next().value;
+        const firstValue = dissMap.get(firstKey)?.get(firstSubkey);    
+
+        const result = `${this.enumValuesToLabelPipe.transform(dissagregation, 'DissagregationType')}: ${this.utilsService.getDissagregationlabelByKey(firstKey)} - ${firstSubkey}`;
+
+        return result
+
+    }
+
+    missMatchTotal(dissagregation){
+        const dissMap=this.totalsValidation.get(dissagregation)
+        const firstKey = dissMap?.keys().next().value;
+        const firstSubkey = dissMap.get(firstKey)?.keys().next().value;
+        const firstValue = dissMap.get(firstKey)?.get(firstSubkey);    
+
+        const result = `${firstValue}`;
+
+        return result
+
     }
 
     cancel() {
@@ -216,7 +250,8 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     }
 
     closeErrorDialog() {
-        this.showErrorResume = false;
+        this.showTotalErrorResume = false;
+        this.showMissmatchErrorResume=false;
     }
 
     setDimentionsDissagregations(): void {
@@ -248,4 +283,6 @@ export class PerformanceIndicatorFormComponent implements OnInit {
             this.formItem.get('sourceOther').updateValueAndValidity();
         }
     }
+
+
 }

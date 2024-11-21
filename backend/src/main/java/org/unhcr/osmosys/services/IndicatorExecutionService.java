@@ -776,7 +776,7 @@ public class IndicatorExecutionService {
                 Object oldValues;
                 if(valueToUpdate.getValue()!=null){
                     if(valueToUpdate.getValue().compareTo(indicatorValueWeb.getValue()) !=0){
-                        if(dissagregationType==DissagregationType.SIN_DESAGREGACION){
+                        if(indicatorExecution.getProject() == null){
                                 oldValues = indicatorExecutionDao.findIndicatorDirectImplementationValuesById(valueToUpdate.getId());
                             }else {
                                 oldValues = indicatorExecutionDao.findIndicatorDissagregationValuesById(valueToUpdate.getId());
@@ -790,7 +790,7 @@ public class IndicatorExecutionService {
                     //solo agrego cambios si el valor a actualizar es diferente de cero
                     boolean isValueNonZero = indicatorValueWeb.getValue().compareTo(BigDecimal.ZERO) != 0;
                     if (isValueNonZero) {
-                        if(dissagregationType==DissagregationType.SIN_DESAGREGACION){
+                        if(indicatorExecution.getProject() == null){
                             oldValues = indicatorExecutionDao.findIndicatorDirectImplementationValuesById(valueToUpdate.getId());
                         }else {
                             oldValues = indicatorExecutionDao.findIndicatorDissagregationValuesById(valueToUpdate.getId());
@@ -809,7 +809,7 @@ public class IndicatorExecutionService {
                 //agrego valores nuevos a lista de auditoria
                 if(isnewValue){
                     Object newValues;
-                    if(dissagregationType==DissagregationType.SIN_DESAGREGACION){
+                    if(indicatorExecution.getProject() == null){
                         newValues = indicatorExecutionDao.findIndicatorDirectImplementationValuesById(valueToUpdate.getId());
                     }else {
                         newValues = indicatorExecutionDao.findIndicatorDissagregationValuesById(valueToUpdate.getId());
@@ -833,22 +833,34 @@ public class IndicatorExecutionService {
                     IndicatorValueCustomDissagregation valueToUpdate = indicatorValueCustomDissagregationOp.get();
                     //agrego valores anteriores y actuales a listas de auditoria
                     boolean isnewValue=false;
+                    Object oldValues;
                     if(valueToUpdate.getValue()!=null){
                         if(valueToUpdate.getValue().compareTo(totalIndicatorValueCustomDissagregationWeb.getValue()) !=0){
                             // Verificar si el valor a actualizar es nulo o tiene un valor diferente
-                            Object oldValues=indicatorExecutionDao.findIndicatorCustomDissagregationValuesById(valueToUpdate.getId());
+                            if(indicatorExecution.getProject() == null){
+                                oldValues = indicatorExecutionDao.findIndicatorDirectImplementationCustomDissValuesById(valueToUpdate.getId());
+                            }else {
+                                oldValues=indicatorExecutionDao.findIndicatorCustomDissagregationValuesById(valueToUpdate.getId());
+
+                            }
                             oldIndicatorValues.add(oldValues);
-                            auditChange=true;
-                            isnewValue=true;
+                            isnewValue = true;
+                            auditChange = true;
+
                         }
 
                     }else{
                         boolean isValueNonZero = totalIndicatorValueCustomDissagregationWeb.getValue().compareTo(BigDecimal.ZERO) != 0;
-                        if (valueToUpdate.getValue() != null || isValueNonZero) {
-                            Object oldValues=indicatorExecutionDao.findIndicatorCustomDissagregationValuesById(valueToUpdate.getId());
+                        if (isValueNonZero) {
+                            if(indicatorExecution.getProject() == null){
+                                oldValues = indicatorExecutionDao.findIndicatorDirectImplementationCustomDissValuesById(valueToUpdate.getId());
+                            }else {
+                                oldValues=indicatorExecutionDao.findIndicatorCustomDissagregationValuesById(valueToUpdate.getId());
+                            }
+                            isnewValue = true;
+                            auditChange = true;
                             oldIndicatorValues.add(oldValues);
-                            auditChange=true;
-                            isnewValue=true;
+
                         }
 
                     }
@@ -859,7 +871,13 @@ public class IndicatorExecutionService {
                     valueToUpdate.setDenominatorValue(totalIndicatorValueCustomDissagregationWeb.getDenominatorValue());
                     //agrego valores nuevos a lista de auditoria
                     if(isnewValue){
-                        Object newValues=indicatorExecutionDao.findIndicatorCustomDissagregationValuesById(valueToUpdate.getId());
+                        Object newValues;
+                        if(indicatorExecution.getProject() == null){
+                            newValues = indicatorExecutionDao.findIndicatorDirectImplementationCustomDissValuesById(valueToUpdate.getId());
+                        }else {
+                            newValues=indicatorExecutionDao.findIndicatorCustomDissagregationValuesById(valueToUpdate.getId());
+
+                        }
                         newIndicatorValues.add(newValues);
                     }
                     //
