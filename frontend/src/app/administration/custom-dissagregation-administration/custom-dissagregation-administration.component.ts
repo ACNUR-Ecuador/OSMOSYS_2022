@@ -84,7 +84,7 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
         this.formItem = this.fb.group({
             id: new FormControl(''),
             name: new FormControl('', Validators.required),
-            description: new FormControl('', Validators.required),
+            description: new FormControl(''),
             controlTotalValue: new FormControl('', Validators.required),
             state: new FormControl('', Validators.required),
             customDissagregationOptions: this.fb.array([])
