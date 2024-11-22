@@ -191,6 +191,8 @@ public class IndicatorExecutionService {
             List<Canton> locations, Indicator indicator,
             Period period, IndicatorExecution ie
     ) throws GeneralAppException {
+        period = this.periodService.getWithAllDataById(period.getId());
+        Long periodID = period.getId();
         List<DissagregationType> dissagregationTypes = dissagregationAssignations.stream().map(DissagregationAssignationToIndicatorInterface::getDissagregationType).collect(Collectors.toList());
         Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationsMap = new HashMap<>();
         for (DissagregationType dissagregationType : dissagregationTypes) {
@@ -212,7 +214,7 @@ public class IndicatorExecutionService {
                         } else {
 
                             Optional<DissagregationAssignationToIndicator> dissagregationAssignationOptional = indicator.getDissagregationsAssignationToIndicator().stream()
-                                    .filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.getPeriod().getId().equals(period.getId())
+                                    .filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.getPeriod().getId().equals(periodID)
                                             && dissagregationAssignationToIndicator.getDissagregationType().equals(dissagregationType))
                                     .findFirst();
                             @SuppressWarnings("OptionalGetWithoutIsPresent")
