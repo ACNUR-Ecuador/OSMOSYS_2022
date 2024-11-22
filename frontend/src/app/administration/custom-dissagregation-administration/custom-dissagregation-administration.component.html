@@ -9,7 +9,7 @@
                 <ng-template pTemplate="caption">
                     <div class="grid">
                         <div
-                            class="col-12 md:col-4 sm:col-12 justify-content-start">
+                            class="col-12 md:col-6 sm:col-12 justify-content-start">
                             <h3 class="m-0">Administración de Desagregaciones Personalizadas</h3>
                         </div>
                         <div
@@ -172,7 +172,7 @@
                              [showCurrentPageReport]="true">
                         <ng-template pTemplate="caption">
                             <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between table-header">
-                                <h5 class="m-0">Opciones de Desagregación</h5>
+                                <h5 class="mb-1">Opciones de Desagregación</h5>
                                 <span class="p-input-icon-left">
                                     </span>
                                 <p-multiSelect [options]="colOptions"
@@ -182,10 +182,13 @@
                                                selectedItemsLabel="{0} columnas seleccionadas"
                                                [style]="{minWidth: '200px',color:'#6c757d'}"
                                                placeholder="Seleccione las columnas"></p-multiSelect>
+                               
                             </div>
 
                         </ng-template>
+                        
                         <ng-template pTemplate="header" let-columns>
+                            <br>
                             <tr>
                                 <th *ngFor="let col of columns" [pSortableColumn]="col.field">
                                     {{col.header}}

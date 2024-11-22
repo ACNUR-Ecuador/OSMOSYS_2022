@@ -24,7 +24,7 @@
                             <button pButton pRipple label="Crear" icon="pi pi-plus" class="main-button mr-2 mb-2"
                             (click)="createItem()" style="margin-left: 2rem;" pTooltip="Crear un Área" tooltipPosition="bottom"></button>
 
-                            <button pButton pRipple label="Importar" icon="pi pi-file-import" class="second-button mr-2 mb-2"
+                            <button *ngIf="false" pButton pRipple label="Importar" icon="pi pi-file-import" class="second-button mr-2 mb-2"
                             (click)="initiateCatalogImport()" style="margin-left: 1rem;" pTooltip="Importar catálogo de declaraciones" tooltipPosition="bottom"></button>                        
                       
                             <button pButton pRipple label="Exportar" icon="pi pi-file-excel" class="second-button mr-2 mb-2"
