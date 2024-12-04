@@ -22,6 +22,7 @@ import * as fs from 'fs';
 export class AppLoginComponent{
     loginPhotoFile=`assets/layout/images/${environment.loginPhoto}`;
     flagLoginFile=`assets/layout/images/${environment.flagLoginFile}`;
+    operationName=`${environment.operationName}`;
     public performanceIndicators: IndicatorExecution[];
 
     _selectedColumnsPerformanceIndicators: ColumnTable[];

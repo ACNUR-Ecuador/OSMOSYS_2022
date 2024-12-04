@@ -14,8 +14,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <!--<datasource.name>osmosys_ec</datasource.name>-->
-                <datasource.name>osmosys_ec</datasource.name>
+                <datasource.name>osmosys</datasource.name>
                 <context-root>osmosys</context-root>
                 <hibernate.show_sql>true</hibernate.show_sql>
                 <warName>osmosys</warName>
@@ -43,21 +42,73 @@
             </build>
         </profile>
         <profile>
-            <id>sv</id>
+            <id>cri</id>
             <properties>
-                <datasource.name>osmosys</datasource.name>
-                <context-root>osmosys</context-root>
+                <datasource.name>osmosys_cri</datasource.name>
+                <context-root>osmosys_cri</context-root>
                 <hibernate.show_sql>false</hibernate.show_sql>
-                <warName>osmosys</warName>
+                <warName>osmosys_cri</warName>
+                <output.dir>${project.build.directory}/cri</output.dir>
             </properties>
         </profile>
         <profile>
-            <id>ec</id>
+            <id>ecu</id>
             <properties>
-                <datasource.name>osmosys_ec</datasource.name>
-                <context-root>osmosys_ec</context-root>
+                <datasource.name>osmosys_ecu</datasource.name>
+                <context-root>osmosys_ecu</context-root>
                 <hibernate.show_sql>false</hibernate.show_sql>
-                <warName>osmosys_ec</warName>
+                <warName>osmosys_ecu</warName>
+                <output.dir>${project.build.directory}/ecu</output.dir>
+            </properties>
+        </profile>
+        <profile>
+            <id>mex</id>
+            <properties>
+                <datasource.name>osmosys_mex</datasource.name>
+                <context-root>osmosys_mex</context-root>
+                <hibernate.show_sql>false</hibernate.show_sql>
+                <warName>osmosys_mex</warName>
+                <output.dir>${project.build.directory}/mex</output.dir>
+            </properties>
+        </profile>
+        <profile>
+            <id>per</id>
+            <properties>
+                <datasource.name>osmosys_per</datasource.name>
+                <context-root>osmosys_per</context-root>
+                <hibernate.show_sql>false</hibernate.show_sql>
+                <warName>osmosys_per</warName>
+                <output.dir>${project.build.directory}/per</output.dir>
+            </properties>
+        </profile>
+        <profile>
+            <id>slv</id>
+            <properties>
+                <datasource.name>osmosys_slv</datasource.name>
+                <context-root>osmosys_slv</context-root>
+                <hibernate.show_sql>false</hibernate.show_sql>
+                <warName>osmosys_slv</warName>
+                <output.dir>${project.build.directory}/slv</output.dir>
+            </properties>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <datasource.name>osmosys_test</datasource.name>
+                <context-root>osmosys_test</context-root>
+                <hibernate.show_sql>false</hibernate.show_sql>
+                <warName>osmosys_test</warName>
+                <output.dir>${project.build.directory}/test</output.dir>
+            </properties>
+        </profile>
+        <profile>
+            <id>ven</id>
+            <properties>
+                <datasource.name>osmosys_ven</datasource.name>
+                <context-root>osmosys_ven</context-root>
+                <hibernate.show_sql>false</hibernate.show_sql>
+                <warName>osmosys_ven</warName>
+                <output.dir>${project.build.directory}/ven</output.dir>
             </properties>
         </profile>
     </profiles>
@@ -425,9 +476,7 @@
                                 <include>**/app.properties</include>
                             </includes>
                             <targetPath>WEB-INF/classes</targetPath>
-
                         </resource>
-
                     </webResources>
                 </configuration>
             </plugin>

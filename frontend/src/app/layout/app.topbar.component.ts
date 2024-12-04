@@ -9,6 +9,7 @@ import {environment} from "../../environments/environment";
     templateUrl: './app.topbar.component.html'
 })
 export class AppTopbarComponent implements OnInit {
+    operationName=`${environment.operationName}`;
     flagToolbarFile=`assets/layout/images/${environment.flagToolbarFile}`;
 
     @ViewChild('menubutton') menuButton!: ElementRef;

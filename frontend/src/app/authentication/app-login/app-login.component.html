@@ -1,14 +1,12 @@
 <div class="flex h-screen">
     <div class="w-full lg:w-4 h-full text-center px-6 py-6 flex flex-column align-items-center">
-        <!-- <img [src]=flagLoginFile class="mt-4 align-items-center" alt="osmosys" style="max-height: 10%;width: fit-content;"/> 
-        <h5 style="color: #0B73B9; margin-top: 1rem; font-size: 20px;font-weight:100">EL SALVADOR</h5>                
-    -->
+
         <div  class=" flex flex-column align-items-center" style="width: 50% !important; margin-top: 30px;">
             <img [src]="'assets/layout/images/unhcr_logo_vertical_blue.png'" class="mt-4 " alt="osmosys" style="width: 80%; margin-top: -20px !important;"/>
             <hr style="border: none; border-top: 1px solid #0B73B9; width: 80%; margin-top: -5px;" />
             <img [src]="'assets/layout/images/logo_osmosys_blue.png'" class="mt-4 " alt="osmosys" style="width: 80%; ; margin-top: 0px !important;"/>
             <hr style="border: none; border-top: 1px solid #0B73B9; width: 80%;" />
-            <h5 style="color: #0B73B9; margin-top: 1rem; font-size: 20px;font-weight:100">EL SALVADOR</h5>                
+            <h5 style="color: #0B73B9; margin-top: 1rem; font-size: 20px;font-weight:100">{{  operationName.toUpperCase() }}</h5>                
         </div>
         <div class="flex flex-column align-items-center gap-6">           
             <form [formGroup]="loginForm" class="flex flex-column align-items-center gap-4" style="margin-top: 3rem; color: rgb(109, 109, 109);" (ngSubmit)="login()">
@@ -33,29 +31,11 @@
         class="w-8 hidden lg:flex flex-column justify-content-between align-items-center px-6 py-6 bg-cover bg-norepeat"
         [ngStyle]="{ 'background-image': 'url(' + loginPhotoFile + ')'}">
  
-        <div class="avatar semi-transparent-box">
-            <img [src]=flagLoginFile alt="osmosys" style="max-height: 100%;width: fit-content;"/> 
+        <div class="avatar-container semi-transparent-box">
+            <img [src]=flagLoginFile alt="osmosys" class="avatar" /> 
         </div>
 
-        <!-- <div id="semi-transparent-box" class="semi-transparent-box flex flex-column align-items-center" style="width: 30% !important;">
-            <img [src]="'assets/layout/images/unhcr_logo_vertical_blue.png'" class="mt-4 " alt="osmosys" style="width: 80%; margin-top: -20px !important;"/>
-            <hr style="border: none; border-top: 1px solid #0B73B9; width: 80%; margin-top: -5px;" />
-            <img [src]="'assets/layout/images/logo_osmosys_blue.png'" class="mt-4 " alt="osmosys" style="width: 80%; ; margin-top: 0px !important;"/>
-            <hr style="border: none; border-top: 1px solid #0B73B9; width: 80%;" />
-            <h5 style="color: #0B73B9; margin-top: 1rem; font-size: 25px;font-weight:100">EL SALVADOR</h5>                
-        </div> -->
-
-        <!--<div class="mt-auto  flex align-content-end flex-wrap">
-            &lt;!&ndash;<span class="block text-white text-7xl font-semibold">Access to your <br/>Diamond <br/>Account</span>&ndash;&gt;
-            <span class="block text-white text-3xl mt-4">Desarrollado por Gestión de Informacion<br/> El Salvador<br/>  </span>
-
-        </div>-->
+       
     </div>
-    <!--
-        <div>
-            <button pButton label="Exportar" class="w-20rem" (click)="export()"></button>
-        </div>
     
-    -->
-
 </div>
