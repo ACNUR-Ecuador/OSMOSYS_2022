@@ -32,7 +32,7 @@
                             <button pButton pRipple label="Crear" icon="pi pi-plus" *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'])"
                                     class="main-button mr-2 mb-2" style="margin-left: 1rem;" pTooltip="Crear proyecto" tooltipPosition="bottom"
                                     (click)="createItem()"></button>
-                            <button pButton pRipple label="Importar" *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR'])"
+                            <button pButton pRipple label="Importar" *ngIf="false"
                                     icon="pi pi-plus" style="margin-left: 1rem;"
                                     class="second-button mr-2 mb-2" pTooltip="Importar catálago de proyecto" tooltipPosition="bottom"
                                     (click)="initiateCatalogImport()"></button>
