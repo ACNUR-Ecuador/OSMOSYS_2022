@@ -113,8 +113,7 @@ public class AuditService {
     }
 
     public void logAction(String entity, String projectCode, String indicatorCode, AuditAction action, User responsibleUser, Object oldData, Object newData, State state) {
-        //String oldDataJson = convertToJson(convertToProjectAuditDTO((Project) oldData));
-        //String newDataJson = convertToJson(convertToProjectAuditDTO((Project) newData));
+
         Gson gson = new Gson();
         String oldDataJson="";
         String newDataJson="";
