@@ -24,7 +24,7 @@ export class RecoverPasswordComponent {
 
     cancelar() {
 
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl('/auth/login');
     }
 
     recoverPassword() {

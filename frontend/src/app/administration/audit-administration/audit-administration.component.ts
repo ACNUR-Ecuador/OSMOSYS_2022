@@ -46,7 +46,7 @@ export class AuditAdministrationComponent implements OnInit {
     this.loadItems(this.selectedTable);
     this.cols = [
       { field: 'entity', header: 'Tabla', type: ColumnDataType.text },
-      { field: 'projectCode', header: 'Código de Proyecto', type: ColumnDataType.text },
+      { field: 'projectCode', header: 'Número de Acuerdo', type: ColumnDataType.text },
       { field: 'indicatorCode', header: 'Código de Indicador', type: ColumnDataType.text },
       { field: 'action', header: 'Acción', type: ColumnDataType.text },
       { field: 'responsibleUser.name', header: 'Usuario', type: ColumnDataType.text },

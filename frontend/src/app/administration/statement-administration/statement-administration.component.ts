@@ -76,7 +76,7 @@ export class StatementAdministrationComponent implements OnInit {
             {field: 'code', header: 'Código', type: ColumnDataType.text},
             {
                 field: 'areaType',
-                header: 'Tipo',
+                header: 'Nivel de Resultado',
                 type: ColumnDataType.text,
                 pipeRef: this.enumValuesToLabelPipe,
                 arg1: EnumsType.AreaType
@@ -89,7 +89,7 @@ export class StatementAdministrationComponent implements OnInit {
                 pipeRef: this.codeDescriptionPipe
             },
             {field: 'area', header: 'Área', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},
-            {field: 'pillar', header: 'Pillar', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},            
+            {field: 'pillar', header: 'Pilar', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},            
             {
                 field: 'periodStatementAsignations',
                 header: 'Periodos',
@@ -267,7 +267,7 @@ export class StatementAdministrationComponent implements OnInit {
     exportExcel(table: Table) {
         this.utilsService.exportTableAsExcel(this._selectedColumns,
             table.filteredValue ? table.filteredValue : this.items,
-            'declaraciones');
+            'enunciados');
     }
 
 

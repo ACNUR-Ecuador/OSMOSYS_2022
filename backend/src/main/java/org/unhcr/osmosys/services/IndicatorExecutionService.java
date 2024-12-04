@@ -762,6 +762,7 @@ public class IndicatorExecutionService {
         List<IndicatorValueWeb> totalIndicatorValueWebs = new ArrayList<>();
         List<Object> newIndicatorValues = new ArrayList<>();
         List<Object> oldIndicatorValues = new ArrayList<>();
+        IndicatorType indicatorType=indicatorExecution.getIndicatorType();
         boolean auditChange=false;
         monthValuesWeb.getIndicatorValuesMap().forEach((dissagregationType, indicatorValueWebs) -> {
             if (indicatorValueWebs != null) {
@@ -774,16 +775,18 @@ public class IndicatorExecutionService {
                 IndicatorValue valueToUpdate = valueToUpdateOp.get();
                 //agrego valores anteriores a lista de auditoria
                 boolean isnewValue=false;
-                DissagregationType dissagregationType = indicatorValueWeb.getDissagregationType();
                 Object oldValues;
                 if(valueToUpdate.getValue()!=null){
                     if(valueToUpdate.getValue().compareTo(indicatorValueWeb.getValue()) !=0){
                         if(indicatorExecution.getProject() == null){
                                 oldValues = indicatorExecutionDao.findIndicatorDirectImplementationValuesById(valueToUpdate.getId());
-                            }else {
-                                oldValues = indicatorExecutionDao.findIndicatorDissagregationValuesById(valueToUpdate.getId());
-
-                            }
+                        }else {
+                                if(indicatorType==IndicatorType.GENERAL){
+                                    oldValues = indicatorExecutionDao.findGeneralIndicatorDissagregationValuesById(valueToUpdate.getId());
+                                }else{
+                                    oldValues = indicatorExecutionDao.findIndicatorDissagregationValuesById(valueToUpdate.getId());
+                                }
+                        }
                             oldIndicatorValues.add(oldValues);
                             isnewValue = true;
                             auditChange = true;
@@ -795,9 +798,13 @@ public class IndicatorExecutionService {
                         if(indicatorExecution.getProject() == null){
                             oldValues = indicatorExecutionDao.findIndicatorDirectImplementationValuesById(valueToUpdate.getId());
                         }else {
-                            oldValues = indicatorExecutionDao.findIndicatorDissagregationValuesById(valueToUpdate.getId());
-
-                        }                        oldIndicatorValues.add(oldValues);
+                            if(indicatorType==IndicatorType.GENERAL){
+                                oldValues = indicatorExecutionDao.findGeneralIndicatorDissagregationValuesById(valueToUpdate.getId());
+                            }else{
+                                oldValues = indicatorExecutionDao.findIndicatorDissagregationValuesById(valueToUpdate.getId());
+                            }
+                        }
+                        oldIndicatorValues.add(oldValues);
                         isnewValue = true;
                         auditChange = true;
                     }
@@ -814,8 +821,11 @@ public class IndicatorExecutionService {
                     if(indicatorExecution.getProject() == null){
                         newValues = indicatorExecutionDao.findIndicatorDirectImplementationValuesById(valueToUpdate.getId());
                     }else {
-                        newValues = indicatorExecutionDao.findIndicatorDissagregationValuesById(valueToUpdate.getId());
-
+                        if(indicatorType==IndicatorType.GENERAL){
+                            newValues = indicatorExecutionDao.findGeneralIndicatorDissagregationValuesById(valueToUpdate.getId());
+                        }else{
+                            newValues = indicatorExecutionDao.findIndicatorDissagregationValuesById(valueToUpdate.getId());
+                        }
                     }
                     newIndicatorValues.add(newValues);
                 }
@@ -842,8 +852,11 @@ public class IndicatorExecutionService {
                             if(indicatorExecution.getProject() == null){
                                 oldValues = indicatorExecutionDao.findIndicatorDirectImplementationCustomDissValuesById(valueToUpdate.getId());
                             }else {
-                                oldValues=indicatorExecutionDao.findIndicatorCustomDissagregationValuesById(valueToUpdate.getId());
-
+                                if(indicatorType==IndicatorType.GENERAL){
+                                    oldValues=indicatorExecutionDao.findGeneralIndicatorCustomDissagregationValuesById(valueToUpdate.getId());
+                                }else{
+                                    oldValues=indicatorExecutionDao.findIndicatorCustomDissagregationValuesById(valueToUpdate.getId());
+                                }
                             }
                             oldIndicatorValues.add(oldValues);
                             isnewValue = true;
@@ -857,7 +870,11 @@ public class IndicatorExecutionService {
                             if(indicatorExecution.getProject() == null){
                                 oldValues = indicatorExecutionDao.findIndicatorDirectImplementationCustomDissValuesById(valueToUpdate.getId());
                             }else {
-                                oldValues=indicatorExecutionDao.findIndicatorCustomDissagregationValuesById(valueToUpdate.getId());
+                                if(indicatorType==IndicatorType.GENERAL){
+                                    oldValues=indicatorExecutionDao.findGeneralIndicatorCustomDissagregationValuesById(valueToUpdate.getId());
+                                }else{
+                                    oldValues=indicatorExecutionDao.findIndicatorCustomDissagregationValuesById(valueToUpdate.getId());
+                                }
                             }
                             isnewValue = true;
                             auditChange = true;
@@ -877,8 +894,11 @@ public class IndicatorExecutionService {
                         if(indicatorExecution.getProject() == null){
                             newValues = indicatorExecutionDao.findIndicatorDirectImplementationCustomDissValuesById(valueToUpdate.getId());
                         }else {
-                            newValues=indicatorExecutionDao.findIndicatorCustomDissagregationValuesById(valueToUpdate.getId());
-
+                            if(indicatorType==IndicatorType.GENERAL){
+                                newValues=indicatorExecutionDao.findGeneralIndicatorCustomDissagregationValuesById(valueToUpdate.getId());
+                            }else{
+                                newValues=indicatorExecutionDao.findIndicatorCustomDissagregationValuesById(valueToUpdate.getId());
+                            }
                         }
                         newIndicatorValues.add(newValues);
                     }
@@ -891,10 +911,16 @@ public class IndicatorExecutionService {
         this.updateIndicatorExecutionTotals(indicatorExecution);
         if(auditChange){
             String projectCode=null;
+            String indicatorCode;
             if(indicatorExecution.getProject()!=null){
                 projectCode = indicatorExecution.getProject().getCode();
             }
-            auditService.logAction("Reporte", projectCode, indicatorExecution.getIndicator().getCode(), AuditAction.REPORT, responsibleUser, oldIndicatorValues, newIndicatorValues, State.ACTIVO);
+            if(indicatorExecution.getIndicator()!=null){
+                indicatorCode = indicatorExecution.getIndicator().getCode();
+            }else{
+                indicatorCode=indicatorExecution.getProject().getPeriod().getGeneralIndicator().getId().toString();
+            }
+            auditService.logAction("Reporte", projectCode, indicatorCode, AuditAction.REPORT, responsibleUser, oldIndicatorValues, newIndicatorValues, State.ACTIVO);
         }
 
 

@@ -21,7 +21,7 @@
                                 placeholder="Seleccione las columnas"
                                 appendTo="body"></p-multiSelect>
                             <button pButton pRipple label="Crear" icon="pi pi-plus" class="main-button mr-2 mb-2"
-                            (click)="createItem()" style="margin-left: 2rem;" pTooltip="Crear un Área" tooltipPosition="bottom"></button>
+                            (click)="createItem()" style="margin-left: 2rem;" pTooltip="Crear una Desagregación" tooltipPosition="bottom"></button>
 
                             <button pButton pRipple label="Exportar" icon="pi pi-file-excel" class="second-button mr-2 mb-2"
                             (click)="exportExcel(dt)" style="margin-left: 1rem;" pTooltip="Exportar a Excel" tooltipPosition="bottom"></button>                        
@@ -156,12 +156,6 @@
                                     class="p-button-success mr-2 mb-2"
                                     (click)="createOption()"></button>
                         </ng-template>
-
-                        <ng-template pTemplate="right">
-                            <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel(dt1)"
-                                    class="p-button-success mr-2" pTooltip="XLS"
-                                    tooltipPosition="bottom"></button>
-                        </ng-template>
                     </p-toolbar>
                     <p-table #dt1 [value]="formItem.get('customDissagregationOptions').value"
                              [columns]="selectedColumnsOptions" [rows]="10"
@@ -172,16 +166,7 @@
                              [showCurrentPageReport]="true">
                         <ng-template pTemplate="caption">
                             <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between table-header">
-                                <h5 class="mb-1">Opciones de Desagregación</h5>
-                                <span class="p-input-icon-left">
-                                    </span>
-                                <p-multiSelect [options]="colOptions"
-                                               [(ngModel)]="selectedColumnsOptions"
-                                               [ngModelOptions]="{standalone: true}"
-                                               optionLabel="header"
-                                               selectedItemsLabel="{0} columnas seleccionadas"
-                                               [style]="{minWidth: '200px',color:'#6c757d'}"
-                                               placeholder="Seleccione las columnas"></p-multiSelect>
+                                <h5 class="mb-2">Opciones de Desagregación</h5>
                                
                             </div>
 

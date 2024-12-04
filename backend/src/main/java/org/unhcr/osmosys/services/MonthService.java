@@ -420,9 +420,14 @@ public class MonthService {
     public Long changeMonthBlockedState(Long monthId, Boolean blockinState) {
         Month month = this.monthDao.find(monthId);
         IndicatorExecution indicatorExecution=indicatorExecutionDao.find(month.getQuarter().getIndicatorExecution().getId());
-        Object oldMonth;
+        Map<String,Object> oldMonth;
+        IndicatorType indicatorType=indicatorExecution.getIndicatorType();
         if(indicatorExecution.getProject()!=null){
-            oldMonth=monthDao.findMonthRelatedProject(monthId);
+            if(indicatorType==IndicatorType.GENERAL){
+                oldMonth=monthDao.findMonthRelatedProjectGeneralIndicator(monthId);
+            }else{
+                oldMonth=monthDao.findMonthRelatedProject(monthId);
+            }
         }else{
             oldMonth=monthDao.findMonthRelatedIndicator(monthId);
         }
@@ -438,9 +443,13 @@ public class MonthService {
 
 
         month.setBlockUpdate(blockinState);
-        Object newMonth;
+        Map<String,Object> newMonth;
         if(indicatorExecution.getProject()!=null){
-            newMonth=monthDao.findMonthRelatedProject(monthId);
+            if(indicatorType==IndicatorType.GENERAL){
+                 newMonth=monthDao.findMonthRelatedProjectGeneralIndicator(monthId);
+            }else{
+                newMonth=monthDao.findMonthRelatedProject(monthId);
+            }
         }else{
             newMonth=monthDao.findMonthRelatedIndicator(monthId);
         }
@@ -450,7 +459,7 @@ public class MonthService {
             auditService.logAction(
                     "Bloqueo de Mes Indicador",
                     indicatorExecution.getProject() != null ? indicatorExecution.getProject().getCode() : null,
-                    indicatorExecution.getIndicator().getCode(),
+                    indicatorExecution.getIndicator() != null ? indicatorExecution.getIndicator().getCode(): newMonth.get("ID_de_Indicador").toString(),
                     AuditAction.LOCK,
                     responsibleUser,
                     oldMonth,
@@ -462,7 +471,7 @@ public class MonthService {
             auditService.logAction(
                     "Bloqueo de Mes Indicador",
                     indicatorExecution.getProject() != null ? indicatorExecution.getProject().getCode() : null,
-                    indicatorExecution.getIndicator().getCode(),
+                    indicatorExecution.getIndicator() != null ? indicatorExecution.getIndicator().getCode(): newMonth.get("ID_de_Indicador").toString() ,
                     AuditAction.UNLOCK,
                     responsibleUser,
                     oldMonth,
@@ -481,12 +490,26 @@ public class MonthService {
         UserWeb principal = UserSecurityContext.getCurrentUser();
         User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
         Project project=projectDao.find(projectId);
-        List<?> oldIndicatorsMonthState=monthDao.findIndicatorsRelatedProjectByMonth(projectId, month, year);
+        List<Map<String,Object>> oldIndicatorsMonthState=monthDao.findIndicatorsRelatedProjectByMonth(projectId, month, year);
+        if (oldIndicatorsMonthState == null) {
+            oldIndicatorsMonthState = new ArrayList<>();
+        }
+        Map<String,Object> oldGeneralIndicatorsMonthState=monthDao.findGeneralIndicatorsRelatedProjectByMonth(projectId, month, year);
+        if(oldGeneralIndicatorsMonthState != null){
+            oldIndicatorsMonthState.add(oldGeneralIndicatorsMonthState);
+        }
         for (Month monthE : months) {
             monthE.setBlockUpdate(blockUpdate);
             this.saveOrUpdate(monthE);
         }
-        List<?> newIndicatorsMonthState=monthDao.findIndicatorsRelatedProjectByMonth(projectId, month, year);
+        List<Map<String,Object>> newIndicatorsMonthState=monthDao.findIndicatorsRelatedProjectByMonth(projectId, month, year);
+        if (newIndicatorsMonthState == null) {
+            newIndicatorsMonthState = new ArrayList<>();
+        }
+        Map<String,Object> newGeneralIndicatorsMonthState=monthDao.findGeneralIndicatorsRelatedProjectByMonth(projectId, month, year);
+        if(newGeneralIndicatorsMonthState != null){
+            newIndicatorsMonthState.add(newGeneralIndicatorsMonthState);
+        }
         if(blockUpdate) {
             // Registrar auditoría
             auditService.logAction("Bloqueo de Mes Masivo", project.getCode(),null, AuditAction.LOCK, responsibleUser, oldIndicatorsMonthState, newIndicatorsMonthState, State.ACTIVO);

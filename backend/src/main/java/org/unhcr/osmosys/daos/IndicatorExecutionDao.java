@@ -760,6 +760,116 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         // Obtener los resultados como un único Map
         return query.getSingleResult();
     }
+    public Object findGeneralIndicatorDissagregationValuesById(Long idValue) {
+        // JPQL de la consulta con JOIN FETCH
+        String jpql = "SELECT new map( "
+                + "p.code AS Código_de_Proyecto, "
+                + "p.name AS Nombre_Proyecto, "
+                + "i.id AS ID_de_Indicador, "
+                + "i.description AS Descripción_de_Indicador, "
+                + "o.acronym AS Organización_Acrónimo, "
+                + "o.description AS Organización_Descr, "
+                + "q.year AS Periodo, "
+                + "q.quarter AS Trimestre, "
+                + "m.month AS Mes, "
+                + "iv.dissagregationType AS Tipo_de_Desagregación, "
+                + "iv.value AS Valor, "
+                + "iv.location.id AS Cantón_id, "
+                + "cantonOption.name AS Cantón_nombre, "
+                + "iv.populationType.id AS Tipo_de_población_id, "
+                + "populationTypeOption.name AS Tipo_de_población, "
+                + "iv.ageType.id AS Edad_id, "
+                + "ageOption.name AS Edad, "
+                + "iv.genderType.id AS Género_id, "
+                + "genderOption.name AS Género, "
+                + "iv.countryOfOrigin.id AS País_de_Origen_id, "
+                + "countryOfOriginOption.name AS País_de_Origen, "
+                + "iv.diversityType.id AS Diversidad_id, "
+                + "diversityOption.name AS Diversidad "
+                + ") "
+                + "FROM Project p "
+                + "JOIN p.indicatorExecutions ie "
+                + "JOIN p.period pe "
+                + "JOIN pe.generalIndicator i "
+                + "JOIN p.organization o "
+                + "JOIN ie.quarters q "
+                + "JOIN q.months m "
+                + "JOIN m.indicatorValues iv "
+                + "LEFT JOIN iv.location cantonOption "
+                + "LEFT JOIN iv.populationType populationTypeOption "
+                + "LEFT JOIN iv.ageType ageOption "
+                + "LEFT JOIN iv.genderType genderOption "
+                + "LEFT JOIN iv.countryOfOrigin countryOfOriginOption "
+                + "LEFT JOIN iv.diversityType diversityOption "
+                + "WHERE iv.id = :idValue "
+                + "AND ie.project.id = p.id "
+                + "AND p.period.id = pe.id "
+                + "AND pe.generalIndicator.id = i.id "
+                + "AND o.id = p.organization.id "
+                + "AND q.indicatorExecution.id = ie.id "
+                + "AND q.id = m.quarter.id "
+                + "AND m.id = iv.month.id";
+
+        // Ejecutar la consulta con el parámetro `idValue`
+        Query query = getEntityManager().createQuery(jpql);
+        query.setParameter("idValue", idValue);
+
+        // Obtener los resultados como un único Map
+        return query.getSingleResult();
+    }
+
+    public Object findGeneralIndicatorCustomDissagregationValuesById(Long idValue) {
+        // JPQL de la consulta
+        String jpql = "SELECT new map( "
+                + "p.code AS Código_de_Proyecto, "
+                + "p.name AS Nombre_Proyecto, "
+                + "i.id AS ID_de_Indicador, "
+                + "i.description AS Descripción_de_Indicador, "
+                + "o.acronym AS Organización_Acrónimo, "
+                + "o.description AS Organización_Descr, "
+                + "q.year AS Periodo, "
+                + "q.quarter AS Trimestre, "
+                + "m.month AS Mes, "
+                + "cd.name AS Nombre_de_Desagregación, "
+                + "iv.value AS Valor, "
+                + "iv.customDissagregationOption.id AS Opción_de_Desagregación_id, "
+                + "cdo.name AS Opción_de_Desagregación "
+                + ") "
+                + "FROM Project p "
+                + "JOIN p.indicatorExecutions ie "
+                + "JOIN p.period pe "
+                + "JOIN pe.generalIndicator i "
+                + "JOIN p.organization o "
+                + "JOIN ie.quarters q "
+                + "JOIN q.months m "
+                + "JOIN m.indicatorValuesIndicatorValueCustomDissagregations iv "
+                + "JOIN iv.customDissagregationOption cdo "
+                + "JOIN cdo.customDissagregation cd "
+                + "WHERE iv.id = :idValue "
+                + "AND ie.project.id = p.id "
+                + "AND p.period.id = pe.id "
+                + "AND pe.generalIndicator.id = i.id "
+                + "AND o.id = p.organization.id "
+                + "AND q.indicatorExecution.id = ie.id "
+                + "AND q.id = m.quarter.id "
+                + "AND m.id = iv.month.id "
+                + "AND iv.customDissagregationOption.id = cdo.id "
+                + "AND cdo.customDissagregation.id = cd.id";
+
+        // Ejecutar la consulta con el parámetro `idValue`
+        Query query = getEntityManager().createQuery(jpql);
+        query.setParameter("idValue", idValue);
+
+        // Obtener los resultados como una lista de Mapas
+        List<?> results = query.getResultList();
+
+
+        if (results.isEmpty()) {
+            return null;
+        }
+
+        return results.get(0);
+    }
 
 
 
