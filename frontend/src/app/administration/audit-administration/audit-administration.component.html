@@ -62,7 +62,7 @@
               </p-columnFilter>
               <p-calendar *ngSwitchCase="'changeDate'" type="equals" [showTime]="false" [monthNavigator]="true"
                 [yearNavigator]="true" [dateFormat]="'yy-mm-dd'" [(ngModel)]="selectedDate"
-                (onSelect)="onDateFilterSelect($event, col.field)" [showIcon]="true" placeholder="Filtrar por fecha">
+                (onSelect)="onDateFilterSelect($event, col.field)" [showIcon]="true" placeholder="Filtrar por fecha" [readonlyInput]="true">
               </p-calendar>
 
               <i *ngIf="selectedDate && col.field === 'changeDate'" class="pi pi-times"

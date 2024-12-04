@@ -90,7 +90,7 @@ export class MenuService {
                 {
                     label: 'Configuración del sistema',
                     icon: 'pi pi-fw pi-cog',
-                    roles: ['SUPER_ADMINISTRADOR'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'],
                     items: [
                         {
                             label: 'Areas',
@@ -114,13 +114,13 @@ export class MenuService {
                             label: 'Pilares',
                             icon: 'pi pi-fw pi-cog',
                             routerLink: ['/administration/pillars'],
-                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
+                            roles: ['SUPER_ADMINISTRADOR']
                         },
                         {
                             label: 'Periodos',
                             icon: 'pi pi-fw pi-cog',
                             routerLink: ['/administration/periods'],
-                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
+                            roles: ['SUPER_ADMINISTRADOR']
                         },                        
                         {
                             label: 'Oficinas',
@@ -263,7 +263,7 @@ export class MenuService {
         {
             label: 'Acerca de OSMOSYS',
             icon: 'pi pi-file-o',
-            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
+            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS','ADMINISTRADOR_OFICINA'],
             routerLink: ['/home/about-us'],
         },
         {separator: true},
