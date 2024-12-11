@@ -115,21 +115,21 @@
             <p-messages></p-messages>
             <div class="card p-fluid">
                 <div class="field">
-                    <label for="codeI">Código</label>
+                    <label for="codeI">Código *:</label>
                     <input type="text" pInputText id="codeI"
                            formControlName="code" autofocus/>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('code',formItem)">Campo
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="shortDescriptionI">Descripción Corta</label>
+                    <label for="shortDescriptionI">Descripción Corta *:</label>
                     <input type="text" pInputText id="shortDescriptionI"
                            formControlName="shortDescription"/>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('shortDescription',formItem)">Campo
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="descriptionI">Descripción Completa</label>
+                    <label for="descriptionI">Descripción Completa *:</label>
 
                     <textarea pInputTextarea id="descriptionI"
                               formControlName="description"
@@ -140,7 +140,7 @@
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="areaTypeI">Tipo</label>
+                    <label for="areaTypeI">Tipo *:</label>
 
                     <p-dropdown id="areaTypeI"
                                 formControlName="areaType"
@@ -153,7 +153,7 @@
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="stateI">Estado</label>
+                    <label for="stateI">Estado *:</label>
 
                     <p-selectButton id="stateI"
                                     formControlName="state"
@@ -165,7 +165,7 @@
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="definitionI">Definición</label>
+                    <label for="definitionI">Definición:</label>
 
                     <textarea pInputTextarea id="definitionI"
                               formControlName="definition"

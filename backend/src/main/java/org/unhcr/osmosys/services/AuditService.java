@@ -359,6 +359,11 @@ public class AuditService {
         return modelWebTransformationService.auditsToAuditsWeb(audits);
     }
 
+    public List<AuditWeb> getAuditsByTableNamePeriodAndMonth(String tableName, int year, int month) {
+        List<Audit> audits = auditDao.getAuditsByTableNamePeriodAndMonth(tableName, year, month);
+        return modelWebTransformationService.auditsToAuditsWeb(audits);
+    }
+
 
 
 

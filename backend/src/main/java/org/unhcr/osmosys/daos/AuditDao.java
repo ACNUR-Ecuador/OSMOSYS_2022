@@ -35,6 +35,21 @@ public class AuditDao extends GenericDaoJpa<Audit, Long> {
         return q.getResultList();
     }
 
+    public List<Audit> getAuditsByTableNamePeriodAndMonth(String name, int year, int month) {
+
+        String jpql = "SELECT o FROM Audit o " +
+                "WHERE o.entity = :name " +
+                "AND FUNCTION('YEAR', o.changeDate) = :year " +
+                "AND FUNCTION('MONTH', o.changeDate) = :month";
+
+        Query q = getEntityManager().createQuery(jpql, Audit.class);
+        q.setParameter("name", name);
+        q.setParameter("year", year);
+        q.setParameter("month", month);
+
+        return q.getResultList();
+    }
+
 
 
 }

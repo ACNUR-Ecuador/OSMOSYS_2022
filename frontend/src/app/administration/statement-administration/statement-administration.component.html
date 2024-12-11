@@ -174,7 +174,7 @@
             <div class="card">
                 <div class="p-fluid p-formgrid grid">
                     <div class="field col-4 md:col-4">
-                        <label for="areaTypeI">Nivel de Resultado *</label>
+                        <label for="areaTypeI">Nivel de Resultado *:</label>
                         <p-dropdown id="areaTypeI"
                                     formControlName="areaType"
                                     [options]="areaTypesItems"
@@ -188,7 +188,7 @@
                             obligatorio.</small>
                     </div>
                     <div class="field col-4 md:col4 p-sm-12">
-                        <label for="periodsI">Periodos *</label>
+                        <label for="periodsI">Periodos *:</label>
                         <p-multiSelect id="periodsI"
                             [options]="periodsItems"
                             appendTo="body"
@@ -204,7 +204,7 @@
                     </div>
 
                     <div class="field col-3 md:col3 p-sm-12">
-                        <label for="areaI">Área</label>
+                        <label for="areaI">Área *:</label>
 
                         <p-dropdown id="areaI"
                                     formControlName="area"
@@ -220,7 +220,7 @@
                     </div>
                     
                     <div class="field col-4 md:col-4">
-                        <label for="areaI">Enunciado padre</label>
+                        <label for="areaI">Enunciado padre:</label>
                         <p-dropdown id="parentStatementI"
                                     formControlName="parentStatement"
                                     [options]="parentStatementsItemsFiltered"
@@ -236,7 +236,7 @@
                     </div>
 
                     <div class="field col-4 md:col-4">
-                        <label for="codeI">Código *</label>
+                        <label for="codeI">Código *:</label>
                         <input type="text" pInputText id="codeI"
                                formControlName="code" autofocus/>
                         <small class="p-error" *ngIf="utilsService.showErrorForm('code',formItem)">Campo
@@ -244,7 +244,7 @@
                     </div>
 
                     <div class="field col-3 md:col3 p-sm-12 ">
-                        <label for="pillarI">Pilar *</label>
+                        <label for="pillarI">Pilar *:</label>
 
                         <p-dropdown id="pillarI"
                                     formControlName="pillar"
@@ -260,7 +260,7 @@
                     </div>
 
                     <div class="field col-12 md:col12">
-                        <label for="descriptionI">Descripción Completa *</label>
+                        <label for="descriptionI">Descripción Completa *:</label>
 
                         <textarea pInputTextarea id="descriptionI"
                                   formControlName="description"
@@ -271,7 +271,7 @@
                             obligatorio.</small>
                     </div>
                     <div class="field col-3 md:col3 ">
-                        <label for="stateI">Estado *</label>
+                        <label for="stateI">Estado *:</label>
 
                         <p-selectButton id="stateI"
                                         formControlName="state"

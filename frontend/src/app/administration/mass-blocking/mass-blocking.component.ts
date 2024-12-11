@@ -77,7 +77,7 @@ export class MassBlockingComponent implements OnInit {
             next: () => {
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'bloquedo exitosamente ' + yearMonth.year + '-' + yearMonth.month
+                    summary: 'bloqueado exitosamente ' + yearMonth.year + '-' + yearMonth.month
                 });
             }, error: () => {
                 this.messageService.add({
@@ -93,12 +93,12 @@ export class MassBlockingComponent implements OnInit {
             next: () => {
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'bloquedo exitosamente ' + yearMonth.year + '-' + yearMonth.month
+                    summary: 'desbloqueado exitosamente ' + yearMonth.year + '-' + yearMonth.month
                 });
             }, error: () => {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'error en el bloqueo de ' + yearMonth.year + '-' + yearMonth.month
+                    summary: 'error en el desbloqueo de ' + yearMonth.year + '-' + yearMonth.month
                 });
             }
         });

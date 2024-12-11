@@ -99,14 +99,16 @@
             <p-messages></p-messages>
             <div class="card p-fluid">
                 <div class="field">
-                    <label for="yearI">Año</label>
+                    <label for="yearI">Año *:</label>
                     <p-inputNumber id="yearI"
-                                   formControlName="year" autofocus></p-inputNumber>
+                                   formControlName="year" autofocus [locale]="'en-US'" 
+                                   [mode]="'decimal'" 
+                                   [useGrouping]="false"></p-inputNumber>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('year',formItem)">Campo
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="stateI">Estado</label>
+                    <label for="stateI">Estado *:</label>
 
                     <p-selectButton id="stateI"
                                     formControlName="state"
@@ -117,7 +119,7 @@
                     <small class="p-error" *ngIf="utilsService.showErrorForm('state',formItem)">Campo
                         obligatorio.</small>
                 </div>
-                <p-panel class="col-12" header="Desagregaciones" [toggleable]="true">
+                <p-panel class="col-12" header="Desagregaciones *" [toggleable]="true">
                     <div class="p-fluid grid formgrid">
                         <p-panel class="col-6" header="Tipos de Población" [toggleable]="true">
 

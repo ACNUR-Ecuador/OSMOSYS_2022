@@ -110,7 +110,7 @@ export class StatementAdministrationComponent implements OnInit {
             state: new FormControl('', Validators.required),
             parentStatement: new FormControl(''),
             area: new FormControl(''),
-            areaType: new FormControl(''),
+            areaType: new FormControl('', Validators.required),
             pillar: new FormControl('', Validators.required),
             situation: new FormControl(''),
             periods: new FormControl('', Validators.required),
@@ -374,6 +374,11 @@ export class StatementAdministrationComponent implements OnInit {
                     next: () => {
                         this.cancelDialog();
                         this.loadItems();
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Enunciado guardado exitosamente',
+                            life: 3000
+                        });
                     },
                     error: err => {
                         this.messageService.add({
@@ -391,6 +396,11 @@ export class StatementAdministrationComponent implements OnInit {
                     next: () => {
                         this.cancelDialog();
                         this.loadItems();
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Enunciado guardado exitosamente',
+                            life: 3000
+                        });
                     },
                     error: err => {
                         this.messageService.add({

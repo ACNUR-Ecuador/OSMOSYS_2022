@@ -125,21 +125,21 @@
             <p-messages></p-messages>
             <div class="card p-fluid">
                 <div class="field">
-                    <label for="nameI">Nombre  *</label>
+                    <label for="nameI">Nombre *:</label>
                     <input type="text" pInputText id="nameI"
                         formControlName="name" autofocus (input)="toUpperCase()"/>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('name',formItem)">Campo
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="DescriptionI">Descripción</label>
+                    <label for="DescriptionI">Descripción *:</label>
                     <input type="text" pInputText id="DescriptionI"
                         formControlName="description"/>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('description',formItem)">Campo
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="periodI">Periodo *</label>
+                    <label for="periodI">Periodo *:</label>
 
                     <p-dropdown id="periodsI"
                         [options]="periodsItems"
@@ -155,13 +155,13 @@
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="stateI">Cálculo</label>
+                    <label for="stateI">Cálculo:</label>
                     <p-dropdown [options]="operations" formControlName="operation" ></p-dropdown>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('state',formItem)">Campo
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="stateI">Estado</label>
+                    <label for="stateI">Estado *:</label>
 
                     <p-selectButton id="stateI"
                                     formControlName="state"
@@ -174,7 +174,7 @@
                 </div>       
               
                 <div class="field">
-                    <label for="stateI">Indicadores</label>
+                    <label for="stateI">Indicadores:</label>
 
                     <p-pickList [sourceStyle]="{'height':'20rem'}" [targetStyle]="{'height':'20rem'}"  [dragdrop]="true" [source]="indicators" [target]="selectedIndicators" filterBy="code" sourceHeader="Ind. Disponibles" targetHeader="Ind. Asignados"> 
                         <ng-template let-indicator pTemplate="item">                                                           

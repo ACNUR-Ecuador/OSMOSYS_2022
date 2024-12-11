@@ -361,6 +361,11 @@ export class PeriodAdministrationComponent implements OnInit {
                 next: () => {
                     this.cancelDialog();
                     this.loadItems();
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Periodo guardado exitosamente',
+                        life: 3000
+                    });
                 },
                 error: err => {
                     this.messageService.add({
@@ -377,6 +382,11 @@ export class PeriodAdministrationComponent implements OnInit {
                 next: () => {
                     this.cancelDialog();
                     this.loadItems();
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Periodo guardado exitosamente',
+                        life: 3000
+                    });
                 },
                 error: err => {
                     this.messageService.add({

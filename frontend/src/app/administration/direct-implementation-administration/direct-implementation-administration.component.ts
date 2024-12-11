@@ -120,7 +120,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
                 error: error => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al cargar las áreas',
+                        summary: 'Error al cargar los periodos',
                         detail: error.error.message,
                         life: 3000
                     });

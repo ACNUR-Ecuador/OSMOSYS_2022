@@ -125,14 +125,14 @@
             <p-messages></p-messages>
             <div class="card p-fluid">
                 <div class="field">
-                    <label for="acronymI">Acrónimo</label>
+                    <label for="acronymI">Acrónimo *:</label>
                     <input type="text" pInputText id="acronymI"
                            formControlName="acronym" autofocus/>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('acronym',formItem)">Campo
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="descriptionI">Nombre</label>
+                    <label for="descriptionI">Nombre *:</label>
 
                     <input type="text" pInputText id="descriptionI"
                            formControlName="description"
@@ -142,7 +142,7 @@
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="officeTypeI">Tipo de oficina</label>
+                    <label for="officeTypeI">Tipo de oficina *:</label>
 
                     <p-dropdown id="officeTypeI"
                                 formControlName="type"
@@ -155,7 +155,7 @@
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="officeTypeI">Oficina padre</label>
+                    <label for="officeTypeI">Oficina padre:</label>
 
                     <p-dropdown id="parentOfficeI"
                                 [filter]="true"
@@ -169,7 +169,7 @@
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="administratorsI">Administradores</label>
+                    <label for="administratorsI">Administradores:</label>
 
                     <p-multiSelect id="administratorsI"
                                     formControlName="administrators"
@@ -179,7 +179,7 @@
                     </p-multiSelect>
                 </div>
                 <div class="field">
-                    <label for="stateI">Estado</label>
+                    <label for="stateI">Estado *:</label>
 
                     <p-selectButton id="stateI"
                                     formControlName="state"

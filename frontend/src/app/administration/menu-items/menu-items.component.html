@@ -110,14 +110,14 @@
             <p-messages></p-messages>
             <div class="card p-fluid">
                 <div class="field">
-                    <label for="labelI">Etiqueta</label>
+                    <label for="labelI">Etiqueta *:</label>
                     <input type="text" pInputText id="labelI"
                            formControlName="label" autofocus/>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('label',formItem)">Campo
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="parentI">Padre</label>
+                    <label for="parentI">Padre:</label>
                     <p-dropdown
                         id="parentI"
                         [options]="parentItems"
@@ -129,7 +129,7 @@
                     </p-dropdown>
                 </div>
                 <div class="field">
-                    <label for="iconI">Ícono</label>
+                    <label for="iconI">Ícono *:</label>
                     <input type="text" pInputText id="iconI"
                            formControlName="icon"/>
                     <small class="p-tag-warning">Consultar iconos en primeNg V14.</small>
@@ -138,7 +138,7 @@
                 </div>
 
                 <div class="field">
-                    <label for="assignedRolesI">Roles</label>
+                    <label for="assignedRolesI">Roles *:</label>
                     <p-multiSelect
                             id="assignedRolesI"
                             [options]="rolesItems"
@@ -149,7 +149,7 @@
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="urlI">Url</label>
+                    <label for="urlI">Url:</label>
                     <input type="text" pInputText id="urlI"
                            formControlName="url"/>
                 </div>
@@ -163,7 +163,7 @@
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="stateI">Estado</label>
+                    <label for="stateI">Estado *:</label>
 
                     <p-selectButton id="stateI"
                                     formControlName="state"
@@ -176,7 +176,7 @@
                 </div>
 
                 <div class="field">
-                    <label for="orderI">Orden</label>
+                    <label for="orderI">Orden *:</label>
                     <p-inputNumber id="orderI"
                                    [min]="1"
                                    [maxFractionDigits]="0"

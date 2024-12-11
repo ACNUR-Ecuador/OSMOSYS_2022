@@ -121,6 +121,11 @@ export class OrganizationAdministrationComponent implements OnInit {
                     next: () => {
                         this.cancelDialog();
                         this.loadItems();
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Organización guardada exitosamente',
+                            life: 3000
+                        });
                     },
                     error: err => {
                         this.messageService.add({
@@ -138,6 +143,11 @@ export class OrganizationAdministrationComponent implements OnInit {
                     next: () => {
                         this.cancelDialog();
                         this.loadItems();
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Organización guardada exitosamente',
+                            life: 3000
+                        });
                     },
                     error: err => {
                         this.messageService.add({

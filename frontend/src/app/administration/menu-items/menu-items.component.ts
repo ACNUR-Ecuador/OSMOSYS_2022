@@ -194,6 +194,11 @@ export class MenuItemsComponent implements OnInit {
                 next: () => {
                     this.cancelDialog();
                     this.loadItems();
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Menú guardado exitosamente',
+                        life: 3000
+                    });
                 }, error: err => {
                     this.messageService.add({
                         severity: 'error',
@@ -210,6 +215,11 @@ export class MenuItemsComponent implements OnInit {
                 next: () => {
                     this.cancelDialog();
                     this.loadItems();
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Menú guardado exitosamente',
+                        life: 3000
+                    });
                 }, error: err => {
                     this.messageService.add({
                         severity: 'error',

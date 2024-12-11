@@ -98,7 +98,7 @@
             <p-messages></p-messages>
             <div class="card p-fluid">
                 <div class="field">
-                    <label for="codeI">Código del Implementador</label>
+                    <label for="codeI">Código del Implementador *:</label>
                     <input type="text" pInputText id="codeI"
                            formControlName="code" autofocus/>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('code',formItem)">Campo
@@ -106,7 +106,7 @@
                 </div>
 
                 <div class="field">
-                    <label for="codeI">Acrónimo</label>
+                    <label for="codeI">Acrónimo *:</label>
                     <input type="text" pInputText id="acronymI"
                            formControlName="acronym" autofocus/>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('acronym',formItem)">Campo
@@ -114,7 +114,7 @@
                 </div>
 
                 <div class="field">
-                    <label for="descriptionI">Descripción Completa</label>
+                    <label for="descriptionI">Descripción Completa *:</label>
 
                     <textarea pInputTextarea id="descriptionI"
                               formControlName="description"
@@ -125,7 +125,7 @@
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="stateI">Estado</label>
+                    <label for="stateI">Estado *:</label>
 
                     <p-selectButton id="stateI"
                                     formControlName="state"

@@ -67,7 +67,7 @@ export class OfficeAdministrationComponent implements OnInit {
             id: new FormControl(''),
             state: new FormControl('', Validators.required),
             description: new FormControl('', Validators.required),
-            acronym: new FormControl(''),
+            acronym: new FormControl('', Validators.required),
             type: new FormControl('', Validators.required),
             parentOffice: new FormControl(''),
             administrators: new FormControl(''),
@@ -298,6 +298,11 @@ export class OfficeAdministrationComponent implements OnInit {
                     this.cancelDialog();
                     this.loadItems();
                     this.loadTree();
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Oficina guardada exitosamente',
+                        life: 3000
+                    });
                 },
                 error: err => {
                     this.messageService.add({
@@ -315,6 +320,11 @@ export class OfficeAdministrationComponent implements OnInit {
                     this.cancelDialog();
                     this.loadItems();
                     this.loadTree();
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Oficina guardada exitosamente',
+                        life: 3000
+                    });
                 },
                 error: err => {
                     this.messageService.add({

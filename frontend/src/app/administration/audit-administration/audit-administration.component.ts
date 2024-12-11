@@ -1,11 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ConfirmationService, MessageService, SelectItem } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { AuditService } from 'src/app/services/audit.service';
 import { EnumsService } from 'src/app/services/enums.service';
+import { PeriodService } from 'src/app/services/period.service';
 import { UtilsService } from 'src/app/services/utils.service';
-import { Audit } from 'src/app/shared/model/OsmosysModel';
+import { Audit, Period } from 'src/app/shared/model/OsmosysModel';
 import { ColumnDataType, ColumnTable, EnumsType } from 'src/app/shared/model/UtilsModel';
 
 @Component({
@@ -34,16 +35,22 @@ export class AuditAdministrationComponent implements OnInit {
   dialogData: any[] = [];
   dialogTitle: string = '';
   specialProperties: string[] = ['Puntos Focales', 'Lugares de Ejecución', 'Indicadores de Ejecución'];
+  tableDateForm: FormGroup;
+  periods: Period[];
+  months:any
 
   constructor(private messageService: MessageService,
     public utilsService: UtilsService,
     private enumsService: EnumsService,
-    private auditService: AuditService) { }
+    private auditService: AuditService,
+    private periodService: PeriodService,
+    private fb: FormBuilder,) { }
 
   ngOnInit(): void {
     this.tables = ["Proyecto", "Reporte", "Bloqueo de Mes Indicador", "Bloqueo de Mes Masivo"]
-    this.selectedTable = this.tables[0]
-    this.loadItems(this.selectedTable);
+    this.months=this.getMonths();
+    this.loadPeriods();
+    this.createForms();
     this.cols = [
       { field: 'entity', header: 'Tabla', type: ColumnDataType.text },
       { field: 'projectCode', header: 'Número de Acuerdo', type: ColumnDataType.text },
@@ -60,8 +67,68 @@ export class AuditAdministrationComponent implements OnInit {
 
   }
 
-  private loadItems(tableName: string) {
-    this.auditService.getAuditsByTableName(tableName).subscribe({
+
+  loadPeriods() {
+    this.periodService.getAll()
+        .subscribe({
+            next: value => {
+                this.periods = value;
+                if (this.periods.length < 1) {
+                    this.messageService.add({severity: 'error', summary: 'No se encontraron periodos', detail: ''});
+                }else {
+                  const currentYear = (new Date()).getFullYear();
+                  const currentMonth = (new Date()).getMonth()+1;
+                  
+                  if (this.periods.some(e => e.year === currentYear)) {
+                      this.periods.filter(p => p.year === currentYear).forEach(value1 => {
+                        this.tableDateForm.get('selectedTable').patchValue(this.tables[0]);
+                          this.tableDateForm.get('selectedYear').patchValue(value1);
+
+                          const currentMonthObj = this.months.find(month => month.value === currentMonth); // Buscar el mes actual en la lista
+                          if (currentMonthObj) {
+                              this.tableDateForm.get('selectedMonth').patchValue(currentMonthObj); // Asignar el mes al formulario
+                          }
+                      });
+                  } else {
+                      const smallestYear = Math.min(...this.periods.map(value1 => value1.year));
+                      const smallestPeriod = this.periods.filter(value1 => {
+                          return value1.year === smallestYear;
+                      })[0];
+                      this.tableDateForm.get('selectedTable').patchValue(this.tables[0]);
+                      this.tableDateForm.get('selectedYear').patchValue(smallestPeriod);
+                      const currentMonthObj = this.months.find(month => month.value === currentMonth); // Buscar el mes actual en la lista
+                          if (currentMonthObj) {
+                              this.tableDateForm.get('selectedMonth').patchValue(currentMonthObj); // Asignar el mes al formulario
+                          }
+                  }
+                  
+                  this.loadItems(this.tableDateForm.get('selectedTable').value,this.tableDateForm.get('selectedYear').value.year,this.tableDateForm.get('selectedMonth').value.value);
+              }
+            },
+            error: error => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los periodos',
+                    detail: error.error.message,
+                    life: 3000
+                });
+            }
+        });
+}
+
+getMonths(): { value: number; label: string }[] {
+  const formatter = new Intl.DateTimeFormat('es-ES', { month: 'long' }); // Cambia 'es-ES' por el idioma deseado
+  return Array.from({ length: 12 }, (_, index) => {
+      const date = new Date(0, index); // Crea una fecha para cada mes
+      return { 
+          value: index + 1, // El valor numérico del mes (1 a 12)
+          label: formatter.format(date).charAt(0).toUpperCase() + formatter.format(date).slice(1) // Nombre del mes con capitalización
+      };
+  });
+}
+
+  private loadItems(tableName: string, year: number, month: number) {
+    this.auditService.getAuditsByTableNameAndDate(tableName,year,month).subscribe({
       next: value => {
         const listItems = value;
         //ordeno las listas en forma descendente por la fecha
@@ -88,6 +155,15 @@ export class AuditAdministrationComponent implements OnInit {
     });
 
   }
+
+  private createForms() {
+    this.tableDateForm = this.fb.group({
+                selectedTable:new FormControl(''),
+                selectedYear: new FormControl(''),
+                selectedMonth: new FormControl(''),
+            });
+    
+    }
 
 
 
@@ -284,9 +360,15 @@ export class AuditAdministrationComponent implements OnInit {
     }
   }
 
-  onTableAuditChange(entity: any) {
-    this.selectedTable = entity
-    this.loadItems(entity);
+  onTableAuditSubmit() {
+    const {
+      selectedTable,
+      selectedYear,
+      selectedMonth,
+    }
+      = this.tableDateForm.value;
+    this.selectedTable = selectedTable
+    this.loadItems(selectedTable,selectedYear.year,selectedMonth.value);
     if (this.selectedTable !== "Proyecto" && this.selectedTable !== "Bloqueo de Mes Masivo") {
       this._selectedColumns = this.cols;
     } else {

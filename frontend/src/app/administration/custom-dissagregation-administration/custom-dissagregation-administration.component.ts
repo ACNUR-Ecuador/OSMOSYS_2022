@@ -197,6 +197,11 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
                     next: () => {
                         this.cancelDialog();
                         this.loadItems();
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Desagregación guardada exitosamente',
+                            life: 3000
+                        });
                     },
                     error: err => {
                         this.messageService.add({
@@ -214,6 +219,11 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
                     next: () => {
                         this.cancelDialog();
                         this.loadItems();
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Desagregación guardada exitosamente',
+                            life: 3000
+                        });
                     },
                     error: err => {
 

@@ -35,4 +35,8 @@ export class AuditService {
     return this.http.get<Audit[]>(`${mainServiceUrl}/getAuditsByTableName/${tableName}`)
   }
 
+  public getAuditsByTableNameAndDate(tableName: string, year: number, month:number): Observable<Audit[]>{
+    return this.http.get<Audit[]>(`${mainServiceUrl}/getAuditsByTableNameAndDate/${tableName}/${year}/${month}`)
+  }
+
 }

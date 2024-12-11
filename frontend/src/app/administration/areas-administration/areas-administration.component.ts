@@ -133,7 +133,7 @@ export class AreasAdministrationComponent implements OnInit {
                         this.loadItems();
                         this.messageService.add({
                             severity: 'success',
-                            summary: 'Área guardado exitosamente',
+                            summary: 'Área guardada exitosamente',
                             life: 3000
                         });
                     },
@@ -153,6 +153,11 @@ export class AreasAdministrationComponent implements OnInit {
                     next: () => {
                         this.cancelDialog();
                         this.loadItems();
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Área guardada exitosamente',
+                            life: 3000
+                        });
                     },
                     error: err => {
                         this.messageService.add({

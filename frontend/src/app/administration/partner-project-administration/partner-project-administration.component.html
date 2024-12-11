@@ -19,7 +19,7 @@
                     <div class="p-fluid p-formgrid grid">
                         <div class="field col-12 md:col-4">
                             <!--suppress HtmlUnknownAttribute -->
-                            <label htmlFor="codeI">Número de Acuerdo</label>
+                            <label htmlFor="codeI">Número de Acuerdo *:</label>
                             <input type="text" pInputText id="codeI"
                                 formControlName="code" autofocus/>
                             <small class="p-error"
@@ -27,7 +27,7 @@
 
                         </div>
                         <div class="field col-12 md:col-8">
-                            <label htmlFor="nameI">Nombre del Acuerdo</label>
+                            <label htmlFor="nameI">Nombre del Acuerdo *:</label>
                             <input type="text" pInputText id="nameI"
                                    formControlName="name" autofocus/>
                             <small class="p-error"
@@ -35,7 +35,7 @@
 
                         </div>
                         <div class="field col-12 md:col-4">
-                            <label htmlFor="stateI">Estado</label>
+                            <label htmlFor="stateI">Estado *:</label>
                             <p-selectButton id="stateI"
                                             formControlName="state"
                                             [options]="states"
@@ -46,7 +46,7 @@
 
                         </div>
                         <div class="field col-12 md:col-4">
-                            <label htmlFor="organizationI">Socio</label>
+                            <label htmlFor="organizationI">Socio *:</label>
 
                             <p-dropdown id="organizationI"
                                         formControlName="organization"
@@ -59,7 +59,7 @@
 
                         </div>
                         <div class="field col-12 md:col-4">
-                            <label htmlFor="periodI">Año de Implementación</label>
+                            <label htmlFor="periodI">Año de Implementación *:</label>
 
                             <p-dropdown id="periodI"
                                         formControlName="period"
@@ -73,7 +73,7 @@
 
                         </div>
                         <div class="field col-12 md:col-4">
-                            <label htmlFor="startDateI">Fecha de Inicio de Implementación</label>
+                            <label htmlFor="startDateI">Fecha de Inicio de Implementación *:</label>
                             <p-calendar id="startDateI"
                                         formControlName="startDate" dateFormat="dd/mm/yy"
                                         [showIcon]="true"
@@ -86,7 +86,7 @@
                                    *ngIf="utilsService.showErrorForm('startDate',formItem)">{{utilsService.getErrorMessageForm('startDate', formItem)}}</small>
                         </div>
                         <div class="field col-12 md:col-4">
-                            <label htmlFor="endDateI">Fecha de Fin de Implementación</label>
+                            <label htmlFor="endDateI">Fecha de Fin de Implementación *:</label>
                             <p-calendar id="endDateI" formControlName="endDate" dateFormat="dd/mm/yy"
                                         [showIcon]="true"
                                         [monthNavigator]="true"
@@ -96,7 +96,7 @@
                                    *ngIf="utilsService.showErrorForm('endDate',formItem)">{{utilsService.getErrorMessageForm('endDate', formItem)}}</small>
                         </div>
                         <div class="field col-12 md:col-4">
-                            <label for="periodsI">Puntos focales</label>
+                            <label for="periodsI">Puntos focales *:</label>
                             <p-multiSelect id="periodsI"
                                     [options]="focalPoints"
                                     appendTo="body"
@@ -570,7 +570,7 @@
 
             <div class="p-fluid p-formgrid grid">
                 <div class="field col-12 md-12">
-                    <label htmlFor="indicatorI">Indicador</label>
+                    <label htmlFor="indicatorI">Indicador *:</label>
                     <p-dropdown id="indicatorI"
                                 formControlName="indicator"
                                 [options]="indicatorOptions"
@@ -587,7 +587,7 @@
                     </small>
                 </div>
                 <div class="field col-4 md:col-4">
-                    <label htmlFor="isBorrowedStatementI">Indicador prestado</label>
+                    <label htmlFor="isBorrowedStatementI">Indicador prestado:</label>
                     <div class="field-checkbox">
                         <!--suppress AngularInvalidExpressionResultType -->
                         <p-checkbox id="isBorrowedStatementI"
@@ -609,7 +609,7 @@
 
                 </div>
                 <div class="field col-12 md-12">
-                    <label htmlFor="statementI">Enunciado para el proyecto</label>
+                    <label htmlFor="statementI">Enunciado para el proyecto:</label>
                     <p-dropdown id="statementI"
                                 formControlName="projectStatement"
                                 [style]="{'width':'90%'}"
@@ -627,7 +627,7 @@
                     </small>
                 </div>
                 <div class="field col-12 md-12">
-                    <label htmlFor="commentaryI">Actividades Clave del Producto</label>
+                    <label htmlFor="commentaryI">Actividades Clave del Producto:</label>
                     <textarea id="commentaryI" pInputTextarea formControlName="activityDescription">
                     </textarea>
                     <small class="p-error"
@@ -636,7 +636,7 @@
                     </small>
                 </div>
                 <div class="field col-6 md-6">
-                    <label htmlFor="keepBudgetI">Controlar presupuesto</label>
+                    <label htmlFor="keepBudgetI">Controlar presupuesto:</label>
                     <div>
                         <p-inputSwitch id="keepBudgetI"
                                        formControlName="keepBudget"
@@ -650,7 +650,7 @@
                     </small>
                 </div>
                 <div class="field col-6 md-6">
-                    <label htmlFor="assignedBudgetI">Presupuesto asignado</label>
+                    <label htmlFor="assignedBudgetI">Presupuesto asignado:</label>
                     <p-inputNumber
                         id="assignedBudgetI"
                         formControlName="assignedBudget"
@@ -665,7 +665,7 @@
                     </small>
                 </div>
                 <div class="field col-12 md-2">
-                    <label htmlFor="statePII">Estado</label>
+                    <label htmlFor="statePII">Estado *:</label>
 
                     <p-toggleButton id="statePII"
                                     formControlName="state"

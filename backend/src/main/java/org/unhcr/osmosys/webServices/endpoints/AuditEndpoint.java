@@ -59,6 +59,16 @@ public class AuditEndpoint {
         return auditService.getAuditsByTableName(tableName);
     }
 
+    @Path("/getAuditsByTableNameAndDate/{tableName}/{year}/{month}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AuditWeb> getByTableNameAndDate(@PathParam("tableName") String tableName,
+                                                @PathParam("year") int year,
+                                                @PathParam("month") int month) {
+        return auditService.getAuditsByTableNamePeriodAndMonth(tableName, year, month);
+    }
+
 
 
 

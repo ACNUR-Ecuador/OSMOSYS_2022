@@ -171,7 +171,7 @@
 
             <div class="p-fluid p-formgrid grid">
                 <div class="field col-12 md-12">
-                    <label for="officeI">Oficina Responsable</label>
+                    <label for="officeI">Oficina Responsable *:</label>
                     <p-dropdown id="officeI"
                                 formControlName="reportingOffice"
                                 [options]="officeOptions"
@@ -188,18 +188,18 @@
                 </div>
 
                 <div class="field col-12 md-12">
-                    <label for="statementI">Enunciado de Producto</label>
+                    <label for="statementI">Enunciado de Producto:</label>
                     <input type="text" pInputText id="statementI"
                            formControlName="statement"/>
                 </div>
                 <div class="field col-12 md-12">
-                    <label for="productI">Código de producto</label>
+                    <label for="productI">Código de producto:</label>
                     <input type="text" pInputText id="productI"
                            formControlName="product"/>
                 </div>
 
                 <div class="field col-12 md-12">
-                    <label for="indicatorI">Indicador</label>
+                    <label for="indicatorI">Indicador *:</label>
                     <p-dropdown id="indicatorI"
                                 formControlName="indicator"
                                 [options]="indicatorOptions"
@@ -217,7 +217,7 @@
                     </small>
                 </div>
                 <div class="field col-12 md-12">
-                    <label for="indicatorI">Meta Anual</label>
+                    <label for="indicatorI">Meta Anual *:</label>
                     <p-inputNumber id="targetI"
                                 formControlName="target"
                                    mode="decimal"
@@ -231,7 +231,7 @@
                     </small>
                 </div>
                 <div class="field col-6 md-6">
-                    <label for="keepBudgetI">Controlar presupuesto</label>
+                    <label for="keepBudgetI">Controlar presupuesto:</label>
                     <div>
                         <p-inputSwitch id="keepBudgetI"
                                        formControlName="keepBudget"
@@ -245,7 +245,7 @@
                     </small>
                 </div>
                 <div class="field col-6 md-6">
-                    <label for="assignedBudgetI">Presupuesto asignado</label>
+                    <label for="assignedBudgetI">Presupuesto asignado:</label>
                     <p-inputNumber
                         id="assignedBudgetI"
                         formControlName="assignedBudget"
@@ -260,7 +260,7 @@
                     </small>
                 </div>
                 <div class="field col-12 md-12">
-                    <label for="supervisorUserI">Supervisor del indicador</label>
+                    <label for="supervisorUserI">Supervisor del indicador *:</label>
                     <p-dropdown id="supervisorUserI"
                                 formControlName="supervisorUser"
                                 [options]="userOptions"
@@ -277,7 +277,7 @@
                     </small>
                 </div>
                 <div class="field col-12 md-12">
-                    <label for="assignedUserI">Responsable de Reporte</label>
+                    <label for="assignedUserI">Responsable de Reporte *:</label>
                     <p-dropdown id="assignedUserI"
                                 formControlName="assignedUser"
                                 [options]="userOptions"
@@ -294,7 +294,7 @@
                     </small>
                 </div>
                 <div class="field col-12 md-12">
-                    <label for="assignedUserBackupI">Responsable de Reporte Alterno</label>
+                    <label for="assignedUserBackupI">Responsable de Reporte Alterno:</label>
                     <p-dropdown id="assignedUserBackupI"
                                 formControlName="assignedUserBackup"
                                 [options]="userOptions"
@@ -312,7 +312,7 @@
                     </small>
                 </div>
                 <div class="field col-12 md-12">
-                    <label for="stateI">Estado</label>
+                    <label for="stateI">Estado *:</label>
                     <p-selectButton id="stateI"
                                     formControlName="state"
                                     [options]="states"
@@ -353,7 +353,7 @@
                 </h5>
 
                 <div class="field grid">
-                    <label htmlFor="periodII" class="col-12 mb-2 md:col-2 md:mb-0">Periodo</label>
+                    <label htmlFor="periodII" class="col-12 mb-2 md:col-2 md:mb-0">Periodo:</label>
                     <div class="col-12 md:col-10">
                         <p-dropdown
                             id="periodII"

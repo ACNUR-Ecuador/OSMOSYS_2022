@@ -4,22 +4,47 @@
     <div class="card px-6 py-6">
 
       <p-table #dt [value]="filteredData" [columns]="selectedColumns" [rows]="10" [paginator]="true" [rowHover]="true"
-        dataKey="id" currentPageReportTemplate=" {first} a {last} de {totalRecords} " [showCurrentPageReport]="true"
+        dataKey="id" currentPageReportTemplate=" {first} a {last} de {totalRecords} " [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]"
         (sortFunction)="utilsService.customSort($event, cols)" [customSort]="true">
         <ng-template pTemplate="caption">
           <div class="grid">
             <div class="col-12 md:col-4 sm:col-12 justify-content-start">
               <h3 class="m-0">Auditorías</h3>
             </div>
-            <div class="col-12 md:col sm:col-12 flex justify-content-center">
-              <div class="field grid">
-                <label for="tablaI" class="col-fixed" style="width:80px; ">Auditoría:</label>
-                <div class="p-col mr-5">
-                  <p-dropdown id="tablaI" [options]="tables" (onChange)="onTableAuditChange($event.value)"
-                    appendTo="body"></p-dropdown>
+            <div class="col-12 md:col-3 sm:col-12 flex justify-content-center">
+              <form [formGroup]="tableDateForm" (ngSubmit)="onTableAuditSubmit()" class="flex align-items-center gap-4">
+                <!-- Dropdown Auditoría -->
+                <div class="flex align-items-center justify-content-start">
+                  <label for="tablaI" class="mr-3" >Auditoría:</label>
+                  <p-dropdown id="tablaI" [options]="tables" formControlName="selectedTable" appendTo="body"></p-dropdown>
                 </div>
-              </div>
+            
+                <!-- Dropdown Año -->
+                <div class="flex align-items-center justify-content-start">
+                  <label for="yearI"  class="mr-3" >Año:</label>
+                  <p-dropdown id="yearI" [options]="periods" optionLabel="year" formControlName="selectedYear" appendTo="body"></p-dropdown>
+                </div>
+            
+                <!-- Dropdown Mes -->
+                <div class="flex align-items-center justify-content-start">
+                  <label for="monthI"  class="mr-3" >Mes:</label>
+                  <p-dropdown id="monthI" [options]="months" optionLabel="label" formControlName="selectedMonth" appendTo="body"></p-dropdown>
+                </div>
+            
+                <!-- Botón Buscar -->
+                <div>
+                  <button 
+                    pButton 
+                    type="submit" 
+                    [disabled]="!tableDateForm.valid" 
+                    pRipple 
+                    label="Buscar" 
+                    icon="pi pi-search">
+                  </button>
+                </div>
+              </form>
             </div>
+            
             <div class="col-12 md:col sm:col-12 flex justify-content-end">
               <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
                 selectedItemsLabel="{0} columnas seleccionadas" [style]="{minWidth: '150px',color:'#6c757d'}"
