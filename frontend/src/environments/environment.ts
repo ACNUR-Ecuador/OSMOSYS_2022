@@ -8,7 +8,7 @@ export const environment = {
     locale: 'es',
     base_url: 'http://localhost:8080/osmosys/api',
     app_code: 'OSMOSYS_PER',
-    versionCheckURL : 'https://backend.osmosys.unhcr.org:8443/osmosys/version.json',
+    versionCheckURL : 'https://osmosys.unhcr.org/test/version.json',
     loginPhoto : 'unhcr_photo_ec_old.jpg',
     flagLoginFile : 'flag_per.png',
     flagToolbarFile : 'flag_per.png',

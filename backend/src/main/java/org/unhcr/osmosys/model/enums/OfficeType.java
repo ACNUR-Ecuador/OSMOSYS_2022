@@ -4,7 +4,9 @@ public enum OfficeType  implements EnumInterface{
     BO("BO", 1),
     SUB_OFICINA("Sub oficina", 2),
     OFICINA_DE_CAMPO("Oficina de campo", 3),
-    UNIDAD_DE_CAMPO("Unidad de campo", 4);
+    UNIDAD_DE_CAMPO("Unidad de campo", 4),
+    OFICINA_NACIONAL("Oficina Nacional", 5);
+
 
 
     private String label;

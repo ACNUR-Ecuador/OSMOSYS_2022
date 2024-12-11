@@ -66,7 +66,9 @@ export class AreasAdministrationComponent implements OnInit {
 
     private loadItems() {
         this.areaService.getAll().subscribe({
-            next: value => this.items = value,
+            next: value => {
+                this.items = value;
+            },
             error: err => {
                 this.messageService.add({
                     severity: 'error',
@@ -129,6 +131,11 @@ export class AreasAdministrationComponent implements OnInit {
                     next: () => {
                         this.cancelDialog();
                         this.loadItems();
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Área guardado exitosamente',
+                            life: 3000
+                        });
                     },
                     error: err => {
                         this.messageService.add({

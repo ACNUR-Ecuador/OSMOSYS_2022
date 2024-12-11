@@ -112,7 +112,7 @@ public class ReportDao {
 
     public List<IndicatorExecutionTagDTO> getTagReport(Tags tag, Period period) {
 
-        String jpql = "SELECT i.performance_indicator_id, i.indicator, i.period_id , i.quarter, i.month, i.month_order,  sum(i.value) as value  " +
+        String jpql = "SELECT i.performance_indicator_id, i.indicator, i.period_id , i.quarter, i.month, i.month_order,  avg(i.value) as value  " +
                 "FROM osmosys.ie_detailed i " +
                 "WHERE i.project_id IS NOT NULL " +
                 "AND i.performance_indicator_id IS NOT NULL " +

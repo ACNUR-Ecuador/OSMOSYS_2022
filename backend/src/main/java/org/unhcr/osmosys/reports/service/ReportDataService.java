@@ -299,7 +299,17 @@ public class ReportDataService {
                 }
                 if(j == 1){
                     Cell cell = rowData.createCell(j);
-                    cell.setCellValue(i);
+                    int trimestres = 0;
+                    if(i >= 1 && i <= 4 )
+                        trimestres = 1;
+                    if(i >= 4 && i <= 7 )
+                        trimestres = 2;
+                    if(i >= 7 && i <= 10 )
+                        trimestres = 3;
+                    if(i >= 10 && i <= 12 )
+                        trimestres = 4;
+
+                    cell.setCellValue(trimestres);
                 }
                 if(j == 2){
                     Cell cell = rowData.createCell(j);
