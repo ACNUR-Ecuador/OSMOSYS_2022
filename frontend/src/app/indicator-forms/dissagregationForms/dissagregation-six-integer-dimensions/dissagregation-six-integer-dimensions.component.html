@@ -201,7 +201,7 @@
     </p-accordion>
 </p-panel>
 <form [formGroup]="importForm" (ngSubmit)="importFile()">
-    <p-dialog [(visible)]="showImportDialog" [style]="{width: '70%'}" [modal]="true" [closable]="false">
+    <p-dialog [(visible)]="showImportDialog" [style]="{width: '70%'}" [modal]="true" [closable]="false" [draggable]="false">
 
         <ng-template pTemplate="header">
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
