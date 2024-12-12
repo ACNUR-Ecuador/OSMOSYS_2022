@@ -132,45 +132,68 @@
             <div class="col-12">
                 <div class="card">
                     <div class="p-fluid p-formgrid grid">
-                        <div class="field col-12 md:col-6">
-                            <label for="statementI">Enunciado:</label>
+
+                        <div class="field col-12 md:col-12" *ngIf="isEditing()">
+
+                            <p-checkbox [binary]="true" label="Core Indicator" [ngModelOptions]="{standalone: true}" [(ngModel)]="isCoreIndicator"></p-checkbox> <i class="pi pi-info-circle" style="margin-left: 0.5rem;" pTooltip="Completa los códigos e instrucciones desde el listado de Core Indicators" tooltipPosition="right"></i>
+                            
+                        </div>
+
+                        <div class="field col-12 md:col-12" *ngIf="isCoreIndicator">
+                            <label for="coreIndicator">Core Indicator *:</label>
+                            <p-dropdown id="coreIndicator" 
+                                        
+                                        [options]="coreIndicators"
+                                        appendTo="body"
+                                        emptyMessage="Selecciona un Core Indicator.... "
+                                        [filter]="true"                                        
+                                        dataKey="id"
+                                        optionLabel="code"
+                                        [showClear]="true"
+                                        placeholder="Selecciona un Core Indicator.... "
+                                        (onChange)="setCoreIndicator($event.value)"
+                                        [panelStyle]="{ 'white-space': 'nowrap', 'overflow': 'hidden', 'text-overflow': 'ellipsis',  'max-width': '50%' }">
+                                <ng-template let-option pTemplate="item">
+                                    <span style="max-width: 80%;">{{option.code}} - {{option.description}}</span>
+                                </ng-template>
+                            </p-dropdown>
+                        </div>
+                        <div class="field col-12 md:col-12">
+                            <label for="statementI">Enunciado *:</label>
                             <p-dropdown id="statementI"
                                         formControlName="statement"
                                         [options]="filteredStatements"
                                         appendTo="body"
-                                        emptyMessage="Selecciona una declaración.... "
+                                        emptyMessage="Selecciona un Enunciado.... "
                                         [filter]="true"
                                         dataKey="id"
                                         [showClear]="true"
-                                        placeholder="Selecciona una declaración.... "
+                                        placeholder="Selecciona un Enunciado.... "
                                         (onChange)="setPeriodForStatment($event.value)"
                                         [panelStyle]="{ 'white-space': 'nowrap', 'overflow': 'hidden', 'text-overflow': 'ellipsis',  'max-width': '80%' }"
-
                             >
                             </p-dropdown>
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('statement',formItem)">{{utilsService.getErrorMessageForm('statement', formItem)}}</small>
                         </div>
-                        <div class="field col-12 md:col-6"></div>
+
                         <div class="field col-12 md:col-3">
-                            <label for="codeI">Código</label>
-                            <input type="text" pInputText id="codeI"
-                                   formControlName="code"/>
+                            <label for="codeI">Código *:</label>
+                            <input type="text" pInputText id="codeI" 
+                                    formControlName="code"/>
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('code',formItem)">{{utilsService.getErrorMessageForm('code', formItem)}}</small>
                         </div>
 
-                        <div class="field col-12 md:col-9">
-                            <label for="descriptionI">Descripción Completa</label>
-
-                            <textarea pInputTextarea id="descriptionI"
-                                      formControlName="description"
-                                      [autoResize]="true">
-                        </textarea>
-
+                        <div class="field col-12 md:col-3">
+                            <label for="codeR">Código Regional</label>
+                            <input type="text" pInputText id="codeR"
+                                    formControlName="regionalCode"/>
                             <small class="p-error"
-                                   *ngIf="utilsService.showErrorForm('description',formItem)">{{utilsService.getErrorMessageForm('description', formItem)}}</small>
-                        </div>
+                                   *ngIf="utilsService.showErrorForm('regionalCode',formItem)">{{utilsService.getErrorMessageForm('regionalCode', formItem)}}</small>
+                        </div>                                                                      
+
+                       
                         <div class="field col-12 md:col-3">
                             <label for="codeI">Categoría</label>
                             <input type="text" pInputText id="categoryI"
@@ -179,7 +202,7 @@
                                    *ngIf="utilsService.showErrorForm('category',formItem)">{{utilsService.getErrorMessageForm('category', formItem)}}</small>
                         </div>
 
-                        <div class="field col-12 md:col-2">
+                        <div class="field col-12 md:col-3">
                             <label for="measureTypeI">Tipo de medida</label>
 
                             <p-dropdown id="measureTypeI"
@@ -194,7 +217,7 @@
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('measureType',formItem)">{{utilsService.getErrorMessageForm('measureType', formItem)}}</small>
                         </div>
-                        <div class="field col-12 md:col-2">
+                        <div class="field col-12 md:col-3">
                             <label for="totalIndicatorCalculationTypeI">Tipo de cálculo</label>
 
                             <p-dropdown id="totalIndicatorCalculationTypeI"
@@ -210,7 +233,7 @@
                                    *ngIf="utilsService.showErrorForm('totalIndicatorCalculationType',formItem)">{{utilsService.getErrorMessageForm('totalIndicatorCalculationType', formItem)}}</small>
                         </div>
 
-                        <div class="field col-12 md:col-2">
+                        <div class="field col-12 md:col-3">
                             <label for="frecuencyI">Frecuencia</label>
 
                             <p-dropdown id="frecuencyI"
@@ -270,18 +293,18 @@
                                    *ngIf="utilsService.showErrorForm('unit',formItem)">{{utilsService.getErrorMessageForm('unit', formItem)}}</small>
                         </div>
                         <!-- <div class="field col-12 md:col-2">
-                             <label for="isMonitoredI">Monitoreo</label>
+                                <label for="isMonitoredI">Monitoreo</label>
 
-                             <p-toggleButton id="isMonitoredI"
-                                             formControlName="isMonitored"
-                                             onLabel="Monitoreado" offLabel="No Monitoreado"
-                                             onIcon="pi pi-check" offIcon="pi pi-times"
-                             >
-                             </p-toggleButton>
+                                <p-toggleButton id="isMonitoredI"
+                                                formControlName="isMonitored"
+                                                onLabel="Monitoreado" offLabel="No Monitoreado"
+                                                onIcon="pi pi-check" offIcon="pi pi-times"
+                                >
+                                </p-toggleButton>
 
-                             <small class="p-error"
+                                <small class="p-error"
                                     *ngIf="utilsService.showErrorForm('isMonitored',formItem)">{{utilsService.getErrorMessageForm('isMonitored', formItem)}}</small>
-                         </div>
+                            </div>
         -->
                         <!--                        <div class="field col-12 md:col-2">
                                                     <label for="isCalculatedI">Calculado</label>
@@ -308,6 +331,17 @@
 
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('state',formItem)">{{utilsService.getErrorMessageForm('state', formItem)}}</small>
+                        </div>
+                        <div class="field col-12 md:col-12">
+                            <label for="descriptionI">Descripción Completa</label>
+
+                            <textarea pInputTextarea id="descriptionI"
+                                      formControlName="description"
+                                      [autoResize]="true">
+                        </textarea>
+
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('description',formItem)">{{utilsService.getErrorMessageForm('description', formItem)}}</small>
                         </div>
                         <div class="field col-12 md:col-12">
                             <label for="instructionsI">Instrucciones para Información Cuantitativa</label>

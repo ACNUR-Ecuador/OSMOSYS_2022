@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {ImportFile, Indicator} from '../shared/model/OsmosysModel';
+import {CoreIndicator, ImportFile, Indicator} from '../shared/model/OsmosysModel';
 import {EnumsState} from '../shared/model/UtilsModel';
 import {environment} from '../../environments/environment';
 
@@ -43,5 +43,9 @@ export class IndicatorService {
 
     public importCatalog(file: ImportFile) {
         return this.http.post(`${mainServiceUrl}/importIndicatorsCatalog`, file);
+    }
+    
+    public getCoreIndicators() {
+        return this.http.get<CoreIndicator[]>(`${mainServiceUrl}/getCoreIndicators`);
     }
 }

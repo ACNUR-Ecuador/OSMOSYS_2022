@@ -16,6 +16,7 @@ public class IndicatorWeb extends BaseWebEntity implements Serializable {
     }
 
     private String code;
+    private String regionalCode;
     private String description;
     private String category;
     private String instructions;
@@ -29,6 +30,7 @@ public class IndicatorWeb extends BaseWebEntity implements Serializable {
     @JsonProperty("isCalculated")
     private Boolean isCalculated;
     private Boolean compassIndicator;
+    private Boolean coreIndicator;
     private TotalIndicatorCalculationType totalIndicatorCalculationType;
     private StatementWeb statement;
     private UnitType unit;
@@ -118,6 +120,14 @@ public class IndicatorWeb extends BaseWebEntity implements Serializable {
         isCalculated = calculated;
     }
 
+    public String getRegionalCode() {
+        return regionalCode;
+    }
+
+    public void setRegionalCode(String regionalCode) {
+        this.regionalCode = regionalCode;
+    }
+
     public TotalIndicatorCalculationType getTotalIndicatorCalculationType() {
         return totalIndicatorCalculationType;
     }
@@ -148,6 +158,14 @@ public class IndicatorWeb extends BaseWebEntity implements Serializable {
 
     public void setCompassIndicator(Boolean compassIndicator) {
         this.compassIndicator = compassIndicator;
+    }
+
+    public Boolean getCoreIndicator() {
+        return coreIndicator;
+    }
+
+    public void setCoreIndicator(Boolean coreIndicator) {
+        this.coreIndicator = coreIndicator;
     }
 
     public UnitType getUnit() {

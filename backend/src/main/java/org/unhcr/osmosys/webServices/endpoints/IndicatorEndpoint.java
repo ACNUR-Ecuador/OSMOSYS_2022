@@ -5,8 +5,11 @@ import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jboss.logging.Logger;
+import org.unhcr.osmosys.model.CoreIndicator;
+import org.unhcr.osmosys.services.CoreIndicatorService;
 import org.unhcr.osmosys.services.IndicatorService;
 import org.unhcr.osmosys.services.dataImport.IndicatorsImportService;
+import org.unhcr.osmosys.webServices.model.CoreIndicatorWeb;
 import org.unhcr.osmosys.webServices.model.ImportFileWeb;
 import org.unhcr.osmosys.webServices.model.IndicatorWeb;
 
@@ -29,6 +32,9 @@ public class IndicatorEndpoint {
 
     @Inject
     IndicatorService indicatorService;
+
+    @Inject
+    CoreIndicatorService coreIndicatorService;
 
     @Inject
     IndicatorsImportService indicatorsImportService;
@@ -96,13 +102,12 @@ public class IndicatorEndpoint {
         return null;
     }
 
-    @Path("/byState/{state}")
+    @Path("/getCoreIndicators")
     @GET
-   // @Secured
+    @Secured
     @Produces(MediaType.APPLICATION_JSON)
-    public List<IndicatorWeb> getByState(@PathParam("state") State state) {
-        return this.indicatorService.getWebByState(state);
+    public List<CoreIndicatorWeb> getByState() {
+        return this.coreIndicatorService.getByState(State.ACTIVO);
     }
-
 }
 
