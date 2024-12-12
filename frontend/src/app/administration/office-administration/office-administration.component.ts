@@ -31,7 +31,7 @@ export class OfficeAdministrationComponent implements OnInit {
     officeTree: TreeNode[];
     selectedNode: TreeNode;
     activeIndex1 = 0;
-
+    allParentOffices: SelectItem[] = [];
 
     constructor(
         private messageService: MessageService,
@@ -230,6 +230,7 @@ export class OfficeAdministrationComponent implements OnInit {
                     };
                     return selectItem;
                 });
+                this.allParentOffices=this.parenteOffices
             },
             error: err => {
                 this.messageService.add({
@@ -250,6 +251,7 @@ export class OfficeAdministrationComponent implements OnInit {
     }
 
     createItem() {
+        this.parenteOffices=this.allParentOffices
         this.messageService.clear();
         this.utilsService.resetForm(this.formItem);
         this.submitted = false;
@@ -259,11 +261,31 @@ export class OfficeAdministrationComponent implements OnInit {
     }
 
     editItem(office: Office) {
-
+        this.parenteOffices=this.allParentOffices
         this.utilsService.resetForm(this.formItem);
         this.submitted = false;
         this.showDialog = true;
         this.formItem.patchValue(office);
+        const officeRemoveItself=this.parenteOffices.filter(value1 =>{
+            return value1.value.id !== office.id
+            
+        })
+        this.parenteOffices=officeRemoveItself
+
+        const officeType: string = office.type;
+        if (officeType) {
+            if (officeType === "BO" || officeType === "OFICINA_NACIONAL" ) {
+                this.formItem.get('parentOffice').patchValue(null);
+                this.formItem.get('parentOffice').clearValidators();
+                this.formItem.get('parentOffice').updateValueAndValidity();
+                this.formItem.get('parentOffice').disable();
+            } else {
+                this.formItem.get('parentOffice').setValidators([Validators.required]);
+                this.formItem.get('parentOffice').enable();
+                this.formItem.get('parentOffice').updateValueAndValidity();
+            }
+            
+        }
     }
 
 
@@ -354,6 +376,23 @@ export class OfficeAdministrationComponent implements OnInit {
 
     onNodeSelect($event: any) {
         this.editItem($event.node.data);
+    }
+
+    onOfficeTypeChange($event: any) {
+        const officeType: string = $event.value;
+        if (officeType) {
+            if (officeType === "BO" || officeType === "OFICINA_NACIONAL" ) {
+                this.formItem.get('parentOffice').patchValue(null);
+                this.formItem.get('parentOffice').clearValidators();
+                this.formItem.get('parentOffice').updateValueAndValidity();
+                this.formItem.get('parentOffice').disable();
+            } else {
+                this.formItem.get('parentOffice').setValidators([Validators.required]);
+                this.formItem.get('parentOffice').enable();
+                this.formItem.get('parentOffice').updateValueAndValidity();
+            }
+            
+        }
     }
 }
 

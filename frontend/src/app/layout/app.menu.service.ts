@@ -35,7 +35,11 @@ export class MenuService {
             this.menuItemsService.getMenuStructure().subscribe({
                 next: value => {
                     let extraMenu = this.menuItemsService.processMenusItem(value);
-                    let presettedMenu = this.MENUITEMS.concat(extraMenu);
+                    let presettedMenu = [...this.MENUITEMS];
+
+                    // Inserta `extraMenu` en la penúltima posición
+                    const insertIndex = presettedMenu.length - 2; 
+                    presettedMenu.splice(insertIndex, 0, ...extraMenu);                    
                     let settedMenu = this.setCanChow(presettedMenu, permissions);
                     this.menuModel.next(settedMenu);
                 }

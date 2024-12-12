@@ -336,14 +336,7 @@ public class AuditService {
     }
 
     private String convertMapToString(Map<String, Object> map) {
-        /*ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            // Convertir el Map a una cadena JSON
-            return objectMapper.writeValueAsString(map);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "{}"; // En caso de error, devolver un objeto vacío
-        }*/
+
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             // Crear una lista que contenga el map como único objeto

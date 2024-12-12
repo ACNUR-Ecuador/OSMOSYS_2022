@@ -148,6 +148,7 @@
                                 formControlName="type"
                                 [options]="officeTypes"
                                 placeholder="Selecciona..."
+                                (onChange)="onOfficeTypeChange($event)"
                                 appendTo="body">
                     </p-dropdown>
 

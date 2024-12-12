@@ -40,6 +40,7 @@ export class StatementAdministrationComponent implements OnInit {
     parentStatementsItemsFiltered: SelectItem[];
     parentStatementsItems: SelectItem[];
     areaTypesItems: SelectItem[];
+    filterAreaItems: SelectItem[];
 
 
     // tslint:disable-next-line:variable-name
@@ -272,6 +273,7 @@ export class StatementAdministrationComponent implements OnInit {
 
 
     createItem() {
+        this.filterAreaItems=[]
         this.parentStatementsItems = this.items.map(value => {
             return this.statementToSelectItem(value);
         });
@@ -290,6 +292,9 @@ export class StatementAdministrationComponent implements OnInit {
             return this.statementToSelectItem(value);
         });*/
         // obtengo los periods
+        this.filterAreaItems=this.areasItems.filter(value1 =>{
+            return value1.value.areaType==statement.areaType;
+        })
         let periods= statement.periodStatementAsignations.map(value => value.period);
         this.filterStatementsByPeriod(periods);
         this.utilsService.resetForm(this.formItem);
@@ -531,5 +536,11 @@ export class StatementAdministrationComponent implements OnInit {
             this.parentStatementsItemsFiltered = [];
         }
 
+    }
+    onAreaTypeChange(areaType:any){
+        this.filterAreaItems=this.areasItems.filter(value1 =>{
+            return value1.value.areaType==areaType;
+        })
+        
     }
 }

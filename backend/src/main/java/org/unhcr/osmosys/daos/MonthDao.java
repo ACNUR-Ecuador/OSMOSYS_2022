@@ -280,6 +280,7 @@ public class MonthDao extends GenericDaoJpa<Month, Long> {
 
                 + "i.code AS Código_de_Indicador, "
                 + "i.description AS Descripción_de_Indicador, "
+                + "CONCAT(ie.reportingOffice.acronym, '-', ie.reportingOffice.description) AS Oficina, "
                 + "ie.supervisorUser.name AS Supervisor, "
                 + "ie.assignedUser.name AS Responsable ,"
                 + "q.year AS Periodo, "
