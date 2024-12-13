@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import * as Excel from 'exceljs/dist/exceljs.min.js';
 // import * as Excel from 'exceljs';
 // import * as fs from 'file-saver';
 import * as FileSaver from 'file-saver';
-import { FormGroup } from '@angular/forms';
+import {FormGroup} from '@angular/forms';
 import {
     ColumnTable,
     EnumsState,
@@ -23,12 +23,12 @@ import {
     QuarterMonthResume,
     StandardDissagregationOption
 } from '../shared/model/OsmosysModel';
-import { HttpResponse } from '@angular/common/http';
-import { TableColumnProperties } from 'exceljs';
-import { SortEvent } from "primeng/api";
-import { EnumsService } from "./enums.service";
-import { Console } from 'console';
-import { options } from '@fullcalendar/core/preact';
+import {HttpResponse} from '@angular/common/http';
+import {TableColumnProperties} from 'exceljs';
+import {SortEvent} from "primeng/api";
+import {EnumsService} from "./enums.service";
+import {Console} from 'console';
+import {options} from '@fullcalendar/core/preact';
 
 @Injectable({
     providedIn: 'root'
@@ -93,11 +93,11 @@ export class UtilsService {
         this.autoWidth(worksheet, 15);
         let rowIndex = 1;
         for (rowIndex; rowIndex <= worksheet.rowCount; rowIndex++) {
-            worksheet.getRow(rowIndex).alignment = { vertical: 'top', horizontal: 'left', wrapText: true };
+            worksheet.getRow(rowIndex).alignment = {vertical: 'top', horizontal: 'left', wrapText: true};
         }
         // @ts-ignore
         workbook.xlsx.writeBuffer().then(excelData => {
-            const blob = new Blob([excelData], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const blob = new Blob([excelData], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
             const EXCEL_EXTENSION = '.xlsx';
             FileSaver.saveAs(blob, filename + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
 
@@ -109,7 +109,7 @@ export class UtilsService {
     autoWidth(worksheet, minimalWidth = 10, maximalWidth = 50) {
         worksheet.columns.forEach((column) => {
             let maxColumnLength = 0;
-            column.eachCell({ includeEmpty: true }, (cell) => {
+            column.eachCell({includeEmpty: true}, (cell) => {
                 maxColumnLength = Math.max(
                     maxColumnLength,
                     minimalWidth,
@@ -270,7 +270,6 @@ export class UtilsService {
     }
 
 
-
     setDimentionsDissagregationsV2(
         monthValuesMap: Map<string, IndicatorValue[]>): Map<number, EnumWeb[]> {
         const results: Map<number, EnumWeb[]> = new Map<number, EnumWeb[]>();
@@ -346,7 +345,6 @@ export class UtilsService {
     }
 
 
-
     getTotalIndicatorValuesArray(indicatorValues: IndicatorValue[] | IndicatorValueCustomDissagregationWeb[]) {
         return indicatorValues.map(value => value.value).reduce((previousValue, currentValue) => previousValue + currentValue, 0);
     }
@@ -368,7 +366,7 @@ export class UtilsService {
 
 
     validateMonthAndOptions(monthValuesMap: Map<string, IndicatorValue[]>,
-        customDissagregationValues: CustomDissagregationValues[]) {
+                            customDissagregationValues: CustomDissagregationValues[]) {
 
 
         const monthValuesTotals: Map<string, number> = new Map<string, number>();
@@ -382,63 +380,63 @@ export class UtilsService {
         const totalMonth = Math.max(...monthValuesTotals.values());
 
         //Obtengo las desagregaciones que se repiten por tabla
-        const diss=[...monthValuesTotals.keys()]
-        const dissKeysToCompare=this.dissagregationKeystoCompare(diss)
+        const diss = [...monthValuesTotals.keys()]
+        const dissKeysToCompare = this.dissagregationKeystoCompare(diss)
 
         //saco las opciones para las desagregaciones en comun
-        const dissCommonOptions: Map<string,string[]> =new Map<string,string[]>()
-        dissKeysToCompare.forEach(key =>{
-            let options=[]
-            monthValuesMap.forEach((value, dissagregationType)=>{
-                let isDissagregtion=false
-                if(diss.includes(dissagregationType) && !isDissagregtion ){
-                        value.forEach(item=>{
-                            const option=item[key]!.name
-                            options.push(option)
-                            
-                        })
-                        isDissagregtion=true     
+        const dissCommonOptions: Map<string, string[]> = new Map<string, string[]>()
+        dissKeysToCompare.forEach(key => {
+            let options = []
+            monthValuesMap.forEach((value, dissagregationType) => {
+                let isDissagregtion = false
+                if (diss.includes(dissagregationType) && !isDissagregtion) {
+                    value.forEach(item => {
+                        const option = item[key]!.name
+                        options.push(option)
+
+                    })
+                    isDissagregtion = true
                 }
             })
-            const uniqueOptions=new Set([...options])
-            dissCommonOptions.set(key,[...uniqueOptions])
-            
+            const uniqueOptions = new Set([...options])
+            dissCommonOptions.set(key, [...uniqueOptions])
+
         })
 
         //Creo el mapa de totales por cada opcion de desagregacion
-        const dissTotalsbyCommonDissOptions: Map<string,Map<string, Map<string,number>>> =new Map<string,Map<string, Map<string,number>>>()
-        monthValuesMap.forEach((value, dissagregationType)=>{
+        const dissTotalsbyCommonDissOptions: Map<string, Map<string, Map<string, number>>> = new Map<string, Map<string, Map<string, number>>>()
+        monthValuesMap.forEach((value, dissagregationType) => {
             if (value && value.length > 0 && this.shouldvalidate(dissagregationType)) {
-                const dissOptionValuesMap: Map<string, Map<string,number>>= new Map<string, Map<string,number>>()
-                dissCommonOptions.forEach((options, disskey)=>{
-                    const optionValueMap: Map<string,number>= new Map<string,number>()
-                    options.forEach(option=>{
-                        let total=0;
-                        value.forEach(item=>{
-                            if(item[disskey]!=null && item[disskey]!.name==option){
-                                total+=item.value
+                const dissOptionValuesMap: Map<string, Map<string,number>>= new Map<string, Map<string, number>>()
+                dissCommonOptions.forEach((options, disskey) => {
+                    const optionValueMap: Map<string, number> = new Map<string, number>()
+                    options.forEach(option => {
+                        let total = 0;
+                        value.forEach(item => {
+                            if (item[disskey] != null && item[disskey]!.name == option) {
+                                total += item.value
                             }
                         })
-                        optionValueMap.set(option,total)
+                        optionValueMap.set(option, total)
                     })
-                    if(optionValueMap.size>0){
-                        dissOptionValuesMap.set(disskey,optionValueMap)
+                    if (optionValueMap.size > 0) {
+                        dissOptionValuesMap.set(disskey, optionValueMap)
                     }
-                } )
-                if(dissOptionValuesMap.size>0){
-                    dissTotalsbyCommonDissOptions.set(dissagregationType,dissOptionValuesMap)
+                })
+                if (dissOptionValuesMap.size > 0) {
+                    dissTotalsbyCommonDissOptions.set(dissagregationType, dissOptionValuesMap)
                 }
             }
         })
         //comparo que los totales por opción de desagregación sean iguales entre los tipos de Desagregación en común
         const dissUnmatchOptionValues = this.compareMapsInOuterMapWithDifferences(dissTotalsbyCommonDissOptions)
         let errorExists = false;
-        let missmatchErrorExists=false;
-        if(dissUnmatchOptionValues.size>0){
+        let missmatchErrorExists = false;
+        if (dissUnmatchOptionValues.size > 0) {
             errorExists = true;
-            missmatchErrorExists=true;
+            missmatchErrorExists = true;
         }
-        
+
         monthValuesTotals.forEach(value => {
             if (totalMonth !== value) {
                 errorExists = true;
@@ -464,15 +462,15 @@ export class UtilsService {
             return null;
         } else {
             // error exits
-            if(missmatchErrorExists){
+            if (missmatchErrorExists) {
                 return {
-                    type:"mismatchError",
-                    value:dissUnmatchOptionValues
+                    type: "mismatchError",
+                    value: dissUnmatchOptionValues
                 }
-            }else{
+            } else {
                 return {
-                    type:"totalsError",
-                    value:monthValuesTotals
+                    type: "totalsError",
+                    value: monthValuesTotals
                 }
             }
         }
@@ -482,25 +480,25 @@ export class UtilsService {
         const differencesMap = new Map<string, Map<any, any>>();
         outerMap.forEach((innerMap, groupKey) => {
             const groupDifferences = new Map<string, Map<any, any>>();
-    
+
             const keys = Array.from(innerMap.keys());
-    
+
             // Si hay más de una clave, usamos los bucles anidados
             if (keys.length > 1) {
                 // Comparamos cada clave principal entre los Mapas internos
                 for (let i = 0; i < keys.length; i++) {
-                    
+
                     outerMap.forEach((otherInnerMap, otherGroupKey) => {
                         if (otherGroupKey !== groupKey) {
                             const otherSubMap = otherInnerMap.get(keys[i]);
                             const diffs = this.findDifferences(innerMap.get(keys[i]), otherSubMap);
-        
+
                             if (diffs.size > 0) {
                                 const keyDifferences = new Map<string, any>();
                                 diffs.forEach((diff, option) => {
-                                    keyDifferences.set(option, diff.map1); 
+                                    keyDifferences.set(option, diff.map1);
                                 });
-        
+
                                 groupDifferences.set(keys[i], keyDifferences);
                             }
                         }
@@ -510,90 +508,91 @@ export class UtilsService {
                 // Si solo hay una clave, comparamos directamente los valores
                 const key = keys[0];
                 const subMap = innerMap.get(key);
-    
+
                 // Compara los subMapas de la única clave entre los grupos del outerMap
                 outerMap.forEach((otherInnerMap, otherGroupKey) => {
                     if (otherGroupKey !== groupKey) {
                         const otherSubMap = otherInnerMap.get(key);
-    
+
                         const diffs = this.findDifferences(subMap, otherSubMap);
-    
+
                         if (diffs.size > 0) {
                             const keyDifferences = new Map<string, any>();
                             diffs.forEach((diff, option) => {
-                                keyDifferences.set(option, diff.map1); 
+                                keyDifferences.set(option, diff.map1);
                             });
-    
+
                             groupDifferences.set(key, keyDifferences);
                         }
                     }
                 });
             }
-    
+
             if (groupDifferences.size > 0) {
                 differencesMap.set(groupKey, groupDifferences);
             }
         });
-    
+
         return differencesMap;
     }
 
-      findDifferences(map1: Map<any, any>, map2: Map<any, any>): Map<string, { map1: any, map2: any }> {
+    findDifferences(map1: Map<any, any>, map2: Map<any, any>): Map<string, { map1: any, map2: any }> {
         const differences = new Map<string, { map1: any, map2: any }>();
         // Recorremos las claves y valores del primer mapa
         for (let [key, value] of map1) {
-          if (!map2.has(key)) {
-            differences.set(key, { map1: value, map2: undefined });
-          } else {
-            const value2 = map2.get(key);
-            if (value !== value2) {
-              differences.set(key, { map1: value, map2: value2 });
+            if (!map2.has(key)) {
+                differences.set(key, {map1: value, map2: undefined});
+            } else {
+                const value2 = map2.get(key);
+                if (value !== value2) {
+                    differences.set(key, {map1: value, map2: value2});
+                }
             }
-          }
         }
-      
-        for (let [key, value] of map2) {
-          if (!map1.has(key)) {
-            differences.set(key, { map1: undefined, map2: value });
-          }
-        }
-      
-        return differences;
-      }
-    dissagregationKeystoCompare(dissagregationTypes:string[]){
-         // Objeto para almacenar las partículas que aparecen en cada índice del array
-            const particleCount: Record<string, Set<number>> = {};
 
-            // Descomponer cada cadena en partículas y contar en qué cadenas aparecen
-            dissagregationTypes.forEach((str, index) => {
-                const particles = this.splitIntoDissagregations(str);
-                particles.forEach(particle => {
+        for (let [key, value] of map2) {
+            if (!map1.has(key)) {
+                differences.set(key, {map1: undefined, map2: value});
+            }
+        }
+
+        return differences;
+    }
+
+    dissagregationKeystoCompare(dissagregationTypes: string[]) {
+        // Objeto para almacenar las partículas que aparecen en cada índice del array
+        const particleCount: Record<string, Set<number>> = {};
+
+        // Descomponer cada cadena en partículas y contar en qué cadenas aparecen
+        dissagregationTypes.forEach((str, index) => {
+            const particles = this.splitIntoDissagregations(str);
+            particles.forEach(particle => {
                 if (!particleCount[particle]) {
                     particleCount[particle] = new Set();
                 }
-                particleCount[particle].add(index); 
-                });
+                particleCount[particle].add(index);
             });
+        });
 
-            // Filtramos las partículas que aparecen en más de una cadena (más de un índice)
-            const commonDiss=Object.keys(particleCount).filter(particle => particleCount[particle].size > 1);
-            const dissKeys=commonDiss.map(item=>{
-                return this.getDissagregationKey(item);
-            })
-            return dissKeys;
+        // Filtramos las partículas que aparecen en más de una cadena (más de un índice)
+        const commonDiss = Object.keys(particleCount).filter(particle => particleCount[particle].size > 1);
+        const dissKeys = commonDiss.map(item => {
+            return this.getDissagregationKey(item);
+        })
+        return dissKeys;
 
     }
 
-     splitIntoDissagregations(str: string): string[] {
+    splitIntoDissagregations(str: string): string[] {
         const uniqueDissagregations = ["LUGAR", "TIPO_POBLACION", "PAIS_ORIGEN", "GENERO", "EDAD", "DIVERSIDAD"];
         const foundParticles: string[] = [];
         uniqueDissagregations.forEach(particle => {
-          if (str.includes(particle)) {
-            foundParticles.push(particle);
-          }
+            if (str.includes(particle)) {
+                foundParticles.push(particle);
+            }
         });
         return foundParticles;
-      }
+    }
 
 
     setZerosMonthValues(monthValuesMap: Map<string, IndicatorValue[]>) {
@@ -692,7 +691,7 @@ export class UtilsService {
         const binaryData = [];
         binaryData.push(response.body);
         const downloadLink = document.createElement('a');
-        downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: 'blob' }));
+        downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, {type: 'blob'}));
         downloadLink.setAttribute('download', filename);
         document.body.appendChild(downloadLink);
         downloadLink.click();
@@ -724,11 +723,16 @@ export class UtilsService {
 
 
     generateQuarterMonthsResumes(quarters: Quarter[]): QuarterMonthResume[] {
-        const quarterMonthResumes = [];
-        let yearSpan: number = null;
-        let quarterSpan: string = null;
+        let quarterMonthResumes = [];
+        let currentYear: number = null;
+        let currentQuarter: string = null;
+        let yearSpanCount: number = 0;
+        let quarterSpanCount: number = 0;
+
+
         quarters.forEach(quarter => {
             quarter.months.forEach(month => {
+                console.log(month.order.toString()+month.year.toString()+month.month);
                 const qmr = new QuarterMonthResume();
                 qmr.quarterId = quarter.id;
                 qmr.quarterQuarter = quarter.quarter;
@@ -745,38 +749,40 @@ export class UtilsService {
                 qmr.monthTotalExecution = month.totalExecution;
                 qmr.monthLate = month.late;
                 qmr.blockUpdate = month.blockUpdate;
+
                 // year rowspan
-                if (!yearSpan) {
-                    yearSpan = quarter.year;
+                if (currentYear !== quarter.year) {
+                    currentYear = quarter.year;
                     qmr.yearSpan = true;
-                } else if (month.year !== yearSpan) {
-                    qmr.yearSpan = true;
-                    yearSpan = quarter.year;
-                } else if (month.year === yearSpan) {
+                    yearSpanCount = quarters
+                        .filter(q => q.year === currentYear)
+                        .reduce((acc, q) => acc + q.months.length, 0);
+                } else {
                     qmr.yearSpan = false;
                 }
-                qmr.yearSpanCount = quarters
-                    .filter(value => value.year === yearSpan)
-                    .reduce(
-                        (a, b) => a.concat(b.months), []
-                    ).length;
+                qmr.yearSpanCount = yearSpanCount;
+
                 // quarter rowspan
-                if (!quarterSpan) {
-                    quarterSpan = quarter.quarter;
+                if (currentQuarter !== quarter.quarter) {
+                    currentQuarter = quarter.quarter;
                     qmr.quarterSpan = true;
-                } else if (quarter.quarter !== quarterSpan) {
-                    qmr.quarterSpan = true;
-                    quarterSpan = quarter.quarter;
-                } else if (quarter.quarter === quarterSpan) {
+                    quarterSpanCount = quarter.months.length;
+                } else {
                     qmr.quarterSpan = false;
                 }
-                qmr.quarterSpanCount = quarter.months.length;
+                qmr.quarterSpanCount = quarterSpanCount;
 
                 quarterMonthResumes.push(qmr);
             });
         });
-        return quarterMonthResumes;
+
+
+
+
+        return quarterMonthResumes.sort((a, b) => a.monthOrder - b.monthOrder);
     }
+
+
 
     customSort(event: SortEvent, cols: ColumnTable[]) {
         event.data.sort((data1, data2) => {
@@ -822,11 +828,11 @@ export class UtilsService {
         if (dissagregationType.value === 'LUGAR') {
             result.forEach(value => {
 
-                if (value.name && !value.name.includes('--')) {
-                    value.name = (value as unknown as Canton).provincia.description + " -- " + (value as unknown as Canton).name;
-                }
+                    if (value.name && !value.name.includes('--')) {
+                        value.name = (value as unknown as Canton).provincia.description + " -- " + (value as unknown as Canton).name;
+                    }
 
-            }
+                }
             );
             result.sort((a, b) => (a as unknown as Canton).code.localeCompare((b as unknown as Canton).code));
         } else {
@@ -876,6 +882,7 @@ export class UtilsService {
                 return null;
         }
     }
+
     getDissagregationlabelByKey(key: string) {
         switch (key) {
             case 'populationType':
@@ -947,9 +954,9 @@ export class UtilsService {
             const objeto = dataFile[i];
             // Crear un nuevo objeto sin el campo 'value'
             //@ts-ignore
-            const { value, ...objetoSinValue } = objeto;
+            const {value, ...objetoSinValue} = objeto;
             const claveUnica = JSON.stringify(objetoSinValue);
-            
+
 
             if (objetosVistos.has(claveUnica)) {
                 posicionesRepetidas.push(i + 2);
@@ -1027,7 +1034,6 @@ export class UtilsService {
         return importErroMessage
 
     }
-
 
 
     validateCustomDissagregationTypeOption(dissagregation: string, option: string, dissagregationCatalogue: any[]) {
