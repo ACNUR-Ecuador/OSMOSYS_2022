@@ -50,6 +50,34 @@ public class ModelWebTransformationService {
     @Inject
     UserDao userDao;
 
+
+    //<editor-fold desc="CoreIndicators">
+    public CoreIndicatorWeb coreIndicatorToCoreIndicatorWeb(CoreIndicator coreIndicator) {
+        if (coreIndicator == null) {
+            return null;
+        }
+        CoreIndicatorWeb coreIndicatorWeb = new CoreIndicatorWeb();
+        coreIndicatorWeb.setId(coreIndicator.getId());
+        coreIndicatorWeb.setAreaCode(coreIndicator.getAreaCode());
+        coreIndicatorWeb.setCode(coreIndicator.getCode());
+        coreIndicatorWeb.setDescription(coreIndicator.getDescription());
+        coreIndicatorWeb.setFrecuency(coreIndicator.getFrecuency());
+        coreIndicatorWeb.setMeasureType(coreIndicator.getMeasureType());
+        coreIndicatorWeb.setGuiadance(coreIndicator.getGuiadance());
+        coreIndicatorWeb.setState(coreIndicator.getState());
+
+        return coreIndicatorWeb;
+    }
+
+    public List<CoreIndicatorWeb> coreIndicatorsToCoreIndicatorsWeb(List<CoreIndicator> coreIndicators) {
+        List<CoreIndicatorWeb> r = new ArrayList<>();
+        for (CoreIndicator coreIndicator : coreIndicators) {
+            r.add(this.coreIndicatorToCoreIndicatorWeb(coreIndicator));
+        }
+        return r;
+    }
+    //</editor-fold>
+
     //<editor-fold desc="FocalPointAssignation">
     public FocalPointAssignationWeb focalPointerAssignationToFocalPointerAssignationWeb(FocalPointAssignation focalPointAssignation) {
         if (focalPointAssignation == null) {
@@ -352,6 +380,8 @@ public class ModelWebTransformationService {
         IndicatorWeb indicatorWeb = new IndicatorWeb();
         indicatorWeb.setId(indicator.getId());
         indicatorWeb.setCode(indicator.getCode());
+        indicatorWeb.setRegionalCode(indicator.getRegionalCode());
+        indicatorWeb.setCoreIndicator(indicator.getCoreIndicator());
         indicatorWeb.setDescription(indicator.getDescription());
         indicatorWeb.setCategory(indicator.getCategory());
         indicatorWeb.setQualitativeInstructions(indicator.getQualitativeInstructions());
@@ -625,6 +655,8 @@ public class ModelWebTransformationService {
         indicator.setId(indicatorWeb.getId());
         indicator.setInstructions(indicatorWeb.getInstructions());
         indicator.setCode(indicatorWeb.getCode());
+        indicator.setRegionalCode(indicatorWeb.getRegionalCode());
+        indicator.setCoreIndicator(indicatorWeb.getCoreIndicator());
         indicator.setDescription(indicatorWeb.getDescription());
         indicator.setCategory(indicatorWeb.getCategory());
         indicator.setQualitativeInstructions(indicatorWeb.getQualitativeInstructions());

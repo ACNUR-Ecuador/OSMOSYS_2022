@@ -51,11 +51,10 @@ public class QuarterService {
     }
 
 
-
     public Set<Quarter> createQuarters(LocalDate startDate, LocalDate endDate,
-                                       Map<DissagregationType,Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationsMap,
+                                       Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationsMap,
                                        List<CustomDissagregation> customDissagregations
-                                       ) throws GeneralAppException {
+    ) throws GeneralAppException {
         Set<Quarter> qs = new HashSet<>();
         List<YearQuarter> yearQuarters = this.dateUtils.calculateQuarter(startDate, endDate);
         if (yearQuarters.isEmpty()) {
@@ -64,7 +63,7 @@ public class QuarterService {
 
 
         for (YearQuarter yearQuarter : yearQuarters) {
-            Quarter q = this.createQuarter(yearQuarter, startDate, endDate,dissagregationsMap, customDissagregations);
+            Quarter q = this.createQuarter(yearQuarter, startDate, endDate, dissagregationsMap, customDissagregations);
             qs.add(q);
         }
         return qs;
@@ -73,7 +72,7 @@ public class QuarterService {
 
     public Quarter createQuarter(YearQuarter yearQuarter,
                                  LocalDate startDate, LocalDate endDate,
-                                 Map<DissagregationType,Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationMap,
+                                 Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationMap,
                                  List<CustomDissagregation> customDissagregations
 
     ) throws GeneralAppException {
@@ -95,6 +94,15 @@ public class QuarterService {
     public void updateQuarterDissagregations(IndicatorExecution ie, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationTypeMapMap,
                                              Set<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicators) throws GeneralAppException {
         Set<Quarter> quarters = ie.getQuarters();
+        // reviso q solo esten las del periodo
+        if(customDissagregationAssignationToIndicators != null) {
+            customDissagregationAssignationToIndicators = customDissagregationAssignationToIndicators
+                .stream()
+                .filter(customDissagregationAssignationToIndicator ->
+                        customDissagregationAssignationToIndicator.getPeriod().getId().equals(ie.getPeriod().getId())
+                ).collect(Collectors.toSet());
+        }
+
         for (Quarter quarter : quarters) {
             Set<Month> months = quarter.getMonths();
             for (Month month : months) {
@@ -109,7 +117,6 @@ public class QuarterService {
     }
 
     /*************************************************************************************/
-
 
 
     public void updateQuarterTotals(Quarter quarter, TotalIndicatorCalculationType totalIndicatorCalculationType) throws GeneralAppException {
@@ -157,7 +164,6 @@ public class QuarterService {
             }
         }
     }
-
 
 
     public void blockQuarterStateByProjectId(Long projectId, QuarterEnum quarterEnum, Integer year, Boolean blockUpdate) {

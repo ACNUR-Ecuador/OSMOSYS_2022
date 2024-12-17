@@ -164,6 +164,7 @@ export class Indicator {
 
     public id: number;
     public code: string;
+    public regionalCode: string;
     public description: string;
     public category: string;
     public instructions?: string;
@@ -177,6 +178,7 @@ export class Indicator {
     public isCalculated: boolean;
     public totalIndicatorCalculationType: string;
     public compassIndicator: boolean;
+    public coreIndicator: boolean;
     public statement: Statement;
     public unit: string;
     public blockAfterUpdate: boolean;
@@ -184,6 +186,27 @@ export class Indicator {
     public customDissagregationAssignationToIndicators: CustomDissagregationAssignationToIndicator[];
     public periods?:string;
 }
+
+
+
+
+
+
+export class CoreIndicator {
+    constructor() {
+    }
+
+    public id: number;
+    public code: string;
+    public areaCode: string;
+    public description: string;
+    public measureType: string;
+    public frecuency: string;
+    public guiadance: string;
+    public state: string;   
+}
+
+
 
 export class DissagregationAssignationToIndicator {
     constructor() {

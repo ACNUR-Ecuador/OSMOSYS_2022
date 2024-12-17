@@ -47,7 +47,9 @@ public class IndicatorValueCustomDissagregationService {
             iv.setCustomDissagregationOption(option);
             iv.setState(State.ACTIVO);
             r.add(iv);
+            LOGGER.debug("" + option.getId());
         }
+        LOGGER.debug("-------------------");
         return r;
     }
 

@@ -96,6 +96,8 @@ public class IndicatorService {
 
     private void indicatorWebToIndicator(IndicatorWeb indicatorWeb, Indicator indicator) {
         indicator.setCode(indicatorWeb.getCode()); //
+        indicator.setRegionalCode(indicatorWeb.getRegionalCode()); //
+        indicator.setCoreIndicator(indicatorWeb.getCoreIndicator());
         indicator.setDescription(indicatorWeb.getDescription());
         indicator.setCategory(indicatorWeb.getCategory());
         indicator.setInstructions(indicatorWeb.getInstructions());

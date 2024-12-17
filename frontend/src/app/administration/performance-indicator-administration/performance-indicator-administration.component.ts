@@ -1,6 +1,7 @@
 import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {
     AreaType,
+    CoreIndicator,
     CustomDissagregation,
     CustomDissagregationAssignationToIndicator,
     DissagregationAssignationToIndicator,
@@ -41,6 +42,7 @@ import {HttpResponse} from "@angular/common/http";
 export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
     items: Indicator[];
+    coreIndicators: CoreIndicator[];
     cols: ColumnTable[];
     showDialog = false;
     formItem: FormGroup;
@@ -67,6 +69,8 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     _selectedColumns: ColumnTable[];
     showDialogImport = false;
     importForm: FormGroup;
+    isCoreIndicator: boolean = false;
+
 
     constructor(
         private messageService: MessageService,
@@ -97,9 +101,10 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
             {field: 'periods', header: 'Periodos', type: ColumnDataType.text},
             {field: 'code', header: 'Código', type: ColumnDataType.text},
+            {field: 'regionalCode', header: 'Código Regional', type: ColumnDataType.text},
+            {field: 'coreIndicator', header: 'Core Indicator', type: ColumnDataType.text},
             {field: 'description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'category', header: 'Categoría', type: ColumnDataType.text},
-            
             {
                 field: 'indicatorType',
                 header: 'Tipo',
@@ -176,6 +181,8 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.formItem = this.fb.group({
             id: new FormControl(''),
             code: new FormControl('', [Validators.required, Validators.maxLength(15)]),
+            regionalCode: new FormControl(''),
+            coreIndicator: new FormControl(''),
             description: new FormControl('', [Validators.required, Validators.maxLength(255)]),
             category: new FormControl('', [Validators.maxLength(255)]),
             instructions: new FormControl('', [Validators.maxLength(1000)]),
@@ -265,6 +272,20 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                 });
             }
         });
+
+        this.indicatorService.getCoreIndicators().subscribe({
+            next: value => {
+                this.coreIndicators = value;
+            },
+            error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar las CoreIndicators',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
     }
 
     private loadStatements() {
@@ -324,6 +345,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         const {
             id,
             code,
+            regionalCode,
             description,
             category,
             instructions,
@@ -337,6 +359,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             isCalculated,
             totalIndicatorCalculationType,
             compassIndicator,
+            coreIndicator,
             statement,
             dissagregationAssignationToIndicators,
             customDissagregationAssignationToIndicators,
@@ -347,6 +370,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         const indicator: Indicator = {
             id,
             code,
+            regionalCode,
             description,
             category,
             instructions,
@@ -360,6 +384,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             isCalculated,
             totalIndicatorCalculationType,
             compassIndicator,
+            coreIndicator,
             statement,
             unit,
             dissagregationsAssignationToIndicator: dissagregationAssignationToIndicators,
@@ -403,11 +428,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                     next: () => {
                         this.cancelDialog();
                         this.loadItems();
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: 'Indicador guardado exitosamente',
-                            life: 3000
-                        });
                     },
                     error: err => {
                         this.messageService.add({
@@ -425,6 +445,12 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
     cancelDialog() {
         this.showDialog = false;
+        this.isCoreIndicator = false;
+        this.formItem.get('regionalCode').patchValue(null);
+        this.formItem.get('description').patchValue(null);
+        this.formItem.get('frecuency').patchValue(null);
+        this.formItem.get('measureType').patchValue(null)
+        this.setDefaultIndicatorValues();
     }
 
     @Input() get selectedColumns(): any[] {
@@ -487,7 +513,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.formItem.get('statement').enable();
         if (clearStatements) {
             let emptyItem: SelectItem<Statement> = {
-                label: 'Selecciona una declaración.... ',
+                label: 'Selecciona un Enunciado.... ',
                 value: null,
             };
             this.filteredStatements.push(emptyItem);
@@ -678,7 +704,31 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                 .map(value1 => value1.period)
                 .sort((a, b) => a.year-b.year);
         }
+    }
+
+    setCoreIndicator(value:CoreIndicator) {
+        if(value){
+            console.log(value);
+            this.formItem.get('regionalCode').patchValue(value.code);
+            this.formItem.get('description').patchValue(value.description);
+            this.formItem.get('frecuency').patchValue(value.frecuency);
+            this.formItem.get('measureType').patchValue(value.measureType);
+
+        }else {
+            console.log(value)
+        }
+    }
 
 
+    isEditing() {
+        console.log("Aquí estoy");
+        let isEditing = this.formItem.get('id')?.value;
+        if(isEditing == null)
+        {
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

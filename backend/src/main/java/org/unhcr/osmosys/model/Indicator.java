@@ -21,6 +21,10 @@ public class Indicator extends BaseEntityIdState {
     private String code;
 
 
+    @Column(name = "regional_code", nullable = true, unique = true)
+    private String regionalCode;
+
+
     @Column(name = "description", nullable = false)
     private String description;
 
@@ -72,6 +76,9 @@ public class Indicator extends BaseEntityIdState {
     @Column(name = "compass_indicator")
     private Boolean compassIndicator;
 
+    @Column(name = "core_indicator")
+    private Boolean coreIndicator;
+
     @Column(name = "unit")
     @Enumerated(EnumType.STRING)
     private UnitType unit;
@@ -111,6 +118,13 @@ public class Indicator extends BaseEntityIdState {
         this.description = description;
     }
 
+    public String getRegionalCode() {
+        return regionalCode;
+    }
+
+    public void setRegionalCode(String regionalCode) {
+        this.regionalCode = regionalCode;
+    }
 
     public State getState() {
         return state;
@@ -275,5 +289,13 @@ public class Indicator extends BaseEntityIdState {
 
     public void setBlockAfterUpdate(Boolean blockAfterUpdate) {
         this.blockAfterUpdate = blockAfterUpdate;
+    }
+
+    public Boolean getCoreIndicator() {
+        return coreIndicator;
+    }
+
+    public void setCoreIndicator(Boolean coreIndicator) {
+        this.coreIndicator = coreIndicator;
     }
 }

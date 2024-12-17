@@ -340,11 +340,18 @@ public class IndicatorExecutionService {
     public void updateAllIndicatorExecutionsDissagregationsByPeriod(Period period) throws GeneralAppException {
 
         Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> periodDissagregationMapGeneralIndicator = this.getPeriodDessagregationMap(true, period, null);
+
+        LOGGER.debug("updateAllIndicatorExecutionsDissagregationsByPeriod ");
         this.updateGeneralIndicatorExecutionsDissagregations(period, periodDissagregationMapGeneralIndicator);
         // performance indicators
         // recupero todos los indicadores afectados
         List<Indicator> indicatorsToUpdate = this.indicatorDao.getByPeriodDissagregationAssignment(period.getId());
+        int totalIndicators=indicatorsToUpdate.size();
+        LOGGER.debug("updateAllIndicatorExecutionsDissagregationsByPeriod : "+ totalIndicators);
+        int i=0;
         for (Indicator indicator : indicatorsToUpdate) {
+            i++;
+            LOGGER.debug("updateAllIndicatorExecutionsDissagregationsByPeriod "+i+"/"+totalIndicators);
             this.updatePerformanceIndicatorExecutionsDissagregations(period, indicator);
         }
 
@@ -407,8 +414,14 @@ public class IndicatorExecutionService {
 
     public void updateGeneralIndicatorExecutionsDissagregations(Period period, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationTypeMapMap) throws GeneralAppException {
         // busco los ies que pueden ser actualizados
+        LOGGER.debug("updateGeneralIndicatorExecutionsDissagregations ");
         List<IndicatorExecution> iesToUpdate = this.indicatorExecutionDao.getGeneralIndicatorsExecutionsByPeriodId(period.getId());
+        int total = iesToUpdate.size();
+        LOGGER.debug("updateGeneralIndicatorExecutionsDissagregations total: " + total);
+        int i=0;
         for (IndicatorExecution ie : iesToUpdate) {
+            i++;
+            LOGGER.debug("updateGeneralIndicatorExecutionsDissagregations : " +i+"/"+ total);
             this.setStandardDissagregationOptionsForIndicatorExecutions(ie, dissagregationTypeMapMap);
             this.quarterService.updateQuarterDissagregations(ie, dissagregationTypeMapMap, null);
             this.updateIndicatorExecutionTotals(ie);
@@ -976,6 +989,8 @@ public class IndicatorExecutionService {
         for (IndicatorExecution indicatorExecution : indicatorExecutions) {
             Period period = indicatorExecution.getPeriod();
             Indicator indicator;
+
+            // recupero las asignaciones del proyecto para indicadores
             List<DissagregationAssignationToIndicatorInterface> dissagregationAssignations;
             List<CustomDissagregation> customDissagregations;
             if (indicatorExecution.getIndicatorType().equals(IndicatorType.GENERAL)) {
@@ -993,10 +1008,13 @@ public class IndicatorExecutionService {
                                 && dissagregationAssignationToIndicator.getPeriod().getId().equals(period.getId()))
                         .collect(Collectors.toList());
 
+
                 customDissagregations = indicator
                         .getCustomDissagregationAssignationToIndicators().stream()
                         .filter(customDissagregationAssignationToIndicatorExecution ->
-                                customDissagregationAssignationToIndicatorExecution.getState().equals(State.ACTIVO))
+                                customDissagregationAssignationToIndicatorExecution.getState().equals(State.ACTIVO)
+                                && customDissagregationAssignationToIndicatorExecution.getPeriod().getId().equals(period.getId())
+                        )
                         .map(CustomDissagregationAssignationToIndicator::getCustomDissagregation).collect(Collectors.toList());
             }
 
@@ -1016,10 +1034,13 @@ public class IndicatorExecutionService {
                         return false;
                     }
                 }).findFirst();
+
+                // si el quarter ya existe
                 if (foundQuarterOp.isPresent()) {
                     Quarter foundQuarter = foundQuarterOp.get();
                     foundQuarter.setState(State.ACTIVO);
                     List<MonthEnum> monthsEnums = MonthEnum.getMonthsByQuarter(foundQuarter.getQuarter());
+                    // veo los meses q deben existir
                     monthsEnums = monthsEnums.stream().filter(monthEnum -> {
                         LocalDate firstDay = LocalDate.of(foundQuarter.getYear(), monthEnum.getOrder(), 1);
                         LocalDate lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
@@ -1031,7 +1052,9 @@ public class IndicatorExecutionService {
                     // meses presentes
                     for (Month month : foundQuarter.getMonths()) {
                         Optional<MonthEnum> presentMonth = monthsEnums.stream().filter(monthEnum -> monthEnum.equals(month.getMonth())).findFirst();
+                        // busco los meses
                         if (presentMonth.isPresent()) {
+                            // si existe activo
                             month.setState(State.ACTIVO);
                             for (IndicatorValue indicatorValue : month.getIndicatorValues()) {
                                 indicatorValue.setState(State.ACTIVO);
@@ -1040,6 +1063,7 @@ public class IndicatorExecutionService {
                                 indicatorValuesIndicatorValueCustomDissagregation.setState(State.ACTIVO);
                             }
                         } else {
+                            // si no es parte de las fechas desactivo
                             month.setState(State.INACTIVO);
                             for (IndicatorValue indicatorValue : month.getIndicatorValues()) {
                                 indicatorValue.setState(State.INACTIVO);
@@ -1052,6 +1076,7 @@ public class IndicatorExecutionService {
                     // meses ausentes
                     for (MonthEnum monthEnum : monthsEnums) {
                         Optional<Month> foundMonth = foundQuarter.getMonths().stream().filter(month -> month.getMonth().equals(monthEnum)).findFirst();
+                        // estos son lo meses a crear
                         if (foundMonth.isEmpty()) {
                             // creo mes
                             Month newmonth = this.monthService
@@ -1062,6 +1087,7 @@ public class IndicatorExecutionService {
 
 
                 } else {
+                    // si el quarter no existe
 
                     this.validateLocationsLocationsInLocationsDissagregations(dissagregationsMap);
                     Quarter newCreatedQuarter = this.quarterService.createQuarter(newQuarter, newStartDate, newEndDate, dissagregationsMap, customDissagregations);

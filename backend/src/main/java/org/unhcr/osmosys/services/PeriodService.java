@@ -10,6 +10,7 @@ import org.unhcr.osmosys.model.Period;
 import org.unhcr.osmosys.model.standardDissagregations.options.*;
 import org.unhcr.osmosys.model.standardDissagregations.periodOptions.*;
 import org.unhcr.osmosys.services.standardDissagregations.StandardDissagregationOptionService;
+import org.unhcr.osmosys.webServices.model.GeneralIndicatorWeb;
 import org.unhcr.osmosys.webServices.model.PeriodWeb;
 import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
@@ -298,7 +299,9 @@ public class PeriodService {
             // hay un indicador general
             if(periodWeb.getGeneralIndicator().getId()!=null){
                 //actualiza
-                GeneralIndicator   generalIndicator= this.generalIndicatorService.update(periodWeb.getGeneralIndicator());
+
+                GeneralIndicatorWeb generalIndicatorWeb = this.modelWebTransformationService.generalIndicatorToGeneralIndicatorWeb(this.generalIndicatorService.getById(periodWeb.getGeneralIndicator().getId()));
+                GeneralIndicator   generalIndicator= this.generalIndicatorService.update(generalIndicatorWeb);
                 period.setGeneralIndicator(generalIndicator);
 
             }else {

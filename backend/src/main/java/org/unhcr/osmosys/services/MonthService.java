@@ -92,9 +92,11 @@ public class MonthService {
         List<MonthEnum> monthsEnums = MonthEnum.getMonthsByQuarter(quarterEnum);
         // solo los meses q enten dentro del periodo
 
+        LOGGER.debug("createMonthsForQuarter");
 
         List<Month> months = new ArrayList<>();
         for (MonthEnum monthEnum : monthsEnums) {
+            LOGGER.debug(monthEnum.getLabel()+":"+quarter.getYear());
             LocalDate firstDay = LocalDate.of(quarter.getYear(), monthEnum.getOrder(), 1);
             LocalDate lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
             if (
