@@ -213,6 +213,8 @@ export class TagsAdministrationComponent implements OnInit {
     }
 
     createItem() {
+        this.indicators=[]
+        this.selectedIndicators=[]
         this.messageService.clear();
         this.utilsService.resetForm(this.formItem);
         this.submitted = false;

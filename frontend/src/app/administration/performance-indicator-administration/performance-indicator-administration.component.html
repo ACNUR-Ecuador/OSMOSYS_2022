@@ -134,7 +134,7 @@
                     <div class="p-fluid p-formgrid grid">
 
                         <div class="field col-12 md:col-12" *ngIf="isEditing()">
-                            <p-checkbox [binary]="true" label="Core Indicator" [ngModelOptions]="{standalone: true}" [(ngModel)]="isCoreIndicator"></p-checkbox> 
+                            <p-checkbox [binary]="true" label="Core Indicator"  [(ngModel)]="isCoreIndicator" (onChange)="onIsCoreIndicatorChange($event)" formControlName="coreIndicator"></p-checkbox> 
                             <i class="pi pi-info-circle" style="margin-left: 0.5rem;color: #ff8000;" 
                             pTooltip="Autocompleta los códigos e instrucciones desde el listado de Core Indicators" tooltipPosition="right"></i>                      
                         </div>
@@ -148,14 +148,12 @@
                                         emptyMessage="Selecciona un Core Indicator.... "
                                         [filter]="true"                                        
                                         dataKey="id"
-                                        optionLabel="code"
+                                        optionLabel="label"
                                         [showClear]="true"
                                         placeholder="Selecciona un Core Indicator.... "
                                         (onChange)="setCoreIndicator($event.value)"
                                         [panelStyle]="{ 'white-space': 'nowrap', 'overflow': 'hidden', 'text-overflow': 'ellipsis',  'max-width': '50%' }">
-                                <ng-template let-option pTemplate="item">
-                                    <span style="max-width: 80%;">{{option.code}} - {{option.description}}</span>
-                                </ng-template>
+                                
                             </p-dropdown>
                         </div>
                         <div class="field col-12 md:col-12">
@@ -188,7 +186,7 @@
                         <div class="field col-12 md:col-3">
                             <label for="codeR">Código Regional</label>
                             <input type="text" pInputText id="codeR"
-                                    formControlName="regionalCode"/>
+                                    formControlName="regionalCode" [readOnly]="isCoreIndicator"/>
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('regionalCode',formItem)">{{utilsService.getErrorMessageForm('regionalCode', formItem)}}</small>
                         </div>                                                                      
@@ -211,6 +209,7 @@
                                         placeholder="Selecciona..."
                                         [filter]="true"
                                         appendTo="body"
+                                        [disabled]="isCoreIndicator"
                             >
                             </p-dropdown>
 
@@ -348,7 +347,9 @@
                             <label for="descriptionI">Descripción Completa</label>
                             <textarea pInputTextarea id="descriptionI"
                                 formControlName="description"
-                                [autoResize]="true">
+                                [autoResize]="true"
+                                [readOnly]="isCoreIndicator"
+                                >
                         </textarea>
 
                             <small class="p-error"
@@ -358,6 +359,7 @@
                             <label for="instructionsI">Instrucciones para Información Cuantitativa</label>
                             <textarea pInputTextarea id="instructionsI"
                                       formControlName="instructions"
+                                      [readOnly]="isCoreIndicator"
                                       [autoResize]="true">
                             </textarea>
                             <small class="p-error"
@@ -368,6 +370,7 @@
                             <label for="qualitativeInstructionsI">Instrucciones para Información Cualitativa</label>
                             <textarea pInputTextarea id="qualitativeInstructionsI"
                                       formControlName="qualitativeInstructions"
+                                      [readOnly]="isCoreIndicator"
                                       [autoResize]="true">
                             </textarea>
                             <small class="p-error"

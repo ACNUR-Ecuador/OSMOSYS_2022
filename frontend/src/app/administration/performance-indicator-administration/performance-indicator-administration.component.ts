@@ -44,7 +44,7 @@ import {HttpResponse} from "@angular/common/http";
 export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
     items: Indicator[];
-    coreIndicators: CoreIndicator[];
+    coreIndicators: SelectItem[];
     cols: ColumnTable[];
     showDialog = false;
     formItem: FormGroup;
@@ -283,7 +283,13 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
         this.indicatorService.getCoreIndicators().subscribe({
             next: value => {
-                this.coreIndicators = value;
+                this.coreIndicators = value.map(value1 => {
+                    const selectItem: SelectItem = {
+                        label: this.codeDescriptionPipe.transform(value1),
+                        value: value1
+                    };
+                    return selectItem;
+                });;
             },
             error: err => {
                 this.messageService.add({
@@ -335,6 +341,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     }
 
     editItem(indicator: Indicator) {
+        this.isCoreIndicator=indicator.coreIndicator
         this.setPeriodForStatment(indicator.statement);
         this.utilsService.resetForm(this.formItem);
         this.showDialog = true;
@@ -745,16 +752,14 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         }
     }
 
-    setCoreIndicator(value:CoreIndicator) {
-        if(value){
-            console.log(value);
-            this.formItem.get('regionalCode').patchValue(value.code);
-            this.formItem.get('description').patchValue(value.description);
-            this.formItem.get('frecuency').patchValue(value.frecuency);
-            this.formItem.get('measureType').patchValue(value.measureType);
+    setCoreIndicator(value:any) {
+        const coreInd:CoreIndicator=value.value
+        if(coreInd){
+            this.formItem.get('regionalCode').patchValue(coreInd.code);
+            this.formItem.get('description').patchValue(coreInd.description);
+            this.formItem.get('frecuency').patchValue(coreInd.frecuency);
+            this.formItem.get('measureType').patchValue(coreInd.measureType);
 
-        }else {
-            console.log(value)
         }
     }
 
@@ -768,6 +773,17 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         }
         else{
             return false;
+        }
+    }
+
+    onIsCoreIndicatorChange($event: any) {
+        const isCoreIndicator=$event.value
+        if(!isCoreIndicator){
+            this.formItem.get('regionalCode').patchValue(null);
+            this.formItem.get('description').patchValue(null);
+            this.formItem.get('frecuency').patchValue(null);
+            this.formItem.get('measureType').patchValue(null);
+
         }
     }
 }
