@@ -134,9 +134,9 @@
                     <div class="p-fluid p-formgrid grid">
 
                         <div class="field col-12 md:col-12" *ngIf="isEditing()">
-
-                            <p-checkbox [binary]="true" label="Core Indicator" [ngModelOptions]="{standalone: true}" [(ngModel)]="isCoreIndicator"></p-checkbox> <i class="pi pi-info-circle" style="margin-left: 0.5rem;" pTooltip="Completa los códigos e instrucciones desde el listado de Core Indicators" tooltipPosition="right"></i>
-                            
+                            <p-checkbox [binary]="true" label="Core Indicator" [ngModelOptions]="{standalone: true}" [(ngModel)]="isCoreIndicator"></p-checkbox> 
+                            <i class="pi pi-info-circle" style="margin-left: 0.5rem;color: #ff8000;" 
+                            pTooltip="Autocompleta los códigos e instrucciones desde el listado de Core Indicators" tooltipPosition="right"></i>                      
                         </div>
 
                         <div class="field col-12 md:col-12" *ngIf="isCoreIndicator">
@@ -217,7 +217,7 @@
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('measureType',formItem)">{{utilsService.getErrorMessageForm('measureType', formItem)}}</small>
                         </div>
-                        <div class="field col-12 md:col-3">
+                        <!-- <div class="field col-12 md:col-3">
                             <label for="totalIndicatorCalculationTypeI">Tipo de cálculo</label>
 
                             <p-dropdown id="totalIndicatorCalculationTypeI"
@@ -231,10 +231,13 @@
 
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('totalIndicatorCalculationType',formItem)">{{utilsService.getErrorMessageForm('totalIndicatorCalculationType', formItem)}}</small>
-                        </div>
+                        </div> -->
 
                         <div class="field col-12 md:col-3">
-                            <label for="frecuencyI">Frecuencia</label>
+                            <label for="frecuencyI">Frecuencia de alerta</label>
+                            <i class="pi pi-info-circle" style="margin-left: 0.5rem; color: #ff8000;" 
+                            pTooltip="Frecuencia con la que se envían correos de alerta" tooltipPosition="right"></i> 
+                            
 
                             <p-dropdown id="frecuencyI"
                                         formControlName="frecuency"
@@ -286,6 +289,7 @@
                                         [filter]="true"
                                         appendTo="body"
                                         [required]="true"
+                                        (onChange)="formItem.get('unit').valueChanges"
                             >
                             </p-dropdown>
 
@@ -332,12 +336,19 @@
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('state',formItem)">{{utilsService.getErrorMessageForm('state', formItem)}}</small>
                         </div>
+
+                        <p-messages severity="warn" *ngIf="formItem.get('unit').value === 'PERSONAS_INTERES'">
+                            <ng-template pTemplate>
+                                <span class="custom-message" style="color: #D9A301; margin-right: 0.5rem;font-weight: bold;">RECUERDA, </span>
+                                <span class="custom-message"> al seleccionar Personas de Interés, debes desagregar por "Tipos de Población" dentro de cada .</span>
+                            </ng-template>
+                        </p-messages>
+
                         <div class="field col-12 md:col-12">
                             <label for="descriptionI">Descripción Completa</label>
-
                             <textarea pInputTextarea id="descriptionI"
-                                      formControlName="description"
-                                      [autoResize]="true">
+                                formControlName="description"
+                                [autoResize]="true">
                         </textarea>
 
                             <small class="p-error"
@@ -397,7 +408,10 @@
         </ng-template>
 
         <ng-template pTemplate="footer">
-            <button pButton type="submit"
+            <p-confirmDialog icon="pi pi-exclamation-triangle"></p-confirmDialog>
+
+            <button pButton type="button"
+                    (click)="confirmBeforeSave()"
                     [disabled]="!formItem.valid"
                     pRipple label="Guardar" icon="pi pi-check"
             ></button>
@@ -421,7 +435,7 @@
                 </h5>
 
                 <div class="field grid">
-                    <label htmlFor="name3" class="col-12 mb-2 md:col-2 md:mb-0">Periodo</label>
+                    <label htmlFor="name3" class="col-12 mb-2 md:col-2 md:mb-0">Año</label>
                     <div class="col-12 md:col-10">
                         <p-dropdown
                                 id="periodI"

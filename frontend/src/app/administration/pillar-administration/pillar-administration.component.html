@@ -14,7 +14,7 @@
                         <div class="grid">
                             <div
                                 class="col-12 md:col-4 sm:col-12 justify-content-start">
-                                <h3 class="m-0">Administración de Pilares</h3>
+                                <h3 class="m-0">Administración de Grupos Poblacionales</h3>
                             </div>
                             <div
                                 
@@ -26,7 +26,7 @@
                                             placeholder="Seleccione las columnas"
                                             appendTo="body"></p-multiSelect>
                                 <button pButton pRipple label="Crear" icon="pi pi-plus" class="main-button mr-2 mb-2"
-                                (click)="createItem()" style="margin-left: 2rem;" pTooltip="Crear un Pilar" tooltipPosition="bottom"></button>
+                                (click)="createItem()" style="margin-left: 2rem;" pTooltip="Crear un Grupo de Población" tooltipPosition="bottom"></button>
 
                                 <button pButton pRipple label="Exportar" icon="pi pi-file-excel" class="second-button mr-2 mb-2"
                                 (click)="exportExcel(dt)" style="margin-left: 1rem;" pTooltip="Exportar a Excel" tooltipPosition="bottom"></button>
@@ -87,7 +87,7 @@
                     </ng-template>
                     <ng-template pTemplate="summary">
                         <div class="p-d-flex p-ai-center p-jc-between">
-                            Total {{items ? items.length : 0 }} pilares.
+                            Total {{items ? items.length : 0 }} grupos.
                         </div>
                     </ng-template>
                 </p-table>
@@ -96,7 +96,7 @@
     </div>
 </div>
 <form [formGroup]="formItem" (ngSubmit)="saveItem()">
-    <p-dialog [(visible)]="showDialog" [style]="{width: '70%'}" header="Pilar" [modal]="true"
+    <p-dialog [(visible)]="showDialog" [style]="{width: '70%'}" header="Grupo Poblacional" [modal]="true"
               [closable]="false">
 
         <ng-template pTemplate="content">

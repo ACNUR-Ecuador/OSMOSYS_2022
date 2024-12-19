@@ -16,7 +16,24 @@ public class StandardDissagregationOptionWeb extends BaseWebEntity implements Se
     protected String name;
     protected Integer order;
     protected String groupName;
+    protected String regionGroupName;
+    protected Long parentDissagregationId;
 
+    public String getRegionGroupName() {
+        return regionGroupName;
+    }
+
+    public void setRegionGroupName(String regionGroupName) {
+        this.regionGroupName = regionGroupName;
+    }
+
+    public Long getParentDissagregationId() {
+        return parentDissagregationId;
+    }
+
+    public void setParentDissagregationId(Long parentDissagregationId) {
+        this.parentDissagregationId = parentDissagregationId;
+    }
 
     public String getName() {
         return name;

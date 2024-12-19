@@ -35,11 +35,7 @@ export class MenuService {
             this.menuItemsService.getMenuStructure().subscribe({
                 next: value => {
                     let extraMenu = this.menuItemsService.processMenusItem(value);
-                    let presettedMenu = [...this.MENUITEMS];
-
-                    // Inserta `extraMenu` en la penúltima posición
-                    const insertIndex = presettedMenu.length - 2; 
-                    presettedMenu.splice(insertIndex, 0, ...extraMenu);                    
+                    let presettedMenu = this.MENUITEMS.concat(extraMenu);
                     let settedMenu = this.setCanChow(presettedMenu, permissions);
                     this.menuModel.next(settedMenu);
                 }
@@ -85,22 +81,48 @@ export class MenuService {
             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL', 'ADMINISTRADOR_OFICINA'],
             items: [
                 // {label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']},
-                {
-                    label: 'Usuarios',
-                    icon: 'pi pi-fw pi-user',
-                    routerLink: ['/administration/users'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL', 'ADMINISTRADOR_OFICINA']
-                },
+               
                 {
                     label: 'Configuración del sistema',
                     icon: 'pi pi-fw pi-cog',
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'],
                     items: [
                         {
-                            label: 'Areas',
+                            label: 'Parámetros de Configuración',
+                            icon: 'pi pi-fw pi-cog',
+                            routerLink: ['/administration/appconfiguration'],
+                            roles: ['SUPER_ADMINISTRADOR']
+                        },
+                        {
+                            label: 'Áreas',
                             icon: 'pi pi-fw pi-cog',
                             routerLink: ['/administration/areas'],
                             roles: ['SUPER_ADMINISTRADOR']
+                        },
+                        {
+                            label: 'Grupos Poblacionales',
+                            icon: 'pi pi-fw pi-cog',
+                            routerLink: ['/administration/pillars'],
+                            roles: ['SUPER_ADMINISTRADOR']
+                        },
+                        {
+                            label: 'Años',
+                            icon: 'pi pi-fw pi-cog',
+                            routerLink: ['/administration/periods'],
+                            roles: ['SUPER_ADMINISTRADOR']
+                        },
+                     
+                        {
+                            label: 'Oficinas/Unidades',
+                            icon: 'pi pi-fw pi-cog',
+                            routerLink: ['/administration/offices'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
+                        },
+                        {
+                            label: 'Implementadores',
+                            icon: 'pi pi-fw pi-cog',
+                            routerLink: ['/administration/organizations'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
                         },
                         {
                             label: 'Tags',
@@ -109,83 +131,67 @@ export class MenuService {
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
                         },
                         {
-                            label: 'Auditoria',
-                            icon: 'pi pi-fw pi-cog',
-                            routerLink: ['/administration/audits'],
-                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
-                        },
-                        {
-                            label: 'Pilares',
-                            icon: 'pi pi-fw pi-cog',
-                            routerLink: ['/administration/pillars'],
-                            roles: ['SUPER_ADMINISTRADOR']
-                        },
-                        {
-                            label: 'Periodos',
-                            icon: 'pi pi-fw pi-cog',
-                            routerLink: ['/administration/periods'],
-                            roles: ['SUPER_ADMINISTRADOR']
-                        },                        
-                        {
-                            label: 'Oficinas',
-                            icon: 'pi pi-fw pi-cog',
-                            routerLink: ['/administration/offices'],
-                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
-                        },
-                        {
-                            label: 'Enunciados',
-                            icon: 'pi pi-fw pi-cog',
-                            routerLink: ['/administration/statements'],
-                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
-                        },
-                        // tslint:disable-next-line:max-line-length
-                        {
                             label: 'Desagregaciones Personalizadas',
                             icon: 'pi pi-fw pi-cog',
                             routerLink: ['/administration/customDissagregation'],
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
                         },
                         {
-                            label: 'Organizaciones',
+                            label: 'Usuarios',
+                            icon: 'pi pi-fw pi-user',
+                            routerLink: ['/administration/users'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL', 'ADMINISTRADOR_OFICINA']
+                        },
+                        {
+                            label: 'Auditoría',
                             icon: 'pi pi-fw pi-cog',
-                            routerLink: ['/administration/organizations'],
+                            routerLink: ['/administration/audits'],
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
-                        }
+                        },
+                                               
+                       
+
+                        // tslint:disable-next-line:max-line-length
+                       
+                     
                     ]
                 },
+                
                 {
-                    label: 'Configuración de indicadores',
+                    label: 'Indicadores de Producto',
                     icon: 'pi pi-fw pi-cog',
                     roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'],
                     items: [
-                        /*                        {
-                                                    label: 'Marcadores',
-                                                    icon: 'pi pi-fw pi-cog',
-                                                    routerLink: ['/administration/marker'],
-                                                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
-                                                },*/
-                        // tslint:disable-next-line:max-line-length
+
+
                         {
-                            label: 'Indicadores de Producto',
+                            label: 'Marco de Resultados',
+                            icon: 'pi pi-fw pi-cog',
+                            routerLink: ['/administration/statements'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
+                        }, 
+                        {
+                            label: 'Catálogo de Indicadores',
                             icon: 'pi pi-fw pi-cog',
                             routerLink: ['/administration/performanceIndicator'],
                             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']
                         },
+                        {
+                            label: 'Indicadores Socios',
+                            icon: 'pi pi-fw pi-cog',
+                            routerLink: ['/administration/partnerProjectListAdministration'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL']
+                        },
+                        {
+                            label: 'Indicadores Implementación Directa',
+                            icon: 'pi pi-fw pi-cog',
+                            routerLink: ['/administration/directImplementationAdministration'],
+                            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'ADMINISTRADOR_OFICINA']
+                        },
 
-                    ]
-                },
-                {
-                    label: 'Proyectos',
-                    icon: 'pi pi-fw pi-cog',
-                    routerLink: ['/administration/partnerProjectListAdministration'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'PUNTO_FOCAL']
-                },
-                {
-                    label: 'Implementación Directa',
-                    icon: 'pi pi-fw pi-cog',
-                    routerLink: ['/administration/directImplementationAdministration'],
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR', 'ADMINISTRADOR_OFICINA']
-                },
+                    ]},
+
+                
                 {
                     label: 'Envío Masivo de Correos',
                     icon: 'pi pi-fw pi-cog',
@@ -199,17 +205,12 @@ export class MenuService {
                     roles: ['SUPER_ADMINISTRADOR']
                 },
                 {
-                    label: 'Menu',
+                    label: 'Menús de Tableros',
                     icon: 'pi pi-fw pi-cog',
                     routerLink: ['/administration/menuItemsAdministration'],
                     roles: ['SUPER_ADMINISTRADOR']
                 },
-                {
-                    label: 'Configuración Global',
-                    icon: 'pi pi-fw pi-cog',
-                    routerLink: ['/administration/appconfiguration'],
-                    roles: ['SUPER_ADMINISTRADOR']
-                }
+              
             ]
         },
         {

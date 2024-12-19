@@ -67,7 +67,7 @@ export class PillarAdministrationComponent implements OnInit {
             error: err => {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Error al cargar los pilares',
+                    summary: 'Error al cargar los grupos de población',
                     detail: err.error.message,
                     life: 3000
                 });
@@ -78,7 +78,7 @@ export class PillarAdministrationComponent implements OnInit {
     exportExcel(table: Table) {
         this.utilsService.exportTableAsExcel(this._selectedColumns,
             table.filteredValue ? table.filteredValue : this.items,
-            'pilares');
+            'grupos-poblacion');
     }
 
 
@@ -124,14 +124,14 @@ export class PillarAdministrationComponent implements OnInit {
                     this.loadItems();
                     this.messageService.add({
                         severity: 'success',
-                        summary: 'Pilar guardado exitosamente',
+                        summary: 'Grupo de Población guardado exitosamente',
                         life: 3000
                     });
                 },
                 error: err => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al actualizar el pilar',
+                        summary: 'Error al actualizar el Grupo de Población',
                         detail: err.error.message,
                         life: 3000
                     });
@@ -145,14 +145,14 @@ export class PillarAdministrationComponent implements OnInit {
                     this.loadItems();
                     this.messageService.add({
                         severity: 'success',
-                        summary: 'Pilar guardado exitosamente',
+                        summary: 'Grupo de Población guardado exitosamente',
                         life: 3000
                     });
                 },
                 error: err => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al guardar el pilar',
+                        summary: 'Error al guardar el Grupo de Población',
                         detail: err.error.message,
                         life: 3000
                     });

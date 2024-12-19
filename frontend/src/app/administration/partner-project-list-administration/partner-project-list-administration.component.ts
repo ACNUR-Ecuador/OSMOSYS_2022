@@ -52,7 +52,7 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
         this.periodService.getAll().subscribe(value => {
             this.periods = value;
             if (this.periods.length < 1) {
-                this.messageService.add({severity: 'error', summary: 'No se encontraron periodos', detail: ''});
+                this.messageService.add({severity: 'error', summary: 'No se encontraron años', detail: ''});
             } else {
                 const currentYear = (new Date()).getFullYear();
                 if (this.periods.some(e => e.year === currentYear)) {
@@ -127,9 +127,9 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
             {field: 'code', header: 'Código', type: ColumnDataType.text},
             {field: 'name', header: 'Nombre', type: ColumnDataType.text},
             // {field: 'organizationId', header: 'Id Organización', type: ColumnDataType.numeric},
-            {field: 'organizationDescription', header: 'Organización', type: ColumnDataType.text},
-            {field: 'organizationAcronym', header: 'Organización Acr.', type: ColumnDataType.text},
-            // {field: 'periodYear', header: 'Periodo', type: ColumnDataType.numeric},
+            {field: 'organizationDescription', header: 'Implementador', type: ColumnDataType.text},
+            {field: 'organizationAcronym', header: 'Implementador Acr.', type: ColumnDataType.text},
+            // {field: 'periodYear', header: 'Año', type: ColumnDataType.numeric},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
 
         ];
@@ -222,7 +222,7 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
         if (!period || !period.id) {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Selecciona un periodo',
+                summary: 'Selecciona un año',
                 life: 3000
             });
         }

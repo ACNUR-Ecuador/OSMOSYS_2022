@@ -1683,6 +1683,8 @@ public class ModelWebTransformationService {
             d.setName(dissagregationOption.getName());
         }
         d.setGroupName(dissagregationOption.getGroupName());
+        d.setRegionGroupName(dissagregationOption.getRegionGroupName());
+        d.setParentDissagregationId(dissagregationOption.getParentDissagregationId());
         return d;
 
     }

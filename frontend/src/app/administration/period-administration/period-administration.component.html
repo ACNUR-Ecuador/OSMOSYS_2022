@@ -13,7 +13,7 @@
                     <div class="grid">
                         <div
                             class="col-12 md:col-4 sm:col-12 justify-content-start">
-                            <h3 class="m-0">Administración de Periodos</h3>
+                            <h3 class="m-0">Administración de Años</h3>
                         </div>
                         <div
                             class="col-12 md:col sm:col-12 flex justify-content-end">
@@ -23,7 +23,7 @@
                                 placeholder="Seleccione las columnas"
                                 appendTo="body"></p-multiSelect>
                                 <button pButton pRipple label="Crear" icon="pi pi-plus" class="main-button mr-2 mb-2"
-                                (click)="createItem()" style="margin-left: 2rem;" pTooltip="Crear un Periodo" tooltipPosition="bottom"></button>
+                                (click)="createItem()" style="margin-left: 2rem;" pTooltip="Crear un Año" tooltipPosition="bottom"></button>
     
                                 <button pButton pRipple label="Exportar" icon="pi pi-file-excel" class="second-button mr-2 mb-2"
                                 (click)="exportExcel(dt)" style="margin-left: 1rem;" pTooltip="Exportar a Excel" tooltipPosition="bottom"></button>                        
@@ -84,7 +84,7 @@
                 </ng-template>
                 <ng-template pTemplate="summary">
                     <div class="p-d-flex p-ai-center p-jc-between">
-                        Total {{items ? items.length : 0 }} periodos.
+                        Total {{items ? items.length : 0 }} años.
                     </div>
                 </ng-template>
             </p-table>
@@ -92,8 +92,8 @@
     </div>
 </div>
 <form [formGroup]="formItem" (ngSubmit)="saveItem()">
-    <p-dialog [(visible)]="showDialog" [style]="{width: '80%'}" header="Periodo" [modal]="true"
-              [closable]="false">
+    <p-dialog [(visible)]="showDialog" [style]="{width: '80%'}" header="Año" [modal]="true"
+            [closable]="false">
 
         <ng-template pTemplate="content">
             <p-messages></p-messages>
@@ -101,9 +101,9 @@
                 <div class="field">
                     <label for="yearI">Año *:</label>
                     <p-inputNumber id="yearI"
-                                   formControlName="year" autofocus [locale]="'en-US'" 
-                                   [mode]="'decimal'" 
-                                   [useGrouping]="false"></p-inputNumber>
+                        formControlName="year" autofocus [locale]="'en-US'" 
+                        [mode]="'decimal'" 
+                        [useGrouping]="false"></p-inputNumber>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('year',formItem)">Campo
                         obligatorio.</small>
                 </div>
@@ -121,24 +121,24 @@
                 </div>
                 <p-panel class="col-12" header="Desagregaciones *" [toggleable]="true">
                     <div class="p-fluid grid formgrid">
-                        <p-panel class="col-6" header="Tipos de Población" [toggleable]="true">
-
-
-
-                            <div class="field-checkbox col-12 md:col-12"
+                        <p-panel class="col-6" header="Tipos de Población" >
+                            
+                            <p-tree  [formControl]="$any(formItem.controls['populationTypeOptions'])" [value]="treeNodes" selectionMode="checkbox" [(selection)]="selectedNodes" triState="true"
+                                (onNodeSelect)="onNodeSelect($event)" (onNodeUnselect)="onNodeUnselect($event)" [propagateSelectionDown]="false" [propagateSelectionUp]="false"
+                                    (onNodeExpand)="onNodeExpand($event)" (onNodeCollapse)="onNodeCollapse($event)">
+                            </p-tree>
+                            
+                            <!-- <div class="field-checkbox col-12 md:col-12"
                                  *ngFor="let option of populationTypeOptions">
-                                <!--suppress AngularInvalidExpressionResultType -->
                                 <p-checkbox name="grouppopulationTypeOptions"
                                             [value]="option.value"
-                                            [formControl]="$any(formItem.controls['populationTypeOptions'])"
-
-                                >
+                                            [formControl]="$any(formItem.controls['populationTypeOptions'])">
                                 </p-checkbox>
                                 <label [for]="option.label">{{option.label}} [grupo: {{option.title}} ]</label>
-                            </div>
+                            </div> -->
                         </p-panel>
 
-                        <p-panel class="col-6" header="Género" [toggleable]="true">
+                        <p-panel class="col-6" header="Género" >
                             <div class="field-checkbox col-12 md:col-12"
                                  *ngFor="let option of genderOptions">
                                 <!--suppress AngularInvalidExpressionResultType -->
@@ -151,7 +151,7 @@
                             </div>
                         </p-panel>
 
-                        <p-panel class="col-6" header="Edad" [toggleable]="true">
+                        <p-panel class="col-6" header="Edad" >
                             <div class="field-checkbox col-12 md:col-12"
                                  *ngFor="let option of ageOptions">
                                 <!--suppress AngularInvalidExpressionResultType -->
@@ -163,7 +163,7 @@
                                 <label [for]="option.label">{{option.label}} [grupo: {{option.title}}]</label>
                             </div>
                         </p-panel>
-                        <p-panel class="col-6" header="Diversidad" [toggleable]="true">
+                        <p-panel class="col-6" header="Diversidad" >
                             <div class="field-checkbox col-12 md:col-12"
                                  *ngFor="let option of diversityOptions">
                                 <!--suppress AngularInvalidExpressionResultType -->
@@ -175,7 +175,7 @@
                                 <label [for]="option.label">{{option.label}} [grupo: {{option.title}}]</label>
                             </div>
                         </p-panel>
-                        <p-panel class="col-6" header="País de Origen" [toggleable]="true">
+                        <p-panel class="col-6" header="País de Origen" >
                             <div class="field-checkbox col-12 md:col-12"
                                  *ngFor="let option of countryOfOriginOptions">
                                 <!--suppress AngularInvalidExpressionResultType -->
@@ -192,7 +192,7 @@
                 <div class="field">
 
                     <p-triStateCheckbox id="hasGeneralIndicatorI"
-                                        label="Tiene indicador general para socios?"
+                                        label="Reportará Total de Beneficiarios Únicos?"
                                         formControlName="hasGeneralIndicator"
                                         (onChange)="hasGeneralIndicatorValueChange($event.value)"
                     >
@@ -201,15 +201,15 @@
                     <small class="p-error"
                            *ngIf="utilsService.showErrorForm('hasGeneralIndicator',formItem)">{{utilsService.getErrorMessageForm('hasGeneralIndicator', formItem)}}</small>
                 </div>
-                <p-panel header="Indicador General" [toggleable]="true"
+                <p-panel header="Total de Beneficiarios Nuevos" [toggleable]="true"
                          *ngIf="formItem.get('hasGeneralIndicator').value">
                     <div class="p-card p-fluid p-formgrid grid">
                         <div class="p-fluid p-formgrid grid">
-                            <div class="field col-12 md-12">
+                            <!-- <div class="field col-12 md-12">
                                 <label for="descriptionI">Descripción</label>
                                 <textarea pInputTextarea id="descriptionI"
-                                          formControlName="generalIndicatorDescription"
-                                          maxlength="255" [autoResize]="true"
+                                    formControlName="generalIndicatorDescription"
+                                    maxlength="255" [autoResize]="true"
                                 ></textarea>
                                 <small class="p-error"
                                        *ngIf="utilsService.showErrorForm('generalIndicatorDescription',formItem)">{{utilsService.getErrorMessageForm('generalIndicatorDescription', formItem)}}</small>
@@ -227,7 +227,7 @@
                                 <small class="p-error"
                                        *ngIf="utilsService.showErrorForm('generalIndicatorMeasureType',formItem)">{{utilsService.getErrorMessageForm('generalIndicatorMeasureType', formItem)}}</small>
 
-                            </div>
+                            </div> -->
                             <div class="field col-12 md-4">
                                 <label for="generalIndicatorStateI">Estado</label>
 
@@ -241,7 +241,7 @@
 
                             </div>
                             <div class="field col-12 md:col-12">
-                                <label>Desagregaciones del Indicador General (Globales para todos los proyectos)</label>
+                                <label>Desagregaciones del Total de Beneficiarios Nuevos (Globales para todos los proyectos)</label>
                                 <div class="field col-12 md:col-12"
                                      style="border: 1px solid #ced4da;">
                                     <p-multiSelect [options]="dissagregationTypes" [group]="true"

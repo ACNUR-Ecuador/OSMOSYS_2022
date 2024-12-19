@@ -8,7 +8,7 @@
         <div class="flex justify-content-center flex-wrap">
             <div class="grid p-fluid col-12">
                 <div class="col-3 field">
-                    <label for="periodI" class="text-900 font-semibold">Periodo</label>
+                    <label for="periodI" class="text-900 font-semibold">Año</label>
                     <p-dropdown class="col-12" [style]="{'width':'90%'}" id="periodI"
                                 (onChange)="loadPeriod($event.value)"
                                 [options]="periods" [(ngModel)]="selectedPeriod"
@@ -45,7 +45,7 @@
             <div class="grid" *ngIf="generalIndicator">
 
                 <div class="col-12">
-                    <h4 class="blue-title" style="text-align: center">Indicador General</h4>
+                    <h4 class="blue-title" style="text-align: center">Total de Beneficiarios Nuevos</h4>
                 </div>
                 <div class="col-4">
                     <div class="card no-gutter widget-overview-box widget-overview-box-1">

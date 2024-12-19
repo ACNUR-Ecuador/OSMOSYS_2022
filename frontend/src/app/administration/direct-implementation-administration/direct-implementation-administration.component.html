@@ -22,7 +22,7 @@
                     <div class="col-12 md:col-3 sm:col-12 flex justify-content-center">
                         <form [formGroup]="periodForm">    
                             <label for="periodI" class="col-fixed"
-                                style="color: rgb(86, 86, 86);">Periodo:</label>                            
+                                style="color: rgb(86, 86, 86);">Año:</label>                            
                             <p-dropdown id="periodI" [options]="periods" optionLabel="year"
                                 style="height: 20px;"
                                 formControlName="selectedPeriod"
@@ -188,17 +188,6 @@
                 </div>
 
                 <div class="field col-12 md-12">
-                    <label for="statementI">Enunciado de Producto:</label>
-                    <input type="text" pInputText id="statementI"
-                           formControlName="statement"/>
-                </div>
-                <div class="field col-12 md-12">
-                    <label for="productI">Código de producto:</label>
-                    <input type="text" pInputText id="productI"
-                           formControlName="product"/>
-                </div>
-
-                <div class="field col-12 md-12">
                     <label for="indicatorI">Indicador *:</label>
                     <p-dropdown id="indicatorI"
                                 formControlName="indicator"
@@ -216,6 +205,19 @@
                         {{utilsService.getErrorMessageForm('indicator', itemForm)}}
                     </small>
                 </div>
+
+                <div class="field col-12 md-12">
+                    <label for="statementI">Enunciado de Producto:</label>
+                    <input type="text" pInputText id="statementI"
+                           formControlName="statement"/>
+                </div>
+                <!-- <div class="field col-12 md-12">
+                    <label for="productI">Código de producto:</label>
+                    <input type="text" pInputText id="productI"
+                           formControlName="product"/>
+                </div> -->
+
+
                 <div class="field col-12 md-12">
                     <label for="indicatorI">Meta Anual *:</label>
                     <p-inputNumber id="targetI"
@@ -230,7 +232,7 @@
                         {{utilsService.getErrorMessageForm('target', itemForm)}}
                     </small>
                 </div>
-                <div class="field col-6 md-6">
+                <!-- <div class="field col-6 md-6">
                     <label for="keepBudgetI">Controlar presupuesto:</label>
                     <div>
                         <p-inputSwitch id="keepBudgetI"
@@ -258,9 +260,9 @@
                            *ngIf="utilsService.showErrorForm('assignedBudget',itemForm)">
                         {{utilsService.getErrorMessageForm('assignedBudget', itemForm)}}
                     </small>
-                </div>
+                </div> -->
                 <div class="field col-12 md-12">
-                    <label for="supervisorUserI">Supervisor del indicador *:</label>
+                    <label for="supervisorUserI">Manager de Resultados *:</label>
                     <p-dropdown id="supervisorUserI"
                                 formControlName="supervisorUser"
                                 [options]="userOptions"
@@ -277,7 +279,7 @@
                     </small>
                 </div>
                 <div class="field col-12 md-12">
-                    <label for="assignedUserI">Responsable de Reporte *:</label>
+                    <label for="assignedUserI">Responsable de Reporte ACNUR *:</label>
                     <p-dropdown id="assignedUserI"
                                 formControlName="assignedUser"
                                 [options]="userOptions"
@@ -294,7 +296,7 @@
                     </small>
                 </div>
                 <div class="field col-12 md-12">
-                    <label for="assignedUserBackupI">Responsable de Reporte Alterno:</label>
+                    <label for="assignedUserBackupI">Responsable de Reporte ACNUR Alterno:</label>
                     <p-dropdown id="assignedUserBackupI"
                                 formControlName="assignedUserBackup"
                                 [options]="userOptions"
@@ -353,7 +355,7 @@
                 </h5>
 
                 <div class="field grid">
-                    <label htmlFor="periodII" class="col-12 mb-2 md:col-2 md:mb-0">Periodo:</label>
+                    <label htmlFor="periodII" class="col-12 mb-2 md:col-2 md:mb-0">Año:</label>
                     <div class="col-12 md:col-10">
                         <p-dropdown
                             id="periodII"

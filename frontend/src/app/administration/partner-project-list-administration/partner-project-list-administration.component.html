@@ -15,7 +15,7 @@
                         </div>
                         <div class="col-12 md:col-3 sm:col-12 flex justify-content-center">
                             <form [formGroup]="periodForm">
-                                    <label for="periodI2" class="col-fixed" style="color: rgb(91, 91, 91);">Periodo:</label>
+                                    <label for="periodI2" class="col-fixed" style="color: rgb(91, 91, 91);">Año:</label>
                                     <p-dropdown id="periodI2" [options]="periods" optionLabel="year"
                                                 formControlName="selectedPeriod"
                                                 (onChange)="onPeriodChange($event.value)"
@@ -129,7 +129,7 @@
                 </h5>
 
                 <div class="field grid">
-                    <label htmlFor="name3" class="col-12 mb-2 md:col-2 md:mb-0">Periodo</label>
+                    <label htmlFor="name3" class="col-12 mb-2 md:col-2 md:mb-0">Año</label>
                     <div class="col-12 md:col-10">
                         <p-dropdown
                             id="periodI"

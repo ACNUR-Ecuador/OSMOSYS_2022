@@ -44,6 +44,12 @@ public abstract class StandardDissagregationOption extends BaseEntityIdState imp
     @Column(name = "group_name", nullable = false)
     protected String groupName;
 
+    @Column(name = "region_group_name")
+    protected String regionGroupName;
+
+    @Column(name = "parent_dissagregation_id")
+    protected Long parentDissagregationId;
+
     @Column(name = "order_", nullable = false)
     protected Integer order;
 
@@ -91,6 +97,22 @@ public abstract class StandardDissagregationOption extends BaseEntityIdState imp
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public String getRegionGroupName() {
+        return regionGroupName;
+    }
+
+    public void setRegionGroupName(String regionGroupName) {
+        this.regionGroupName = regionGroupName;
+    }
+
+    public Long getParentDissagregationId() {
+        return parentDissagregationId;
+    }
+
+    public void setParentDissagregationId(Long parentDissagregationId) {
+        this.parentDissagregationId = parentDissagregationId;
     }
 
     @Override

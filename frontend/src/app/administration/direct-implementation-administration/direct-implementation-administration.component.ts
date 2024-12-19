@@ -92,7 +92,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
                 next: value => {
                     this.periods = value;
                     if (this.periods.length < 1) {
-                        this.messageService.add({severity: 'error', summary: 'No se encontraron periodos', detail: ''});
+                        this.messageService.add({severity: 'error', summary: 'No se encontraron años', detail: ''});
                     } else {
                         this.periodsItems = value.map(value1 => {
                             const selectItem: SelectItem = {
@@ -120,7 +120,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
                 error: error => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al cargar los periodos',
+                        summary: 'Error al cargar los años',
                         detail: error.error.message,
                         life: 3000
                     });
@@ -297,7 +297,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
                 pipeRef: this.monthPipe
             },
             {field: 'lateMonths', header: 'Meses Retrasado', type: ColumnDataType.text, pipeRef: this.monthListPipe},
-            {field: 'supervisorUser', header: 'Supervisor', type: ColumnDataType.text, pipeRef: this.userPipe},
+            {field: 'supervisorUser', header: 'Manager de Resultado', type: ColumnDataType.text, pipeRef: this.userPipe},
             {field: 'assignedUser', header: 'Responsable', type: ColumnDataType.text, pipeRef: this.userPipe},
             {
                 field: 'assignedUserBackup',
@@ -586,7 +586,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
         if (!period || !period.id) {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Selecciona un periodo',
+                summary: 'Selecciona un año',
                 life: 3000
             });
         }

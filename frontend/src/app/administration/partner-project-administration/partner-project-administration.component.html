@@ -96,7 +96,7 @@
                                    *ngIf="utilsService.showErrorForm('endDate',formItem)">{{utilsService.getErrorMessageForm('endDate', formItem)}}</small>
                         </div>
                         <div class="field col-12 md:col-4">
-                            <label for="periodsI">Puntos focales *:</label>
+                            <label for="periodsI">Puntos focales ACNUR del Proyecto*:</label>
                             <p-multiSelect id="periodsI"
                                     [options]="focalPoints"
                                     appendTo="body"
@@ -216,7 +216,7 @@
             <div class="card">
                 <p-panel>
                     <ng-template pTemplate="header">
-                        Indicador General
+                        Total de Beneficiarios Nuevos
                     </ng-template>
                     <p-table #dt [value]="generalIndicators" [columns]="selectedColumnsGeneralIndicators"
                              [rowHover]="true" dataKey="id"
@@ -626,7 +626,7 @@
                         {{utilsService.getErrorMessageForm('projectStatement', formPerformanceIndicator)}}
                     </small>
                 </div>
-                <div class="field col-12 md-12">
+                <!-- <div class="field col-12 md-12">
                     <label htmlFor="commentaryI">Actividades Clave del Producto:</label>
                     <textarea id="commentaryI" pInputTextarea formControlName="activityDescription">
                     </textarea>
@@ -648,8 +648,8 @@
                            *ngIf="utilsService.showErrorForm('keepBudget',formPerformanceIndicator)">
                         {{utilsService.getErrorMessageForm('keepBudget', formPerformanceIndicator)}}
                     </small>
-                </div>
-                <div class="field col-6 md-6">
+                </div> -->
+                <!-- <div class="field col-6 md-6">
                     <label htmlFor="assignedBudgetI">Presupuesto asignado:</label>
                     <p-inputNumber
                         id="assignedBudgetI"
@@ -663,7 +663,7 @@
                            *ngIf="utilsService.showErrorForm('assignedBudget',formPerformanceIndicator)">
                         {{utilsService.getErrorMessageForm('assignedBudget', formPerformanceIndicator)}}
                     </small>
-                </div>
+                </div> -->
                 <div class="field col-12 md-2">
                     <label htmlFor="statePII">Estado *:</label>
 

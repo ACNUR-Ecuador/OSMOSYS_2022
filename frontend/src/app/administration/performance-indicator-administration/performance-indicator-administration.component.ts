@@ -1,4 +1,6 @@
 import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {ConfirmationService} from 'primeng/api';
 import {
     AreaType,
     CoreIndicator,
@@ -73,6 +75,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
 
     constructor(
+        private confirmationService: ConfirmationService,
         private messageService: MessageService,
         private fb: FormBuilder,
         public utilsService: UtilsService,
@@ -99,7 +102,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.registerFilters();
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
-            {field: 'periods', header: 'Periodos', type: ColumnDataType.text},
+            {field: 'periods', header: 'Años', type: ColumnDataType.text},
             {field: 'code', header: 'Código', type: ColumnDataType.text},
             {field: 'regionalCode', header: 'Código Regional', type: ColumnDataType.text},
             {field: 'coreIndicator', header: 'Core Indicator', type: ColumnDataType.text},
@@ -255,12 +258,17 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             fileName: new FormControl('', [Validators.required]),
             file: new FormControl(''),
         });
+
+        this.formItem.get('unit').valueChanges.subscribe(value => {
+            console.log('Unit changed to:', value); // Esto ayudará a depurar si el valor cambia como se espera
+        });
     }
 
 
     private loadItems() {
         this.indicatorService.getAll().subscribe({
             next: value => {
+                this.items = value;
                 this.items = value;
             },
             error: err => {
@@ -442,7 +450,38 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.ref.detectChanges();
     }
 
+    confirmBeforeSave() {
+        if (!this.hasPopulationTypeDissagregation()) {
+            this.confirmationService.confirm({
+                message: 'Se seleccionó "Personas de Interés" como tipo de medida, pero no se encontraron desgregaciones con Tipo de Población para todos los años. ¿Desea continuar de todos modos?',
+                header: 'Confirmación Requerida',
+                icon: 'pi pi-exclamation-triangle',
+                acceptLabel: "Si",
+                acceptButtonStyleClass: "warn",
+                accept: () => {
+                    this.saveItem();
+                },
+                reject: () => {
+                    this.messageService.add({
+                        severity: 'warn',
+                        summary: 'No se guardaron los cambios',
+                        detail: 'Seleccione alguna desagregación con Tipo de Población en todos los s.',
+                        life: 4000
+                    });
+                }
+            });
+        } else {
+            this.saveItem();
+        }
+    }
 
+    hasPopulationTypeDissagregation() {
+        let dissagregationsAssignationToIndicators = this.formItem.get('dissagregationAssignationToIndicators').value
+        const hasPopulationTypeDissagregation = dissagregationsAssignationToIndicators?.some(
+            (item) => item.dissagregationType.includes('TIPO_POBLACION') && item.state === 'ACTIVO'
+        );
+        return hasPopulationTypeDissagregation;
+    }
     cancelDialog() {
         this.showDialog = false;
         this.isCoreIndicator = false;
@@ -613,7 +652,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         if (!this.importForm.get('period').value || !this.importForm.get('period').value.id) {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Seleccione un periodo',
+                summary: 'Seleccione un año',
                 life: 3000
             });
         }
@@ -721,7 +760,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
 
     isEditing() {
-        console.log("Aquí estoy");
+        //console.log("Aquí estoy");
         let isEditing = this.formItem.get('id')?.value;
         if(isEditing == null)
         {

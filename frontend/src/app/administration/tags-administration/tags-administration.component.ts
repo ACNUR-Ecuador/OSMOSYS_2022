@@ -86,7 +86,7 @@ export class TagsAdministrationComponent implements OnInit {
             },
             {
                 field: 'periodTagAsignations',
-                header: 'Periodo',
+                header: 'Año',
                 type: ColumnDataType.numeric,
                 pipeRef: this.tagPeriodTagAsignationListPipe,
             },
@@ -196,7 +196,7 @@ export class TagsAdministrationComponent implements OnInit {
             error: (err) => {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Error al cargar los periodos',
+                    summary: 'Error al cargar los años',
                     detail: err.error.message,
                     life: 3000,
                 });

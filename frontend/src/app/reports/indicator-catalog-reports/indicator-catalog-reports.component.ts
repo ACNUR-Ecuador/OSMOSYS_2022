@@ -37,7 +37,7 @@ export class IndicatorCatalogReportsComponent implements OnInit {
             next: value => {
                 this.periods = value;
                 if (this.periods.length < 1) {
-                    this.messageService.add({severity: 'error', summary: 'No se encontraron periodos', detail: ''});
+                    this.messageService.add({severity: 'error', summary: 'No se encontraron años', detail: ''});
                 } else {
                     const currentPeriod = this.utilsService.getCurrectPeriodOrDefault(this.periods);
                     this.periodForm.get('selectedPeriod').patchValue(currentPeriod);
@@ -45,7 +45,7 @@ export class IndicatorCatalogReportsComponent implements OnInit {
             }, error: err => {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Error al cargar las los periodos',
+                    summary: 'Error al cargar las los años',
                     detail: err.error.message,
                     life: 3000
                 });
@@ -77,7 +77,7 @@ export class IndicatorCatalogReportsComponent implements OnInit {
         } else {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Selecciona un periodo',
+                summary: 'Selecciona un año',
                 life: 3000
             });
         }
@@ -100,7 +100,7 @@ export class IndicatorCatalogReportsComponent implements OnInit {
         } else {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Selecciona un periodo',
+                summary: 'Selecciona un año',
                 life: 3000
             });
         }
@@ -123,7 +123,7 @@ export class IndicatorCatalogReportsComponent implements OnInit {
         } else {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Selecciona un periodo',
+                summary: 'Selecciona un año',
                 life: 3000
             });
         }

@@ -229,11 +229,15 @@ export class StandardDissagregationOption {
     }
 
     public id: number;
+    public parentDissagregationId: number;
     public name: string;
     public order: number;
     public groupName: string;
+    public regionGroupName: string;
     public state: string;
     public type?: string;
+    children?: StandardDissagregationOption[];  
+
 }
 
 export class CustomDissagregationAssignationToIndicator {

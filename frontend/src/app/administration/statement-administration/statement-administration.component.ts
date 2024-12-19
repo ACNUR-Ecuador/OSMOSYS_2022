@@ -40,7 +40,6 @@ export class StatementAdministrationComponent implements OnInit {
     parentStatementsItemsFiltered: SelectItem[];
     parentStatementsItems: SelectItem[];
     areaTypesItems: SelectItem[];
-    filterAreaItems: SelectItem[];
 
 
     // tslint:disable-next-line:variable-name
@@ -82,7 +81,7 @@ export class StatementAdministrationComponent implements OnInit {
                 pipeRef: this.enumValuesToLabelPipe,
                 arg1: EnumsType.AreaType
             },
-            {field: 'description', header: 'Descripción', type: ColumnDataType.text},
+            {field: 'description', header: 'Enunciado', type: ColumnDataType.text},
             {
                 field: 'parentStatement',
                 header: 'Enunciado Padre',
@@ -90,10 +89,10 @@ export class StatementAdministrationComponent implements OnInit {
                 pipeRef: this.codeDescriptionPipe
             },
             {field: 'area', header: 'Área', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},
-            {field: 'pillar', header: 'Pilar', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},            
+            {field: 'pillar', header: 'Grupo Poblacional', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},            
             {
                 field: 'periodStatementAsignations',
-                header: 'Periodos',
+                header: 'Años',
                 type: ColumnDataType.numeric,
                 pipeRef: this.statementPeriodStatementAsignationsListPipe
             },
@@ -158,7 +157,7 @@ export class StatementAdministrationComponent implements OnInit {
             error: err => {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Error al cargar los pilares',
+                    summary: 'Error al cargar los Grupos de Población',
                     detail: err.error.message,
                     life: 3000
                 });
@@ -209,7 +208,7 @@ export class StatementAdministrationComponent implements OnInit {
                 error: err => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al cargar los pilares',
+                        summary: 'Error al cargar los Grupos de Población',
                         detail: err.error.message,
                         life: 3000
                     });
@@ -257,7 +256,7 @@ export class StatementAdministrationComponent implements OnInit {
                 error: err => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al cargar los periodos',
+                        summary: 'Error al cargar los años',
                         detail: err.error.message,
                         life: 3000
                     });
@@ -273,7 +272,6 @@ export class StatementAdministrationComponent implements OnInit {
 
 
     createItem() {
-        this.filterAreaItems=[]
         this.parentStatementsItems = this.items.map(value => {
             return this.statementToSelectItem(value);
         });
@@ -292,9 +290,6 @@ export class StatementAdministrationComponent implements OnInit {
             return this.statementToSelectItem(value);
         });*/
         // obtengo los periods
-        this.filterAreaItems=this.areasItems.filter(value1 =>{
-            return value1.value.areaType==statement.areaType;
-        })
         let periods= statement.periodStatementAsignations.map(value => value.period);
         this.filterStatementsByPeriod(periods);
         this.utilsService.resetForm(this.formItem);
@@ -388,7 +383,7 @@ export class StatementAdministrationComponent implements OnInit {
                     error: err => {
                         this.messageService.add({
                             severity: 'error',
-                            summary: 'Error al actualizar el pilar',
+                            summary: 'Error al actualizar el Grupo de Población',
                             detail: err.error.message,
                             life: 3000
                         });
@@ -410,7 +405,7 @@ export class StatementAdministrationComponent implements OnInit {
                     error: err => {
                         this.messageService.add({
                             severity: 'error',
-                            summary: 'Error al guardar el pilar',
+                            summary: 'Error al guardar el Grupo de Población',
                             detail: err.error.message,
                             life: 3000
                         });
@@ -536,11 +531,5 @@ export class StatementAdministrationComponent implements OnInit {
             this.parentStatementsItemsFiltered = [];
         }
 
-    }
-    onAreaTypeChange(areaType:any){
-        this.filterAreaItems=this.areasItems.filter(value1 =>{
-            return value1.value.areaType==areaType;
-        })
-        
     }
 }

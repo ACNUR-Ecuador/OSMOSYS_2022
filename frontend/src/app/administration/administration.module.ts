@@ -88,6 +88,7 @@ import { MenuItemsComponent } from './menu-items/menu-items.component';
 import { TagsAdministrationComponent } from './tags-administration/tags-administration.component';
 import { TagPeriodTagAsignationsListPipe } from '../shared/pipes/tag-period-tag-asignations-list.pipe';
 import { AuditAdministrationComponent } from './audit-administration/audit-administration.component';
+import { TreeModule } from 'primeng/tree';
 
 
 @NgModule({
@@ -115,6 +116,7 @@ import { AuditAdministrationComponent } from './audit-administration/audit-admin
         AuditAdministrationComponent
     ],
     imports: [
+        TreeModule,
         CommonModule,
         AdministrationRoutingModule,
         ToolbarModule,

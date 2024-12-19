@@ -74,7 +74,7 @@ export class AuditAdministrationComponent implements OnInit {
             next: value => {
                 this.periods = value;
                 if (this.periods.length < 1) {
-                    this.messageService.add({severity: 'error', summary: 'No se encontraron periodos', detail: ''});
+                    this.messageService.add({severity: 'error', summary: 'No se encontraron años', detail: ''});
                 }else {
                   const currentYear = (new Date()).getFullYear();
                   const currentMonth = (new Date()).getMonth()+1;
@@ -108,7 +108,7 @@ export class AuditAdministrationComponent implements OnInit {
             error: error => {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Error al cargar los periodos',
+                    summary: 'Error al cargar los años',
                     detail: error.error.message,
                     life: 3000
                 });

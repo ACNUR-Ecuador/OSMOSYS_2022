@@ -182,14 +182,13 @@
                                     [filter]=true
                                     appendTo="body"
                                     [panelStyle]="{'width':'80%'}"
-                                    (onChange)="onAreaTypeChange($event.value)"
                         >
                         </p-dropdown>
                         <small class="p-error" *ngIf="utilsService.showErrorForm('parentStatement',formItem)">Campo
                             obligatorio.</small>
                     </div>
                     <div class="field col-4 md:col4 p-sm-12">
-                        <label for="periodsI">Periodos *:</label>
+                        <label for="periodsI">Años *:</label>
                         <p-multiSelect id="periodsI"
                             [options]="periodsItems"
                             appendTo="body"
@@ -209,7 +208,7 @@
 
                         <p-dropdown id="areaI"
                                     formControlName="area"
-                                    [options]="filterAreaItems"
+                                    [options]="areasItems"
                                     placeholder="Selecciona"
                                     [filter]=true
                                     appendTo="body"
@@ -245,7 +244,7 @@
                     </div>
 
                     <div class="field col-3 md:col3 p-sm-12 ">
-                        <label for="pillarI">Pilar *:</label>
+                        <label for="pillarI">Grupo Poblacional *:</label>
 
                         <p-dropdown id="pillarI"
                                     formControlName="pillar"
@@ -334,7 +333,7 @@
                 </h5>
 
                 <div class="field grid">
-                    <label htmlFor="name3" class="col-12 mb-2 md:col-2 md:mb-0">Periodo</label>
+                    <label htmlFor="name3" class="col-12 mb-2 md:col-2 md:mb-0">Año</label>
                     <div class="col-12 md:col-10">
                         <p-dropdown
                             id="periodI"
