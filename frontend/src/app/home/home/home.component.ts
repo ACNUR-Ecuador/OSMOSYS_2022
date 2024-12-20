@@ -42,7 +42,7 @@ export class HomeComponent implements OnInit {
     }
 
     loadUsers() {
-        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
+        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL']);
         this.isFocalPoint = this.userService.hasAnyRole(['PUNTO_FOCAL']);
         this.isAcnurUser = this.userService.isUNHCRUser();
         this.isPartner = !this.isAcnurUser;

@@ -124,7 +124,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
 
     setRoles() {
         const userId = this.userService.getLogedUsername().id;
-        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
+        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL']);
         if (this.indicatorExecution.supervisorUser && this.indicatorExecution.supervisorUser.id === userId) {
             this.isSupervisor = true;
         }

@@ -94,7 +94,7 @@
                                             [showMenu]="false" [matchMode]="'rolesFilter'"
                             >
                                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                    <p-multiSelect [ngModel]="value" [options]="roles"
+                                    <p-multiSelect [ngModel]="value" [options]="selectRoles"
                                                    (onChange)="filter($event.value)"
                                                    [filter]=true
                                                    placeholder="Selecciona...">
@@ -146,7 +146,7 @@
             <p-messages></p-messages>
             <div class="card">
                 <div class="field">
-                    <label for="emailI">Correo Electrónico</label>
+                    <label for="emailI">Correo Electrónico *:</label>
                     <input type="text" pInputText id="emailI"
                            formControlName="email" autofocus maxlength="255"
                            (change)="onEmailChange()"
@@ -156,7 +156,7 @@
                     </small>
                 </div>
                 <div class="field">
-                    <label for="nameI">Nombre</label>
+                    <label for="nameI">Nombre *:</label>
                     <input type="text" pInputText id="nameI"
                            formControlName="name" autofocus maxlength="255"/>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('name',formItem)">
@@ -165,7 +165,7 @@
                 </div>
 
                 <div class="field">
-                    <label for="usernameI">Nombre de Usuario</label>
+                    <label for="usernameI">Nombre de Usuario *:</label>
                     <input type="text" pInputText id="usernameI"
                            formControlName="username" autofocus maxlength="255"/>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('username',formItem)">
@@ -173,7 +173,7 @@
                     </small>
                 </div>
                 <div class="field">
-                    <label for="organizationI">Organización</label>
+                    <label for="organizationI">Organización *:</label>
 
                     <p-dropdown id="organizationI"
                                 formControlName="organization"
@@ -190,7 +190,7 @@
                     </small>
                 </div>
                 <div class="field">
-                    <label for="officeI">Oficina</label>
+                    <label for="officeI">Oficina:</label>
 
                     <p-dropdown id="officeI"
                                 formControlName="office"
@@ -207,7 +207,7 @@
                     </small>
                 </div>
                 <div class="field">
-                    <label for="stateI">Estado</label>
+                    <label for="stateI">Estado *:</label>
 
                     <p-selectButton id="stateI"
                                     formControlName="state"
@@ -219,7 +219,7 @@
                     </small>
                 </div>
                 <div class="field">
-                    <label>Permisos</label>
+                    <label>Permisos *:</label>
                     <div class="grid formgrid">
                         <div class="col-12 md:col-4"
                              *ngFor="let category of roles">

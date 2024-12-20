@@ -107,7 +107,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
     setRoles() {
         const userId = this.userService.getLogedUsername().id;
 
-        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
+        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL']);
         if (this.indicatorExecution.project.focalPoints.some( fp => fp.id === userId) ) {
             this.isProjectFocalPoint = true;
         }

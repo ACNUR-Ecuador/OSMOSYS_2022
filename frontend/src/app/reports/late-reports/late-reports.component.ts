@@ -44,7 +44,7 @@ export class LateReportsComponent implements OnInit {
     ngOnInit(): void {
         this.currentUser = this.userService.getLogedUsername();
         this.userId = this.currentUser.id;
-        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
+        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL']);
         this.createForms();
         this.loadPeriods();
         this.enableReport = this.userService.getLogedUsername().organization.id === 1;

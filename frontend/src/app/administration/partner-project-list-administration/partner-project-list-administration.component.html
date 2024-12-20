@@ -29,7 +29,7 @@
                                 appendTo="body"
                                 placeholder="Seleccione las columnas"></p-multiSelect>
 
-                            <button pButton pRipple label="Crear" icon="pi pi-plus" *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'])"
+                            <button pButton pRipple label="Crear" icon="pi pi-plus" *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL'])"
                                     class="main-button mr-2 mb-2" style="margin-left: 1rem;" pTooltip="Crear proyecto" tooltipPosition="bottom"
                                     (click)="createItem()"></button>
                             <button pButton pRipple label="Importar" *ngIf="false"

@@ -141,7 +141,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
                             };
                             return item;
                         });
-                    if (!this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'])
+                    if (!this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL'])
                         && this.userService.hasAnyRole(['ADMINISTRADOR_OFICINA']) ) {
                         const officesIds = this.adminOffices.map(value => value.id);
                         this.officeOptions = this.officeOptions.filter(value => {
@@ -211,7 +211,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
     }
 
     loadItems(periodId: number) {
-        if (this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'])) {
+        if (this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL'])) {
             this.indicatorExecutionService.getPerformanceAllDirectImplementationByPeriodId(periodId)
                 .subscribe({
                     next: ies => {

@@ -28,6 +28,7 @@ export class UserAdministrationComponent implements OnInit {
     offices: SelectItem[];
     organizations: SelectItem[];
     roles: SelectItem[];
+    selectRoles: SelectItem[];
 
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
@@ -122,22 +123,26 @@ export class UserAdministrationComponent implements OnInit {
 
         this.enumsService.getByType(EnumsType.RoleType).subscribe({
             next: value => {
-                this.roles = value;
+                this.selectRoles = value
+                    .filter(value1 => value1.value !== 'PUNTO_FOCAL' && value1.value !== 'ADMINISTRADOR_OFICINA' )
+                this.roles=JSON.parse(JSON.stringify(this.selectRoles));
                 this.roles.forEach(value1 => {
-                    if (value1.value === 'PUNTO_FOCAL') {
-                        value1.disabled = true;
-                    } else if (value1.value === 'ADMINISTRADOR_OFICINA') {
-                        value1.disabled = true;
-                    } else if (value1.value === 'SUPER_ADMINISTRADOR' || value1.value === 'ADMINISTRADOR') {
-                        const isAdministrator: boolean = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
-                        value1.disabled = !isAdministrator;
-                    } else {
+                    if (value1.value === 'SUPER_ADMINISTRADOR') {
+                        const doSuperAdmin: boolean = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR']);
+                        value1.disabled = !doSuperAdmin;
+                    }else if(value1.value === 'ADMINISTRADOR_REGIONAL'){
+                        const doRegionalAdmin: boolean = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL']);
+                        value1.disabled = !doRegionalAdmin;
+                    }
+                    else if(value1.value === 'ADMINISTRADOR_LOCAL'){
+                        const doLocalAdmin: boolean = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL']);
+                        value1.disabled = !doLocalAdmin;
+                    }
+                     else {
                         value1.disabled = false;
                     }
-
-
                 });
-
+                    
             },
             error: error => this.messageService.add({
                 severity: 'error',
@@ -216,6 +221,7 @@ export class UserAdministrationComponent implements OnInit {
         this.formItem.patchValue(user);
         this.formItem.get('roleTypes').patchValue([]);
         this.formItem.get('username').enable();
+        this.formItem.get('office').enable();
         this.showDialog = true;
     }
 
@@ -223,6 +229,7 @@ export class UserAdministrationComponent implements OnInit {
         this.utilsService.resetForm(this.formItem);
         this.showDialog = true;
         this.formItem.patchValue(user);
+        const office=this.officesActive.filter(office=> office.value.id===user.office?.id)[0]?.value
         const roleTypes: string[] = user.roles
             .filter(value => value.state === EnumsState.ACTIVE)
             .map(value => {
@@ -234,6 +241,9 @@ export class UserAdministrationComponent implements OnInit {
                 this.formItem.get('office').setValidators([Validators.required]);
                 this.formItem.get('office').enable();
                 this.formItem.get('office').updateValueAndValidity();
+                if(office){
+                    this.formItem.get('office').patchValue(office);
+                }
             } else {
                 this.formItem.get('office').patchValue(null);
                 this.formItem.get('office').clearValidators();
@@ -243,6 +253,7 @@ export class UserAdministrationComponent implements OnInit {
         }
         this.formItem.get('roleTypes').patchValue(roleTypes);
         this.formItem.get('username').disable();
+            
     }
 
     exportExcel(table: Table) {

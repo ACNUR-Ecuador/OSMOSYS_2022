@@ -99,7 +99,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     setRoles() {
         const userId = this.userService.getLogedUsername().id;
 
-        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
+        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL']);
         if (this.indicatorExecution.project.focalPoints && this.indicatorExecution.project.focalPoints.some( fp => fp.id === userId) ) {
             this.isProjectFocalPoint = true;
         }
@@ -259,7 +259,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         const dimensionsMap: Map<number, EnumWeb[]> = this.utilsService.setDimentionsDissagregationsV2(
             this.monthValuesMap
         );
-
+        console.log(this.monthValuesMap);
         this.noDimentionDissagregations = dimensionsMap.get(0);
         this.oneDimentionDissagregations = dimensionsMap.get(1);
         this.twoDimentionDissagregations = dimensionsMap.get(2);
@@ -268,6 +268,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         this.fiveDimentionDissagregations = dimensionsMap.get(5);
         this.sixDimentionDissagregations = dimensionsMap.get(6);
         this.render = true;
+        console.log(this.oneDimentionDissagregations)
     }
 
     setOtherSource(sources: string[]) {

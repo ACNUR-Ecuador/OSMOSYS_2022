@@ -37,7 +37,7 @@
                             placeholder="Seleccione las columnas"
                             appendTo="body"></p-multiSelect>
                             <div class="p-toolbar-group-left"
-                                *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR'])">
+                                *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL'])">
                                 <button pButton label="Crear Proyecto" icon="pi pi-plus" style="margin-left: 2rem;"
                                         class="main-button p-mr-2 p-mb-2" pTooltip="Crear un Proyecto" tooltipPosition="bottom"
                                         (click)="createItem()"></button>

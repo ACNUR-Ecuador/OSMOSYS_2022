@@ -319,7 +319,7 @@
                                     (click)="updatePerformanceIndicatorsTargets()"></button>
 
                             <button pButton pRipple label="Importar Indicadores" icon="pi pi-plus"
-                                    *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR'])"
+                                    *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL'])"
                                     class="p-button-success mr-2 mb-2"
                                     (click)="initiateCatalogImport()"></button>
                         </ng-template>
