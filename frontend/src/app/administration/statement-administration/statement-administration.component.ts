@@ -267,7 +267,7 @@ export class StatementAdministrationComponent implements OnInit {
     exportExcel(table: Table) {
         this.utilsService.exportTableAsExcel(this._selectedColumns,
             table.filteredValue ? table.filteredValue : this.items,
-            'enunciados');
+            'marco de resultados');
     }
 
 

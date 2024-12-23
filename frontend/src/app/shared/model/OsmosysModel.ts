@@ -278,6 +278,7 @@ export class Project {
     public locations: Canton[];
     public focalPoints: User[];
     public updateAllLocationsIndicators?: boolean;
+    public partnerManager?: User;
 }
 
 export class ProjectResume {

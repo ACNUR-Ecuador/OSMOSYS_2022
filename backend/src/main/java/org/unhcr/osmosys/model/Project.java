@@ -91,6 +91,9 @@ public class Project extends BaseEntityIdState {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL)
     private Set<IndicatorExecution> indicatorExecutions = new HashSet<>();
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "partner_manager", foreignKey = @ForeignKey(name = "fk_indicator_partner_manager"))
+    private User partnerManager;
 
     @Override
     public Long getId() {
@@ -221,6 +224,13 @@ public class Project extends BaseEntityIdState {
         this.focalPointAssignations = focalPointAssignations;
     }
 
+    public User getPartnerManager() {
+        return partnerManager;
+    }
+
+    public void setPartnerManager(User partnerManager) {
+        this.partnerManager = partnerManager;
+    }
 
     @Override
     public boolean equals(Object o) {

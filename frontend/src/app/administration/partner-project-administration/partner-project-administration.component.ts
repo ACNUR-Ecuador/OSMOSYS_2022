@@ -12,6 +12,7 @@ import {
     CantonForList, ImportFile,
     Indicator, IndicatorExecution,
     IndicatorExecutionAssigment,
+    Organization,
     Period,
     Project,
     Quarter,
@@ -67,6 +68,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     public indicatorOptions: SelectItem[] = [];
     public showLocationMenu = false;
     public showPerformanceIndicatorDialog = false;
+    public partnersList: User[];
     cols: ColumnTable[];
     colsCantonList: ColumnTable[];
     colsCantonListNotEditable: ColumnTable[];
@@ -195,8 +197,10 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                         startDate,
                         endDate,
                         locations,
-                        focalPoints
+                        focalPoints,
+                        partnerManager
                     } = value;
+                    this.onOrganizationChange(organization)
                     this.utilsService.sortCantones(locations);
                     const originalLocations = [];
                     locations.forEach(val => originalLocations.push(Object.assign({}, val)));
@@ -212,7 +216,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                         locations,
                         focalPoints,
                         originalLocations,
-                        updateAllLocationsIndicators: false
+                        updateAllLocationsIndicators: false,
+                        partnerManager
                     });
                     this.periods = [];
                     this.periods.push(period);
@@ -428,7 +433,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             focalPoints: new FormControl('', Validators.required),
             locations: new FormControl(''),
             originalLocations: new FormControl(''),
-            updateAllLocationsIndicators: new FormControl('')
+            updateAllLocationsIndicators: new FormControl(''),
+            partnerManager: new FormControl('')
         });
 
         this.formLocations = this.fb.group({
@@ -472,7 +478,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             endDate,
             locations,
             focalPoints,
-            updateAllLocationsIndicators
+            updateAllLocationsIndicators,
+            partnerManager
         } = this.formItem.value;
         const project: Project = {
             id,
@@ -485,7 +492,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             endDate,
             focalPoints: [],
             locations: [],
-            updateAllLocationsIndicators
+            updateAllLocationsIndicators,
+            partnerManager
         };
         if (!locations || locations.length < 1) {
             this.messageService.add({
@@ -1310,5 +1318,24 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             this.importForm.get('file').setValue(fileReader.result);
             this.importForm.get('file').markAsTouched();
         };
+    }
+
+    onOrganizationChange(org: Organization){
+        this.userService.getActivePartnerUsers(org.id)
+        .subscribe({
+            next: value => {
+                this.partnersList = value;
+            },
+            error: error => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los usuarios socios',
+                    detail: error.error.message,
+                    life: 3000
+                });
+            }
+        });
+
+
     }
 }

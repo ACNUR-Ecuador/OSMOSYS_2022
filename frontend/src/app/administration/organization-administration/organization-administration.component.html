@@ -22,7 +22,7 @@
                                         placeholder="Seleccione las columnas"
                                         appendTo="body"></p-multiSelect>
                             <button pButton pRipple label="Crear" icon="pi pi-plus" class="main-button mr-2 mb-2"
-                            (click)="createItem()" style="margin-left: 2rem;" pTooltip="Crear una Organización" tooltipPosition="bottom"></button>
+                            (click)="createItem()" style="margin-left: 2rem;" pTooltip="Crear un Implementador" tooltipPosition="bottom"></button>
 
                             <button pButton pRipple label="Exportar" icon="pi pi-file-excel" class="second-button mr-2 mb-2"
                             (click)="exportExcel(dt)" style="margin-left: 1rem;" pTooltip="Exportar a Excel" tooltipPosition="bottom"></button>                        
@@ -91,7 +91,7 @@
     </div>
 </div>
 <form [formGroup]="formItem" (ngSubmit)="saveItem()">
-    <p-dialog [(visible)]="showDialog" [style]="{width: '450px'}" header="Socios" [modal]="true"
+    <p-dialog [(visible)]="showDialog" [style]="{width: '450px'}" header="Implementador" [modal]="true"
               [closable]="false">
 
         <ng-template pTemplate="content">

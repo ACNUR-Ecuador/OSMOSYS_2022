@@ -111,6 +111,12 @@ public class ProjectService {
         project.setStartDate(projectWeb.getStartDate());
         project.setEndDate(projectWeb.getEndDate());
         User focalPoint = null;
+        if(projectWeb.getPartnerManager() != null && projectWeb.getPartnerManager().getId() != null){
+            User partnerManager = userService.getById(projectWeb.getPartnerManager().getId());
+            if(partnerManager != null){
+                project.setPartnerManager(partnerManager);
+            }
+        }
 
         if(!projectWeb.focalPoints.isEmpty()){
             this.setFocalPointsInProject(project, new ArrayList<>(projectWeb.getFocalPoints()));
@@ -162,6 +168,12 @@ public class ProjectService {
         project.setPeriod(this.modelWebTransformationService.periodWebToPeriod(projectWeb.getPeriod()));
         project.setState(projectWeb.getState());
         project.setName(projectWeb.getName());
+        if(projectWeb.getPartnerManager() != null && projectWeb.getPartnerManager().getId() != null){
+            User partnerManager = userService.getById(projectWeb.getPartnerManager().getId());
+            if(partnerManager != null){
+                project.setPartnerManager(partnerManager);
+            }
+        }
         Set<FocalPointAssignation> focalPointAssignations = new HashSet<>();
         if (projectWeb.getFocalPoints() != null && !projectWeb.getFocalPoints().isEmpty()) {
 //            Set<User> focalPoints  = projectWeb.getFocalPoints().stream().map(fpw-> this.userService.getById(fpw.getId())).collect(Collectors.toSet());

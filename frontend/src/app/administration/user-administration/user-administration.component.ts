@@ -1,18 +1,18 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Role, User} from '../../shared/model/User';
-import {FilterService, MessageService, SelectItem} from 'primeng/api';
-import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {UserService} from '../../services/user.service';
-import {EnumsService} from '../../services/enums.service';
-import {UtilsService} from '../../services/utils.service';
-import {FilterUtilsService} from '../../services/filter-utils.service';
-import {OrganizationService} from '../../services/organization.service';
-import {OfficeOrganizationPipe} from '../../shared/pipes/office-organization.pipe';
-import {RolesListPipe} from '../../shared/pipes/roles-list.pipe';
-import {Table} from 'primeng/table';
-import {OfficeService} from '../../services/office.service';
-import {Organization} from "../../shared/model/OsmosysModel";
+import { Component, Input, OnInit } from '@angular/core';
+import { Role, User } from '../../shared/model/User';
+import { FilterService, MessageService, SelectItem } from 'primeng/api';
+import { ColumnDataType, ColumnTable, EnumsState, EnumsType } from '../../shared/model/UtilsModel';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UserService } from '../../services/user.service';
+import { EnumsService } from '../../services/enums.service';
+import { UtilsService } from '../../services/utils.service';
+import { FilterUtilsService } from '../../services/filter-utils.service';
+import { OrganizationService } from '../../services/organization.service';
+import { OfficeOrganizationPipe } from '../../shared/pipes/office-organization.pipe';
+import { RolesListPipe } from '../../shared/pipes/roles-list.pipe';
+import { Table } from 'primeng/table';
+import { OfficeService } from '../../services/office.service';
+import { Organization } from "../../shared/model/OsmosysModel";
 
 @Component({
     selector: 'app-user-administration',
@@ -78,19 +78,19 @@ export class UserAdministrationComponent implements OnInit {
 
     createColumns() {
         this.cols = [
-            {field: 'id', header: 'Id', type: ColumnDataType.numeric},
-            {field: 'name', header: 'Nombre', type: ColumnDataType.text},
-            {field: 'username', header: 'Username', type: ColumnDataType.text},
-            {field: 'email', header: 'Correo', type: ColumnDataType.text},
+            { field: 'id', header: 'Id', type: ColumnDataType.numeric },
+            { field: 'name', header: 'Nombre', type: ColumnDataType.text },
+            { field: 'username', header: 'Username', type: ColumnDataType.text },
+            { field: 'email', header: 'Correo', type: ColumnDataType.text },
             {
                 field: 'organization',
                 header: 'Organización',
                 type: ColumnDataType.text,
                 pipeRef: this.officeOrganizationPipe
             },
-            {field: 'office', header: 'Oficina', type: ColumnDataType.text, pipeRef: this.officeOrganizationPipe},
-            {field: 'roles', header: 'Permisos', type: ColumnDataType.text, pipeRef: this.rolesListPipe},
-            {field: 'state', header: 'Estado', type: ColumnDataType.text},
+            { field: 'office', header: 'Oficina', type: ColumnDataType.text, pipeRef: this.officeOrganizationPipe },
+            { field: 'roles', header: 'Permisos', type: ColumnDataType.text, pipeRef: this.rolesListPipe },
+            { field: 'state', header: 'Estado', type: ColumnDataType.text },
         ];
         const hiddenColumns: string[] = ['id'];
         this._selectedColumns = this.cols.filter(value => !hiddenColumns.includes(value.field));
@@ -124,25 +124,23 @@ export class UserAdministrationComponent implements OnInit {
         this.enumsService.getByType(EnumsType.RoleType).subscribe({
             next: value => {
                 this.selectRoles = value
-                    .filter(value1 => value1.value !== 'PUNTO_FOCAL' && value1.value !== 'ADMINISTRADOR_OFICINA' )
-                this.roles=JSON.parse(JSON.stringify(this.selectRoles));
-                this.roles.forEach(value1 => {
-                    if (value1.value === 'SUPER_ADMINISTRADOR') {
-                        const doSuperAdmin: boolean = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR']);
-                        value1.disabled = !doSuperAdmin;
-                    }else if(value1.value === 'ADMINISTRADOR_REGIONAL'){
-                        const doRegionalAdmin: boolean = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL']);
-                        value1.disabled = !doRegionalAdmin;
-                    }
-                    else if(value1.value === 'ADMINISTRADOR_LOCAL'){
-                        const doLocalAdmin: boolean = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL']);
-                        value1.disabled = !doLocalAdmin;
-                    }
-                     else {
-                        value1.disabled = false;
-                    }
-                });
-                    
+                    .filter(value1 => value1.value !== 'PUNTO_FOCAL' && value1.value !== 'ADMINISTRADOR_OFICINA')
+                this.roles = JSON.parse(JSON.stringify(this.selectRoles));
+                if (this.userService.hasAnyRole(['SUPER_ADMINISTRADOR'])) {
+                    this.roles = this.roles
+                } else if (this.userService.hasAnyRole(['ADMINISTRADOR_REGIONAL'])) {
+                    this.roles = this.roles.filter(value1 => value1.value !== 'SUPER_ADMINISTRADOR')
+                } else if (this.userService.hasAnyRole(['ADMINISTRADOR_LOCAL'])) {
+                    this.roles = this.roles.filter(value1 => value1.value !== 'SUPER_ADMINISTRADOR'
+                        && value1.value !== 'ADMINISTRADOR_REGIONAL'
+                    )
+
+                } else {
+                    this.roles = this.roles.filter(value1 => value1.value !== 'SUPER_ADMINISTRADOR'
+                        && value1.value !== 'ADMINISTRADOR_REGIONAL' && value1.value !== 'ADMINISTRADOR_LOCAL'
+                    )
+                }
+
             },
             error: error => this.messageService.add({
                 severity: 'error',
@@ -229,7 +227,7 @@ export class UserAdministrationComponent implements OnInit {
         this.utilsService.resetForm(this.formItem);
         this.showDialog = true;
         this.formItem.patchValue(user);
-        const office=this.officesActive.filter(office=> office.value.id===user.office?.id)[0]?.value
+        const office = this.officesActive.filter(office => office.value.id === user.office?.id)[0]?.value
         const roleTypes: string[] = user.roles
             .filter(value => value.state === EnumsState.ACTIVE)
             .map(value => {
@@ -241,7 +239,7 @@ export class UserAdministrationComponent implements OnInit {
                 this.formItem.get('office').setValidators([Validators.required]);
                 this.formItem.get('office').enable();
                 this.formItem.get('office').updateValueAndValidity();
-                if(office){
+                if (office) {
                     this.formItem.get('office').patchValue(office);
                 }
             } else {
@@ -253,7 +251,7 @@ export class UserAdministrationComponent implements OnInit {
         }
         this.formItem.get('roleTypes').patchValue(roleTypes);
         this.formItem.get('username').disable();
-            
+
     }
 
     exportExcel(table: Table) {

@@ -929,6 +929,7 @@ public class ModelWebTransformationService {
         w.setStartDate(project.getStartDate());
         w.setEndDate(project.getEndDate());
         w.setState(project.getState());
+        w.setPartnerManager(userToUserWebSimple(project.getPartnerManager(),false,false));
         List<User> focalPoints = project.getFocalPointAssignations().stream()
                 .filter(focalPointAssignation -> focalPointAssignation.getState().equals(State.ACTIVO)).map(FocalPointAssignation::getFocalPointer).filter(user -> user.getState().equals(State.ACTIVO)).collect(Collectors.toList());
 
