@@ -2,6 +2,8 @@ package org.unhcr.osmosys.services;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.model.User;
+import com.sagatechs.generics.security.servicio.UserService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
@@ -50,6 +52,8 @@ public class IndicatorService {
     @Inject
     StandardDissagregationOptionService standardDissagregationOptionService;
 
+    @Inject
+    UserService userService;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(IndicatorService.class);
@@ -115,6 +119,13 @@ public class IndicatorService {
         indicator.setMonitored(indicatorWeb.getMonitored());
         indicator.setCalculated(indicatorWeb.getCalculated());
         indicator.setTotalIndicatorCalculationType(indicatorWeb.getTotalIndicatorCalculationType());
+
+        if(indicatorWeb.getResultManager() != null && indicatorWeb.getResultManager().getId() != null){
+            User resultManager = userService.getById(indicatorWeb.getResultManager().getId());
+            if(resultManager != null){
+                indicator.setResultManager(resultManager);
+            }
+        }
     }
 
     public List<IndicatorWeb> getAll() {
@@ -132,6 +143,7 @@ public class IndicatorService {
         if (indicatorWeb == null) {
             throw new GeneralAppException("No se puede actualizar un indicator null", Response.Status.BAD_REQUEST);
         }
+
         if (indicatorWeb.getId() == null) {
             throw new GeneralAppException("No se puede crear un indicator sin id", Response.Status.BAD_REQUEST);
         }

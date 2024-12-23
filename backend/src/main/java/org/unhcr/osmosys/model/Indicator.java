@@ -2,6 +2,7 @@ package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.model.User;
 import org.unhcr.osmosys.model.enums.*;
 
 import javax.persistence.*;
@@ -86,6 +87,9 @@ public class Indicator extends BaseEntityIdState {
     @Column(name = "block_after_update")
     private Boolean blockAfterUpdate;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "result_manager", foreignKey = @ForeignKey(name = "fk_indicator_result_manager"))
+    private User resultManager;
 
     @OneToMany(mappedBy = "indicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<DissagregationAssignationToIndicator> dissagregationsAssignationToIndicator = new HashSet<>();
@@ -104,6 +108,14 @@ public class Indicator extends BaseEntityIdState {
 
     public String getCode() {
         return code;
+    }
+
+    public User getResultManager() {
+        return resultManager;
+    }
+
+    public void setResultManager(User resultManager) {
+        this.resultManager = resultManager;
     }
 
     public void setCode(String code) {

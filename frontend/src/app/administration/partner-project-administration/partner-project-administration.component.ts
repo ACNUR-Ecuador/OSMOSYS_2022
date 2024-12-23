@@ -289,7 +289,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             // todo 2024 quitar para no indicador general
             this.messageAlert += 'Las metas de los siguientes indicadores están pendientes de actualización. </br>';
             generalIndicatorsTargetsToAlert.forEach(value => {
-                this.messageAlert = this.messageAlert + 'Total de Beneficiarios Nuevos: ' + this.indicatorPipe.transform(value.indicator) + '</br>';
+                this.messageAlert = this.messageAlert + 'Total de Beneficiarios: ' + this.indicatorPipe.transform(value.indicator) + '</br>';
             });
             performanceIndicatorsTargetsToAlert.forEach(value => {
                 this.messageAlert = this.messageAlert + 'Indicador de Producto: ' + this.indicatorPipe.transform(value.indicator) + '</br>';

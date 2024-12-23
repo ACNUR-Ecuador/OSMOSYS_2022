@@ -95,7 +95,8 @@ export class PeriodAdministrationComponent implements OnInit {
             if(isSelected){
                 node.children.forEach(child => {
                     const idx = this.selectedNodes.indexOf(child);
-                    this.selectedNodes.splice(idx, 1);
+                    if(idx != -1)
+                        this.selectedNodes.splice(idx, 1);
                 });
 
                 node.partialSelected = false;
@@ -287,7 +288,8 @@ export class PeriodAdministrationComponent implements OnInit {
     convertToTreeNodes(disaggregations: StandardDissagregationOption[]): TreeNode[] {
         // Función auxiliar para crear un TreeNode a partir de una disgregación
         const createTreeNode = (disagg: any): TreeNode => ({
-            label: `${disagg.name} - ${disagg.groupName}`,
+            //label: `${disagg.name} - ${disagg.groupName}`,
+            label: `${disagg.name}`,
             data: disagg,
             children: disagg.children.map(createTreeNode)
         });
@@ -453,7 +455,7 @@ export class PeriodAdministrationComponent implements OnInit {
             state,
             periodAgeDissagregationOptions: ageOptions,
             periodGenderDissagregationOptions: genderOptions,
-            periodPopulationTypeDissagregationOptions: populationTypeOptions,
+            periodPopulationTypeDissagregationOptions: populationTypeOptions.data,
             periodDiversityDissagregationOptions: diversityOptions,
             periodCountryOfOriginDissagregationOptions: countryOfOriginOptions
 

@@ -149,7 +149,7 @@
 
     <div *ngFor="let tableData of filteredAuditTableData; let i = index">
       <br>
-      <div *ngIf="selectedTable == 'Reporte'">
+      <div *ngIf="selectedTable === 'Reporte'">
         <h3 style="text-align: center;">Cambio {{ i + 1 }}</h3>
       </div>
       <p-table [value]="tableData.data">

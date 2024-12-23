@@ -209,7 +209,6 @@
                                         placeholder="Selecciona..."
                                         [filter]="true"
                                         appendTo="body"
-                                        [disabled]="isCoreIndicator"
                             >
                             </p-dropdown>
 
@@ -232,7 +231,7 @@
                                    *ngIf="utilsService.showErrorForm('totalIndicatorCalculationType',formItem)">{{utilsService.getErrorMessageForm('totalIndicatorCalculationType', formItem)}}</small>
                         </div> -->
 
-                        <div class="field col-12 md:col-3">
+                        <div class="field col-12 md:col-2">
                             <label for="frecuencyI">Frecuencia de alerta</label>
                             <i class="pi pi-info-circle" style="margin-left: 0.5rem; color: #ff8000;" 
                             pTooltip="Frecuencia con la que se envían correos de alerta" tooltipPosition="right"></i> 
@@ -264,20 +263,8 @@
                                                     <small class="p-error"
                                                            *ngIf="utilsService.showErrorForm('compassIndicator',formItem)">{{utilsService.getErrorMessageForm('compassIndicator', formItem)}}</small>
                                                 </div>-->
-                        <div class="field col-12 md:col-2">
-                            <label for="blockAfterUpdateI">Bloqueo automático</label>
-
-                            <p-toggleButton id="blockAfterUpdateI"
-                                            formControlName="blockAfterUpdate"
-                                            onLabel="Bloquear después de guardar"
-                                            offLabel="No bloquear después de guardar"
-                                            onIcon="pi pi-lock" offIcon="pi pi-lock-open"
-                            >
-                            </p-toggleButton>
-
-                            <small class="p-error"
-                                   *ngIf="utilsService.showErrorForm('isMonitored',formItem)">{{utilsService.getErrorMessageForm('isMonitored', formItem)}}</small>
-                        </div>
+                        
+                        
                         <div class="field col-12 md:col-2">
                             <label for="unitI">Unidad de Medida</label>
 
@@ -295,33 +282,39 @@
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('unit',formItem)">{{utilsService.getErrorMessageForm('unit', formItem)}}</small>
                         </div>
-                        <!-- <div class="field col-12 md:col-2">
-                                <label for="isMonitoredI">Monitoreo</label>
+                        <div class="field col-12 md:col-3">
+                            <label htmlFor="focalPointI">Result Manager</label>
+                            <p-dropdown id="focalPointI" formControlName="resultManager" [options]="focalPoints"
+                                        placeholder="Selecciona..." [showClear]="true"
+                                        [filter]="true" filterBy="name"
+                                        appendTo="body"
+                            >
+                                <ng-template pTemplate="item" let-item>
+                                    {{item.name }}
+                                </ng-template>
+                                <ng-template pTemplate="selectedItem" let-item>
+                                    {{item.name }}
+                                </ng-template>
+                            </p-dropdown>
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('resultManager',formItem)">{{utilsService.getErrorMessageForm('resultManager', formItem)}}</small>
+                        </div>
 
-                                <p-toggleButton id="isMonitoredI"
-                                                formControlName="isMonitored"
-                                                onLabel="Monitoreado" offLabel="No Monitoreado"
-                                                onIcon="pi pi-check" offIcon="pi pi-times"
-                                >
-                                </p-toggleButton>
+                        <div class="field col-12 md:col-3">
+                            <label for="blockAfterUpdateI">Bloqueo automático</label>
 
-                                <small class="p-error"
+                            <p-toggleButton id="blockAfterUpdateI"
+                                            formControlName="blockAfterUpdate"
+                                            onLabel="Bloquear después de guardar"
+                                            offLabel="No bloquear después de guardar"
+                                            onIcon="pi pi-lock" offIcon="pi pi-lock-open"
+                            >
+                            </p-toggleButton>
+
+                            <small class="p-error"
                                     *ngIf="utilsService.showErrorForm('isMonitored',formItem)">{{utilsService.getErrorMessageForm('isMonitored', formItem)}}</small>
-                            </div>
-        -->
-                        <!--                        <div class="field col-12 md:col-2">
-                                                    <label for="isCalculatedI">Calculado</label>
-
-                                                    <p-toggleButton id="isCalculatedI"
-                                                                    formControlName="isCalculated"
-                                                                    onLabel="Calculado" offLabel="No Calculado"
-                                                                    onIcon="pi pi-check" offIcon="pi pi-times"
-                                                    >
-                                                    </p-toggleButton>
-
-                                                    <small class="p-error"
-                                                           *ngIf="utilsService.showErrorForm('isCalculated',formItem)">{{utilsService.getErrorMessageForm('isCalculated', formItem)}}</small>
-                                                </div>-->
+                        </div>
+                                                
                         <div class="field col-12 md:col-2">
                             <label for="stateI">Estado</label>
 
@@ -336,6 +329,7 @@
                                    *ngIf="utilsService.showErrorForm('state',formItem)">{{utilsService.getErrorMessageForm('state', formItem)}}</small>
                         </div>
 
+                       
                         <p-messages severity="warn" *ngIf="formItem.get('unit').value === 'PERSONAS_INTERES'">
                             <ng-template pTemplate>
                                 <span class="custom-message" style="color: #D9A301; margin-right: 0.5rem;font-weight: bold;">RECUERDA, </span>

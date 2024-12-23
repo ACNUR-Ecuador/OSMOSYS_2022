@@ -1,6 +1,8 @@
 package org.unhcr.osmosys.webServices.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sagatechs.generics.security.model.User;
+import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.*;
@@ -38,6 +40,7 @@ public class IndicatorWeb extends BaseWebEntity implements Serializable {
     private List<CustomDissagregationAssignationToIndicatorWeb> customDissagregationAssignationToIndicators = new ArrayList<>();
     private String periods;
     private Boolean blockAfterUpdate;
+    private UserWeb resultManager;
 
     public String getCode() {
         return code;
@@ -53,6 +56,14 @@ public class IndicatorWeb extends BaseWebEntity implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public UserWeb getResultManager() {
+        return resultManager;
+    }
+
+    public void setResultManager(UserWeb resultManager) {
+        this.resultManager = resultManager;
     }
 
     public StatementWeb getStatement() {

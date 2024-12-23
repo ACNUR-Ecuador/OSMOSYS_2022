@@ -397,6 +397,7 @@ public class ModelWebTransformationService {
         indicatorWeb.setCompassIndicator(indicator.getCompassIndicator());
         indicatorWeb.setUnit(indicator.getUnit());
         indicatorWeb.setBlockAfterUpdate(indicator.getBlockAfterUpdate());
+        indicatorWeb.setResultManager(userToUserWebSimple(indicator.getResultManager(), false, false));
         if (getStatement) {
             indicatorWeb.setStatement(this.statementToStatementWeb(indicator.getStatement(), true, true, false, false, false));
         }
@@ -673,6 +674,7 @@ public class ModelWebTransformationService {
         indicator.setDissagregationsAssignationToIndicator(this.dissagregationAssignationToIndicatorsWebToDissagregationAssignationToIndicators(indicatorWeb.getDissagregationsAssignationToIndicator()));
         indicator.setCustomDissagregationAssignationToIndicators(this.customDissagregationAssignationToIndicatorsWebToCustomDissagregationAssignationToIndicators(indicatorWeb.getCustomDissagregationAssignationToIndicators()));
         indicator.setState(indicatorWeb.getState());
+        //indicator.setResultManager(indicatorWeb.getResultManager());
         return indicator;
     }
 

@@ -34,6 +34,8 @@ import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
 import {Table} from 'primeng/table';
 import {PeriodsFromIndicatorPipe} from "../../shared/pipes/periods-from-indicator.pipe";
 import {HttpResponse} from "@angular/common/http";
+import { User } from 'src/app/shared/model/User';
+import { UserService } from 'src/app/services/user.service';
 
 
 @Component({
@@ -45,6 +47,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
     items: Indicator[];
     coreIndicators: SelectItem[];
+    public focalPoints: User[];
     cols: ColumnTable[];
     showDialog = false;
     formItem: FormGroup;
@@ -92,7 +95,9 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         private filterService: FilterService,
         private filterUtilsService: FilterUtilsService,
         private periodService: PeriodService,
-        private ref: ChangeDetectorRef
+        private ref: ChangeDetectorRef,
+        public userService: UserService,
+
     ) {
     }
 
@@ -203,6 +208,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             dissagregationAssignationToIndicators: new FormControl(''),
             customDissagregationAssignationToIndicators: new FormControl(''),
             blockAfterUpdate: new FormControl(''),
+            resultManager: new FormControl(''),
             unit: new FormControl(''),
         });
 
@@ -269,7 +275,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.indicatorService.getAll().subscribe({
             next: value => {
                 this.items = value;
-                this.items = value;
             },
             error: err => {
                 this.messageService.add({
@@ -300,6 +305,22 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                 });
             }
         });
+
+        this.userService.getActiveUNHCRUsers()
+            .subscribe({
+                next: value => {
+                    this.focalPoints = value;
+                    this.ref.detectChanges();
+                },
+                error: error => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al cargar los puntos focales',
+                        detail: error.error.message,
+                        life: 3000
+                    });
+                }
+            });
     }
 
     private loadStatements() {
@@ -348,9 +369,12 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.formItem.patchValue(indicator);
         this.formItem.get('dissagregationAssignationToIndicators').patchValue(indicator.dissagregationsAssignationToIndicator);
         this.formItem.get('customDissagregationAssignationToIndicators').patchValue(indicator.customDissagregationAssignationToIndicators);
+        
+        if(indicator?.resultManager?.id)
+            indicator.resultManager = this.focalPoints.find(fp => fp.id === indicator.resultManager.id);
+
+        
         this.filterStatementsByAreaType(indicator.areaType as AreaType, false);
-
-
         this.ref.detectChanges();
     }
 
@@ -379,7 +403,8 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             dissagregationAssignationToIndicators,
             customDissagregationAssignationToIndicators,
             blockAfterUpdate,
-            unit
+            unit,
+            resultManager
         }
             = this.formItem.value;
         const indicator: Indicator = {
@@ -404,7 +429,8 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             unit,
             dissagregationsAssignationToIndicator: dissagregationAssignationToIndicators,
             customDissagregationAssignationToIndicators: customDissagregationAssignationToIndicators,
-            blockAfterUpdate
+            blockAfterUpdate,
+            resultManager
         };
         if (indicator.state) {
             indicator.state = 'ACTIVO';

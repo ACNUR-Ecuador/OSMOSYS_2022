@@ -201,7 +201,7 @@
                     <small class="p-error"
                            *ngIf="utilsService.showErrorForm('hasGeneralIndicator',formItem)">{{utilsService.getErrorMessageForm('hasGeneralIndicator', formItem)}}</small>
                 </div>
-                <p-panel header="Total de Beneficiarios Nuevos" [toggleable]="true"
+                <p-panel header="Total de Beneficiarios" [toggleable]="true"
                          *ngIf="formItem.get('hasGeneralIndicator').value">
                     <div class="p-card p-fluid p-formgrid grid">
                         <div class="p-fluid p-formgrid grid">
@@ -241,7 +241,7 @@
 
                             </div>
                             <div class="field col-12 md:col-12">
-                                <label>Desagregaciones del Total de Beneficiarios Nuevos (Globales para todos los proyectos)</label>
+                                <label>Desagregaciones del Total de Beneficiarios (Globales para todos los proyectos)</label>
                                 <div class="field col-12 md:col-12"
                                      style="border: 1px solid #ced4da;">
                                     <p-multiSelect [options]="dissagregationTypes" [group]="true"

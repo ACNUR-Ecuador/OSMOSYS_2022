@@ -185,11 +185,8 @@ export class Indicator {
     public dissagregationsAssignationToIndicator: DissagregationAssignationToIndicator[];
     public customDissagregationAssignationToIndicators: CustomDissagregationAssignationToIndicator[];
     public periods?:string;
+    public resultManager: User;
 }
-
-
-
-
 
 
 export class CoreIndicator {

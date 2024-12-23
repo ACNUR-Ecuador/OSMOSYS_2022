@@ -117,7 +117,7 @@
             
             <div class="card">
                 <p-tabView>
-                    <p-tabPanel header="Total de Beneficiarios Nuevos" *ngIf="viewGeneralIndicators">
+                    <p-tabPanel header="Total de Beneficiarios" *ngIf="viewGeneralIndicators">
                         <app-partners-project-general-indicator-list
                             (callMonthParent)="viewDesagregationGeneralIndicator($event)"
                             (callGeneralIndicatorCount)="setViewGeneralIndicators($event)" [project]="project"
