@@ -21,6 +21,7 @@ public class ProjectAuditDTO {
     private String periodId;
     private List<ProjectLocationAssigmentsDTO> projectLocationAssigments;
     private List<IndicatorExecutionDTO> indicatorExecutions;
+    private String partnerManager;
 
     public Long getId() {
         return id;
@@ -117,6 +118,13 @@ public class ProjectAuditDTO {
         this.organization = organization;
     }
 
+    public String getPartnerManager() {
+        return partnerManager;
+    }
+
+    public void setPartnerManager(String partnerManager) {
+        this.partnerManager = partnerManager;
+    }
 
     public List<LabelValue> toLabelValueList() {
         List<LabelValue> labelValueList = new ArrayList<>();
@@ -129,6 +137,7 @@ public class ProjectAuditDTO {
         labelValueList.add(new LabelValue("Socio id", organizationId));
         labelValueList.add(new LabelValue("Socio", organization));
         labelValueList.add(new LabelValue("Año de Implementación", periodId));
+        labelValueList.add(new LabelValue("Partner Manager", partnerManager));
 
         if (focalPointAssignations != null && !focalPointAssignations.isEmpty()) {
             // Ordenar la lista por el ID de FocalPoint

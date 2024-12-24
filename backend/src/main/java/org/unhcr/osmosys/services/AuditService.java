@@ -186,6 +186,12 @@ public class AuditService {
                 .collect(Collectors.toList());
         projectAuditDTO.setFocalPointAssignations(focalPointAssignationDTOS);
         projectAuditDTO.setPeriodId(project.getPeriod().getYear().toString());
+        if (project.getPartnerManager() != null) {
+            projectAuditDTO.setPartnerManager(project.getPartnerManager().getName());
+        } else {
+            // Manejar el caso en el que project o partnerManager sean null
+            projectAuditDTO.setPartnerManager("N/A");
+        }
         List<ProjectLocationAssigmentsDTO> projectLocationAssigmentsDTOS = project.getProjectLocationAssigments().stream()
                 .map(projectLocationAssigment -> {
                     ProjectLocationAssigmentsDTO dto = new ProjectLocationAssigmentsDTO();
@@ -210,11 +216,11 @@ public class AuditService {
                                 dto.setTarget(target != null ? target.toString() : "");
                             }
                             if (indicatorExecution.getProjectStatement() != null) {
-                                String statement = indicatorExecution.getProjectStatement().getDescription();
+                                String statement = indicatorExecution.getProjectStatement().getDescription().replace("\"", "");;
                                 dto.setProjectStatement(statement != null ? statement : "");
                             }
                             if (indicatorExecution.getIndicator() != null) {
-                                String indicatorId = indicatorExecution.getIndicator().getDescription();
+                                String indicatorId = indicatorExecution.getIndicator().getDescription().replace("\"", "");;
                                 dto.setIndicator(indicatorId != null ? indicatorId : "");
                             }
                             if (indicatorExecution.getCompassIndicator() != null) {

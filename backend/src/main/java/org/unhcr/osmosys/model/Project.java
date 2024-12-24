@@ -213,6 +213,7 @@ public class Project extends BaseEntityIdState {
         copy.setEndDate(this.endDate);
         copy.setIndicatorExecutions(this.indicatorExecutions);
         copy.setProjectLocationAssigments(this.projectLocationAssigments);
+        copy.setPartnerManager(partnerManager);
 
         return copy;
     }

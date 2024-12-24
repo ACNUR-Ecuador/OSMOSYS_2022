@@ -54,7 +54,7 @@
                         <th *ngFor="let col of columns" [ngSwitch]="col.field">
                             <p-columnFilter *ngSwitchDefault [type]="col.type" [field]="col.field"
                                             [matchMode]="'contains'"
-                                            [showMenu]="false"> matchMode="contains
+                                            [showMenu]="false"> 
                             </p-columnFilter>
                             <p-columnFilter *ngSwitchCase="'state'" type="equals" [field]="col.field"
                                             [showMenu]="false"
@@ -79,7 +79,7 @@
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr>
                         <td *ngFor="let col of columns"
-                            [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
+                            [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) " style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;"
                         >
                             {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
                         </td>
