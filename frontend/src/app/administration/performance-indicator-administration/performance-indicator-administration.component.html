@@ -333,7 +333,7 @@
                         <p-messages severity="warn" *ngIf="formItem.get('unit').value === 'PERSONAS_INTERES'">
                             <ng-template pTemplate>
                                 <span class="custom-message" style="color: #D9A301; margin-right: 0.5rem;font-weight: bold;">RECUERDA, </span>
-                                <span class="custom-message"> al seleccionar Personas de Interés, debes desagregar por "Tipos de Población" dentro de cada año.</span>
+                                <span class="custom-message"> al seleccionar Personas aplazadas y/o Apatrias, debes desagregar por "Tipos de Población" dentro de cada año.</span>
                             </ng-template>
                         </p-messages>
 
@@ -360,7 +360,7 @@
                                    *ngIf="utilsService.showErrorForm('instructions',formItem)">
                                 {{utilsService.getErrorMessageForm('instructions', formItem)}}</small>
                         </div>
-                        <div class="field col-12 md:col-12">
+                        <!-- <div class="field col-12 md:col-12">
                             <label for="qualitativeInstructionsI">Instrucciones para Información Cualitativa</label>
                             <textarea pInputTextarea id="qualitativeInstructionsI"
                                       formControlName="qualitativeInstructions"
@@ -370,7 +370,7 @@
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('qualitativeInstructions',formItem)">
                                 {{utilsService.getErrorMessageForm('qualitativeInstructions', formItem)}}</small>
-                        </div>
+                        </div> -->
                         <div class="field col-12 md:col-12">
                             <div>
                                 <h4>Desagregaciones</h4>

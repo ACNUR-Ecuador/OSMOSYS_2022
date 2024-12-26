@@ -10,6 +10,8 @@ export class AppFooterComponent {
     operationName=`${environment.operationName}`;
     constructor(public layoutService: LayoutService) { }
 
+    showDialog = false;
+    
     get logo() {
         return this.layoutService.config.colorScheme === 'light' ? 'dark' : 'white';
     }

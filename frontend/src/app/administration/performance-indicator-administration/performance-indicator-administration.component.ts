@@ -486,7 +486,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     confirmBeforeSave() {
         if (!this.hasPopulationTypeDissagregation()) {
             this.confirmationService.confirm({
-                message: 'Se seleccionó "Personas de Interés" como tipo de medida, pero no se encontraron desgregaciones con Tipo de Población para todos los años. ¿Desea continuar de todos modos?',
+                message: 'Se seleccionó "Personas aplazadas y/o Apatrias" como tipo de medida, pero no se encontraron desgregaciones con Tipo de Población para todos los años. ¿Desea continuar de todos modos?',
                 header: 'Confirmación Requerida',
                 icon: 'pi pi-exclamation-triangle',
                 acceptLabel: "Si",
