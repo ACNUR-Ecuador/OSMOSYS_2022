@@ -19,6 +19,7 @@ import {IndicatorPipe} from "../shared/pipes/indicator.pipe";
 import {CheckboxModule} from "primeng/checkbox";
 import {RippleModule} from "primeng/ripple";
 import { AboutUsComponent } from './about-us/about-us.component';
+import { HelpComponent } from './help/help.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { AboutUsComponent } from './about-us/about-us.component';
     HomeComponent,
     HomeDashboardDirectImplementationComponent,
     HomeDashboardFocalPointComponent,
-    AboutUsComponent
+    AboutUsComponent,
+    HelpComponent
   ],
     imports: [
         CommonModule,
