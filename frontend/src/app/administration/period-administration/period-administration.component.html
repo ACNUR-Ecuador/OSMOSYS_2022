@@ -101,7 +101,7 @@
                 <div class="field">
                     <label for="yearI">Año *:</label>
                     <p-inputNumber id="yearI"
-                                   formControlName="year" autofocus></p-inputNumber>
+                                   formControlName="year" autofocus [useGrouping]="false"></p-inputNumber>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('year',formItem)">Campo
                         obligatorio.</small>
                 </div>
