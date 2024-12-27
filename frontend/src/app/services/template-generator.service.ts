@@ -108,7 +108,7 @@ const allColumns = [
               worksheet.getCell(letter + i).dataValidation = {
                   type: 'custom', 
                   formulae: [
-                      `AND(ISNUMBER(${letter}${i}), ${letter}${i}>0)`, // Verifica que sea número y mayor que 0
+                      `AND(ISNUMBER(${letter}${i}), ${letter}${i}>=0)`, // Verifica que sea número y mayor que 0
                   ],
                   showErrorMessage: true,
                   errorTitle: 'Entrada inválida',
