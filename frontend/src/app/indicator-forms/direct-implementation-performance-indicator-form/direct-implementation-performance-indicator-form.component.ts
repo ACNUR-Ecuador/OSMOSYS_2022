@@ -458,8 +458,8 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             const cantonO: Canton = {
                 groupName: "", order: 0,
                 id: null,
-                parentDissagregationId: null,
                 regionGroupName: null,
+                otherGroupName: null,
                 code: canton_code,
                 name: Canton,
                 state: null,

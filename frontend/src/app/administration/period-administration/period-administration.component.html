@@ -93,7 +93,7 @@
 </div>
 <form [formGroup]="formItem" (ngSubmit)="saveItem()">
     <p-dialog [(visible)]="showDialog" [style]="{width: '80%'}" header="Año" [modal]="true"
-            [closable]="false">
+              [closable]="false">
 
         <ng-template pTemplate="content">
             <p-messages></p-messages>
@@ -101,9 +101,7 @@
                 <div class="field">
                     <label for="yearI">Año *:</label>
                     <p-inputNumber id="yearI"
-                        formControlName="year" autofocus [locale]="'en-US'" 
-                        [mode]="'decimal'" 
-                        [useGrouping]="false"></p-inputNumber>
+                                   formControlName="year" autofocus></p-inputNumber>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('year',formItem)">Campo
                         obligatorio.</small>
                 </div>
@@ -121,21 +119,21 @@
                 </div>
                 <p-panel class="col-12" header="Desagregaciones *" [toggleable]="true">
                     <div class="p-fluid grid formgrid">
-                        <p-panel class="col-6" header="Tipos de Población" >
-                            
-                            <p-tree  [formControl]="$any(formItem.controls['populationTypeOptions'])" [value]="treeNodes" selectionMode="checkbox" [(selection)]="selectedNodes" triState="true"
-                                (onNodeSelect)="onNodeSelect($event)" (onNodeUnselect)="onNodeUnselect($event)" [propagateSelectionDown]="false" [propagateSelectionUp]="false"
-                                    (onNodeExpand)="onNodeExpand($event)" (onNodeCollapse)="onNodeCollapse($event)">
-                            </p-tree>
-                            
-                            <!-- <div class="field-checkbox col-12 md:col-12"
+                        <p-panel class="col-6" header="Tipos de Población" [toggleable]="true">
+
+
+
+                            <div class="field-checkbox col-12 md:col-12"
                                  *ngFor="let option of populationTypeOptions">
+                                <!--suppress AngularInvalidExpressionResultType -->
                                 <p-checkbox name="grouppopulationTypeOptions"
                                             [value]="option.value"
-                                            [formControl]="$any(formItem.controls['populationTypeOptions'])">
+                                            [formControl]="$any(formItem.controls['populationTypeOptions'])"
+
+                                >
                                 </p-checkbox>
                                 <label [for]="option.label">{{option.label}} [grupo: {{option.title}} ]</label>
-                            </div> -->
+                            </div>
                         </p-panel>
 
                         <p-panel class="col-6" header="Género" >
@@ -192,7 +190,7 @@
                 <div class="field">
 
                     <p-triStateCheckbox id="hasGeneralIndicatorI"
-                                        label="Reportará Total de Beneficiarios Únicos?"
+                                        label="Reportará Total de Beneficiarios?"
                                         formControlName="hasGeneralIndicator"
                                         (onChange)="hasGeneralIndicatorValueChange($event.value)"
                     >
@@ -208,8 +206,8 @@
                             <!-- <div class="field col-12 md-12">
                                 <label for="descriptionI">Descripción</label>
                                 <textarea pInputTextarea id="descriptionI"
-                                    formControlName="generalIndicatorDescription"
-                                    maxlength="255" [autoResize]="true"
+                                          formControlName="generalIndicatorDescription"
+                                          maxlength="255" [autoResize]="true"
                                 ></textarea>
                                 <small class="p-error"
                                        *ngIf="utilsService.showErrorForm('generalIndicatorDescription',formItem)">{{utilsService.getErrorMessageForm('generalIndicatorDescription', formItem)}}</small>

@@ -226,11 +226,11 @@ export class StandardDissagregationOption {
     }
 
     public id: number;
-    public parentDissagregationId: number;
     public name: string;
     public order: number;
     public groupName: string;
     public regionGroupName: string;
+    public otherGroupName: string;
     public state: string;
     public type?: string;
     children?: StandardDissagregationOption[];  

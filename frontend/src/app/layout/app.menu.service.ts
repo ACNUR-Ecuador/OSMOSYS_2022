@@ -95,44 +95,44 @@ export class MenuService {
                         },
                         {
                             label: 'Áreas',
-                            icon: 'pi pi-fw pi-cog',
+                            icon: 'pi pi-fw pi-map',
                             routerLink: ['/administration/areas'],
                             roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL']
                         },
                         {
                             label: 'Grupos Poblacionales',
-                            icon: 'pi pi-fw pi-cog',
+                            icon: 'pi pi-fw pi-users',
                             routerLink: ['/administration/pillars'],
                             roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL']
                         },
                         {
                             label: 'Años',
-                            icon: 'pi pi-fw pi-cog',
+                            icon: 'pi pi-fw pi-calendar',
                             routerLink: ['/administration/periods'],
                             roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL']
                         },
                      
                         {
                             label: 'Oficinas/Unidades',
-                            icon: 'pi pi-fw pi-cog',
+                            icon: 'pi pi-fw pi-building',
                             routerLink: ['/administration/offices'],
                             roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL']
                         },
                         {
                             label: 'Implementadores',
-                            icon: 'pi pi-fw pi-cog',
+                            icon: 'pi pi-fw pi-plus',
                             routerLink: ['/administration/organizations'],
                             roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL']
                         },
                         {
                             label: 'Tags',
-                            icon: 'pi pi-fw pi-cog',
+                            icon: 'pi pi-fw pi-tags',
                             routerLink: ['/administration/tags'],
                             roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL']
                         },
                         {
                             label: 'Desagregaciones Personalizadas',
-                            icon: 'pi pi-fw pi-cog',
+                            icon: 'pi pi-fw pi-chart-bar',
                             routerLink: ['/administration/customDissagregation'],
                             roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL']
                         },
@@ -144,7 +144,7 @@ export class MenuService {
                         },
                         {
                             label: 'Auditoría',
-                            icon: 'pi pi-fw pi-cog',
+                            icon: 'pi pi-fw pi-shield',
                             routerLink: ['/administration/audits'],
                             roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL']
                         },
@@ -159,32 +159,32 @@ export class MenuService {
                 
                 {
                     label: 'Indicadores de Producto',
-                    icon: 'pi pi-fw pi-cog',
+                    icon: 'pi pi-fw pi-box',
                     roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL','PUNTO_FOCAL', 'ADMINISTRADOR_OFICINA'],
                     items: [
 
 
                         {
                             label: 'Marco de Resultados',
-                            icon: 'pi pi-fw pi-cog',
+                            icon: 'pi pi-fw pi-list',
                             routerLink: ['/administration/statements'],
                             roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL']
                         }, 
                         {
                             label: 'Catálogo de Indicadores',
-                            icon: 'pi pi-fw pi-cog',
+                            icon: 'pi pi-fw pi-chart-line',
                             routerLink: ['/administration/performanceIndicator'],
                             roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL']
                         },
                         {
                             label: 'Indicadores Socios',
-                            icon: 'pi pi-fw pi-cog',
+                            icon: 'pi pi-fw pi-user-plus',
                             routerLink: ['/administration/partnerProjectListAdministration'],
                             roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL','PUNTO_FOCAL']
                         },
                         {
                             label: 'Indicadores Implementación Directa',
-                            icon: 'pi pi-fw pi-cog',
+                            icon: 'pi pi-fw pi-briefcase',
                             routerLink: ['/administration/directImplementationAdministration'],
                             roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL', 'ADMINISTRADOR_OFICINA']
                         },
@@ -194,19 +194,19 @@ export class MenuService {
                 
                 {
                     label: 'Envío Masivo de Correos',
-                    icon: 'pi pi-fw pi-cog',
+                    icon: 'pi pi-fw pi-envelope',
                     routerLink: ['/administration/massMailing'],
                     roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL']
                 },
                 {
                     label: 'Bloqueo Masivo de Indicadores ',
-                    icon: 'pi pi-fw pi-cog',
+                    icon: 'pi pi-fw pi-lock',
                     routerLink: ['/administration/massBlocking'],
                     roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL']
                 },
                 {
                     label: 'Menús de Tableros',
-                    icon: 'pi pi-fw pi-cog',
+                    icon: 'pi pi-fw pi-bars',
                     routerLink: ['/administration/menuItemsAdministration'],
                     roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL']
                 },

@@ -479,6 +479,11 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                     next: () => {
                         this.cancelDialog();
                         this.loadItems();
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Indicador guardado exitosamente',
+                            life: 3000
+                        });
                     },
                     error: err => {
                         this.messageService.add({
@@ -496,7 +501,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     confirmBeforeSave() {
         if (!this.hasPopulationTypeDissagregation() && this.formItem.get('unit').value === "PERSONAS_INTERES") {
             this.confirmationService.confirm({
-                message: 'Se seleccionó "Personas de Interés" como tipo de medida, pero no se encontraron desgregaciones con Tipo de Población para todos los años. ¿Desea continuar de todos modos?',
+                message: 'Se seleccionó "Personas aplazadas y/o Apatrias" como tipo de medida, pero no se encontraron desgregaciones con Tipo de Población para todos los años. ¿Desea continuar de todos modos?',
                 header: 'Confirmación Requerida',
                 icon: 'pi pi-exclamation-triangle',
                 acceptLabel: "Si",

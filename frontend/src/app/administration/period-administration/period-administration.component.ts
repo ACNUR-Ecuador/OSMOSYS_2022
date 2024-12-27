@@ -13,8 +13,6 @@ import {Table} from 'primeng/table';
 import {PeriodService} from '../../services/period.service';
 import {StandardDissagregationsService} from "../../services/standardDissagregations.service";
 import {EnumValuesToLabelPipe} from "../../shared/pipes/enum-values-to-label.pipe";
-import {TreeModule} from 'primeng/tree';
-import {TreeNode} from 'primeng/api';
 
 @Component({
     selector: 'app-period-administration',
@@ -22,35 +20,6 @@ import {TreeNode} from 'primeng/api';
     styleUrls: ['./period-administration.component.scss']
 })
 export class PeriodAdministrationComponent implements OnInit {
-
-    selectedNodes: TreeNode[];
-
-    treeNodes: TreeNode[] = [
-        {
-            label: 'Documents',
-            data: 'COMPASS INDICATOR',
-            expandedIcon: 'pi pi-folder-open',
-            collapsedIcon: 'pi pi-folder',
-            children: [
-                {
-                    label: 'Work',
-                    data: 'Work Folder',
-                    expandedIcon: 'pi pi-folder-open',
-                    collapsedIcon: 'pi pi-folder',
-                    
-                },
-                {
-                    label: 'Home',
-                    data: 'Home Folder',
-                    expandedIcon: 'pi pi-folder-open',
-                    collapsedIcon: 'pi pi-folder',
-                }
-            ]
-        },
-        // otros nodos...
-    ];
-    
-
     items: Period[];
     populationTypeOptions: SelectItemWithOrder<StandardDissagregationOption>[];
     ageOptions: SelectItemWithOrder<StandardDissagregationOption>[];
@@ -80,59 +49,6 @@ export class PeriodAdministrationComponent implements OnInit {
         private enumValuesToLabelPipe: EnumValuesToLabelPipe,
     ) {
     }
-
-    onNodeSelect(event: any) {
-        
-        this.updateSelections(event.node, true);
-    }
-    
-    onNodeUnselect(event: any) {
-        this.updateSelections(event.node, false);
-    }
-
-    updateSelections(node: TreeNode, isSelected: boolean) {
-        if (node.children && node.children.length > 0 ) {   //Padre 
-            if(isSelected){
-                node.children.forEach(child => {
-                    const idx = this.selectedNodes.indexOf(child);
-                    if(idx != -1)
-                        this.selectedNodes.splice(idx, 1);
-                });
-
-                node.partialSelected = false;
-                this.updateNode(node, true);
-            }        
-        } else{ // Hijos
-            this.updateNode(node.parent, false)
-            if(isSelected){
-                node.parent.partialSelected = true;
-            } else{
-                const someSelected = node.parent.children.some(child => this.selectedNodes.includes(child));
-                if(!someSelected){
-                    node.parent.partialSelected = false;
-                }
-            }
-        }
-    }
-
-    updateNode(node: TreeNode, isSelected: boolean){
-        const idx = this.selectedNodes.indexOf(node);
-        if (isSelected && idx === -1) {
-            this.selectedNodes.push(node);
-        } else if (!isSelected && idx !== -1) {
-            this.selectedNodes.splice(idx, 1);
-        }
-    }
-
-    onNodeExpand(event: any) {
-        //this.deselectNodeAndChildren(event.node);
-    }    
-    
-    onNodeCollapse(event: any) {
-        //this.deselectNodeAndChildren(event.node);
-    }
-
-    
 
     ngOnInit(): void {
         this.loadOptions();
@@ -221,8 +137,7 @@ export class PeriodAdministrationComponent implements OnInit {
         });
         this.standardDissagregationsService.getActivePopulationTypeOptions().subscribe({
             next: value => {
-                value = this.buildTree(value);
-                this.treeNodes = this.convertToTreeNodes(value);
+                this.populationTypeOptions = this.utilsService.standandarDissagregationOptionsToSelectItems(value);
             },
             error: err => {
                 this.messageService.add({
@@ -261,59 +176,6 @@ export class PeriodAdministrationComponent implements OnInit {
         });
     }
 
-    buildTree(disaggregations: StandardDissagregationOption[]): StandardDissagregationOption[] {
-        // Crear un diccionario para acceso rápido a las desagregaciones por ID
-        const idToDisaggregation: Record<number, StandardDissagregationOption> = {};
-    
-        // Inicializar cada desagregación y almacenar en el diccionario
-        disaggregations.forEach(disaggregation => {
-            disaggregation.children = [];
-            idToDisaggregation[disaggregation.id] = disaggregation;
-        });
-    
-        // Asignar hijos a sus respectivos padres
-        const roots: StandardDissagregationOption[] = [];
-        disaggregations.forEach(disaggregation => {
-            if (disaggregation.parentDissagregationId) {
-                const parent = idToDisaggregation[disaggregation.parentDissagregationId];
-                parent.children.push(disaggregation);
-            } else {
-                roots.push(disaggregation); // Es un nodo raíz
-            }
-        });
-    
-        return roots;
-    }
-
-    convertToTreeNodes(disaggregations: StandardDissagregationOption[]): TreeNode[] {
-        // Función auxiliar para crear un TreeNode a partir de una disgregación
-        const createTreeNode = (disagg: any): TreeNode => ({
-            //label: `${disagg.name} - ${disagg.groupName}`,
-            label: `${disagg.name}`,
-            data: disagg,
-            children: disagg.children.map(createTreeNode)
-        });
-    
-        // Filtrar y convertir solo los elementos de nivel superior
-        return disaggregations
-            .filter(disagg => disagg.parentDissagregationId === null)
-            .map(createTreeNode);
-    }
-
-    convertToDissagregation(tree: TreeNode[]): StandardDissagregationOption[] {
-        const extractData = (node: TreeNode): StandardDissagregationOption => {
-            // Clona el objeto para evitar mutaciones accidentales
-            let dissagOption: StandardDissagregationOption = {
-                ...node.data,
-                // Procesar recursivamente los hijos si existen
-                children: node.children && node.children.length > 0 ? node.children.map(extractData) : undefined
-            };
-            return dissagOption;
-        };
-    
-        // Mapear cada nodo del árbol
-        return tree.map(extractData);
-    }
 
     private loadOptions() {
         this.enumsService.getByType(EnumsType.MeasureType).subscribe(value => {
@@ -422,7 +284,6 @@ export class PeriodAdministrationComponent implements OnInit {
                 totalGeneralIndicatorDissagregations,
                 selectedGeneralIndicatorDissagregations
             });
-            console.log(this.formItem.value);
         }else {
             this.formItem.get('hasGeneralIndicator').patchValue(false);
         }
@@ -455,7 +316,7 @@ export class PeriodAdministrationComponent implements OnInit {
             state,
             periodAgeDissagregationOptions: ageOptions,
             periodGenderDissagregationOptions: genderOptions,
-            periodPopulationTypeDissagregationOptions: populationTypeOptions.data,
+            periodPopulationTypeDissagregationOptions: populationTypeOptions,
             periodDiversityDissagregationOptions: diversityOptions,
             periodCountryOfOriginDissagregationOptions: countryOfOriginOptions
 
@@ -478,7 +339,7 @@ export class PeriodAdministrationComponent implements OnInit {
             id: generalIndicatorId,
             period: null,
             state: generalIndicatorState,
-            description: generalIndicatorDescription,
+            description: "General Indicator",
             measureType: 'NUMERO',// valor por defecto
             dissagregationAssignationsToGeneralIndicator
         };
@@ -491,7 +352,6 @@ export class PeriodAdministrationComponent implements OnInit {
                 period.generalIndicator = null;
             }
         }
-
 
         if (period.id) {
             // tslint:disable-next-line:no-shadowed-variable

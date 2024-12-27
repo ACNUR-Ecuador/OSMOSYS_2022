@@ -26,7 +26,7 @@ public class Indicator extends BaseEntityIdState {
     private String regionalCode;
 
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = false, columnDefinition = "text")
     private String description;
 
     @Column(name = "category")
