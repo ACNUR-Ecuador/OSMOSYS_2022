@@ -266,7 +266,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         });
 
         this.formItem.get('unit').valueChanges.subscribe(value => {
-            console.log('Unit changed to:', value); // Esto ayudará a depurar si el valor cambia como se espera
         });
     }
 
@@ -362,6 +361,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     }
 
     editItem(indicator: Indicator) {
+        this.onIsCoreIndicatorChange(indicator.coreIndicator)
         this.isCoreIndicator=indicator.coreIndicator
         this.setPeriodForStatment(indicator.statement);
         this.utilsService.resetForm(this.formItem);
@@ -370,9 +370,11 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.formItem.get('dissagregationAssignationToIndicators').patchValue(indicator.dissagregationsAssignationToIndicator);
         this.formItem.get('customDissagregationAssignationToIndicators').patchValue(indicator.customDissagregationAssignationToIndicators);
         
-        if(indicator?.resultManager?.id)
-            indicator.resultManager = this.focalPoints.find(fp => fp.id === indicator.resultManager.id);
+        if(indicator.resultManager?.id){
+            const resultManager = this.focalPoints.find(fp => fp.id === indicator.resultManager.id);
+            this.formItem.get('resultManager').patchValue(resultManager);
 
+        }
         
         this.filterStatementsByAreaType(indicator.areaType as AreaType, false);
         this.ref.detectChanges();
@@ -437,6 +439,14 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         } else {
             indicator.state = 'INACTIVO';
         }
+        if(indicator.coreIndicator){
+            indicator.regionalCode=this.formItem.get("regionalCode").value
+            indicator.frecuency=this.formItem.get("frecuency").value
+            indicator.measureType=this.formItem.get("measureType").value
+            indicator.description=this.formItem.get("description").value
+            indicator.instructions=this.formItem.get("instructions").value
+            indicator.qualitativeInstructions=this.formItem.get("qualitativeInstructions").value
+        }
         // process assignation dissagregations
 
 
@@ -484,7 +494,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     }
 
     confirmBeforeSave() {
-        if (!this.hasPopulationTypeDissagregation()) {
+        if (!this.hasPopulationTypeDissagregation() && this.formItem.get('unit').value === "PERSONAS_INTERES") {
             this.confirmationService.confirm({
                 message: 'Se seleccionó "Personas de Interés" como tipo de medida, pero no se encontraron desgregaciones con Tipo de Población para todos los años. ¿Desea continuar de todos modos?',
                 header: 'Confirmación Requerida',
@@ -517,7 +527,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     }
     cancelDialog() {
         this.showDialog = false;
-        this.isCoreIndicator = false;
+        this.onIsCoreIndicatorChange(false)
         this.formItem.get('regionalCode').patchValue(null);
         this.formItem.get('description').patchValue(null);
         this.formItem.get('frecuency').patchValue(null);
@@ -785,13 +795,14 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             this.formItem.get('description').patchValue(coreInd.description);
             this.formItem.get('frecuency').patchValue(coreInd.frecuency);
             this.formItem.get('measureType').patchValue(coreInd.measureType);
+            this.formItem.get('instructions').patchValue(null);
+            this.formItem.get('qualitativeInstructions').patchValue(null);
 
         }
     }
 
 
     isEditing() {
-        //console.log("Aquí estoy");
         let isEditing = this.formItem.get('id')?.value;
         if(isEditing == null)
         {
@@ -802,14 +813,31 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         }
     }
 
-    onIsCoreIndicatorChange($event: any) {
-        const isCoreIndicator=$event.value
+    onIsCoreIndicatorChange(isCoreIndicator: boolean) {
+        this.isCoreIndicator=isCoreIndicator
         if(!isCoreIndicator){
             this.formItem.get('regionalCode').patchValue(null);
-            this.formItem.get('description').patchValue(null);
+            this.formItem.get('regionalCode').enable();
             this.formItem.get('frecuency').patchValue(null);
+            this.formItem.get('frecuency').enable();
+            this.formItem.get('description').patchValue(null);
+            this.formItem.get('description').enable();
+            this.formItem.get('instructions').patchValue(null);
+            this.formItem.get('instructions').enable();
+            this.formItem.get('qualitativeInstructions').patchValue(null);
+            this.formItem.get('qualitativeInstructions').enable();
             this.formItem.get('measureType').patchValue(null);
+            this.formItem.get('measureType').enable();
+
+        }else{
+            this.formItem.get('regionalCode').disable();
+            this.formItem.get('frecuency').disable();
+            this.formItem.get('description').disable();
+            this.formItem.get('instructions').disable();
+            this.formItem.get('qualitativeInstructions').disable();
+            this.formItem.get('measureType').disable();
 
         }
+       
     }
 }

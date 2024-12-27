@@ -155,12 +155,11 @@
                 </div>
 
 
-                <div class="field">
-                    <label for="openInNewTabI">Abrir en otra ventana</label>
-                    <p-inputSwitch  pInputText id="openInNewTabI"
-                                    formControlName="openInNewTab"></p-inputSwitch>
-                    <small class="p-error" *ngIf="utilsService.showErrorForm('openInNewTab',formItem)">Campo
-                        obligatorio.</small>
+                <div class="field" style="display: flex; align-items: center; gap: 10px; width: 50px;">
+                    <label for="openInNewTabI" style="white-space: nowrap;">Abrir en otra ventana:</label>
+                    <p-inputSwitch pInputText id="openInNewTabI"
+                                   formControlName="openInNewTab" [ngStyle]="{ 'border': 'none'}"></p-inputSwitch>
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('openInNewTab', formItem)">Campo obligatorio.</small>
                 </div>
                 <div class="field">
                     <label for="stateI">Estado *:</label>
@@ -183,17 +182,17 @@
                                    formControlName="order"></p-inputNumber>
                 </div>
 
-                <div class="field">
-                    <label for="powerBiI">Es PowerBi</label>
+                <div class="field" style="display: flex; align-items: center; gap: 10px; width: 50px;">
+                    <label for="powerBiI" style="white-space: nowrap;">Es PowerBi:</label>
                     <p-inputSwitch  pInputText id="powerBiI"
-                                   formControlName="powerBi"></p-inputSwitch>
+                                   formControlName="powerBi" [ngStyle]="{ 'border': 'none'}">></p-inputSwitch>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('powerBi',formItem)">Campo
                         obligatorio.</small>
                 </div>
-                <div class="field">
-                    <label for="isRectrictedI">Acceso Restringido</label>
+                <div class="field" style="display: flex; align-items: center; gap: 10px; width: 50px;">
+                    <label for="isRectrictedI" style="white-space: nowrap;">Acceso Restringido:</label>
                     <p-inputSwitch  pInputText id="isRectrictedI"
-                                   formControlName="restricted"></p-inputSwitch>
+                                   formControlName="restricted" [ngStyle]="{ 'border': 'none'}"></p-inputSwitch>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('restricted',formItem)">Campo
                         obligatorio.</small>
                 </div>

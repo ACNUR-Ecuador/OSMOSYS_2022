@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
-import {ImportFile, Period, PeriodStatementAsignation, Pillar, Statement} from '../../shared/model/OsmosysModel';
+import {Area, ImportFile, Period, PeriodStatementAsignation, Pillar, Statement} from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ConfirmationService, FilterService, MessageService, SelectItem} from 'primeng/api';
@@ -40,6 +40,7 @@ export class StatementAdministrationComponent implements OnInit {
     parentStatementsItemsFiltered: SelectItem[];
     parentStatementsItems: SelectItem[];
     areaTypesItems: SelectItem[];
+    filterAreaList: SelectItem[];
 
 
     // tslint:disable-next-line:variable-name
@@ -290,6 +291,7 @@ export class StatementAdministrationComponent implements OnInit {
             return this.statementToSelectItem(value);
         });*/
         // obtengo los periods
+        this.onResultLevelChange(statement.areaType)
         let periods= statement.periodStatementAsignations.map(value => value.period);
         this.filterStatementsByPeriod(periods);
         this.utilsService.resetForm(this.formItem);
@@ -420,6 +422,7 @@ export class StatementAdministrationComponent implements OnInit {
         });
         this.showDialog = false;
         this.submitted = false;
+        this.filterAreaList=[];
     }
 
     statementToSelectItem(value: Statement): SelectItem {
@@ -531,5 +534,10 @@ export class StatementAdministrationComponent implements OnInit {
             this.parentStatementsItemsFiltered = [];
         }
 
+    }
+
+    onResultLevelChange(areaType: string){
+        const areaList= JSON.parse(JSON.stringify(this.areasItems))
+        this.filterAreaList=areaList.filter(value1 => value1.value.areaType === areaType)
     }
 }

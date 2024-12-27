@@ -134,12 +134,12 @@
                     <div class="p-fluid p-formgrid grid">
 
                         <div class="field col-12 md:col-12" *ngIf="isEditing()">
-                            <p-checkbox [binary]="true" label="Core Indicator"  [(ngModel)]="isCoreIndicator" (onChange)="onIsCoreIndicatorChange($event)" formControlName="coreIndicator"></p-checkbox> 
+                            <p-checkbox [binary]="true" label="Core Indicator"   (onChange)="onIsCoreIndicatorChange($event.checked)" formControlName="coreIndicator"></p-checkbox> 
                             <i class="pi pi-info-circle" style="margin-left: 0.5rem;color: #ff8000;" 
                             pTooltip="Autocompleta los códigos e instrucciones desde el listado de Core Indicators" tooltipPosition="right"></i>                      
                         </div>
 
-                        <div class="field col-12 md:col-12" *ngIf="isCoreIndicator">
+                        <div class="field col-12 md:col-12" *ngIf="isCoreIndicator && isEditing()">
                             <label for="coreIndicator">Core Indicator *:</label>
                             <p-dropdown id="coreIndicator" 
                                         
@@ -184,16 +184,16 @@
                         </div>
 
                         <div class="field col-12 md:col-3">
-                            <label for="codeR">Código Regional</label>
+                            <label for="codeR">Código Regional:</label>
                             <input type="text" pInputText id="codeR"
-                                    formControlName="regionalCode" [readOnly]="isCoreIndicator"/>
+                                    formControlName="regionalCode" />
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('regionalCode',formItem)">{{utilsService.getErrorMessageForm('regionalCode', formItem)}}</small>
                         </div>                                                                      
 
                        
                         <div class="field col-12 md:col-3">
-                            <label for="codeI">Categoría</label>
+                            <label for="codeI">Categoría:</label>
                             <input type="text" pInputText id="categoryI"
                                    formControlName="category"/>
                             <small class="p-error"
@@ -201,7 +201,7 @@
                         </div>
 
                         <div class="field col-12 md:col-3">
-                            <label for="measureTypeI">Tipo de medida</label>
+                            <label for="measureTypeI">Tipo de medida *:</label>
 
                             <p-dropdown id="measureTypeI"
                                         formControlName="measureType"
@@ -232,7 +232,7 @@
                         </div> -->
 
                         <div class="field col-12 md:col-2">
-                            <label for="frecuencyI">Frecuencia de alerta</label>
+                            <label for="frecuencyI">Frecuencia de alerta *:</label>
                             <i class="pi pi-info-circle" style="margin-left: 0.5rem; color: #ff8000;" 
                             pTooltip="Frecuencia con la que se envían correos de alerta" tooltipPosition="right"></i> 
                             
@@ -266,7 +266,7 @@
                         
                         
                         <div class="field col-12 md:col-2">
-                            <label for="unitI">Unidad de Medida</label>
+                            <label for="unitI">Unidad de Medida:</label>
 
                             <p-dropdown id="unitI"
                                         formControlName="unit"
@@ -283,7 +283,7 @@
                                    *ngIf="utilsService.showErrorForm('unit',formItem)">{{utilsService.getErrorMessageForm('unit', formItem)}}</small>
                         </div>
                         <div class="field col-12 md:col-3">
-                            <label htmlFor="focalPointI">Result Manager</label>
+                            <label htmlFor="focalPointI">Result Manager:</label>
                             <p-dropdown id="focalPointI" formControlName="resultManager" [options]="focalPoints"
                                         placeholder="Selecciona..." [showClear]="true"
                                         [filter]="true" filterBy="name"
@@ -301,7 +301,7 @@
                         </div>
 
                         <div class="field col-12 md:col-3">
-                            <label for="blockAfterUpdateI">Bloqueo automático</label>
+                            <label for="blockAfterUpdateI">Bloqueo automático:</label>
 
                             <p-toggleButton id="blockAfterUpdateI"
                                             formControlName="blockAfterUpdate"
@@ -316,7 +316,7 @@
                         </div>
                                                 
                         <div class="field col-12 md:col-2">
-                            <label for="stateI">Estado</label>
+                            <label for="stateI">Estado *:</label>
 
                             <p-toggleButton id="stateI"
                                             formControlName="state"
@@ -338,11 +338,10 @@
                         </p-messages>
 
                         <div class="field col-12 md:col-12">
-                            <label for="descriptionI">Descripción Completa</label>
+                            <label for="descriptionI">Descripción Completa *:</label>
                             <textarea pInputTextarea id="descriptionI"
                                 formControlName="description"
                                 [autoResize]="true"
-                                [readOnly]="isCoreIndicator"
                                 >
                         </textarea>
 
@@ -350,10 +349,9 @@
                                    *ngIf="utilsService.showErrorForm('description',formItem)">{{utilsService.getErrorMessageForm('description', formItem)}}</small>
                         </div>
                         <div class="field col-12 md:col-12">
-                            <label for="instructionsI">Instrucciones para Información Cuantitativa</label>
+                            <label for="instructionsI">Instrucciones para Información Cuantitativa:</label>
                             <textarea pInputTextarea id="instructionsI"
                                       formControlName="instructions"
-                                      [readOnly]="isCoreIndicator"
                                       [autoResize]="true">
                             </textarea>
                             <small class="p-error"
@@ -361,10 +359,9 @@
                                 {{utilsService.getErrorMessageForm('instructions', formItem)}}</small>
                         </div>
                         <div class="field col-12 md:col-12">
-                            <label for="qualitativeInstructionsI">Instrucciones para Información Cualitativa</label>
+                            <label for="qualitativeInstructionsI">Instrucciones para Información Cualitativa:</label>
                             <textarea pInputTextarea id="qualitativeInstructionsI"
                                       formControlName="qualitativeInstructions"
-                                      [readOnly]="isCoreIndicator"
                                       [autoResize]="true">
                             </textarea>
                             <small class="p-error"
