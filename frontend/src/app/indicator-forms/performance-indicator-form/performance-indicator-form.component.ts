@@ -259,7 +259,6 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         const dimensionsMap: Map<number, EnumWeb[]> = this.utilsService.setDimentionsDissagregationsV2(
             this.monthValuesMap
         );
-        console.log(this.monthValuesMap);
         this.noDimentionDissagregations = dimensionsMap.get(0);
         this.oneDimentionDissagregations = dimensionsMap.get(1);
         this.twoDimentionDissagregations = dimensionsMap.get(2);
@@ -268,7 +267,6 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         this.fiveDimentionDissagregations = dimensionsMap.get(5);
         this.sixDimentionDissagregations = dimensionsMap.get(6);
         this.render = true;
-        console.log(this.oneDimentionDissagregations)
     }
 
     setOtherSource(sources: string[]) {

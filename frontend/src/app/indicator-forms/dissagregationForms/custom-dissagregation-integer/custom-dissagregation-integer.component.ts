@@ -153,7 +153,7 @@ export class CustomDissagregationIntegerComponent implements OnInit {
             dissagregationKeys.forEach(key => {
                 let cellValue = value[key];
                 if (cellValue !== undefined) {
-                    cellValue = cellValue.replace(/;/g, ',')
+                    cellValue = String(cellValue).replace(/;/g, ',')
                 }
                 obj[key] = cellValue
 

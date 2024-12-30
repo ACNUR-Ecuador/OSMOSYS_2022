@@ -191,7 +191,7 @@ public class ReportDataService {
         indicators.forEach(indicator -> {
             List<String> ind = new ArrayList<>();
             ind.add(indicator);
-            for (int i = 1; i <= 12; i++) {
+            for (int i = 0; i < 12; i++) {
                 int finalI = i;
                 Optional<IndicatorExecutionTagDTO> first = resultData.stream().filter(r -> r.getMonthOrder() == finalI && r.getIndicator().startsWith(indicator)).findFirst();
                 if (first.isPresent()) {
