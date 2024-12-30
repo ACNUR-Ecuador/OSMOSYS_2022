@@ -174,6 +174,9 @@ public class ProjectService {
                 project.setPartnerManager(partnerManager);
             }
         }
+        if(projectWeb.getPartnerManager() == null && project.getPartnerManager() != null){
+            project.setPartnerManager(null);
+        }
         Set<FocalPointAssignation> focalPointAssignations = new HashSet<>();
         if (projectWeb.getFocalPoints() != null && !projectWeb.getFocalPoints().isEmpty()) {
 //            Set<User> focalPoints  = projectWeb.getFocalPoints().stream().map(fpw-> this.userService.getById(fpw.getId())).collect(Collectors.toSet());

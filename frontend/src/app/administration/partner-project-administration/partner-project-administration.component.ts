@@ -493,8 +493,9 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             focalPoints: [],
             locations: [],
             updateAllLocationsIndicators,
-            partnerManager
+            partnerManager: partnerManager !== "" ? partnerManager: null
         };
+        console.log(project)
         if (!locations || locations.length < 1) {
             this.messageService.add({
                 severity: 'error',
