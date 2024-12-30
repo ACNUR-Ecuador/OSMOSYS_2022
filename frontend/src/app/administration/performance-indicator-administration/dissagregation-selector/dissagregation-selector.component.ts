@@ -217,7 +217,7 @@ export class DissagregationSelectorComponent implements OnInit {
                 });
                 return;
             }
-            dissagregationAssignationToIndicatorFinal.customIndicatorOptions = this.selectedAgeOptions;
+            dissagregationAssignationToIndicatorFinal.customIndicatorOptions = this.selectedAgeOptions.map(({ ["type"]: _, ...rest }) => rest);
         } else {
             dissagregationAssignationToIndicatorFinal.customIndicatorOptions = [];
         }
