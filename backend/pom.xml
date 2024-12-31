@@ -42,6 +42,16 @@
             </build>
         </profile>
         <profile>
+            <id>ectest</id>
+            <properties>
+                <datasource.name>osmosys_ec_test</datasource.name>
+                <context-root>osmosys_ec_test</context-root>
+                <hibernate.show_sql>false</hibernate.show_sql>
+                <warName>osmosys_ec_test</warName>
+                <output.dir>${project.build.directory}/ec_test</output.dir>
+            </properties>
+        </profile>
+        <profile>
             <id>cri</id>
             <properties>
                 <datasource.name>osmosys_cri</datasource.name>

@@ -22,7 +22,6 @@ import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.DateTimeException;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -150,7 +149,7 @@ public class AuditService {
             newDataJson=convertListToString((List)newData);
         }
 
-        String timeZone = configService.getAuditTimeZone();
+        String timeZone = configService.getTimeZone();
 
         ZoneId zoneId;
         try {

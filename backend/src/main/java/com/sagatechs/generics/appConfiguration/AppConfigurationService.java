@@ -97,8 +97,8 @@ public class AppConfigurationService {
 
 
     }
-    public String getAuditTimeZone() {
-        return this.findValorByClave(AppConfigurationKey.AUDIT_TIME_ZONE);
+    public String getTimeZone() {
+        return this.findValorByClave(AppConfigurationKey.TIME_ZONE);
 
 
     }

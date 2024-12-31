@@ -38,7 +38,32 @@
                             "src/styles.scss"
                         ]
                     },
-                    "configurations": {                        
+                    "configurations": {
+                        "ec_test": {
+                            "baseHref": "/osmosys_ec_test/",
+                            "optimization": true,
+                            "aot": true,
+                            "buildOptimizer": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "4mb",
+                                    "maximumError": "5mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "2kb",
+                                    "maximumError": "4kb"
+                                }
+                            ],
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.ec_test.ts"
+                                }
+                            ],
+                            "outputHashing": "all"
+                        },
                         "production_ecu": {
                             "baseHref": "/ecu/",
                             "optimization": true,
