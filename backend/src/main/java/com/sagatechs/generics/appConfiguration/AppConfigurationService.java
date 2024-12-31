@@ -97,6 +97,11 @@ public class AppConfigurationService {
 
 
     }
+    public String getAuditTimeZone() {
+        return this.findValorByClave(AppConfigurationKey.AUDIT_TIME_ZONE);
+
+
+    }
 
     public List<Integer> getReminderDays() {
         String valusS = this.findValorByClave(AppConfigurationKey.REMINDER_DAYS);

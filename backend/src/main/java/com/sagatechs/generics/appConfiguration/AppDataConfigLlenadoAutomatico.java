@@ -135,6 +135,9 @@ public class AppDataConfigLlenadoAutomatico {
         instantiateConfigurationValues("day limit to report",
                 "día máximo del mes para el reporte de indicadores",
                 AppConfigurationKey.REPORT_LIMIT, "10");
+        instantiateConfigurationValues("Configuración de Zona horaria para realizar el monitoreo de las Auditorías",
+                "Zona horaria para para llevar la auditoría de las opraciones",
+                AppConfigurationKey.AUDIT_TIME_ZONE, "ECU");
     }
 
     @SuppressWarnings("SameParameterValue")

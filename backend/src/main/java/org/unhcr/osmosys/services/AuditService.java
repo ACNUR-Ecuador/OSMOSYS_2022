@@ -2,6 +2,7 @@ package org.unhcr.osmosys.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.AuditAction;
 import com.sagatechs.generics.persistence.model.State;
@@ -21,6 +22,8 @@ import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,6 +34,9 @@ public class AuditService {
 
     @Inject
     ModelWebTransformationService modelWebTransformationService;
+
+    @Inject
+    AppConfigurationService configService;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(AuditService.class);
@@ -143,7 +149,11 @@ public class AuditService {
             newDataJson=convertListToString((List)newData);
         }
 
+        String timeZone = getTimeZoneByCountry(configService.getAuditTimeZone()); // Implementar un método para determinar la zona horaria
 
+        // Obtener la hora local de la región en la que el usuario está realizando la acción
+        ZoneId zoneId = ZoneId.of(timeZone); // "America/Mexico_City", "Europe/Madrid", etc.
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
 
         // Comparar las representaciones en JSON
         if (!oldDataJson.equals(newDataJson)) {
@@ -153,7 +163,7 @@ public class AuditService {
             audit.setIndicatorCode(indicatorCode);
             audit.setAction(action);
             audit.setResponsibleUser(responsibleUser);
-            audit.setChangeDate(LocalDateTime.now());
+            audit.setChangeDate(zonedDateTime.toLocalDateTime());
             audit.setOldData(oldDataJson);
             audit.setNewData(newDataJson);
             audit.setState(state);
@@ -361,6 +371,25 @@ public class AuditService {
     public List<AuditWeb> getAuditsByTableNamePeriodAndMonth(String tableName, int year, int month) {
         List<Audit> audits = auditDao.getAuditsByTableNamePeriodAndMonth(tableName, year, month);
         return modelWebTransformationService.auditsToAuditsWeb(audits);
+    }
+
+    private String getTimeZoneByCountry(String country) {
+        switch (country) {
+            case "MEX":
+                return "America/Mexico_City";  // Ciudad de México (zona horaria estándar en México)
+            case "ECU":
+                return "America/Guayaquil";  // Quito o Guayaquil (zona horaria estándar en Ecuador)
+            case "PER":
+                return "America/Lima";  // Lima (zona horaria estándar en Perú)
+            case "VEN":
+                return "America/Caracas";  // Caracas (zona horaria estándar en Venezuela)
+            case "CRI":
+                return "America/Costa_Rica";  // San José (zona horaria estándar en Costa Rica)
+            case "SLV":
+                return "America/El_Salvador";  // San Salvador (zona horaria estándar en El Salvador)
+            default:
+                return "UTC";  // Zona horaria por defecto
+        }
     }
 
 
