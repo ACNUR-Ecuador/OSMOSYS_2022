@@ -41,6 +41,7 @@ export class StatementAdministrationComponent implements OnInit {
     parentStatementsItems: SelectItem[];
     areaTypesItems: SelectItem[];
     filterAreaList: SelectItem[];
+    selectedAreaType: string;
 
 
     // tslint:disable-next-line:variable-name
@@ -291,9 +292,8 @@ export class StatementAdministrationComponent implements OnInit {
             return this.statementToSelectItem(value);
         });*/
         // obtengo los periods
-        this.onResultLevelChange(statement.areaType)
-        let periods= statement.periodStatementAsignations.map(value => value.period);
-        this.filterStatementsByPeriod(periods);
+        
+        
         this.utilsService.resetForm(this.formItem);
         this.submitted = false;
         this.showDialog = true;
@@ -311,6 +311,7 @@ export class StatementAdministrationComponent implements OnInit {
         this.formItem.get('periodStatementAsignations').patchValue(periodStatementAsignations);
         this.formItem.get('periods').patchValue(assignedPeriods);
         this.cd.detectChanges();
+        this.onResultLevelChange(statement.areaType)
     }
 
 
@@ -423,6 +424,9 @@ export class StatementAdministrationComponent implements OnInit {
         this.showDialog = false;
         this.submitted = false;
         this.filterAreaList=[];
+        this.parentStatementsItemsFiltered=[]
+        this.formItem.get('parentStatement').enable();
+        this.formItem.get('parentStatement').updateValueAndValidity();
     }
 
     statementToSelectItem(value: Statement): SelectItem {
@@ -519,8 +523,9 @@ export class StatementAdministrationComponent implements OnInit {
 
     filterStatementsByPeriod(value) {
         let selectedPeriods: Period[] = value;
-        if (selectedPeriods && selectedPeriods.length > 0 ) {
-            this.parentStatementsItemsFiltered = this.items
+        const selectedAreaType=this.formItem.get("areaType").value
+        if ( selectedAreaType && selectedPeriods && selectedPeriods.length > 0 ) {
+            const parentStatementPeriodList= this.items
                 .filter(statementTmp => {
                 let periodIds = statementTmp.periodStatementAsignations.map(value2 => {
                     return value2.period.id
@@ -530,6 +535,15 @@ export class StatementAdministrationComponent implements OnInit {
                 }
                 return false;
             }).map(value1 => this.statementToSelectItem(value1));
+            this.parentStatementsItemsFiltered=parentStatementPeriodList.filter(value1 => {
+                if(selectedAreaType==='RESULTADO'){
+                   return value1.value?.areaType === 'IMPACTO'
+                }else if(selectedAreaType==='PRODUCTO'){
+                    return value1.value?.areaType === 'RESULTADO'
+                }else{
+                    return value1
+                }
+            })
         } else {
             this.parentStatementsItemsFiltered = [];
         }
@@ -537,7 +551,17 @@ export class StatementAdministrationComponent implements OnInit {
     }
 
     onResultLevelChange(areaType: string){
+        this.selectedAreaType=areaType
         const areaList= JSON.parse(JSON.stringify(this.areasItems))
         this.filterAreaList=areaList.filter(value1 => value1.value.areaType === areaType)
+        this.filterStatementsByPeriod(this.formItem.get("periods").value)
+        if (areaType !== "IMPACTO") {
+            this.formItem.get('parentStatement').enable();
+            this.formItem.get('parentStatement').updateValueAndValidity();
+        } else {
+            this.formItem.get('parentStatement').patchValue(null);
+            this.formItem.get('parentStatement').updateValueAndValidity();
+            this.formItem.get('parentStatement').disable();
+        }
     }
 }
