@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -149,10 +150,19 @@ public class AuditService {
             newDataJson=convertListToString((List)newData);
         }
 
-        String timeZone = getTimeZoneByCountry(configService.getAuditTimeZone()); // Implementar un método para determinar la zona horaria
+        String timeZone = configService.getAuditTimeZone();
 
-        // Obtener la hora local de la región en la que el usuario está realizando la acción
-        ZoneId zoneId = ZoneId.of(timeZone); // "America/Mexico_City", "Europe/Madrid", etc.
+        ZoneId zoneId;
+        try {
+            // Intentar obtener la zona horaria con el identificador proporcionado
+            zoneId = ZoneId.of(timeZone);  // "America/Mexico_City", "Europe/Madrid", etc.
+        } catch (DateTimeException e) {
+            // Si no se puede obtener la zona horaria válida, asignar una zona horaria predeterminada
+            System.out.println("Zona horaria no válida: " + timeZone + ". Asignando zona horaria predeterminada.");
+            zoneId = ZoneId.of("UTC");  // Zona horaria por defecto (UTC)
+        }
+
+// Obtener la hora local de la región en la que el usuario está realizando la acción
         ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
 
         // Comparar las representaciones en JSON
@@ -373,6 +383,7 @@ public class AuditService {
         return modelWebTransformationService.auditsToAuditsWeb(audits);
     }
 
+  /*
     private String getTimeZoneByCountry(String country) {
         switch (country) {
             case "MEX":
@@ -390,8 +401,10 @@ public class AuditService {
             default:
                 return "UTC";  // Zona horaria por defecto
         }
-    }
 
+
+    }
+*/
 
 
 
