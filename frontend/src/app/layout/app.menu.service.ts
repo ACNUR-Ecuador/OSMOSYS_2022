@@ -81,7 +81,7 @@ export class MenuService {
             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR_LOCAL','ADMINISTRADOR_REGIONAL', 'PUNTO_FOCAL', 'ADMINISTRADOR_OFICINA'],
             items: [
                 // {label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']},
-               
+
                 {
                     label: 'Configuración del sistema',
                     icon: 'pi pi-fw pi-cog',
@@ -111,7 +111,7 @@ export class MenuService {
                             routerLink: ['/administration/periods'],
                             roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL']
                         },
-                     
+
                         {
                             label: 'Oficinas/Unidades',
                             icon: 'pi pi-fw pi-building',
@@ -148,15 +148,15 @@ export class MenuService {
                             routerLink: ['/administration/audits'],
                             roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL']
                         },
-                                               
-                       
+
+
 
                         // tslint:disable-next-line:max-line-length
-                       
-                     
+
+
                     ]
                 },
-                
+
                 {
                     label: 'Indicadores de Producto',
                     icon: 'pi pi-fw pi-box',
@@ -169,7 +169,7 @@ export class MenuService {
                             icon: 'pi pi-fw pi-list',
                             routerLink: ['/administration/statements'],
                             roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL']
-                        }, 
+                        },
                         {
                             label: 'Catálogo de Indicadores',
                             icon: 'pi pi-fw pi-chart-line',
@@ -191,7 +191,7 @@ export class MenuService {
 
                     ]},
 
-                
+
                 {
                     label: 'Envío Masivo de Correos',
                     icon: 'pi pi-fw pi-envelope',
@@ -210,7 +210,7 @@ export class MenuService {
                     routerLink: ['/administration/menuItemsAdministration'],
                     roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL']
                 },
-              
+
             ]
         },
         {

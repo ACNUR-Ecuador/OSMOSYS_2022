@@ -2,7 +2,7 @@
     <div class="topbar-left">
         <a #menubutton tabindex="0" class="menu-button p-trigger" (click)="onMenuButtonClick()">
             <i class="pi pi-chevron-left"></i>
-        </a>           
+        </a>
     </div>
 
     <app-sidebar></app-sidebar>
@@ -19,14 +19,25 @@
         <img class="acnur-logo" style="margin-top: 4px !important; cursor: pointer;" [routerLink]="['/']" [src]="'assets/layout/images/unhcr_logo_horizontal_white.png'"
         alt="osmosys"/>
         <span class="topbar-separator"></span>
-        <img class="osmosys-logo" style="margin-top: 12px !important;" [routerLink]="['/home/about-us']" [src]="'assets/layout/images/Logo_osmosys_white.png'"
-        alt="osmosys"/>
+        <img class="osmosys-logo" style="margin-top: 12px !important;" [routerLink]="['/home/about-us']"
+             [src]="'assets/layout/images/Logo_osmosys_white.png'"
+             alt="osmosys"/>
         <span class="topbar-separator"></span>
-        <h5 style="color: #ffffff; font-size: 20px;font-weight:100">{{operationName.toUpperCase()}}</h5>        
-        
+        <h5 style="color: #ffffff; font-size: 20px;font-weight:100">{{ operationName.toUpperCase() }}</h5>
+        <span class="topbar-separator"></span>
+        <ul class="topbar-menu">
+            <a [routerLink]="['/home/about-us'] "  style="color: white"
+               class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                <i class="pi pi-info-circle mr-3" style="font-size: 1.5rem;"></i>
+                <span class="flex flex-column">
+                                <span class="font-semibold">Acerca de<br> OSMOSYS</span>
+                            </span>
+            </a>
+        </ul>
+
         <ul class="topbar-menu">
             <li class="search-item">
-                
+
             </li>
 
             <!--

@@ -28,6 +28,7 @@ import { AppMenuitemComponent } from './app.menuitem.component';
 import { AppSearchComponent } from './app.search.component';
 import { AppFooterComponent } from './app.footer.component';
 import {AvatarModule} from "primeng/avatar";
+import {AdministrationModule} from "../administration/administration.module";
 
 @NgModule({
     declarations: [
@@ -61,7 +62,8 @@ import {AvatarModule} from "primeng/avatar";
         AppConfigModule,
         DialogModule,
         StyleClassModule,
-        AvatarModule
+        AvatarModule,
+        AdministrationModule
     ]
 })
 export class AppLayoutModule { }

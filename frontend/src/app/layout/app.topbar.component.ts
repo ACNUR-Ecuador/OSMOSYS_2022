@@ -9,14 +9,19 @@ import {environment} from "../../environments/environment";
     templateUrl: './app.topbar.component.html'
 })
 export class AppTopbarComponent implements OnInit {
-    operationName=`${environment.operationName}`;
-    flagToolbarFile=`assets/layout/images/${environment.flagToolbarFile}`;
+    operationName = `${environment.operationName}`;
+    flagToolbarFile = `assets/layout/images/${environment.flagToolbarFile}`;
 
     @ViewChild('menubutton') menuButton!: ElementRef;
 
     @ViewChild(AppSidebarComponent) appSidebar!: AppSidebarComponent;
 
     public userInitials = '';
+    item: any = {
+        label: 'Acerca de OSMOSYS',
+        icon: 'pi pi-info-circle',
+        routerLink: ['/home/about-us']
+    };
 
     constructor(public layoutService: LayoutService,
                 public userService: UserService,
