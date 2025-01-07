@@ -135,9 +135,9 @@ public class AppDataConfigLlenadoAutomatico {
         instantiateConfigurationValues("day limit to report",
                 "día máximo del mes para el reporte de indicadores",
                 AppConfigurationKey.REPORT_LIMIT, "10");
-        instantiateConfigurationValues("Configuración de Zona horaria para la operación",
+        /*instantiateConfigurationValues("Configuración de Zona horaria para la operación",
                 "Zona horaria para la operación",
-                AppConfigurationKey.TIME_ZONE, "UTC");
+                AppConfigurationKey.TIME_ZONE, "UTC");*/
     }
 
     @SuppressWarnings("SameParameterValue")
