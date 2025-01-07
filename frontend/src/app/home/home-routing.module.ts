@@ -6,7 +6,6 @@ import {
     HomeDashboardDirectImplementationComponent
 } from "./home-dashboard-direct-implementation/home-dashboard-direct-implementation.component";
 import {AboutUsComponent} from "./about-us/about-us.component";
-import { HelpComponent } from './help/help.component';
 
 const routes: Routes = [{
     path: '',
@@ -15,7 +14,6 @@ const routes: Routes = [{
         {path: 'homeDashboardFocalPoint', component: HomeDashboardFocalPointComponent},
         {path: 'homeDashboardDirectImplementation', component: HomeDashboardDirectImplementationComponent},
         {path: 'about-us', component: AboutUsComponent},
-        {path: 'help', component: HelpComponent}
     ]
 }];
 

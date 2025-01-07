@@ -125,7 +125,7 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
         this.cols = [
             {field: 'id', header: 'id', type: ColumnDataType.numeric},
             {field: 'code', header: 'Código', type: ColumnDataType.text},
-            {field: 'name', header: 'Nombre', type: ColumnDataType.text},
+            {field: 'name', header: 'Título', type: ColumnDataType.text},
             // {field: 'organizationId', header: 'Id Organización', type: ColumnDataType.numeric},
             {field: 'organizationDescription', header: 'Implementador', type: ColumnDataType.text},
             {field: 'organizationAcronym', header: 'Implementador Acr.', type: ColumnDataType.text},

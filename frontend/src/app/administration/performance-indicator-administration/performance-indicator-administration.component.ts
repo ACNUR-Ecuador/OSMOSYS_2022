@@ -183,7 +183,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             },
         ];
 
-        const hiddenColumns: string[] = ['id', 'indicatorType', 'areaType',  'measureType', 'isMonitored', 'totalIndicatorCalculationType', 'isCalculated', 'frecuency', 'category','guideDirectImplementation', 'customDissagregationAssignationToIndicators', 'dissagregationsAssignationToIndicator', 'unit', 'instructions'];
+        const hiddenColumns: string[] = ['id', 'indicatorType', 'areaType',  'measureType', 'isMonitored', 'totalIndicatorCalculationType', 'isCalculated', 'frecuency', 'category','guideDirectImplementation', 'customDissagregationAssignationToIndicators', 'dissagregationsAssignationToIndicator', 'unit', 'instructions', 'compassIndicator'];
         this._selectedColumns = this.cols.filter(value => !hiddenColumns.includes(value.field));
 
         this.formItem = this.fb.group({
