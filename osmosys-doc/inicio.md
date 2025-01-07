@@ -100,37 +100,36 @@
 
 
 ## 6. Socios
-- [6.1 Proyectos](#proyectos)
-  - [6.1.1 Crear nuevo Proyecto](#crear-nuevo-proyecto)
-  - [6.1.2 Tabla de Proyectos](#tabla-de-proyectos)
-  - [6.1.3 Pantalla de Proyecto](#pantalla-de-proyecto)
-    - [6.1.3.1 Bloqueo masivo de meses](#bloqueo-masivo-de-meses)
-    - [6.1.3.2 Editar lugares de Ejecución](#editar-lugares-de-ejecución)
-    - [6.1.3.3 Reporte del Proyecto](#reporte-del-proyecto)
-    - [6.1.3.4 Reporte de Retrasos de Indicadores](#reporte-de-retrasos-de-indicadores)
-  - [6.1.4 Tabla de Indicadores](#tabla-de-indicadores)
-  - [6.1.5 Reporte de valores de Indicador](#reporte-de-valores-de-indicador)
-  - [6.1.6 Reporte de valores de Indicador por Importación](#reporte-de-valores-de-indicador-por-importación)
+- [6.1 Proyectos](socios.md#_61-proyectos)
+  - [6.1.1 Crear nuevo Proyecto](socios.md#_611-crear-nuevo-proyecto)
+  - [6.1.2 Tabla de Proyectos](socios.md#_612-tabla-de-proyectos)
+  - [6.1.3 Pantalla de Proyecto](socios.md#_613-pantalla-de-proyecto)
+    - [6.1.3.1 Bloqueo masivo de meses](socios.md#_6131-bloqueo-masivo-de-meses)
+    - [6.1.3.2 Editar lugares de Ejecución](socios.md#_6132-editar-lugares-de-ejecución)
+    - [6.1.3.3 Reporte del Proyecto](socios.md#_6133-reporte-del-proyecto)
+    - [6.1.3.4 Reporte de Retrasos de Indicadores](socios.md#_6134-reporte-de-retrasos-de-indicadores)
+  - [6.1.4 Tabla de Indicadores](socios.md#_614-tabla-de-indicadores)
+  - [6.1.5 Reporte de valores de Indicador](socios.md#_615-reporte-de-valores-de-indicador)
+  - [6.1.6 Reporte de valores de Indicador por Importación](socios.md#_616-reporte-de-valores-de-indicador-por-importación)
 
 ## 7. Implementación Directa
--  [7.1 Reporte e Indicadores](#reporte-de-indicadores)
-  - [7.1.1	Tabla de Indicadores de Implementación directa](#tabla-indicadores-impl-directa)
-  - [7.1.2 Reporte de valores de Implementación directa](#reporte-de-valores-impl-directa)
-  - [7.1.3 Reporte de valores de Implementación directa por Importación](#reporte-de-valores-impl-directa-importacion)
+-  [7.1 Reporte e Indicadores](implementacion-directa.md#_71-reporte-de-indicadores)
+  - [7.1.1	Tabla de Indicadores de Implementación directa](implementacion-directa.md#_711-tabla-de-indicadores-de-implementación-directa)
+  - [7.1.2 Reporte de valores de Implementación directa](implementacion-directa.md#_71-reporte-de-indicadores)
+  - [7.1.3 Reporte de valores de Implementación directa por Importación](implementacion-directa.md#_71-reporte-de-indicadores)
 
 ## 8. REPORTES
-- [8.1 Catálogo de Indicadores](#catálogo-de-indicadores)
-- [8.2 Exportación de Datos](#exportación-de-datos)
-- [8.3 Reportes de Retrasos](#reportes-de-retrasos)
+- [8.1 Catálogo de Indicadores](reportes.md#_81-catálogo-de-indicadores)
+- [8.2 Exportación de Datos](reportes.md#_82-exportación-de-datos)
+- [8.3 Reportes de Retrasos](reportes.md#_83-reportes-de-retrasos)
 
 ## 9. ACERCA DE OSMOSYS
-- [9.1 Información sobre Osmosys](#información-sobre-osmosys)
-
+- [9.1 Información sobre Osmosys](acerca-de-osmosys.md)
 ## 10. PERFIL DE USUARIO
-- [10.1 Datos del Usuario](#datos-del-usuario)
-- [10.2 Editar datos del Usuario](#editar-datos-del-usuario)
-- [10.3 Cambiar Contraseña](#cambiar-contraseña)
-- [10.4 Cerrar Sesión](#cerrar-sesión)
+- [10.1 Datos del Usuario](perfil-de-usuario.md#_101-datos-del-usuario)
+- [10.2 Editar datos del Usuario](perfil-de-usuario.md#_102-editar-datos-del-usuario)
+- [10.3 Cambiar Contraseña](perfil-de-usuario.md#_103-cambiar-contraseña)
+- [10.4 Cerrar Sesión](perfil-de-usuario.md#_104-cerrar-sesión)
 
 ## 11. FAQ
-- [11.1 Preguntas Frecuentes](#preguntas-frecuentes)
+- [11.1 Preguntas Frecuentes](faq.md)

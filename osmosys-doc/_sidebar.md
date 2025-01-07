@@ -1,4 +1,4 @@
-- [Inicio](README.md)
+- [Inicio](inicio.md)
 - [Descripción del sistema](descripcion-del-sistema.md)
 - [Acceso al sistema](acceso-al-sistema.md)
 - [Estructura del sistema](estructura-del-sistema.md)

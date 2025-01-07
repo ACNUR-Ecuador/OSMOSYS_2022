@@ -9,7 +9,7 @@
 En la pantalla de Inicio de Sesión el usuario encontrará el formulario de ingreso, el logo correspondiente a la organización, el nombre de la operación a la cual pertenece el sistema y en la parte superior derecha el logo distintivo de la misma.
 
 <p align="center">
-  <img src="/assets/inicio_sesion.png" alt="Inicio de sesion" title="Inicio de sesion">
+  <img src="./assets/inicio_sesion.png" alt="Inicio de sesion" title="Inicio de sesion">
 </p>
 
 Para acceder al sistema el usuario deberá seguir los siguientes pasos:
@@ -21,7 +21,7 @@ Para acceder al sistema el usuario deberá seguir los siguientes pasos:
 5. En caso de problemas, utilice la opción **¿Necesitas ayuda?** para contactarse con soporte.
 
 <p align="center">
-  <img src="/assets/user_pass.png" alt="Inicio de sesion" title="Inicio de sesion">
+  <img src="./assets/user_pass.png" alt="Inicio de sesion" title="Inicio de sesion">
 </p>
 
 ## 2.3 Recuperar contraseña
@@ -33,7 +33,7 @@ Para recuperar la contraseña en caso de haberla olvidado, el usuario deberá se
 4. Abrir su correo electrónico correspondiente, buscar el correo de recuperación y copiar la nueva contraseña generada para poder Iniciar sesión.
 
 <p align="center">
-  <img src="/assets/recuperar_pass.png" title="Recuperar contraseña">
+  <img src="./assets/recuperar_pass.png" title="Recuperar contraseña">
 </p>
 
 ## 2.4 Solicitar Soporte
@@ -44,6 +44,6 @@ Para solicitar ayuda en caso de tener problemas con el sistema, el usuario deber
 3. Enviar el correo electrónico.
 
 <p align="center">
-  <img src="/assets/soporte.png" title="Soporte">
+  <img src="./assets/soporte.png" title="Soporte">
 </p>
 
