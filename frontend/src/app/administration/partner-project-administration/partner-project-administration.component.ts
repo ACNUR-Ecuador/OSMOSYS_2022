@@ -575,12 +575,13 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     cancel() {
-        if (this.idProjectParam) {
+        this._location.back();
+        /*if (this.idProjectParam) {
             const idProject = Number(this.idProjectParam);
             this.loadProject(idProject);
         } else {
             this._location.back();
-        }
+        }*/
 
     }
 

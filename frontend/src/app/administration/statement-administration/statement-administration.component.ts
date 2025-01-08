@@ -111,7 +111,7 @@ export class StatementAdministrationComponent implements OnInit {
             description: new FormControl(''),
             state: new FormControl('', Validators.required),
             parentStatement: new FormControl(''),
-            area: new FormControl(''),
+            area: new FormControl('',Validators.required),
             areaType: new FormControl('', Validators.required),
             pillar: new FormControl('', Validators.required),
             situation: new FormControl(''),
@@ -332,7 +332,6 @@ export class StatementAdministrationComponent implements OnInit {
             periodStatementAsignations
         }
             = this.formItem.value;
-
         const statement: Statement = {
             id,
             code,
@@ -369,6 +368,9 @@ export class StatementAdministrationComponent implements OnInit {
             }
         }
         statement.periodStatementAsignations = periodStatementAsignationsCasted;
+        if(areaType==="PRODUCTO"){
+            statement.area=parentStatement.area
+        }
         // noinspection DuplicatedCode
         if (statement.id) {
             // tslint:disable-next-line:no-shadowed-variable
@@ -427,6 +429,9 @@ export class StatementAdministrationComponent implements OnInit {
         this.parentStatementsItemsFiltered=[]
         this.formItem.get('parentStatement').enable();
         this.formItem.get('parentStatement').updateValueAndValidity();
+        this.formItem.get('area').enable();
+        this.formItem.get('area').updateValueAndValidity();
+        this.formItem.get('area').setValidators([Validators.required]);
     }
 
     statementToSelectItem(value: Statement): SelectItem {
@@ -556,12 +561,25 @@ export class StatementAdministrationComponent implements OnInit {
         this.filterAreaList=areaList.filter(value1 => value1.value.areaType === areaType)
         this.filterStatementsByPeriod(this.formItem.get("periods").value)
         if (areaType !== "IMPACTO") {
+            if(areaType ==="PRODUCTO"){
+                this.formItem.get('parentStatement').setValidators([Validators.required]);
+                //this.formItem.get('area').patchValue(null);
+                this.formItem.get('area').clearValidators();
+                this.formItem.get('area').disable();
+            }else{
+                this.formItem.get('area').setValidators([Validators.required]);
+                this.formItem.get('area').enable();
+                this.formItem.get('parentStatement').clearValidators();
+            }
             this.formItem.get('parentStatement').enable();
-            this.formItem.get('parentStatement').updateValueAndValidity();
         } else {
+            this.formItem.get('area').setValidators([Validators.required]);
+            this.formItem.get('area').enable();
             this.formItem.get('parentStatement').patchValue(null);
-            this.formItem.get('parentStatement').updateValueAndValidity();
+            this.formItem.get('parentStatement').clearValidators();
             this.formItem.get('parentStatement').disable();
         }
+        this.formItem.get('area').updateValueAndValidity();
+        this.formItem.get('parentStatement').updateValueAndValidity();
     }
 }
