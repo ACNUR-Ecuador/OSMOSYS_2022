@@ -327,8 +327,9 @@ public class IndicatorExecutionService {
         indicatorExecution.setKeepBudget(indicatorExecutionAssigmentWeb.getKeepBudget());
         indicatorExecution.setAssignedBudget(indicatorExecutionAssigmentWeb.getAssignedBudget());
 
-
         this.updateIndicatorExecutionTotals(indicatorExecution);
+        this.updatePartnerIndicatorExecutionLocationAssigment(indicatorExecutionAssigmentWeb.getId(),indicatorExecutionAssigmentWeb.getLocations());
+
         // Registrar auditoría
         List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
         auditService.logAction("Proyecto", project.getCode(), null, AuditAction.UPDATE, responsibleUser, oldprojectAudit, newprojectAudit, State.ACTIVO);

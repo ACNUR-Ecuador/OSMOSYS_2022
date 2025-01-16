@@ -1,12 +1,13 @@
 package org.unhcr.osmosys.model.enums;
 
 public enum OfficeType  implements EnumInterface{
-    BO("BO", 1),
-    SUB_OFICINA("Sub oficina", 2),
-    OFICINA_DE_CAMPO("Oficina de campo", 3),
-    UNIDAD_DE_CAMPO("Unidad de campo", 4),
-    OFICINA_NACIONAL("Oficina Nacional", 5);
-
+    BO("Oficina de País", 1),
+    SUB_OFICINA("Sub-Oficina", 2),
+    OFICINA_DE_CAMPO("Oficina de Terreno", 3),
+    UNIDAD_DE_CAMPO("Unidad de Terreno", 4),
+    OFICINA_NACIONAL("Oficina Nacional", 5),
+    PRESENCIA("Presencia", 6),
+    UNIDAD("Unidad", 7);
 
 
     private String label;

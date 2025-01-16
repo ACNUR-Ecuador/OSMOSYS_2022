@@ -191,9 +191,9 @@ public class ReportDataService {
         indicators.forEach(indicator -> {
             List<String> ind = new ArrayList<>();
             ind.add(indicator);
-            for (int i = 0; i < 12; i++) {
+            for (int i = 1; i < 13; i++) {
                 int finalI = i;
-                Optional<IndicatorExecutionTagDTO> first = resultData.stream().filter(r -> r.getMonthOrder() == finalI && r.getIndicator().startsWith(indicator)).findFirst();
+                Optional<IndicatorExecutionTagDTO> first = resultData.stream().filter(r -> monthtoNumber(r.getMonth()) == finalI && r.getIndicator().startsWith(indicator)).findFirst();
                 if (first.isPresent()) {
                     String value = first.get().getTotalValue().toString();
                     System.out.println (i + " - " + indicator + " - " + value);
@@ -1146,6 +1146,38 @@ public class ReportDataService {
         }
         return this.getLateReport(data, true, true);
     }
+
+    private int monthtoNumber(String month) {
+        switch (month.toLowerCase()) {
+            case "enero":
+                return 1;
+            case "febrero":
+                return 2;
+            case "marzo":
+                return 3;
+            case "abril":
+                return 4;
+            case "mayo":
+                return 5;
+            case "junio":
+                return 6;
+            case "julio":
+                return 7;
+            case "agosto":
+                return 8;
+            case "septiembre":
+                return 9;
+            case "octubre":
+                return 10;
+            case "noviembre":
+                return 11;
+            case "diciembre":
+                return 12;
+            default:
+                return -1; // Mes no válido
+        }
+    }
+
 // todo
 /*
     public List<IndicatorReportProgramsDTO> getIndicatorReportProgramsByProjectId(Long projectId) {

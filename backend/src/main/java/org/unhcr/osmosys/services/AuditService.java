@@ -308,7 +308,9 @@ public class AuditService {
                                 StringBuilder locationString = new StringBuilder();
 
                                 for (IndicatorExecutionLocationAssigment assignment : locationAssigments) {
-                                    locationString.append(assignment.getLocation().getName()).append(", ");
+                                    if(assignment.getState().equals(State.ACTIVO)){
+                                        locationString.append(assignment.getLocation().getName()).append(", ");
+                                    }
                                 }
 
                                 if (locationString.length() > 0) {
