@@ -152,7 +152,7 @@
 
                 <div class="card">
                     <div class="p-fluid p-formgrid grid">
-                        <div class="field cold-12 md:col-7">
+                        <!-- <div class="field cold-12 md:col-7">
                             <label for="sourcesI">Herramientas de recolección de datos</label>
                             <p-multiSelect id="sourcesI"
                                            [options]="sourceTypes"
@@ -164,7 +164,7 @@
                                    *ngIf="utilsService.showErrorForm('sources',formItem)">
                                 {{utilsService.getErrorMessageForm('sources', formItem)}}
                             </small>
-                        </div>
+                        </div> -->
                         <div class="field cold-12 md:col-4" *ngIf="showOtherSource">
                             <label for="sourceOtherI">Otro</label>
                             <input id="sourceOtherI" type="text" pInputText formControlName="sourceOther">

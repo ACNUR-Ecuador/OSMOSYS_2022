@@ -106,7 +106,7 @@ export class UserAdministrationComponent implements OnInit {
             office: new FormControl(''),
             roles: new FormControl(''),
             state: new FormControl(''),
-            roleTypes: new FormControl('', Validators.required)
+            roleTypes: new FormControl('')
         });
     }
 

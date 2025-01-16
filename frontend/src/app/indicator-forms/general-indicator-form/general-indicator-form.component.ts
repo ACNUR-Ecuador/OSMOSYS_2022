@@ -81,7 +81,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
         this.isEjecutor = this.config.data.isEjecutor; //
         this.formItem = this.fb.group({
             commentary: new FormControl('', [Validators.maxLength(1000), Validators.required]),
-            sources: new FormControl('', Validators.required),
+            sources: new FormControl(''),
             sourceOther: new FormControl(''),
             checked: new FormControl(''),
         });

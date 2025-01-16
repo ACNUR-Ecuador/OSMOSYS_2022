@@ -3,10 +3,22 @@
         <img id="footer-logo" [src]="'assets/images/logo_osmosys_blue.png'" alt="osmosys"/>
         <!--<span class="footer-copyright">&#169; Hecho con amor en el -salvador</span>-->
     </div>
-    <span (click)="showDialog = true" class="footer-copyright hover:surface-hover transition-colors transition-duration-150 cursor-pointer">V 5.0.1</span>
+    <span (click)="showDialog = true" class="footer-copyright hover:surface-hover transition-colors transition-duration-150 cursor-pointer">V 5.0.3</span>
     <span class="footer-copyright">&#169; UNHCR -Hecho en El Salvador y Ecuador-  2024</span> 
     
     <p-dialog header="Change log" [(visible)]="showDialog" [modal]="true" [style]="{width: '50vw'}" (onHide)="showDialog = false">
+        <h5 style="margin-top: 1rem;">Versión 5.0.3 - 2025-01-13 </h5>
+        <ul>
+            <li>No es obligatorio roles al crear o editar usuario.</li>            
+        </ul>
+        <h5 style="margin-top: 1rem;">Versión 5.0.2 - 2025-01-09 </h5>
+        <ul>
+            <li>Correción Area en Enunciados de Producto.</li>
+            <li>Se retira herraminetas de recolección en Implementación Directa y Reporte de Beneficiarios Únicos.</li>
+            <li>Cambio de etiqueta, Beneficiarios Totales por Beneficiarios Úncos.</li>
+            <li>Correción botón cancelar en Proyectos no regresaba.</li>
+            
+        </ul>
         <h5 style="margin-top: 1rem;">Versión 5.0.1 - 2024-12-31 </h5>
         <ul>
             <li>Cambios en Administración de Marco de Resultados.</li>

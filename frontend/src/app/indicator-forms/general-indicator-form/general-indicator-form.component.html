@@ -3,7 +3,7 @@
     <p-messages></p-messages>
     <div class="card p-0 border-primary font-bold text-lg text-primary">
         <div class="fluid">
-            <p class="text-primary text-xl">Para el reporte de este Total de Beneficiarios, recuerde que <b><u>una persona
+            <p class="text-primary text-xl">Para el reporte de este Total de Beneficiarios Únicos, recuerde que <b><u>una persona
                 beneficiaria debe
                 contabilizarse
                 solamente una vez</u></b>, a pesar de que haya recibido diferentes servicios por parte del proyecto.
@@ -109,7 +109,7 @@
                 </div>
                 <div class="card">
                     <div class="p-fluid p-formgrid grid">
-                        <div class="field md:col-12">
+                        <!-- <div class="field md:col-12">
                             <label for="sourcesI">Herramientas de recolección de datos</label>
                             <p-multiSelect id="sourcesI"
                                            [options]="sourceTypes"
@@ -121,7 +121,7 @@
                                    *ngIf="utilsService.showErrorForm('sources',formItem)">
                                 {{utilsService.getErrorMessageForm('sources', formItem)}}
                             </small>
-                        </div>
+                        </div> -->
                         <div class="field md:col-4" *ngIf="showOtherSource">
                             <label for="sourceOtherI">Otro</label>
                             <input id="sourceOtherI" type="text" pInputText formControlName="sourceOther">

@@ -140,7 +140,7 @@ export class PartnersProjectComponent implements OnInit {
             title = title + ' (' + month + '-' + year + ')';
         }
         const ref = this.dialogService.open(GeneralIndicatorFormComponent, {
-                header: 'Total de Beneficiarios Nuevos: ' + title + this.getRoleTitle(),
+                header: 'Total de Beneficiarios Únicos: ' + title + this.getRoleTitle(),
                 width: '98%',
                 height: '80%',
                 closeOnEscape: false,
