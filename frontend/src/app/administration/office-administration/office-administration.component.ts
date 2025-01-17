@@ -77,6 +77,7 @@ export class OfficeAdministrationComponent implements OnInit {
         });
         this.enumsService.getByType(EnumsType.OfficeType).subscribe(value => {
             this.officeTypes = value;
+            console.log(this.officeTypes)
         });
 
         this.userService.getActiveUNHCRUsers().subscribe({
@@ -211,6 +212,7 @@ export class OfficeAdministrationComponent implements OnInit {
             .subscribe({
                 next: value => {
                     this.items = value;
+                    console.log(this.items)
                 },
                 error: err => {
                     this.messageService.add({

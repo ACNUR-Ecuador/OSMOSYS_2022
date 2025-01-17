@@ -96,7 +96,7 @@ export class IndicatorsListComponent implements OnInit {
         // noinspection DuplicatedCode
         this.cols = [
             {field: 'id', header: 'id', type: ColumnDataType.numeric},
-            {field: 'reportingOffice', header: 'Oficina', type: ColumnDataType.text, pipeRef: this.officeOrganizationPipe},
+            {field: 'reportingOffice', header: 'Oficina/Unidad', type: ColumnDataType.text, pipeRef: this.officeOrganizationPipe},
             {field: 'indicator.statement', header: 'Enunciado de Producto', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
             {field: 'indicator', header: 'Indicador', type: ColumnDataType.text, pipeRef: this.indicatorPipe},
             {field: 'activityDescription', header: 'Descripción de la actividad', type: ColumnDataType.text},

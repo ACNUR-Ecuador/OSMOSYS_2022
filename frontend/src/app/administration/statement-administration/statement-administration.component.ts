@@ -430,8 +430,11 @@ export class StatementAdministrationComponent implements OnInit {
         this.formItem.get('parentStatement').enable();
         this.formItem.get('parentStatement').updateValueAndValidity();
         this.formItem.get('area').enable();
-        this.formItem.get('area').updateValueAndValidity();
         this.formItem.get('area').setValidators([Validators.required]);
+        this.formItem.get('area').updateValueAndValidity();
+        this.formItem.get('pillar').enable();
+        this.formItem.get('pillar').setValidators([Validators.required]);
+        this.formItem.get('pillar').updateValueAndValidity();
     }
 
     statementToSelectItem(value: Statement): SelectItem {
@@ -563,10 +566,13 @@ export class StatementAdministrationComponent implements OnInit {
         if (areaType !== "IMPACTO") {
             if(areaType ==="PRODUCTO"){
                 this.formItem.get('parentStatement').setValidators([Validators.required]);
-                //this.formItem.get('area').patchValue(null);
                 this.formItem.get('area').clearValidators();
                 this.formItem.get('area').disable();
+                this.formItem.get('pillar').setValidators([Validators.required]);
+                this.formItem.get('pillar').enable();
             }else{
+                this.formItem.get('pillar').clearValidators();
+                this.formItem.get('pillar').disable();
                 this.formItem.get('area').setValidators([Validators.required]);
                 this.formItem.get('area').enable();
                 this.formItem.get('parentStatement').clearValidators();
@@ -578,8 +584,11 @@ export class StatementAdministrationComponent implements OnInit {
             this.formItem.get('parentStatement').patchValue(null);
             this.formItem.get('parentStatement').clearValidators();
             this.formItem.get('parentStatement').disable();
+            this.formItem.get('pillar').clearValidators();
+            this.formItem.get('pillar').disable();
         }
         this.formItem.get('area').updateValueAndValidity();
         this.formItem.get('parentStatement').updateValueAndValidity();
+        this.formItem.get('pillar').updateValueAndValidity();
     }
 }

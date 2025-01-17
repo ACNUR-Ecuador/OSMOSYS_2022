@@ -27,8 +27,7 @@ import {HttpResponse} from '@angular/common/http';
 import {TableColumnProperties} from 'exceljs';
 import {SortEvent} from "primeng/api";
 import {EnumsService} from "./enums.service";
-import {Console} from 'console';
-import {options} from '@fullcalendar/core/preact';
+
 
 @Injectable({
     providedIn: 'root'
@@ -382,17 +381,26 @@ export class UtilsService {
         //Obtengo las desagregaciones que se repiten por tabla
         const diss = [...monthValuesTotals.keys()]
         const dissKeysToCompare = this.dissagregationKeystoCompare(diss)
-
         //saco las opciones para las desagregaciones en comun
         const dissCommonOptions: Map<string, string[]> = new Map<string, string[]>()
         dissKeysToCompare.forEach(key => {
             let options = []
             monthValuesMap.forEach((value, dissagregationType) => {
                 let isDissagregtion = false
-                if (diss.includes(dissagregationType) && !isDissagregtion) {
+                const dissParticles=this.splitIntoDissagregations(dissagregationType)
+                const dissKeys = dissParticles.map(item => {
+                    return this.getDissagregationKey(item);
+                })
+                if (diss.includes(dissagregationType) && !isDissagregtion && dissKeys.includes(key)) {
                     value.forEach(item => {
-                        const option = item[key]!.name
-                        options.push(option)
+                        if(key == 'location' && !item[key]?.name.includes(" -- ")){
+                            //@ts-ignore
+                            const option = item[key]?.provincia?.description+" -- "+item[key]?.name
+                            options.push(option)
+                        }else{
+                            const option = item[key]?.name
+                            options.push(option)
+                        }
 
                     })
                     isDissagregtion = true
@@ -400,6 +408,7 @@ export class UtilsService {
             })
             const uniqueOptions = new Set([...options])
             dissCommonOptions.set(key, [...uniqueOptions])
+
 
         })
 
@@ -409,19 +418,35 @@ export class UtilsService {
             if (value && value.length > 0 && this.shouldvalidate(dissagregationType)) {
                 const dissOptionValuesMap: Map<string, Map<string,number>>= new Map<string, Map<string, number>>()
                 dissCommonOptions.forEach((options, disskey) => {
-                    const optionValueMap: Map<string, number> = new Map<string, number>()
-                    options.forEach(option => {
-                        let total = 0;
-                        value.forEach(item => {
-                            if (item[disskey] != null && item[disskey]!.name == option) {
-                                total += item.value
-                            }
+                    const dissParticles=this.splitIntoDissagregations(dissagregationType)
+                    const dissPartKeys = dissParticles.map(item => {
+                            return this.getDissagregationKey(item);
                         })
-                        optionValueMap.set(option, total)
-                    })
-                    if (optionValueMap.size > 0) {
-                        dissOptionValuesMap.set(disskey, optionValueMap)
+                    //@ts-ignore
+                    if(dissPartKeys.includes(disskey)){
+                        const optionValueMap: Map<string, number> = new Map<string, number>()
+                        options.forEach(option => {
+                            let total = 0;
+                            value.forEach(item => {
+                                if(disskey === "location" && !item[disskey]?.name.includes(" -- ")){
+                                    //@ts-ignore
+                                    const locationOption= item[disskey]?.provincia?.description+" -- "+item[disskey]?.name
+                                    if (item[disskey] != null && locationOption == option) {
+                                        total += item.value
+                                    }
+                                }else{
+                                    if (item[disskey] != null && item[disskey]?.name == option) {
+                                        total += item.value
+                                    }
+                                }
+                            })
+                            optionValueMap.set(option, total)
+                        })
+                        if (optionValueMap.size > 0) {
+                            dissOptionValuesMap.set(disskey, optionValueMap)
+                        }
                     }
+                    
                 })
                 if (dissOptionValuesMap.size > 0) {
                     dissTotalsbyCommonDissOptions.set(dissagregationType, dissOptionValuesMap)
@@ -489,7 +514,15 @@ export class UtilsService {
                 for (let i = 0; i < keys.length; i++) {
 
                     outerMap.forEach((otherInnerMap, otherGroupKey) => {
-                        if (otherGroupKey !== groupKey) {
+                        const otherGroupParticles=this.splitIntoDissagregations(otherGroupKey);
+                        const groupParticles=this.splitIntoDissagregations(groupKey);
+                        const otherGoupDissKeys = otherGroupParticles.map(item => {
+                            return this.getDissagregationKey(item);
+                        })
+                        const groupDissKeys = groupParticles.map(item => {
+                            return this.getDissagregationKey(item);
+                        })
+                        if (otherGroupKey !== groupKey && otherGoupDissKeys.includes(keys[i]) && groupDissKeys.includes(keys[i])) {
                             const otherSubMap = otherInnerMap.get(keys[i]);
                             const diffs = this.findDifferences(innerMap.get(keys[i]), otherSubMap);
 

@@ -273,7 +273,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             {field: 'id', header: 'id', type: ColumnDataType.numeric},
             {
                 field: 'reportingOffice',
-                header: 'Oficina',
+                header: 'Oficina/Unidad',
                 type: ColumnDataType.text,
                 pipeRef: this.officeOrganizationPipe
             },

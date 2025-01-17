@@ -190,7 +190,7 @@
                     </small>
                 </div>
                 <div class="field">
-                    <label for="officeI">Oficina:</label>
+                    <label for="officeI">Oficina/Unidad:</label>
 
                     <p-dropdown id="officeI"
                                 formControlName="office"
@@ -222,7 +222,7 @@
                     <label>Permisos *:</label>
                     <div class="grid formgrid">
                         <div class="col-12 md:col-4"
-                             *ngFor="let category of roles">
+                             *ngFor="let category of assignableRoles">
                             <!--suppress AngularInvalidExpressionResultType -->
                             <div class="field-checkbox">
                                 <p-checkbox name="group1" [inputId]="category.value"

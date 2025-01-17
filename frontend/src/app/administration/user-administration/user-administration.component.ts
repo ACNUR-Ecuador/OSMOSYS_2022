@@ -28,6 +28,7 @@ export class UserAdministrationComponent implements OnInit {
     offices: SelectItem[];
     organizations: SelectItem[];
     roles: SelectItem[];
+    assignableRoles: SelectItem[];
     selectRoles: SelectItem[];
 
     // tslint:disable-next-line:variable-name
@@ -66,7 +67,25 @@ export class UserAdministrationComponent implements OnInit {
 
     loadItems() {
         this.userService.getAllUser().subscribe({
-            next: value => this.items = value,
+            next: value => {
+                if(this.userService.hasAnyRole(['SUPER_ADMINISTRADOR'])){
+                    this.items=value
+                }else if(this.userService.hasAnyRole(['ADMINISTRADOR_REGIONAL'])){
+                    this.items=value.filter(user =>{
+                        return user.roles.every(role => role.name !== 'SUPER_ADMINISTRADOR');
+                    })
+                }else if(this.userService.hasAnyRole(['ADMINISTRADOR_LOCAL'])){
+                    this.items=value.filter(user =>{
+                        return user.roles.every(role => role.name !== 'SUPER_ADMINISTRADOR' &&  role.name !== 'ADMINISTRADOR_REGIONAL');
+                    })
+                }else{
+                    this.items=value.filter(user =>{
+                       return user.roles.every(role => role.name !== 'SUPER_ADMINISTRADOR' &&  
+                        role.name !== 'ADMINISTRADOR_REGIONAL' && role.name !== 'ADMINISTRADOR_LOCAL');
+                   })
+                }
+                
+            },
             error: err => this.messageService.add({
                 severity: 'error',
                 summary: 'Error al cargar los usuarios',
@@ -88,7 +107,7 @@ export class UserAdministrationComponent implements OnInit {
                 type: ColumnDataType.text,
                 pipeRef: this.officeOrganizationPipe
             },
-            { field: 'office', header: 'Oficina', type: ColumnDataType.text, pipeRef: this.officeOrganizationPipe },
+            { field: 'office', header: 'Oficina/Unidad', type: ColumnDataType.text, pipeRef: this.officeOrganizationPipe },
             { field: 'roles', header: 'Permisos', type: ColumnDataType.text, pipeRef: this.rolesListPipe },
             { field: 'state', header: 'Estado', type: ColumnDataType.text },
         ];
@@ -123,9 +142,7 @@ export class UserAdministrationComponent implements OnInit {
 
         this.enumsService.getByType(EnumsType.RoleType).subscribe({
             next: value => {
-                this.selectRoles = value
-                    .filter(value1 => value1.value !== 'PUNTO_FOCAL' && value1.value !== 'ADMINISTRADOR_OFICINA')
-                this.roles = JSON.parse(JSON.stringify(this.selectRoles));
+                this.roles = value
                 if (this.userService.hasAnyRole(['SUPER_ADMINISTRADOR'])) {
                     this.roles = this.roles
                 } else if (this.userService.hasAnyRole(['ADMINISTRADOR_REGIONAL'])) {
@@ -134,12 +151,16 @@ export class UserAdministrationComponent implements OnInit {
                     this.roles = this.roles.filter(value1 => value1.value !== 'SUPER_ADMINISTRADOR'
                         && value1.value !== 'ADMINISTRADOR_REGIONAL'
                     )
-
                 } else {
                     this.roles = this.roles.filter(value1 => value1.value !== 'SUPER_ADMINISTRADOR'
                         && value1.value !== 'ADMINISTRADOR_REGIONAL' && value1.value !== 'ADMINISTRADOR_LOCAL'
                     )
                 }
+                this.selectRoles = JSON.parse(JSON.stringify(this.roles));
+                this.roles = this.roles
+                    .filter(value1 => value1.value !== 'PUNTO_FOCAL' && value1.value !== 'ADMINISTRADOR_OFICINA')
+                
+                this.assignableRoles = JSON.parse(JSON.stringify(this.roles));
 
             },
             error: error => this.messageService.add({
@@ -263,6 +284,8 @@ export class UserAdministrationComponent implements OnInit {
     cancelDialog() {
         this.showDialog = false;
         this.messageService.clear();
+        this.assignableRoles = JSON.parse(JSON.stringify(this.roles));
+
     }
 
     saveItem() {
@@ -378,10 +401,13 @@ export class UserAdministrationComponent implements OnInit {
         const org: Organization = $event.value;
         if (org) {
             if (org.id === 1) {
+                this.assignableRoles = JSON.parse(JSON.stringify(this.roles));
                 this.formItem.get('office').setValidators([Validators.required]);
                 this.formItem.get('office').enable();
                 this.formItem.get('office').updateValueAndValidity();
             } else {
+                this.assignableRoles = this.assignableRoles
+                    .filter(value1 => value1.value !== 'EJECUTOR_ID' && value1.value !== 'MONITOR_ID')
                 this.formItem.get('office').patchValue(null);
                 this.formItem.get('office').clearValidators();
                 this.formItem.get('office').updateValueAndValidity();
