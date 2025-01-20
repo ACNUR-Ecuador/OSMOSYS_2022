@@ -8,11 +8,11 @@
             <p-messages></p-messages>          
 
         <p-table #dtIndicatorExecutions [value]="items"
-            [columns]="selectedColumns"
+            [columns]="selectedColumns" [rows]="10" [paginator]="true"
             [rowHover]="true" dataKey="id" styleClass="p-datatable-striped" 
             styleClass="p-datatable-customers"
             currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-            [showCurrentPageReport]="true"
+            [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]"
             (sortFunction)="utilsService.customSort($event, cols)" [customSort]="true">
             <ng-template pTemplate="caption">
                 <div class="grid">
@@ -262,7 +262,7 @@
                     </small>
                 </div> -->
                 <div class="field col-12 md-12">
-                    <label for="supervisorUserI">Supervisor del Indicador *:</label>
+                    <label for="supervisorUserI">Supervisor de la Implementación *:</label>
                     <p-dropdown id="supervisorUserI"
                                 formControlName="supervisorUser"
                                 [options]="userOptions"

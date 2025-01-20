@@ -39,6 +39,7 @@
                                 [dissagregationType]="dissagregation"
                                 [values]="monthValuesMap.get(dissagregation.value)"
                                 [editable]="editable"
+                                [indicatorExecution]="indicatorExecution"
                         ></app-dissagregation-six-integer-dimensions>
                     </div>
                     <div class="col-12 md:col-6" *ngFor="let dissagregation of fiveDimentionDissagregations">
@@ -47,6 +48,7 @@
                                 [dissagregationType]="dissagregation"
                                 [values]="monthValuesMap.get(dissagregation.value)"
                                 [editable]="editable"
+                                [indicatorExecution]="indicatorExecution"
                         ></app-dissagregation-five-integer-dimensions>
                     </div>
 
@@ -56,6 +58,7 @@
                                 [dissagregationType]="dissagregation"
                                 [values]="monthValuesMap.get(dissagregation.value)"
                                 [editable]="editable"
+                                [indicatorExecution]="indicatorExecution"
                                 implementationType="partnerImplementation"
                         ></app-dissagregation-four-integer-dimensions>
                     </div>
@@ -65,6 +68,7 @@
                                 [dissagregationType]="dissagregation"
                                 [values]="monthValuesMap.get(dissagregation.value)"
                                 [editable]="editable"
+                                [indicatorExecution]="indicatorExecution"
                         ></app-dissagregation-three-integer-dimensions>
                     </div>
 
@@ -75,6 +79,7 @@
                                 [dissagregationType]="dissagregation"
                                 [values]="monthValuesMap.get(dissagregation.value)"
                                 [editable]="editable"
+                                [indicatorExecution]="indicatorExecution"
                         ></app-dissagregation-two-integer-dimentions>
                     </div>
                     <div class="col-12 md:col-6"
@@ -84,6 +89,7 @@
                                 [dissagregationType]="dissagregation"
                                 [values]="monthValuesMap.get(dissagregation.value)"
                                 [editable]="editable"
+                                [indicatorExecution]="indicatorExecution"
                         ></app-dissagregation-one-integer-dimensions>
                     </div>
 
@@ -107,6 +113,7 @@
                                 [values]="monthCustomDissagregatoinValue.indicatorValuesCustomDissagregation"
                                 [customDissagregation]="monthCustomDissagregatoinValue.customDissagregation"
                                 [editable]="editable"
+                                [indicatorExecution]="indicatorExecution"
                         ></app-custom-dissagregation-integer>
                     </div>
                 </div>

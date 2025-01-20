@@ -6,7 +6,7 @@
                 [rowHover]="true" dataKey="id"
                 styleClass="p-datatable-customers"
                 currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                [showCurrentPageReport]="true"
+                [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]"
                 (sortFunction)="utilsService.customSort($event, cols)" [customSort]="true">
                 <ng-template pTemplate="caption">
                     <div class="grid">

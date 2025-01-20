@@ -547,7 +547,7 @@ export class StatementAdministrationComponent implements OnInit {
                 if(selectedAreaType==='RESULTADO'){
                    return value1.value?.areaType === 'IMPACTO'
                 }else if(selectedAreaType==='PRODUCTO'){
-                    return value1.value?.areaType === 'RESULTADO'
+                    return value1.value?.areaType === 'RESULTADO' || value1.value?.areaType === 'APOYO'
                 }else{
                     return value1
                 }

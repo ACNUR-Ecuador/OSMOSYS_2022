@@ -128,6 +128,8 @@ export class DissagregationSelectorComponent implements OnInit {
         this.standardDissagregationsService.getActiveAgeOptions().subscribe({
             next: value => {
                 this.ageOptions = value;
+                this.ageOptions.sort((a, b) => a.order - b.order);
+                this.ageOptions.sort((a, b) => a.groupName.localeCompare(b.groupName));
             },
             error: err => {
                 this.messageService.add({

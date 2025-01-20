@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {SelectItemWithOrder} from '../../../shared/model/UtilsModel';
 import {
-    CustomDissagregation, IndicatorValueCustomDissagregationWeb
+    CustomDissagregation, IndicatorExecution, IndicatorValueCustomDissagregationWeb
 } from '../../../shared/model/OsmosysModel';
 import {UtilsService} from '../../../services/utils.service';
 import { TemplateGeneratorService } from 'src/app/services/template-generator.service';
@@ -21,6 +21,8 @@ export class CustomDissagregationIntegerComponent implements OnInit {
     values: IndicatorValueCustomDissagregationWeb[];
     @Input()
     editable: boolean;
+    @Input()
+    indicatorExecution: IndicatorExecution;
 
     dissagregationOptionsRows: SelectItemWithOrder<any>[];
     rows = new Array<Array<IndicatorValueCustomDissagregationWeb>>();
@@ -238,7 +240,13 @@ export class CustomDissagregationIntegerComponent implements OnInit {
        return dissagregationCatalogue
     }
     generarExcel(){
-        this.templateService.generateExcel(this.createdisagregationCatalogue())
+        let templateName:string
+        if(this.indicatorExecution.indicatorType==="GENERAL"){
+            templateName="Plantilla_import_Ind_General - "+this.indicatorExecution.period.year
+        }else{
+            templateName="Plantilla_import_Indicador - "+this.indicatorExecution.indicator.code
+        }
+        this.templateService.generateExcel(this.createdisagregationCatalogue(),templateName)
       .then(() => console.log('Archivo Excel generado exitosamente.'))
       .catch(error => console.error('Error al generar el archivo:', error));
     }

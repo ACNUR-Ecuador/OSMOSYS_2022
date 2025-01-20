@@ -6,7 +6,7 @@
                      [rowHover]="true" dataKey="id"
                      currentPageReportTemplate=" {first} a {last} de {totalRecords} "
                      [showCurrentPageReport]="true"
-                     (sortFunction)="utilsService.customSort($event, cols)" [customSort]="true"
+                     (sortFunction)="utilsService.customSort($event, cols)" [customSort]="true" [rowsPerPageOptions]="[10,25,50]"
             >
                 <ng-template pTemplate="caption">
                     <div class="grid">

@@ -5,7 +5,7 @@
             <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true"
                      [rowHover]="true" dataKey="id"
                      currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                     [showCurrentPageReport]="true">
+                     [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]">
                 <ng-template pTemplate="caption">
                     <div class="grid">
                         <div

@@ -6,7 +6,7 @@
                 [rowHover]="true" dataKey="id" styleClass="p-datatable-striped" 
                 styleClass="p-datatable-customers"
                 currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                [showCurrentPageReport]="true"
+                [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]"
             >
                 <ng-template pTemplate="caption">
                     <div class="grid">
@@ -82,7 +82,7 @@
                 </ng-template>
                 <ng-template pTemplate="summary">
                     <div class="p-d-flex p-ai-center p-jc-between">
-                        Total {{items ? items.length : 0 }} años.
+                        Total {{items ? items.length : 0 }} implementadores.
                     </div>
                 </ng-template>
             </p-table>

@@ -10,7 +10,7 @@ export class TemplateGeneratorService {
 
   constructor(public utilsService: UtilsService) { }
 
-  async generateExcel(dissagregationTypeList:any[]) {
+  async generateExcel(dissagregationTypeList:any[], indicatorCode:string) {
     // Crear un nuevo workbook
     const workbook = new ExcelJS.Workbook();
      // Crear una nueva hoja de cálculo
@@ -274,7 +274,7 @@ catalogueSheet.protect('@DM1N2025', {
      workbook.xlsx.writeBuffer().then(excelData => {
         const blob = new Blob([excelData], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
         const EXCEL_EXTENSION = '.xlsx';
-        FileSaver.saveAs(blob, "Plantilla_de_Importación_"+ new Date().getTime() + EXCEL_EXTENSION);
+        FileSaver.saveAs(blob, indicatorCode+"_"+ new Date().getTime() + EXCEL_EXTENSION);
 
     });
 

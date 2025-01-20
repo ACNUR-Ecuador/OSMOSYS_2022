@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
-import { EnumWeb, IndicatorValue, StandardDissagregationOption } from "../../../shared/model/OsmosysModel";
+import { EnumWeb, IndicatorExecution, IndicatorValue, StandardDissagregationOption } from "../../../shared/model/OsmosysModel";
 import { UtilsService } from "../../../services/utils.service";
 import { EnumsService } from "../../../services/enums.service";
 import { EnumsType } from "../../../shared/model/UtilsModel";
@@ -21,6 +21,8 @@ export class DissagregationFiveIntegerDimensionsComponent implements OnInit {
     values: IndicatorValue[];
     @Input()
     editable: boolean;
+    @Input()
+    indicatorExecution: IndicatorExecution;
 
     dissagregationGroupsL1Type: EnumWeb;
     dissagregationGroupsL2Type: EnumWeb;
@@ -362,7 +364,13 @@ export class DissagregationFiveIntegerDimensionsComponent implements OnInit {
     }
 
     generarExcel() {
-        this.templateService.generateExcel(this.createdisagregationCatalogue())
+        let templateName:string
+        if(this.indicatorExecution.indicatorType==="GENERAL"){
+            templateName="Plantilla_import_Ind_General - "+this.indicatorExecution.period.year
+        }else{
+            templateName="Plantilla_import_Indicador - "+this.indicatorExecution.indicator.code
+        }
+        this.templateService.generateExcel(this.createdisagregationCatalogue(),templateName)
             .then(() => console.log('Archivo Excel generado exitosamente.'))
             .catch(error => console.error('Error al generar el archivo:', error));
     }

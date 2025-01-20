@@ -297,7 +297,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
                 pipeRef: this.monthPipe
             },
             {field: 'lateMonths', header: 'Meses Retrasado', type: ColumnDataType.text, pipeRef: this.monthListPipe},
-            {field: 'supervisorUser', header: 'Supervisor del Indicador', type: ColumnDataType.text, pipeRef: this.userPipe},
+            {field: 'supervisorUser', header: 'Supervisor de la Implementación', type: ColumnDataType.text, pipeRef: this.userPipe},
             {field: 'assignedUser', header: 'Responsable', type: ColumnDataType.text, pipeRef: this.userPipe},
             {
                 field: 'assignedUserBackup',
