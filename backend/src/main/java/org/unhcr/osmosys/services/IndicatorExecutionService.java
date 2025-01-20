@@ -168,8 +168,6 @@ public class IndicatorExecutionService {
             List<Canton> locations, Indicator indicator,
             Period period, IndicatorExecution ie
     ) throws GeneralAppException {
-        period = this.periodService.getWithAllDataById(period.getId());
-        Long periodID = period.getId();
         List<DissagregationType> dissagregationTypes = dissagregationAssignations.stream().map(DissagregationAssignationToIndicatorInterface::getDissagregationType).collect(Collectors.toList());
         Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationsMap = new HashMap<>();
         for (DissagregationType dissagregationType : dissagregationTypes) {
@@ -191,7 +189,7 @@ public class IndicatorExecutionService {
                         } else {
 
                             Optional<DissagregationAssignationToIndicator> dissagregationAssignationOptional = indicator.getDissagregationsAssignationToIndicator().stream()
-                                    .filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.getPeriod().getId().equals(periodID)
+                                    .filter(dissagregationAssignationToIndicator -> dissagregationAssignationToIndicator.getPeriod().getId().equals(period.getId())
                                             && dissagregationAssignationToIndicator.getDissagregationType().equals(dissagregationType))
                                     .findFirst();
                             @SuppressWarnings("OptionalGetWithoutIsPresent")
@@ -304,12 +302,20 @@ public class IndicatorExecutionService {
 
     public void updateAllIndicatorExecutionsDissagregationsByPeriod(Period period) throws GeneralAppException {
 
+
         Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> periodDissagregationMapGeneralIndicator = this.getPeriodDessagregationMap(true, period, null);
+
+        LOGGER.debug("updateAllIndicatorExecutionsDissagregationsByPeriod ");
         this.updateGeneralIndicatorExecutionsDissagregations(period, periodDissagregationMapGeneralIndicator);
         // performance indicators
         // recupero todos los indicadores afectados
         List<Indicator> indicatorsToUpdate = this.indicatorDao.getByPeriodDissagregationAssignment(period.getId());
+        int totalIndicators=indicatorsToUpdate.size();
+        LOGGER.debug("updateAllIndicatorExecutionsDissagregationsByPeriod : "+ totalIndicators);
+        int i=0;
         for (Indicator indicator : indicatorsToUpdate) {
+            i++;
+            LOGGER.debug("updateAllIndicatorExecutionsDissagregationsByPeriod "+i+"/"+totalIndicators);
             this.updatePerformanceIndicatorExecutionsDissagregations(period, indicator);
         }
 
@@ -372,14 +378,21 @@ public class IndicatorExecutionService {
     }
 
     public void updateGeneralIndicatorExecutionsDissagregations(Period period, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationTypeMapMap) throws GeneralAppException {
-        // busco los ies que pueden ser actualizados
+// busco los ies que pueden ser actualizados
+        LOGGER.debug("updateGeneralIndicatorExecutionsDissagregations ");
         List<IndicatorExecution> iesToUpdate = this.indicatorExecutionDao.getGeneralIndicatorsExecutionsByPeriodId(period.getId());
+        int total = iesToUpdate.size();
+        LOGGER.debug("updateGeneralIndicatorExecutionsDissagregations total: " + total);
+        int i=0;
         for (IndicatorExecution ie : iesToUpdate) {
+            i++;
+            LOGGER.debug("updateGeneralIndicatorExecutionsDissagregations : " +i+"/"+ total);
             this.setStandardDissagregationOptionsForIndicatorExecutions(ie, dissagregationTypeMapMap);
             this.quarterService.updateQuarterDissagregations(ie, dissagregationTypeMapMap, null);
             this.updateIndicatorExecutionTotals(ie);
             this.saveOrUpdate(ie);
         }
+
 
     }
 
@@ -814,7 +827,9 @@ public class IndicatorExecutionService {
                 customDissagregations = indicator
                         .getCustomDissagregationAssignationToIndicators().stream()
                         .filter(customDissagregationAssignationToIndicatorExecution ->
-                                customDissagregationAssignationToIndicatorExecution.getState().equals(State.ACTIVO))
+                                customDissagregationAssignationToIndicatorExecution.getState().equals(State.ACTIVO)
+                                        && customDissagregationAssignationToIndicatorExecution.getPeriod().getId().equals(period.getId())
+                        )
                         .map(CustomDissagregationAssignationToIndicator::getCustomDissagregation).collect(Collectors.toList());
             }
 

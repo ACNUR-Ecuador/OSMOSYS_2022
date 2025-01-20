@@ -95,6 +95,15 @@ public class QuarterService {
     public void updateQuarterDissagregations(IndicatorExecution ie, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationTypeMapMap,
                                              Set<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicators) throws GeneralAppException {
         Set<Quarter> quarters = ie.getQuarters();
+        // reviso q solo esten las del periodo
+        if(customDissagregationAssignationToIndicators != null) {
+            customDissagregationAssignationToIndicators = customDissagregationAssignationToIndicators
+                    .stream()
+                    .filter(customDissagregationAssignationToIndicator ->
+                            customDissagregationAssignationToIndicator.getPeriod().getId().equals(ie.getPeriod().getId())
+                    ).collect(Collectors.toSet());
+        }
+
         for (Quarter quarter : quarters) {
             Set<Month> months = quarter.getMonths();
             for (Month month : months) {
