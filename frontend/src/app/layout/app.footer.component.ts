@@ -8,9 +8,17 @@ import { environment } from 'src/environments/environment';
 })
 export class AppFooterComponent {
     operationName=`${environment.operationName}`;
-    constructor(public layoutService: LayoutService) { }
-
+    isProduction = `${environment.production}`;
+    backgroundColor: string = 'white'; // Color inicial
     showDialog = false;
+
+
+    constructor(public layoutService: LayoutService) { 
+        this.isProduction === 'true' ? this.backgroundColor = 'white' : 
+        this.backgroundColor = '#ffd700'; // Color inicial
+
+    }
+
     
     get logo() {
         return this.layoutService.config.colorScheme === 'light' ? 'dark' : 'white';
