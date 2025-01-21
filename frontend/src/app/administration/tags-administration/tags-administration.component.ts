@@ -168,7 +168,10 @@ export class TagsAdministrationComponent implements OnInit {
                 this.indicators = filteredData.filter(
                     (indicator) => indicator.state === 'ACTIVO'
                 );
-                console.log(this.indicators);
+                if(this.selectedIndicators.length >0){
+                    this.indicators =this.indicators.filter((ind) => !this.selectedIndicators.find(ind2 => ind.id === ind2.id));
+
+                }
             },
             error: (err) => {
                 this.messageService.add({

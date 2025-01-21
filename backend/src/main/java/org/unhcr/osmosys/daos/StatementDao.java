@@ -140,4 +140,19 @@ public class StatementDao extends GenericDaoJpa<Statement, Long> {
         return q.getResultList();
 
     }
+
+    public List<Statement> getChildStatementsByParentId(Long parentId){
+        String jpql = "SELECT DISTINCT o" +
+                " FROM Statement o" +
+                " WHERE " +
+                " o.parentStatement.id =:parentId" +
+                " and o.areaType =:areaType" +
+                " and o.state=:state ";
+
+        Query q = getEntityManager().createQuery(jpql, Statement.class);
+        q.setParameter("state", State.ACTIVO);
+        q.setParameter("parentId", parentId);
+        q.setParameter("areaType", AreaType.PRODUCTO);
+        return q.getResultList();
+    }
 }

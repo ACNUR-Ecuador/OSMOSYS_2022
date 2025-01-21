@@ -77,7 +77,10 @@
                                 <td *ngFor="let col of columns"
                                     [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
                                 >
-                                    {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
+                                    {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) 
+                                        : (col.field === 'type') 
+                                        ? (convertoToOfficeTypeLabel(utilsService.resolveFieldData(rowData, col.field))) 
+                                        : utilsService.resolveFieldData(rowData, col.field) }}
                                 </td>
                                 <td>
                                     <button pButton pRipple icon="pi pi-pencil"

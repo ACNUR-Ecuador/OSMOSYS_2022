@@ -42,6 +42,7 @@ export class StatementAdministrationComponent implements OnInit {
     areaTypesItems: SelectItem[];
     filterAreaList: SelectItem[];
     selectedAreaType: string;
+    previousSaveStatement: Statement
 
 
     // tslint:disable-next-line:variable-name
@@ -293,7 +294,7 @@ export class StatementAdministrationComponent implements OnInit {
         });*/
         // obtengo los periods
         
-        
+        this.previousSaveStatement=statement
         this.utilsService.resetForm(this.formItem);
         this.submitted = false;
         this.showDialog = true;
@@ -373,6 +374,43 @@ export class StatementAdministrationComponent implements OnInit {
         }
         // noinspection DuplicatedCode
         if (statement.id) {
+            //Actualizar los child Statements si el área cambio
+            if(this.previousSaveStatement.area.id !== statement.area.id){
+                this.statementService.getChildStatementsByParentId(Number(statement.id))
+                .subscribe({
+                    next: value => {
+                        const childStatements=value
+                        if(childStatements?.length > 0){
+                            childStatements.forEach(item =>{
+                                item.area=statement.area
+                                this.statementService.update(item)
+                                    .subscribe({
+                                        next: () => {
+                                            this.loadItems();
+                                        },
+                                        error: err => {
+                                            this.messageService.add({
+                                                severity: 'error',
+                                                summary: 'Error al actualizar los enunciados hijos',
+                                                detail: err.error.message,
+                                                life: 3000
+                                            });
+                                        }
+                                    });
+                            })
+                        }
+                    },
+                    error: err => {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error al obtener los enunciados hijos',
+                            detail: err.error.message,
+                            life: 3000
+                        });
+                    }
+                });
+            }
+            
             // tslint:disable-next-line:no-shadowed-variable
             this.statementService.update(statement)
                 .subscribe({
@@ -571,6 +609,7 @@ export class StatementAdministrationComponent implements OnInit {
                 this.formItem.get('pillar').setValidators([Validators.required]);
                 this.formItem.get('pillar').enable();
             }else{
+                this.formItem.get('pillar').patchValue(null);
                 this.formItem.get('pillar').clearValidators();
                 this.formItem.get('pillar').disable();
                 this.formItem.get('area').setValidators([Validators.required]);
@@ -584,6 +623,7 @@ export class StatementAdministrationComponent implements OnInit {
             this.formItem.get('parentStatement').patchValue(null);
             this.formItem.get('parentStatement').clearValidators();
             this.formItem.get('parentStatement').disable();
+            this.formItem.get('pillar').patchValue(null);
             this.formItem.get('pillar').clearValidators();
             this.formItem.get('pillar').disable();
         }

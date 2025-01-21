@@ -254,22 +254,11 @@ export class UserAdministrationComponent implements OnInit {
             .map(value => {
                 return value.name;
             });
-        const org = user.organization;
-        if (org) {
-            if (org.id === 1) {
-                this.formItem.get('office').setValidators([Validators.required]);
-                this.formItem.get('office').enable();
-                this.formItem.get('office').updateValueAndValidity();
-                if (office) {
-                    this.formItem.get('office').patchValue(office);
-                }
-            } else {
-                this.formItem.get('office').patchValue(null);
-                this.formItem.get('office').clearValidators();
-                this.formItem.get('office').updateValueAndValidity();
-                this.formItem.get('office').disable();
-            }
+        if (office) {
+            this.formItem.get('office').patchValue(office);
         }
+        const org = user.organization;
+        this.onOrganizacionChange(org)
         this.formItem.get('roleTypes').patchValue(roleTypes);
         this.formItem.get('username').disable();
 
@@ -397,8 +386,7 @@ export class UserAdministrationComponent implements OnInit {
         }
     }
 
-    onOrganizacionChange($event: any) {
-        const org: Organization = $event.value;
+    onOrganizacionChange(org: Organization) {
         if (org) {
             if (org.id === 1) {
                 this.assignableRoles = JSON.parse(JSON.stringify(this.roles));
@@ -407,7 +395,10 @@ export class UserAdministrationComponent implements OnInit {
                 this.formItem.get('office').updateValueAndValidity();
             } else {
                 this.assignableRoles = this.assignableRoles
-                    .filter(value1 => value1.value !== 'EJECUTOR_ID' && value1.value !== 'MONITOR_ID')
+                    .filter(value1 => value1.value !== 'EJECUTOR_ID' && value1.value !== 'MONITOR_ID'
+                                        && value1.value !== 'ADMINISTRADOR_REGIONAL' && value1.value !== 'ADMINISTRADOR_LOCAL'
+                                        && value1.value !== 'SUPER_ADMINISTRADOR'
+                    )
                 this.formItem.get('office').patchValue(null);
                 this.formItem.get('office').clearValidators();
                 this.formItem.get('office').updateValueAndValidity();

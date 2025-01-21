@@ -396,5 +396,16 @@ export class OfficeAdministrationComponent implements OnInit {
             
         }
     }
+
+    convertoToOfficeTypeLabel(officeType:string){
+        const officeTypeLabel=this.officeTypes.find(item => item.value===officeType)?.label
+
+        if(officeTypeLabel){
+            return officeTypeLabel
+        }else{
+            return ""
+        }
+
+    }
 }
 

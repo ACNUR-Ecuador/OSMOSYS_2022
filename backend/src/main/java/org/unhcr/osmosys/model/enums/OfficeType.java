@@ -7,7 +7,8 @@ public enum OfficeType  implements EnumInterface{
     UNIDAD_DE_CAMPO("Unidad de Terreno", 4),
     OFICINA_NACIONAL("Oficina Nacional", 5),
     PRESENCIA("Presencia", 6),
-    UNIDAD("Unidad", 7);
+    UNIDAD("Unidad o Área Técnica", 7),
+    OFICINA_MULTI_PAIS("Oficina Multi-País", 8);
 
 
     private String label;
