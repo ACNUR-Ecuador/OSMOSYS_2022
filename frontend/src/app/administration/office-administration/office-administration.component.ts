@@ -275,19 +275,7 @@ export class OfficeAdministrationComponent implements OnInit {
         this.parenteOffices=officeRemoveItself
 
         const officeType: string = office.type;
-        if (officeType) {
-            if (officeType === "BO" || officeType === "OFICINA_NACIONAL" ) {
-                this.formItem.get('parentOffice').patchValue(null);
-                this.formItem.get('parentOffice').clearValidators();
-                this.formItem.get('parentOffice').updateValueAndValidity();
-                this.formItem.get('parentOffice').disable();
-            } else {
-                this.formItem.get('parentOffice').setValidators([Validators.required]);
-                this.formItem.get('parentOffice').enable();
-                this.formItem.get('parentOffice').updateValueAndValidity();
-            }
-            
-        }
+        this.onOfficeTypeChange(officeType)
     }
 
 
@@ -380,10 +368,9 @@ export class OfficeAdministrationComponent implements OnInit {
         this.editItem($event.node.data);
     }
 
-    onOfficeTypeChange($event: any) {
-        const officeType: string = $event.value;
+    onOfficeTypeChange(officeType: string) {
         if (officeType) {
-            if (officeType === "BO" || officeType === "OFICINA_NACIONAL" ) {
+            if (officeType === "BO" || officeType === "OFICINA_NACIONAL" || officeType === "OFICINA_MULTI_PAIS" ) {
                 this.formItem.get('parentOffice').patchValue(null);
                 this.formItem.get('parentOffice').clearValidators();
                 this.formItem.get('parentOffice').updateValueAndValidity();
@@ -398,14 +385,12 @@ export class OfficeAdministrationComponent implements OnInit {
     }
 
     convertoToOfficeTypeLabel(officeType:string){
-        const officeTypeLabel=this.officeTypes.find(item => item.value===officeType)?.label
-
+        const officeTypeLabel=this.officeTypes.find(item => item.value === officeType)?.label
         if(officeTypeLabel){
             return officeTypeLabel
         }else{
             return ""
         }
-
     }
 }
 
