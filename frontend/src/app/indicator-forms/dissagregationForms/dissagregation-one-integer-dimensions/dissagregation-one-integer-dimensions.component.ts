@@ -33,7 +33,7 @@ export class DissagregationOneIntegerDimensionsComponent implements OnInit, OnCh
     importErroMessage: string[];
     showImportErrorLogs: boolean;
     currentTimestamp: string;
-    
+    validateTotalControl: boolean=true
 
     constructor(
         public enumsService: EnumsService,
@@ -44,6 +44,9 @@ export class DissagregationOneIntegerDimensionsComponent implements OnInit, OnCh
     }
 
     ngOnInit(): void {
+        if(this.dissagregationType.value.lastIndexOf("DIVERSIDAD")>=0){
+            this.validateTotalControl=false;
+        }
         this.processDissagregationValues();
         this.importForm = this.fb.group({
             fileName: new FormControl('', [Validators.required]),

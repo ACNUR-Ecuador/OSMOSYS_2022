@@ -137,7 +137,7 @@ public class ProjectAuditDTO {
         labelValueList.add(new LabelValue("Socio id", organizationId));
         labelValueList.add(new LabelValue("Socio", organization));
         labelValueList.add(new LabelValue("Año de Implementación", periodId));
-        labelValueList.add(new LabelValue("Partner Manager", partnerManager));
+        labelValueList.add(new LabelValue("Supervisor de Reporte (Socio)", partnerManager));
 
         if (focalPointAssignations != null && !focalPointAssignations.isEmpty()) {
             // Ordenar la lista por el ID de FocalPoint
@@ -162,7 +162,7 @@ public class ProjectAuditDTO {
             }
 
             focalPoints.append("]");
-            labelValueList.add(new LabelValue("Puntos Focales", focalPoints.toString()));
+            labelValueList.add(new LabelValue("Responsables del Proyecto", focalPoints.toString()));
         }
 
         // Concatenar la lista de projectLocationAssigments

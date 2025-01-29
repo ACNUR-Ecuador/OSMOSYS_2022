@@ -8,7 +8,7 @@
                     *ngIf="disableSave && canEditLocation"
                     text="Primero agrega lugares para poder reportar"
             ></p-message>
-            <button pButton *ngIf="hasLocationDissagregation && canEditLocation" type="button" pRipple label="Agregar Lugares de Ejecución"
+            <button pButton *ngIf="hasLocationDissagregation && canEditLocation && (isAdmin || isResponsible || isOfficeAdmin)" type="button" pRipple label="Agregar Lugares de Ejecución"
                     icon="pi pi-plus"
                     (click)="openLocationsDialog()"></button>
         </div>
@@ -36,6 +36,17 @@
                     [indicatorExecution]="indicatorExecution"
                 ></app-chart-indicator-execution>
 
+            </div>
+        </div>
+        <div class="nota">
+            <p><strong>Nota:</strong> El color en el encabezado de las tablas de desagregación indica lo siguiente:</p>
+            <div class="leyenda">
+              <span class="cuadro-color" [style.background-color]="'#0072BC'"></span>
+              <span>Requiere validación de totales con otras tablas</span>
+            </div>
+            <div class="leyenda">
+              <span class="cuadro-color" [style.background-color]="'#0c0067'"></span>
+              <span>No requiere validación de totales con otras tablas</span>
             </div>
         </div>
         <div class="card p-0">
@@ -235,8 +246,10 @@
                         (click)="cancel()"></button>
             </div>
             <div class="flex justify-content-end "
-                 *ngIf="!editable && !(isAdmin || isSupervisor && isResponsible) ">
-
+                 *ngIf="!editable && !(isAdmin || isSupervisor && isResponsible && isOfficeAdmin) ">
+                 <p-message severity="warn"
+                 [text]=noEditionMessage
+                 styleClass="p-mr-2"></p-message>
                 <button pButton type="button" pRipple label="Salir" icon="pi pi-times"
                         (click)="cancel()"></button>
             </div>
@@ -245,7 +258,7 @@
     </form>
 </div>
 
-<p-dialog [(visible)]="showTotalErrorResume" [closable]="false" [closeOnEscape]="false">
+<p-dialog [(visible)]="showTotalErrorResume" [closable]="false" [closeOnEscape]="false" appendTo="body">
     <ng-template pTemplate="header">
         Existen Errores en los Valores
     </ng-template>
@@ -281,7 +294,7 @@
         </div>
     </ng-template>
 </p-dialog>
-<p-dialog [(visible)]="showMissmatchErrorResume" [closable]="false" [closeOnEscape]="false">
+<p-dialog [(visible)]="showMissmatchErrorResume" [closable]="false" [closeOnEscape]="false" appendTo="body">
     <ng-template pTemplate="header">
         Existen Errores en los Valores
     </ng-template>
@@ -305,7 +318,7 @@
                     </ng-template>
                     <ng-template pTemplate="body" let-dissagregation>
                         <tr>
-                            <td>{{missMatchMessage(dissagregation)}}</td>
+                            <td><strong>{{missMatchDiss(dissagregation)}}</strong>{{missMatchDissOption(dissagregation)}}</td>
                             <td>{{ missMatchTotal(dissagregation)}}</td>
                         </tr>
                     </ng-template>

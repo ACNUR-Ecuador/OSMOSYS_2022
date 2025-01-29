@@ -32,6 +32,8 @@ export class CustomDissagregationIntegerComponent implements OnInit {
     importErroMessage: string[];
     showImportErrorLogs: boolean;
     currentTimestamp: string;
+    validateTotalControl: boolean=true
+
 
     constructor(
         public utilsService: UtilsService,
@@ -41,6 +43,9 @@ export class CustomDissagregationIntegerComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        if(this.customDissagregation.controlTotalValue === false){
+            this.validateTotalControl=false;
+        }
         this.processDissagregationValues();
         this.importForm = this.fb.group({
             fileName: new FormControl('', [Validators.required]),

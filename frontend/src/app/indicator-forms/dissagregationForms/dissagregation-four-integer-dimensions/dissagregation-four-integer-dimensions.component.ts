@@ -46,7 +46,7 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
     importErroMessage: string[];
     showImportErrorLogs: boolean;
     currentTimestamp: string;
-    
+    validateTotalControl: boolean=true
     // private workbook: XLSX.WorkBook;
 
 
@@ -59,6 +59,9 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
     }
 
     ngOnInit(): void {
+        if(this.dissagregationType.value.lastIndexOf("DIVERSIDAD")>=0){
+            this.validateTotalControl=false;
+        }
         this.processDissagregationValues();
         //this.dissagregationType === DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO && this.implementationType === 'directImplementation';
         this.importForm = this.fb.group({

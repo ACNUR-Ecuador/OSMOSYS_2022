@@ -219,6 +219,9 @@ export class IndicatorsListComponent implements OnInit {
         if (indicatorExecution.assignedUserBackup && indicatorExecution.assignedUserBackup.id === userId) {
             roles.push('Responsable de reporte alterno');
         }
+        if(indicatorExecution?.reportingOffice?.administrators.some( adm => adm.id === userId) ){
+            roles.push('Jefe de Oficina');
+        }
         if (roles.length > 0) {
             header = header + ' (' + roles.join(', ') + ')';
         }

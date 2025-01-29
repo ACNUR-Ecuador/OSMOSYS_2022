@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.jboss.logging.Logger;
+import org.unhcr.osmosys.model.Indicator;
 import org.unhcr.osmosys.model.Office;
 import org.unhcr.osmosys.model.OfficeAdministrator;
 import org.unhcr.osmosys.model.Organization;
@@ -287,6 +288,12 @@ public class UserService implements Serializable {
                 .map(OfficeAdministrator::getOffice).collect(Collectors.toList());
         // find focal points ()
         List<Long> projectsIds = this.userDao.findProjectsFocalPoints(user.getId());
+        //result manager Indicators
+        List<Indicator> resultManagerIndicators = this.userDao.findIndicatorsByResultManager(user.getId());
+        //partner Manager(supervisor reporte) Projects
+        List<Long> partnerManagerProjects=this.userDao.findProjectsPartnerManager(user.getId());
+        //impl dir supervisor Indicatorexecutions
+        List<Long> supervisorDirectImplementations=this.userDao.findSupervisorDirectImplementations(user.getId());
         if (CollectionUtils.isNotEmpty(projectsIds)) {
             RoleWeb fpr = new RoleWeb();
             fpr.setId(0L);
@@ -303,6 +310,29 @@ public class UserService implements Serializable {
             userWeb.getRoles().add(fpr);
             userWeb.setAdministratedOffices(this.modelWebTransformationService.officesToOfficesWeb(administeredOfficess,false, false));
         }
+        if (CollectionUtils.isNotEmpty(resultManagerIndicators)) {
+            RoleWeb fpr = new RoleWeb();
+            fpr.setId(-2L);
+            fpr.setName(RoleType.RESULT_MANAGER.name());
+            fpr.setState(State.ACTIVO);
+            userWeb.getRoles().add(fpr);
+        }
+        if (CollectionUtils.isNotEmpty(partnerManagerProjects)) {
+            RoleWeb fpr = new RoleWeb();
+            fpr.setId(-3L);
+            fpr.setName(RoleType.SUPERVISOR_REPORTE_SOCIO.name());
+            fpr.setState(State.ACTIVO);
+            userWeb.getRoles().add(fpr);
+        }
+        if (CollectionUtils.isNotEmpty(supervisorDirectImplementations)) {
+            RoleWeb fpr = new RoleWeb();
+            fpr.setId(-4L);
+            fpr.setName(RoleType.SUPERVISOR_REPORTE_ID.name());
+            fpr.setState(State.ACTIVO);
+            userWeb.getRoles().add(fpr);
+        }
+
+
 
 
         return userWeb;
@@ -506,11 +536,17 @@ public class UserService implements Serializable {
         // roles
 
         this.userDao.update(user);
+        Set<RoleType> invalidRoles = new HashSet<>();
+        invalidRoles.add(RoleType.PUNTO_FOCAL);
+        invalidRoles.add(RoleType.ADMINISTRADOR_OFICINA);
+        invalidRoles.add(RoleType.RESULT_MANAGER);
+        invalidRoles.add(RoleType.SUPERVISOR_REPORTE_SOCIO);
+        invalidRoles.add(RoleType.SUPERVISOR_REPORTE_ID);
 
         for (RoleWeb roleWeb : userWeb.getRoles()) {
             try {
                 RoleType roleType = RoleType.valueOf(roleWeb.getName());
-                if (roleType.equals(RoleType.PUNTO_FOCAL)) {
+                if (invalidRoles.contains(roleType)) {
                     continue;
                 }
                 Role role = this.roleService.findByRoleType(roleType);

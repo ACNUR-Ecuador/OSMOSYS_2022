@@ -78,14 +78,14 @@ export class MenuService {
         {
             label: 'Administración',
             icon: 'pi pi-cog',
-            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR_LOCAL','ADMINISTRADOR_REGIONAL', 'PUNTO_FOCAL', 'ADMINISTRADOR_OFICINA'],
+            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR_LOCAL','ADMINISTRADOR_REGIONAL'],
             items: [
                 // {label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']},
 
                 {
                     label: 'Configuración del sistema',
                     icon: 'pi pi-fw pi-cog',
-                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR_LOCAL','ADMINISTRADOR_REGIONAL','PUNTO_FOCAL', 'ADMINISTRADOR_OFICINA'],
+                    roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR_LOCAL','ADMINISTRADOR_REGIONAL'],
                     items: [
                         {
                             label: 'Parámetros de Configuración',
@@ -140,7 +140,7 @@ export class MenuService {
                             label: 'Usuarios',
                             icon: 'pi pi-fw pi-user',
                             routerLink: ['/administration/users'],
-                            roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL', 'PUNTO_FOCAL', 'ADMINISTRADOR_OFICINA']
+                            roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL']
                         },
                         {
                             label: 'Auditoría',
@@ -160,7 +160,7 @@ export class MenuService {
                 {
                     label: 'Indicadores de Producto',
                     icon: 'pi pi-fw pi-box',
-                    roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL','PUNTO_FOCAL', 'ADMINISTRADOR_OFICINA'],
+                    roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL'],
                     items: [
 
 
@@ -180,13 +180,13 @@ export class MenuService {
                             label: 'Indicadores Socios',
                             icon: 'pi pi-fw pi-user-plus',
                             routerLink: ['/administration/partnerProjectListAdministration'],
-                            roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL','PUNTO_FOCAL']
+                            roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL']
                         },
                         {
                             label: 'Indicadores Implementación Directa',
                             icon: 'pi pi-fw pi-briefcase',
                             routerLink: ['/administration/directImplementationAdministration'],
-                            roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL', 'ADMINISTRADOR_OFICINA']
+                            roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL']
                         },
 
                     ]},
@@ -216,13 +216,13 @@ export class MenuService {
         {
             label: 'Socios',
             icon: 'pi pi-users',
-            roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'PUNTO_FOCAL'],
+            roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'PUNTO_FOCAL', 'MONITOR_ID'],
             items: [
                 {
                     label: 'Proyectos',
                     icon: 'pi pi-fw pi-home',
                     routerLink: ['/partners/partnersProjectList'],
-                    roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'PUNTO_FOCAL']
+                    roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS', 'PUNTO_FOCAL', 'MONITOR_ID']
                 }
             ]
         },

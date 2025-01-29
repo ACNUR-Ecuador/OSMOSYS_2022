@@ -6,6 +6,7 @@ import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.RoleType;
 import com.sagatechs.generics.security.model.User;
+import org.unhcr.osmosys.model.Indicator;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
@@ -264,10 +265,11 @@ public class UserDao extends GenericDaoJpa<User, Long> {
 
     public List<Long> findProjectsFocalPoints(Long id) {
         String jpql = "SELECT DISTINCT pr.id FROM " +
-                "  Project pr inner join pr.focalPoint fp  " +
-                " where fp.id=:id ";
+                "  Project pr inner join pr.focalPointAssignations fpa  " +
+                " where fpa.focalPointer.id=:id and pr.state=:state and fpa.state=:state";
         Query query = getEntityManager().createQuery(jpql, Long.class);
         query.setParameter("id", id);
+        query.setParameter("state", State.ACTIVO);
         return query.getResultList();
     }
 
@@ -326,6 +328,35 @@ public class UserDao extends GenericDaoJpa<User, Long> {
         Query query = getEntityManager().createQuery(jpql, User.class);
         query.setParameter("periodId", periodId);
         query.setParameter("state", state);
+        return query.getResultList();
+    }
+
+    public List<Indicator> findIndicatorsByResultManager(Long id) {
+        String jpql = "SELECT DISTINCT i FROM " +
+                "  Indicator i inner join i.resultManager rm  " +
+                " where rm.id=:id AND i.state=:state";
+        Query query = getEntityManager().createQuery(jpql, Indicator.class);
+        query.setParameter("id", id);
+        query.setParameter("state", State.ACTIVO);
+        return query.getResultList();
+    }
+
+    public List<Long> findProjectsPartnerManager(Long id) {
+        String jpql = "SELECT DISTINCT pr.id FROM " +
+                "  Project pr inner join pr.partnerManager pm  " +
+                " where pm.id=:id AND pr.state=:state";
+        Query query = getEntityManager().createQuery(jpql, Long.class);
+        query.setParameter("id", id);
+        query.setParameter("state", State.ACTIVO);
+        return query.getResultList();
+    }
+    public List<Long> findSupervisorDirectImplementations(Long id) {
+        String jpql = "SELECT DISTINCT ie.id FROM " +
+                "  IndicatorExecution ie inner join ie.supervisorUser su  " +
+                " where su.id=:id AND ie.state=:state";
+        Query query = getEntityManager().createQuery(jpql, Long.class);
+        query.setParameter("id", id);
+        query.setParameter("state", State.ACTIVO);
         return query.getResultList();
     }
 }

@@ -46,6 +46,7 @@ export class DissagregationSixIntegerDimensionsComponent implements OnInit {
     importErroMessage: string[];
     showImportErrorLogs: boolean;
     currentTimestamp: string;
+    validateTotalControl: boolean=true
 
     constructor(
         public utilsService: UtilsService,
@@ -56,6 +57,9 @@ export class DissagregationSixIntegerDimensionsComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        if(this.dissagregationType.value.lastIndexOf("DIVERSIDAD")>=0){
+            this.validateTotalControl=false;
+        }
         this.processDissagregationValues();
         this.importForm = this.fb.group({
             fileName: new FormControl('', [Validators.required]),

@@ -38,6 +38,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     isAdmin = false;
     isSupervisor = false;
     isResponsible = false;
+    isOfficeAdmin = false;
     noEditionMessage: string = '';
 
     noDimentionDissagregations: EnumWeb[] = [];
@@ -71,6 +72,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
     importCantonesErroMessage: string[];
     showImportCantonesErroMessage: boolean;
     canEditLocation: boolean;
+    
 
     constructor(public ref: DynamicDialogRef,
                 public config: DynamicDialogConfig,
@@ -92,6 +94,7 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
         this.indicatorExecution = this.config.data.indicatorExecution;
         this.monthId = this.config.data.monthId;
         this.canEditLocation=this.appConfigurationService.getCanDirectImplementacionEditLocations();
+        
 
         this.formItem = this.fb.group({
             commentary: new FormControl('', [Validators.maxLength(1000), Validators.required]),
@@ -134,6 +137,9 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
         if (this.indicatorExecution.assignedUserBackup && this.indicatorExecution.assignedUserBackup.id === userId) {
             this.isResponsible = true;
         }
+        if(this.indicatorExecution?.reportingOffice?.administrators.some( adm => adm.id === userId) ){
+            this.isOfficeAdmin = true;
+        }
         this.setEditable();
     }
 
@@ -141,10 +147,10 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
         this.noEditionMessage = null;
         if (this.isAdmin) {
             this.editable = true;
-        } else if (this.month.blockUpdate && (this.isResponsible || this.isSupervisor)) {
+        } else if (this.month.blockUpdate && (this.isResponsible || this.isSupervisor || this.isOfficeAdmin)) {
             this.editable = false;
-            this.noEditionMessage = "El indicador está bloqueado, comuníquese con el punto focal si desea actualizarlo";
-        } else if (!this.month.blockUpdate && (this.isResponsible || this.isSupervisor)) {
+            this.noEditionMessage = "El indicador está bloqueado, comuníquese con un responsable del proyecto si desea actualizarlo";
+        } else if (!this.month.blockUpdate && (this.isResponsible || this.isSupervisor || this.isOfficeAdmin)) {
             this.editable = true;
         } else {
             this.editable = false;
@@ -305,14 +311,17 @@ export class DirectImplementationPerformanceIndicatorFormComponent implements On
             this.sendMonthValue();
         }
     }
-    missMatchMessage(dissagregation){
+    missMatchDissOption(dissagregation){
         const dissMap=this.totalsValidation.get(dissagregation)
         const firstKey = dissMap?.keys().next().value;
         const firstSubkey = dissMap.get(firstKey)?.keys().next().value;
-        const firstValue = dissMap.get(firstKey)?.get(firstSubkey);    
+        const result = `${this.utilsService.getDissagregationlabelByKey(firstKey)} - ${firstSubkey}`;
 
-        const result = `${this.enumValuesToLabelPipe.transform(dissagregation, 'DissagregationType')}: ${this.utilsService.getDissagregationlabelByKey(firstKey)} - ${firstSubkey}`;
+        return result
 
+    }
+    missMatchDiss(dissagregation){
+        const result = `${this.enumValuesToLabelPipe.transform(dissagregation, 'DissagregationType')}: `;
         return result
 
     }

@@ -157,9 +157,21 @@ export class UserAdministrationComponent implements OnInit {
                     )
                 }
                 this.selectRoles = JSON.parse(JSON.stringify(this.roles));
-                this.roles = this.roles
-                    .filter(value1 => value1.value !== 'PUNTO_FOCAL' && value1.value !== 'ADMINISTRADOR_OFICINA')
-                
+                this.selectRoles.forEach(value1 => value1.disabled = false)
+                /*this.roles = this.roles
+                    .filter(value1 => value1.value !== 'PUNTO_FOCAL' && value1.value !== 'ADMINISTRADOR_OFICINA')*/
+                this.roles.forEach(value1 => {
+                        if (value1.value === 'PUNTO_FOCAL' || value1.value === 'ADMINISTRADOR_OFICINA' || value1.value === 'RESULT_MANAGER'
+                                            || value1.value === 'SUPERVISOR_REPORTE_SOCIO' || value1.value === 'SUPERVISOR_REPORTE_ID'
+                        ) {
+                            value1.disabled = true;
+                       
+                        } else {
+                            value1.disabled = false;
+                        }
+    
+    
+                });
                 this.assignableRoles = JSON.parse(JSON.stringify(this.roles));
 
             },
@@ -388,16 +400,22 @@ export class UserAdministrationComponent implements OnInit {
 
     onOrganizacionChange(org: Organization) {
         if (org) {
+            this.assignableRoles = JSON.parse(JSON.stringify(this.roles));
             if (org.id === 1) {
-                this.assignableRoles = JSON.parse(JSON.stringify(this.roles));
                 this.formItem.get('office').setValidators([Validators.required]);
                 this.formItem.get('office').enable();
                 this.formItem.get('office').updateValueAndValidity();
+                this.assignableRoles = this.assignableRoles
+                    .filter(value1 => value1.value !== 'EJECUTOR_PROYECTOS' && value1.value !== 'MONITOR_PROYECTOS'
+                                       && value1.value !== 'SUPERVISOR_REPORTE_SOCIO'
+                    )
             } else {
                 this.assignableRoles = this.assignableRoles
                     .filter(value1 => value1.value !== 'EJECUTOR_ID' && value1.value !== 'MONITOR_ID'
                                         && value1.value !== 'ADMINISTRADOR_REGIONAL' && value1.value !== 'ADMINISTRADOR_LOCAL'
-                                        && value1.value !== 'SUPER_ADMINISTRADOR'
+                                        && value1.value !== 'SUPER_ADMINISTRADOR' && value1.value !== 'PUNTO_FOCAL'
+                                        && value1.value !== 'ADMINISTRADOR_OFICINA' && value1.value !== 'RESULT_MANAGER'
+                                        && value1.value !== 'SUPERVISOR_REPORTE_ID'
                     )
                 this.formItem.get('office').patchValue(null);
                 this.formItem.get('office').clearValidators();

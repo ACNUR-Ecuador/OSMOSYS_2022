@@ -1,5 +1,5 @@
-<p-table *ngIf="values" [value]="rows">
-    <ng-template pTemplate="caption">
+<p-table *ngIf="values" [value]="rows" [ngClass]="validateTotalControl ? 'diss-table':'diss-table-secondary'">
+    <ng-template pTemplate="caption" >
         <div class="flex w-full justify-content-between align-items-center">
             <div class="flex-grow-1 text-center">
                 Desagregación por {{ dissagregationType.label }}
@@ -46,7 +46,7 @@
             <td class="subtotal_value" *ngFor="let colOp of dissagregationOptionsColumns; index as indexColumn">
                 {{this.utilsService.getTotalIndicatorValuesColumnArrayArray(rows, indexColumn)}}
             </td>
-            <td class="total_value">{{this.utilsService.getTotalIndicatorValuesArrayArray(rows)}}</td>
+            <td class="total_value" >{{this.utilsService.getTotalIndicatorValuesArrayArray(rows)}}</td>
         </tr>
     </ng-template>
 </p-table>

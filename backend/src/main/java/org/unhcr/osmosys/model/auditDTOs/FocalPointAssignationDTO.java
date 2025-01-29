@@ -51,9 +51,9 @@ public class FocalPointAssignationDTO {
     public String toString() {
         return "{" +
                 "\"ID\":" + id +
-                ", \"Punto Focal\":\"" + focalPoint + "\"" +
+                ", \"Responsable del Proyecto\":\"" + focalPoint + "\"" +
                 ", \"ID de Proyecto\":\"" + projectId + "\"" +
-                ", \"Punto Focal Principal\":\"" + mainFocalPoint + "\"" +
+                ", \"Responsable Principal\":\"" + mainFocalPoint + "\"" +
                 ", \"Estado\":\"" + state + "\"" +
                 '}';
     }

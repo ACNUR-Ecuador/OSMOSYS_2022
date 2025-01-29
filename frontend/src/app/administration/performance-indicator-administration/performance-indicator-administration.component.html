@@ -233,7 +233,7 @@
 
                         <div class="field col-12 md:col-2">
                             <label for="frecuencyI">Frecuencia de alerta *:</label>
-                            <i class="pi pi-info-circle" style="margin-left: 0.5rem; color: #ff8000;" 
+                            <i class="pi pi-info-circle" style="margin-left: 0.5rem; color: blue;" 
                             pTooltip="Frecuencia con la que se envían correos de alerta" tooltipPosition="right"></i> 
                             
 
@@ -283,7 +283,9 @@
                                    *ngIf="utilsService.showErrorForm('unit',formItem)">{{utilsService.getErrorMessageForm('unit', formItem)}}</small>
                         </div>
                         <div class="field col-12 md:col-3">
-                            <label htmlFor="focalPointI">Manager de Resultado:</label>
+                            <label htmlFor="focalPointI">Mánager de Resultado:</label>
+                            <i class="pi pi-info-circle" style="margin-left: 0.5rem; color: blue;" 
+                            pTooltip="Usuario del ACNUR que supervisa el indicador actual" tooltipPosition="right"></i> 
                             <p-dropdown id="focalPointI" formControlName="resultManager" [options]="focalPoints"
                                         placeholder="Selecciona..." [showClear]="true"
                                         [filter]="true" filterBy="name"

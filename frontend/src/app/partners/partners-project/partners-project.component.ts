@@ -44,6 +44,7 @@ export class PartnersProjectComponent implements OnInit {
     isAdmin = false;
     isProjectFocalPoint = false;
     isEjecutor = false;
+    isPartnerSupervisor = false;
 
     colsMonthState: ColumnTable[];
 
@@ -156,7 +157,8 @@ export class PartnersProjectComponent implements OnInit {
                     projectId: this.project.id,
                     isAdmin: this.isAdmin,
                     isProjectFocalPoint: this.isProjectFocalPoint,
-                    isEjecutor: this.isEjecutor
+                    isEjecutor: this.isEjecutor,
+                    isPartnerSupervisor:this.isPartnerSupervisor
                 }
             }
         );
@@ -190,7 +192,8 @@ export class PartnersProjectComponent implements OnInit {
                     projectId: this.project.id,
                     isAdmin: this.isAdmin,
                     isProjectFocalPoint: this.isProjectFocalPoint,
-                    isEjecutor: this.isEjecutor
+                    isEjecutor: this.isEjecutor,
+                    isPartnerSupervisor:this.isPartnerSupervisor
                 }
             }
         );
@@ -213,10 +216,13 @@ export class PartnersProjectComponent implements OnInit {
             roles.push('Administrador');
         }
         if (this.isProjectFocalPoint) {
-            roles.push('Punto Focal');
+            roles.push('Responsable del Proyecto');
         }
         if (this.isEjecutor) {
-            roles.push('Ejecutor');
+            roles.push('Responsable de Reporte');
+        }
+        if (this.isPartnerSupervisor) {
+            roles.push('Supervisor de Reporte');
         }
         if (roles.length > 0) {
             return ' (' + roles.join(', ') + ')';
@@ -327,7 +333,7 @@ export class PartnersProjectComponent implements OnInit {
         this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL']);
         this.isProjectFocalPoint = this.project.focalPoints.some( fp => fp.id === userId);
         this.isEjecutor = this.project.organization.id === orgId && this.userService.hasRole('EJECUTOR_PROYECTOS');
-
+        this.isPartnerSupervisor=this.project?.partnerManager?.id === userId
         if (this.isAdmin || this.isProjectFocalPoint) {
             this.canEditCantons = true;
         } else {

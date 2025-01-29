@@ -34,7 +34,7 @@ export class AuditAdministrationComponent implements OnInit {
   dialogVisible: boolean = false;
   dialogData: any[] = [];
   dialogTitle: string = '';
-  specialProperties: string[] = ['Puntos Focales', 'Lugares de Ejecución', 'Indicadores de Ejecución'];
+  specialProperties: string[] = ['Responsables del Proyecto', 'Lugares de Ejecución', 'Indicadores de Ejecución'];
   tableDateForm: FormGroup;
   periods: Period[];
   months:any

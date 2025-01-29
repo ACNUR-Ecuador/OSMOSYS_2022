@@ -363,7 +363,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 error: error => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al cargar los puntos focales',
+                        summary: 'Error al cargar los responsables del proyecto',
                         detail: error.error.message,
                         life: 3000
                     });
@@ -495,7 +495,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             updateAllLocationsIndicators,
             partnerManager: partnerManager !== "" ? partnerManager: null
         };
-        console.log(project)
         if (!locations || locations.length < 1) {
             this.messageService.add({
                 severity: 'error',
@@ -507,7 +506,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         if (!focalPoints || focalPoints.length < 1) {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Agrega al menos un punto focal'
+                summary: 'Agrega al menos un Responsable de Proyecto'
             });
             return;
         }

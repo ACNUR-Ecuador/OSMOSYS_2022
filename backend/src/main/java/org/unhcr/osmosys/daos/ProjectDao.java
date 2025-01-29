@@ -92,7 +92,9 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
 
     public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndFocalPointId(Long periodId, Long focalPointId) {
 
-        String sql = this.projectResumeWebQuery + " WHERE pe.id =:periodId and pr.focal_point_id =:focalPointId";
+        String sql = this.projectResumeWebQuery
+                +"LEFT JOIN osmosys.focal_point_assignation fpa ON pr.id = fpa.project_id "
+                + " WHERE pe.id =:periodId and fpa.focal_pointer_id =:focalPointId";
         Query q = getEntityManager().createNativeQuery(sql, "ProjectResumeWebMapping");
         q.setParameter("periodId", periodId);
         q.setParameter("focalPointId", focalPointId);
@@ -141,7 +143,9 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         String jpql = "SELECT DISTINCT " +
                 " o FROM Project o " +
                 " left outer join fetch o.organization " +
-                " left outer join fetch o.focalPoint fp " +
+                " left outer join fetch o.focalPointAssignations fpa " +
+                " left outer join fetch fpa.focalPointer " +
+                " left outer join fetch fpa.focalPointer fp " +
                 " left outer join fetch fp.organization " +
                 " left outer join fetch fp.office " +
                 " left outer join fetch o.period pe " +
@@ -204,9 +208,10 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
     }
 
     public List<User> getFocalPointByPeriodId(Long periodId) {
-        String jpql = "SELECT DISTINCT o FROM Project pr " +
-                " inner join pr.focalPoint o " +
-                "  WHERE o.state =:state and pr.period.id=:periodId";
+        String jpql = "SELECT DISTINCT fpa FROM Project pr " +
+                " inner join pr.focalPointAssignations o " +
+                " inner join o.focalPointer fpa " +
+                "  WHERE o.state =:state and pr.period.id=:periodId and pr.state=:state";
         Query q = getEntityManager().createQuery(jpql, User.class);
         q.setParameter("periodId", periodId);
         q.setParameter("state", State.ACTIVO);

@@ -314,7 +314,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                 error: error => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al cargar los puntos focales',
+                        summary: 'Error al cargar los responsables del proyecto',
                         detail: error.error.message,
                         life: 3000
                     });

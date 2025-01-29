@@ -72,6 +72,74 @@ $gutter: 1rem; //for primeflex grid system
     color: #fdfeff !important;
     background: #338EC9 !important;
 }
+//desagregaciones sin validación de totales
+/* Sobrescribir el estilo de encabezado global */
+.diss-table .p-datatable-header {
+    background: #0072BC !important;
+    color: #ffffff !important; 
+    font-weight: normal;
+    padding-bottom: 5px !important;
+  }
+.diss-table-secondary .p-datatable-header {
+    background: #0c0067  !important;
+    color: #ffffff !important; 
+    font-weight: normal;
+    padding-bottom: 5px !important;
+  }
+  .diss-panel-secondary .p-panel-header {
+    background: #009e4d  !important;
+    color: #ffffff !important; 
+    font-weight: normal;
+  }
+  .nota {
+    margin-top: 20px;
+    font-weight: normal;
+    font-size: 12px;
+    color: #333;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 10px;  /* Borde redondeado */
+    border: 2px solid #ddd;  /* Borde sutil */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    display: inline-block; 
+  }
+  
+  .leyenda {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .cuadro-color {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border-radius: 5px;
+  }
+  
+  //
+.table-title-secondary{
+    text-align: left;
+    padding: 1rem 1rem;
+    border: 1px solid #e9ecef;
+    font-weight: 600;
+    color: #fdfeff !important;
+    background: #0cb15e !important;
+}
+.table-headers th{
+    background: #009e4d !important;
+}
+.subtotal_value-secondary{
+    background-color: #cef2cc !important;
+    color: #000000 !important;
+    text-align: right !important;
+}
+.total_value-secondary {
+    background-color: #17bf70 !important;
+    color: #000000 !important;
+    text-align: right !important;
+}
+//
 .p-datatable .p-sortable-column.p-highlight {
     background: rgb(0, 114, 188, 0.4);
     color: #0072bc;
