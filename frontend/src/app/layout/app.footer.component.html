@@ -9,37 +9,38 @@
     <p-dialog header="Change log" [(visible)]="showDialog" [modal]="true" [style]="{width: '50vw'}" (onHide)="showDialog = false">
         <h5 style="margin-top: 1rem;">Versión 5.0.6 - 2025-01-29</h5>
         <ul>
-            <li>Se agrega un color diferente al encabezado de las tablas de desagregación que no requieren validación de totales</li>
-            <li>Se agrega etiqueta de información al campo de Mánager de Resultado en la creación de Indicadores</li>
-            <li>Se renombran y agregan nuevos roles</li>
-            <li>Se agregan permisos correpondientes a los nuevos roles</li>
-            <li>Se renombran campos en las pantallas de proyecto y auditoría de acuerdo a los nuevos roles</li>
+            <li>El pie de página ahora se muestra en amarillo cuando se está en un ambiente de pruebas.</li>
+            <li>EL pie de página se pinta de amarillo cuando se está en un ambiente de pruebas.</li>
+            <li>Al cerrar sesión, ahora se redirige automáticamente a la pantalla de inicio de sesión.</li>
+            <li>Se añade un color distintivo al encabezado de las tablas de desagregación que no requieren validación de totales.</li>
+            <li>Se incorpora ayuda informativa en varios campos y roles.</li>
+            <li>Se renombran y añaden nuevos roles y permisos.</li>
+            <li>Se actualizan etiquetas en las pantallas de proyecto y auditoría para alinearlas con los nuevos roles.</li>
         </ul>
         <h5 style="margin-top: 1rem;">Versión 5.0.5 - 2025-01-22</h5>
         <ul>
-            <li>Correción de actualización en el área de los enunciados hijos cuando el padre cambia</li>
-            <li>Se agregan nuevas oficinas y se coloca la etiqueta de tipo de oficina sobre la columna de "Tipo" en la tabla</li>
-            <li>Se elimina la posibilidad de asignar el mismo indicador mas de una vez en un tag</li>
-            <li>Se restringe los permisos de administración para la creación de usuarios Socios</li>
-            <li>Se restringe la posibilidad de asignar oficina padre a Oficina de tipo Multi-país</li>
+            <li>Al modificar el área de un enunciado de tipo Efecto, ahora se actualizará automáticamente el área de sus enunciados de Producto asociados.</li>
+            <li>Se añaden nuevas oficinas y se corrigen etiquetas en la tabla de oficinas.</li>
+            <li>Se elimina la posibilidad de asignar el mismo indicador más de una vez en un tag.</li>
+            <li>Se restringe la asignación de permisos de administración y de reporte de implementación directa a los usuarios de tipo Socios.</li>
+            <li>Se impide la asignación de una oficina padre a oficinas de tipo Multi-país.</li>
         </ul>
-        <h5 style="margin-top: 1rem;">Versión 5.0.4 - 2025-01-17 </h5>
+        <h5 style="margin-top: 1rem;">Versión 5.0.4 - 2025-01-17</h5>
         <ul>
-            <li>Correción de actualización de lugares para indicadores de ejecución</li>
-            <li>Correción de mes en generación de reportes para tags</li>
-            <li>Se renombran y agregan nuevos tipos de oficinas</li>
-            <li>Se renombra Oficina por Oficina/Unidad</li>
-            <li>Se restringe la visualización de usuarios segun el tipo de rol asignado</li>
-            <li>Se restringe la asignacion de permisos de implementador a los usuarios socios</li>
-            <li>Se restringe la asignacion de grupos poblacionales a los statements que no sean de tipo Producto</li>
-            <li>Se corrige la validación de reportes de mes</li>
-            <li>Control de visualización de número de registros por tabla en bloques de administración</li>
-            <li>Se ordenan opciones de edades personalizadas por nombre de grupo</li>
-            <li>Corrección de nombre del texto en el pie de la tabla de Implementadores</li>
-            <li>Cambio del nombre del campo "Supervisor de indicador" en implementación directa</li>
-            <li>Se agrega el código del indicador en el nombre del archivo de la plantilla de importación de valores</li>
-            <li>Se filtra el campo de selección de enunciado padre con las opciones de efecto y apoyo para el tipo de área de Producto </li>
-
+            <li>Corrección en la actualización de lugares para indicadores de ejecución.</li>
+            <li>Corrección en la generación de reportes para tags, ajustando el mes correctamente.</li>
+            <li>Se renombran y añaden nuevos tipos de oficinas.</li>
+            <li>El término "Oficina" se actualiza a "Oficina/Unidad".</li>
+            <li>Se restringe la visualización de usuarios según el tipo de rol asignado.</li>
+            <li>Se limita la asignación de permisos de implementador a los usuarios de tipo Socios.</li>
+            <li>Se impide la asignación de grupos poblacionales a enunciados que no sean de tipo Producto.</li>
+            <li>Corrección en la validación de reportes mensuales.</li>
+            <li>Se añade control de visualización del número de registros por tabla en los bloques de administración.</li>
+            <li>Las opciones de edades personalizadas ahora se ordenan por nombre de grupo.</li>
+            <li>Corrección en el nombre del texto en el pie de tabla de Implementadores.</li>
+            <li>El campo "Supervisor de indicador" en implementación directa cambia de nombre.</li>
+            <li>El código del indicador ahora se incluye en el nombre del archivo de la plantilla de importación de valores.</li>
+            <li>El campo de selección de enunciado padre ahora se filtra para mostrar únicamente opciones de Efecto y Apoyo en áreas de tipo Producto.</li>
         </ul>
         <h5 style="margin-top: 1rem;">Versión 5.0.3 - 2025-01-13 </h5>
         <ul>

@@ -5,10 +5,7 @@ import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.DataFormat;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
@@ -31,6 +28,7 @@ import org.unhcr.osmosys.services.IndicatorExecutionService;
 import org.unhcr.osmosys.webServices.model.IndicatorExecutionWeb;
 import org.unhcr.osmosys.webServices.model.MonthWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -184,7 +182,7 @@ public class ReportDataService {
         List<String> indicators = tagIndicators.stream().map(Indicator::getCode).collect(Collectors.toList());
         List<String> titles = new ArrayList<>(Arrays.asList("Periodo", "Trimestre", "Mes"));
         titles.addAll(indicators);
-        if(!tag.getOperation().isEmpty())
+        if(tag.getOperation() != null && !tag.getOperation().isEmpty())
             titles.add(tag.getOperation());
 
         List<List<String>> indicatorsList = new ArrayList<>();
@@ -208,6 +206,26 @@ public class ReportDataService {
         });
         SXSSFWorkbook wb = new SXSSFWorkbook();
         SXSSFSheet sheet = wb.createSheet();
+
+        //FONT
+        Font font = wb.createFont();
+        font.setColor(IndexedColors.WHITE.getIndex()); // Texto en blanco
+
+        // Establecer el color de fondo
+        CellStyle cellStyleTitles = wb.createCellStyle();
+        byte[] rgb = new byte[]{(byte) 68, (byte) 114, (byte) 196}; // R=68, G=114, B=196
+        XSSFColor customColor = new XSSFColor(rgb); // Usar java.awt.Color
+        cellStyleTitles.setFillForegroundColor(customColor);
+        cellStyleTitles.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        cellStyleTitles.setFont(font);
+
+        // Establecer el color de celdas
+        CellStyle cellStyleCeldas = wb.createCellStyle();
+        byte[] rgbCeldas = new byte[]{(byte) 217, (byte) 225, (byte) 242}; // R=68, G=114, B=196
+        XSSFColor customColorCeldas = new XSSFColor(rgbCeldas); // Usar java.awt.Color
+        cellStyleCeldas.setFillForegroundColor(customColorCeldas);
+        cellStyleCeldas.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
         // Set which area the table should be placed in
         int NB_ROWS = resultData.size();
         int NB_COLS = titles.size() - 1;
@@ -228,23 +246,22 @@ public class ReportDataService {
         for (int i = 0; i < titles.size(); i++) {
             Cell cell = rowTitle.createCell(i);
             cell.setCellValue(titles.get(i));
-//            if(titlesWidth.size() < titles.size())
-//                sheet.setColumnWidth(i, titlesWidth.get(i));
-//            else
-                sheet.setColumnWidth(i, 3000);
+            cell.setCellStyle(cellStyleTitles);
+            sheet.setColumnWidth(i, 3000);
         }
 
         long lStartTime2 = System.nanoTime();
         for (int i = 1; i <= 12; i++) {
             SXSSFRow rowData = sheet.createRow(i);
             String mesEnEspanol = Month.of(i).getDisplayName(TextStyle.FULL, new Locale("es", "ES"));
-
+            mesEnEspanol = mesEnEspanol.toUpperCase();
             //Títulos de los indicadores
             for (int j = 0; j < indicatorsList.size(); j++) {
                 List<String> indReport = indicatorsList.get(j);
                 if(!indReport.get(0).isEmpty()) {
                     Cell cell = rowData.createCell(3 +j);
                     cell.setCellValue(indReport.get(i));
+                    cell.setCellStyle(cellStyleCeldas);
                 }
             }
             //Totales
@@ -254,66 +271,66 @@ public class ReportDataService {
                     .filter(subArray -> subArray.size() > finalI)
                     .map(subArray -> Integer.parseInt(subArray.get(finalI))).collect(Collectors.toList());
 
-            switch (tag.getOperation()) {
-                case "Suma":
-                    Cell cell = rowData.createCell(3 + indicatorsList.size());
-                    cell.setCellValue(monthValues.stream().mapToInt(Integer::intValue).sum());
-                    break;
-                case "Máximo":
-                    Cell cell1 = rowData.createCell(3 + indicatorsList.size());
-                    OptionalInt maximo = monthValues.stream().mapToInt(Integer::intValue).max();
-                    if(maximo.isPresent()) {
-                        cell1.setCellValue(maximo.getAsInt());
-                    } else {
-                        cell1.setCellValue("No aplica");
-                    }
-                    break;
-                case "Mínimo":
-                    Cell cell3 = rowData.createCell(3 + indicatorsList.size());
-                    OptionalInt minimo = monthValues.stream().mapToInt(Integer::intValue).min();
-                    if(minimo.isPresent()) {
-                        cell3.setCellValue(minimo.getAsInt());
-                    } else {
-                        cell3.setCellValue("No aplica");
-                    }
-                    break;
-                case "Promedio":
-                    Cell cell4 = rowData.createCell(3 + indicatorsList.size());
-                    OptionalDouble average = monthValues.stream().mapToInt(Integer::intValue).average();
-                    if(average.isPresent()) {
-                        cell4.setCellValue(average.getAsDouble());
-                    } else {
-                        cell4.setCellValue("No aplica");
-                    }
-                    break;
-                default:
-                    break;
+            //Operations
+            Cell cellOperation = rowData.createCell(3 + indicatorsList.size());
+            cellOperation.setCellStyle(cellStyleCeldas);
+            if(tag.getOperation() != null && !tag.getOperation().isEmpty()){
+                switch (tag.getOperation()) {
+                    case "Suma":
+                        cellOperation.setCellValue(monthValues.stream().mapToInt(Integer::intValue).sum());
+                        break;
+                    case "Máximo":
+                        OptionalInt maximo = monthValues.stream().mapToInt(Integer::intValue).max();
+                        if(maximo.isPresent()) {
+                            cellOperation.setCellValue(maximo.getAsInt());
+                        } else {
+                            cellOperation.setCellValue("No aplica");
+                        }
+                        break;
+                    case "Mínimo":
+                        OptionalInt minimo = monthValues.stream().mapToInt(Integer::intValue).min();
+                        if(minimo.isPresent()) {
+                            cellOperation.setCellValue(minimo.getAsInt());
+                        } else {
+                            cellOperation.setCellValue("No aplica");
+                        }
+                        break;
+                    case "Promedio":
+                        OptionalDouble average = monthValues.stream().mapToInt(Integer::intValue).average();
+                        if(average.isPresent()) {
+                            cellOperation.setCellValue(average.getAsDouble());
+                        } else {
+                            cellOperation.setCellValue("No aplica");
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
 
             //Filas de periodos, trimestre, mes
             for (int j = 0; j <= titles.size(); j++) {
-                if(j == 0){
+                if(j >= 0 && j<= 2){
                     Cell cell = rowData.createCell(j);
+                    cell.setCellStyle(cellStyleCeldas);
+                    if(j == 0){
                     cell.setCellValue(period.getYear());
-
-                }
-                if(j == 1){
-                    Cell cell = rowData.createCell(j);
-                    int trimestres = 0;
-                    if(i >= 1 && i <= 4 )
-                        trimestres = 1;
-                    if(i >= 4 && i <= 7 )
-                        trimestres = 2;
-                    if(i >= 7 && i <= 10 )
-                        trimestres = 3;
-                    if(i >= 10 && i <= 12 )
-                        trimestres = 4;
-
-                    cell.setCellValue(trimestres);
-                }
-                if(j == 2){
-                    Cell cell = rowData.createCell(j);
-                    cell.setCellValue(mesEnEspanol);
+                    }
+                    if(j == 1){
+                        int trimestres = 0;
+                        if(i >= 1 && i <= 4 )
+                            trimestres = 1;
+                        if(i >= 4 && i <= 7 )
+                            trimestres = 2;
+                        if(i >= 7 && i <= 10 )
+                            trimestres = 3;
+                        if(i >= 10 && i <= 12 )
+                            trimestres = 4;
+                        cell.setCellValue(trimestres);
+                    }
+                    if(j == 2){
+                        cell.setCellValue(mesEnEspanol);
+                    }
                 }
             }
         }
