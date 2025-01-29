@@ -10,10 +10,12 @@ import {UtilsService} from '../../services/utils.service';
 import { IndicatorExecution } from 'src/app/shared/model/OsmosysModel';
 import * as FileSaver from 'file-saver';
 import * as _ from 'lodash';
+import jwtDecode from 'jwt-decode';
 
 import * as ExcelJS from 'exceljs';
 import * as fs from 'fs';
 
+const app_code = environment.app_code;
 @Component({
     selector: 'app-app-login',
     templateUrl: './app-login.component.html',
@@ -53,8 +55,9 @@ export class AppLoginComponent{
             user.password = this.loginForm.controls.password.value as string;
             this.userService.login(user).subscribe({
                 next: () => {
-                    // noinspection JSIgnoredPromiseFromCall
+                    //noinspection JSIgnoredPromiseFromCall
                     this.router.navigateByUrl('/');
+                    this.checkToken();
                 },
                 error: (error) => {
                     if (error.status === 0) {
@@ -67,11 +70,40 @@ export class AppLoginComponent{
                     }
                 }
             });
-
-
         }
     }
-        
 
+    private intervalId: any;
+
+    checkToken() {
+        this.intervalId = setInterval(() => {
+            console.log("Checking token");
+            const token = this.getToken();
+        let decToken: any;
+        if (token) {
+            decToken = jwtDecode(token);
+            const exp = decToken.exp;
+            // verifico expiración token
+            if (Date.now() >= exp * 1000) {
+                this.userService.logout();
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Su sesión ha caducado',
+                    detail: 'Por favor vuelva a ingresar al sistema'
+                });
+                return;
+            }
+            else {
+                const timeDifference = (exp * 1000) - Date.now();
+                if (timeDifference > 0 && timeDifference <= 300000) { // 5 minutos
+                    console.log("Token is about to expire");
+                }  
+            }
+        }
+        }, 60000); // Comprueba cada minuto
+    }
+    public getToken() {
+        return localStorage.getItem(`${app_code}_token`);
+    }
 
 }
