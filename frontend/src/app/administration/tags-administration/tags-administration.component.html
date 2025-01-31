@@ -26,7 +26,15 @@
                         (click)="createItem()" style="margin-left: 2rem;" pTooltip="Crear un Tag" tooltipPosition="bottom"></button>
 
                         <button pButton pRipple label="Exportar" icon="pi pi-file-excel" class="second-button mr-2 mb-2"
-                        (click)="exportExcel(dt)" style="margin-left: 1rem;" pTooltip="Exportar a Excel" tooltipPosition="bottom"></button>                        
+                        (click)="exportExcel(dt)" style="margin-left: 1rem;" pTooltip="Exportar a Excel" tooltipPosition="bottom"></button>
+                        <a href="https://osmosys.unhcr.org/common/manual/#/administracion-del-sistema?id=_52-tags"
+                                target="_blank"  
+                                class="p-button  p-button-outlined p-button-info custom-button"
+                                style="width: auto; height: fit-content; display: inline-flex; justify-content: center; align-items: center; text-decoration: none; margin-left: 11px; " 
+                                pTooltip="Ver el manual de ayuda" tooltipPosition="bottom">
+                                <i class="pi pi-question-circle" style="margin-right: 5px;"></i> 
+                                <span>Ayuda</span>
+                        </a>                         
                     </div>
 
                     </div>
@@ -36,6 +44,9 @@
                         <th *ngFor="let col of columns" [pSortableColumn]="col.field">
                             {{col.header}}
                             <p-sortIcon [field]="col.field"></p-sortIcon>
+                        </th>
+                        <th>
+
                         </th>
                         <th>
 
@@ -80,6 +91,9 @@
                                     </p-dropdown>
                                 </ng-template>
                             </p-columnFilter>
+                        </th>
+                        <th>
+
                         </th>
                         <th>
 

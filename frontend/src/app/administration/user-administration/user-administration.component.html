@@ -26,6 +26,14 @@
 
                             <button pButton pRipple label="Exportar" icon="pi pi-file-excel" class="second-button mr-2 mb-2"
                             (click)="exportExcel(dt)" style="margin-left: 1rem;" pTooltip="Exportar a Excel" tooltipPosition="bottom"></button>
+                            <a href="https://osmosys.unhcr.org/common/manual/#/administracion-del-sistema?id=_51-usuarios"
+                                target="_blank"  
+                                class="p-button  p-button-outlined p-button-info custom-button"
+                                style="width: auto; height: fit-content; display: inline-flex; justify-content: center; align-items: center; text-decoration: none; margin-left: 11px; " 
+                                pTooltip="Ver el manual de ayuda" tooltipPosition="bottom">
+                                <i class="pi pi-question-circle" style="margin-right: 5px;"></i> 
+                                <span>Ayuda</span>
+                            </a>  
                         </div>
                     </div>
                 </ng-template>
@@ -218,7 +226,7 @@
                         {{utilsService.getErrorMessageForm('state', formItem)}}
                     </small>
                 </div>
-                <div class="field">
+                <div class="field" *ngIf="showPermisions">
                     <label>Permisos *:</label>
                     <div class="grid formgrid">
                         <div class="col-12 md:col-4"
@@ -233,6 +241,8 @@
 
                                 </p-checkbox>
                                 <label [for]="category.value">{{category.label}}</label>
+                                <i class="pi pi-info-circle" style="margin-left: 0.5rem;color: blue;" 
+                                [pTooltip]="category.title" tooltipPosition="right"></i>    
                             </div>
                         </div>
                     </div>

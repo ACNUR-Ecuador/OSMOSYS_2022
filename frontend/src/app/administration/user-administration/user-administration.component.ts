@@ -40,6 +40,7 @@ export class UserAdministrationComponent implements OnInit {
     officesActive: SelectItem[];
     organizationsActive: SelectItem[];
     showDialog = false;
+    showPermisions= false;
 
 
     constructor(
@@ -158,8 +159,7 @@ export class UserAdministrationComponent implements OnInit {
                 }
                 this.selectRoles = JSON.parse(JSON.stringify(this.roles));
                 this.selectRoles.forEach(value1 => value1.disabled = false)
-                /*this.roles = this.roles
-                    .filter(value1 => value1.value !== 'PUNTO_FOCAL' && value1.value !== 'ADMINISTRADOR_OFICINA')*/
+                
                 this.roles.forEach(value1 => {
                         if (value1.value === 'PUNTO_FOCAL' || value1.value === 'ADMINISTRADOR_OFICINA' || value1.value === 'RESULT_MANAGER'
                                             || value1.value === 'SUPERVISOR_REPORTE_SOCIO' || value1.value === 'SUPERVISOR_REPORTE_ID'
@@ -172,6 +172,31 @@ export class UserAdministrationComponent implements OnInit {
     
     
                 });
+                
+                const rolDescriptions = new Map()
+                rolDescriptions.set('SUPER_ADMINISTRADOR','Configura y administra cualquier aspecto del sistema.')
+                rolDescriptions.set('ADMINISTRADOR_REGIONAL','Configura aspectos del sistema a nivel regional, global y de operaciones, como: Parámetros de configuración, Áreas, Grupos Poblacionales, Oficina/Unidad, Implementadores, Tags, Desagregaciones personalizadas, Usuarios, Auditoría, Indicadores de producto, Envío masivo de correos, Bloqueo masivo de indicadores, Menús de tableros.')
+                rolDescriptions.set('ADMINISTRADOR_LOCAL','Configura aspectos del sistema que son específicos de su operación, como: Oficina/Unidad, Implementadores, Tags, Desagregaciones personalizadas, Usuarios, Auditoría, Indicadores de producto, Envío masivo de correos, Bloqueo masivo de indicadores, Menús de tableros.')
+                rolDescriptions.set('RESULT_MANAGER','Responsable de monitorear y revisar los indicadores, asegurando la calidad y verificación de los datos, sin poder reportar ni corregir información.')
+                rolDescriptions.set('MONITOR_ID','Puede ver los datos de todos los proyectos y de implementación directa, sin capacidad para reportar ni corregir información.')
+                rolDescriptions.set('PUNTO_FOCAL','Da seguimiento a los proyectos como responsable, recibe notificaciones, revisa y corrige datos en consulta con el socio.')
+                rolDescriptions.set('SUPERVISOR_REPORTE_SOCIO','Supervisa los reportes del socio, recibe notificaciones, revisa y corrige datos en consulta con la persona responsable del reporte.')
+                rolDescriptions.set('EJECUTOR_PROYECTOS','Responsable de reporte del socio, reporta los valores para los indicadores del acuerdo')
+                rolDescriptions.set('MONITOR_PROYECTOS','Puede ver los datos específicos de su proyecto, sin capacidad para reportar ni corregir información.')
+                rolDescriptions.set('ADMINISTRADOR_OFICINA','Puede reportar en colaboración con la persona responsable para las implementaciones donde es jefe de Oficina/Unidad.')
+                rolDescriptions.set('SUPERVISOR_REPORTE_ID','Recibe notificaciones sobre el cumplimiento de los reportes, revisa y corrige datos en consulta con la persona responsable cuando sea necesario.')
+                rolDescriptions.set('EJECUTOR_ID','Responsable de reporte de implementación directa, reporta los valores para los indicadores relacionados a sus actividades.')
+
+                this.roles.forEach(value1 => {
+                        if(rolDescriptions.get(value1.value)){
+                            value1.title=rolDescriptions.get(value1.value)
+                        }else{
+                            value1.title=""
+                        }
+                       
+    
+                });
+                  
                 this.assignableRoles = JSON.parse(JSON.stringify(this.roles));
 
             },
@@ -283,6 +308,7 @@ export class UserAdministrationComponent implements OnInit {
     }
 
     cancelDialog() {
+        this.showPermisions=false;
         this.showDialog = false;
         this.messageService.clear();
         this.assignableRoles = JSON.parse(JSON.stringify(this.roles));
@@ -399,6 +425,7 @@ export class UserAdministrationComponent implements OnInit {
     }
 
     onOrganizacionChange(org: Organization) {
+        this.showPermisions=true;
         if (org) {
             this.assignableRoles = JSON.parse(JSON.stringify(this.roles));
             if (org.id === 1) {

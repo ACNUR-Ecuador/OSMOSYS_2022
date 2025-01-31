@@ -116,6 +116,25 @@ $gutter: 1rem; //for primeflex grid system
     margin-right: 10px;
     border-radius: 5px;
   }
+ /* Estilos personalizados para el botón con hover */
+.custom-button {
+    transition: box-shadow 0.3s ease, border-color 0.3s ease !important; /* Suaviza la transición */
+    border-width: 1px !important; /* Asegura que tenga un borde visible */
+    padding: 6px 12px !important; /* Ajusta el padding si es necesario */
+    position: relative !important; /* Necesario para el sombreado */
+    overflow: hidden !important; /* Asegura que el sombreado no se escape fuera de los bordes */
+  }
+  
+  /* Efecto hover con borde resaltado y sombreado hacia adentro */
+  .custom-button:hover {
+    box-shadow: inset 0 0 4px rgb(136, 211, 252) !important;  /* Sombra hacia adentro */
+  }
+
+  /* Efecto de focus (si el botón es seleccionado) */
+.custom-button:focus {
+    outline: none;  
+    box-shadow: inset 0 0 0px ; 
+  }
   
   //
 .table-title-secondary{

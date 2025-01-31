@@ -122,8 +122,9 @@ public class UserService implements Serializable {
             }
             user.setOffice(office);
         }
+        List<RoleWeb> userValidRoles = validateUserRoles(userWeb);
 
-        for (RoleWeb roleWeb : userWeb.getRoles()) {
+        for (RoleWeb roleWeb : userValidRoles) {
             if (roleWeb.getState().equals(State.ACTIVO)) {
                 try {
                     RoleType roleType = RoleType.valueOf(roleWeb.getName());
@@ -533,22 +534,15 @@ public class UserService implements Serializable {
         user.setState(userWeb.getState());
         user.setOffice(this.modelWebTransformationService.officeWebToOffice(userWeb.getOffice()));
         user.setOrganization(this.modelWebTransformationService.organizationWebToOrganization(userWeb.getOrganization()));
-        // roles
+
 
         this.userDao.update(user);
-        Set<RoleType> invalidRoles = new HashSet<>();
-        invalidRoles.add(RoleType.PUNTO_FOCAL);
-        invalidRoles.add(RoleType.ADMINISTRADOR_OFICINA);
-        invalidRoles.add(RoleType.RESULT_MANAGER);
-        invalidRoles.add(RoleType.SUPERVISOR_REPORTE_SOCIO);
-        invalidRoles.add(RoleType.SUPERVISOR_REPORTE_ID);
+        // roles
+        List<RoleWeb> userValidRoles = validateUserRoles(userWeb);
 
-        for (RoleWeb roleWeb : userWeb.getRoles()) {
+        for (RoleWeb roleWeb : userValidRoles) {
             try {
                 RoleType roleType = RoleType.valueOf(roleWeb.getName());
-                if (invalidRoles.contains(roleType)) {
-                    continue;
-                }
                 Role role = this.roleService.findByRoleType(roleType);
                 if (roleWeb.getState().equals(State.ACTIVO)) {
                     user.addRole(role);
@@ -643,5 +637,42 @@ public class UserService implements Serializable {
     public User getByEmail(String email) {
         return this.userDao.getByEmail(email);
     }
+
+    public List<RoleWeb> validateUserRoles(UserWeb userWeb){
+        Long orgId=userWeb.getOrganization().getId();
+        Set<RoleType> invalidRoles = new HashSet<>();
+        invalidRoles.add(RoleType.PUNTO_FOCAL);
+        invalidRoles.add(RoleType.ADMINISTRADOR_OFICINA);
+        invalidRoles.add(RoleType.RESULT_MANAGER);
+        invalidRoles.add(RoleType.SUPERVISOR_REPORTE_SOCIO);
+        invalidRoles.add(RoleType.SUPERVISOR_REPORTE_ID);
+
+        Set<RoleType> userAcnurRoles = new HashSet<>();
+        userAcnurRoles.add(RoleType.SUPER_ADMINISTRADOR);
+        userAcnurRoles.add(RoleType.ADMINISTRADOR_REGIONAL);
+        userAcnurRoles.add(RoleType.ADMINISTRADOR_LOCAL);
+        userAcnurRoles.add(RoleType.MONITOR_ID);
+        userAcnurRoles.add(RoleType.EJECUTOR_ID);
+
+
+        List<RoleWeb> validRoles = new ArrayList<>();
+        for (RoleWeb roleWeb : userWeb.getRoles()) {
+            RoleType roleType = RoleType.valueOf(roleWeb.getName());
+            if(orgId == 1){
+                if(!userAcnurRoles.contains(roleType) || invalidRoles.contains(roleType)){
+                    continue;
+                }
+                validRoles.add(roleWeb);
+
+            }else{
+                if(!invalidRoles.contains(roleType) && !userAcnurRoles.contains(roleType)){
+                    validRoles.add(roleWeb);
+                }
+            }
+        }
+        return validRoles;
+    }
+
+
 }
 

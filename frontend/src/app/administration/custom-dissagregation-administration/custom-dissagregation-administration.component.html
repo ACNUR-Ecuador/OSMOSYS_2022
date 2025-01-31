@@ -25,7 +25,15 @@
 
                             <button pButton pRipple label="Exportar" icon="pi pi-file-excel" class="second-button mr-2 mb-2"
                             (click)="exportExcel(dt)" style="margin-left: 1rem;" pTooltip="Exportar a Excel" tooltipPosition="bottom"></button>                        
-                    
+
+                            <a href="https://osmosys.unhcr.org/common/manual/#/administracion-del-sistema?id=_55-desagregaciones-personalizadas"
+                                target="_blank"  
+                                class="p-button  p-button-outlined p-button-info custom-button"
+                                style="width: auto; height: fit-content; display: inline-flex; justify-content: center; align-items: center; text-decoration: none; margin-left: 11px; " 
+                                pTooltip="Ver el manual de ayuda" tooltipPosition="bottom">
+                                <i class="pi pi-question-circle" style="margin-right: 5px;"></i> 
+                                <span>Ayuda</span>
+                            </a> 
                         </div>
                     </div>
                 </ng-template>
@@ -200,7 +208,7 @@
                                                         placeholder="Selecciona..." [showClear]="true">
                                                 <ng-template let-option pTemplate="item">
                                             <span
-                                                [class]="'customer-badge status-' + option">{{option}}</span>
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
                                                 </ng-template>
                                             </p-dropdown>
                                         </ng-template>
