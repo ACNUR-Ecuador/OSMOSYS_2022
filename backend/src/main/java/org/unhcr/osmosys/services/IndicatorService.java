@@ -20,6 +20,8 @@ import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -127,9 +129,12 @@ public class IndicatorService {
 */
 
     public Long update(IndicatorWeb indicatorWeb) throws GeneralAppException {
+        Instant t1 = Instant.now(); // Marca de tiempo inicial
+
         if (indicatorWeb == null) {
             throw new GeneralAppException("No se puede actualizar un indicator null", Response.Status.BAD_REQUEST);
         }
+        LOGGER.info("indicator: "+indicatorWeb.getCode());
         if (indicatorWeb.getId() == null) {
             throw new GeneralAppException("No se puede crear un indicator sin id", Response.Status.BAD_REQUEST);
         }
@@ -209,9 +214,19 @@ public class IndicatorService {
 
         this.saveOrUpdate(indicator);
         updatePeriodStatementAssigment(indicator);
+        Instant t2 = Instant.now(); // Marca de tiempo final
+        Duration d1 = Duration.between(t1, t2);
+        LOGGER.info("actualizacion indicador: " + d1.toSeconds()+" sec.");
+
+
         this.updateIndicatorExecutionsDissagregationsByIndicator(
                 indicator
         );
+        Instant t3 = Instant.now(); // Marca de tiempo final
+        Duration d2 = Duration.between(t2, t3);
+        LOGGER.info("actualizacion indicador ie: " + d2.toSeconds()+" sec.");
+        Duration dt = Duration.between(t1, t3);
+        LOGGER.info("actualizacion indicador total: " + d2.toSeconds()+" sec.");
 
 
         return indicator.getId();
