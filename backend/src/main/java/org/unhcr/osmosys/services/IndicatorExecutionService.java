@@ -1036,6 +1036,11 @@ public class IndicatorExecutionService {
         if (indicatorExecution == null) {
             throw new GeneralAppException("No se pudo encontrar la asignación (Id:" + indicatorExecutionAssigmentWeb.getId() + ")", Response.Status.BAD_REQUEST);
         }
+        Office reportingOffice = this.officeService.getById(indicatorExecutionAssigmentWeb.getReportingOffice().getId());
+        if (reportingOffice == null) {
+            throw new GeneralAppException("No se pudo encontrar la oficina (Id:" + reportingOffice.getId() + ")", Response.Status.BAD_REQUEST);
+        }
+        indicatorExecution.setReportingOffice(reportingOffice);
 
         indicatorExecution.setState(indicatorExecutionAssigmentWeb.getState());
         indicatorExecution.setTarget(indicatorExecutionAssigmentWeb.getTarget() != null ? new BigDecimal(indicatorExecutionAssigmentWeb.getTarget()) : null);
