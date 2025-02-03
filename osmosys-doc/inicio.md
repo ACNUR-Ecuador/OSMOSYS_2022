@@ -66,15 +66,15 @@
   - [5.7.4 Auditoría de Bloqueo de Mes Masivo](administracion-del-sistema.md#_574-auditoría-de-bloqueo-de-mes-masivo)
   - [5.7.5 Exportar Auditorías](administracion-del-sistema.md#_575-exportar-auditorías)
 - [5.8 Catálogo de Indicadores](administracion-del-sistema.md#_58-catálogo-de-indicadores)
-  - [5.8.1 Crear nuevo Indicador de Producto](administracion-del-sistema.md#_58-catálogo-de-indicadores)
+  - [5.8.1 Crear nuevo Indicador de Producto](administracion-del-sistema.md#581-crear-nuevo-indicador-de-producto)
   - [5.8.2 Tabla de Catálogo de Indicadores](administracion-del-sistema.md#_582-tabla-de-catálogo-de-indicadores)
   - [5.8.3 Edición de Indicadores de Producto](administracion-del-sistema.md#_583-edición-de-indicadores-de-producto)
   - [5.8.4 Importar Indicador de Producto](administracion-del-sistema.md#_584-importar-indicador-de-producto)
   - [5.8.5 Deshabilitar Indicadores de Producto](administracion-del-sistema.md#_585-deshabilitar-indicadores-de-producto)
   - [5.8.6 Exportar Indicadores de Producto](administracion-del-sistema.md#_586-exportar-indicadores-de-producto)
 - [5.9 Proyectos](administracion-del-sistema.md#_59-proyectos)
-  - [5.9.1 Crear nuevo Proyecto](administracion-del-sistema.md#_59-proyectos)
-  - [5.9.2 Tabla de Proyectos](administracion-del-sistema.md#_591-crear-nuevo-proyecto)
+  - [5.9.1 Crear nuevo Proyecto](administracion-del-sistema.md#_591-crear-nuevo-proyecto)
+  - [5.9.2 Tabla de Proyectos](administracion-del-sistema.md#_592-tabla-de-proyectos)
   - [5.9.3 Edición de Proyectos](administracion-del-sistema.md#_593-edición-de-proyectos)
   - [5.9.4 Deshabilitar Proyectos](administracion-del-sistema.md#-594-deshabilitar-proyectos)
   - [5.9.5 Exportar Proyectos](administracion-del-sistema.md#_595-exportar-proyectos)
@@ -97,6 +97,8 @@
   - [5.13.3 Edición de Menús](administracion-del-sistema.md#_5133-edición-de-menús)
   - [5.13.4 Deshabilitar Menús](administracion-del-sistema.md#_5134-deshabilitar-menús)
   - [5.13.5 Exportar Menús](administracion-del-sistema.md#_5135-exportar-menús)
+- [5.14 Ayuda](administracion-del-sistema.md#_514-ayuda)
+
 
 
 ## 6. Socios
@@ -124,12 +126,13 @@
 - [8.3 Reportes de Retrasos](reportes.md#_83-reportes-de-retrasos)
 
 ## 9. ACERCA DE OSMOSYS
-- [9.1 Información sobre Osmosys](acerca-de-osmosys.md)
+- [9. Información sobre Osmosys](acerca-de-osmosys.md)
 ## 10. PERFIL DE USUARIO
 - [10.1 Datos del Usuario](perfil-de-usuario.md#_101-datos-del-usuario)
 - [10.2 Editar datos del Usuario](perfil-de-usuario.md#_102-editar-datos-del-usuario)
 - [10.3 Cambiar Contraseña](perfil-de-usuario.md#_103-cambiar-contraseña)
-- [10.4 Cerrar Sesión](perfil-de-usuario.md#_104-cerrar-sesión)
+- [10.4 Manual de Usuario](perfil-de-usuario.md#_104-manual-de-usuario)
+- [10.5 Cerrar Sesión](perfil-de-usuario.md#_105-cerrar-sesión)
 
 ## 11. FAQ
 - [11.1 Preguntas Frecuentes](faq.md)

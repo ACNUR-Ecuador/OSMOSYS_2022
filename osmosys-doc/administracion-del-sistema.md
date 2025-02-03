@@ -36,7 +36,7 @@ Los **Roles de usuario** son un conjunto de actividades específicas que va a de
   - Home
   - Acerca de OSMOSYS
 
-- **Administrador Regional**: Usuario que tiene acceso a todas las funcionalidades dentro del sistema, creación, gestión, configuración, monitoreo, generación de reportes.
+- **Administrador Regional**: Configura aspectos del sistema a nivel regional, global y de operaciones.
 
   **Menús de acceso**:
   - Administración: Configuración del Sistema (Parámetros de Configuración, Áreas, Grupos Poblacionales, Año, Oficinas, Implementadores, Tags, Desagregaciones Personalizadas, Usuarios, Auditoría), Indicadores de Producto, Envío Masivo de correos, Bloqueo Masivo de Indicadores, Menús de Tableros
@@ -46,7 +46,7 @@ Los **Roles de usuario** son un conjunto de actividades específicas que va a de
   - Home
   - Acerca de OSMOSYS
 
-- **Administrador Local**: Usuario que tiene acceso a la mayoría de las funciones del sistema excepto a algunos parámetros de configuración dentro del menú de Administración.
+- **Administrador Local**: Configura aspectos del sistema que son específicos de su operación.
 
   **Menús de acceso**:
   - Administración: Configuración del Sistema (Oficinas, Implementadores, Tags, Desagregaciones Personalizadas, Usuarios, Auditoría), Indicadores de Producto, Envío Masivo de correos, Bloqueo Masivo de Indicadores, Menús de Tableros
@@ -56,49 +56,77 @@ Los **Roles de usuario** son un conjunto de actividades específicas que va a de
   - Home
   - Acerca de OSMOSYS
 
-- **Ejecutor de Proyectos**: Usuario implementador que puede realizar reportes en Indicadores de Proyectos, generar diferentes reportes de indicadores.
+- **Responsable de Reporte (Socio)**: Responsable de reporte del socio, reporta los valores para los indicadores del acuerdo.
 
   **Menús de acceso**:
   - Socios: Proyectos
   - Home
   - Acerca de OSMOSYS
 
-- **Monitor de Proyectos**: Usuario implementador que puede revisar, monitorear reportes en Indicadores de Proyectos, generar diferentes reportes de indicadores.
+- **Monitor (Socio)**: Los monitores de los socios no pueden reportar ni corregir datos; no tienen ninguna acción específica en OSMOSYS. Solamente pueden ver los datos específicos a su proyecto.
 
   **Menús de acceso**:
   - Socios: Proyectos
   - Home
   - Acerca de OSMOSYS
 
-- **Ejecutor de Implementación Directa**: Usuario de ACNUR que puede realizar reportes en Indicadores de Implementación directa, generar diferentes reportes de indicadores.
+- **Responsable de Reporte Implementación Directa (ACNUR)**: Usuario responsable de reporte de implementación directa, reporta los valores para los indicadores relacionados a sus actividades..
 
   **Menús de acceso**:
+  - Socios: Proyectos
   - Implementación directa: Reporte de Indicadores
   - Reportes: Catálogo de indicadores, Exportación de datos, Reportes de retrasos
   - Home
   - Acerca de OSMOSYS
 
-- **Monitor de Implementación Directa**: Usuario de ACNUR que puede revisar, monitorear reportes en Indicadores de Implementación directa, generar diferentes reportes de indicadores.
+- **Monitor (ACNUR)**: Puede ver los datos de todos los proyectos y de implementación directa, sin capacidad para reportar ni corregir información.
 
   **Menús de acceso**:
+  - Socios: Proyectos
   - Implementación directa: Reporte de Indicadores
   - Reportes: Catálogo de indicadores, Exportación de datos, Reportes de retrasos
   - Home
   - Acerca de OSMOSYS
 
-- **Punto Focal**: El usuario punto focal puede crear nuevos usuarios con permisos por debajo del Superadministrador, Administrador Regional y Administrador Local, es capaz de crear nuevos proyectos, realizar reportes en indicadores de ejecución, generar reportes de proyectos.
+- **Responsable del Proyecto (ACNUR)**: El usuario desempeña el rol de responsable de seguimiento de proyectos, recibiendo notificaciones, revisando y corrigiendo datos en colaboración con el socio. Este rol se asigna automáticamente cuando se designa a un usuario de ACNUR como Responsable de Proyecto, y no puede ser asignado manualmente.
 
   **Menús de acceso**:
-  - Administración: Configuración del Sistema (Usuarios), Indicadores de Producto (Indicadores Socios)
   - Socios: Proyectos
-  - Reportes: Reportes de retrasos
+  - Implementación directa: Reporte de Indicadores
+  - Reportes: Catálogo de indicadores, Exportación de datos, Reportes de retrasos
   - Home
   - Acerca de OSMOSYS
 
-- **Administrador de Oficina**: El usuario administrador de oficina puede crear nuevos usuarios con permisos por debajo del Superadministrador, Administrador Regional y Administrador Local, es capaz de crear implementaciones directas.
+- **Jefe de Oficina/Unidad (ACNUR)**: El usuario Puede reportar en colaboración con la persona responsable para las implementaciones donde es jefe de Oficina/Unidad. Este rol se asigna automáticamente cuando se designa a un usuario de ACNUR como jefe de una Oficina/Unidad, y no puede ser asignado manualmente.
 
   **Menús de acceso**:
-  - Administración: Configuración del Sistema (Usuarios), Indicadores de Producto (Indicadores Implementación Directa)
+  - Socios: Proyectos
+  - Reportes: Catálogo de indicadores, Exportación de datos, Reportes de retrasos
+  - Implementación directa: Reporte de Indicadores
+  - Home
+  - Acerca de OSMOSYS
+
+- **Supervisor de Reporte Implementación Directa (ACNUR)**: El usuario Recibe notificaciones sobre el cumplimiento de los reportes, revisa y corrige datos en consulta con la persona responsable cuando sea necesario. Este rol se asigna automáticamente cuando se designa a un usuario de ACNUR como supervisor de reporte en una implementación directa, y no puede ser asignado manualmente.
+
+  **Menús de acceso**:
+  - Socios: Proyectos
+  - Reportes: Catálogo de indicadores, Exportación de datos, Reportes de retrasos
+  - Implementación directa: Reporte de Indicadores
+  - Home
+  - Acerca de OSMOSYS
+  
+- **Supervisor de Reporte (Socio)**: Supervisa los reportes del socio, recibe notificaciones, revisa y corrige datos en consulta con la persona responsable del reporte. Este rol se asigna automáticamente cuando se designa a un usuario Socio como supervisor de reporte en un proyecto, y no puede ser asignado manualmente.
+
+  **Menús de acceso**:
+  - Socios: Proyectos
+  - Home
+  - Acerca de OSMOSYS
+
+- **Mánager de Resultados (ACNUR)**: Usuario responsable de monitorear y revisar los indicadores, asegurando la calidad y verificación de los datos, sin poder reportar ni corregir información. Este rol se asigna automáticamente cuando se designa a un usuario ACNUR como Mánager de resultado en la creación de un indicador, y no puede ser asignado manualmente.
+
+  **Menús de acceso**:
+  - Socios: Proyectos
+  - Reportes: Catálogo de indicadores, Exportación de datos, Reportes de retrasos
   - Implementación directa: Reporte de Indicadores
   - Home
   - Acerca de OSMOSYS
@@ -121,9 +149,8 @@ Se debe completar cada uno de los campos del formulario para que el botón de �
 - Organización: Nombre de la Organización a la que pertenece.
 - Oficina: Nombre de la oficina a la que pertenece el usuario, esta opción es necesaria únicamente si la Organización es ACNUR.
 - Estado: El estado del usuario este puede ser “Activo” o “Inactivo”.
-- Permisos: Roles que tendrá el usuario nuevo, estos pueden ser: Super Administrador, Administrador Regional, Administrador Local, Ejecutor de Proyectos, Monitor de Proyectos, Ejecutor de Implementación directa, Monitor de Implementación directa.
+- Permisos: Roles asignados al nuevo usuario, los cuales variarán según la organización seleccionada (ACNUR o Socio). Algunos roles no podrán ser asignados manualmente, como se detalla en la sección de roles de usuario.
 
-Los permisos de **Punto Focal** y **Administrador de Oficina** no pueden asignarse directamente dentro de la Administración de Usuarios, estos se conceden al momento de asignar a un usuario como punto focal de un proyecto o como administrador de una oficina correspondientemente en los bloques de **Operación de Indicadores de Socios** y **Administración de Oficinas**.
 
 Una vez guardado el usuario aparecerá un mensaje de guardado exitoso.
 
@@ -353,9 +380,9 @@ Es importante completar cada uno de los campos para que el botón de **“Guarda
 ### Campos de Ingreso:
 - **Acrónimo**: Acrónimo de la Oficina.
 - **Nombre**: Nombre de la oficina.
-- **Tipo de oficina**: Tipo de oficina, puede ser **BO**, **Sub-Oficina**, **Oficina de campo**, **Unidad de campo**.
-- **Oficina Padre**: Oficina de la cual se deriva la nueva. Esta opción se deshabilita cuando el tipo de oficina es una **“BO”** u **“Oficina Nacional”**.
-- **Manager de Oficina/Unidad**: Usuarios que administrarán la oficina.
+- **Tipo de oficina**: Tipo de oficina, puede ser **Oficina Multi-País**, **Oficina de País**, **Oficina Nacional**, **Sub-Oficina**, **Oficina de Terreno**, **Unidad de Terreno**, **Presencia**, **Unidad o Área Técnica**.
+- **Oficina Padre**: Oficina de la cual se deriva la nueva. Esta opción se deshabilita cuando el tipo de oficina es una **“Oficina Multi-País”** , **“Oficina de País”** u **“Oficina Nacional”**.
+- **Jefe de Oficina/Unidad**: Usuarios que administrarán la oficina.
 - **Estado**: El estado de la oficina, puede ser **“Activo”** o **“Inactivo”**.
 
 <p align="center">
@@ -484,10 +511,10 @@ Se debe completar cada uno de los campos del formulario para que el botón de �
 Campos de Ingreso:
 - **Nivel de resultado**: Tipo de Resultado, estos pueden ser (Impacto, Efecto, Producto, Apoyo).  
 - **Años**: Años en los cuales el marco de resultado será aplicado.  
-- **Área**: Área a la que pertenece el marco de resultado.  
-- **Enunciado Padre**: Enunciado del cual se derivará el marco de resultado a crear, este campo puede dejarse en blanco si no hay Marco de resultado Padre.  
+- **Área**: Área asociada al marco de resultado. Esta opción se deshabilita para el nivel de resultado de tipo Producto, ya que heredan automáticamente el área de su enunciado padre.
+- **Enunciado Padre**: Enunciado del cual se derivará el marco de resultado a crear, este campo se deshabilita para el nivel de Resultado de tipo Impacto y es obligatorio para el nivel de resultado de tipo Producto.  
 - **Código**: Código identificador del marco de resultado.  
-- **Grupo poblacional**: Grupo poblacional correspondiente al marco de resultado.  
+- **Grupo poblacional**: Grupo poblacional correspondiente al marco de resultado, esta opción se habilita unicamente para el nivel de resultado de tipo Producto.  
 - **Descripción Completa**: Descripción detallada del marco de resultado.  
 - **Estado**: El estado del marco de resultado, este puede ser “Activo” o “Inactivo”.
 
@@ -1059,7 +1086,7 @@ Se debe completar cada uno de los campos del formulario para que el botón de **
   <img src="./assets/create_indicator.png" title="Crear indicador">
 </p>
 
-Si el usuario escoge la opción de **“Personas de Interés”** en el campo de **Unidad de Medida**, se presentará una etiqueta indicando que se debe desagregar por **“Tipo de población”** dentro de cada año.
+Si el usuario escoge la opción de **“Personas desplazadas y Apátridas”** en el campo de **Unidad de Medida**, se presentará una etiqueta indicando que se debe desagregar por **“Tipo de población”** dentro de cada año.
 
 <p align="center">
   <img src="./assets/indicator_label_warn.png" title="Advertencia de Unidad de Medida">
@@ -1191,8 +1218,8 @@ Se debe completar primero cada uno de los campos de la primera sección para que
 - **Año de Implementación**: Periodo en el cual el proyecto será implementado, esta opción se completa automáticamente al seleccionar el periodo en la tabla de Administración de proyectos.
 - **Fecha de Inicio de Implementación**: Fecha de Inicio del proyecto.
 - **Fecha de fin de Implementación**: Fecha de fin del proyecto.
-- **Puntos focales ACNUR de Proyecto**: Usuarios de ACNUR a cargo del monitoreo proyecto.
-- **Partner Manager**: Usuario de la Organización Implementadora encargada del reporte del proyecto.
+- **Responsable del Proyecto (ACNUR)**: Usuarios de ACNUR responsables del monitoreo proyecto.
+- **Supervisor de Reporte (Socio)**: Usuario de la Organización Implementadora encargada de la supervisión del proyecto.
 - **Lugares de Ejecución**: Lugares en los cuales se implementará el proyecto.
 
 <p align="center">
@@ -1685,4 +1712,13 @@ Si la tabla se encontraba con algún filtro aplicado, se exportarán los registr
 <p align="center">
   <img src="./assets/menu_export.png" title="Exportar menú">
 </p>
+
+# 5.14 Ayuda
+
+El usuario contará con un **botón de ayuda** en la parte superior derecha de las pantallas de los diferentes bloques de administración. Al hacer clic en este botón, será redirigido al manual del sistema, específicamente a la sección correspondiente al bloque de administración donde presionó el botón de ayuda.
+
+<p align="center">
+  <img src="./assets/administration_help_btn.png" title="Exportar menú">
+</p>
+
 

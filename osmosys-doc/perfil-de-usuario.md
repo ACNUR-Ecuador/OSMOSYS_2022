@@ -92,7 +92,18 @@ Una vez guardados los cambios, el sistema mostrará un mensaje de confirmación 
      <img src="./assets/user_change_pass.png" title="Ir a cambiar contraseña">
 </p>
 
-## 10.4 Cerrar Sesión
+## 10.4 Manual de Usuario
+
+La opción **Manual de Usuario** redirige a la documentación del sistema, permitiendo al usuario consultar cualquier tema relacionado con su uso.
+
+Para acceder al manual, el usuario debe hacer clic en el ícono circular ubicado en la esquina superior derecha del menú principal y luego seleccionar la opción **Manual de Usuario**.
+
+<p align="center">
+     <img src="./assets/go_user_manual.png" title="Ir a cambiar contraseña">
+</p>
+
+
+## 10.5 Cerrar Sesión
 
 El sistema permite al usuario cerrar sesión de forma segura para proteger su cuenta y los datos asociados. A continuación, se describen los pasos para realizar esta acción:
 

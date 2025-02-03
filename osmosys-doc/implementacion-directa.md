@@ -146,12 +146,17 @@ La función **Reporte de Valores de Indicador** permite al usuario registrar y a
    - Una vez ingresados todos los datos, haga clic en el botón **"Guardar"** para registrar los valores del mes seleccionado.
 
 6. **Validación de Datos**  
-   - Si los totales ingresados no coinciden entre las tablas o entre las opciones de desagregación compartidas, el sistema mostrará una alerta indicando las inconsistencias específicas.
-   - Corrija los valores según las indicaciones antes de guardar los datos.
+- Cada tabla de desagregación de reporte debe validar sus totales para asegurar que coincidan con los totales de las demás tablas. Sin embargo, no todas las tablas requieren esta validación. Para identificar cuáles no necesitan validación, se debe observar el color del encabezado de la tabla. Si el encabezado tiene un color azul oscuro, esta desagregación no requiere validación de totales con otras tablas.
+  
+- En el caso de las desagregaciones que sí requieren validación de totales, si los totales no coinciden entre las tablas o entre las opciones de desagregación compartidas, el sistema generará una alerta que indicará las inconsistencias específicas.
+  
+- Corrija los valores según las indicaciones antes de guardar los datos.
 
 <p align="center">
   <img src="./assets/direct_impl_ind_month_report.png" title="Reporte de mes">
+  <img src="./assets/validate_dissagregations.png" title="Validar desagregaciones">
   <img src="./assets/direct_impl_ind_report_by_diss.png" title="Reporte de valores">
+  <img src="./assets/diss_validation_error.png" title="Reporte de valores">
 </p>
 
 ## 7.1.3 Reporte de Valores de Implementación Directa por Importación
@@ -202,11 +207,12 @@ La función de **Reporte de Valores de Indicador por Importación** permite al u
 ### Validación de Datos
 
 - Si los valores en la plantilla de Importación tienen inconsistencias al momento de importar, se presentará una alerta indicando qué filas del documento contienen los errores.
-- Si los totales ingresados no coinciden entre las tablas o entre las opciones de desagregación compartidas, el sistema mostrará una alerta indicando las inconsistencias específicas.
+- La validación de totales se realiza siguiendo el criterio mencionado en el apartado anterior, estos dependeran si las tablas de desagregación requieren validación de totales y de tener inconcistencias entre estas, se presentara una ventana indicando los errores específicos.
 - Corrija los valores según las indicaciones antes de guardar los datos.
 
 <p align="center">
   <img src="./assets/direct_impl_ind_report_import.png" title="Reporte de mes">
   <img src="./assets/direct_impl_ind_report_import2.png" title="Reporte de valores">
   <img src="./assets/direct_impl_ind_report_import3.png" title="Reporte de valores">
+   <img src="./assets/partner_project_import_values_error.png" title="Error de importación">
 </p>
