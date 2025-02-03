@@ -11,6 +11,7 @@ import {environment} from "../../environments/environment";
 export class AppTopbarComponent implements OnInit {
     operationName = `${environment.operationName}`;
     flagToolbarFile = `assets/layout/images/${environment.flagToolbarFile}`;
+    manualUrl: string=''
 
     @ViewChild('menubutton') menuButton!: ElementRef;
 
@@ -59,5 +60,18 @@ export class AppTopbarComponent implements OnInit {
         if (user && user.name) {
             this.userInitials = user.name.split(' ').map(n => n[0]).join('');
         }
+        this.manualUrl=this.setUserManualUrl();
+    }
+
+    setUserManualUrl(): string{
+        const user = this.userService.getLogedUsername();
+        let manualUrl:string
+        if(user?.organization?.id === 1){
+            manualUrl='https://osmosys.unhcr.org/common/manual-admin-local/#/'
+        }else{
+            manualUrl='https://osmosys.unhcr.org/common/manual-socios/#/'
+        }
+
+        return manualUrl;
     }
 }
