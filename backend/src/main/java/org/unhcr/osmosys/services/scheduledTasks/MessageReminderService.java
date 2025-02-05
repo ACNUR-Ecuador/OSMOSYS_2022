@@ -3,26 +3,20 @@ package org.unhcr.osmosys.services.scheduledTasks;
 import com.sagatechs.generics.appConfiguration.AppConfigurationKey;
 import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.GeneralAppException;
-import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.service.EmailService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.Organization;
 import org.unhcr.osmosys.model.Period;
 import org.unhcr.osmosys.model.enums.MonthEnum;
-import org.unhcr.osmosys.model.enums.TimeStateEnum;
 import org.unhcr.osmosys.services.*;
-import org.unhcr.osmosys.webServices.model.IndicatorExecutionWeb;
-import org.unhcr.osmosys.webServices.model.MonthWeb;
 import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -84,18 +78,35 @@ public class MessageReminderService {
             LOGGER.info(focalPoint.getName());
             List<ProjectResumeWeb> projects = this.projectService.getProjectResumenWebByPeriodIdAndFocalPointId(currentPeriod.getId(), focalPoint.getId());
 
-            String message = "<p style=\"text-align:justify\">Estimado/a colega " + ":</p>" +
-                    "<p style=\"text-align:justify\">" +
-                    " Este es un recordatorio de que el periodo de reportes de indicadores para el mes de  " + mesAReportar.getLabel() +
+            String message = "<p><strong>Estimado/a colega " + ":</strong></p>" +
+                    "<p>Este es un recordatorio de que el periodo de reportes de indicadores para el mes de  " + mesAReportar.getLabel() +
                     " ha iniciado. Contamos con su ayuda para tener sus datos al día en el sistema OSMOSYS-ACNUR hasta el día " + limitDay + " de este mes. " +
                     " Los socios asignados para Ud. son " +projects.stream().map(ProjectResumeWeb::getOrganizationAcronym).collect(Collectors.joining(", "))+
                     ". En caso de que ya se hayan reportado los datos, por favor haga caso omiso de este correo.</p>" +
-                    "<p style=\"text-align:justify\">Este recordatorio ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con con su punto focal de ACNUR.</p>";
+                    "<p>Este recordatorio ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con con su punto focal de ACNUR.</p>";
 
             String copyAddresses = CollectionUtils.isNotEmpty(imProgramsEmail) ? String.join(", ", imProgramsEmail) : null;
-            this.emailService.sendEmailMessage(focalPoint.getEmail(), copyAddresses, "Recordatorio de reporte Indicadors OSMOSYS-Socios", message);
+            this.emailService.sendEmailMessage(focalPoint.getEmail(), copyAddresses, "Recordatorio de reporte Indicadores OSMOSYS-Socios", message);
             // this.emailService.sendEmailMessage("salazart@unhcr.org", "salazart@unhcr.org", "Recordatorio de reporte Indicadors OSMOSYS", message);
        }
+        List<User> partnerSupervisors = this.projectService.getPartnerSupervisorsByPeriodId(currentPeriod.getId());
+        for (User partnerSupervisor : partnerSupervisors) {
+            List<MessageAlertServiceV2.PartnerAlertDTO> alerts = new ArrayList<>();
+            // obtengo los proyectos por cada partner supervisor
+            LOGGER.info(partnerSupervisor.getName());
+            List<ProjectResumeWeb> projects = this.projectService.getProjectResumenWebByPeriodIdAndPartnerSupervisorId(currentPeriod.getId(), partnerSupervisor.getId());
+
+            String message = "<p><strong>Estimado/a colega " + ":</strong></p>" +
+                    "<p>Este es un recordatorio de que el periodo de reportes de indicadores para el mes de  " + mesAReportar.getLabel() +
+                    " ha iniciado. Contamos con su ayuda para tener sus datos al día en el sistema OSMOSYS-ACNUR hasta el día " + limitDay + " de este mes. " +
+                    " Los proyectos asignados para Ud. son " +projects.stream().map(ProjectResumeWeb::getCode).collect(Collectors.joining(", "))+
+                    ". En caso de que ya se hayan reportado los datos, por favor haga caso omiso de este correo.</p>" +
+                    "<p>Este recordatorio ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con su punto focal de ACNUR.</p>";
+
+            String copyAddresses = CollectionUtils.isNotEmpty(imProgramsEmail) ? String.join(", ", imProgramsEmail) : null;
+            this.emailService.sendEmailMessage(partnerSupervisor.getEmail(), copyAddresses, "Recordatorio de reporte Indicadores OSMOSYS-Socios", message);
+            // this.emailService.sendEmailMessage("salazart@unhcr.org", "salazart@unhcr.org", "Recordatorio de reporte Indicadors OSMOSYS", message);
+        }
 
 
     }
@@ -172,12 +183,11 @@ public class MessageReminderService {
         for (User user : users) {
             LOGGER.debug("user: " + user.getEmail());
 
-            String message = "<p style=\"text-align:justify\">Estimado/a colega " + user.getName() + ":</p>" +
-                    "<p style=\"text-align:justify\">" +
-                    " Este es un recordatorio de que el periodo de reportes de indicadores para el mes de  " + mesAReportar.getLabel() +
+            String message = "<p><strong>Estimado/a colega " + user.getName() + ":</strong></p>" +
+                    "<p>Este es un recordatorio de que el periodo de reportes de indicadores para el mes de  " + mesAReportar.getLabel() +
                     " ha iniciado. Contamos con su ayuda para tener sus datos al día en el sistema OSMOSYS-ACNUR hasta el día " + limitDay + " de este mes. " +
                     "En caso de que ya haya reportado los datos, por favor haga caso omiso de este correo.</p>" +
-                    "<p style=\"text-align:justify\">Este recordatorio ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con con la unidad de programas.</p>";
+                    "<p>Este recordatorio ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con la unidad de programas.</p>";
             this.emailService.sendEmailMessage(user.getEmail(), null, "Recordatorio de reporte Indicadors OSMOSYS", message);
             // this.emailService.sendEmailMessage("salazart@unhcr.org", null, "Recordatorio de reporte Indicadors OSMOSYS", message);
 

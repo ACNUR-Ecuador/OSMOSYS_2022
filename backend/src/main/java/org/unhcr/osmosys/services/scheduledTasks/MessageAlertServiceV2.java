@@ -74,61 +74,11 @@ public class MessageAlertServiceV2 {
         }
 
         for (User focalPoint : focalPoints) {
-            List<PartnerAlertDTO> alerts = new ArrayList<>();
             // obtengo los proyectos por cada focal point
             LOGGER.info(focalPoint.getName());
             List<ProjectResumeWeb> projects = this.projectService.getProjectResumenWebByPeriodIdAndFocalPointId(currentPeriod.getId(), focalPoint.getId());
-            for (ProjectResumeWeb project : projects) {
-
-                LOGGER.info("   " + project.getOrganizationAcronym() + "-" + project.getName());
-                List<IndicatorExecutionWeb> generalIndicators = this.indicatorExecutionService.getGeneralIndicatorExecutionsByProjectIdAndState(project.getId(), State.ACTIVO);
-                LOGGER.info("       " + "General:" + generalIndicators.size());
-                IndicatorExecutionWeb generaIndicator = generalIndicators.get(0);
-                LOGGER.info("       " + "General:" + generaIndicator.getLate());
-                if (generaIndicator.getLate().equals(TimeStateEnum.LATE) || generaIndicator.getLate().equals(TimeStateEnum.SOON_REPORT)) {
-                    PartnerAlertDTO alertDTO = new PartnerAlertDTO();
-                    alertDTO.setPartner(project.getOrganizationAcronym());
-                    alertDTO.setProjectName(project.getName());
-                    alertDTO.setIndicator(generaIndicator.getIndicator().getDescription());
-                    alertDTO.setIndicatorType(generaIndicator.getIndicatorType().getLabel());
-                    alertDTO.setLateMonths(generaIndicator.getQuarters().stream().flatMap(quarterWeb -> quarterWeb.getMonths().stream()).filter(monthWeb -> monthWeb.getLate().equals(TimeStateEnum.LATE) || monthWeb.getLate().equals(TimeStateEnum.SOON_REPORT))
-                            .map(MonthWeb::getMonth)
-                            .sorted()
-                            .map(MonthEnum::getLabel)
-                            .collect(Collectors.joining(", ")));
-                    alerts.add(alertDTO);
-                }
-                List<IndicatorExecutionWeb> performanceIndicators = this.indicatorExecutionService.getPerformanceIndicatorExecutionsByProjectId(project.getId(), State.ACTIVO);
-                LOGGER.info("       " + "Performance:" + performanceIndicators.size());
-                // filtro lo que tengan retrasos
-                List<IndicatorExecutionWeb> latePerformanceIndicators = performanceIndicators.stream().filter(indicatorExecutionWeb -> indicatorExecutionWeb.getLate().equals(TimeStateEnum.LATE) || indicatorExecutionWeb.getLate().equals(TimeStateEnum.SOON_REPORT)).collect(Collectors.toList());
-
-                LOGGER.info("       " + "LatePerformance:" + latePerformanceIndicators.size());
-                for (IndicatorExecutionWeb latePerformanceIndicator : latePerformanceIndicators) {
-
-                    String lateMonths = latePerformanceIndicator.getQuarters().stream().flatMap(quarterWeb -> quarterWeb.getMonths().stream())
-                            .filter(monthWeb -> monthWeb.getState().equals(State.ACTIVO))
-                            .filter(monthWeb -> monthWeb.getLate().equals(TimeStateEnum.LATE) || monthWeb.getLate().equals(TimeStateEnum.SOON_REPORT))
-                            .map(MonthWeb::getMonth)
-                            .sorted()
-                            .map(MonthEnum::getLabel)
-                            .collect(Collectors.joining(", "));
-                    LOGGER.info("          " + "LatePerformance:" + latePerformanceIndicator.getIndicator().getCode() + lateMonths);
-                    PartnerAlertDTO alertDTO = new PartnerAlertDTO();
-                    alertDTO.setPartner(project.getOrganizationAcronym());
-                    alertDTO.setProjectName(project.getName());
-                    alertDTO.setIndicator(latePerformanceIndicator.getIndicator().getCode() + "-" + latePerformanceIndicator.getIndicator().getDescription() +
-                            (latePerformanceIndicator.getIndicator().getCategory() != null ? "( categoría: " + latePerformanceIndicator.getIndicator().getCategory() + ")" : ""
-                            ));
-                    alertDTO.setIndicatorType(latePerformanceIndicator.getIndicatorType().getLabel());
-                    alertDTO.setLateMonths(lateMonths);
-                    alerts.add(alertDTO);
-
-                }
-
-
-            }
-            if (alerts.size() < 1) {
+            List<PartnerAlertDTO> alerts=getPartnerAlerts(projects);
+            if (alerts.isEmpty()) {
                 continue;
             }
 
@@ -141,6 +91,26 @@ public class MessageAlertServiceV2 {
             this.emailService.sendEmailMessageWithAttachment(focalPoint.getEmail(), copyAddresses, "Retrasos en reporte de indicadores - OSMOSYS", message, report, "reporte_retrasos.xlsx");
         }
 
+        List<User> partnerSupervisors = this.projectService.getPartnerSupervisorsByPeriodId(currentPeriod.getId());
+        if(!partnerSupervisors.isEmpty()) {
+            for (User partnerSupervisor : partnerSupervisors) {
+                // obtengo los proyectos por cada partner Supervisor
+                LOGGER.info(partnerSupervisor.getName());
+                List<ProjectResumeWeb> projects = this.projectService.getProjectResumenWebByPeriodIdAndPartnerSupervisorId(currentPeriod.getId(), partnerSupervisor.getId());
+                List<PartnerAlertDTO> alerts=getPartnerAlerts(projects);
+                if (alerts.isEmpty()) {
+                    continue;
+                }
+
+                SXSSFWorkbook wb = this.createPartnersAlertAttachment(alerts);
+                ByteArrayOutputStream report = this.utilsService.getByteArrayOutputStreamFromWorkbook(wb);
+
+
+                String copyAddresses = CollectionUtils.isNotEmpty(imProgramsEmail) ? String.join(", ", imProgramsEmail) : null;
+                String message = this.getPartnerSupervisorAlertMessage(partnerSupervisor.getName(), projects.stream().map(ProjectResumeWeb::getCode).collect(Collectors.joining(", ")));
+                this.emailService.sendEmailMessageWithAttachment(partnerSupervisor.getEmail(), copyAddresses, "Retrasos en reporte de indicadores - OSMOSYS", message, report, "reporte_retrasos.xlsx");
+            }
+        }
 
     }
 
@@ -244,24 +214,31 @@ public class MessageAlertServiceV2 {
 
     private String getPartnerAlertMessage(String focalPointName, String partnersList) {
         return
-                "<p style=\"text-align:justify\">Estimado/a " + focalPointName + ":</p>" +
-                        "<p style=\"text-align:justify\">" +
-                        " Se han encontrado indicadores con retrasos en proyectos de socios en los cuales usted es punto focal: " + partnersList +
+                        "<p><strong>Estimado/a " + focalPointName + ":</strong></p>" +
+                        "<p>Se han encontrado indicadores con retrasos en proyectos de socios en los cuales usted es punto focal: " + partnersList +
                         ". Rogamos su ayuda para poner al d&iacute;a estos datos en el sistema OSMOSYS-ACNUR.  En el archivo adjunto puede encontrar el detalle de los indicadores con retraso.</p>" +
-                        "<p style=\"text-align:justify\">Este reporte ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con con la Unidad de Programas.</p>"
+                        "<p>Este reporte ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con con la Unidad de Programas.</p>"
+                ;
+    }
+    private String getPartnerSupervisorAlertMessage(String partnerSupervisorName, String projectsList) {
+        return
+                        "<p><strong>Estimado/a "+ partnerSupervisorName+":</strong></p>\n" +
+                        "<p>Se han encontrado indicadores con retrasos para los cuales usted es supervisor/a. Rogamos su ayuda para poner al día estos datos en el sistema <strong>OSMOSYS-ACNUR</strong>.</p>\n" +
+                        "<p>En el archivo adjunto puede encontrar el detalle de los indicadores con retraso.</p>\n" +
+                        "<p><strong>Proyectos de socios en los cuales usted es supervisor: </strong> "+projectsList+"</p>\n" +
+                        "<p>Este reporte ha sido generado automáticamente por el sistema OSMOSYS. En caso de dudas, por favor comunicarse con la <strong>Unidad de Programas</strong>.</p>\n"
                 ;
     }
 
     private String getDIAlertMessage(String supervisorName, String responsableList) {
         return
-                "<p style=\"text-align:justify\">Estimado/a " + supervisorName + ":</p>" +
-                        "<p style=\"text-align:justify\">" +
-                        " Se han encontrado indicadores de implementación directa con retrasos para los cuales usted es supervisor/a" +
+                        "<p><strong>Estimado/a " + supervisorName + ":</strong></p>" +
+                        "<p>Se han encontrado indicadores de implementación directa con retrasos para los cuales usted es supervisor/a" +
                         ". Rogamos su ayuda para poner al d&iacute;a estos datos en el sistema OSMOSYS-ACNUR.  En el archivo adjunto puede encontrar el detalle de los indicadores con retraso.</p>" +
-                        "<p style=\"text-align:justify\">Los reponsables de reportar estos indicadores son los siguientes colegas: " +
+                        "<p>Los reponsables de reportar estos indicadores son los siguientes colegas: " +
                         responsableList +
                         "</p>" +
-                        "<p style=\"text-align:justify\">Este reporte ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con con la Unidad de Programas.</p>"
+                        "<p>Este reporte ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con con la Unidad de Programas.</p>"
                 ;
     }
 
@@ -311,6 +288,58 @@ public class MessageAlertServiceV2 {
         return wb;
 
 
+    }
+
+    private List<PartnerAlertDTO> getPartnerAlerts(List<ProjectResumeWeb> projects) throws GeneralAppException{
+        List<PartnerAlertDTO> alerts = new ArrayList<>();
+        for (ProjectResumeWeb project : projects) {
+            LOGGER.info("   " + project.getOrganizationAcronym() + "-" + project.getName());
+            List<IndicatorExecutionWeb> generalIndicators = this.indicatorExecutionService.getGeneralIndicatorExecutionsByProjectIdAndState(project.getId(), State.ACTIVO);
+            LOGGER.info("       " + "General:" + generalIndicators.size());
+            IndicatorExecutionWeb generaIndicator = generalIndicators.get(0);
+            LOGGER.info("       " + "General:" + generaIndicator.getLate());
+            if (generaIndicator.getLate().equals(TimeStateEnum.LATE) || generaIndicator.getLate().equals(TimeStateEnum.SOON_REPORT)) {
+                PartnerAlertDTO alertDTO = new PartnerAlertDTO();
+                alertDTO.setPartner(project.getOrganizationAcronym());
+                alertDTO.setProjectName(project.getName());
+                alertDTO.setIndicator(generaIndicator.getIndicator().getDescription());
+                alertDTO.setIndicatorType(generaIndicator.getIndicatorType().getLabel());
+                alertDTO.setLateMonths(generaIndicator.getQuarters().stream().flatMap(quarterWeb -> quarterWeb.getMonths().stream()).filter(monthWeb -> monthWeb.getLate().equals(TimeStateEnum.LATE) || monthWeb.getLate().equals(TimeStateEnum.SOON_REPORT))
+                        .map(MonthWeb::getMonth)
+                        .sorted()
+                        .map(MonthEnum::getLabel)
+                        .collect(Collectors.joining(", ")));
+                alerts.add(alertDTO);
+            }
+            List<IndicatorExecutionWeb> performanceIndicators = this.indicatorExecutionService.getPerformanceIndicatorExecutionsByProjectId(project.getId(), State.ACTIVO);
+            LOGGER.info("       " + "Performance:" + performanceIndicators.size());
+            // filtro lo que tengan retrasos
+            List<IndicatorExecutionWeb> latePerformanceIndicators = performanceIndicators.stream().filter(indicatorExecutionWeb -> indicatorExecutionWeb.getLate().equals(TimeStateEnum.LATE) || indicatorExecutionWeb.getLate().equals(TimeStateEnum.SOON_REPORT)).collect(Collectors.toList());
+
+            LOGGER.info("       " + "LatePerformance:" + latePerformanceIndicators.size());
+            for (IndicatorExecutionWeb latePerformanceIndicator : latePerformanceIndicators) {
+
+                String lateMonths = latePerformanceIndicator.getQuarters().stream().flatMap(quarterWeb -> quarterWeb.getMonths().stream())
+                        .filter(monthWeb -> monthWeb.getState().equals(State.ACTIVO))
+                        .filter(monthWeb -> monthWeb.getLate().equals(TimeStateEnum.LATE) || monthWeb.getLate().equals(TimeStateEnum.SOON_REPORT))
+                        .map(MonthWeb::getMonth)
+                        .sorted()
+                        .map(MonthEnum::getLabel)
+                        .collect(Collectors.joining(", "));
+                LOGGER.info("          " + "LatePerformance:" + latePerformanceIndicator.getIndicator().getCode() + lateMonths);
+                PartnerAlertDTO alertDTO = new PartnerAlertDTO();
+                alertDTO.setPartner(project.getOrganizationAcronym());
+                alertDTO.setProjectName(project.getName());
+                alertDTO.setIndicator(latePerformanceIndicator.getIndicator().getCode() + "-" + latePerformanceIndicator.getIndicator().getDescription() +
+                        (latePerformanceIndicator.getIndicator().getCategory() != null ? "( categoría: " + latePerformanceIndicator.getIndicator().getCategory() + ")" : ""
+                        ));
+                alertDTO.setIndicatorType(latePerformanceIndicator.getIndicatorType().getLabel());
+                alertDTO.setLateMonths(lateMonths);
+                alerts.add(alertDTO);
+
+            }
+        }
+        return alerts;
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
