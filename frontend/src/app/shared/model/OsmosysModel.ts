@@ -612,6 +612,36 @@ export class Tag {
     public indicatorTagAsignations: IndicatorTagAsignation[];
 }
 
+
+// Result Manager Page
+export class ResultManagerIndicator {
+
+    public indicator: Indicator;
+    public anualTarget: number;
+    public anualExecution: number;
+    public resultManagerIndicatorQuarter: ResultManagerIndicatorQuarter[];
+}
+
+export class ResultManagerIndicatorQuarter {
+    public quarter: number;
+    public quarterExecution: number;
+    public resultManagerQuarterPopulationType: ResultManagerQuarterPopulationType[];
+    public resultManagerQuarterImplementer: ResultManagerQuarterImplementer[];
+}
+
+export class ResultManagerQuarterPopulationType {
+    public quarterPopulationTypeExecution: number;
+    public populationType: StandardDissagregationOption
+    public confirmation: boolean;    
+}
+
+export class ResultManagerQuarterImplementer {
+    public IndicatorExecution: IndicatorExecution;
+    public quarterImplementerExecution: number;
+}
+
+//end Result manager page
+
 export class PeriodTagAsignation {
     constructor() {
         this.state = 'ACTIVO';
