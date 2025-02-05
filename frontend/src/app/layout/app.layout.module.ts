@@ -29,6 +29,7 @@ import { AppSearchComponent } from './app.search.component';
 import { AppFooterComponent } from './app.footer.component';
 import {AvatarModule} from "primeng/avatar";
 import {AdministrationModule} from "../administration/administration.module";
+import { ResultManagerModule } from '../result-manager/result-manager.module';
 
 @NgModule({
     declarations: [
@@ -63,7 +64,8 @@ import {AdministrationModule} from "../administration/administration.module";
         DialogModule,
         StyleClassModule,
         AvatarModule,
-        AdministrationModule
+        AdministrationModule,
+        ResultManagerModule
     ]
 })
 export class AppLayoutModule { }

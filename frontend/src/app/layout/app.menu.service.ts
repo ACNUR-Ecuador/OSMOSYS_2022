@@ -241,6 +241,20 @@ export class MenuService {
         },
         {separator: true},
         {
+            label: 'Manager de Resultado',
+            icon: 'pi pi-sitemap',
+            roles: ['RESULT_MANAGER', 'ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL'],
+            items: [
+                {
+                    label: 'Reporte de indicadores',
+                    icon: 'pi pi-fw pi-th-large',
+                    routerLink: ['/resultManager/resultManagerIndicatorList'],
+                    roles: ['RESULT_MANAGER', 'ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL'],
+                }
+            ]
+        },
+        {separator: true},
+        {
             label: 'Reportes',
             icon: 'pi pi-file-o',
             roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL'],
