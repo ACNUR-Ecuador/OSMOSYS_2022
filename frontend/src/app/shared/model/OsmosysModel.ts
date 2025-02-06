@@ -619,20 +619,21 @@ export class ResultManagerIndicator {
     public indicator: Indicator;
     public anualTarget: number;
     public anualExecution: number;
-    public resultManagerIndicatorQuarter: ResultManagerIndicatorQuarter[];
+    public resultManagerIndicatorQuarter?: ResultManagerIndicatorQuarter[];
+    public hasExecutions: boolean;
 }
 
 export class ResultManagerIndicatorQuarter {
     public quarter: number;
     public quarterExecution: number;
-    public resultManagerQuarterPopulationType: ResultManagerQuarterPopulationType[];
-    public resultManagerQuarterImplementer: ResultManagerQuarterImplementer[];
+    public resultManagerQuarterPopulationType?: ResultManagerQuarterPopulationType[];
+    public resultManagerQuarterImplementer?: ResultManagerQuarterImplementer[];
 }
 
 export class ResultManagerQuarterPopulationType {
     public quarterPopulationTypeExecution: number;
     public populationType: StandardDissagregationOption
-    public confirmation: boolean;    
+    public confirmation?: boolean;    
 }
 
 export class ResultManagerQuarterImplementer {

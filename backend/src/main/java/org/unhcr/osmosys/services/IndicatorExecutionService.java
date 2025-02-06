@@ -1504,6 +1504,45 @@ public class IndicatorExecutionService {
         return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(r, false);
     }
 
+    public List<ResultManagerIndicatorWeb> getResultManagerIndicators(Long userId, Long periodId) throws GeneralAppException {
+        List<Indicator> resultManagerIndicators = this.userDao.findIndicatorsByResultManager(userId);
+        List<ResultManagerIndicatorWeb> r = new ArrayList<>();
+        for(Indicator resultManagerIndicator : resultManagerIndicators){
+            boolean hasExecutions=false;
+            List<IndicatorExecution> ies =this.indicatorExecutionDao.getByIndicatorIdAndPeriodId(periodId,resultManagerIndicator.getId());
+            if(!ies.isEmpty()){
+                hasExecutions = true;
+            }
+            ResultManagerIndicatorWeb rmi=new ResultManagerIndicatorWeb();
+            BigDecimal response = this.indicatorExecutionDao.getIndicatorAnualTarget(resultManagerIndicator.getId(), periodId);
+            rmi.setAnualTarget(response);
+            rmi.setAnualExecution(response.divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP));
+            rmi.setIndicator(this.modelWebTransformationService.indicatorToIndicatorWeb(resultManagerIndicator,true,true));
+            rmi.setHasExecutions(hasExecutions);
+            r.add(rmi);
+            //obtener ResultManagerIndicatorQuarter
+            if(hasExecutions){
+                List<ResultManagerIndicatorQuarterWeb> rmiq = getIndicatorQuarterExecutions(resultManagerIndicator.getId(), periodId);
+                rmi.setResultManagerIndicatorQuarter(rmiq);
+            }
+        }
+        return r;
+    }
+
+    public List<ResultManagerIndicatorQuarterWeb>  getIndicatorQuarterExecutions(Long indicatorId, Long periodId) throws GeneralAppException{
+        int year=periodService.getById(periodId).getYear();
+        List<ResultManagerIndicatorQuarterWeb> rmiqs = indicatorExecutionDao.getIndicatorQuarterExecutions(indicatorId, year);
+        for(ResultManagerIndicatorQuarterWeb rmiq : rmiqs){
+            List<ResultManagerQuarterImplementerWeb> rmi= indicatorExecutionDao.getIndicatorQuarterImplementers(indicatorId,periodId,rmiq.getQuarter());
+            rmiq.setResultManagerQuarterImplementer(rmi);
+            List<ResultManagerQuarterPopulationTypeWeb> rmpt=indicatorExecutionDao.getResultManagerQuarterPopulationType(indicatorId,rmiq.getQuarter(),year);
+            rmiq.setResultManagerQuarterPopulationType(rmpt);
+        }
+        return rmiqs;
+    }
+
+
+
 
 }
 

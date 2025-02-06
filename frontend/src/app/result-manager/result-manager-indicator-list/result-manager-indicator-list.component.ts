@@ -18,13 +18,16 @@ import { FilterUtilsService } from 'src/app/services/filter-utils.service';
 import { IndicatorService } from 'src/app/services/indicator.service';
 import { PeriodService } from 'src/app/services/period.service';
 import { ReportsService } from 'src/app/services/reports.service';
+import { ResultManagerService } from 'src/app/services/result-manager.service';
 import { TagService } from 'src/app/services/tag.service';
+import { UserService } from 'src/app/services/user.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import {
     Indicator,
     IndicatorTagAsignation,
     Period,
     PeriodTagAsignation,
+    ResultManagerIndicator,
     Tag,
 } from 'src/app/shared/model/OsmosysModel';
 import {
@@ -53,6 +56,7 @@ export class ResultManagerIndicatorListComponent implements OnInit {
     indicators: Indicator[];
     selectedIndicators: Indicator[];
     operations: any[];
+    resultManagerIndicators: ResultManagerIndicator[]
 
     products: any[] = [
         { name: 'Apple', category: 'Fruit', price: 1.2 },
@@ -81,10 +85,13 @@ export class ResultManagerIndicatorListComponent implements OnInit {
         private filterUtilsService: FilterUtilsService,
         private cd: ChangeDetectorRef,
         private reportsService: ReportsService,
+        private resultManagerService: ResultManagerService,
+        private userService: UserService
 
     ) {}
 
     ngOnInit(): void {
+        this.loadResultManagerIndicators();
         this.selectedIndicators = [];
         this.loadItems();
         this.loadPeriods();
@@ -156,6 +163,25 @@ export class ResultManagerIndicatorListComponent implements OnInit {
                 this.messageService.add({
                     severity: 'error',
                     summary: 'Error al cargar los tags',
+                    detail: err.error.message,
+                    life: 3000,
+                });
+            },
+        });
+    }
+
+    private loadResultManagerIndicators() {
+        const period=3;
+        const user=this.userService.getLogedUsername();
+        this.resultManagerService.getAll(period, user.id).subscribe({
+            next: (value) => {
+                this.resultManagerIndicators = value;
+                console.log(this.resultManagerIndicators)
+            },
+            error: (err) => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los indicadores del Manager de resultado',
                     detail: err.error.message,
                     life: 3000,
                 });
