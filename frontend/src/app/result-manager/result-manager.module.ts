@@ -30,11 +30,13 @@ import {DialogModule} from "primeng/dialog";
 import {PickListModule} from "primeng/picklist";
 import { ResultManagerIndicatorListComponent } from './result-manager-indicator-list/result-manager-indicator-list.component';
 import { ResultManagerRoutingModule } from './result-manager-routing.module';
+import { PercentagePipe } from '../shared/pipes/percentage.pipe'; // Asegúrate de que la ruta sea correcta
 
 
 @NgModule({
     declarations: [
-        ResultManagerIndicatorListComponent
+        ResultManagerIndicatorListComponent,
+        
     ],
     imports: [
         CommonModule,
@@ -70,7 +72,8 @@ import { ResultManagerRoutingModule } from './result-manager-routing.module';
         IndicatorPipe,
         PercentPipe,
         MonthPipe,
-        DialogService
+        DialogService,
+        PercentagePipe
     ]
 })
 export class ResultManagerModule {

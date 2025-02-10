@@ -2,106 +2,74 @@
     <div class="col-12">
         <p-toast></p-toast>
         <div class="card px-6 py-6">
-            <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true"
-                    [rowHover]="true" dataKey="id" styleClass="p-datatable-striped" 
-                    currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                    [showCurrentPageReport]="true"
-                    (sortFunction)="utilsService.customSort($event, cols)" [customSort]="true" [rowsPerPageOptions]="[10,25,50]"
-            >
-                <ng-template pTemplate="caption">
-                    <div class="grid">
-                        <div class="col-12 md:col-4 sm:col-12 flex justify-content-start">
-                            <h3 class="m-0">Manager de Resultado</h3>
-                        </div>
-                        <div class="col-12 md:col-3 sm:col-12 flex justify-content-center">
-                        </div>
-                        <div class="col-12 md:col-5 sm:col-12 flex justify-content-end">
+            
 
-                            <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
-                                            selectedItemsLabel="{0} columnas seleccionadas"
-                                            [style]="{minWidth: '150px',color:'#6c757d'}"
-                                            placeholder="Seleccione las columnas"
-                                            appendTo="body"></p-multiSelect>
-                            <button pButton pRipple label="Crear" icon="pi pi-plus" class="main-button mr-2 mb-2"
-                            (click)="createItem()" style="margin-left: 2rem;" pTooltip="Crear un Área" tooltipPosition="bottom"></button>
+            <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" 
+         [paginator]="true" [rowHover]="true" dataKey="id"
+         styleClass="p-datatable-striped" 
+         currentPageReportTemplate=" {first} a {last} de {totalRecords} "
+         [showCurrentPageReport]="true"
+         (sortFunction)="utilsService.customSort($event, cols)" [customSort]="true" 
+         [rowsPerPageOptions]="[10,25,50]">
 
-                            <button pButton pRipple label="Exportar" icon="pi pi-file-excel" class="second-button mr-2 mb-2"
-                            (click)="exportExcel(dt)" style="margin-left: 1rem;" pTooltip="Exportar a Excel" tooltipPosition="bottom"></button>                    
-                        </div>
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="header" let-columns>
-                    <tr>
-                        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
-                            {{col.header}}
-                            <p-sortIcon [field]="col.field"></p-sortIcon>
-                        </th>
-                        <th>
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th style="width: 3rem"></th> <!-- Columna para el botón de expansión -->
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+            <th>Acciones</th>
+        </tr>
+    </ng-template>
 
-                        </th>
-                    </tr>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr>
+            <td>
+                <button pButton pRipple type="button"
+                        [icon]="expandedRowKeys[rowData.id] ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
+                        [pRowToggler]="rowData"
+                        (click)="toggleRow(rowData)">
+                </button>
 
-                    <tr>
-                        <th *ngFor="let col of columns" [ngSwitch]="col.field">
-                            <p-columnFilter *ngSwitchDefault [type]="col.type" [field]="col.field"
-                                            [matchMode]="'contains'"
-                                            [showMenu]="false"> matchMode="contains
-                            </p-columnFilter>
 
-                            <p-columnFilter *ngSwitchCase="'areaType'" type="equals" [field]="col.field"
-                                            [showMenu]="false"
-                            >
-                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                    <p-dropdown [ngModel]="value" [options]="products" 
-                                                (onChange)="filter($event.value)"
-                                                placeholder="Selecciona..." [showClear]="true">
-                                        <ng-template let-option pTemplate="item">
-                                            <span
-                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
-                                        </ng-template>
-                                    </p-dropdown>
-                                </ng-template>
-                            </p-columnFilter>
-                            <p-columnFilter *ngSwitchCase="'state'" type="equals" [field]="col.field"
-                                            [showMenu]="false"
-                            >
-                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                    <p-dropdown [ngModel]="value" [options]="states"
-                                                (onChange)="filter($event.value)"
-                                                placeholder="Selecciona..." [showClear]="true">
-                                        <ng-template let-option pTemplate="item">
-                                            <span
-                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
-                                        </ng-template>
-                                    </p-dropdown>
-                                </ng-template>
-                            </p-columnFilter>
-                        </th>
-                        <th>
+            </td>
+            <td *ngFor="let col of columns">
+                {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field)) : utilsService.resolveFieldData(rowData, col.field) }}
+            </td>
+            <td>
+                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary"
+                        (click)="openDialog(rowData)">
+                </button>
+            </td>
+        </tr>
+        <!-- Sección de expansión -->
+        <tr *ngIf="expandedRowKeys[rowData.id]">
+            <td colspan="100%">
+                <div class="p-3">
+                    <h5>Detalles por Trimestre</h5>
+                    <p-table [value]="rowData.resultManagerIndicatorQuarter" dataKey="quarter">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Trimestre</th>
+                                <th>Ejecución</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-quarterData>
+                            <tr>
+                                <td>Trimestre {{ quarterData.quarter }}</td>
+                                <td>{{ quarterData.quarterExecution }}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </td>
+        </tr>
+    </ng-template>
 
-                        </th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-rowData let-columns="columns">
-                    <tr>
-                        <td *ngFor="let col of columns"
-                            [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
-                        >
-                            {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
-                        </td>
-                        <td>
-                            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2"
-                                    (click)="editItem(rowData)"></button>
+</p-table>
 
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="summary">
-                    <div class="p-d-flex p-ai-center p-jc-between">
-                        {{dt.filteredValue?dt.filteredValue.length:dt.totalRecords}} de {{items?items.length:0}} áreas.
-                    </div>
-                </ng-template>
-            </p-table>
+
         </div>
     </div>
 </div>
@@ -113,70 +81,6 @@
 
         <ng-template pTemplate="content">
             <p-messages></p-messages>
-            <div class="card p-fluid">
-                <div class="field">
-                    <label for="codeI">Código *:</label>
-                    <input type="text" pInputText id="codeI"
-                           formControlName="code" autofocus/>
-                    <small class="p-error" *ngIf="utilsService.showErrorForm('code',formItem)">Campo
-                        obligatorio.</small> 
-                </div>
-                <div class="field">
-                    <label for="shortDescriptionI">Descripción Corta *:</label>
-                    <input type="text" pInputText id="shortDescriptionI"
-                           formControlName="shortDescription"/>
-                    <small class="p-error" *ngIf="utilsService.showErrorForm('shortDescription',formItem)">Campo
-                        obligatorio.</small>
-                </div>
-                <div class="field">
-                    <label for="descriptionI">Descripción Completa *:</label>
-
-                    <textarea pInputTextarea id="descriptionI"
-                              formControlName="description"
-                              [autoResize]="true">
-                        </textarea>
-
-                    <small class="p-error" *ngIf="utilsService.showErrorForm('description',formItem)">Campo
-                        obligatorio.</small>
-                </div>
-                <div class="field">
-                    <label for="areaTypeI">Tipo *:</label>
-
-                    <p-dropdown id="areaTypeI"
-                                formControlName="areaType"
-                                [options]="products"
-                                placeholder="Selecciona..." 
-                                appendTo="body">
-                    </p-dropdown>
-
-                    <small class="p-error" *ngIf="utilsService.showErrorForm('areaType',formItem)">Campo
-                        obligatorio.</small>
-                </div>
-                <div class="field">
-                    <label for="stateI">Estado *:</label>
-
-                    <p-selectButton id="stateI"
-                                    formControlName="state"
-                                    [options]="states"
-                    >
-                    </p-selectButton>
-
-                    <small class="p-error" *ngIf="utilsService.showErrorForm('state',formItem)">Campo
-                        obligatorio.</small>
-                </div>
-                <div class="field">
-                    <label for="definitionI">Definición:</label>
-
-                    <textarea pInputTextarea id="definitionI"
-                              formControlName="definition"
-                              [autoResize]="true">
-                        </textarea>
-
-                    <small class="p-error" *ngIf="utilsService.showErrorForm('description',formItem)">Campo
-                        obligatorio.</small>
-                </div>
-            </div>
-
         </ng-template>
 
         <ng-template pTemplate="footer">

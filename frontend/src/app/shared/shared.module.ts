@@ -23,6 +23,7 @@ import { StatementPeriodStatementAsignationsListPipe } from './pipes/statement-p
 import { StandardDissagreationListPipe } from './pipes/standard-dissagreation-list.pipe';
 import { SafePipe } from './pipes/safe.pipe';
 import { TagPeriodTagAsignationsListPipe } from './pipes/tag-period-tag-asignations-list.pipe';
+import { PercentagePipe } from './pipes/percentage.pipe';
 
 
 
@@ -49,7 +50,8 @@ import { TagPeriodTagAsignationsListPipe } from './pipes/tag-period-tag-asignati
         OfficeOrganizationPipe,
         StandardDissagreationListPipe,
         SafePipe,
-        TagPeriodTagAsignationsListPipe
+        TagPeriodTagAsignationsListPipe,
+        PercentagePipe
     ],
     imports: [
         CommonModule
