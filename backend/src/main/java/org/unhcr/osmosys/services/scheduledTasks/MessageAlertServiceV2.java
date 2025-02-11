@@ -62,6 +62,7 @@ public class MessageAlertServiceV2 {
 
 
     public void sendPartnersAlertsToFocalPoints() throws GeneralAppException {
+        LOGGER.info("sendPartnersAlertsToFocalPoints");
         Period currentPeriod = this.periodService.getByYear(this.utilsService.getCurrentYear());
         // obtengo los focal points de este periodo
         List<User> focalPoints = this.projectService.getFocalPointByPeriodId(currentPeriod.getId());
@@ -145,6 +146,7 @@ public class MessageAlertServiceV2 {
     }
 
     public void sendDirectImplementationAlertsToSupervisors() throws GeneralAppException {
+        LOGGER.debug("sendDirectImplementationAlertsToSupervisors");
         Period currentPeriod = this.periodService.getByYear(this.utilsService.getCurrentYear());
         List<String> imProgramsEmail = new ArrayList<>();
         if (StringUtils.isNotBlank(this.appConfigurationService.findValorByClave(AppConfigurationKey.IM_EMAIL))) {

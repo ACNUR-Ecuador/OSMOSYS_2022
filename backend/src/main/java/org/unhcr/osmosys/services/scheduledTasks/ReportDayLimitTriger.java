@@ -41,7 +41,7 @@ public class ReportDayLimitTriger {
     @PostConstruct
     public void init() {
         Integer limitreport = this.appConfigurationService.getReportLimitDay();
-        LOGGER.debug("ReportDayLimitTrigger" + limitreport);
+        LOGGER.info("ReportDayLimitTrigger" + limitreport);
 
         // this.scheduler.scheduleAtFixedRate(this::run, 500, 500, TimeUnit.MILLISECONDS);
         Trigger trigg = new Trigger() {
@@ -49,9 +49,9 @@ public class ReportDayLimitTriger {
 
             @Override
             public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
-                LOGGER.debug("1 ReportDayLimitTrigger");
-                LOGGER.debug(lastExecutionInfo);
-                LOGGER.debug(taskScheduledTime);
+                LOGGER.info("1 ReportDayLimitTrigger");
+                LOGGER.info(lastExecutionInfo);
+                LOGGER.info(taskScheduledTime);
                 SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                 Calendar now = Calendar.getInstance();
                 Calendar next = Calendar.getInstance();
@@ -59,12 +59,13 @@ public class ReportDayLimitTriger {
 
                 if (lastExecutionInfo == null) {
                     //now.set(Calendar.DAY_OF_MONTH, limitreport);
+                    LOGGER.debug("lastExecutionInfo == null");
                     next.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), limitreport + 1, 6, 1, 1);
                     if (next.before(now)) {
                         next.add(Calendar.MONTH, 1);
                     }
 
-                    LOGGER.debug("1 ReportDayLimitTrigger firt times");
+                    LOGGER.info("1 ReportDayLimitTrigger firt times");
                 } else {
                     Calendar calendar = GregorianCalendar.getInstance();
                     calendar.setTime(lastExecutionInfo.getRunStart());
@@ -72,7 +73,7 @@ public class ReportDayLimitTriger {
                     next = calendar;
 
                 }
-                LOGGER.debug("next time" + formatter.format(next.getTime()));
+                LOGGER.info("next time" + formatter.format(next.getTime()));
 
                 return next.getTime();
 
@@ -98,7 +99,7 @@ public class ReportDayLimitTriger {
             LOGGER.error(ExceptionUtils.getStackTrace(e));
         }
 
-        LOGGER.debug("Envío de alertas socios");
+        LOGGER.info("Envío de alertas socios");
         try {
             messageAlertService.sendPartnersAlertsToFocalPoints();
         } catch (GeneralAppException e) {

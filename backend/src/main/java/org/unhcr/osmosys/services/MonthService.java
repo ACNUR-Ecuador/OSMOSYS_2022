@@ -418,6 +418,7 @@ public class MonthService {
     }
 
     public void blockMonthsAutomaticaly() throws GeneralAppException {
+        LOGGER.debug("Bloqueo de meses");
         int currentYear = this.utilsService.getCurrentYear();
         // mes pasado
         int currentMonth = this.utilsService.getCurrentMonthYearOrder() - 1;
