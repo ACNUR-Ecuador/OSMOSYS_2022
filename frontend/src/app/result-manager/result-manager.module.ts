@@ -31,6 +31,10 @@ import {PickListModule} from "primeng/picklist";
 import { ResultManagerIndicatorListComponent } from './result-manager-indicator-list/result-manager-indicator-list.component';
 import { ResultManagerRoutingModule } from './result-manager-routing.module';
 import { PercentagePipe } from '../shared/pipes/percentage.pipe'; // Asegúrate de que la ruta sea correcta
+import { ResultManagerExecutionPipe } from '../shared/pipes/result-manager-execution.pipe';
+import {CheckboxModule} from 'primeng/checkbox';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { TagModule } from 'primeng/tag';
 
 
 @NgModule({
@@ -63,7 +67,10 @@ import { PercentagePipe } from '../shared/pipes/percentage.pipe'; // Asegúrate 
         InputTextModule,
         RippleModule,
         DialogModule,
-        PickListModule
+        PickListModule,
+        CheckboxModule,
+        RadioButtonModule,
+        TagModule
     ],
     providers: [
         EnumValuesToLabelPipe,
@@ -73,7 +80,9 @@ import { PercentagePipe } from '../shared/pipes/percentage.pipe'; // Asegúrate 
         PercentPipe,
         MonthPipe,
         DialogService,
-        PercentagePipe
+        PercentagePipe,
+        ResultManagerExecutionPipe
+
     ]
 })
 export class ResultManagerModule {

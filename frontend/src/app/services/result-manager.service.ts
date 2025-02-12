@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { ResultManagerIndicator } from '../shared/model/OsmosysModel';
+import { QuarterPopulationTypeConfirmation, ResultManagerIndicator } from '../shared/model/OsmosysModel';
 import { Observable } from 'rxjs';
 
 const mainServiceUrl = environment.base_url + '/resultManagerIndicators';
@@ -15,6 +15,13 @@ export class ResultManagerService {
 
   public getAll(periodId:number, userId:number): Observable<ResultManagerIndicator[]> {
           return this.http.get<ResultManagerIndicator[]>(`${mainServiceUrl}/${periodId}/${userId}`);
+      }
+  public save(rmi: QuarterPopulationTypeConfirmation): Observable<number> {
+          return this.http.post<number>(`${mainServiceUrl}`, rmi);
+      }
+  
+  public update(rmi: QuarterPopulationTypeConfirmation): Observable<number> {
+          return this.http.put<number>(`${mainServiceUrl}`, rmi);
       }
 
 }

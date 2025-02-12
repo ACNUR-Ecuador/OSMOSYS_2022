@@ -10,10 +10,7 @@ import org.unhcr.osmosys.model.enums.Frecuency;
 import org.unhcr.osmosys.model.enums.IndicatorType;
 import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.model.standardDissagregations.options.StandardDissagregationOption;
-import org.unhcr.osmosys.webServices.model.IndicatorExecutionWeb;
-import org.unhcr.osmosys.webServices.model.ResultManagerIndicatorQuarterWeb;
-import org.unhcr.osmosys.webServices.model.ResultManagerQuarterImplementerWeb;
-import org.unhcr.osmosys.webServices.model.ResultManagerQuarterPopulationTypeWeb;
+import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
@@ -22,6 +19,7 @@ import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -889,9 +887,8 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         return results.get(0);
     }
 
-    public BigDecimal getIndicatorAnualTarget(Long indicatorId, Long periodId) {
-
-        String jpql = "SELECT SUM(ie.target) FROM IndicatorExecution ie " +
+    public ResultManagerIndicatorWeb getIndicatorAnualTargetandExecutions(Long indicatorId, Long periodId) {
+        String jpql = "SELECT SUM(ie.target), SUM(ie.totalExecution) FROM IndicatorExecution ie " +
                 "WHERE ie.indicator.id = :indicatorId " +
                 "AND ie.indicator.state = :state " +
                 "AND ie.state = :state " +
@@ -903,16 +900,30 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         q.setParameter("periodId", periodId);
         q.setParameter("state", State.ACTIVO);
 
-        // Obtener el resultado como una lista de BigDecimal
-        List<BigDecimal> result = q.getResultList();
+        List<Object[]> results = q.getResultList();
 
-        // Si no hay resultados, devolver 0.0
-        if (result.isEmpty() || result.get(0) == null) {
-            return BigDecimal.ZERO;
+        BigDecimal anualTarget;
+        BigDecimal totalExecution;
+        // Verifica si la consulta devuelve resultados
+        if (results.isEmpty()) {
+            anualTarget = BigDecimal.ZERO;
+            totalExecution = BigDecimal.ZERO;
+        }else{
+            // Si hay resultados, procesarlos
+            Object[] result = results.get(0);
+            anualTarget = (result[0] == null) ? BigDecimal.ZERO : (BigDecimal) result[0];
+            totalExecution = (result[1] == null) ? BigDecimal.ZERO : (BigDecimal) result[1];
+
         }
 
-        return result.get(0);
+        ResultManagerIndicatorWeb resultManager = new ResultManagerIndicatorWeb();
+        resultManager.setAnualExecution(totalExecution);
+        resultManager.setAnualTarget(anualTarget);
+
+        return resultManager;
     }
+
+
     public List<ResultManagerIndicatorQuarterWeb> getIndicatorQuarterExecutions(Long indicatorId, int year) {
 
         String jpql = "SELECT q.quarterYearOrder, SUM(q.totalExecution) " +
@@ -933,10 +944,8 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         // Obtener la lista de resultados (List<Object[]>)
         List<Object[]> results = query.getResultList();
 
-        // Lista para almacenar los objetos mapeados
         List<ResultManagerIndicatorQuarterWeb> resultList = new ArrayList<>();
 
-        // Iterar sobre los resultados para mapearlos a ResultManagerIndicatorQuarterWeb
         for (Object[] result : results) {
             int quarterYearOrder = (int) result[0];  // El valor de q.quarterYearOrder
             BigDecimal totalQuarterExecution;
@@ -947,12 +956,10 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
 
             }
 
-            // Crear y llenar el objeto ResultManagerIndicatorQuarterWeb
             ResultManagerIndicatorQuarterWeb rmiq = new ResultManagerIndicatorQuarterWeb();
             rmiq.setQuarter(quarterYearOrder);
             rmiq.setQuarterExecution(totalQuarterExecution);
 
-            // Agregar el objeto a la lista de resultados
             resultList.add(rmiq);
         }
 
@@ -977,7 +984,6 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         // Obtener la lista de resultados (List<Object[]>)
         List<Object[]> results = query.getResultList();
 
-        // Lista para almacenar los objetos mapeados
         List<ResultManagerQuarterImplementerWeb> resultList = new ArrayList<>();
 
         // Iterar sobre los resultados para mapearlos a ResultManagerIndicatorQuarterWeb
@@ -987,15 +993,13 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
             if(result[1]==null){
                 quarterExecution =BigDecimal.ZERO;
             }else{
-                quarterExecution = (BigDecimal) result[1]; // El valor de SUM(q.totalExecution)
+                quarterExecution = (BigDecimal) result[1];
 
             }
-            // Crear y llenar el objeto ResultManagerIndicatorQuarterWeb
             ResultManagerQuarterImplementerWeb rmq = new ResultManagerQuarterImplementerWeb();
             rmq.setQuarterImplementerExecution(quarterExecution);
             rmq.setIndicatorExecution(iew);
 
-            // Agregar el objeto a la lista de resultados
             resultList.add(rmq);
         }
 
@@ -1021,10 +1025,8 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         query.setParameter("quarterOrder", quarterOrder);
         query.setParameter("state", State.ACTIVO);
 
-        // Necesitamos hacer el mapeo de los resultados con los tipos correctos
         List<Object[]> results = query.getResultList();
 
-        // Lista para almacenar los objetos mapeados
         List<ResultManagerQuarterPopulationTypeWeb> resultList = new ArrayList<>();
 
         // Iterar sobre los resultados para mapearlos a ResultManagerQuarterPopulationTypeWeb
@@ -1032,20 +1034,35 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
             BigDecimal quarterExecution = (result[0] == null) ? BigDecimal.ZERO : (BigDecimal) result[0];
             StandardDissagregationOption sdow = (StandardDissagregationOption) result[1];
 
-            // Transformación de sdow a sdowWeb (usando el servicio de transformación)
             StandardDissagregationOptionWeb sdowWeb = this.modelWebTransformationService.standardDissagregationOptionToStandardDissagregationOptionWeb(sdow);
 
-            // Crear y llenar el objeto ResultManagerQuarterPopulationTypeWeb
             ResultManagerQuarterPopulationTypeWeb rmqpt = new ResultManagerQuarterPopulationTypeWeb();
             rmqpt.setQuarterPopulationTypeExecution(quarterExecution);
             rmqpt.setPopulationType(sdowWeb);
 
-            // Agregar el objeto a la lista de resultados
             resultList.add(rmqpt);
         }
 
         return resultList;
     }
+
+    public List<IndicatorExecution> getIndicatorExecutionsByResultManagerAndPeriodId(Long userId, Long periodId) {
+        String jpql = "SELECT  " +
+                "ie " +
+                "FROM  " +
+                "IndicatorExecution ie   " +
+                "LEFT JOIN ie.indicator i " +
+                "LEFT JOIN i.resultManager rm " +
+                "WHERE ie.period.id = :periodId AND rm.id= :userId AND ie.state= :state  ";
+
+        Query query = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        query.setParameter("userId", userId);
+        query.setParameter("periodId", periodId);
+        query.setParameter("state", State.ACTIVO);
+        return query.getResultList();
+
+    }
+
 
 
 

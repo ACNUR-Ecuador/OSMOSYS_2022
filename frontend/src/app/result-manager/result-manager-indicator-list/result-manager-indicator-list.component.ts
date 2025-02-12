@@ -1,5 +1,5 @@
 import { HttpResponse } from '@angular/common/http';
-import { ChangeDetectorRef, Component, Input, OnInit, Pipe, PipeTransform } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, Pipe, PipeTransform, ViewChild } from '@angular/core';
 import {
     FormBuilder,
     FormControl,
@@ -27,7 +27,11 @@ import {
     Period,
     Project,
     Quarter,
+    QuarterPopulationTypeConfirmation,
     ResultManagerIndicator,
+    ResultManagerIndicatorQuarter,
+    ResultManagerQuarterImplementer,
+    ResultManagerQuarterPopulationType,
     Statement,
 } from 'src/app/shared/model/OsmosysModel';
 import { User } from 'src/app/shared/model/User';
@@ -39,6 +43,7 @@ import {
 } from 'src/app/shared/model/UtilsModel';
 import { ResultManagerService } from 'src/app/services/result-manager.service';
 import { UserService } from 'src/app/services/user.service';
+import { ResultManagerExecutionPipe } from 'src/app/shared/pipes/result-manager-execution.pipe';
 
 @Component({
     selector: 'app-result-manager-indicator-list',
@@ -48,7 +53,8 @@ import { UserService } from 'src/app/services/user.service';
 export class ResultManagerIndicatorListComponent implements OnInit {
     items: ResultManagerIndicator[];
     cols: ColumnTable[];
-    showDialog = false;
+    showPopulationDialog:boolean = false;
+    showImplementationDialog:boolean = false;
     private submitted = false;
     formItem: FormGroup;
     states: SelectItem[];
@@ -58,679 +64,15 @@ export class ResultManagerIndicatorListComponent implements OnInit {
     indicators: Indicator[];
     selectedIndicators: Indicator[];
     operations: any[];
-    resultManagerIndicators: ResultManagerIndicator[];
-
-    exampleData1: ResultManagerIndicator = {
-        indicator: {
-            id: 1,
-            code: '',
-            regionalCode: '',
-            description: '# de personas que desean acceder a beneficios de protección social',
-            category: '',
-            qualitativeInstructions: '',
-            state: '',
-            indicatorType: '',
-            measureType: '',
-            frecuency: '',
-            areaType: '',
-            isMonitored: false,
-            isCalculated: false,
-            totalIndicatorCalculationType: '',
-            compassIndicator: false,
-            coreIndicator: false,
-            statement: new Statement,
-            unit: '',
-            blockAfterUpdate: false,
-            dissagregationsAssignationToIndicator: [],
-            customDissagregationAssignationToIndicators: [],
-            resultManager: new User,
-        },
-        anualTarget: 1000,
-        anualExecution: 750,
-        resultManagerIndicatorQuarter: [
-            {
-                quarter: 1,
-                quarterExecution: 200,
-                resultManagerQuarterPopulationType: [
-                    {
-                        quarterPopulationTypeExecution: 120,
-                        populationType: {
-                            id: 1,
-                            name: "Children",
-                            order: 0,
-                            groupName: '',
-                            regionGroupName: '',
-                            otherGroupName: '',
-                            state: ''
-                        },
-                        confirmation: true,
-                    },
-                    {
-                        quarterPopulationTypeExecution: 80,
-                        populationType: {
-                            id: 2,
-                            name: "Adults",
-                            order: 0,
-                            groupName: '',
-                            regionGroupName: '',
-                            otherGroupName: '',
-                            state: ''
-                        },
-                        confirmation: false,
-                    }
-                ],
-                resultManagerQuarterImplementer: [
-                    {
-                        IndicatorExecution: {
-                            id: 1,
-                            commentary: '',
-                            activityDescription: '',
-                            indicatorType: '',
-                            state: '',
-                            target: 0,
-                            compassIndicator: false,
-                            indicator: new Indicator,
-                            period: new Period,
-                            totalExecution: 0,
-                            executionPercentage: 0,
-                            lastReportedQuarter: new Quarter,
-                            lastReportedMonth: new Month,
-                            quarters: [],
-                            late: '',
-                            project: new Project,
-                            projectStatement: new Statement,
-                            reportingOffice: new Office,
-                            supervisorUser: new User,
-                            assignedUser: new User,
-                            assignedUserBackup: new User,
-                            locations: [],
-                            keepBudget: false,
-                            assignedBudget: 0,
-                            availableBudget: 0,
-                            totalUsedBudget: 0
-                        },
-                        quarterImplementerExecution: 100,
-                    },
-                    {
-                        IndicatorExecution: {
-                            id: 2,
-                            commentary: '',
-                            activityDescription: '',
-                            indicatorType: '',
-                            state: '',
-                            target: 0,
-                            compassIndicator: false,
-                            indicator: new Indicator,
-                            period: new Period,
-                            totalExecution: 0,
-                            executionPercentage: 0,
-                            lastReportedQuarter: new Quarter,
-                            lastReportedMonth: new Month,
-                            quarters: [],
-                            late: '',
-                            project: new Project,
-                            projectStatement: new Statement,
-                            reportingOffice: new Office,
-                            supervisorUser: new User,
-                            assignedUser: new User,
-                            assignedUserBackup: new User,
-                            locations: [],
-                            keepBudget: false,
-                            assignedBudget: 0,
-                            availableBudget: 0,
-                            totalUsedBudget: 0
-                        },
-                        quarterImplementerExecution: 100,
-                    }
-                ]
-            },
-            {
-                quarter: 2,
-                quarterExecution: 300,
-                resultManagerQuarterPopulationType: [
-                    {
-                        quarterPopulationTypeExecution: 180,
-                        populationType: {
-                            id: 1,
-                            name: "Children",
-                            order: 0,
-                            groupName: '',
-                            regionGroupName: '',
-                            otherGroupName: '',
-                            state: ''
-                        },
-                        confirmation: true,
-                    },
-                    {
-                        quarterPopulationTypeExecution: 120,
-                        populationType: {
-                            id: 2,
-                            name: "Adults",
-                            order: 0,
-                            groupName: '',
-                            regionGroupName: '',
-                            otherGroupName: '',
-                            state: ''
-                        },
-                        confirmation: true,
-                    }
-                ],
-                resultManagerQuarterImplementer: [
-                    {
-                        IndicatorExecution: {
-                            id: 3,
-                            commentary: '',
-                            activityDescription: '',
-                            indicatorType: '',
-                            state: '',
-                            target: 0,
-                            compassIndicator: false,
-                            indicator: new Indicator,
-                            period: new Period,
-                            totalExecution: 0,
-                            executionPercentage: 0,
-                            lastReportedQuarter: new Quarter,
-                            lastReportedMonth: new Month,
-                            quarters: [],
-                            late: '',
-                            project: new Project,
-                            projectStatement: new Statement,
-                            reportingOffice: new Office,
-                            supervisorUser: new User,
-                            assignedUser: new User,
-                            assignedUserBackup: new User,
-                            locations: [],
-                            keepBudget: false,
-                            assignedBudget: 0,
-                            availableBudget: 0,
-                            totalUsedBudget: 0
-                        },
-                        quarterImplementerExecution: 150,
-                    },
-                    {
-                        IndicatorExecution: {
-                            id: 4,
-                            commentary: '',
-                            activityDescription: '',
-                            indicatorType: '',
-                            state: '',
-                            target: 0,
-                            compassIndicator: false,
-                            indicator: new Indicator,
-                            period: new Period,
-                            totalExecution: 0,
-                            executionPercentage: 0,
-                            lastReportedQuarter: new Quarter,
-                            lastReportedMonth: new Month,
-                            quarters: [],
-                            late: '',
-                            project: new Project,
-                            projectStatement: new Statement,
-                            reportingOffice: new Office,
-                            supervisorUser: new User,
-                            assignedUser: new User,
-                            assignedUserBackup: new User,
-                            locations: [],
-                            keepBudget: false,
-                            assignedBudget: 0,
-                            availableBudget: 0,
-                            totalUsedBudget: 0
-                        },
-                        quarterImplementerExecution: 150,
-                    }
-                ]
-            }
-        ],
-        hasExecutions: false
-    };
-
-    exampleData2: ResultManagerIndicator = {
-        indicator: {
-            id: 2,
-            code: '',
-            regionalCode: '',
-            description: '# de personas que desean acceder a beneficios de protección social',
-            category: '',
-            qualitativeInstructions: '',
-            state: '',
-            indicatorType: '',
-            measureType: '',
-            frecuency: '',
-            areaType: '',
-            isMonitored: false,
-            isCalculated: false,
-            totalIndicatorCalculationType: '',
-            compassIndicator: false,
-            coreIndicator: false,
-            statement: new Statement,
-            unit: '',
-            blockAfterUpdate: false,
-            dissagregationsAssignationToIndicator: [],
-            customDissagregationAssignationToIndicators: [],
-            resultManager: new User,
-        },
-        anualTarget: 1000,
-        anualExecution: 750,
-        resultManagerIndicatorQuarter: [
-            {
-                quarter: 1,
-                quarterExecution: 200,
-                resultManagerQuarterPopulationType: [
-                    {
-                        quarterPopulationTypeExecution: 120,
-                        populationType: {
-                            id: 1,
-                            name: "Children",
-                            order: 0,
-                            groupName: '',
-                            regionGroupName: '',
-                            otherGroupName: '',
-                            state: ''
-                        },
-                        confirmation: true,
-                    },
-                    {
-                        quarterPopulationTypeExecution: 80,
-                        populationType: {
-                            id: 2,
-                            name: "Adults",
-                            order: 0,
-                            groupName: '',
-                            regionGroupName: '',
-                            otherGroupName: '',
-                            state: ''
-                        },
-                        confirmation: false,
-                    }
-                ],
-                resultManagerQuarterImplementer: [
-                    {
-                        IndicatorExecution: {
-                            id: 1,
-                            commentary: '',
-                            activityDescription: '',
-                            indicatorType: '',
-                            state: '',
-                            target: 0,
-                            compassIndicator: false,
-                            indicator: new Indicator,
-                            period: new Period,
-                            totalExecution: 0,
-                            executionPercentage: 0,
-                            lastReportedQuarter: new Quarter,
-                            lastReportedMonth: new Month,
-                            quarters: [],
-                            late: '',
-                            project: new Project,
-                            projectStatement: new Statement,
-                            reportingOffice: new Office,
-                            supervisorUser: new User,
-                            assignedUser: new User,
-                            assignedUserBackup: new User,
-                            locations: [],
-                            keepBudget: false,
-                            assignedBudget: 0,
-                            availableBudget: 0,
-                            totalUsedBudget: 0
-                        },
-                        quarterImplementerExecution: 100,
-                    },
-                    {
-                        IndicatorExecution: {
-                            id: 2,
-                            commentary: '',
-                            activityDescription: '',
-                            indicatorType: '',
-                            state: '',
-                            target: 0,
-                            compassIndicator: false,
-                            indicator: new Indicator,
-                            period: new Period,
-                            totalExecution: 0,
-                            executionPercentage: 0,
-                            lastReportedQuarter: new Quarter,
-                            lastReportedMonth: new Month,
-                            quarters: [],
-                            late: '',
-                            project: new Project,
-                            projectStatement: new Statement,
-                            reportingOffice: new Office,
-                            supervisorUser: new User,
-                            assignedUser: new User,
-                            assignedUserBackup: new User,
-                            locations: [],
-                            keepBudget: false,
-                            assignedBudget: 0,
-                            availableBudget: 0,
-                            totalUsedBudget: 0
-                        },
-                        quarterImplementerExecution: 100,
-                    }
-                ]
-            },
-            {
-                quarter: 2,
-                quarterExecution: 300,
-                resultManagerQuarterPopulationType: [
-                    {
-                        quarterPopulationTypeExecution: 180,
-                        populationType: {
-                            id: 1,
-                            name: "Children",
-                            order: 0,
-                            groupName: '',
-                            regionGroupName: '',
-                            otherGroupName: '',
-                            state: ''
-                        },
-                        confirmation: true,
-                    },
-                    {
-                        quarterPopulationTypeExecution: 120,
-                        populationType: {
-                            id: 2,
-                            name: "Adults",
-                            order: 0,
-                            groupName: '',
-                            regionGroupName: '',
-                            otherGroupName: '',
-                            state: ''
-                        },
-                        confirmation: true,
-                    }
-                ],
-                resultManagerQuarterImplementer: [
-                    {
-                        IndicatorExecution: {
-                            id: 3,
-                            commentary: '',
-                            activityDescription: '',
-                            indicatorType: '',
-                            state: '',
-                            target: 0,
-                            compassIndicator: false,
-                            indicator: new Indicator,
-                            period: new Period,
-                            totalExecution: 0,
-                            executionPercentage: 0,
-                            lastReportedQuarter: new Quarter,
-                            lastReportedMonth: new Month,
-                            quarters: [],
-                            late: '',
-                            project: new Project,
-                            projectStatement: new Statement,
-                            reportingOffice: new Office,
-                            supervisorUser: new User,
-                            assignedUser: new User,
-                            assignedUserBackup: new User,
-                            locations: [],
-                            keepBudget: false,
-                            assignedBudget: 0,
-                            availableBudget: 0,
-                            totalUsedBudget: 0
-                        },
-                        quarterImplementerExecution: 150,
-                    },
-                    {
-                        IndicatorExecution: {
-                            id: 4,
-                            commentary: '',
-                            activityDescription: '',
-                            indicatorType: '',
-                            state: '',
-                            target: 0,
-                            compassIndicator: false,
-                            indicator: new Indicator,
-                            period: new Period,
-                            totalExecution: 0,
-                            executionPercentage: 0,
-                            lastReportedQuarter: new Quarter,
-                            lastReportedMonth: new Month,
-                            quarters: [],
-                            late: '',
-                            project: new Project,
-                            projectStatement: new Statement,
-                            reportingOffice: new Office,
-                            supervisorUser: new User,
-                            assignedUser: new User,
-                            assignedUserBackup: new User,
-                            locations: [],
-                            keepBudget: false,
-                            assignedBudget: 0,
-                            availableBudget: 0,
-                            totalUsedBudget: 0
-                        },
-                        quarterImplementerExecution: 150,
-                    }
-                ]
-            }
-        ],
-        hasExecutions: false
-    };
-
-    exampleData3: ResultManagerIndicator = {
-        indicator: {
-            id: 3,
-            code: '',
-            regionalCode: '',
-            description: '# de personas que desean acceder a beneficios de protección social',
-            category: '',
-            qualitativeInstructions: '',
-            state: '',
-            indicatorType: '',
-            measureType: '',
-            frecuency: '',
-            areaType: '',
-            isMonitored: false,
-            isCalculated: false,
-            totalIndicatorCalculationType: '',
-            compassIndicator: false,
-            coreIndicator: false,
-            statement: new Statement,
-            unit: '',
-            blockAfterUpdate: false,
-            dissagregationsAssignationToIndicator: [],
-            customDissagregationAssignationToIndicators: [],
-            resultManager: new User,
-        },
-        anualTarget: 1000,
-        anualExecution: 750,
-        resultManagerIndicatorQuarter: [
-            {
-                quarter: 1,
-                quarterExecution: 200,
-                resultManagerQuarterPopulationType: [
-                    {
-                        quarterPopulationTypeExecution: 120,
-                        populationType: {
-                            id: 1,
-                            name: "Children",
-                            order: 0,
-                            groupName: '',
-                            regionGroupName: '',
-                            otherGroupName: '',
-                            state: ''
-                        },
-                        confirmation: true,
-                    },
-                    {
-                        quarterPopulationTypeExecution: 80,
-                        populationType: {
-                            id: 2,
-                            name: "Adults",
-                            order: 0,
-                            groupName: '',
-                            regionGroupName: '',
-                            otherGroupName: '',
-                            state: ''
-                        },
-                        confirmation: false,
-                    }
-                ],
-                resultManagerQuarterImplementer: [
-                    {
-                        IndicatorExecution: {
-                            id: 1,
-                            commentary: '',
-                            activityDescription: '',
-                            indicatorType: '',
-                            state: '',
-                            target: 0,
-                            compassIndicator: false,
-                            indicator: new Indicator,
-                            period: new Period,
-                            totalExecution: 0,
-                            executionPercentage: 0,
-                            lastReportedQuarter: new Quarter,
-                            lastReportedMonth: new Month,
-                            quarters: [],
-                            late: '',
-                            project: new Project,
-                            projectStatement: new Statement,
-                            reportingOffice: new Office,
-                            supervisorUser: new User,
-                            assignedUser: new User,
-                            assignedUserBackup: new User,
-                            locations: [],
-                            keepBudget: false,
-                            assignedBudget: 0,
-                            availableBudget: 0,
-                            totalUsedBudget: 0
-                        },
-                        quarterImplementerExecution: 100,
-                    },
-                    {
-                        IndicatorExecution: {
-                            id: 2,
-                            commentary: '',
-                            activityDescription: '',
-                            indicatorType: '',
-                            state: '',
-                            target: 0,
-                            compassIndicator: false,
-                            indicator: new Indicator,
-                            period: new Period,
-                            totalExecution: 0,
-                            executionPercentage: 0,
-                            lastReportedQuarter: new Quarter,
-                            lastReportedMonth: new Month,
-                            quarters: [],
-                            late: '',
-                            project: new Project,
-                            projectStatement: new Statement,
-                            reportingOffice: new Office,
-                            supervisorUser: new User,
-                            assignedUser: new User,
-                            assignedUserBackup: new User,
-                            locations: [],
-                            keepBudget: false,
-                            assignedBudget: 0,
-                            availableBudget: 0,
-                            totalUsedBudget: 0
-                        },
-                        quarterImplementerExecution: 100,
-                    }
-                ]
-            },
-            {
-                quarter: 2,
-                quarterExecution: 300,
-                resultManagerQuarterPopulationType: [
-                    {
-                        quarterPopulationTypeExecution: 180,
-                        populationType: {
-                            id: 1,
-                            name: "Children",
-                            order: 0,
-                            groupName: '',
-                            regionGroupName: '',
-                            otherGroupName: '',
-                            state: ''
-                        },
-                        confirmation: true,
-                    },
-                    {
-                        quarterPopulationTypeExecution: 120,
-                        populationType: {
-                            id: 2,
-                            name: "Adults",
-                            order: 0,
-                            groupName: '',
-                            regionGroupName: '',
-                            otherGroupName: '',
-                            state: ''
-                        },
-                        confirmation: true,
-                    }
-                ],
-                resultManagerQuarterImplementer: [
-                    {
-                        IndicatorExecution: {
-                            id: 3,
-                            commentary: '',
-                            activityDescription: '',
-                            indicatorType: '',
-                            state: '',
-                            target: 0,
-                            compassIndicator: false,
-                            indicator: new Indicator,
-                            period: new Period,
-                            totalExecution: 0,
-                            executionPercentage: 0,
-                            lastReportedQuarter: new Quarter,
-                            lastReportedMonth: new Month,
-                            quarters: [],
-                            late: '',
-                            project: new Project,
-                            projectStatement: new Statement,
-                            reportingOffice: new Office,
-                            supervisorUser: new User,
-                            assignedUser: new User,
-                            assignedUserBackup: new User,
-                            locations: [],
-                            keepBudget: false,
-                            assignedBudget: 0,
-                            availableBudget: 0,
-                            totalUsedBudget: 0
-                        },
-                        quarterImplementerExecution: 150,
-                    },
-                    {
-                        IndicatorExecution: {
-                            id: 4,
-                            commentary: '',
-                            activityDescription: '',
-                            indicatorType: '',
-                            state: '',
-                            target: 0,
-                            compassIndicator: false,
-                            indicator: new Indicator,
-                            period: new Period,
-                            totalExecution: 0,
-                            executionPercentage: 0,
-                            lastReportedQuarter: new Quarter,
-                            lastReportedMonth: new Month,
-                            quarters: [],
-                            late: '',
-                            project: new Project,
-                            projectStatement: new Statement,
-                            reportingOffice: new Office,
-                            supervisorUser: new User,
-                            assignedUser: new User,
-                            assignedUserBackup: new User,
-                            locations: [],
-                            keepBudget: false,
-                            assignedBudget: 0,
-                            availableBudget: 0,
-                            totalUsedBudget: 0
-                        },
-                        quarterImplementerExecution: 150,
-                    }
-                ]
-            }
-        ],
-        hasExecutions: false
-    };
+    tableData: ResultManagerQuarterPopulationType[]
+    originalItems:ResultManagerIndicator[]
+    confirmed:boolean;
+    periodForm: FormGroup;
+    periods: Period[];
+    selectedQuarter:number;
+    selectedIndicator:Indicator;
+    implTable:any={}
+    expandedRowKeys: { [key: number]: boolean } = {}; // Objeto para manejar las filas expandidas
 
     constructor(
         private messageService: MessageService,
@@ -745,14 +87,15 @@ export class ResultManagerIndicatorListComponent implements OnInit {
         private reportsService: ReportsService,
         private percentagePipe: PercentagePipe,
         private resultManagerService: ResultManagerService,
-        private userService: UserService
+        private userService: UserService,
+        private resultMangerExecutionPipe: ResultManagerExecutionPipe
     ) {}
 
     ngOnInit(): void {
-
-        this.loadItems();
+       this.createForms()
+       this.loadItems()
         this.cols = [
-            { field: 'indicator.id', header: 'Código', type: ColumnDataType.text },
+            { field: 'indicator.code', header: 'Código', type: ColumnDataType.text },
             {
                 field: 'indicator.description',
                 header: 'Indicador',
@@ -769,13 +112,19 @@ export class ResultManagerIndicatorListComponent implements OnInit {
                 type: ColumnDataType.text,
             },
             {
-                field: 'anualPercentage',
+                field: '',
                 header: 'Porcentaje Anual',
+                pipeRef: this.resultMangerExecutionPipe,
                 type: ColumnDataType.text,  
             },
             {
                 field: 'confirmation',
                 header: 'Confirmación',
+                type: ColumnDataType.text,
+            },
+            {
+                field: 'hasExecutions',
+                header: 'Estado',
                 type: ColumnDataType.text,
             },            
         ];
@@ -785,72 +134,7 @@ export class ResultManagerIndicatorListComponent implements OnInit {
         );
 
 
-        this.formItem = this.fb.group({
-           
-        });
-    }
-
-    expandedRowKeys: { [key: number]: boolean } = {}; // Objeto para manejar las filas expandidas
-
-    toggleRow(rowData: any) {
-        if (this.expandedRowKeys[rowData.indicador.id]) {
-            delete this.expandedRowKeys[rowData.indicador.id]; // Si está expandida, la colapsamos
-        } else {
-            this.expandedRowKeys[rowData.indicador.id] = true; // Si no está expandida, la expandimos
-        }
-    }
-
-    private loadItems() {
-
-
-        this.items = [
-            this.exampleData1,
-            this.exampleData2,
-            this.exampleData3,
-        ]
         
-
-        // this.items.forEach(item => {
-        //     item.anualPercentage = item.anualTarget 
-        //         ? (item.anualExecution / item.anualTarget) * 100 
-        //         : 0;
-        // });
-
-        // this.tagService.getAll().subscribe({
-        //     next: (value) => {
-        //         this.items = value;
-
-        //     },
-        //     error: (err) => {
-        //         this.messageService.add({
-        //             severity: 'error',
-        //             summary: 'Error al cargar los tags',
-        //             detail: err.error.message,
-        //             life: 3000,
-        //         });
-        //     },
-        // });
-    }
-    
-    exportExcel(table: Table) {
-        this.utilsService.exportTableAsExcel(
-            this._selectedColumns,
-            table.filteredValue ? table.filteredValue : this.items,
-            'tags'
-        );
-    }
-    
-    saveItem() {
-
-    }
-
-    openDialog(ResultManagerIndicator: ResultManagerIndicator) {
-       
-    }
-
-    cancelDialog() {
-        this.showDialog = false;
-        this.submitted = false;
     }
 
     @Input() get selectedColumns(): any[] {
@@ -860,15 +144,79 @@ export class ResultManagerIndicatorListComponent implements OnInit {
     set selectedColumns(val: any[]) {
         // restore original order
         this._selectedColumns = this.cols.filter((col) => val.includes(col));
-    }   
+    } 
 
-    private loadResultManagerIndicators() {
-        const period=3;
+
+    createForms(){
+        this.periodForm = this.fb.group({
+            selectedPeriod: new FormControl('')
+        });
+        this.formItem = this.fb.group({
+            id: new FormControl(''),
+            indicator: new FormControl('', Validators.required),
+            quarterYearOrder: new FormControl('', Validators.required),
+            populationType: new FormControl('', [Validators.required, Validators.email]),
+            isConfirmed: new FormControl('', Validators.required),
+            period: new FormControl('',Validators.required),
+         
+        });
+
+    }
+    loadItems(){
+        this.expandedRowKeys= {};
+        this.loadPeriods()
+    }
+
+    loadPeriods() {
+        this.periodService.getAll().subscribe(value => {
+            this.periods = value;
+            if (this.periods.length < 1) {
+                this.messageService.add({severity: 'error', summary: 'No se encontraron años', detail: ''});
+            } else {
+                const currentYear = (new Date()).getFullYear();
+                if (this.periods.some(e => e.year === currentYear)) {
+                    this.periods.filter(p => p.year === currentYear).forEach(value1 => {
+                        this.periodForm.get('selectedPeriod').patchValue(value1);
+                        if (value1) {
+                            this.loadResultManagerIndicators(value1.id);
+                        }
+                    });
+                } else {
+                    const smallestYear = Math.min(...this.periods.map(value1 => value1.year));
+                    const smallestPeriod = this.periods.filter(value1 => {
+                        return value1.year === smallestYear;
+                    })[0];
+                    this.periodForm.get('selectedPeriod').patchValue(smallestPeriod);
+                    this.loadResultManagerIndicators(smallestPeriod.id);
+
+                }
+            }
+            this.periodsItems = this.periods.map(value1 => {
+                const selectItem: SelectItem = {
+                    label: value1.year.toString(),
+                    value: value1
+                };
+                return selectItem;
+            });
+
+
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al cargar las áreas',
+                detail: error.error.message,
+                life: 3000
+            });
+        });
+    }
+
+    private loadResultManagerIndicators(periodId:number) {
         const user=this.userService.getLogedUsername();
-        this.resultManagerService.getAll(period, user.id).subscribe({
+        this.resultManagerService.getAll(periodId, user.id).subscribe({
             next: (value) => {
-                this.resultManagerIndicators = value;
-                console.log(this.resultManagerIndicators)
+                this.items=value
+                this.originalItems=JSON.parse(JSON.stringify(this.items))
+                console.log(this.items)
             },
             error: (err) => {
                 this.messageService.add({
@@ -880,4 +228,183 @@ export class ResultManagerIndicatorListComponent implements OnInit {
             },
         });
     }
+
+   
+
+    onPeriodChange(period: Period) {
+        this.loadResultManagerIndicators(period.id);
+    }
+
+
+    toggleRow(rowData: any) {
+        if (this.expandedRowKeys[rowData.indicator.id]) {
+            delete this.expandedRowKeys[rowData.indicator.id]; // Si está expandida, la colapsamos
+        } else {
+            this.expandedRowKeys[rowData.indicator.id] = true; // Si no está expandida, la expandimos
+        }
+    }
+    
+    
+    saveItem() {
+        let hasError = false;
+        let errorMessage = '';
+        this.tableData.forEach((item, index) => {
+            const quarterPopulationTypeConfirmation: QuarterPopulationTypeConfirmation = {
+                id: item.id,
+                indicator: this.selectedIndicator,
+                quarterYearOrder: this.selectedQuarter,
+                populationType: item.populationType,
+                period: this.periodForm.get('selectedPeriod').value,
+                confirmed: item.confirmation
+            };
+
+            if (item.id) {
+                // Actualizar
+                this.resultManagerService.update(quarterPopulationTypeConfirmation).subscribe({
+                    next: () => {
+                        // Solo continuar con la siguiente iteración si no hubo errores
+                        if (index === this.tableData.length - 1 && !hasError) {
+                            this.cancelDialog();
+                            this.loadItems();
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Valores guardados exitosamente',
+                                life: 3000
+                            });
+                        }
+                    },
+                    error: err => {
+                        // En caso de error, mostrar inmediatamente el mensaje de error
+                        hasError = true;
+                        errorMessage = err.error.message;
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error al guardar los valores',
+                            detail: errorMessage,
+                            life: 3000
+                        });
+                        // Detener las iteraciones restantes
+                        return;
+                    }
+                });
+            } else {
+                // Guardar nuevo
+                this.resultManagerService.save(quarterPopulationTypeConfirmation).subscribe({
+                    next: () => {
+                        // Solo continuar con la siguiente iteración si no hubo errores
+                        if (index === this.tableData.length - 1 && !hasError) {
+                            this.cancelDialog();
+                            this.loadItems();
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Valores guardados exitosamente',
+                                life: 3000
+                            });
+                        }
+                    },
+                    error: err => {
+                        // En caso de error, mostrar inmediatamente el mensaje de error
+                        hasError = true;
+                        errorMessage = err.error.message;
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error al guardar los valores',
+                            detail: errorMessage,
+                            life: 3000
+                        });
+                        // Detener las iteraciones restantes
+                        return;
+                    }
+                });
+            }
+        });
+
+
+    }
+
+   
+    cancelDialog() {
+        this.showPopulationDialog = false;
+        this.showImplementationDialog = false;
+        this.submitted = false;
+        this.items=JSON.parse(JSON.stringify(this.originalItems))
+        this.selectedIndicator=null;
+        this.selectedQuarter=null;
+    }
+
+     
+
+  
+
+    showDissPopulationView(data:ResultManagerIndicatorQuarter, indicator:Indicator){
+        this.selectedQuarter=data.quarter
+        this.selectedIndicator=indicator
+        this.tableData = data.resultManagerQuarterPopulationType;
+        this.showPopulationDialog=true
+    }
+
+    showImplementationTypeView(data: ResultManagerQuarterImplementer[]){
+        this.showImplementationDialog=true;
+        
+        // Usamos un mapa para acumular las ejecuciones por partner y office
+        let partnerExecMap = new Map();
+        let officeExecMap = new Map();
+
+        data.forEach(item => {
+            const { indicatorExecution } = item;
+            const project = indicatorExecution?.project;
+            const office = indicatorExecution?.reportingOffice;
+            const execution = item.quarterImplementerExecution;
+
+            if (project?.id) {
+                const org = project?.organization?.acronym;
+                if (org) {
+                    partnerExecMap.set(org, (partnerExecMap.get(org) || 0) + execution);
+                }
+            }
+
+            if (office?.id) {
+                const officeAcronym = office?.acronym;
+                if (officeAcronym) {
+                    officeExecMap.set(officeAcronym, (officeExecMap.get(officeAcronym) || 0) + execution);
+                }
+            }
+        });
+
+        // Convertimos los resultados acumulados en arrays
+        const partnerImpl = Array.from(partnerExecMap, ([partner, execution]) => ({ partner, execution }));
+        const officeImpl = Array.from(officeExecMap, ([office, execution]) => ({ office, execution }));
+
+        this.implTable["partnerImpl"] = partnerImpl;
+        this.implTable["officeImpl"] = officeImpl;
+
+    }
+
+    getConfirmationRate(rmi:ResultManagerIndicator){
+        let confirmationRate:string="0/0"
+        const rmiq=rmi?.resultManagerIndicatorQuarter
+        if(rmiq){
+            let totalPopulationTypes:number;
+            let confirmationsDone:number=0
+            let fetchPopulationTypeLength=false
+            rmiq.forEach(item => {
+                if(!fetchPopulationTypeLength){
+                    totalPopulationTypes=item.resultManagerQuarterPopulationType.length
+                }
+                item.resultManagerQuarterPopulationType.forEach(element => {
+                    if(element.confirmation){
+                        confirmationsDone++;
+                    }
+                });
+
+            });
+            const totalConfirmations=totalPopulationTypes*4
+            confirmationRate=`${confirmationsDone}/${totalConfirmations}`
+          
+        }
+
+        return confirmationRate
+    }
+
+   
 }

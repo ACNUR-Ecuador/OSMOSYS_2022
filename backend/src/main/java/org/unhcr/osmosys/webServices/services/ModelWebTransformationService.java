@@ -11,6 +11,7 @@ import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.AreaDao;
 import org.unhcr.osmosys.daos.StatementDao;
 import org.unhcr.osmosys.daos.TagsDao;
+import org.unhcr.osmosys.daos.standardDissagregations.StandardDissagregationOptionDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.*;
 import org.unhcr.osmosys.model.standardDissagregations.options.AgeDissagregationOption;
@@ -49,6 +50,8 @@ public class ModelWebTransformationService {
     UtilsService utilsService;
     @Inject
     UserDao userDao;
+    @Inject
+    StandardDissagregationOptionDao standardDissagregationOptionDao;
 
 
     //<editor-fold desc="CoreIndicators">
@@ -1699,6 +1702,20 @@ public class ModelWebTransformationService {
         }
         return r;
 
+    }
+
+    public ResultManagerIndicator resultManagerDtoToResultManager(ResultManagerIndicatorDTO resultManagerDto){
+        if (resultManagerDto == null) {
+            return null;
+        }
+        ResultManagerIndicator rmi = new ResultManagerIndicator();
+        rmi.setId(resultManagerDto.getId());
+        rmi.setIndicator(this.indicatorWebToIndicator(resultManagerDto.getIndicator()));
+        rmi.setQuarterYearOrder(resultManagerDto.getQuarterYearOrder());
+        rmi.setPopulationType(this.standardDissagregationOptionDao.find(resultManagerDto.getPopulationType().getId()));
+        rmi.setConfirmed(resultManagerDto.isConfirmed());
+        rmi.setPeriod(this.periodWebToPeriod(resultManagerDto.getPeriod()));
+        return rmi;
     }
 
 

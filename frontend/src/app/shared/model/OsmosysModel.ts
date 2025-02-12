@@ -631,14 +631,24 @@ export class ResultManagerIndicatorQuarter {
 }
 
 export class ResultManagerQuarterPopulationType {
+    public id?:number;
     public quarterPopulationTypeExecution: number;
     public populationType: StandardDissagregationOption
     public confirmation?: boolean;    
 }
 
 export class ResultManagerQuarterImplementer {
-    public IndicatorExecution: IndicatorExecution;
+    public indicatorExecution: IndicatorExecution;
     public quarterImplementerExecution: number;
+}
+
+export class QuarterPopulationTypeConfirmation{
+    public id?:number;
+    public indicator:Indicator;
+    public quarterYearOrder:number;
+    public populationType:StandardDissagregationOption;
+    public confirmed:boolean;
+    public period:Period;
 }
 
 //end Result manager page

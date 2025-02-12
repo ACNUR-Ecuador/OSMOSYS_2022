@@ -135,6 +135,11 @@ $gutter: 1rem; //for primeflex grid system
     outline: none;  
     box-shadow: inset 0 0 0px ; 
   }
+  .impl-table .p-datatable-header {
+    border: none !important; 
+    font-weight: normal !important;
+    //padding-bottom: 5px !important;
+  }
   
   //
 .table-title-secondary{

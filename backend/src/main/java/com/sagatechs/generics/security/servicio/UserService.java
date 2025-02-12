@@ -673,6 +673,10 @@ public class UserService implements Serializable {
         return validRoles;
     }
 
+    public List<User> getActiveResultManagerUsers() {
+        return this.userDao.getActiveResultManagerUsers();
+    }
+
 
 }
 

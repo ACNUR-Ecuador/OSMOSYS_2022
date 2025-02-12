@@ -9,13 +9,16 @@ import java.util.Objects;
 public class ResultManagerQuarterPopulationTypeWeb implements Serializable {
     public ResultManagerQuarterPopulationTypeWeb() {}
 
-    public ResultManagerQuarterPopulationTypeWeb(BigDecimal quarterPopulationTypeExecution, StandardDissagregationOptionWeb populationType) {
+    public ResultManagerQuarterPopulationTypeWeb(BigDecimal quarterPopulationTypeExecution, StandardDissagregationOptionWeb populationType, boolean confirmation) {
         this.quarterPopulationTypeExecution = quarterPopulationTypeExecution;
         this.populationType = populationType;
+        this.confirmation = confirmation;
     }
 
+    private Long id;
     private BigDecimal quarterPopulationTypeExecution;
     private StandardDissagregationOptionWeb populationType;
+    private boolean confirmation;
 
     public BigDecimal getQuarterPopulationTypeExecution() {
         return quarterPopulationTypeExecution;
@@ -33,11 +36,29 @@ public class ResultManagerQuarterPopulationTypeWeb implements Serializable {
         this.populationType = populationType;
     }
 
+    public boolean isConfirmation() {
+        return confirmation;
+    }
+
+    public void setConfirmation(boolean confirmation) {
+        this.confirmation = confirmation;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "ResultManagerQuarterPopulationTypeWeb{" +
-                "quarterPopulationTypeExecution=" + quarterPopulationTypeExecution +
+                "id=" + id +
+                ", quarterPopulationTypeExecution=" + quarterPopulationTypeExecution +
                 ", populationType=" + populationType +
+                ", confirmation=" + confirmation +
                 '}';
     }
 
@@ -46,11 +67,11 @@ public class ResultManagerQuarterPopulationTypeWeb implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ResultManagerQuarterPopulationTypeWeb that = (ResultManagerQuarterPopulationTypeWeb) o;
-        return quarterPopulationTypeExecution == that.quarterPopulationTypeExecution && Objects.equals(populationType, that.populationType);
+        return confirmation == that.confirmation && Objects.equals(id, that.id) && Objects.equals(quarterPopulationTypeExecution, that.quarterPopulationTypeExecution) && Objects.equals(populationType, that.populationType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(quarterPopulationTypeExecution, populationType);
+        return Objects.hash(id, quarterPopulationTypeExecution, populationType, confirmation);
     }
 }

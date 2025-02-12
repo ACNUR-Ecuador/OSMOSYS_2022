@@ -97,6 +97,7 @@ public class Indicator extends BaseEntityIdState {
     @OneToMany(mappedBy = "indicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicators = new HashSet<>();
 
+
     @Override
     public Long getId() {
         return id;
@@ -310,4 +311,5 @@ public class Indicator extends BaseEntityIdState {
     public void setCoreIndicator(Boolean coreIndicator) {
         this.coreIndicator = coreIndicator;
     }
+
 }

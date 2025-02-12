@@ -4,6 +4,7 @@ import com.sagatechs.generics.appConfiguration.AppConfigurationKey;
 import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.dao.UserDao;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.service.EmailService;
@@ -11,8 +12,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.jboss.logging.Logger;
-import org.unhcr.osmosys.model.Organization;
-import org.unhcr.osmosys.model.Period;
+import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.model.enums.TimeStateEnum;
 import org.unhcr.osmosys.services.*;
@@ -24,7 +24,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -50,6 +52,9 @@ public class MessageReminderService {
     UserService userService;
     @Inject
     ProjectService projectService;
+    @Inject
+   IndicatorExecutionService indicatorExecutionService;
+
 
 
     public void sendPartnersRemindersToFocalPoints() throws GeneralAppException {
@@ -99,6 +104,67 @@ public class MessageReminderService {
 
 
     }
+
+    public void sendResultsManagerReminders() throws GeneralAppException {
+        Period currentPeriod = this.periodService.getByYear(this.utilsService.getCurrentYear());
+        if (currentPeriod == null) {
+            return;
+        }
+
+        Integer currentMonthYearOrder = this.utilsService.getCurrentMonthYearOrder();
+        int mes = currentMonthYearOrder % 100;  // Esto nos da los dos últimos dígitos (mes)
+
+        // Determinar el trimestre
+        String trimestre;
+        if (mes >= 1 && mes <= 3) {
+            trimestre = "primer";  // Primer trimestre (Enero, Febrero, Marzo)
+        } else if (mes >= 4 && mes <= 6) {
+            trimestre = "segundo"; // Segundo trimestre (Abril, Mayo, Junio)
+        } else if (mes >= 7 && mes <= 9) {
+            trimestre = "tercer";  // Tercer trimestre (Julio, Agosto, Septiembre)
+        } else if (mes >= 10 && mes <= 12) {
+            trimestre = "cuarto";  // Cuarto trimestre (Octubre, Noviembre, Diciembre)
+        } else {
+            trimestre = "desconocido";  // Si el mes no es válido (aunque no se espera que ocurra)
+        }
+        // obtengo los Usuarios resultManagers
+        List<User> resultManagers = this.userService.getActiveResultManagerUsers();
+        List<String> imProgramsEmail = new ArrayList<>();
+        if (StringUtils.isNotBlank(this.appConfigurationService.findValorByClave(AppConfigurationKey.IM_EMAIL))) {
+            imProgramsEmail.add(this.appConfigurationService.findValorByClave(AppConfigurationKey.IM_EMAIL));
+        }
+        if (StringUtils.isNotBlank(this.appConfigurationService.findValorByClave(AppConfigurationKey.PROGRAMS_EMAIL))) {
+            imProgramsEmail.add(this.appConfigurationService.findValorByClave(AppConfigurationKey.PROGRAMS_EMAIL));
+        }
+
+        for (User resultManager : resultManagers) {
+            List<MessageAlertServiceV2.PartnerAlertDTO> alerts = new ArrayList<>();
+            // obtengo los indicadores de ejecución del periodo actual por cada result Manager
+            LOGGER.info(resultManager.getName());
+            List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionService.getIndicatorExecutionsByResultManagerAndPeriodId(resultManager.getId(), currentPeriod.getId());
+            Set<Indicator> indicators= new HashSet<>();
+            for(IndicatorExecution ie: indicatorExecutions){
+                if(ie.getIndicator() != null){
+                    indicators.add(ie.getIndicator());
+                }
+            }
+            if(indicators.isEmpty()){
+                continue;
+            }
+
+            String message = "<p style=\"text-align:justify\">Estimado/a colega " + ":</p>" +
+                    "<p style=\"text-align:justify\">" +
+                    " Este es un recordatorio de que el periodo de aprobación de indicadores para el " + trimestre +" trimestre"+
+                    " ha iniciado. Contamos con su ayuda para tener sus datos al día en el sistema OSMOSYS-ACNUR. " +
+                    " Los indicadores asignados para Ud. son: " + String.join(", ", indicators.stream().map(Indicator::getCode).collect(Collectors.toSet()))+
+                    ". En caso de que ya se hayan reportado los datos, por favor haga caso omiso de este correo.</p>" +
+                    "<p style=\"text-align:justify\">Este recordatorio ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con la Unidad de Programas.</p>";
+
+            String copyAddresses = CollectionUtils.isNotEmpty(imProgramsEmail) ? String.join(", ", imProgramsEmail) : null;
+            this.emailService.sendEmailMessage(resultManager.getEmail(), copyAddresses, "Recordatorio de reporte Indicadors OSMOSYS-Socios", message);
+        }
+    }
+
     public void sendPartnersReminders() throws GeneralAppException {
         LOGGER.info("Send partners reminders");
         Period currentPeriod = this.periodService.getByYear(this.utilsService.getCurrentYear());

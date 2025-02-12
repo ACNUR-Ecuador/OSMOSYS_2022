@@ -24,6 +24,7 @@ import { StandardDissagreationListPipe } from './pipes/standard-dissagreation-li
 import { SafePipe } from './pipes/safe.pipe';
 import { TagPeriodTagAsignationsListPipe } from './pipes/tag-period-tag-asignations-list.pipe';
 import { PercentagePipe } from './pipes/percentage.pipe';
+import { ResultManagerExecutionPipe } from './pipes/result-manager-execution.pipe';
 
 
 
@@ -51,7 +52,8 @@ import { PercentagePipe } from './pipes/percentage.pipe';
         StandardDissagreationListPipe,
         SafePipe,
         TagPeriodTagAsignationsListPipe,
-        PercentagePipe
+        PercentagePipe,
+        ResultManagerExecutionPipe
     ],
     imports: [
         CommonModule

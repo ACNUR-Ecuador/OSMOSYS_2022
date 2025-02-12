@@ -16,6 +16,7 @@ import org.threeten.extra.YearQuarter;
 import org.unhcr.osmosys.daos.IndicatorDao;
 import org.unhcr.osmosys.daos.IndicatorExecutionDao;
 import org.unhcr.osmosys.daos.ProjectDao;
+import org.unhcr.osmosys.daos.ResultManagerIndicatorDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.auditDTOs.LabelValue;
 import org.unhcr.osmosys.model.enums.*;
@@ -90,6 +91,8 @@ public class IndicatorExecutionService {
     UserDao userDao;
     @Inject
     ProjectDao projectDao;
+    @Inject
+    ResultManagerIndicatorDao resultManagerIndicatorDao;
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(IndicatorExecutionService.class);
 
@@ -1513,10 +1516,7 @@ public class IndicatorExecutionService {
             if(!ies.isEmpty()){
                 hasExecutions = true;
             }
-            ResultManagerIndicatorWeb rmi=new ResultManagerIndicatorWeb();
-            BigDecimal response = this.indicatorExecutionDao.getIndicatorAnualTarget(resultManagerIndicator.getId(), periodId);
-            rmi.setAnualTarget(response);
-            rmi.setAnualExecution(response.divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP));
+            ResultManagerIndicatorWeb rmi=this.indicatorExecutionDao.getIndicatorAnualTargetandExecutions(resultManagerIndicator.getId(), periodId);
             rmi.setIndicator(this.modelWebTransformationService.indicatorToIndicatorWeb(resultManagerIndicator,true,true));
             rmi.setHasExecutions(hasExecutions);
             r.add(rmi);
@@ -1535,10 +1535,23 @@ public class IndicatorExecutionService {
         for(ResultManagerIndicatorQuarterWeb rmiq : rmiqs){
             List<ResultManagerQuarterImplementerWeb> rmi= indicatorExecutionDao.getIndicatorQuarterImplementers(indicatorId,periodId,rmiq.getQuarter());
             rmiq.setResultManagerQuarterImplementer(rmi);
-            List<ResultManagerQuarterPopulationTypeWeb> rmpt=indicatorExecutionDao.getResultManagerQuarterPopulationType(indicatorId,rmiq.getQuarter(),year);
-            rmiq.setResultManagerQuarterPopulationType(rmpt);
+            List<ResultManagerQuarterPopulationTypeWeb> rmpts=indicatorExecutionDao.getResultManagerQuarterPopulationType(indicatorId,rmiq.getQuarter(),year);
+            for(ResultManagerQuarterPopulationTypeWeb rmpt : rmpts){
+                ResultManagerIndicator rm =this.resultManagerIndicatorDao.getResultManagerIndicatorByIdParameters(indicatorId,rmiq.getQuarter(),rmpt.getPopulationType().getId(),periodId);
+                if(rm == null){
+                    rmpt.setConfirmation(false);
+                }else{
+                    rmpt.setId(rm.getId());
+                    rmpt.setConfirmation(rm.isConfirmed());
+                }
+            }
+            rmiq.setResultManagerQuarterPopulationType(rmpts);
         }
         return rmiqs;
+    }
+
+    public List<IndicatorExecution> getIndicatorExecutionsByResultManagerAndPeriodId(Long userId, Long periodId){
+        return indicatorExecutionDao.getIndicatorExecutionsByResultManagerAndPeriodId(userId, periodId);
     }
 
 

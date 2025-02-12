@@ -85,6 +85,45 @@ public class ReminderDaysTrigger {
             ScheduledFuture<?> f = this.scheduler.schedule(this::run, trigg);
             LOGGER.info(f.isDone());
         }
+        // Trigger trimestral
+        Trigger quarterlyTrigger = new Trigger() {
+            @Override
+            public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
+                LOGGER.info("QuarterlyTrigger");
+
+                // Obtenemos el año actual
+                Calendar now = Calendar.getInstance();
+                int currentMonth = now.get(Calendar.MONTH); // El mes actual (0-11)
+
+                // Calculamos el primer día del siguiente trimestre
+                Calendar nextQuarter = Calendar.getInstance();
+                if (currentMonth < 3) {
+                    // Primer trimestre (enero-marzo)
+                    nextQuarter.set(now.get(Calendar.YEAR), 3, 1, 6, 0, 0); // 1 de abril
+                } else if (currentMonth < 6) {
+                    // Segundo trimestre (abril-junio)
+                    nextQuarter.set(now.get(Calendar.YEAR), 6, 1, 6, 0, 0); // 1 de julio
+                } else if (currentMonth < 9) {
+                    // Tercer trimestre (julio-septiembre)
+                    nextQuarter.set(now.get(Calendar.YEAR), 9, 1, 6, 0, 0); // 1 de octubre
+                } else {
+                    // Cuarto trimestre (octubre-diciembre)
+                    nextQuarter.set(now.get(Calendar.YEAR) + 1, 0, 1, 6, 0, 0); // 1 de enero del siguiente año
+                }
+
+                LOGGER.info("Next quarterly run time: " + nextQuarter.getTime());
+                return nextQuarter.getTime();
+            }
+
+            @Override
+            public boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {
+                return false;
+            }
+        };
+
+        // Programar el trigger trimestral para ejecutar la tarea trimestral
+        ScheduledFuture<?> quarterlyScheduled = this.scheduler.schedule(this::runQuarterlyTask, quarterlyTrigger);
+        LOGGER.info(quarterlyScheduled.isDone());
 
 
     }
@@ -111,4 +150,17 @@ public class ReminderDaysTrigger {
 
         LOGGER.info("Envío de recordatorios-fin");
     }
+    public void runQuarterlyTask() {
+        try {
+            // Lógica de la tarea trimestral que se ejecutará cada trimestre
+            this.messageReminderService.sendResultsManagerReminders();
+        } catch (Exception e) {
+            LOGGER.error("Error en envío de recordatorio trimestral");
+            LOGGER.error(ExceptionUtils.getRootCauseMessage(e));
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
+        }
+
+        LOGGER.info("Envío de recordatorio trimestral - fin");
+    }
+
 }

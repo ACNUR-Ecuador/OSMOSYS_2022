@@ -241,13 +241,13 @@ export class MenuService {
         },
         {separator: true},
         {
-            label: 'Manager de Resultado',
-            icon: 'pi pi-sitemap',
+            label: 'Mánager de Resultado',
+            icon: 'pi pi-sliders-h',
             roles: ['RESULT_MANAGER', 'ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL'],
             items: [
                 {
-                    label: 'Reporte de indicadores',
-                    icon: 'pi pi-fw pi-th-large',
+                    label: 'Verificación de Indicadores',
+                    icon: 'pi pi-fw pi-check-square',
                     routerLink: ['/resultManager/resultManagerIndicatorList'],
                     roles: ['RESULT_MANAGER', 'ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL'],
                 }
