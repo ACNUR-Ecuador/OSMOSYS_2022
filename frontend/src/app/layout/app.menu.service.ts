@@ -242,7 +242,7 @@ export class MenuService {
         {separator: true},
         {
             label: 'Mánager de Resultado',
-            icon: 'pi pi-sliders-h',
+            icon: 'pi pi-chart-bar',
             roles: ['RESULT_MANAGER', 'ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL'],
             items: [
                 {

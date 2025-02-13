@@ -164,13 +164,13 @@ public class MessageReminderService {
                 continue;
             }
 
-            String message = "<p style=\"text-align:justify\">Estimado/a colega " + ":</p>" +
-                    "<p style=\"text-align:justify\">" +
+            String message = "<p>Estimado/a colega " + ":</p>" +
+                    "<p>" +
                     " Este es un recordatorio de que el periodo de aprobación de indicadores para el " + trimestre +" trimestre"+
                     " ha iniciado. Contamos con su ayuda para tener sus datos al día en el sistema OSMOSYS-ACNUR. " +
                     " Los indicadores asignados para Ud. son: " + String.join(", ", indicators.stream().map(Indicator::getCode).collect(Collectors.toSet()))+
                     ". En caso de que ya se hayan reportado los datos, por favor haga caso omiso de este correo.</p>" +
-                    "<p style=\"text-align:justify\">Este recordatorio ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con la Unidad de Programas.</p>";
+                    "<p>Este recordatorio ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con la Unidad de Programas.</p>";
 
             String copyAddresses = CollectionUtils.isNotEmpty(imProgramsEmail) ? String.join(", ", imProgramsEmail) : null;
             this.emailService.sendEmailMessage(resultManager.getEmail(), copyAddresses, "Recordatorio de reporte Indicadors OSMOSYS-Socios", message);

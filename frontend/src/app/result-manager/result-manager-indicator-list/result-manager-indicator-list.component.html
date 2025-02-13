@@ -146,7 +146,7 @@
         </ng-template>
 
         <ng-template pTemplate="footer">
-            <button pButton type="button"
+            <button *ngIf="tableData.length > 0" pButton type="button"
                     pRipple label="Guardar" icon="pi pi-check" (click)="saveItem()"
             ></button>
             <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"

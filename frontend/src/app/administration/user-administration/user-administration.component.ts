@@ -367,7 +367,7 @@ export class UserAdministrationComponent implements OnInit {
         if (user.id) {
             this.userService.updateUser(user).subscribe({
                 next: () => {
-                    this.showDialog = false;
+                    this.cancelDialog()
                     this.messageService.add({
                         severity: 'success',
                         summary: 'Guardado con éxito',
@@ -388,7 +388,7 @@ export class UserAdministrationComponent implements OnInit {
             this.userService.createUser(user)
                 .subscribe({
                     next: () => {
-                        this.showDialog = false;
+                        this.cancelDialog()
                         this.messageService.add({
                             severity: 'success',
                             summary: 'Guardado con éxito',
