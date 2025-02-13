@@ -572,10 +572,9 @@ public class UserService implements Serializable {
             user.setPassword(pass);
 
             userDao.save(user);
-            String message = "<p>Bienvenid@:</p>" +
+            String message = "<p><strong>Bienvenid@:</strong></p>" +
                     "<p>Se ha generado una nueva contraseña para el acceso al Osmosys.</p>" +
                     "<p>Puede acceder al sistema utilizando los siguientes datos:</p>" +
-                    "<p>Direcci&oacute;n: <a href=\""+this.appConfigurationService.getAppUrl()+"\">" + this.appConfigurationService.getAppUrl() + "</a> (Se recomienda el uso de Google Chrome)</p>" +
                     "<p>Nombre de usuario: " + user.getUsername() + "</p>" +
                     "<p>Contraseña: " + password + "</p>" +
                     "<p>&nbsp;</p>" +

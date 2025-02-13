@@ -3,11 +3,16 @@
         <img id="footer-logo" [src]="'assets/images/logo_osmosys_blue.png'" alt="osmosys"/>
         <!--<span class="footer-copyright">&#169; Hecho con amor en el -salvador</span>-->
     </div>
-    <span (click)="showDialog = true" class="footer-copyright hover:surface-hover transition-colors transition-duration-150 cursor-pointer">V 5.0.4</span>
+    <span (click)="showDialog = true" class="footer-copyright hover:surface-hover transition-colors transition-duration-150 cursor-pointer">V 5.0.5</span>
     <span class="footer-copyright">&#169; UNHCR -Hecho en El Salvador y Ecuador-  2024</span> 
     
     <p-dialog header="Change log" [(visible)]="showDialog" [modal]="true" [style]="{width: '50vw'}" (onHide)="showDialog = false">
-        
+        <h5 style="margin-top: 1rem;">Versión 5.0.5 - 2025-02-05 </h5>
+        <ul>
+            <li>Creación de plantilla genérica para envío de correos.</li>            
+            <li>Se agregan notificaciones de alerta y recordatorio para el rol de Supervisor de Proyecto (Socio).</li>            
+            <li>Se cambian los correos de administración por defecto.</li>            
+        </ul>
         <h5 style="margin-top: 1rem;">Versión 5.0.4 - 2025-02-03</h5>
         <ul>
             <li>Corrección en la actualización de lugares para indicadores de ejecución.</li>

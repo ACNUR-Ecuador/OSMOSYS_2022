@@ -72,9 +72,10 @@ public class EmailService {
     }
 
     public void sendEmailMessage(String destinationAdress, String destinationCopyAdress, String subject, String messageText) {
-        if(StringUtils.trimToEmpty(System.getProperty("os.name")).contains("windows") || StringUtils.trimToEmpty(System.getProperty("os.name")).contains("Windows")){
-            destinationAdress="salazart@unhcr.org";
-            destinationCopyAdress=null;
+        if (StringUtils.trimToEmpty(System.getProperty("os.name")).toLowerCase().contains("windows") ||
+                StringUtils.trimToEmpty(System.getProperty("os.name")).toLowerCase().contains("mac")) {
+            destinationAdress = "gancino@unhcr.org";
+            destinationCopyAdress = null;
         }
         try {
             Message message = new MimeMessage(session);
@@ -86,13 +87,13 @@ public class EmailService {
             message.setSubject(subject);
             message.setReplyTo(new javax.mail.Address[]
                     {
-                            new javax.mail.internet.InternetAddress("ecuquosmosys@unhcr.org")
+                            new javax.mail.internet.InternetAddress("gancino@unhcr.org")
                     });
 
 
             // MimeBodyPart mimeBodyPart = new MimeBodyPart();
 
-            message.setContent(messageText, "text/html; charset=UTF-8");
+            message.setContent(emailGenericTemplate(messageText), "text/html; charset=UTF-8");
             Transport.send(message);
             LOGGER.debug("----------------enviado");
 
@@ -105,7 +106,7 @@ public class EmailService {
         try {
 
             if(StringUtils.trimToEmpty(System.getProperty("os.name")).contains("windows") || StringUtils.trimToEmpty(System.getProperty("os.name")).contains("Windows")){
-                destinationAdress="salazart@unhcr.org";
+                destinationAdress="gancino@unhcr.org";
                 destinationCopyAdress=null;
             }
 
@@ -118,13 +119,13 @@ public class EmailService {
             message.setSubject(subject);
             message.setReplyTo(new javax.mail.Address[]
                     {
-                            new javax.mail.internet.InternetAddress("ecuquosmosys@unhcr.org")
+                            new javax.mail.internet.InternetAddress("gancino@unhcr.org")
                     });
 
 
             MimeBodyPart mimeBodyPart = new MimeBodyPart();
             messageText= new String(messageText.getBytes(StandardCharsets.UTF_8),StandardCharsets.UTF_8);
-            mimeBodyPart.setText(messageText);
+            mimeBodyPart.setText(emailGenericTemplate(messageText));
             mimeBodyPart.setHeader("Content-Type","text/html");
 
             //message.setContent(messageText, "text/html; charset=UTF-8");
@@ -186,6 +187,53 @@ public class EmailService {
             LOGGER.error(ExceptionUtils.getStackTrace(ex));
         }
         return contents.toString();
+    }
+    private String emailGenericTemplate(String messageTextContent) {
+        String operationUrl= this.appConfigurationService.findValorByClave(AppConfigurationKey.APP_URL);
+        return
+                "<!DOCTYPE html>\n" +
+                        "<html>\n" +
+                        "<head>\n" +
+                        "    <meta charset=\"UTF-8\">\n" +
+                        "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                        "    <title>Notificación de Retraso en Indicadores</title>\n" +
+                        "</head>\n" +
+                        "<body style=\"margin: 0; padding: 0; background-color: #f4f4f4;\">\n" +
+                        "    <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"background-color: #f4f4f4; padding: 20px;\">\n" +
+                        "        <tr>\n" +
+                        "            <td align=\"center\">\n" +
+                        "                <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"600\" style=\"background-color: #ffffff; width: 100%; max-width: 600px;\">\n" +
+                        "                    <!-- Header -->\n" +
+                        "                    <tr>\n" +
+                        "                        <td align=\"center\" style=\"padding: 20px; border-bottom: 2px solid #1D72BC;\">\n" +
+                        "                            <img src=\"https://osmosys.unhcr.org/mex/assets/layout/images/logo_osmosys_blue.png\" alt=\"OSMOSYS Logo\" width=\"200\" style=\"display: block;\">\n" +
+                        "                        </td>\n" +
+                        "                    </tr>\n" +
+                        "                    <!-- Content -->\n" +
+                        "                    <tr>\n" +
+                        "                        <td style=\"padding: 20px; font-family: Arial, sans-serif; font-size: 16px; color: #333; line-height: 1.5;\">\n" +
+                        "                            "+messageTextContent +
+                        "                        </td>\n" +
+                        "                    </tr>\n" +
+                        "                    <!-- Button -->\n" +
+                        "                    <tr>\n" +
+                        "                        <td align=\"center\" style=\"padding-bottom: 20px;\">\n" +
+                        "                            <a href="+operationUrl+" target=\"_blank\" style=\"background-color: #1D72BC; color: #ffffff; text-decoration: none; font-weight: bold; padding: 12px 20px; display: inline-block; border-radius: 5px;\">Ir a OSMOSYS</a>\n" +
+                        "                        </td>\n" +
+                        "                    </tr>\n" +
+                        "                    <!-- Footer -->\n" +
+                        "                    <tr>\n" +
+                        "                        <td align=\"center\" style=\"font-family: Arial, sans-serif; font-size: 12px; color: #777; padding: 10px; border-top: 1px solid #ddd;\">\n" +
+                        "                            <p>© UNHCR - Hecho en El Salvador y Ecuador - 2025</p>\n" +
+                        "                        </td>\n" +
+                        "                    </tr>\n" +
+                        "                </table>\n" +
+                        "            </td>\n" +
+                        "        </tr>\n" +
+                        "    </table>\n" +
+                        "</body>\n" +
+                        "</html>"
+                ;
     }
 }
 

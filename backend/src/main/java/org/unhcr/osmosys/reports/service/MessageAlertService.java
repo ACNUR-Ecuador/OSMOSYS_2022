@@ -63,7 +63,7 @@ public class MessageAlertService {
                                     "<p style=\"text-align:justify\">Este reporte ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con su punto focal.</p>";
 
                     LOGGER.info("reporte retrasos socio: " + project.getName() + ":" + project.getOrganization().getAcronym());
-                    String copyAddress = "ecuquosmosys@unhcr.org, " + project.getFocalPoint().getEmail();
+                    String copyAddress = "gancino@unhcr.org, " + project.getFocalPoint().getEmail();
                     LOGGER.info(copyAddress);
                     List<User> parterUsers = this.userService.getActivePartnerUsers(project.getOrganization().getId());
                     String destinationAdress = parterUsers.stream().map(User::getEmail).collect(Collectors.joining(", "));
@@ -105,7 +105,7 @@ public class MessageAlertService {
                                     "<p style=\"text-align:justify\">Este reporte ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con su punto focal.</p>";
 
                     LOGGER.info("reporte retrasos socio: " + project.getName() + ":" + project.getOrganization().getAcronym());
-                    String copyAddress = "ecuquosmosys@unhcr.org, " + project.getFocalPoint().getEmail();
+                    String copyAddress = "gancino@unhcr.org, " + project.getFocalPoint().getEmail();
                     LOGGER.info(copyAddress);
 
                     List<User> parterUsers = this.userService.getActivePartnerUsers(project.getOrganization().getId());
@@ -146,7 +146,7 @@ public class MessageAlertService {
                                     "<p style=\"text-align:justify\">Este reporte ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con la Unidad de Programas o Gestión de Información .</p>";
 
                     LOGGER.info("reporte retrasos: " + responsable.getName() + ":" + responsable.getOffice() != null ? responsable.getOffice().getAcronym() : "oficina no asignada");
-                    String copyAddress = "ecuquosmosys@unhcr.org";
+                    String copyAddress = "gancino@unhcr.org";
                     String destinationAdress = responsable.getEmail();
                     LOGGER.info(destinationAdress);
                     this.emailService.sendEmailMessageWithAttachment(destinationAdress, copyAddress,
@@ -185,7 +185,7 @@ public class MessageAlertService {
                                     "<p style=\"text-align:justify\">Este reporte ha sido generado automaticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse con la Unidad de Programas o Gestión de Información .</p>";
 
                     LOGGER.info("reporte retrasos: " + supervisor.getName() + ":" + supervisor.getOffice() != null ? supervisor.getOffice().getAcronym() : "oficina no asignada");
-                    String copyAddress = "ecuquosmosys@unhcr.org";
+                    String copyAddress = "gancino@unhcr.org";
                     String destinationAdress = supervisor.getEmail();
                     LOGGER.info(destinationAdress);
                     this.emailService.sendEmailMessageWithAttachment(destinationAdress, copyAddress,

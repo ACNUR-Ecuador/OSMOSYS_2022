@@ -217,4 +217,22 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         q.setParameter("state", State.ACTIVO);
         return q.getResultList();
     }
+    public List<User> getPartnerSupervisorsByPeriodId(Long periodId) {
+        String jpql = "SELECT DISTINCT pm FROM Project pr " +
+                " inner join pr.partnerManager pm " +
+                "  WHERE pm.state =:state and pr.period.id=:periodId and pr.state=:state";
+        Query q = getEntityManager().createQuery(jpql, User.class);
+        q.setParameter("periodId", periodId);
+        q.setParameter("state", State.ACTIVO);
+        return q.getResultList();
+    }
+
+    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndPartnerSupervisorId(Long periodId, Long partnerSupervisorId) {
+        String sql = this.projectResumeWebQuery
+                + " WHERE pe.id =:periodId and pr.partner_manager =:partnerSupervisorId";
+        Query q = getEntityManager().createNativeQuery(sql, "ProjectResumeWebMapping");
+        q.setParameter("periodId", periodId);
+        q.setParameter("partnerSupervisorId", partnerSupervisorId);
+        return q.getResultList();
+    }
 }
