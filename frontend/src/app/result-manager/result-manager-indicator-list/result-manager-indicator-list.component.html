@@ -56,18 +56,10 @@
             <td *ngFor="let col of columns">
                 <!-- Condición para 'hasExecutions' -->
                 <ng-container *ngIf="col.field === 'hasExecutions'">
-                  <p-tag *ngIf="rowData.hasExecutions" severity="success" value="Tiene Ejecuciones" class="custom-ptag"></p-tag>
-                  <p-tag *ngIf="!rowData.hasExecutions" severity="danger" value="Sin Ejecuciones" class="custom-ptag"></p-tag>
+                  <p-tag *ngIf="rowData.hasExecutions" [severity]="getAnualReportStatus(rowData).confirmationSeverity" [value]="getAnualReportStatus(rowData).confirmationValue" class="custom-ptag"></p-tag>
+                  <p-tag *ngIf="!rowData.hasExecutions" severity="success" value="Sin Implementaciones" class="custom-ptag2"></p-tag>
                 </ng-container>
-                <!-- Lógica para confirmation -->
-                <ng-container *ngIf="col.field === 'confirmation'">
-                    <span [ngClass]="{
-                      'lateConfirm': getAnualConfirmationRate(rowData).confirmationStatus === 'late',
-                      'progressConfirm': getAnualConfirmationRate(rowData).confirmationStatus === 'inProgress',
-                      'completedConfirm': getAnualConfirmationRate(rowData).confirmationStatus === 'completed',
-                      'onTimeConfirm': getAnualConfirmationRate(rowData).confirmationStatus === 'onTime'
-                    }">{{ getAnualConfirmationRate(rowData).confirmationRate }}</span>
-                  </ng-container>
+            
                 <!-- Lógica normal para los otros campos -->
                 <ng-container *ngIf="col.field !== 'hasExecutions' && col.field !== 'confirmation'">
                   {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field)) : utilsService.resolveFieldData(rowData, col.field) }}
@@ -83,10 +75,11 @@
                     <p-table [value]="rowData.resultManagerIndicatorQuarter" dataKey="quarter" >
                         <ng-template pTemplate="header">
                             <tr>
-                                <th style="width: 15%;">Trimestre</th>
-                                <th style="width: 15%;">Ejecución Trimestral</th>
-                                <th style="width: 15%;">Confirmación Trimestral</th>
-                                <th style="width: 55%; text-align: center;">Detalles</th>
+                                <th style="width: 13%;">Trimestre</th>
+                                <th style="width: 13%;">Ejecución Trimestral</th>
+                                <th style="width: 13%;">Confirmación Trimestral</th>
+                                <th style="width: 13%;">Estado</th>
+                                <th style="width: 48%; text-align: center;">Detalles</th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-quarterData>
@@ -102,9 +95,11 @@
                                       }">
                                         {{getQuarterConfirmationRate(quarterData).confirmationRate}}</span>
                                 </td>
+                                <td *ngIf="quarterData.id">Reportado</td>
+                                <td *ngIf="!quarterData.id">Sin Reporte</td>
                                 <td>
                                     <div style="display: flex; gap: 10px; width: 100%; justify-content: center;">
-                                        <button pButton icon="pi pi-check-square" label="Ver por Tipo de Población"
+                                        <button pButton icon="pi pi-check-square" label="Validación de Datos"
                                             class="p-button p-button-primary p-mr-2"
                                             
                                             (click)="showDissPopulationView(quarterData,rowData.indicator)">
@@ -112,7 +107,7 @@
                                         </button>
                                         <button pButton icon="pi pi-eye" label="Ver por Implementación"
                                             class="p-button p-button-primary p-mr-2"
-                                            style="background-color: #589BE5; border: none;"
+                                            style="background-color: #3a87d4; border: none;"
                                             (click)="showImplementationTypeView(quarterData.resultManagerQuarterImplementer)">
                                         </button>
                                         <button pButton icon="pi pi-file" label="Reporte Trimestral"

@@ -120,11 +120,6 @@ export class ResultManagerIndicatorListComponent implements OnInit {
                 type: ColumnDataType.text,  
             },
             {
-                field: 'confirmation',
-                header: 'Confirmación',
-                type: ColumnDataType.text,
-            },
-            {
                 field: 'hasExecutions',
                 header: 'Estado',
                 type: ColumnDataType.text,
@@ -395,58 +390,46 @@ export class ResultManagerIndicatorListComponent implements OnInit {
 
     }
 
-    getAnualConfirmationRate(rmi:ResultManagerIndicator){
-        let confirmationRate:string="0/0"
+    getAnualReportStatus(rmi:ResultManagerIndicator){
+        let confirmationSeverity:string="info"
+        let confirmationValue:string="A tiempo"
         const rmiq=rmi?.resultManagerIndicatorQuarter
         if(rmiq){
-            let totalPopulationTypes:number;
-            let confirmationsDone:number=0
-            let fetchPopulationTypeLength=false
-            rmiq.forEach(item => {
-                if(!fetchPopulationTypeLength){
-                    totalPopulationTypes=item.resultManagerQuarterPopulationType.length
-                    fetchPopulationTypeLength=true
-                }
-                item.resultManagerQuarterPopulationType.forEach(element => {
-                    if(element.confirmation){
-                        confirmationsDone++;
-                    }
-                });
-
-            });
-            const totalConfirmations=totalPopulationTypes*4
-            confirmationRate=`${confirmationsDone}/${totalConfirmations}`
+            
+            const islate=rmi?.resultManagerIndicatorQuarter?.some(item=>
+                this.getQuarterConfirmationRate(item).confirmationStatus==="late"
+            )
+    
+            const isInProgress=rmi?.resultManagerIndicatorQuarter?.some(item=>
+                this.getQuarterConfirmationRate(item).confirmationStatus==="inProgress"
+                  
+            )
+    
+            const isCompleted=rmi?.resultManagerIndicatorQuarter?.every(item=>
+                this.getQuarterConfirmationRate(item).confirmationStatus==="completed"
+                  
+            )
+            const isPeriodPast = new Date().getFullYear()>this.periodForm.get("selectedPeriod").value.year;
+    
+            if(islate){
+                confirmationValue="Atrasado"
+                confirmationSeverity="danger"
+            }else if(isInProgress){
+                confirmationValue="En Proceso"
+                confirmationSeverity="warning"
+            }else if(isCompleted && !isPeriodPast){
+                confirmationValue="Completado"
+                confirmationSeverity="success"
+            }else if(isCompleted && isPeriodPast){
+                confirmationValue="Cerrado"
+                confirmationSeverity="primary"
+            }
           
         }
 
-        let confirmationStatus:string
-        const islate=rmi?.resultManagerIndicatorQuarter?.some(item=>
-            this.getQuarterConfirmationRate(item).confirmationStatus==="late"
-        )
-
-        const isInProgress=rmi?.resultManagerIndicatorQuarter?.some(item=>
-            this.getQuarterConfirmationRate(item).confirmationStatus==="inProgress"
-              
-        )
-
-        const isCompleted=rmi?.resultManagerIndicatorQuarter?.every(item=>
-            this.getQuarterConfirmationRate(item).confirmationStatus==="completed"
-              
-        )
-
-        if(islate){
-            confirmationStatus="late"
-        }else if(isInProgress){
-            confirmationStatus="inProgress"
-        }else if(isCompleted){
-            confirmationStatus="completed"
-        }else{
-            confirmationStatus="onTime"
-        }
-
         const obj={
-            confirmationRate,
-            confirmationStatus
+            confirmationSeverity,
+            confirmationValue
         }
 
 

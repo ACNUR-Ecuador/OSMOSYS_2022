@@ -246,7 +246,7 @@ export class MenuService {
             roles: ['RESULT_MANAGER', 'ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL'],
             items: [
                 {
-                    label: 'Verificación de Indicadores',
+                    label: 'Control de Calidad',
                     icon: 'pi pi-fw pi-check-square',
                     routerLink: ['/resultManager/resultManagerIndicatorList'],
                     roles: ['RESULT_MANAGER', 'ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL'],

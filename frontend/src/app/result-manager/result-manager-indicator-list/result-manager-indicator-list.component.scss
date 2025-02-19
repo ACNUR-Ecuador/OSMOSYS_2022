@@ -3,6 +3,15 @@
     font-size: 13px !important;  
   }
 
+  ::ng-deep .custom-ptag2 .p-tag-value  {
+    font-size: 13px !important; 
+  }
+
+  ::ng-deep .custom-ptag2 .p-tag-success  {
+    background-color: #deecfb;
+    color: #3d4551;
+  }
+
 .lateConfirm{
     padding: 0 3px;
     font-weight: bold;
