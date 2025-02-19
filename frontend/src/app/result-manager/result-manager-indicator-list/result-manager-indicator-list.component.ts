@@ -230,7 +230,6 @@ export class ResultManagerIndicatorListComponent implements OnInit {
             next: (value) => {
                 this.items=value
                 this.originalItems=JSON.parse(JSON.stringify(this.items))
-                console.log(this.items)
             },
             error: (err) => {
                 this.messageService.add({
@@ -581,7 +580,6 @@ export class ResultManagerIndicatorListComponent implements OnInit {
                 disabled=true
             }
         }else{
-            console.log(quarterData)
             if(quarterData.allReportSumConfirmation===null){
                 disabled=true
             }
