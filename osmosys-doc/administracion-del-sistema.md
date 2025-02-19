@@ -1076,7 +1076,9 @@ Se debe completar cada uno de los campos del formulario para que el botón de **
 - **Tipo de Medida**: Tipo de medición que tendrá el Indicador, esta puede ser **(Número enteros, Proporción, Texto)**.
 - **Frecuencia de alerta**: Frecuencia con la que se envían correos de alerta esta puede ser **(Mensual, Trimestral, Semestral, Anual)**.
 - **Unidad de medida**: Unidad de Medida del Indicador estas pueden ser **(Personas de interés, Personas, Organizaciones o instituciones, Transferencias, Otro, Hogares)**.
-- **Result Manager**: Funcionario de ACNUR responsable de verificar los datos de reporte para ese indicador.
+- **Mánager de Resultados**: Funcionario de ACNUR responsable de verificar los datos de reporte para cada indicador. Al seleccionar un usuario, se activa el campo de Cálculo para el reporte Trimestral.
+  - **Cálculo para reporte Trimestral**: Tipo de cálculo que se utilizará para el reporte Trimestral de los Indicadores asociados al Mánager de Resultados.
+  - **Comentario de Regla de Agregación**: Este campo aparece cuando se selecciona la opción "Regla de Agregación" en el Cálculo para el reporte Trimestral. Es un comentario del cálculo que verá el Mánager de Resultados para su reporte Trimestral.
 - **Bloqueo automático**: Bloquear el indicador para reporte después de guardar.
 - **Estado**: El estado del indicador este puede ser **“Activo”** o **“Inactivo”**.
 - **Instrucciones para Información Cuantitativa**: Instrucciones detalladas para el ingreso de información cuantitativa, este campo puede dejarse en blanco.
