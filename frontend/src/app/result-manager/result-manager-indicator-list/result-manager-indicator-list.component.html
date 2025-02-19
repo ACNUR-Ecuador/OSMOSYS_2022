@@ -75,16 +75,16 @@
                     <p-table [value]="rowData.resultManagerIndicatorQuarter" dataKey="quarter" >
                         <ng-template pTemplate="header">
                             <tr>
-                                <th style="width: 13%;">Trimestre</th>
-                                <th style="width: 13%;">Ejecución Trimestral</th>
-                                <th style="width: 13%;">Confirmación Trimestral</th>
+                                <th style="width: 13%;">Periodo</th>
+                                <th style="width: 13%;">Ejecución Acumulada</th>
+                                <th style="width: 13%;">Datos Validados</th>
                                 <th style="width: 13%;">Estado</th>
                                 <th style="width: 48%; text-align: center;">Detalles</th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-quarterData>
                             <tr>
-                                <td>{{ quarterData.quarter }}</td>
+                                <td>Q{{ quarterData.quarter }}</td>
                                 <td>{{ quarterData.quarterExecution }}</td>
                                 <td>
                                     <span [ngClass]="{
