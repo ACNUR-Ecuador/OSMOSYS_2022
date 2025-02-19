@@ -69,12 +69,15 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     periods: Period[];
     periodsForStatements: Period[];
     periodsSelectItems: SelectItem[];
+    quarterReportCalcTypes: SelectItem[];
 
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
     showDialogImport = false;
     importForm: FormGroup;
     isCoreIndicator: boolean = false;
+    toggleQuarterReportCalc=false;
+    toggleAggRuleComment=false;
 
 
     constructor(
@@ -176,6 +179,10 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                 type: ColumnDataType.boolean,
                 pipeRef: this.booleanYesNoPipe
             },
+            {   field: 'resultManager.name',
+                header: 'Mánager de Resultado',
+                type: ColumnDataType.text 
+            },
             {
                 field: 'state', header: 'Estado', type: ColumnDataType.text,
                 pipeRef: this.enumValuesToLabelPipe,
@@ -183,7 +190,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             },
         ];
 
-        const hiddenColumns: string[] = ['id', 'indicatorType', 'areaType',  'measureType', 'isMonitored', 'totalIndicatorCalculationType', 'isCalculated', 'frecuency', 'category','guideDirectImplementation', 'customDissagregationAssignationToIndicators', 'dissagregationsAssignationToIndicator', 'unit', 'instructions', 'compassIndicator'];
+        const hiddenColumns: string[] = ['id', 'indicatorType', 'areaType',  'measureType', 'isMonitored', 'totalIndicatorCalculationType', 'isCalculated', 'frecuency', 'category','guideDirectImplementation', 'customDissagregationAssignationToIndicators', 'dissagregationsAssignationToIndicator', 'unit', 'instructions', 'compassIndicator','resultManager.name'];
         this._selectedColumns = this.cols.filter(value => !hiddenColumns.includes(value.field));
 
         this.formItem = this.fb.group({
@@ -210,8 +217,9 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             blockAfterUpdate: new FormControl(''),
             resultManager: new FormControl(''),
             unit: new FormControl(''),
+            quarterReportCalculation: new FormControl(''),
+            aggregationRuleComment: new FormControl(''),
         });
-
 
         this.enumsService.getByType(EnumsType.State).subscribe(value => {
             this.states = value;
@@ -248,6 +256,10 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                     });
                 }
             });
+        this.enumsService.getByType(EnumsType.QuarterReportCalculation).subscribe(value => {
+                this.quarterReportCalcTypes = value;
+                console.log(this.quarterReportCalcTypes)
+        });
         this.isCalculatedOptions = [{label: 'Calculado', value: true}, {label: 'No Calculado', value: false}];
         this.isMonitoredOptions = [{label: 'Monitoreado', value: true}, {label: 'No Monitoreado', value: false}];
         this.periodsSelectItems = [];
@@ -361,6 +373,8 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     }
 
     editItem(indicator: Indicator) {
+        this.onResultManagerSelect(indicator?.resultManager)
+        this.onQuarterReportCalcChange(indicator?.quarterReportCalculation)
         this.onIsCoreIndicatorChange(indicator.coreIndicator)
         this.isCoreIndicator=indicator.coreIndicator
         this.setPeriodForStatment(indicator.statement);
@@ -406,7 +420,9 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             customDissagregationAssignationToIndicators,
             blockAfterUpdate,
             unit,
-            resultManager
+            resultManager,
+            quarterReportCalculation,
+            aggregationRuleComment
         }
             = this.formItem.value;
         const indicator: Indicator = {
@@ -432,8 +448,11 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             dissagregationsAssignationToIndicator: dissagregationAssignationToIndicators,
             customDissagregationAssignationToIndicators: customDissagregationAssignationToIndicators,
             blockAfterUpdate,
-            resultManager
+            resultManager,
+            quarterReportCalculation,
+            aggregationRuleComment
         };
+        console.log(indicator)
         if (indicator.state) {
             indicator.state = 'ACTIVO';
         } else {
@@ -446,6 +465,8 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             indicator.description=this.formItem.get("description").value
             indicator.instructions=this.formItem.get("instructions").value
             indicator.qualitativeInstructions=this.formItem.get("qualitativeInstructions").value
+        }else{
+            indicator.coreIndicator=false;
         }
         // process assignation dissagregations
 
@@ -531,6 +552,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         return hasPopulationTypeDissagregation;
     }
     cancelDialog() {
+        this.onResultManagerClear()
         this.showDialog = false;
         this.onIsCoreIndicatorChange(false)
         this.formItem.get('regionalCode').patchValue(null);
@@ -845,4 +867,36 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         }
        
     }
+
+    onResultManagerSelect(rm:User){
+        if(rm){
+            this.toggleQuarterReportCalc=true;
+            this.formItem.get('quarterReportCalculation').setValidators([Validators.required]);
+            this.formItem.get('quarterReportCalculation').updateValueAndValidity();
+        }
+    }
+    onResultManagerClear(){
+        this.toggleQuarterReportCalc=false;
+        this.toggleAggRuleComment=false;
+        this.formItem.get('quarterReportCalculation').patchValue(null)
+        this.formItem.get('aggregationRuleComment').patchValue(null)
+        this.formItem.get('quarterReportCalculation').clearValidators()
+        this.formItem.get('quarterReportCalculation').updateValueAndValidity();
+        this.formItem.get('aggregationRuleComment').clearValidators();
+        this.formItem.get('aggregationRuleComment').updateValueAndValidity();
+    }
+    onQuarterReportCalcChange(quarterReportCalc:string){
+        if(quarterReportCalc === "AGGREGATION_RULE"){
+            this.toggleAggRuleComment=true;
+            this.formItem.get('aggregationRuleComment').setValidators([Validators.required]);
+        }else{
+            this.toggleAggRuleComment=false;
+            this.formItem.get('aggregationRuleComment').patchValue(null)
+            this.formItem.get('aggregationRuleComment').clearValidators();
+
+        }
+        this.formItem.get('aggregationRuleComment').updateValueAndValidity();
+
+    }
+    
 }

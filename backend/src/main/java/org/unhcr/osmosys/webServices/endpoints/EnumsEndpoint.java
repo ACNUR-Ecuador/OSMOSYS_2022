@@ -67,6 +67,8 @@ public class EnumsEndpoint {
                 return this.EnumsToEnumsWeb(TimeStateEnum.values());
             case "AuditAction":
                 return this.EnumsToEnumsWeb(AuditAction.values());
+            case "QuarterReportCalculation":
+                return this.EnumsToEnumsWeb(QuarterReportCalculation.values());
         }
         throw new GeneralAppException("Enumerador no soportado " + type, Response.Status.BAD_GATEWAY);
     }

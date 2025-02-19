@@ -279,13 +279,7 @@ export class MenuService {
                 }
             ]
         },
-        {
-            label: 'Acerca de OSMOSYS',
-            icon: 'pi pi-file-o',
-            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL', 'EJECUTOR_ID', 'MONITOR_ID', 'PUNTO_FOCAL', 'MONITOR_PROYECTOS', 'EJECUTOR_PROYECTOS','ADMINISTRADOR_OFICINA'],
-            routerLink: ['/home/about-us'],
-        },
-        {separator: true},
+        {separator: true}
     ];
 
 }

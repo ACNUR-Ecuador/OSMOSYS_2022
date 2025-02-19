@@ -4,11 +4,9 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.security.annotations.Secured;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
 import org.unhcr.osmosys.services.ProjectService;
+import org.unhcr.osmosys.services.ResultManagerIndicatorQuarterReportService;
 import org.unhcr.osmosys.services.ResultManagerIndicatorService;
-import org.unhcr.osmosys.webServices.model.AreaWeb;
-import org.unhcr.osmosys.webServices.model.ProjectWeb;
-import org.unhcr.osmosys.webServices.model.ResultManagerIndicatorDTO;
-import org.unhcr.osmosys.webServices.model.ResultManagerIndicatorWeb;
+import org.unhcr.osmosys.webServices.model.*;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -23,6 +21,8 @@ public class ResultManagerIndicatorEndPoint {
     IndicatorExecutionService indicatorExecutionService;
     @Inject
     ResultManagerIndicatorService resultManagerIndicatorService;
+    @Inject
+    ResultManagerIndicatorQuarterReportService resultManagerIndicatorQuarterReportService;
     @Path("/{periodId}/{userId}")
     @GET
     @Secured
@@ -45,6 +45,25 @@ public class ResultManagerIndicatorEndPoint {
     public Long update(ResultManagerIndicatorDTO resultManagerIndicatorDTO) throws GeneralAppException {
         return this.resultManagerIndicatorService.update(resultManagerIndicatorDTO);
     }
+
+    //quarter-report
+
+    @Path("/quarterReport")
+    @POST
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public Long createQuarterReport(ResultManagerIndicatorQuarterReportDTO resultManagerIndicatorQuarterReportDTO) throws GeneralAppException {
+        return this.resultManagerIndicatorQuarterReportService.save(resultManagerIndicatorQuarterReportDTO);
+    }
+    @Path("/quarterReport")
+    @PUT
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public Long updateQuarterReport(ResultManagerIndicatorQuarterReportDTO resultManagerIndicatorQuarterReportDTO) throws GeneralAppException {
+        return this.resultManagerIndicatorQuarterReportService.update(resultManagerIndicatorQuarterReportDTO);
+    }
+
+
 
 
 }

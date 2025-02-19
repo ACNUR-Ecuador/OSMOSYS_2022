@@ -401,6 +401,8 @@ public class ModelWebTransformationService {
         indicatorWeb.setUnit(indicator.getUnit());
         indicatorWeb.setBlockAfterUpdate(indicator.getBlockAfterUpdate());
         indicatorWeb.setResultManager(userToUserWebSimple(indicator.getResultManager(), false, false));
+        indicatorWeb.setQuarterReportCalculation(indicator.getQuarterReportCalculation());
+        indicatorWeb.setAggregationRuleComment(indicator.getAggregationRuleComment());
         if (getStatement) {
             indicatorWeb.setStatement(this.statementToStatementWeb(indicator.getStatement(), true, true, false, false, false));
         }
@@ -1716,6 +1718,22 @@ public class ModelWebTransformationService {
         rmi.setConfirmed(resultManagerDto.isConfirmed());
         rmi.setPeriod(this.periodWebToPeriod(resultManagerDto.getPeriod()));
         return rmi;
+    }
+
+    public ResultManagerIndicatorQuarterReport resultManIndQuarterReportDTOToResultManIndQuarterReport(ResultManagerIndicatorQuarterReportDTO resultManagerIndicatorQuarterReportDTO){
+        if (resultManagerIndicatorQuarterReportDTO == null) {
+            return null;
+        }
+        ResultManagerIndicatorQuarterReport rmiqr = new ResultManagerIndicatorQuarterReport();
+        rmiqr.setId(resultManagerIndicatorQuarterReportDTO.getId());
+        rmiqr.setIndicator(this.indicatorWebToIndicator(resultManagerIndicatorQuarterReportDTO.getIndicator()));
+        rmiqr.setQuarterYearOrder(resultManagerIndicatorQuarterReportDTO.getQuarterYearOrder());
+        rmiqr.setAllReportSumConfirmation(resultManagerIndicatorQuarterReportDTO.isAllReportSumConfirmation());
+        rmiqr.setReportComment(resultManagerIndicatorQuarterReportDTO.getReportComment());
+        rmiqr.setNewReportValue(resultManagerIndicatorQuarterReportDTO.getNewReportValue());
+        rmiqr.setPeriod(this.periodWebToPeriod(resultManagerIndicatorQuarterReportDTO.getPeriod()));
+
+        return rmiqr;
     }
 
 

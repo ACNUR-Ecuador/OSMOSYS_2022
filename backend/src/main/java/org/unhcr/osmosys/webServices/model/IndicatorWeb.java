@@ -41,6 +41,8 @@ public class IndicatorWeb extends BaseWebEntity implements Serializable {
     private String periods;
     private Boolean blockAfterUpdate;
     private UserWeb resultManager;
+    private QuarterReportCalculation quarterReportCalculation;
+    private String aggregationRuleComment;
 
     public String getCode() {
         return code;
@@ -217,6 +219,22 @@ public class IndicatorWeb extends BaseWebEntity implements Serializable {
 
     public void setPeriods(String periods) {
         this.periods = periods;
+    }
+
+    public QuarterReportCalculation getQuarterReportCalculation() {
+        return quarterReportCalculation;
+    }
+
+    public void setQuarterReportCalculation(QuarterReportCalculation quarterReportCalculation) {
+        this.quarterReportCalculation = quarterReportCalculation;
+    }
+
+    public String getAggregationRuleComment() {
+        return aggregationRuleComment;
+    }
+
+    public void setAggregationRuleComment(String aggregationRuleComment) {
+        this.aggregationRuleComment = aggregationRuleComment;
     }
 
     @Override

@@ -30,6 +30,7 @@ import {
     QuarterPopulationTypeConfirmation,
     ResultManagerIndicator,
     ResultManagerIndicatorQuarter,
+    ResultManagerIndicatorQuarterReport,
     ResultManagerQuarterImplementer,
     ResultManagerQuarterPopulationType,
     Statement,
@@ -73,6 +74,7 @@ export class ResultManagerIndicatorListComponent implements OnInit {
     selectedIndicator:Indicator;
     implTable:any={}
     expandedRowKeys: { [key: number]: boolean } = {}; // Objeto para manejar las filas expandidas
+    quarterReportForm:FormGroup
 
     constructor(
         private messageService: MessageService,
@@ -155,11 +157,22 @@ export class ResultManagerIndicatorListComponent implements OnInit {
             id: new FormControl(''),
             indicator: new FormControl('', Validators.required),
             quarterYearOrder: new FormControl('', Validators.required),
-            populationType: new FormControl('', [Validators.required, Validators.email]),
+            populationType: new FormControl('', [Validators.required]),
             isConfirmed: new FormControl('', Validators.required),
             period: new FormControl('',Validators.required),
          
         });
+        this.quarterReportForm = this.fb.group({
+            id: new FormControl(''),
+            indicator: new FormControl('', Validators.required),
+            quarterYearOrder: new FormControl('', Validators.required),
+            allReportSumConfirmation: new FormControl(''),
+            reportComment: new FormControl(''),
+            newReportValue: new FormControl(''),
+            period: new FormControl('',Validators.required),
+         
+        });
+        
 
     }
     loadItems(){
@@ -211,11 +224,13 @@ export class ResultManagerIndicatorListComponent implements OnInit {
     }
 
     private loadResultManagerIndicators(periodId:number) {
+        this.expandedRowKeys= {};
         const user=this.userService.getLogedUsername();
         this.resultManagerService.getAll(periodId, user.id).subscribe({
             next: (value) => {
                 this.items=value
                 this.originalItems=JSON.parse(JSON.stringify(this.items))
+                console.log(this.items)
             },
             error: (err) => {
                 this.messageService.add({
@@ -264,7 +279,8 @@ export class ResultManagerIndicatorListComponent implements OnInit {
                         // Solo continuar con la siguiente iteración si no hubo errores
                         if (index === this.tableData.length - 1 && !hasError) {
                             this.cancelDialog();
-                            this.loadItems();
+                            //this.loadItems();
+                            this.loadResultManagerIndicators(this.periodForm.get("selectedPeriod").value.id);
                             this.messageService.add({
                                 severity: 'success',
                                 summary: 'Valores guardados exitosamente',
@@ -293,7 +309,8 @@ export class ResultManagerIndicatorListComponent implements OnInit {
                         // Solo continuar con la siguiente iteración si no hubo errores
                         if (index === this.tableData.length - 1 && !hasError) {
                             this.cancelDialog();
-                            this.loadItems();
+                            //this.loadItems();
+                            this.loadResultManagerIndicators(this.periodForm.get("selectedPeriod").value.id);
                             this.messageService.add({
                                 severity: 'success',
                                 summary: 'Valores guardados exitosamente',
@@ -379,7 +396,7 @@ export class ResultManagerIndicatorListComponent implements OnInit {
 
     }
 
-    getConfirmationRate(rmi:ResultManagerIndicator){
+    getAnualConfirmationRate(rmi:ResultManagerIndicator){
         let confirmationRate:string="0/0"
         const rmiq=rmi?.resultManagerIndicatorQuarter
         if(rmiq){
@@ -389,6 +406,7 @@ export class ResultManagerIndicatorListComponent implements OnInit {
             rmiq.forEach(item => {
                 if(!fetchPopulationTypeLength){
                     totalPopulationTypes=item.resultManagerQuarterPopulationType.length
+                    fetchPopulationTypeLength=true
                 }
                 item.resultManagerQuarterPopulationType.forEach(element => {
                     if(element.confirmation){
@@ -402,8 +420,187 @@ export class ResultManagerIndicatorListComponent implements OnInit {
           
         }
 
-        return confirmationRate
+        let confirmationStatus:string
+        const islate=rmi?.resultManagerIndicatorQuarter?.some(item=>
+            this.getQuarterConfirmationRate(item).confirmationStatus==="late"
+        )
+
+        const isInProgress=rmi?.resultManagerIndicatorQuarter?.some(item=>
+            this.getQuarterConfirmationRate(item).confirmationStatus==="inProgress"
+              
+        )
+
+        const isCompleted=rmi?.resultManagerIndicatorQuarter?.every(item=>
+            this.getQuarterConfirmationRate(item).confirmationStatus==="completed"
+              
+        )
+
+        if(islate){
+            confirmationStatus="late"
+        }else if(isInProgress){
+            confirmationStatus="inProgress"
+        }else if(isCompleted){
+            confirmationStatus="completed"
+        }else{
+            confirmationStatus="onTime"
+        }
+
+        const obj={
+            confirmationRate,
+            confirmationStatus
+        }
+
+
+        return obj
     }
+
+    getQuarterConfirmationRate(rmiq:ResultManagerIndicatorQuarter){
+        //console.log(rmqtp)
+        let confirmationRate:string="0/0"
+        const totalPopulationTypes:number=rmiq?.resultManagerQuarterPopulationType.length;
+        let confirmationsDone:number=0
+        rmiq.resultManagerQuarterPopulationType.forEach(element => {
+            if(element.confirmation){
+                confirmationsDone++;
+            }
+        });
+        confirmationRate=`${confirmationsDone}/${totalPopulationTypes}`
+
+        let confirmationStatus:string
+        const isPeriodPast = new Date().getFullYear()>this.periodForm.get("selectedPeriod").value.year;
+        
+
+        if( confirmationsDone === totalPopulationTypes && totalPopulationTypes!=0){
+            confirmationStatus="completed"
+        }else if(rmiq.quarter<this.getCurrentQuarter() && confirmationsDone<totalPopulationTypes || isPeriodPast){
+            confirmationStatus="late"
+        }else if(rmiq.quarter === this.getCurrentQuarter() && confirmationsDone>0){
+            confirmationStatus="inProgress"
+        }else{
+            confirmationStatus="onTime"
+        }
+
+        const obj={
+            confirmationRate,
+            confirmationStatus
+        }
+
+        return obj
+    }
+
+    getCurrentQuarter(): number {
+        const currentMonth = new Date().getMonth();
+        let currentQuarter:number;
+        if (currentMonth >= 0 && currentMonth <= 2) {
+          currentQuarter = 1;  // Primer trimestre: Enero, Febrero, Marzo
+        } else if (currentMonth >= 3 && currentMonth <= 5) {
+          currentQuarter = 2;  // Segundo trimestre: Abril, Mayo, Junio
+        } else if (currentMonth >= 6 && currentMonth <= 8) {
+          currentQuarter = 3;  // Tercer trimestre: Julio, Agosto, Septiembre
+        } else {
+          currentQuarter = 4;  // Cuarto trimestre: Octubre, Noviembre, Diciembre
+        }
+
+        return currentQuarter;
+
+      }
+      saveQuarterReport(quarterData:ResultManagerIndicatorQuarter,indicator:Indicator){
+        const indicatorQuarterReport: ResultManagerIndicatorQuarterReport = {
+            id: quarterData.id,
+            indicator: indicator,
+            quarterYearOrder: quarterData.quarter,
+            allReportSumConfirmation: quarterData.allReportSumConfirmation,
+            reportComment: quarterData.reportComment,
+            newReportValue: quarterData.newReportValue,
+            period: this.periodForm.get('selectedPeriod').value,
+        };
+
+        if (quarterData.id) {
+            // Actualizar
+            this.resultManagerService.updateIndicatorQuarterReport(indicatorQuarterReport).subscribe({
+                next: () => {
+                        //this.loadItems();
+                        this.loadResultManagerIndicators(this.periodForm.get("selectedPeriod").value.id);
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Valores guardados exitosamente',
+                            life: 3000
+                        });
+                },
+                error: err => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al guardar los valores',
+                        detail: err.error.message,
+                        life: 3000
+                    });
+                   
+                }
+            });
+        } else {
+            // Guardar nuevo
+            this.resultManagerService.saveIndicatorQuarterReport(indicatorQuarterReport).subscribe({
+                next: () => {
+                        //this.loadItems();
+                        this.loadResultManagerIndicators(this.periodForm.get("selectedPeriod").value.id);
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Valores guardados exitosamente',
+                            life: 3000
+                        });
+                },
+                error: err => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al guardar los valores',
+                        detail: err.error.message,
+                        life: 3000
+                    });
+                }
+            });
+        }
+
+
+      }
+
+     
+    
+      // Método que se llama al cerrar el OverlayPanel sin guardar
+      cancelOverlayPanel() {
+        this.items=JSON.parse(JSON.stringify(this.originalItems))
+      }
+
+      //validar formulario de Reporte Trimestral
+      validateReportForm(quarterData:ResultManagerIndicatorQuarter,indicator:Indicator):boolean{
+        let disabled:boolean=false
+        if(indicator.quarterReportCalculation==="AGGREGATION_RULE"){
+            if(quarterData.newReportValue===null){
+                disabled=true
+            }
+            if(quarterData.reportComment===null || quarterData.reportComment===""){
+                disabled=true
+            }
+        }else{
+            console.log(quarterData)
+            if(quarterData.allReportSumConfirmation===null){
+                disabled=true
+            }
+            if(quarterData.allReportSumConfirmation===true){
+                quarterData.reportComment=null;
+            }
+            if(quarterData.allReportSumConfirmation===false && (quarterData.reportComment===null || quarterData.reportComment==="")){
+                disabled=true
+            }
+            if(indicator.quarterReportCalculation===null){
+                disabled=true;
+            }
+        }
+            return disabled
+      }
+
+   
+
+    
 
    
 }

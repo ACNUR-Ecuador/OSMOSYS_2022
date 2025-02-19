@@ -186,6 +186,8 @@ export class Indicator {
     public customDissagregationAssignationToIndicators: CustomDissagregationAssignationToIndicator[];
     public periods?:string;
     public resultManager: User;
+    public quarterReportCalculation?:string;
+    public aggregationRuleComment?:string;
 }
 
 
@@ -624,6 +626,10 @@ export class ResultManagerIndicator {
 }
 
 export class ResultManagerIndicatorQuarter {
+    public id?:number;
+    public allReportSumConfirmation?:boolean
+    public reportComment:string;
+    public newReportValue:number;
     public quarter: number;
     public quarterExecution: number;
     public resultManagerQuarterPopulationType?: ResultManagerQuarterPopulationType[];
@@ -648,6 +654,16 @@ export class QuarterPopulationTypeConfirmation{
     public quarterYearOrder:number;
     public populationType:StandardDissagregationOption;
     public confirmed:boolean;
+    public period:Period;
+}
+
+export class ResultManagerIndicatorQuarterReport{
+    public id?:number;
+    public indicator:Indicator;
+    public quarterYearOrder:number;
+    public allReportSumConfirmation:boolean;
+    public reportComment:string;
+    public newReportValue:number;
     public period:Period;
 }
 

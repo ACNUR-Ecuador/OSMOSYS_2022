@@ -119,6 +119,8 @@ public class IndicatorService {
         indicator.setMonitored(indicatorWeb.getMonitored());
         indicator.setCalculated(indicatorWeb.getCalculated());
         indicator.setTotalIndicatorCalculationType(indicatorWeb.getTotalIndicatorCalculationType());
+        indicator.setQuarterReportCalculation(indicatorWeb.getQuarterReportCalculation());
+        indicator.setAggregationRuleComment(indicatorWeb.getAggregationRuleComment());
 
         if(indicatorWeb.getResultManager() != null && indicatorWeb.getResultManager().getId() != null){
             User resultManager = userService.getById(indicatorWeb.getResultManager().getId());

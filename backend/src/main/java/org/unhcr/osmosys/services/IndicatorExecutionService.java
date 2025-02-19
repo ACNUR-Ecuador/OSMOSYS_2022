@@ -13,10 +13,7 @@ import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.threeten.extra.YearQuarter;
-import org.unhcr.osmosys.daos.IndicatorDao;
-import org.unhcr.osmosys.daos.IndicatorExecutionDao;
-import org.unhcr.osmosys.daos.ProjectDao;
-import org.unhcr.osmosys.daos.ResultManagerIndicatorDao;
+import org.unhcr.osmosys.daos.*;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.auditDTOs.LabelValue;
 import org.unhcr.osmosys.model.enums.*;
@@ -93,6 +90,8 @@ public class IndicatorExecutionService {
     ProjectDao projectDao;
     @Inject
     ResultManagerIndicatorDao resultManagerIndicatorDao;
+    @Inject
+    ResultManagerIndicatorQuarterReportDao resultManagerIndicatorQuarterReportDao;
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(IndicatorExecutionService.class);
 
@@ -1546,6 +1545,14 @@ public class IndicatorExecutionService {
                 }
             }
             rmiq.setResultManagerQuarterPopulationType(rmpts);
+            ResultManagerIndicatorQuarterReport rmiqr=this.resultManagerIndicatorQuarterReportDao.getResultManIndQuarterReportByIdParameters(indicatorId,rmiq.getQuarter(),periodId);
+            if(rmiqr!=null){
+                rmiq.setId(rmiqr.getId());
+                rmiq.setAllReportSumConfirmation(rmiqr.isAllReportSumConfirmation());
+                rmiq.setReportComment(rmiqr.getReportComment());
+                rmiq.setNewReportValue(rmiqr.getNewReportValue());
+            }
+
         }
         return rmiqs;
     }

@@ -43,7 +43,8 @@ export enum EnumsType {
     SourceType = 'SourceType',
     UnitType = 'UnitType',
     TimeStateEnum = 'TimeStateEnum',
-    AuditAction='AuditAction'
+    AuditAction='AuditAction',
+    QuarterReportCalculation="QuarterReportCalculation"
 }
 
 

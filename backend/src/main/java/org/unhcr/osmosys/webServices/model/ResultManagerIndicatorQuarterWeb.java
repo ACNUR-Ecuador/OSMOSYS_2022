@@ -7,6 +7,10 @@ import java.util.Objects;
 
 public class ResultManagerIndicatorQuarterWeb implements Serializable {
     public ResultManagerIndicatorQuarterWeb() {}
+    private Long id;
+    private Boolean allReportSumConfirmation;
+    private String reportComment;
+    private Integer newReportValue;
     private int quarter;
     private BigDecimal quarterExecution;
     private List<ResultManagerQuarterPopulationTypeWeb> resultManagerQuarterPopulationType;
@@ -42,6 +46,38 @@ public class ResultManagerIndicatorQuarterWeb implements Serializable {
 
     public void setResultManagerQuarterImplementer(List<ResultManagerQuarterImplementerWeb> resultManagerQuarterImplementer) {
         this.resultManagerQuarterImplementer = resultManagerQuarterImplementer;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Boolean isAllReportSumConfirmation() {
+        return allReportSumConfirmation;
+    }
+
+    public void setAllReportSumConfirmation(Boolean allReportSumConfirmation) {
+        this.allReportSumConfirmation = allReportSumConfirmation;
+    }
+
+    public String getReportComment() {
+        return reportComment;
+    }
+
+    public void setReportComment(String reportComment) {
+        this.reportComment = reportComment;
+    }
+
+    public Integer getNewReportValue() {
+        return newReportValue;
+    }
+
+    public void setNewReportValue(Integer newReportValue) {
+        this.newReportValue = newReportValue;
     }
 
     @Override

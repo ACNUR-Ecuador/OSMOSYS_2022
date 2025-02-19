@@ -91,11 +91,19 @@ public class Indicator extends BaseEntityIdState {
     @JoinColumn(name = "result_manager", foreignKey = @ForeignKey(name = "fk_indicator_result_manager"))
     private User resultManager;
 
+    @Column(name = "quarter_report_calc")
+    @Enumerated(EnumType.STRING)
+    private QuarterReportCalculation quarterReportCalculation;
+
+    @Column(name = "agg_rule_comment")
+    private String aggregationRuleComment;
+
     @OneToMany(mappedBy = "indicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<DissagregationAssignationToIndicator> dissagregationsAssignationToIndicator = new HashSet<>();
 
     @OneToMany(mappedBy = "indicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicators = new HashSet<>();
+
 
 
     @Override
@@ -312,4 +320,19 @@ public class Indicator extends BaseEntityIdState {
         this.coreIndicator = coreIndicator;
     }
 
+    public QuarterReportCalculation getQuarterReportCalculation() {
+        return quarterReportCalculation;
+    }
+
+    public void setQuarterReportCalculation(QuarterReportCalculation quarterReportCalculation) {
+        this.quarterReportCalculation = quarterReportCalculation;
+    }
+
+    public String getAggregationRuleComment() {
+        return aggregationRuleComment;
+    }
+
+    public void setAggregationRuleComment(String aggregationRuleComment) {
+        this.aggregationRuleComment = aggregationRuleComment;
+    }
 }

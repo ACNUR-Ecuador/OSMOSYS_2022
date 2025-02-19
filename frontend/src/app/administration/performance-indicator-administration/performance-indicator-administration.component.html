@@ -200,7 +200,7 @@
                         </div>                                                                      
 
                        
-                        <div class="field col-12 md:col-3">
+                        <div class="field col-12 md:col-2">
                             <label for="codeI">Categoría:</label>
                             <input type="text" pInputText id="categoryI"
                                    formControlName="category"/>
@@ -208,7 +208,7 @@
                                    *ngIf="utilsService.showErrorForm('category',formItem)">{{utilsService.getErrorMessageForm('category', formItem)}}</small>
                         </div>
 
-                        <div class="field col-12 md:col-3">
+                        <div class="field col-12 md:col-2">
                             <label for="measureTypeI">Tipo de medida *:</label>
 
                             <p-dropdown id="measureTypeI"
@@ -298,6 +298,8 @@
                                         placeholder="Selecciona..." [showClear]="true"
                                         [filter]="true" filterBy="name"
                                         appendTo="body"
+                                        (onChange)="onResultManagerSelect($event.value)"
+                                        (onClear)="onResultManagerClear()"
                             >
                                 <ng-template pTemplate="item" let-item>
                                     {{item.name }}
@@ -308,6 +310,23 @@
                             </p-dropdown>
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('resultManager',formItem)">{{utilsService.getErrorMessageForm('resultManager', formItem)}}</small>
+                        </div>
+
+                        <div *ngIf="toggleQuarterReportCalc" class="field col-12 md:col-2">
+                            <label for="quarterReportCalculation">Cálculo para reporte Trimestral: *</label>
+
+                            <p-dropdown id="quarterReportCalculationI"
+                                        formControlName="quarterReportCalculation"
+                                        [options]="quarterReportCalcTypes"
+                                        placeholder="Selecciona..."
+                                        [filter]="true"
+                                        appendTo="body"
+                                        (onChange)="onQuarterReportCalcChange($event.value)"
+                            >
+                            </p-dropdown>
+
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('quarterReportCalculation',formItem)">{{utilsService.getErrorMessageForm('quarterReportCalculation', formItem)}}</small>
                         </div>
 
                         <div class="field col-12 md:col-3">
@@ -346,6 +365,18 @@
                                 <span class="custom-message"> al seleccionar Personas Desplazadas y Apátridas, debes desagregar por "Tipos de Población" dentro de cada año.</span>
                             </ng-template>
                         </p-messages>
+
+                        <div *ngIf="toggleAggRuleComment" class="field col-12 md:col-12">
+                            <label for="aggregationRuleCommentI">Comentario de Regla de Agregación *:</label>
+                            <textarea pInputTextarea id="aggregationRuleCommentI"
+                                formControlName="aggregationRuleComment"
+                                [autoResize]="true"
+                                >
+                        </textarea>
+
+                            <small class="p-error"
+                                   *ngIf="utilsService.showErrorForm('aggregationRuleComment',formItem)">{{utilsService.getErrorMessageForm('aggregationRuleComment', formItem)}}</small>
+                        </div>
 
                         <div class="field col-12 md:col-12">
                             <label for="descriptionI">Descripción Completa *:</label>
