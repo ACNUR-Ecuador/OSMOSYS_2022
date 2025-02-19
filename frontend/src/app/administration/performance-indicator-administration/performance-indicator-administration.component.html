@@ -368,6 +368,8 @@
 
                         <div *ngIf="toggleAggRuleComment" class="field col-12 md:col-12">
                             <label for="aggregationRuleCommentI">Comentario de Regla de Agregación *:</label>
+                            <i class="pi pi-info-circle" style="margin-left: 0.5rem; color: blue;" 
+                            pTooltip="Comentario del cálculo que verá el Mánager de Resultados para su reporte Trimestral" tooltipPosition="right"></i> 
                             <textarea pInputTextarea id="aggregationRuleCommentI"
                                 formControlName="aggregationRuleComment"
                                 [autoResize]="true"
