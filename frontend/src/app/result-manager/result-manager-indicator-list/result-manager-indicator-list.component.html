@@ -71,14 +71,13 @@
         <tr *ngIf="expandedRowKeys[rowData.indicator.id]">
             <td colspan="100%">
                 <div class="p-3">
-                    <h5>Detalles por Trimestre</h5>
+                    <h5>Detalles por Periodo</h5>
                     <p-table [value]="rowData.resultManagerIndicatorQuarter" dataKey="quarter" >
                         <ng-template pTemplate="header">
                             <tr>
                                 <th style="width: 15%;">Periodo</th>
                                 <th style="width: 15%;">Ejecución Acumulada</th>
                                 <th style="width: 15%;">Datos Validados</th>
-                                <th style="width: 15%;">Estado</th>
                                 <th style="width: 40%; text-align: center;">Detalles</th>
                             </tr>
                         </ng-template>
@@ -95,8 +94,6 @@
                                       }">
                                         {{getQuarterConfirmationRate(quarterData).confirmationRate}}</span>
                                 </td>
-                                <td *ngIf="quarterData.id">Reportado</td>
-                                <td *ngIf="!quarterData.id">Sin Reporte</td>
                                 <td>
                                     <div style="display: flex; gap: 10px; width: 100%; justify-content: center;">
                                         <button pButton icon="pi pi-check-square" label="Validación de Datos"
@@ -108,7 +105,7 @@
                                         <button pButton icon="pi pi-eye" label="Ver por Implementación"
                                             class="p-button p-button-primary p-mr-2"
                                             style="background-color: #3a87d4; border: none;"
-                                            (click)="showImplementationTypeView(quarterData.resultManagerQuarterImplementer)">
+                                            (click)="showImplementationTypeView(quarterData,rowData)">
                                         </button>
                                                             
                                     
@@ -136,7 +133,6 @@
               [closable]="false">
         <ng-template pTemplate="content">
             <p-messages></p-messages>
-            
             <p-messages severity="warn" *ngIf="selectedIndicator.quarterReportCalculation=='AGGREGATION_RULE'">
               <ng-template pTemplate>
                   <span class="custom-message" style="color: #D9A301; margin-right: 0.5rem;font-weight: bold;">RECUERDA, 
@@ -145,7 +141,7 @@
                   <span class="custom-message"> {{selectedIndicator?.aggregationRuleComment}}</span>
               </ng-template>
             </p-messages>
-            <br>
+            <br *ngIf="selectedIndicator.quarterReportCalculation!=='AGGREGATION_RULE'">
             <p-table [value]="tableData">
                 <ng-template pTemplate="header">
                   <tr>
@@ -164,7 +160,7 @@
                               [(ngModel)]="row.reportValue" >
                     </td>
                     <td>
-                      <p-checkbox  [(ngModel)]="row.confirmation" [binary]="true"></p-checkbox>
+                      <p-checkbox (onChange)="onCheckedChange()" [(ngModel)]="row.confirmation" [binary]="true"></p-checkbox>
                     </td>
                   </tr>
                 </ng-template>
@@ -179,7 +175,7 @@
               </ng-template>
               </p-table>
 
-              <div class="overlay-textarea-container">
+              <div class="overlay-textarea-container" *ngIf="tableData.length > 0">
                 <label for="reportCommentI">Comentario:</label>
                 <textarea pInputTextarea
                           id="reportCommentI"
@@ -189,7 +185,7 @@
                           class="overlay-comment-textarea">
                 </textarea>
         
-                <small class="p-error" *ngIf="(selectedIndicator.quarterReportCalculation=='AGGREGATION_RULE')  && !selectedQuarter.reportComment">
+                <small class="p-error" *ngIf="(selectedIndicator.quarterReportCalculation=='AGGREGATION_RULE' ||(selectedIndicator.quarterReportCalculation!=='AGGREGATION_RULE' && !isAllChecked))  && !selectedQuarter.reportComment">
                   El comentario es obligatorio
                 </small>
               </div>
@@ -197,7 +193,7 @@
 
         <ng-template pTemplate="footer">
             <button *ngIf="tableData.length > 0" pButton type="button"
-                    pRipple label="Guardar" icon="pi pi-check" [disabled]="validateReportForm(tableData)" (click)="saveItem()"
+                    pRipple label="Guardar" icon="pi pi-check" [disabled]="validateReportForm()" (click)="saveItem()"
             ></button>
             <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
                     (click)="cancelDialog()"></button>
@@ -205,7 +201,7 @@
         </ng-template>
     </p-dialog>
 <!--Quarter Implementation Type View -->
-    <p-dialog [(visible)]="showImplementationDialog" [style]="{width: '50%'}" header="Ejecución por Tipo de Implementación" [modal]="true"
+    <p-dialog [(visible)]="showImplementationDialog" [style]="{width: '50%'}"  [header]="'Ejecución por Tipo de Implementación del Q'+selectedQuarterYearOrder" [modal]="true"
               [closable]="false">
         <ng-template pTemplate="content">
             <p-messages></p-messages>
@@ -217,7 +213,7 @@
                 <ng-template pTemplate="header">
                   <tr>
                     <th>Socio</th>
-                    <th>Ejecución Trimestral</th>
+                    <th>Ejecución Acumulada</th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-row>
@@ -235,7 +231,7 @@
                 <ng-template pTemplate="header">
                   <tr>
                     <th>Oficina</th>
-                    <th>Ejecución</th>
+                    <th>Ejecución Acumulada</th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-row>
