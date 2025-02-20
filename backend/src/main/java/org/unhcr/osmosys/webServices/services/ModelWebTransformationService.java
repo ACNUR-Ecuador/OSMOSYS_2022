@@ -1716,6 +1716,7 @@ public class ModelWebTransformationService {
         rmi.setQuarterYearOrder(resultManagerDto.getQuarterYearOrder());
         rmi.setPopulationType(this.standardDissagregationOptionDao.find(resultManagerDto.getPopulationType().getId()));
         rmi.setConfirmed(resultManagerDto.isConfirmed());
+        rmi.setReportValue(resultManagerDto.getReportValue());
         rmi.setPeriod(this.periodWebToPeriod(resultManagerDto.getPeriod()));
         return rmi;
     }
@@ -1728,9 +1729,7 @@ public class ModelWebTransformationService {
         rmiqr.setId(resultManagerIndicatorQuarterReportDTO.getId());
         rmiqr.setIndicator(this.indicatorWebToIndicator(resultManagerIndicatorQuarterReportDTO.getIndicator()));
         rmiqr.setQuarterYearOrder(resultManagerIndicatorQuarterReportDTO.getQuarterYearOrder());
-        rmiqr.setAllReportSumConfirmation(resultManagerIndicatorQuarterReportDTO.isAllReportSumConfirmation());
         rmiqr.setReportComment(resultManagerIndicatorQuarterReportDTO.getReportComment());
-        rmiqr.setNewReportValue(resultManagerIndicatorQuarterReportDTO.getNewReportValue());
         rmiqr.setPeriod(this.periodWebToPeriod(resultManagerIndicatorQuarterReportDTO.getPeriod()));
 
         return rmiqr;

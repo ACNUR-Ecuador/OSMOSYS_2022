@@ -75,17 +75,17 @@
                     <p-table [value]="rowData.resultManagerIndicatorQuarter" dataKey="quarter" >
                         <ng-template pTemplate="header">
                             <tr>
-                                <th style="width: 13%;">Periodo</th>
-                                <th style="width: 13%;">Ejecución Acumulada</th>
-                                <th style="width: 13%;">Datos Validados</th>
-                                <th style="width: 13%;">Estado</th>
-                                <th style="width: 48%; text-align: center;">Detalles</th>
+                                <th style="width: 15%;">Periodo</th>
+                                <th style="width: 15%;">Ejecución Acumulada</th>
+                                <th style="width: 15%;">Datos Validados</th>
+                                <th style="width: 15%;">Estado</th>
+                                <th style="width: 40%; text-align: center;">Detalles</th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-quarterData>
                             <tr>
                                 <td>Q{{ quarterData.quarter }}</td>
-                                <td>{{ quarterData.quarterExecution }}</td>
+                                <td>{{ getQuarterAccumulatedExecution(quarterData.quarter,rowData.resultManagerIndicatorQuarter) }}</td>
                                 <td>
                                     <span [ngClass]="{
                                         'lateConfirm': getQuarterConfirmationRate(quarterData).confirmationStatus === 'late',
@@ -102,7 +102,7 @@
                                         <button pButton icon="pi pi-check-square" label="Validación de Datos"
                                             class="p-button p-button-primary p-mr-2"
                                             
-                                            (click)="showDissPopulationView(quarterData,rowData.indicator)">
+                                            (click)="showDissPopulationView(quarterData,rowData)">
         
                                         </button>
                                         <button pButton icon="pi pi-eye" label="Ver por Implementación"
@@ -110,84 +110,7 @@
                                             style="background-color: #3a87d4; border: none;"
                                             (click)="showImplementationTypeView(quarterData.resultManagerQuarterImplementer)">
                                         </button>
-                                        <button pButton icon="pi pi-file" label="Reporte Trimestral"
-                                            class="p-button p-button-info p-mr-2"
-                                            (click)="op.toggle($event)">
-                                        </button>
-                                        <p-overlayPanel #op (onHide)="cancelOverlayPanel()">
-                                          <ng-template pTemplate>
-                                            <div class="card">
-                                              <div *ngIf="rowData.indicator.quarterReportCalculation==='ALL_REPORT_SUM'" class="overlay-content-report">
-                                                        <label style="font-size: 14px;"><strong>Verifico que los valores reportados son correctos</strong></label>
-                                                      <br>
-                                                
-                                                      <!-- Radio button para "Sí" -->
-                                                      <p-radioButton
-                                                        name="allReportSumConfirmation"
-                                                        [(ngModel)]="quarterData.allReportSumConfirmation"
-                                                        [value]="true"
-                                                        label="Sí"
-                                                        class="overlay-radio-button">
-                                                      </p-radioButton>
-                                                
-                                                      <!-- Radio button para "No" -->
-                                                      <p-radioButton
-                                                        name="allReportSumConfirmation"
-                                                        [(ngModel)]="quarterData.allReportSumConfirmation"
-                                                        [value]="false"
-                                                        label="No"
-                                                        class="overlay-radio-button">
-                                                      </p-radioButton>
-                                              </div>
-                                              <div *ngIf="rowData.indicator.quarterReportCalculation==='AGGREGATION_RULE'" class="overlay-content-report">
-                                                <label style="font-size: 14px; text-align: center;"><strong>Reporte Trimestral por regla de agregación</strong></label>
-
-                                                <p-messages severity="warn">
-                                                  <ng-template pTemplate>
-                                                      <span class="custom-message" style="color: #D9A301; margin-right: 0.5rem;font-weight: bold;">RECUERDA, 
-                                                        <span class="custom-message"style="color: #6d5100; font-weight: normal;"> {{rowData.indicator.aggregationRuleComment}}</span>
-                                                      </span>
-                                                  </ng-template>
-                                                </p-messages>
-                                                  
-                                                <div class="overlay-newvalue-container ">
-                                                  <label for="newReportValueI">Nuevo valor a reportar en el trimestre: *</label>
-                                                  <input type="number" pInputText id="newReportValueI"
-                                                         [min]="0"
-                                                         [(ngModel)]="quarterData.newReportValue" />
-                                                </div>
-                                                <small class="p-error" *ngIf="!quarterData.newReportValue">El valor es obligatorio</small>
-                                           
-                                              </div>
-                                
-                                              <!-- Condición para mostrar el textarea cuando se selecciona "No" -->
-                                              <div *ngIf="quarterData.allReportSumConfirmation === false || rowData.indicator.quarterReportCalculation==='AGGREGATION_RULE'" class="overlay-textarea-container">
-                                                <label for="reportCommentI">Comentario *:</label>
-                                                <textarea pInputTextarea
-                                                          id="reportCommentI"
-                                                          [(ngModel)]="quarterData.reportComment"
-                                                          [autoResize]="true"
-                                                          rows="5"
-                                                          class="overlay-comment-textarea">
-                                                </textarea>
-                                        
-                                                <small class="p-error" *ngIf="(quarterData.allReportSumConfirmation === false || rowData.indicator.quarterReportCalculation==='AGGREGATION_RULE') && !quarterData.reportComment">
-                                                  El comentario es obligatorio
-                                                </small>
-                                              </div>
-                                        
-                                              <!-- Botones de acción -->
-                                              <div class="overlay-button-group">
-                                                <button type="button" pButton label="Guardar" icon="pi pi-check" class="p-button-primary" 
-                                                        (click)="saveQuarterReport(quarterData,rowData.indicator)" [disabled]="validateReportForm(quarterData,rowData.indicator)">
-                                                </button>
-                                                <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
-                                                        (click)="op.toggle($event)">
-                                                </button>
-                                              </div>
-                                            </div>
-                                          </ng-template>
-                                        </p-overlayPanel>                                        
+                                                            
                                     
 
                                     </div>
@@ -209,34 +132,72 @@
 </div>
 
 <!--Population Type View -->
-    <p-dialog [(visible)]="showPopulationDialog" [style]="{width: '60%'}" header="Ejecución por Tipo de Población" [modal]="true"
+    <p-dialog [(visible)]="showPopulationDialog" [style]="{width: '60%'}" [header]="'Ejecución por Tipo de Población del Q'+selectedQuarterYearOrder" [modal]="true"
               [closable]="false">
         <ng-template pTemplate="content">
             <p-messages></p-messages>
+            
+            <p-messages severity="warn" *ngIf="selectedIndicator.quarterReportCalculation=='AGGREGATION_RULE'">
+              <ng-template pTemplate>
+                  <span class="custom-message" style="color: #D9A301; margin-right: 0.5rem;font-weight: bold;">RECUERDA, 
+                    
+                  </span>
+                  <span class="custom-message"> {{selectedIndicator?.aggregationRuleComment}}</span>
+              </ng-template>
+            </p-messages>
             <br>
             <p-table [value]="tableData">
                 <ng-template pTemplate="header">
                   <tr>
                     <th>Tipo de Población</th>
-                    <th>Ejecución Trimestral</th>
+                    <th>Ejecución Acumulada</th>
+                    <th *ngIf="selectedIndicator.quarterReportCalculation=='AGGREGATION_RULE'">Valor a Reportar</th>
                     <th>Confirmado</th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-row>
                   <tr>
                     <td>{{ row.populationType.name }}</td>
-                    <td>{{ row.quarterPopulationTypeExecution }}</td>
+                    <td>{{ row.accumulatedExecution }}</td>
+                    <td *ngIf="selectedIndicator.quarterReportCalculation=='AGGREGATION_RULE'">
+                      <input style="width: 45%;" type="number" pInputText [min]="0"
+                              [(ngModel)]="row.reportValue" >
+                    </td>
                     <td>
                       <p-checkbox  [(ngModel)]="row.confirmation" [binary]="true"></p-checkbox>
                     </td>
                   </tr>
                 </ng-template>
+                <ng-template pTemplate="footer" *ngIf="selectedIndicator.quarterReportCalculation=='AGGREGATION_RULE'">
+                  <tr>
+                      <td ><strong>Total:</strong></td>
+                      <td>
+                      </td>
+                      <td>{{getAccumulatedTotal()}}</td>
+                      <td></td>
+                  </tr>
+              </ng-template>
               </p-table>
+
+              <div class="overlay-textarea-container">
+                <label for="reportCommentI">Comentario:</label>
+                <textarea pInputTextarea
+                          id="reportCommentI"
+                          [(ngModel)]="selectedQuarter.reportComment"
+                          [autoResize]="true"
+                          rows="3"
+                          class="overlay-comment-textarea">
+                </textarea>
+        
+                <small class="p-error" *ngIf="(selectedIndicator.quarterReportCalculation=='AGGREGATION_RULE')  && !selectedQuarter.reportComment">
+                  El comentario es obligatorio
+                </small>
+              </div>
         </ng-template>
 
         <ng-template pTemplate="footer">
             <button *ngIf="tableData.length > 0" pButton type="button"
-                    pRipple label="Guardar" icon="pi pi-check" (click)="saveItem()"
+                    pRipple label="Guardar" icon="pi pi-check" [disabled]="validateReportForm(tableData)" (click)="saveItem()"
             ></button>
             <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
                     (click)="cancelDialog()"></button>

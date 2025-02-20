@@ -8,9 +8,7 @@ import java.util.Objects;
 public class ResultManagerIndicatorQuarterWeb implements Serializable {
     public ResultManagerIndicatorQuarterWeb() {}
     private Long id;
-    private Boolean allReportSumConfirmation;
     private String reportComment;
-    private Integer newReportValue;
     private int quarter;
     private BigDecimal quarterExecution;
     private List<ResultManagerQuarterPopulationTypeWeb> resultManagerQuarterPopulationType;
@@ -56,13 +54,6 @@ public class ResultManagerIndicatorQuarterWeb implements Serializable {
         this.id = id;
     }
 
-    public Boolean isAllReportSumConfirmation() {
-        return allReportSumConfirmation;
-    }
-
-    public void setAllReportSumConfirmation(Boolean allReportSumConfirmation) {
-        this.allReportSumConfirmation = allReportSumConfirmation;
-    }
 
     public String getReportComment() {
         return reportComment;
@@ -72,18 +63,12 @@ public class ResultManagerIndicatorQuarterWeb implements Serializable {
         this.reportComment = reportComment;
     }
 
-    public Integer getNewReportValue() {
-        return newReportValue;
-    }
-
-    public void setNewReportValue(Integer newReportValue) {
-        this.newReportValue = newReportValue;
-    }
-
     @Override
     public String toString() {
         return "ResultManagerIndicatorQuarterWeb{" +
-                "quarter=" + quarter +
+                "id=" + id +
+                ", reportComment='" + reportComment + '\'' +
+                ", quarter=" + quarter +
                 ", quarterExecution=" + quarterExecution +
                 ", resultManagerQuarterPopulationType=" + resultManagerQuarterPopulationType +
                 ", resultManagerQuarterImplementer=" + resultManagerQuarterImplementer +
@@ -95,11 +80,11 @@ public class ResultManagerIndicatorQuarterWeb implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ResultManagerIndicatorQuarterWeb that = (ResultManagerIndicatorQuarterWeb) o;
-        return quarter == that.quarter && Objects.equals(quarterExecution, that.quarterExecution) && Objects.equals(resultManagerQuarterPopulationType, that.resultManagerQuarterPopulationType) && Objects.equals(resultManagerQuarterImplementer, that.resultManagerQuarterImplementer);
+        return quarter == that.quarter && Objects.equals(id, that.id) && Objects.equals(reportComment, that.reportComment) && Objects.equals(quarterExecution, that.quarterExecution) && Objects.equals(resultManagerQuarterPopulationType, that.resultManagerQuarterPopulationType) && Objects.equals(resultManagerQuarterImplementer, that.resultManagerQuarterImplementer);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(quarter, quarterExecution, resultManagerQuarterPopulationType, resultManagerQuarterImplementer);
+        return Objects.hash(id, reportComment, quarter, quarterExecution, resultManagerQuarterPopulationType, resultManagerQuarterImplementer);
     }
 }

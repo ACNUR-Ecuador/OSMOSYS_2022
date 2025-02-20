@@ -70,6 +70,9 @@ public class ResultManagerIndicatorService {
         if (resultManagerIndicatorDto.getPopulationType() == null) {
             throw new GeneralAppException("Tipo de población no válido", Response.Status.BAD_REQUEST);
         }
+        if (resultManagerIndicatorDto.getReportValue() != null && resultManagerIndicatorDto.getReportValue()<0 ) {
+            throw new GeneralAppException("Valor de reporte no válido", Response.Status.BAD_REQUEST);
+        }
         if (resultManagerIndicatorDto.getPeriod() == null) {
             throw new GeneralAppException("Periodo no válido", Response.Status.BAD_REQUEST);
         }

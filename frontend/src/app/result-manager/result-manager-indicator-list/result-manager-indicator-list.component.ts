@@ -70,11 +70,13 @@ export class ResultManagerIndicatorListComponent implements OnInit {
     confirmed:boolean;
     periodForm: FormGroup;
     periods: Period[];
-    selectedQuarter:number;
+    selectedQuarterYearOrder:number;
     selectedIndicator:Indicator;
     implTable:any={}
     expandedRowKeys: { [key: number]: boolean } = {}; // Objeto para manejar las filas expandidas
     quarterReportForm:FormGroup
+    selectedQuarter:ResultManagerIndicatorQuarter
+    isAllChecked:boolean
 
     constructor(
         private messageService: MessageService,
@@ -90,7 +92,7 @@ export class ResultManagerIndicatorListComponent implements OnInit {
         private percentagePipe: PercentagePipe,
         private resultManagerService: ResultManagerService,
         private userService: UserService,
-        private resultMangerExecutionPipe: ResultManagerExecutionPipe
+        private resultMangerExecutionPipe: ResultManagerExecutionPipe,
     ) {}
 
     ngOnInit(): void {
@@ -260,10 +262,11 @@ export class ResultManagerIndicatorListComponent implements OnInit {
             const quarterPopulationTypeConfirmation: QuarterPopulationTypeConfirmation = {
                 id: item.id,
                 indicator: this.selectedIndicator,
-                quarterYearOrder: this.selectedQuarter,
+                quarterYearOrder: this.selectedQuarterYearOrder,
                 populationType: item.populationType,
                 period: this.periodForm.get('selectedPeriod').value,
-                confirmed: item.confirmation
+                confirmed: item.confirmation,
+                reportValue:item.reportValue
             };
 
             if (item.id) {
@@ -275,11 +278,7 @@ export class ResultManagerIndicatorListComponent implements OnInit {
                             this.cancelDialog();
                             //this.loadItems();
                             this.loadResultManagerIndicators(this.periodForm.get("selectedPeriod").value.id);
-                            this.messageService.add({
-                                severity: 'success',
-                                summary: 'Valores guardados exitosamente',
-                                life: 3000
-                            });
+                            
                         }
                     },
                     error: err => {
@@ -305,11 +304,7 @@ export class ResultManagerIndicatorListComponent implements OnInit {
                             this.cancelDialog();
                             //this.loadItems();
                             this.loadResultManagerIndicators(this.periodForm.get("selectedPeriod").value.id);
-                            this.messageService.add({
-                                severity: 'success',
-                                summary: 'Valores guardados exitosamente',
-                                life: 3000
-                            });
+                            
                         }
                     },
                     error: err => {
@@ -329,29 +324,52 @@ export class ResultManagerIndicatorListComponent implements OnInit {
             }
         });
 
+        this.saveQuarterReport(this.selectedQuarter,this.selectedIndicator)
 
     }
 
    
     cancelDialog() {
+        this.isAllChecked=false;
         this.showPopulationDialog = false;
         this.showImplementationDialog = false;
         this.submitted = false;
         this.items=JSON.parse(JSON.stringify(this.originalItems))
         this.selectedIndicator=null;
-        this.selectedQuarter=null;
+        this.selectedQuarterYearOrder=null;
     }
 
      
 
   
 
-    showDissPopulationView(data:ResultManagerIndicatorQuarter, indicator:Indicator){
-        this.selectedQuarter=data.quarter
-        this.selectedIndicator=indicator
-        this.tableData = data.resultManagerQuarterPopulationType;
-        this.showPopulationDialog=true
-    }
+    showDissPopulationView(data: ResultManagerIndicatorQuarter, rmi: ResultManagerIndicator) {
+        this.selectedQuarterYearOrder = data.quarter;
+        this.selectedIndicator = rmi.indicator;
+        this.showPopulationDialog = true;
+        this.selectedQuarter=data
+        // Crear un Map para obtener los valores acumulados, optimizando la iteración
+        const populationTypeAcumulationExecutionMap = new Map<number, number>();
+      
+        rmi.resultManagerIndicatorQuarter.forEach(item => {
+          // Acumulo las ejecuciones cuyo quarter es menor o igual que el seleccionado
+          if (item.quarter <= this.selectedQuarterYearOrder) {
+            item.resultManagerQuarterPopulationType.forEach(element => {
+              const populationTypeId = element.populationType.id;
+              const currentExecution = populationTypeAcumulationExecutionMap.get(populationTypeId) || 0;
+              populationTypeAcumulationExecutionMap.set(populationTypeId, currentExecution + element.quarterPopulationTypeExecution);
+            });
+          }
+        });
+      
+        // Agrego la propiedad con el valor acumulado
+        this.tableData = data.resultManagerQuarterPopulationType.map(item => {
+          const accumulatedExecution = populationTypeAcumulationExecutionMap.get(item.populationType.id) || 0;
+          return { ...item, accumulatedExecution };
+        });
+      
+      }
+      
 
     showImplementationTypeView(data: ResultManagerQuarterImplementer[]){
         this.showImplementationDialog=true;
@@ -437,7 +455,6 @@ export class ResultManagerIndicatorListComponent implements OnInit {
     }
 
     getQuarterConfirmationRate(rmiq:ResultManagerIndicatorQuarter){
-        //console.log(rmqtp)
         let confirmationRate:string="0/0"
         const totalPopulationTypes:number=rmiq?.resultManagerQuarterPopulationType.length;
         let confirmationsDone:number=0
@@ -491,12 +508,10 @@ export class ResultManagerIndicatorListComponent implements OnInit {
             id: quarterData.id,
             indicator: indicator,
             quarterYearOrder: quarterData.quarter,
-            allReportSumConfirmation: quarterData.allReportSumConfirmation,
             reportComment: quarterData.reportComment,
-            newReportValue: quarterData.newReportValue,
             period: this.periodForm.get('selectedPeriod').value,
         };
-
+        console.log(indicatorQuarterReport)
         if (quarterData.id) {
             // Actualizar
             this.resultManagerService.updateIndicatorQuarterReport(indicatorQuarterReport).subscribe({
@@ -545,38 +560,41 @@ export class ResultManagerIndicatorListComponent implements OnInit {
 
       }
 
-     
-    
-      // Método que se llama al cerrar el OverlayPanel sin guardar
-      cancelOverlayPanel() {
-        this.items=JSON.parse(JSON.stringify(this.originalItems))
-      }
 
       //validar formulario de Reporte Trimestral
-      validateReportForm(quarterData:ResultManagerIndicatorQuarter,indicator:Indicator):boolean{
+      validateReportForm(tableData:ResultManagerQuarterPopulationType[]):boolean{
         let disabled:boolean=false
-        if(indicator.quarterReportCalculation==="AGGREGATION_RULE"){
-            if(quarterData.newReportValue===null){
-                disabled=true
-            }
-            if(quarterData.reportComment===null || quarterData.reportComment===""){
-                disabled=true
-            }
-        }else{
-            if(quarterData.allReportSumConfirmation===null){
-                disabled=true
-            }
-            if(quarterData.allReportSumConfirmation===true){
-                quarterData.reportComment=null;
-            }
-            if(quarterData.allReportSumConfirmation===false && (quarterData.reportComment===null || quarterData.reportComment==="")){
-                disabled=true
-            }
-            if(indicator.quarterReportCalculation===null){
-                disabled=true;
-            }
+        this.isAllChecked=tableData.every(item=>item.confirmation===true)
+        if(this.selectedIndicator.quarterReportCalculation==="AGGREGATION_RULE" && this.selectedQuarter.reportComment===null || this.selectedQuarter.reportComment==="" ){
+            disabled=true
         }
+
+        if(this.selectedIndicator.quarterReportCalculation!=="AGGREGATION_RULE" && !this.isAllChecked 
+           && (this.selectedQuarter.reportComment===null || this.selectedQuarter.reportComment==="" )){
+            disabled=true
+        }
+       
             return disabled
+      }
+
+      getQuarterAccumulatedExecution(quarter:number,quarterDataList:ResultManagerIndicatorQuarter[]){
+        let accumulatedValue:number=0
+
+        quarterDataList.forEach(item=>{
+            if(item.quarter<=quarter){
+                accumulatedValue+=item.quarterExecution
+            }
+        })
+
+        return accumulatedValue;
+      }
+
+      getAccumulatedTotal(){
+        let total=0
+        this.tableData.forEach(item=>{
+            total+=item.reportValue
+        })
+        return total
       }
 
    

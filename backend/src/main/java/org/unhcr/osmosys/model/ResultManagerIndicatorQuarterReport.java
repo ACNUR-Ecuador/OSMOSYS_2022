@@ -20,14 +20,8 @@ public class ResultManagerIndicatorQuarterReport extends BaseEntity {
     @Column(name = "quarter_year_order", nullable = false)
     private int quarterYearOrder;
 
-    @Column(name = "all_report_sum_confirmation")
-    private Boolean allReportSumConfirmation;
-
     @Column(name = "report_comment")
     private String reportComment;
-
-    @Column(name = "new_report_value")
-    private Integer newReportValue;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "period_id", foreignKey = @ForeignKey(name = "fk_result_man_ind_quarter_report_period"))
@@ -58,14 +52,6 @@ public class ResultManagerIndicatorQuarterReport extends BaseEntity {
         this.quarterYearOrder = quarterYearOrder;
     }
 
-    public Boolean isAllReportSumConfirmation() {
-        return allReportSumConfirmation;
-    }
-
-    public void setAllReportSumConfirmation(Boolean allReportSumConfirmation) {
-        this.allReportSumConfirmation = allReportSumConfirmation;
-    }
-
     public String getReportComment() {
         return reportComment;
     }
@@ -74,13 +60,6 @@ public class ResultManagerIndicatorQuarterReport extends BaseEntity {
         this.reportComment = reportComment;
     }
 
-    public Integer getNewReportValue() {
-        return newReportValue;
-    }
-
-    public void setNewReportValue(Integer newReportValue) {
-        this.newReportValue = newReportValue;
-    }
 
     public Period getPeriod() {
         return period;
@@ -96,9 +75,7 @@ public class ResultManagerIndicatorQuarterReport extends BaseEntity {
                 "id=" + id +
                 ", indicator=" + indicator +
                 ", quarterYearOrder=" + quarterYearOrder +
-                ", allReportSumConfirmation=" + allReportSumConfirmation +
                 ", reportComment='" + reportComment + '\'' +
-                ", newReportValue=" + newReportValue +
                 ", period=" + period +
                 '}';
     }
@@ -108,11 +85,11 @@ public class ResultManagerIndicatorQuarterReport extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ResultManagerIndicatorQuarterReport that = (ResultManagerIndicatorQuarterReport) o;
-        return quarterYearOrder == that.quarterYearOrder && allReportSumConfirmation == that.allReportSumConfirmation && Objects.equals(id, that.id) && Objects.equals(indicator, that.indicator) && Objects.equals(reportComment, that.reportComment) && Objects.equals(newReportValue, that.newReportValue) && Objects.equals(period, that.period);
+        return quarterYearOrder == that.quarterYearOrder && Objects.equals(id, that.id) && Objects.equals(indicator, that.indicator) && Objects.equals(reportComment, that.reportComment) && Objects.equals(period, that.period);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, indicator, quarterYearOrder, allReportSumConfirmation, reportComment, newReportValue, period);
+        return Objects.hash(id, indicator, quarterYearOrder, reportComment, period);
     }
 }

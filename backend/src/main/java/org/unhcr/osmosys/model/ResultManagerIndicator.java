@@ -28,9 +28,14 @@ public class ResultManagerIndicator extends BaseEntity {
     @Column(name = "is_confirmed", nullable = false)
     private boolean confirmed;
 
+    @Column(name = "report_value")
+    private Integer reportValue;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "period_id", foreignKey = @ForeignKey(name = "fk_result_manager_ind_period"))
     private Period period;
+
+
 
     public Long getId() {
         return id;
@@ -80,6 +85,14 @@ public class ResultManagerIndicator extends BaseEntity {
         this.period = period;
     }
 
+    public Integer getReportValue() {
+        return reportValue;
+    }
+
+    public void setReportValue(Integer reportValue) {
+        this.reportValue = reportValue;
+    }
+
     @Override
     public String toString() {
         return "ResultManagerIndicator{" +
@@ -87,7 +100,8 @@ public class ResultManagerIndicator extends BaseEntity {
                 ", indicator=" + indicator +
                 ", quarterYearOrder=" + quarterYearOrder +
                 ", populationType=" + populationType +
-                ", isConfirmation=" + confirmed +
+                ", confirmed=" + confirmed +
+                ", reportValue=" + reportValue +
                 ", period=" + period +
                 '}';
     }
@@ -97,11 +111,11 @@ public class ResultManagerIndicator extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ResultManagerIndicator that = (ResultManagerIndicator) o;
-        return quarterYearOrder == that.quarterYearOrder && confirmed == that.confirmed && Objects.equals(id, that.id) && Objects.equals(indicator, that.indicator) && Objects.equals(populationType, that.populationType) && Objects.equals(period, that.period);
+        return quarterYearOrder == that.quarterYearOrder && confirmed == that.confirmed && Objects.equals(id, that.id) && Objects.equals(indicator, that.indicator) && Objects.equals(populationType, that.populationType) && Objects.equals(reportValue, that.reportValue) && Objects.equals(period, that.period);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, indicator, quarterYearOrder, populationType, confirmed, period);
+        return Objects.hash(id, indicator, quarterYearOrder, populationType, confirmed, reportValue, period);
     }
 }

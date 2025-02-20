@@ -12,8 +12,8 @@ public class ResultManagerIndicatorDTO implements Serializable {
     private int quarterYearOrder;
     private StandardDissagregationOptionWeb populationType;
     private boolean confirmed;
+    private Integer reportValue;
     private PeriodWeb period;
-
     public Long getId() {
         return id;
     }
@@ -60,5 +60,13 @@ public class ResultManagerIndicatorDTO implements Serializable {
 
     public void setPeriod(PeriodWeb period) {
         this.period = period;
+    }
+
+    public Integer getReportValue() {
+        return reportValue;
+    }
+
+    public void setReportValue(Integer reportValue) {
+        this.reportValue = reportValue;
     }
 }

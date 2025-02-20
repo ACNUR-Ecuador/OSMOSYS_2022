@@ -1542,15 +1542,14 @@ public class IndicatorExecutionService {
                 }else{
                     rmpt.setId(rm.getId());
                     rmpt.setConfirmation(rm.isConfirmed());
+                    rmpt.setReportValue(rm.getReportValue());
                 }
             }
             rmiq.setResultManagerQuarterPopulationType(rmpts);
             ResultManagerIndicatorQuarterReport rmiqr=this.resultManagerIndicatorQuarterReportDao.getResultManIndQuarterReportByIdParameters(indicatorId,rmiq.getQuarter(),periodId);
             if(rmiqr!=null){
                 rmiq.setId(rmiqr.getId());
-                rmiq.setAllReportSumConfirmation(rmiqr.isAllReportSumConfirmation());
                 rmiq.setReportComment(rmiqr.getReportComment());
-                rmiq.setNewReportValue(rmiqr.getNewReportValue());
             }
 
         }
