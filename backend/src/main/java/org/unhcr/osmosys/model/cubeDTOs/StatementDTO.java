@@ -2,16 +2,18 @@ package org.unhcr.osmosys.model.cubeDTOs;
 
 public class StatementDTO {
 
-    public StatementDTO(Long area_impact_id, String area_impact_code, String area_impact, Long statement_impact_id, String statement_impact_code, String statement_impact, Long area_outcome_id, String area_outcome_code, String area_outcome, Long statement_outcome_id, String statement_outcome_code, String statement_outcome, Long statement_output_id, String statement_output_code, String statement_output_product_code, String statement_output) {
+    public StatementDTO(Long area_impact_id, String area_impact_code, String area_impact,String area_impact_description, Long statement_impact_id, String statement_impact_code, String statement_impact, Long area_outcome_id, String area_outcome_code, String area_outcome,String area_outcome_description, Long statement_outcome_id, String statement_outcome_code, String statement_outcome, Long statement_output_id, String statement_output_code, String statement_output_product_code, String statement_output) {
         this.area_impact_id = area_impact_id;
         this.area_impact_code = area_impact_code;
         this.area_impact = area_impact;
+        this.area_impact_description = area_impact_description;
         this.statement_impact_id = statement_impact_id;
         this.statement_impact_code = statement_impact_code;
         this.statement_impact = statement_impact;
         this.area_outcome_id = area_outcome_id;
         this.area_outcome_code = area_outcome_code;
         this.area_outcome = area_outcome;
+        this.area_outcome_description = area_outcome_description;
         this.statement_outcome_id = statement_outcome_id;
         this.statement_outcome_code = statement_outcome_code;
         this.statement_outcome = statement_outcome;
@@ -24,12 +26,14 @@ public class StatementDTO {
     private Long area_impact_id;
     private String area_impact_code;
     private String area_impact;
+    private String area_impact_description;
     private Long statement_impact_id;
     private String statement_impact_code;
     private String statement_impact;
     private Long area_outcome_id;
     private String area_outcome_code;
     private String area_outcome;
+    private String area_outcome_description;
     private Long statement_outcome_id;
     private String statement_outcome_code;
     private String statement_outcome;
@@ -164,5 +168,21 @@ public class StatementDTO {
 
     public void setStatement_output(String statement_output) {
         this.statement_output = statement_output;
+    }
+
+    public String getArea_impact_description() {
+        return area_impact_description;
+    }
+
+    public void setArea_impact_description(String area_impact_description) {
+        this.area_impact_description = area_impact_description;
+    }
+
+    public String getArea_outcome_description() {
+        return area_outcome_description;
+    }
+
+    public void setArea_outcome_description(String area_outcome_description) {
+        this.area_outcome_description = area_outcome_description;
     }
 }
