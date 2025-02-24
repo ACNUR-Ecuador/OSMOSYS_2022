@@ -1,12 +1,12 @@
 # Índice
 
 ## 1. Descripción del Sistema
-- [1.1 Objetivo](descripcion-del-sistema.md#_11-objetivo)
+- [1.1 Objetivos](descripcion-del-sistema.md#_11-objetivo)
 - [1.2 Alcance](descripcion-del-sistema.md#_12-alcance)
 - [1.3 Funcionalidades](descripcion-del-sistema.md#_13-funcionalidades)
 
 ## 2. Acceso al Sistema
-- [2.1 Requisitos del sistema](acceso-al-sistema.md#_21-requisitos-del-sistema)
+- [2.1 Requisitos del sistemas](acceso-al-sistema.md#_21-requisitos-del-sistema)
 - [2.2 Inicio de Sesión](acceso-al-sistema.md#_22-inicio-de-sesión)
 - [2.3 Recuperar contraseña](acceso-al-sistema.md#_23-recuperar-contraseña)
 - [2.4 Solicitar Soporte](acceso-al-sistema.md#_24-solicitar-soporte)
@@ -116,13 +116,13 @@
 
 ## 7. Implementación Directa
 -  [7.1 Reporte e Indicadores](implementacion-directa.md#_71-reporte-de-indicadores)
-  - [7.1.1	Tabla de Indicadores de Implementación directa](implementacion-directa.md#_711-tabla-de-indicadores-de-implementación-directa)
+  - [7.1.1	Tabla de Indicadore s de Implementación directa](implementacion-directa.md#_711-tabla-de-indicadores-de-implementación-directa)
   - [7.1.2 Reporte de valores de Implementación directa](implementacion-directa.md#_71-reporte-de-indicadores)
   - [7.1.3 Reporte de valores de Implementación directa por Importación](implementacion-directa.md#_71-reporte-de-indicadores)
 
 ## 8. REPORTES
 - [8.1 Catálogo de Indicadores](reportes.md#_81-catálogo-de-indicadores)
-- [8.2 Exportación de Datos](reportes.md#_82-exportación-de-datos)
+- [8.2 Exportación de Datos](reportes.md#_ 82-exportación-de-datos)
 - [8.3 Reportes de Retrasos](reportes.md#_83-reportes-de-retrasos)
 
 ## 9. ACERCA DE OSMOSYS
