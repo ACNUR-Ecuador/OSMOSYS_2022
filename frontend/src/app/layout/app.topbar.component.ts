@@ -12,6 +12,7 @@ export class AppTopbarComponent implements OnInit {
     operationName = `${environment.operationName}`;
     flagToolbarFile = `assets/layout/images/${environment.flagToolbarFile}`;
     manualUrl: string=''
+    showSubMenu: boolean = false;
 
     @ViewChild('menubutton') menuButton!: ElementRef;
 
@@ -73,5 +74,8 @@ export class AppTopbarComponent implements OnInit {
         }
 
         return manualUrl;
+    }
+    toggleSubMenu() {
+        this.showSubMenu = !this.showSubMenu;
     }
 }

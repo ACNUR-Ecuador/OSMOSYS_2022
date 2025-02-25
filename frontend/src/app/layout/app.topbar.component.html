@@ -138,15 +138,44 @@
                                 <span class="font-semibold">Cambiar contraseña</span>
                             </span>
                         </a>
-                        <a pRipple
-                           [href]="manualUrl"
-                           target="_blank"
-                           class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                        <!-- Opción Manual de Usuario con Submenú -->
+                        <div (click)="toggleSubMenu()" class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
                             <i class="pi pi-book mr-3"></i>
                             <span class="flex flex-column">
                                 <span class="font-semibold">Manual del Usuario</span>
                             </span>
-                        </a>
+                            <i class="pi" [ngClass]="{'pi-chevron-down': !showSubMenu, 'pi-chevron-up': showSubMenu}" class="ml-auto"></i>
+                        </div>
+
+                        <ul *ngIf="showSubMenu" class="pl-5 list-none transition-all transition-duration-200" style="margin-left: -20px;">
+                            <li>
+                                <a pRipple
+                                [href]="manualUrl"
+                                target="_blank"
+                                class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                                    <i class="pi pi-file-pdf mr-3"></i>
+                                    <span class="font-semibold">Administrador Local</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a pRipple
+                                [href]="manualUrl"
+                                target="_blank"
+                                class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                                    <i class="pi pi-video mr-3"></i>
+                                    <span class="font-semibold">Socio</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a pRipple
+                                [href]="manualUrl"
+                                target="_blank"
+                                class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                                    <i class="pi pi-video mr-3"></i>
+                                    <span class="font-semibold">Mánager de Resultado</span>
+                                </a>
+                            </li>
+                        </ul>
                         <a pRipple
                            (click)="logout()"
                            class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
