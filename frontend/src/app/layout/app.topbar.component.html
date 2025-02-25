@@ -100,14 +100,14 @@
 
             <li class="profile-item static sm:relative">
                 <a tabindex="0" pStyleClass="@next" enterClass="hidden" enterActiveClass="scalein" leaveToClass="hidden"
-                   leaveActiveClass="fadeout" [hideOnOutsideClick]="true">
+                   leaveActiveClass="fadeout" [hideOnOutsideClick]="true" (click)="showSubMenu=false">
                     <p-avatar label="{{userInitials}}" styleClass="p-mr-2"
                               size="large" shape="circle"
                               [style]="{'background-color': '#ffffff', 'color': '#0072BC'}"
                     ></p-avatar>
                 </a>
                 <ul class="list-none p-3 m-0 border-round shadow-2 absolute surface-overlay hidden origin-top w-full sm:w-24rem mt-2 top-auto"
-                    style="left:-80px !important; background-color: #0072BC !important;">
+                    style="left:-95px !important; background-color: #0072BC !important;">
                     <li>
 
                         <!-- <a pRipple
@@ -144,34 +144,34 @@
                             <span class="flex flex-column">
                                 <span class="font-semibold">Manual del Usuario</span>
                             </span>
-                            <i class="pi" [ngClass]="{'pi-chevron-down': !showSubMenu, 'pi-chevron-up': showSubMenu}" class="ml-auto"></i>
+                            <i [class]="showSubMenu ? 'pi pi-angle-up': 'pi pi-angle-down'" class="ml-3"></i>
                         </div>
 
-                        <ul *ngIf="showSubMenu" class="pl-5 list-none transition-all transition-duration-200" style="margin-left: -20px;">
-                            <li>
+                        <ul *ngIf="showSubMenu" class="pl-5 list-none transition-all transition-duration-200" style="margin-left: -15px;">
+                            <li *ngIf="isAdmin">
                                 <a pRipple
-                                [href]="manualUrl"
+                                href="https://osmosys.unhcr.org/common/manual-admin-local/#/"
                                 target="_blank"
                                 class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
-                                    <i class="pi pi-file-pdf mr-3"></i>
+                                    <i class="pi pi-book mr-2"></i>
                                     <span class="font-semibold">Administrador Local</span>
                                 </a>
                             </li>
-                            <li>
+                            <li *ngIf="isPartner">
                                 <a pRipple
-                                [href]="manualUrl"
+                                href="https://osmosys.unhcr.org/common/manual-socios/#/"
                                 target="_blank"
                                 class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
-                                    <i class="pi pi-video mr-3"></i>
+                                    <i class="pi pi-book mr-2"></i>
                                     <span class="font-semibold">Socio</span>
                                 </a>
                             </li>
-                            <li>
+                            <li *ngIf="isResultManager">
                                 <a pRipple
-                                [href]="manualUrl"
+                                href="https://osmosys.unhcr.org/common/manual-result-manager/#/"
                                 target="_blank"
                                 class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
-                                    <i class="pi pi-video mr-3"></i>
+                                    <i class="pi pi-book mr-2"></i>
                                     <span class="font-semibold">Mánager de Resultado</span>
                                 </a>
                             </li>

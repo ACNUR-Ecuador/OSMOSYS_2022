@@ -11,8 +11,10 @@ import {environment} from "../../environments/environment";
 export class AppTopbarComponent implements OnInit {
     operationName = `${environment.operationName}`;
     flagToolbarFile = `assets/layout/images/${environment.flagToolbarFile}`;
-    manualUrl: string=''
     showSubMenu: boolean = false;
+    isAdmin:boolean = false;
+    isPartner:boolean = false;
+    isResultManager:boolean = false;
 
     @ViewChild('menubutton') menuButton!: ElementRef;
 
@@ -61,19 +63,20 @@ export class AppTopbarComponent implements OnInit {
         if (user && user.name) {
             this.userInitials = user.name.split(' ').map(n => n[0]).join('');
         }
-        this.manualUrl=this.setUserManualUrl();
+        this.setUserManualsByPermissions();
+        
     }
 
-    setUserManualUrl(): string{
-        const user = this.userService.getLogedUsername();
-        let manualUrl:string
-        if(user?.organization?.id === 1){
-            manualUrl='https://osmosys.unhcr.org/common/manual-admin-local/#/'
+    setUserManualsByPermissions(){
+        if(this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL'])){
+            this.isAdmin=true;
         }else{
-            manualUrl='https://osmosys.unhcr.org/common/manual-socios/#/'
+            this.isPartner=true;
         }
-
-        return manualUrl;
+        if(this.userService.hasAnyRole(['RESULT_MANAGER'])){
+            this.isResultManager=true;
+        }
+        
     }
     toggleSubMenu() {
         this.showSubMenu = !this.showSubMenu;
