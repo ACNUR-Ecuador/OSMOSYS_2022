@@ -28,6 +28,27 @@ public class CubeDao {
             " count(*) " +
             "from  " +
             "cube.fact_table f";
+
+    private static final String tagsTable = "SELECT " +
+            "* " +
+            "from  " +
+            "cube.tags t ";
+
+    private static final String projectManagersTable = "SELECT " +
+            "* " +
+            "from  " +
+            "cube.project_managers p ";
+
+    private static final String resultManagersTable = "SELECT " +
+            "* " +
+            "from  " +
+            "cube.result_managers r ";
+
+    private static final String tagIndicators = "SELECT " +
+            "* " +
+            "from  " +
+            "cube.tag_indicators t ";
+
     private static final String monthQuarterYearTable = "SELECT " +
             "* " +
             "from  " +
@@ -180,6 +201,46 @@ public class CubeDao {
         BigInteger r= (BigInteger) q.getSingleResult();
         return r.longValue();
     }
+
+    public List<ProjectManagersDTO> getProjectManagers() {
+        String sql = CubeDao.projectManagersTable ;
+        Query q = this.entityManager.createNativeQuery(sql, "ProjectManagerDTOMapping");
+        return q.getResultList();
+    }
+
+    public List<ResultManagersDTO> getResultManagers() {
+        String sql = CubeDao.resultManagersTable ;
+        Query q = this.entityManager.createNativeQuery(sql, "ResultManagerDTOMapping");
+        return q.getResultList();
+    }
+
+    public List<TagIndicatorsDTO> getTagIndicatorsByPeriodYear(Integer year) {
+        String sql = CubeDao.tagIndicators +  " where t.period_year =:year";
+        Query q = this.entityManager.createNativeQuery(sql, "TagIndicatorsDTOMapping");
+        q.setParameter("year", year);
+        return q.getResultList();
+    }
+
+    public List<TagsDTO> getTagTableByPeriodYear(Integer year) {
+        String sql = CubeDao.tagsTable +  " where t.period_year =:year";
+        Query q = this.entityManager.createNativeQuery(sql, "TagsDTOMapping");
+        q.setParameter("year", year);
+        return q.getResultList();
+    }
+
+    public List<TagIndicatorsDTO> getTagIndicatorsByPeriodYear() {
+        String sql = CubeDao.tagIndicators ;
+        Query q = this.entityManager.createNativeQuery(sql, "TagIndicatorsDTOMapping");
+        return q.getResultList();
+    }
+
+    public List<TagsDTO> getTagTableByPeriodYear() {
+        String sql = CubeDao.tagsTable ;
+        Query q = this.entityManager.createNativeQuery(sql, "TagsDTOMapping");
+        return q.getResultList();
+    }
+
+
 
     public List<MonthQuarterYearDTO> getMonthQuarterYearTable() {
         Query q = this.entityManager.createNativeQuery(CubeDao.monthQuarterYearTable, "MonthQuarterYearDTOMapping");

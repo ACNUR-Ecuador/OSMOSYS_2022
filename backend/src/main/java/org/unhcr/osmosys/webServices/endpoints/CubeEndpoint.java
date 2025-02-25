@@ -131,6 +131,83 @@ public class CubeEndpoint {
         return result;
     }
 
+    @Path("/projectManagers/")
+    @GET
+    @BasicSecured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ProjectManagersDTO> getProjectManagers() {
+        long lStartTime = System.nanoTime();
+        List<ProjectManagersDTO> projectManagersDTOS = this.cubeService.getProjectManagers();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds count projectManagers:" + (lEndTime - lStartTime) / 1000000000);
+        return projectManagersDTOS;
+    }
+
+    @Path("/resultManagers/")
+    @GET
+    @BasicSecured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ResultManagersDTO> getResultManagers() {
+        long lStartTime = System.nanoTime();
+        List<ResultManagersDTO> projectManagersDTOS = this.cubeService.getResultManagers();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds count projectManagers:" + (lEndTime - lStartTime) / 1000000000);
+        return projectManagersDTOS;
+    }
+
+    @Path("/tagIndicators/{year}")
+    @GET
+    @BasicSecured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<TagIndicatorsDTO> getTagIndicatorsByPeriodYear(
+            @PathParam("year") Integer year
+    ) {
+        long lStartTime = System.nanoTime();
+        List<TagIndicatorsDTO> tagsDTOS = this.cubeService.getTagIndicatorsByPeriodYear(year);
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds count TagTable:" + (lEndTime - lStartTime) / 1000000000);
+        return tagsDTOS;
+    }
+
+    @Path("/tagTable/{year}")
+    @GET
+    @BasicSecured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<TagsDTO> getTagTableByPeriodYear(
+            @PathParam("year") Integer year
+
+    ) {
+        long lStartTime = System.nanoTime();
+        List<TagsDTO> tagsDTOS = this.cubeService.getTagTableByPeriodYear(year);
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds count TagTable:" + (lEndTime - lStartTime) / 1000000000);
+        return tagsDTOS;
+    }
+
+    @Path("/tagIndicators/")
+    @GET
+    @BasicSecured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<TagIndicatorsDTO> getTagIndicatorsByPeriodYear() {
+        long lStartTime = System.nanoTime();
+        List<TagIndicatorsDTO> tagsDTOS = this.cubeService.getTagIndicatorsByPeriodYear();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds count TagTable:" + (lEndTime - lStartTime) / 1000000000);
+        return tagsDTOS;
+    }
+
+    @Path("/tagTable/")
+    @GET
+    @BasicSecured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<TagsDTO> getTagTableByPeriodYear() {
+        long lStartTime = System.nanoTime();
+        List<TagsDTO> tagsDTOS = this.cubeService.getTagTableByPeriodYear();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds count TagTable:" + (lEndTime - lStartTime) / 1000000000);
+        return tagsDTOS;
+    }
+
     @Path("/monthQuarterYearTable")
     @GET
     @BasicSecured
@@ -232,11 +309,15 @@ public class CubeEndpoint {
     @BasicSecured
     @Produces(MediaType.APPLICATION_JSON)
     public List<CantonesProvinciasCentroidsDTO> getCantonesProvinciasCentroidsTable() {
-        long lStartTime = System.nanoTime();
-        List<CantonesProvinciasCentroidsDTO> r = this.cubeService.getCantonesProvinciasCentroidsTable();
-        long lEndTime = System.nanoTime();
-        LOGGER.info("Elapsed time in seconds cantonesProvinciasCentroidsTable: " + (lEndTime - lStartTime) / 1000000000);
-        return r;
+        try {
+            long lStartTime = System.nanoTime();
+            List<CantonesProvinciasCentroidsDTO> r = this.cubeService.getCantonesProvinciasCentroidsTable();
+            long lEndTime = System.nanoTime();
+            LOGGER.info("Elapsed time in seconds cantonesProvinciasCentroidsTable: " + (lEndTime - lStartTime) / 1000000000);
+            return r;
+        } catch (Exception e){
+            return null;
+        }
     }
 
     @Path("/indicatorTypeTable")

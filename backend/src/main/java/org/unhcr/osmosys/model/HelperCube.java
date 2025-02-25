@@ -308,6 +308,64 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "option_name", type = String.class),
                                 @ColumnResult(name = "option_state", type = String.class)
                         })})
+
+@SqlResultSetMapping(
+        name = "TagsDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = TagsDTO.class,
+                        columns = {
+                                @ColumnResult(name = "tag_id", type = Long.class),
+                                @ColumnResult(name = "tag_name", type = String.class),
+                                @ColumnResult(name = "tag_description", type = String.class),
+                                @ColumnResult(name = "tag_operation", type = String.class),
+                                @ColumnResult(name = "period_year", type = Long.class),
+                        })})
+
+@SqlResultSetMapping(
+        name = "TagIndicatorsDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = TagIndicatorsDTO.class,
+                        columns = {
+                                @ColumnResult(name = "tag_id", type = Long.class),
+                                @ColumnResult(name = "tag_name", type = String.class),
+                                @ColumnResult(name = "tag_description", type = String.class),
+                                @ColumnResult(name = "tag_operation", type = String.class),
+                                @ColumnResult(name = "period_year", type = Long.class),
+                                @ColumnResult(name = "indicator_id", type = Long.class)
+                        })})
+
+@SqlResultSetMapping(
+        name = "ProjectManagerDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = ProjectManagersDTO.class,
+                        columns = {
+                                @ColumnResult(name = "id", type = Long.class),
+                                @ColumnResult(name = "project_id", type = Long.class),
+                                @ColumnResult(name = "user_id", type = Long.class),
+                                @ColumnResult(name = "user_name", type = String.class),
+                                @ColumnResult(name = "user_username", type = String.class),
+                        })})
+
+
+@SqlResultSetMapping(
+        name = "ResultManagerDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = ResultManagersDTO.class,
+                        columns = {
+                                @ColumnResult(name = "id", type = Long.class),
+                                @ColumnResult(name = "indicator_id", type = Long.class),
+                                @ColumnResult(name = "user_id", type = Long.class),
+                                @ColumnResult(name = "population_type_id", type = Long.class),
+                                @ColumnResult(name = "period_year", type = Long.class),
+                                @ColumnResult(name = "period_id", type = Long.class),
+                                @ColumnResult(name = "quarter", type = Long.class),
+                                @ColumnResult(name = "confirmed", type = Boolean.class),
+                                @ColumnResult(name = "value", type = Long.class),
+                        })})
 public class HelperCube extends BaseEntity<Long> {
 
     @Id

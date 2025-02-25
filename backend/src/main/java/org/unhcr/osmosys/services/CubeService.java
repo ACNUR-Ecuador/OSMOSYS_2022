@@ -91,7 +91,6 @@ public class CubeService {
         return count;
     }
 
-
     public List<FactDTO> getFactTablePaginatedByPeriodYearAsync(Integer periodYear, int pageSize) throws ExecutionException, InterruptedException {
         List<FactDTO> r = new ArrayList<>();
 
@@ -136,6 +135,38 @@ public class CubeService {
         LOGGER.info("total result: " + r.size());
         return r;
     }
+
+    public List<ProjectManagersDTO> getProjectManagers() {
+        List<ProjectManagersDTO> projectManagersDTOS = this.cubeDao.getProjectManagers();
+        return projectManagersDTOS;
+    }
+
+    public List<ResultManagersDTO> getResultManagers() {
+        List<ResultManagersDTO>  resultManagersDTOS = this.cubeDao.getResultManagers();
+        return resultManagersDTOS;
+    }
+
+
+    public List<TagIndicatorsDTO> getTagIndicatorsByPeriodYear(Integer periodYear) {
+        List<TagIndicatorsDTO> tagIndicatorsDTOS = this.cubeDao.getTagIndicatorsByPeriodYear(periodYear);
+        return tagIndicatorsDTOS;
+    }
+
+    public List<TagsDTO> getTagTableByPeriodYear(Integer periodYear) {
+        List<TagsDTO> tagsDTOS = this.cubeDao.getTagTableByPeriodYear(periodYear);
+        return tagsDTOS;
+    }
+
+    public List<TagIndicatorsDTO> getTagIndicatorsByPeriodYear() {
+        List<TagIndicatorsDTO> tagIndicatorsDTOS = this.cubeDao.getTagIndicatorsByPeriodYear();
+        return tagIndicatorsDTOS;
+    }
+
+    public List<TagsDTO> getTagTableByPeriodYear() {
+        List<TagsDTO> tagsDTOS = this.cubeDao.getTagTableByPeriodYear();
+        return tagsDTOS;
+    }
+
 
 
     public List<MonthQuarterYearDTO> getMonthQuarterYearTable() {
