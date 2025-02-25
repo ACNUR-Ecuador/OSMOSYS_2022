@@ -809,7 +809,7 @@ public class ModelWebTransformationService {
         statementWeb.setDescription(statement.getDescription());
         statementWeb.setState(statement.getState());
         if (getParent) {
-            statementWeb.setParentStatement(this.statementToStatementWeb(statement.getParentStatement(), false, false, false, false, false));
+            statementWeb.setParentStatement(this.statementToStatementWeb(statement.getParentStatement(), false, true, false, false, false));
         }
         if (getArea) {
             statementWeb.setArea(this.areaToAreaWeb(statement.getArea()));
