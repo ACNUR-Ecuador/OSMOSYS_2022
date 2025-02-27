@@ -39,6 +39,7 @@ import {InputTextModule} from 'primeng/inputtext';
 import {RippleModule} from "primeng/ripple";
 import {DialogModule} from "primeng/dialog";
 import {PickListModule} from "primeng/picklist";
+import { CantonsPipe } from '../shared/pipes/cantons.pipe';
 
 
 @NgModule({
@@ -82,7 +83,8 @@ import {PickListModule} from "primeng/picklist";
         IndicatorPipe,
         PercentPipe,
         MonthPipe,
-        DialogService
+        DialogService,
+        CantonsPipe
     ]
 })
 export class PartnersModule {

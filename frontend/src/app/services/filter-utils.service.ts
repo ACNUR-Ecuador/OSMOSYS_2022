@@ -81,6 +81,34 @@ export class FilterUtilsService {
         return false;
     }
 
+    cantonListFilter(valueArray: any[], fields: string[], filter: string): boolean {
+        if (filter === undefined || filter === null || filter.trim() === '') {
+            return true;
+        }
+
+        if (valueArray === undefined || valueArray === null || valueArray.length === 0) {
+            return false;
+        }
+        for (const value of valueArray) {
+            for (const field of fields) {
+                if (value[field] !== undefined || value[field] !== null) {
+                    if(field==="name"){
+                        if ((value[field]).toString().toLowerCase().includes(filter.toString().toLowerCase())) {
+                            return true;
+                        }
+                    }else{
+                        if ((value.provincia.description).toString().toLowerCase().includes(filter.toString().toLowerCase())) {
+                            return true;
+                        }
+
+                    }
+                    
+                }
+            }
+        }
+        return false;
+    }
+
     periodIndicatorFilter(value: DissagregationAssignationToIndicator[], filter): boolean {
 
         if (filter === undefined || filter === null) {

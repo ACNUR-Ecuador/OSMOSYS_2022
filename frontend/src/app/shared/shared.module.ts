@@ -25,6 +25,7 @@ import { SafePipe } from './pipes/safe.pipe';
 import { TagPeriodTagAsignationsListPipe } from './pipes/tag-period-tag-asignations-list.pipe';
 import { PercentagePipe } from './pipes/percentage.pipe';
 import { ResultManagerExecutionPipe } from './pipes/result-manager-execution.pipe';
+import { CantonsPipe } from './pipes/cantons.pipe';
 
 
 
@@ -53,7 +54,8 @@ import { ResultManagerExecutionPipe } from './pipes/result-manager-execution.pip
         SafePipe,
         TagPeriodTagAsignationsListPipe,
         PercentagePipe,
-        ResultManagerExecutionPipe
+        ResultManagerExecutionPipe,
+        CantonsPipe
     ],
     imports: [
         CommonModule

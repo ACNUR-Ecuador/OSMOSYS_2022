@@ -152,7 +152,9 @@ export class TagsAdministrationComponent implements OnInit {
     }
 
     loadIndicators() {
-        this.selectedIndicators=JSON.parse(JSON.stringify(this.originalSelectedIndicators))
+        if(this.originalSelectedIndicators){
+            this.selectedIndicators=JSON.parse(JSON.stringify(this.originalSelectedIndicators))
+        }
         const period = this.formItem.get('period').value as Period;
         if(!period) return;
         this.indicatorService.getAll().subscribe({
@@ -407,6 +409,7 @@ export class TagsAdministrationComponent implements OnInit {
     }
 
     cancelDialog() {
+        this.originalSelectedIndicators=[]
         this.showDialog = false;
         this.submitted = false;
     }

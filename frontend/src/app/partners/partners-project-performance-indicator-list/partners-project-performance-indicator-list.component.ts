@@ -13,6 +13,7 @@ import {UtilsService} from '../../services/utils.service';
 import {IndicatorExecutionService} from '../../services/indicator-execution.service';
 import {FilterUtilsService} from '../../services/filter-utils.service';
 import {EnumValuesToLabelPipe} from "../../shared/pipes/enum-values-to-label.pipe";
+import { CantonsPipe } from 'src/app/shared/pipes/cantons.pipe';
 
 @Component({
     selector: 'app-partners-project-performance-indicator-list',
@@ -51,7 +52,8 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
                 private indicatorExecutionService: IndicatorExecutionService,
                 private filterService: FilterService,
                 private filterUtilsService: FilterUtilsService,
-                private monthPipe: MonthPipe
+                private monthPipe: MonthPipe,
+                private cantonPipe: CantonsPipe
     ) {
     }
 
@@ -105,6 +107,12 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
                 pipeRef: this.codeDescriptionPipe
             },
             {field: 'indicator', header: 'Indicador', type: ColumnDataType.text, pipeRef: this.indicatorPipe},
+            {
+                field: 'locations',
+                header: 'Lugares Asignados',
+                type: ColumnDataType.text,
+                pipeRef: this.cantonPipe
+            },
             {field: 'indicator.frecuency', header: 'Frecuencia de Reporte', type: ColumnDataType.text},
             {field: 'activityDescription', header: 'Descripción de la actividad', type: ColumnDataType.text},
             {field: 'target', header: 'Meta', type: ColumnDataType.numeric},
@@ -121,10 +129,11 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
                 type: ColumnDataType.text,
                 pipeRef: this.monthPipe
             },
+            
 
         ];
 
-        const hiddenColumns: string[] = ['id', 'indicatorType', 'indicator.frecuency'];
+        const hiddenColumns: string[] = ['id', 'indicatorType', 'indicator.frecuency', 'locations','activityDescription'];
         this._selectedColumnsPerformanceIndicators = this.colsGeneralIndicators.filter(value => !hiddenColumns.includes(value.field));
         this.registerFilters();
     }
@@ -138,6 +147,9 @@ export class PartnersProjectPerformanceIndicatorListComponent implements OnInit,
         });
         this.filterService.register('monthFilter', (value, filter): boolean => {
             return this.filterUtilsService.generalFilter(value, ['month', 'year'], filter);
+        });
+        this.filterService.register('cantonsFilter', (value, filter): boolean => {
+            return this.filterUtilsService.cantonListFilter(value, ['name','provincia'], filter);
         });
     }
 

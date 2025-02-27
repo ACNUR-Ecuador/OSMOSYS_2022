@@ -77,7 +77,7 @@ public class MessageReminderService {
         if (StringUtils.isNotBlank(this.appConfigurationService.findValorByClave(AppConfigurationKey.PROGRAMS_EMAIL))) {
             imProgramsEmail.add(this.appConfigurationService.findValorByClave(AppConfigurationKey.PROGRAMS_EMAIL));
         }
-        /*
+
         for (User focalPoint : focalPoints) {
             List<MessageAlertServiceV2.PartnerAlertDTO> alerts = new ArrayList<>();
             // obtengo los proyectos por cada focal point
@@ -113,7 +113,7 @@ public class MessageReminderService {
             this.emailService.sendEmailMessage(partnerSupervisor.getEmail(), copyAddresses, "Recordatorio de reporte Indicadores OSMOSYS-Socios", message);
             // this.emailService.sendEmailMessage("salazart@unhcr.org", "salazart@unhcr.org", "Recordatorio de reporte Indicadors OSMOSYS", message);
         }
-        */
+        /*
         List<Organization> organizations = this.projectService.getActiveProjectsPartnersByPeriodId(currentPeriod.getId());
         String message= this.appConfigurationService.findValorByClave(AppConfigurationKey.PROJECTS_REMINDER_EMAIL);
         for (Organization organization : organizations) {
@@ -136,9 +136,7 @@ public class MessageReminderService {
                 // this.emailService.sendEmailMessage("salazart@unhcr.org", "salazart@unhcr.org", "Recordatorio de reporte Indicadors OSMOSYS", message);
 
             }
-        }
-
-
+        }*/
     }
 
     public void sendResultsManagerReminders() throws GeneralAppException {
