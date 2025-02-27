@@ -195,7 +195,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
 
         this.formItem = this.fb.group({
             id: new FormControl(''),
-            code: new FormControl('', [Validators.required, Validators.maxLength(15)]),
+            code: new FormControl('', [Validators.required, Validators.maxLength(25)]),
             regionalCode: new FormControl(''),
             coreIndicator: new FormControl(''),
             description: new FormControl('', [Validators.required, Validators.maxLength(255)]),

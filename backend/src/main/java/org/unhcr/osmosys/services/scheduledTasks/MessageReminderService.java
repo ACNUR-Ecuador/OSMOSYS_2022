@@ -77,7 +77,7 @@ public class MessageReminderService {
         if (StringUtils.isNotBlank(this.appConfigurationService.findValorByClave(AppConfigurationKey.PROGRAMS_EMAIL))) {
             imProgramsEmail.add(this.appConfigurationService.findValorByClave(AppConfigurationKey.PROGRAMS_EMAIL));
         }
-
+        /*
         for (User focalPoint : focalPoints) {
             List<MessageAlertServiceV2.PartnerAlertDTO> alerts = new ArrayList<>();
             // obtengo los proyectos por cada focal point
@@ -112,6 +112,30 @@ public class MessageReminderService {
             String copyAddresses = CollectionUtils.isNotEmpty(imProgramsEmail) ? String.join(", ", imProgramsEmail) : null;
             this.emailService.sendEmailMessage(partnerSupervisor.getEmail(), copyAddresses, "Recordatorio de reporte Indicadores OSMOSYS-Socios", message);
             // this.emailService.sendEmailMessage("salazart@unhcr.org", "salazart@unhcr.org", "Recordatorio de reporte Indicadors OSMOSYS", message);
+        }
+        */
+        List<Organization> organizations = this.projectService.getActiveProjectsPartnersByPeriodId(currentPeriod.getId());
+        String message= this.appConfigurationService.findValorByClave(AppConfigurationKey.PROJECTS_REMINDER_EMAIL);
+        for (Organization organization : organizations) {
+            List<MessageAlertServiceV2.PartnerAlertDTO> alerts = new ArrayList<>();
+            // obtengo los proyectos por cada focal point
+            LOGGER.info(organization.getAcronym());
+            List<Project> projects = this.projectService.getProjectsByPeriodIdAndOrganizationId(currentPeriod.getId(), organization.getId());
+            List<User> projectManagers = projects.stream()
+                    .flatMap(project -> project.getFocalPointAssignations().stream()) // Aplanar la lista de focalPointAssignations
+                    .map(FocalPointAssignation::getFocalPointer) // Obtener el FocalPointer (usuario)
+                    .collect(Collectors.toList());
+            List<User> partnerUsers=userService.getActivePartnerUsers(organization.getId());
+            for(User partnerUser: partnerUsers){
+                message=message.replace("%mesAReportar%",mesAReportar.getLabel())
+                                .replace("%limitDay%",String.valueOf(limitDay))
+                                .replace("%projectManagerEmails%",String.join(", ", projectManagers.stream().map(User::getEmail).collect(Collectors.toSet())));
+
+                String copyAddresses = CollectionUtils.isNotEmpty(imProgramsEmail) ? String.join(", ", imProgramsEmail) : null;
+                this.emailService.sendEmailMessage(partnerUser.getEmail(), copyAddresses, "Recordatorio de reporte Indicadores OSMOSYS-Socios", message);
+                // this.emailService.sendEmailMessage("salazart@unhcr.org", "salazart@unhcr.org", "Recordatorio de reporte Indicadors OSMOSYS", message);
+
+            }
         }
 
 

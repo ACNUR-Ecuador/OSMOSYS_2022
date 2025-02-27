@@ -477,4 +477,11 @@ public class ProjectService {
         public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndPartnerSupervisorId(Long periodId, Long focalPointId) {
             return this.projectDao.getProjectResumenWebByPeriodIdAndPartnerSupervisorId(periodId, focalPointId);
         }
+        public List<Organization> getActiveProjectsPartnersByPeriodId(Long periodId) {
+            return this.projectDao.getActiveProjectsPartnersByPeriodId(periodId);
+        }
+    public List<Project> getProjectsByPeriodIdAndOrganizationId(Long periodId, Long organizationId) {
+        return this.projectDao.getProjectsByPeriodIdAndOrganizationId(periodId, organizationId);
+    }
+
     }

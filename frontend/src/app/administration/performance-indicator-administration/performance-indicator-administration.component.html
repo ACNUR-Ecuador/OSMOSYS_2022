@@ -141,8 +141,8 @@
                 <div class="card">
                     <div class="p-fluid p-formgrid grid">
 
-                        <div class="field col-12 md:col-12" *ngIf="isEditing()">
-                            <p-checkbox [binary]="true" label="Core Indicator"   (onChange)="onIsCoreIndicatorChange($event.checked)" formControlName="coreIndicator"></p-checkbox> 
+                        <div class="field col-12 md:col-12" *ngIf="isEditing() || (!isEditing() && isCoreIndicator)">
+                            <p-checkbox [binary]="true" label="Core Indicator"   (onChange)="onIsCoreIndicatorChange($event.checked)" formControlName="coreIndicator" [disabled]="!isEditing()"></p-checkbox> 
                             <i class="pi pi-info-circle" style="margin-left: 0.5rem;color: blue;" 
                             pTooltip="Autocompleta los códigos e instrucciones desde el listado de Core Indicators" tooltipPosition="right"></i>                      
                         </div>

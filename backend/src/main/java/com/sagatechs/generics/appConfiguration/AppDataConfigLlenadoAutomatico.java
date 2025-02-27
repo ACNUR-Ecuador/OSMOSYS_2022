@@ -138,6 +138,12 @@ public class AppDataConfigLlenadoAutomatico {
         /*instantiateConfigurationValues("Configuración de Zona horaria para la operación",
                 "Zona horaria para la operación",
                 AppConfigurationKey.TIME_ZONE, "UTC");*/
+        /*instantiateConfigurationValues("Correo recordatorio del reporte de proyectos dirigido a los socios responsables de su reporte",
+                "Correo de recordatorio del reporte de proyectos enviado en los 'REMINDER_DAYS'",
+                AppConfigurationKey.PROJECTS_REMINDER_EMAIL, "Estimado/a colega:\n" +
+                        "Este es un recordatorio de que el periodo de reporte de indicadores para el mes de %mesAReportar% ha iniciado. Contamos con su ayuda para tener sus datos al día en el sistema OSMOSYS hasta el día %limitDay% de este mes.  En caso de que ya se hayan reportado los datos, por favor haga caso omiso de este correo.\n" +
+                        "Este recordatorio ha sido generado automáticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse al %projectManagerEmails%");*/
+
     }
 
     @SuppressWarnings("SameParameterValue")

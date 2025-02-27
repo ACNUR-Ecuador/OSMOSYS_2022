@@ -4,6 +4,7 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
+import org.unhcr.osmosys.model.Organization;
 import org.unhcr.osmosys.model.Project;
 import org.unhcr.osmosys.webServices.model.MonthStateWeb;
 import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
@@ -235,4 +236,28 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         q.setParameter("partnerSupervisorId", partnerSupervisorId);
         return q.getResultList();
     }
+
+    public List<Organization> getActiveProjectsPartnersByPeriodId(Long periodId) {
+        String jpql = "SELECT DISTINCT o FROM Project pr " +
+                " inner join pr.organization o " +
+                "  WHERE o.state =:state and pr.period.id=:periodId and pr.state=:state";
+        Query q = getEntityManager().createQuery(jpql, Organization.class);
+        q.setParameter("periodId", periodId);
+        q.setParameter("state", State.ACTIVO);
+        return q.getResultList();
+    }
+
+    public List<Project> getProjectsByPeriodIdAndOrganizationId(Long periodId , Long organizationId) {
+        String jpql = "SELECT DISTINCT pr FROM Project pr " +
+                " inner join pr.organization o " +
+                "  WHERE o.state =:state and pr.period.id=:periodId and o.id =:organizationId and pr.state=:state";
+        Query q = getEntityManager().createQuery(jpql, Project.class);
+        q.setParameter("periodId", periodId);
+        q.setParameter("organizationId", organizationId);
+        q.setParameter("state", State.ACTIVO);
+        return q.getResultList();
+    }
+
+
+
 }

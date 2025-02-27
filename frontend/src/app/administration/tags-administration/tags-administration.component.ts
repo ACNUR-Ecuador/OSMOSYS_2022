@@ -52,6 +52,7 @@ export class TagsAdministrationComponent implements OnInit {
     inputNameValue: string = '';
     indicators: Indicator[];
     selectedIndicators: Indicator[];
+    originalSelectedIndicators: Indicator[];
     operations: any[];
 
     constructor(
@@ -151,9 +152,9 @@ export class TagsAdministrationComponent implements OnInit {
     }
 
     loadIndicators() {
+        this.selectedIndicators=JSON.parse(JSON.stringify(this.originalSelectedIndicators))
         const period = this.formItem.get('period').value as Period;
         if(!period) return;
-
         this.indicatorService.getAll().subscribe({
             next: (value) => {
                 const filteredData = value.filter((item) => {
@@ -172,6 +173,15 @@ export class TagsAdministrationComponent implements OnInit {
                     this.indicators =this.indicators.filter((ind) => !this.selectedIndicators.find(ind2 => ind.id === ind2.id));
 
                 }
+                //si el periodo cambia filtro las desagregaciones seleccionadas que solo esten en el nuevo periodo
+                this.selectedIndicators=this.selectedIndicators.filter((ind)=>{
+                    const hasActiveDissagregationForYear =
+                    ind.dissagregationsAssignationToIndicator.some(
+                        (dissagregation) =>
+                            period.year === dissagregation.period.year                             
+                    );
+                    return hasActiveDissagregationForYear;
+                }) 
             },
             error: (err) => {
                 this.messageService.add({
@@ -266,6 +276,7 @@ export class TagsAdministrationComponent implements OnInit {
             .patchValue(periodTagAsignations);
         
         this.selectedIndicators = assignedIndicators;
+        this.originalSelectedIndicators=JSON.parse(JSON.stringify(this.selectedIndicators))
         this.formItem.get('periods').patchValue(assignedPeriods);        
         if(assignedPeriods.length > 0)
             this.formItem.get('period').patchValue(assignedPeriods[0]);        
