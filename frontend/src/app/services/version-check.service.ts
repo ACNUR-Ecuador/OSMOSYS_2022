@@ -1,19 +1,19 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {VersionModel} from "../shared/model/OsmosysModel";
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class VersionCheckService {
 
 
     constructor(private http: HttpClient) {
     }
-    // this will be replaced by actual hash post-build.js
-    private currentHash = '{{POST_BUILD_ENTERS_HASH_HERE}}';
 
-    private counter = 0;
+    // this will be replaced by actual hash post-build.js
+    private currentHash:string = '{{POST_BUILD_ENTERS_HASH_HERE}}';
+
 
     private static dateDifference(d1: number) {
         return Math.floor((new Date().getTime() - d1) / (3600 * 1000));
@@ -24,7 +24,7 @@ export class VersionCheckService {
      * @param url where to check url
      * @param frequency to check {number} frequency - in milliseconds, defaults to 60 minutes
      */
-    public initVersionCheck(url, frequency = 1000 * 60 * 60) {
+    public initVersionCheck(url: string, frequency = 1000 * 60 * 60) {
         setInterval(() => {
             this.checkVersion(url);
         }, frequency);
@@ -34,7 +34,7 @@ export class VersionCheckService {
      * Will do the call and check if the hash has changed or not
      * @param url where to check url
      */
-    public checkVersion(url) {
+    public checkVersion(url:string) {
 // timestamp these requests to invalidate caches
         const headers = new HttpHeaders({'Content-Type': 'application/json'});
         headers.append('Access-Control-Allow-Origin', '*');
@@ -43,10 +43,9 @@ export class VersionCheckService {
         headers.append('Access-Control-Allow-Credentials', 'true');
         headers.append('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS, POST, PUT');
 
-        this.counter++;
         this.http.get(url + '?t=' + new Date().getTime(), {headers})
-            .subscribe(
-                (response: any) => {
+            .subscribe({
+                next: (response: any) => {
                     const hash = response.hash;
                     console.error('hash: ' + hash);
                     console.error('currenthash: ' + this.currentHash);
@@ -75,12 +74,10 @@ export class VersionCheckService {
 // store the new hash so we wouldn't trigger versionChange again
 // only necessary in case you did not force refresh
 
-                },
-                (err) => {
-                    console.error(err, 'Could not get version');
-
+                },error:err => {
+                    console.log('');
                 }
-            );
+            });
     }
 
     // noinspection JSMethodCanBeStatic
@@ -92,7 +89,7 @@ export class VersionCheckService {
      * @param newHash hash newHash
      * @returns true if changes {boolean}
      */
-    private hasHashChanged(currentHash, newHash): boolean {
+    private hasHashChanged(currentHash:string, newHash:string): boolean {
         if (!currentHash || currentHash === '{{POST_BUILD_ENTERS_HASH_HERE}}') {
             return false;
         }

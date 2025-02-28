@@ -38,7 +38,7 @@ public class AppConfiguration extends BaseEntity<Long> {
 	@Enumerated(EnumType.STRING)
 	private AppConfigurationKey clave;
 
-	@Size(max = 255)
+	@Size(max = 2000)
 	@Column(name = "valor")
 	private String valor;
 

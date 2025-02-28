@@ -2,7 +2,6 @@ package org.unhcr.osmosys.webServices.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.webservice.jsonSerializers.LocalDateDeserializer;
 import com.sagatechs.generics.webservice.jsonSerializers.LocalDateSerializer;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
@@ -15,13 +14,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class ProjectWeb implements Serializable {
+public class ProjectWeb extends BaseWebEntity implements Serializable {
 
+    public ProjectWeb() {
+        super();
+    }
 
-    private Long id;
     private String code;
     private String name;
-    private State state;
     private OrganizationWeb organization;
     private PeriodWeb period;
     private Set<CantonWeb> locations = new HashSet<>();
@@ -31,18 +31,11 @@ public class ProjectWeb implements Serializable {
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate endDate;
-    public UserWeb focalPoint;
+    public Set<UserWeb> focalPoints = new HashSet<>();
+    private UserWeb partnerManager;
 
     private Boolean updateAllLocationsIndicators;
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getCode() {
         return code;
@@ -60,13 +53,6 @@ public class ProjectWeb implements Serializable {
         this.name = name;
     }
 
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
 
     public OrganizationWeb getOrganization() {
         return organization;
@@ -108,12 +94,12 @@ public class ProjectWeb implements Serializable {
         this.endDate = endDate;
     }
 
-    public UserWeb getFocalPoint() {
-        return focalPoint;
+    public Set<UserWeb> getFocalPoints() {
+        return focalPoints;
     }
 
-    public void setFocalPoint(UserWeb focalPoint) {
-        this.focalPoint = focalPoint;
+    public void setFocalPoints(Set<UserWeb> focalPoints) {
+        this.focalPoints = focalPoints;
     }
 
     public Boolean getUpdateAllLocationsIndicators() {
@@ -122,6 +108,14 @@ public class ProjectWeb implements Serializable {
 
     public void setUpdateAllLocationsIndicators(Boolean updateAllLocationsIndicators) {
         this.updateAllLocationsIndicators = updateAllLocationsIndicators;
+    }
+
+    public UserWeb getPartnerManager() {
+        return partnerManager;
+    }
+
+    public void setPartnerManager(UserWeb partnerManager) {
+        this.partnerManager = partnerManager;
     }
 
     @Override

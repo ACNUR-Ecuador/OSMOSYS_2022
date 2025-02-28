@@ -8,7 +8,6 @@ import {FilterUtilsService} from './filter-utils.service';
 import {IndicatorService} from './indicator.service';
 import {IndicatorExecutionService} from './indicator-execution.service';
 import {LoaderService} from './loader.service';
-import {MarkerService} from './marker.service';
 import {OfficeService} from './office.service';
 import {OrganizationService} from './organization.service';
 import {PeriodService} from './period.service';
@@ -17,11 +16,14 @@ import {SituationService} from './situation.service';
 import {StatementService} from './statement.service';
 import {UserService} from './user.service';
 import {UtilsService} from './utils.service';
+import { TagService } from './tag.service';
 
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    
+  ],
   imports: [
     CommonModule
   ]
@@ -38,7 +40,6 @@ export class ServicesModule {
                 IndicatorService,
                 IndicatorExecutionService,
                 LoaderService,
-                MarkerService,
                 OfficeService,
                 OrganizationService,
                 PeriodService,
@@ -47,7 +48,8 @@ export class ServicesModule {
                 StatementService,
                 UserService,
                 UtilsService,
-                EnumsService
+                EnumsService,
+                TagService
             ]
         };
     }

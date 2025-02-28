@@ -9,6 +9,7 @@ import com.sagatechs.generics.webservice.webModel.ChangePasswordSimple;
 import com.sagatechs.generics.webservice.webModel.CredentialsWeb;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.jboss.logging.Logger;
+import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -27,6 +28,8 @@ public class UserRestEndpoint {
 
     @Inject
     UserService userService;
+    @Inject
+    ModelWebTransformationService modelWebTransformationService;
 
     /**
      * get  user
@@ -100,6 +103,13 @@ public class UserRestEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public List<UserWeb> getActiveUNHCRUsers() {
         return this.userService.getUNHCRUsersWebByState(State.ACTIVO);
+    }
+
+    @Path("/users/active/{organizationId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<UserWeb> getActivePartnerUsers(@PathParam("organizationId") Long organizationId) {
+        return modelWebTransformationService.usersToUsersWebSimple(userService.getActivePartnerUsers(organizationId),false,false);
     }
 
     @Path("/users/responsibleID/{periodId}")

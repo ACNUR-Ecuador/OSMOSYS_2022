@@ -1,6 +1,5 @@
 package org.unhcr.osmosys.webServices.model;
 
-import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
 import org.unhcr.osmosys.model.enums.TimeStateEnum;
 
@@ -10,10 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class QuarterWeb implements Serializable {
+public class QuarterWeb extends BaseWebEntity implements Serializable {
 
 
-    private Long id;
+    public QuarterWeb() {super();
+    }
+
     private QuarterEnum quarter;
     private String commentary;
     private Integer order;
@@ -21,19 +22,13 @@ public class QuarterWeb implements Serializable {
     private BigDecimal target;
     private BigDecimal totalExecution;
     private BigDecimal executionPercentage;
-    private State state;
+
     private List<MonthWeb> months = new ArrayList<>();
     private Boolean blockUpdate;
 
     private TimeStateEnum late;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public QuarterEnum getQuarter() {
         return quarter;
@@ -83,13 +78,7 @@ public class QuarterWeb implements Serializable {
         this.totalExecution = totalExecution;
     }
 
-    public State getState() {
-        return state;
-    }
 
-    public void setState(State state) {
-        this.state = state;
-    }
 
     public BigDecimal getExecutionPercentage() {
         return executionPercentage;

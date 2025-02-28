@@ -6,8 +6,6 @@ import * as FileSaver from 'file-saver';
 import {FormGroup} from '@angular/forms';
 import {
     ColumnTable,
-    DissagregationType,
-    EnumsIndicatorType,
     EnumsState,
     EnumsType,
     QuarterType,
@@ -16,16 +14,20 @@ import {
 import {
     Canton,
     CustomDissagregationValues,
+    EnumWeb,
     IndicatorExecution,
     IndicatorValue,
     IndicatorValueCustomDissagregationWeb,
     Period,
     Quarter,
-    QuarterMonthResume
+    QuarterMonthResume,
+    StandardDissagregationOption
 } from '../shared/model/OsmosysModel';
 import {HttpResponse} from '@angular/common/http';
 import {TableColumnProperties} from 'exceljs';
 import {SortEvent} from "primeng/api";
+import {EnumsService} from "./enums.service";
+
 
 @Injectable({
     providedIn: 'root'
@@ -33,9 +35,27 @@ import {SortEvent} from "primeng/api";
 export class UtilsService {
 
     constructor(
+        public enumsService: EnumsService
     ) {
     }
 
+    /***
+     * Recorre un Json por cada valor y llave independiente de la profundidad de sus componentes
+     */
+    traverseJson(json: any, callback: (value: any, key?: string, parent?: any) => void, parent?: any, key?: string) {
+        if (Array.isArray(json)) {
+            for (let i = 0; i < json.length; i++) {
+                this.traverseJson(json[i], callback, json, i.toString());
+            }
+        } else if (json !== null && typeof json === 'object') {
+            for (const [currentKey, value] of Object.entries(json)) {
+                callback(value, currentKey, json);
+                this.traverseJson(value, callback, json, currentKey);
+            }
+        } else {
+            callback(json, key, parent);
+        }
+    }
 
     exportTableAsExcel(selectedColumns: ColumnTable[], items: any[], filename: string) {
         // const Excel = require('exceljs');
@@ -241,510 +261,88 @@ export class UtilsService {
         return date;
     }
 
-    getEnymTypesByDissagregationTypes(dissagregationType: DissagregationType): EnumsType[] {
-        const dissagregationTypeE = DissagregationType[dissagregationType];
-        const result: EnumsType[] = [];
-        switch (dissagregationTypeE) {
-            case DissagregationType.TIPO_POBLACION: {
-                result.push(EnumsType.PopulationType);
-                return result;
-            }
-            case DissagregationType.EDAD: {
-                result.push(EnumsType.AgeType);
-                return result;
-            }
-            case DissagregationType.EDAD_EDUCACION_PRIMARIA: {
-                result.push(EnumsType.AgePrimaryEducationType);
-                return result;
-            }
-            case DissagregationType.EDAD_EDUCACION_TERCIARIA: {
-                result.push(EnumsType.AgeTertiaryEducationType);
-                return result;
-            }
-            case DissagregationType.GENERO: {
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.LUGAR: {
-                return result;
-            }
-            case DissagregationType.PAIS_ORIGEN: {
-                result.push(EnumsType.CountryOfOrigin);
-                return result;
-            }
-            case DissagregationType.DIVERSIDAD: {
-                result.push(EnumsType.DiversityType);
-                return result;
-            }
-            case DissagregationType.SIN_DESAGREGACION: {
-                return result;
-            }
-            case DissagregationType.GENERO_Y_EDAD: {
-                result.push(EnumsType.AgeType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.GENERO_Y_DIVERSIDAD: {
-                result.push(EnumsType.DiversityType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_Y_GENERO: {
-                result.push(EnumsType.GenderType);
-                result.push(EnumsType.PopulationType);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_Y_EDAD: {
-                result.push(EnumsType.AgeType);
-                result.push(EnumsType.PopulationType);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD: {
-                result.push(EnumsType.DiversityType);
-                result.push(EnumsType.PopulationType);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN: {
-                result.push(EnumsType.CountryOfOrigin);
-                result.push(EnumsType.PopulationType);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_Y_LUGAR: {
-                result.push(null);
-                result.push(EnumsType.PopulationType);
-                return result;
-            }
-            case DissagregationType.LUGAR_EDAD_Y_GENERO: {
-                result.push(null);
-                result.push(EnumsType.AgeType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.DIVERSIDAD_EDAD_Y_GENERO: {
-                result.push(EnumsType.DiversityType);
-                result.push(EnumsType.AgeType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
-                result.push(EnumsType.DiversityType);
-                result.push(EnumsType.AgePrimaryEducationType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO: {
-                result.push(EnumsType.DiversityType);
-                result.push(EnumsType.AgeTertiaryEducationType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO: {
-                result.push(EnumsType.PopulationType);
-                result.push(null);
-                result.push(EnumsType.AgeType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
-                result.push(EnumsType.PopulationType);
-                result.push(null);
-                result.push(EnumsType.AgePrimaryEducationType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO: {
-                result.push(EnumsType.PopulationType);
-                result.push(null);
-                result.push(EnumsType.AgeTertiaryEducationType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
-                result.push(null);
-                result.push(EnumsType.PopulationType);
-                result.push(EnumsType.AgePrimaryEducationType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
 
+    isLocationDissagregation(dissagregationType: string): boolean {
 
-            case DissagregationType.LUGAR_Y_GENERO: {
-                result.push(null);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.LUGAR_Y_DIVERSIDAD: {
-                result.push(null);
-                result.push(EnumsType.DiversityType);
-                return result;
-            }
-            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO: {
-                result.push(null);
-                result.push(EnumsType.CountryOfOrigin);
-                result.push(EnumsType.AgeType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.PAIS_ORIGEN_EDAD_Y_GENERO: {
-                result.push(EnumsType.CountryOfOrigin);
-                result.push(EnumsType.AgeType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
-                result.push(null);
-                result.push(EnumsType.CountryOfOrigin);
-                result.push(EnumsType.AgePrimaryEducationType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-            case DissagregationType.PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
-                result.push(EnumsType.CountryOfOrigin);
-                result.push(EnumsType.AgePrimaryEducationType);
-                result.push(EnumsType.GenderType);
-                return result;
-            }
-        }
-    }
-
-    // noinspection JSUnusedGlobalSymbols
-    getDimentionsByDissagregationTypes(dissagregationType: DissagregationType): number {
-        const dissagregationTypeE = DissagregationType[dissagregationType];
-        switch (dissagregationTypeE) {
-            case DissagregationType.TIPO_POBLACION:
-            case DissagregationType.EDAD:
-            case DissagregationType.EDAD_EDUCACION_PRIMARIA:
-            case DissagregationType.EDAD_EDUCACION_TERCIARIA:
-            case DissagregationType.GENERO:
-            case DissagregationType.LUGAR:
-            case DissagregationType.PAIS_ORIGEN:
-            case DissagregationType.DIVERSIDAD:
-                return 1;
-            case DissagregationType.SIN_DESAGREGACION:
-                return 0;
-            case DissagregationType.GENERO_Y_EDAD:
-            case DissagregationType.GENERO_Y_DIVERSIDAD:
-            case DissagregationType.TIPO_POBLACION_Y_GENERO:
-            case DissagregationType.TIPO_POBLACION_Y_EDAD:
-            case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD:
-            case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN:
-            case DissagregationType.TIPO_POBLACION_Y_LUGAR:
-            case DissagregationType.LUGAR_Y_DIVERSIDAD:
-            case DissagregationType.LUGAR_Y_GENERO:
-                return 2;
-            case DissagregationType.LUGAR_EDAD_Y_GENERO:
-            case DissagregationType.DIVERSIDAD_EDAD_Y_GENERO:
-            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
-            case DissagregationType.PAIS_ORIGEN_EDAD_Y_GENERO:
-            case DissagregationType.PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-                return 3;
-            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO:
-            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
-            case DissagregationType.LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO:
-            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-                return 4;
-        }
+        let dissagregation = this.enumsService.resolveEnumWeb(EnumsType.DissagregationType, dissagregationType);
+        return dissagregation.locationsDissagregation;
     }
 
 
-    filterDimentionsDissagregationTypesByNoOfDimentions(number: number) {
-        const result: DissagregationType[] = [];
-        const disa = Object.keys(DissagregationType);
-        disa.forEach(value => {
-            const dissagregationTypeE = DissagregationType[value];
-            const r1 = this.getDimentionsByDissagregationTypes(dissagregationTypeE);
-            if (r1 === number) {
-                result.push(dissagregationTypeE);
-            }
-        })
-        return result;
-    }
+    setDimentionsDissagregationsV2(
+        monthValuesMap: Map<string, IndicatorValue[]>): Map<number, EnumWeb[]> {
+        const results: Map<number, EnumWeb[]> = new Map<number, EnumWeb[]>();
+        results.set(0, []);
+        results.set(1, []);
+        results.set(2, []);
+        results.set(3, []);
+        results.set(4, []);
+        results.set(5, []);
+        results.set(6, []);
 
-    getNoDimentionsDissagregationTypes(): DissagregationType[] {
-        return this.filterDimentionsDissagregationTypesByNoOfDimentions(0);
-    }
 
-    getOneDimentionsDissagregationTypes(): DissagregationType[] {
-        return this.filterDimentionsDissagregationTypesByNoOfDimentions(1);
-    }
+        monthValuesMap
+            .forEach((value, key) => {
+                if (value && value.length > 0) {
+                    let dissagregationWeb = this.enumsService.resolveEnumWeb(EnumsType.DissagregationType, key);
+                    const numberOfDissagregations = dissagregationWeb.numberOfDissagregations;
+                    if (numberOfDissagregations >= 0 && numberOfDissagregations <= 6) {
+                        results.get(numberOfDissagregations)?.push(dissagregationWeb);
+                    }
+                }
+            });
 
-    isLocationDissagregation(dissagregationType: DissagregationType): boolean {
-        const dissagregationTypeE = DissagregationType[dissagregationType];
-        switch (dissagregationTypeE) {
-            case DissagregationType.LUGAR:
-            case DissagregationType.TIPO_POBLACION_Y_LUGAR:
-            case DissagregationType.LUGAR_EDAD_Y_GENERO:
-            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO:
-            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
-            case DissagregationType.LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-            case DissagregationType.LUGAR_Y_DIVERSIDAD:
-            case DissagregationType.LUGAR_Y_GENERO:
-            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO:
-            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-                return true;
-            case DissagregationType.TIPO_POBLACION:
-            case DissagregationType.EDAD:
-            case DissagregationType.EDAD_EDUCACION_PRIMARIA:
-            case DissagregationType.EDAD_EDUCACION_TERCIARIA:
-            case DissagregationType.GENERO:
-            case DissagregationType.PAIS_ORIGEN:
-            case DissagregationType.DIVERSIDAD:
-            case DissagregationType.SIN_DESAGREGACION:
-            case DissagregationType.GENERO_Y_EDAD:
-            case DissagregationType.GENERO_Y_DIVERSIDAD:
-            case DissagregationType.TIPO_POBLACION_Y_GENERO:
-            case DissagregationType.TIPO_POBLACION_Y_EDAD:
-            case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD:
-            case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN:
-            case DissagregationType.DIVERSIDAD_EDAD_Y_GENERO:
-            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
-            case DissagregationType.PAIS_ORIGEN_EDAD_Y_GENERO:
-            case DissagregationType.PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-                return false;
 
-        }
-    }
-
-    getTwoDimentionsDissagregationTypes(): DissagregationType[] {
-        return this.filterDimentionsDissagregationTypesByNoOfDimentions(2);
-    }
-
-    getThreeDimentionsDissagregationTypes(): DissagregationType[] {
-        return this.filterDimentionsDissagregationTypesByNoOfDimentions(3);
-    }
-
-    getFourDimentionsDissagregationTypes(): DissagregationType[] {
-        return this.filterDimentionsDissagregationTypesByNoOfDimentions(4);
-    }
-
-    getDissagregationTypesByDissagregationType(dissagregationType: DissagregationType): DissagregationType[] {
-        const dissagregationTypeE = DissagregationType[dissagregationType];
-        const result: DissagregationType[] = [];
-        switch (dissagregationTypeE) {
-            case DissagregationType.TIPO_POBLACION:
-            case DissagregationType.EDAD:
-            case DissagregationType.EDAD_EDUCACION_PRIMARIA:
-            case DissagregationType.EDAD_EDUCACION_TERCIARIA:
-            case DissagregationType.GENERO:
-            case DissagregationType.LUGAR:
-            case DissagregationType.PAIS_ORIGEN:
-            case DissagregationType.DIVERSIDAD:
-            case DissagregationType.SIN_DESAGREGACION: {
-                result.push(dissagregationTypeE);
-                return result;
-            }
-            case DissagregationType.GENERO_Y_EDAD: {
-                result.push(DissagregationType.EDAD);
-                result.push(DissagregationType.GENERO);
-                return result;
-            }
-            case DissagregationType.GENERO_Y_DIVERSIDAD: {
-                result.push(DissagregationType.DIVERSIDAD);
-                result.push(DissagregationType.GENERO);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_Y_GENERO: {
-                result.push(DissagregationType.GENERO);
-                result.push(DissagregationType.TIPO_POBLACION);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_Y_EDAD: {
-                result.push(DissagregationType.EDAD);
-                result.push(DissagregationType.TIPO_POBLACION);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD: {
-                result.push(DissagregationType.DIVERSIDAD);
-                result.push(DissagregationType.TIPO_POBLACION);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN: {
-                result.push(DissagregationType.PAIS_ORIGEN);
-                result.push(DissagregationType.TIPO_POBLACION);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_Y_LUGAR: {
-                result.push(DissagregationType.LUGAR);
-                result.push(DissagregationType.TIPO_POBLACION);
-                return result;
-            }
-            case DissagregationType.LUGAR_EDAD_Y_GENERO: {
-                result.push(DissagregationType.LUGAR);
-                result.push(DissagregationType.EDAD);
-                result.push(DissagregationType.GENERO);
-                return result;
-            }
-            case DissagregationType.DIVERSIDAD_EDAD_Y_GENERO: {
-                result.push(DissagregationType.DIVERSIDAD);
-                result.push(DissagregationType.EDAD);
-                result.push(DissagregationType.GENERO);
-                return result;
-            }
-            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
-                result.push(DissagregationType.DIVERSIDAD);
-                result.push(DissagregationType.EDAD_EDUCACION_PRIMARIA);
-                result.push(DissagregationType.GENERO);
-                return result;
-            }
-            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO: {
-                result.push(DissagregationType.DIVERSIDAD);
-                result.push(DissagregationType.EDAD_EDUCACION_TERCIARIA);
-                result.push(DissagregationType.GENERO);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO: {
-                result.push(DissagregationType.LUGAR);
-                result.push(DissagregationType.TIPO_POBLACION);
-                result.push(DissagregationType.EDAD);
-                result.push(DissagregationType.GENERO);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
-                result.push(DissagregationType.LUGAR);
-                result.push(DissagregationType.TIPO_POBLACION);
-                result.push(DissagregationType.EDAD_EDUCACION_PRIMARIA);
-                result.push(DissagregationType.GENERO);
-                return result;
-            }
-            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO: {
-                result.push(DissagregationType.LUGAR);
-                result.push(DissagregationType.TIPO_POBLACION);
-                result.push(DissagregationType.EDAD_EDUCACION_TERCIARIA);
-                result.push(DissagregationType.GENERO);
-                return result;
-            }
-            case DissagregationType.LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
-                result.push(DissagregationType.LUGAR);
-                result.push(DissagregationType.DIVERSIDAD);
-                result.push(DissagregationType.EDAD_EDUCACION_PRIMARIA);
-                result.push(DissagregationType.GENERO);
-                return result;
-            }
-
-            case DissagregationType.LUGAR_Y_GENERO: {
-                result.push(DissagregationType.LUGAR);
-                result.push(DissagregationType.GENERO);
-                return result;
-            }
-            case DissagregationType.LUGAR_Y_DIVERSIDAD: {
-                result.push(DissagregationType.LUGAR);
-                result.push(DissagregationType.DIVERSIDAD);
-                return result;
-            }
-            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO: {
-                result.push(DissagregationType.LUGAR);
-                result.push(DissagregationType.PAIS_ORIGEN);
-                result.push(DissagregationType.EDAD);
-                result.push(DissagregationType.GENERO);
-                return result;
-            }
-            case DissagregationType.PAIS_ORIGEN_EDAD_Y_GENERO: {
-                result.push(DissagregationType.PAIS_ORIGEN);
-                result.push(DissagregationType.EDAD);
-                result.push(DissagregationType.GENERO);
-                return result;
-            }
-            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
-                result.push(DissagregationType.LUGAR);
-                result.push(DissagregationType.PAIS_ORIGEN);
-                result.push(DissagregationType.EDAD_EDUCACION_PRIMARIA);
-                result.push(DissagregationType.GENERO);
-                return result;
-            }
-            case DissagregationType.PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO: {
-                result.push(DissagregationType.PAIS_ORIGEN);
-                result.push(DissagregationType.EDAD_EDUCACION_PRIMARIA);
-                result.push(DissagregationType.GENERO);
-                return result;
-            }
-        }
-    }
-
-    setDimentionsDissagregations(
-        monthValuesMap: Map<string, IndicatorValue[]>): Map<number, DissagregationType[]> {
-
-        const oneDimentionDissagregations: DissagregationType[] = [];
-        const twoDimentionDissagregations: DissagregationType[] = [];
-        const threeDimentionDissagregations: DissagregationType[] = [];
-        const fourDimentionDissagregations: DissagregationType[] = [];
-        const noDimentionDissagregations: DissagregationType[] = [];
-
-        const totalOneDimentions = this.getOneDimentionsDissagregationTypes();
-        const totalTwoDimentions = this.getTwoDimentionsDissagregationTypes();
-        const totalThreeDimentions = this.getThreeDimentionsDissagregationTypes();
-        const totalFourDimentions = this.getFourDimentionsDissagregationTypes();
-        const totalNoDimentions = this.getNoDimentionsDissagregationTypes();
-        totalOneDimentions.forEach(key => {
-            if (monthValuesMap.get(key) !== null && monthValuesMap.get(key).length > 0) {
-                oneDimentionDissagregations.push(DissagregationType[key]);
-            }
-        });
-        totalTwoDimentions.forEach(key => {
-            if (monthValuesMap.get(key) !== null && monthValuesMap.get(key).length > 0) {
-                twoDimentionDissagregations.push(DissagregationType[key]);
-            }
-        });
-        totalThreeDimentions.forEach(key => {
-            if (monthValuesMap.get(key) !== null && monthValuesMap.get(key).length > 0) {
-                threeDimentionDissagregations.push(DissagregationType[key]);
-            }
-        });
-        totalFourDimentions.forEach(key => {
-            if (monthValuesMap.get(key) !== null && monthValuesMap.get(key).length > 0) {
-                fourDimentionDissagregations.push(DissagregationType[key]);
-            }
-        });
-        totalNoDimentions.forEach(key => {
-            if (monthValuesMap.get(key) !== null && monthValuesMap.get(key).length > 0) {
-                noDimentionDissagregations.push(DissagregationType[key]);
-            }
-        });
-        const results: Map<number, DissagregationType[]> = new Map<number, DissagregationType[]>();
-        results.set(0, noDimentionDissagregations);
-        results.set(1, oneDimentionDissagregations);
-        results.set(2, twoDimentionDissagregations);
-        results.set(3, threeDimentionDissagregations);
-        results.set(4, fourDimentionDissagregations);
         return results;
     }
 
-    getIndicatorValueByDissagregationType(dissagregationType: DissagregationType, value: IndicatorValue): string | Canton {
-        const dissagregationTypeE = DissagregationType[dissagregationType];
-        switch (dissagregationTypeE) {
-            case DissagregationType.TIPO_POBLACION:
+    getRowsAndColumnsFromValues(
+        dissagregationColumnsType: EnumWeb,
+        dissagregationRowsType: EnumWeb,
+        dissagregationOptionsRows: StandardDissagregationOption[],
+        dissagregationOptionsColumns: StandardDissagregationOption[],
+        values: IndicatorValue[]) {
+        let rows = new Array<Array<IndicatorValue>>();
+        dissagregationOptionsRows.forEach(rowOption => {
+            const rowOrdered = new Array<IndicatorValue>();
+            const rowTotal = values.filter(value => {
+                const valueOption = this.getIndicatorValueByDissagregationType(dissagregationRowsType, value);
+                return valueOption.id === rowOption.id;
+            });
+            dissagregationOptionsColumns.forEach(colOptions => {
+
+                const val = rowTotal.find(value => {
+                    const optionCol = this.getIndicatorValueByDissagregationType(dissagregationColumnsType, value);
+                    return optionCol.id === colOptions.id
+                });
+                rowOrdered.push(val);
+            });
+
+            rows.push(rowOrdered);
+        });
+
+        return rows;
+    }
+
+    getIndicatorValueByDissagregationType(dissagregationType: EnumWeb, value: IndicatorValue): StandardDissagregationOption {
+        switch (dissagregationType.value) {
+            case 'TIPO_POBLACION':
                 return value.populationType;
-            case DissagregationType.EDAD:
+            case 'EDAD':
                 return value.ageType;
-            case DissagregationType.EDAD_EDUCACION_PRIMARIA:
-                return value.agePrimaryEducationType;
-            case DissagregationType.EDAD_EDUCACION_TERCIARIA:
-                return value.ageTertiaryEducationType;
-            case DissagregationType.GENERO:
+            case 'GENERO':
                 return value.genderType;
-            case DissagregationType.LUGAR:
+            case 'LUGAR':
                 return value.location;
-            case DissagregationType.PAIS_ORIGEN:
+            case 'PAIS_ORIGEN':
                 return value.countryOfOrigin;
-            case DissagregationType.DIVERSIDAD:
+            case 'DIVERSIDAD':
                 return value.diversityType;
             default:
                 return null;
         }
     }
 
-    getOrderByDissagregationOption(dissagregationOption: string, dissagregationOptionsRows: SelectItemWithOrder<any>[]): number {
-        const dissagregationOptionFound = dissagregationOptionsRows
-            .filter(value => {
-                return value.value === dissagregationOption;
-            })[0];
-        return dissagregationOptionFound.order;
-
-    }
 
     getTotalIndicatorValuesArray(indicatorValues: IndicatorValue[] | IndicatorValueCustomDissagregationWeb[]) {
         return indicatorValues.map(value => value.value).reduce((previousValue, currentValue) => previousValue + currentValue, 0);
@@ -765,19 +363,105 @@ export class UtilsService {
             .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
     }
 
-    validateMonth(monthValuesMap: Map<string, IndicatorValue[]>,
-                  customDissagregationValues: CustomDissagregationValues[]): Map<string, number> {
+
+    validateMonthAndOptions(monthValuesMap: Map<string, IndicatorValue[]>,
+                            customDissagregationValues: CustomDissagregationValues[]) {
+
+
         const monthValuesTotals: Map<string, number> = new Map<string, number>();
-        monthValuesMap.forEach((value, key) => {
-            const dissagregationTypeE = DissagregationType[key];
-            if (value && value.length > 0 && this.shouldvalidate(dissagregationTypeE)) {
+        monthValuesMap.forEach((value, dissagregationType) => {
+
+            if (value && value.length > 0 && this.shouldvalidate(dissagregationType)) {
                 const totalDissagregation = value.reduce((previousValue, currentValue) => previousValue + currentValue.value, 0);
-                monthValuesTotals.set(dissagregationTypeE, totalDissagregation);
+                monthValuesTotals.set(dissagregationType, totalDissagregation);
             }
         });
         const totalMonth = Math.max(...monthValuesTotals.values());
 
+        //Obtengo las desagregaciones que se repiten por tabla
+        const diss = [...monthValuesTotals.keys()]
+        const dissKeysToCompare = this.dissagregationKeystoCompare(diss)
+        //saco las opciones para las desagregaciones en comun
+        const dissCommonOptions: Map<string, string[]> = new Map<string, string[]>()
+        dissKeysToCompare.forEach(key => {
+            let options = []
+            monthValuesMap.forEach((value, dissagregationType) => {
+                let isDissagregtion = false
+                const dissParticles=this.splitIntoDissagregations(dissagregationType)
+                const dissKeys = dissParticles.map(item => {
+                    return this.getDissagregationKey(item);
+                })
+                if (diss.includes(dissagregationType) && !isDissagregtion && dissKeys.includes(key)) {
+                    value.forEach(item => {
+                        if(key == 'location' && !item[key]?.name.includes(" -- ")){
+                            //@ts-ignore
+                            const option = item[key]?.provincia?.description+" -- "+item[key]?.name
+                            options.push(option)
+                        }else{
+                            const option = item[key]?.name
+                            options.push(option)
+                        }
+
+                    })
+                    isDissagregtion = true
+                }
+            })
+            const uniqueOptions = new Set([...options])
+            dissCommonOptions.set(key, [...uniqueOptions])
+
+
+        })
+
+        //Creo el mapa de totales por cada opcion de desagregacion
+        const dissTotalsbyCommonDissOptions: Map<string, Map<string, Map<string, number>>> = new Map<string, Map<string, Map<string, number>>>()
+        monthValuesMap.forEach((value, dissagregationType) => {
+            if (value && value.length > 0 && this.shouldvalidate(dissagregationType)) {
+                const dissOptionValuesMap: Map<string, Map<string,number>>= new Map<string, Map<string, number>>()
+                dissCommonOptions.forEach((options, disskey) => {
+                    const dissParticles=this.splitIntoDissagregations(dissagregationType)
+                    const dissPartKeys = dissParticles.map(item => {
+                            return this.getDissagregationKey(item);
+                        })
+                    //@ts-ignore
+                    if(dissPartKeys.includes(disskey)){
+                        const optionValueMap: Map<string, number> = new Map<string, number>()
+                        options.forEach(option => {
+                            let total = 0;
+                            value.forEach(item => {
+                                if(disskey === "location" && !item[disskey]?.name.includes(" -- ")){
+                                    //@ts-ignore
+                                    const locationOption= item[disskey]?.provincia?.description+" -- "+item[disskey]?.name
+                                    if (item[disskey] != null && locationOption == option) {
+                                        total += item.value
+                                    }
+                                }else{
+                                    if (item[disskey] != null && item[disskey]?.name == option) {
+                                        total += item.value
+                                    }
+                                }
+                            })
+                            optionValueMap.set(option, total)
+                        })
+                        if (optionValueMap.size > 0) {
+                            dissOptionValuesMap.set(disskey, optionValueMap)
+                        }
+                    }
+                    
+                })
+                if (dissOptionValuesMap.size > 0) {
+                    dissTotalsbyCommonDissOptions.set(dissagregationType, dissOptionValuesMap)
+                }
+            }
+        })
+        //comparo que los totales por opción de desagregación sean iguales entre los tipos de Desagregación en común
+        const dissUnmatchOptionValues = this.compareMapsInOuterMapWithDifferences(dissTotalsbyCommonDissOptions)
         let errorExists = false;
+        let missmatchErrorExists = false;
+        if (dissUnmatchOptionValues.size > 0) {
+            errorExists = true;
+            missmatchErrorExists = true;
+        }
+
         monthValuesTotals.forEach(value => {
             if (totalMonth !== value) {
                 errorExists = true;
@@ -803,9 +487,146 @@ export class UtilsService {
             return null;
         } else {
             // error exits
-            return monthValuesTotals;
+            if (missmatchErrorExists) {
+                return {
+                    type: "mismatchError",
+                    value: dissUnmatchOptionValues
+                }
+            } else {
+                return {
+                    type: "totalsError",
+                    value: monthValuesTotals
+                }
+            }
         }
     }
+
+    compareMapsInOuterMapWithDifferences(outerMap: Map<string, Map<any, any>>): Map<string, Map<any, any>> {
+        const differencesMap = new Map<string, Map<any, any>>();
+        outerMap.forEach((innerMap, groupKey) => {
+            const groupDifferences = new Map<string, Map<any, any>>();
+
+            const keys = Array.from(innerMap.keys());
+
+            // Si hay más de una clave, usamos los bucles anidados
+            if (keys.length > 1) {
+                // Comparamos cada clave principal entre los Mapas internos
+                for (let i = 0; i < keys.length; i++) {
+
+                    outerMap.forEach((otherInnerMap, otherGroupKey) => {
+                        const otherGroupParticles=this.splitIntoDissagregations(otherGroupKey);
+                        const groupParticles=this.splitIntoDissagregations(groupKey);
+                        const otherGoupDissKeys = otherGroupParticles.map(item => {
+                            return this.getDissagregationKey(item);
+                        })
+                        const groupDissKeys = groupParticles.map(item => {
+                            return this.getDissagregationKey(item);
+                        })
+                        if (otherGroupKey !== groupKey && otherGoupDissKeys.includes(keys[i]) && groupDissKeys.includes(keys[i])) {
+                            const otherSubMap = otherInnerMap.get(keys[i]);
+                            const diffs = this.findDifferences(innerMap.get(keys[i]), otherSubMap);
+
+                            if (diffs.size > 0) {
+                                const keyDifferences = new Map<string, any>();
+                                diffs.forEach((diff, option) => {
+                                    keyDifferences.set(option, diff.map1);
+                                });
+
+                                groupDifferences.set(keys[i], keyDifferences);
+                            }
+                        }
+                    });
+                }
+            } else {
+                // Si solo hay una clave, comparamos directamente los valores
+                const key = keys[0];
+                const subMap = innerMap.get(key);
+
+                // Compara los subMapas de la única clave entre los grupos del outerMap
+                outerMap.forEach((otherInnerMap, otherGroupKey) => {
+                    if (otherGroupKey !== groupKey) {
+                        const otherSubMap = otherInnerMap.get(key);
+
+                        const diffs = this.findDifferences(subMap, otherSubMap);
+
+                        if (diffs.size > 0) {
+                            const keyDifferences = new Map<string, any>();
+                            diffs.forEach((diff, option) => {
+                                keyDifferences.set(option, diff.map1);
+                            });
+
+                            groupDifferences.set(key, keyDifferences);
+                        }
+                    }
+                });
+            }
+
+            if (groupDifferences.size > 0) {
+                differencesMap.set(groupKey, groupDifferences);
+            }
+        });
+
+        return differencesMap;
+    }
+
+    findDifferences(map1: Map<any, any>, map2: Map<any, any>): Map<string, { map1: any, map2: any }> {
+        const differences = new Map<string, { map1: any, map2: any }>();
+        // Recorremos las claves y valores del primer mapa
+        for (let [key, value] of map1) {
+            if (!map2.has(key)) {
+                differences.set(key, {map1: value, map2: undefined});
+            } else {
+                const value2 = map2.get(key);
+                if (value !== value2) {
+                    differences.set(key, {map1: value, map2: value2});
+                }
+            }
+        }
+
+        for (let [key, value] of map2) {
+            if (!map1.has(key)) {
+                differences.set(key, {map1: undefined, map2: value});
+            }
+        }
+
+        return differences;
+    }
+
+    dissagregationKeystoCompare(dissagregationTypes: string[]) {
+        // Objeto para almacenar las partículas que aparecen en cada índice del array
+        const particleCount: Record<string, Set<number>> = {};
+
+        // Descomponer cada cadena en partículas y contar en qué cadenas aparecen
+        dissagregationTypes.forEach((str, index) => {
+            const particles = this.splitIntoDissagregations(str);
+            particles.forEach(particle => {
+                if (!particleCount[particle]) {
+                    particleCount[particle] = new Set();
+                }
+                particleCount[particle].add(index);
+            });
+        });
+
+        // Filtramos las partículas que aparecen en más de una cadena (más de un índice)
+        const commonDiss = Object.keys(particleCount).filter(particle => particleCount[particle].size > 1);
+        const dissKeys = commonDiss.map(item => {
+            return this.getDissagregationKey(item);
+        })
+        return dissKeys;
+
+    }
+
+    splitIntoDissagregations(str: string): string[] {
+        const uniqueDissagregations = ["LUGAR", "TIPO_POBLACION", "PAIS_ORIGEN", "GENERO", "EDAD", "DIVERSIDAD"];
+        const foundParticles: string[] = [];
+        uniqueDissagregations.forEach(particle => {
+            if (str.includes(particle)) {
+                foundParticles.push(particle);
+            }
+        });
+        return foundParticles;
+    }
+
 
     setZerosMonthValues(monthValuesMap: Map<string, IndicatorValue[]>) {
         // noinspection JSUnusedLocalSymbols
@@ -820,6 +641,7 @@ export class UtilsService {
         });
     }
 
+
     setZerosCustomMonthValues(monthCustomDissagregatoinValues: CustomDissagregationValues[]) {
         if (monthCustomDissagregatoinValues !== null && monthCustomDissagregatoinValues.length
             > 0) {
@@ -833,42 +655,9 @@ export class UtilsService {
         }
     }
 
-    shouldvalidate(dissagregationType: DissagregationType): boolean {
-        const dissagregationTypeE = DissagregationType[dissagregationType];
-        switch (dissagregationTypeE) {
-            case DissagregationType.TIPO_POBLACION:
-            case DissagregationType.EDAD:
-            case DissagregationType.EDAD_EDUCACION_PRIMARIA:
-            case DissagregationType.EDAD_EDUCACION_TERCIARIA:
-            case DissagregationType.GENERO:
-            case DissagregationType.LUGAR:
-            case DissagregationType.PAIS_ORIGEN:
-            case DissagregationType.GENERO_Y_EDAD:
-            case DissagregationType.TIPO_POBLACION_Y_GENERO:
-            case DissagregationType.TIPO_POBLACION_Y_EDAD:
-            case DissagregationType.TIPO_POBLACION_Y_PAIS_ORIGEN:
-            case DissagregationType.TIPO_POBLACION_Y_LUGAR:
-            case DissagregationType.SIN_DESAGREGACION:
-            case DissagregationType.LUGAR_EDAD_Y_GENERO:
-            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO:
-            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-            case DissagregationType.TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
-            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO:
-            case DissagregationType.PAIS_ORIGEN_EDAD_Y_GENERO:
-            case DissagregationType.LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-            case DissagregationType.PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-            case DissagregationType.LUGAR_Y_GENERO:
-                return true;
-            case DissagregationType.TIPO_POBLACION_Y_DIVERSIDAD:
-            case DissagregationType.DIVERSIDAD:
-            case DissagregationType.GENERO_Y_DIVERSIDAD:
-            case DissagregationType.DIVERSIDAD_EDAD_Y_GENERO:
-            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-            case DissagregationType.DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO:
-            case DissagregationType.LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO:
-            case DissagregationType.LUGAR_Y_DIVERSIDAD:
-                return false;
-        }
+    shouldvalidate(dissagregationType: string): boolean {
+        const dissagregationTypeE = this.enumsService.resolveEnumWeb(EnumsType.DissagregationType, dissagregationType);
+        return !(dissagregationTypeE.standardDissagregationTypes.lastIndexOf('DIVERSIDAD') >= 0);
     }
 
     getTargetNeedUpdate(indicatorExecution: IndicatorExecution) {
@@ -876,20 +665,24 @@ export class UtilsService {
         if (indicatorExecution.state === EnumsState.INACTIVE) {
             return false;
         }
-        if (indicatorExecution.indicatorType !== EnumsIndicatorType.GENERAL) {
-            if (indicatorExecution.quarters && indicatorExecution.quarters.length > 0) {
-                indicatorExecution.quarters.filter(value => {
-                    return value.state === EnumsState.ACTIVE;
-                }).forEach(value => {
-                    if (value.target === null) {
+        // cambio a anual target
+        /*        if (indicatorExecution.indicatorType !== EnumsIndicatorType.GENERAL) {
+                    if (indicatorExecution.quarters && indicatorExecution.quarters.length > 0) {
+                        indicatorExecution.quarters.filter(value => {
+                            return value.state === EnumsState.ACTIVE;
+                        }).forEach(value => {
+                            if (value.target === null) {
+                                result = true;
+                            }
+                        });
+                    }
+                } else {
+                    if (indicatorExecution.target === null) {
                         result = true;
                     }
-                });
-            }
-        } else {
-            if (indicatorExecution.target === null) {
-                result = true;
-            }
+                }*/
+        if (indicatorExecution.target === null) {
+            result = true;
         }
         return result;
     }
@@ -954,7 +747,7 @@ export class UtilsService {
         return cantones.sort((a, b) => {
             const x = a.provincia.description.localeCompare(b.provincia.description);
             if (x === 0) {
-                return a.description.localeCompare(b.description);
+                return a.name.localeCompare(b.name);
             } else {
                 return x;
             }
@@ -963,11 +756,16 @@ export class UtilsService {
 
 
     generateQuarterMonthsResumes(quarters: Quarter[]): QuarterMonthResume[] {
-        const quarterMonthResumes = [];
-        let yearSpan: number = null;
-        let quarterSpan: string = null;
+        let quarterMonthResumes = [];
+        let currentYear: number = null;
+        let currentQuarter: string = null;
+        let yearSpanCount: number = 0;
+        let quarterSpanCount: number = 0;
+
+
         quarters.forEach(quarter => {
             quarter.months.forEach(month => {
+                console.log(month.order.toString()+month.year.toString()+month.month);
                 const qmr = new QuarterMonthResume();
                 qmr.quarterId = quarter.id;
                 qmr.quarterQuarter = quarter.quarter;
@@ -984,38 +782,41 @@ export class UtilsService {
                 qmr.monthTotalExecution = month.totalExecution;
                 qmr.monthLate = month.late;
                 qmr.blockUpdate = month.blockUpdate;
+
                 // year rowspan
-                if (!yearSpan) {
-                    yearSpan = quarter.year;
+                if (currentYear !== quarter.year) {
+                    currentYear = quarter.year;
                     qmr.yearSpan = true;
-                } else if (month.year !== yearSpan) {
-                    qmr.yearSpan = true;
-                    yearSpan = quarter.year;
-                } else if (month.year === yearSpan) {
+                    yearSpanCount = quarters
+                        .filter(q => q.year === currentYear)
+                        .reduce((acc, q) => acc + q.months.length, 0);
+                } else {
                     qmr.yearSpan = false;
                 }
-                qmr.yearSpanCount = quarters
-                    .filter(value => value.year === yearSpan)
-                    .reduce(
-                        (a, b) => a.concat(b.months), []
-                    ).length;
+                qmr.yearSpanCount = yearSpanCount;
+
                 // quarter rowspan
-                if (!quarterSpan) {
-                    quarterSpan = quarter.quarter;
+                if (currentQuarter !== quarter.quarter) {
+                    currentQuarter = quarter.quarter;
                     qmr.quarterSpan = true;
-                } else if (quarter.quarter !== quarterSpan) {
-                    qmr.quarterSpan = true;
-                    quarterSpan = quarter.quarter;
-                } else if (quarter.quarter === quarterSpan) {
+                    quarterSpanCount = quarter.months.length;
+                } else {
                     qmr.quarterSpan = false;
                 }
-                qmr.quarterSpanCount = quarter.months.length;
+                qmr.quarterSpanCount = quarterSpanCount;
 
                 quarterMonthResumes.push(qmr);
             });
         });
-        return quarterMonthResumes;
+
+
+
+
+        return quarterMonthResumes.sort((a, b) => a.monthOrder - b.monthOrder);
     }
+
+
+
     customSort(event: SortEvent, cols: ColumnTable[]) {
         event.data.sort((data1, data2) => {
             const col = cols.filter(value => {
@@ -1044,6 +845,244 @@ export class UtilsService {
 
             return (event.order * result);
         });
+    }
+
+    getOptionsFromValuesByDissagregationType(values: IndicatorValue[], dissagregationType: EnumWeb): StandardDissagregationOption[] {
+
+
+        let options = values
+            .map(value => this.getIndicatorValueByDissagregationType(dissagregationType, value));
+
+        const uniquesOptions = [...new Map(options.map(item =>
+            [item['id'], item])).values()];
+
+        let result = Array.from(uniquesOptions);
+
+        if (dissagregationType.value === 'LUGAR') {
+            result.forEach(value => {
+
+                    if (value.name && !value.name.includes('--')) {
+                        value.name = (value as unknown as Canton).provincia.description + " -- " + (value as unknown as Canton).name;
+                    }
+
+                }
+            );
+            result.sort((a, b) => (a as unknown as Canton).code.localeCompare((b as unknown as Canton).code));
+        } else {
+            result.sort((a, b) => a.order - b.order);
+        }
+        return result;
+
+    }
+
+
+    standandarDissagregationOptionsToSelectItems(value1: StandardDissagregationOption[]): SelectItemWithOrder<StandardDissagregationOption>[] {
+        let result: SelectItemWithOrder<StandardDissagregationOption>[] = [];
+        value1.forEach(value => {
+            result.push(this.standandarDissagregationOptionToSelectItem(value));
+        });
+        result.sort((a, b) => a.value.order - b.value.order);
+        result.sort((a, b) => a.value.groupName.localeCompare(b.value.groupName));
+
+        return result;
+    }
+
+    standandarDissagregationOptionToSelectItem(value1: StandardDissagregationOption): SelectItemWithOrder<StandardDissagregationOption> {
+        let option = new SelectItemWithOrder<StandardDissagregationOption>();
+        delete value1.type;
+        option.value = value1;
+        option.label = value1.name;
+        option.order = value1.order;
+        option.title = value1.groupName
+        return option;
+    }
+
+    getDissagregationKey(dissagregation: string) {
+        switch (dissagregation) {
+            case 'TIPO_POBLACION':
+                return 'populationType';
+            case 'EDAD':
+                return 'ageType';
+            case 'GENERO':
+                return 'genderType';
+            case 'LUGAR':
+                return 'location';
+            case 'PAIS_ORIGEN':
+                return 'countryOfOrigin';
+            case 'DIVERSIDAD':
+                return 'diversityType';
+            default:
+                return null;
+        }
+    }
+
+    getDissagregationlabelByKey(key: string) {
+        switch (key) {
+            case 'populationType':
+                return 'Tipo de Población';
+            case 'ageType':
+                return 'Edad';
+            case 'genderType':
+                return 'Género';
+            case 'location':
+                return 'Lugar';
+            case 'countryOfOrigin':
+                return 'País de Origen';
+            case 'diversityType':
+                return 'Diversidad';
+            case 'value':
+                return 'Valor'
+            default:
+                return null;
+        }
+    }
+
+    //Data Month Report Values Import Validations
+
+    validateDataImportValues(dataFile: {}[], dissagregationCatalogue: any[]) {
+        if (this.validateUniqueRowsInFile(dataFile).length > 0) {
+            return this.validateUniqueRowsInFile(dataFile)
+        } else if (this.validateRowsValues(dataFile, dissagregationCatalogue).length > 0) {
+            return this.validateRowsValues(dataFile, dissagregationCatalogue)
+        } else {
+            return []
+        }
+
+    }
+
+    validateRowsValues(dataFile: {}[], dissagregationCatalogue: any[]) {
+        const importErroMessage: string[] = [];
+        // Validar que ningun campo sea nulo y que cada dato corresponda a la columna correspondiente
+        dataFile.forEach((item, index) => {
+            Object.keys(item).forEach(key => {
+                const keyLabel = this.getDissagregationlabelByKey(key)
+                // Validar que ninguna clave o valor sea null
+                if (item[key] === null || item[key] === undefined) {
+                    importErroMessage.push(`Error en la fila ${index + 2}: El valor de de la columna ${keyLabel} es nulo`)
+
+                    //Validar que el valor de la clave pertenezca a la desagregacion
+                } else if (key !== 'value') {
+                    const isValidOption = this.validateDissagregationTypeOption(key, item[key], dissagregationCatalogue)
+                    if (isValidOption === false) {
+                        importErroMessage.push(`Error en la fila ${index + 2}: El valor de la columna ${keyLabel}: '${item[key]}', no pertenece a las opciones de desagregación`)
+                    }
+                } else {
+                    if (typeof item[key] !== 'number' || !Number.isInteger(item[key]) || item[key] < 0) {
+                        importErroMessage.push(`Error en la fila ${index + 2}: El valor de de la columna ${keyLabel}: '${item[key]}', no es un número entero válido`)
+                    }
+                }
+            });
+        });
+
+        return importErroMessage
+
+    }
+
+    validateUniqueRowsInFile(dataFile: {}[]) {
+        //validar que ningun objeto se repita
+        const importErroMessage: string[] = [];
+        const objetosVistos = new Set<string>();
+        const posicionesRepetidas: number[] = [];
+        for (let i = 0; i < dataFile.length; i++) {
+            const objeto = dataFile[i];
+            // Crear un nuevo objeto sin el campo 'value'
+            //@ts-ignore
+            const {value, ...objetoSinValue} = objeto;
+            const claveUnica = JSON.stringify(objetoSinValue);
+
+
+            if (objetosVistos.has(claveUnica)) {
+                posicionesRepetidas.push(i + 2);
+            } else {
+                objetosVistos.add(claveUnica);
+            }
+        }
+        if (posicionesRepetidas.length === 1) {
+            const mensaje = `Error: Los valores de la fila: ${posicionesRepetidas.join(', ')} ya han sido reportados anteriormente en filas previas.`;
+            importErroMessage.push(mensaje);
+        } else if (posicionesRepetidas.length > 1) {
+            const mensaje = `Error: Los valores de las filas: ${posicionesRepetidas.join(', ')} ya han sido reportados anteriormente en filas previas.`;
+            importErroMessage.push(mensaje);
+        }
+        return importErroMessage
+
+    }
+
+    validateDissagregationTypeOption(dissagregation: string, option: string, dissagregationCatalogue: any[]) {
+        let isvalid: boolean = false;
+        if (dissagregation === 'location') {
+            option = option.replace("-", " -- ");
+        }
+        dissagregationCatalogue.forEach(diss => {
+            const key = Object.keys(diss)
+            const dissKey = this.getDissagregationKey(key[0])
+            if (dissKey === dissagregation) {
+                diss[key[0]].options.forEach(opt => {
+                    if (opt.name === option) {
+                        isvalid = true
+                    }
+                })
+            }
+        })
+        return isvalid;
+
+
+    }
+
+    validateCustomDataImportValues(dataFile: {}[], dissagregationCatalogue: any[]) {
+        if (this.validateUniqueRowsInFile(dataFile).length > 0) {
+            return this.validateUniqueRowsInFile(dataFile)
+        } else if (this.validateCustomRowsValues(dataFile, dissagregationCatalogue).length > 0) {
+            return this.validateCustomRowsValues(dataFile, dissagregationCatalogue)
+        } else {
+            return []
+        }
+
+    }
+
+    validateCustomRowsValues(dataFile: {}[], dissagregationCatalogue: any[]) {
+        const importErroMessage: string[] = [];
+        // Validar que ningun campo sea nulo y que cada dato corresponda a la columna correspondiente
+        dataFile.forEach((item, index) => {
+            Object.keys(item).forEach(key => {
+                const keyLabel = key
+                // Validar que ninguna clave o valor sea null
+                if (item[key] === null || item[key] === undefined) {
+                    importErroMessage.push(`Error en la fila ${index + 2}: El valor de de la columna ${keyLabel} es nulo`)
+
+                    //Validar que el valor de la clave pertenezca a la desagregacion
+                } else if (key !== 'value') {
+                    const isValidOption = this.validateCustomDissagregationTypeOption(key, item[key], dissagregationCatalogue)
+                    if (isValidOption === false) {
+                        importErroMessage.push(`Error en la fila ${index + 2}: El valor de la columna ${keyLabel}: '${item[key]}', no pertenece a las opciones de desagregación`)
+                    }
+                } else {
+                    if (typeof item[key] !== 'number' || !Number.isInteger(item[key]) || item[key] < 0) {
+                        importErroMessage.push(`Error en la fila ${index + 2}: El valor de de la columna ${keyLabel}: '${item[key]}', no es un número entero válido`)
+                    }
+                }
+            });
+        });
+
+        return importErroMessage
+
+    }
+
+
+    validateCustomDissagregationTypeOption(dissagregation: string, option: string, dissagregationCatalogue: any[]) {
+        let isvalid: boolean = false;
+        dissagregationCatalogue.forEach(diss => {
+            const key = Object.keys(diss)
+            const dissKey = key[0]
+            if (dissKey === dissagregation) {
+                diss[key[0]].options.forEach(opt => {
+                    if (opt.name === option) {
+                        isvalid = true
+                    }
+                })
+            }
+        })
+        return isvalid;
     }
 }
 

@@ -1,12 +1,12 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {DissagregationType, SelectItemWithOrder} from '../../../shared/model/UtilsModel';
-import {Canton, IndicatorValue} from '../../../shared/model/OsmosysModel';
-import {forkJoin, Observable, of} from 'rxjs';
-import {UtilsService} from '../../../services/utils.service';
-import {EnumsService} from '../../../services/enums.service';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { EnumsType } from '../../../shared/model/UtilsModel';
+import { EnumWeb, IndicatorExecution, IndicatorValue, StandardDissagregationOption } from '../../../shared/model/OsmosysModel';
+import { UtilsService } from '../../../services/utils.service';
+import { EnumsService } from '../../../services/enums.service';
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import * as XLSX from "xlsx";
-import {WorkBook} from "xlsx";
+import { WorkBook } from "xlsx";
+import { TemplateGeneratorService } from 'src/app/services/template-generator.service';
 
 @Component({
     selector: 'app-dissagregation-four-integer-dimensions',
@@ -15,53 +15,63 @@ import {WorkBook} from "xlsx";
 })
 export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnChanges {
 
-    @Input()
+
+    @Input() // todo quitar?
     implementationType: string;
     @Input()
-    dissagregationType: DissagregationType;
+    dissagregationType: EnumWeb;
     @Input()
     values: IndicatorValue[];
     @Input()
     editable: boolean;
+    @Input()
+    indicatorExecution: IndicatorExecution;
+    
 
-    dissagregationGroupsL1Type: DissagregationType;
-    dissagregationGroupsL2Type: DissagregationType;
-    dissagregationRowsType: DissagregationType;
-    dissagregationColumnsType: DissagregationType;
+    dissagregationGroupsL1Type: EnumWeb;
+    dissagregationGroupsL2Type: EnumWeb;
+    dissagregationRowsType: EnumWeb;
+    dissagregationColumnsType: EnumWeb;
 
 
-    dissagregationOptionsGroupsL1: SelectItemWithOrder<string | Canton>[];
-    dissagregationOptionsGroupsL2: SelectItemWithOrder<string | Canton>[];
-    dissagregationOptionsColumns: SelectItemWithOrder<string | Canton>[];
-    dissagregationOptionsRows: SelectItemWithOrder<string | Canton>[];
+    dissagregationOptionsGroupsL1: StandardDissagregationOption[];
+    dissagregationOptionsGroupsL2: StandardDissagregationOption[];
+    dissagregationOptionsColumns: StandardDissagregationOption[];
+    dissagregationOptionsRows: StandardDissagregationOption[];
 
-    valuesGroupRowsMap: Map<SelectItemWithOrder<string | Canton>, Map<SelectItemWithOrder<string | Canton>, IndicatorValue[][]>>;
+    valuesGroupRowsMap: Map<StandardDissagregationOption, Map<StandardDissagregationOption, IndicatorValue[][]>>;
     importForm: FormGroup;
     showImportDialog: boolean = false;
-    showImportButton: boolean = false;
     sheetOptions: string[];
     importErroMessage: string[];
-    showImportErroMessage: boolean;
-
+    showImportErrorLogs: boolean;
+    currentTimestamp: string;
+    validateTotalControl: boolean=true
     // private workbook: XLSX.WorkBook;
 
 
     constructor(
         public utilsService: UtilsService,
         public enumsService: EnumsService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        public templateService: TemplateGeneratorService
     ) {
     }
 
     ngOnInit(): void {
+        if(this.dissagregationType.value.lastIndexOf("DIVERSIDAD")>=0){
+            this.validateTotalControl=false;
+        }
         this.processDissagregationValues();
-        this.showImportButton = this.dissagregationType === DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO && this.implementationType === 'directImplementation';
+        //this.dissagregationType === DissagregationType.TIPO_POBLACION_LUGAR_EDAD_Y_GENERO && this.implementationType === 'directImplementation';
         this.importForm = this.fb.group({
             fileName: new FormControl('', [Validators.required]),
             file: new FormControl(''),
             sheet: new FormControl('', [Validators.required]),
             workbook: new FormControl('', [Validators.required]),
         });
+
+
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -69,129 +79,59 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
     }
 
     processDissagregationValues() {
-        const dissagregationsTypesRyC: DissagregationType[] =
-            this.utilsService.getDissagregationTypesByDissagregationType(this.dissagregationType);
-        this.dissagregationGroupsL1Type = dissagregationsTypesRyC[0];
-        this.dissagregationGroupsL2Type = dissagregationsTypesRyC[1];
-        this.dissagregationRowsType = dissagregationsTypesRyC[2];
-        this.dissagregationColumnsType = dissagregationsTypesRyC[3];
-
-        const dissagregationOptionsGroupsL1Obj = this.getOptions(this.dissagregationGroupsL1Type);
-        const dissagregationOptionsGroupsL2Obj = this.getOptions(this.dissagregationGroupsL2Type);
-        const dissagregationOptionsRowsObj = this.getOptions(this.dissagregationRowsType);
-        const dissagregationOptionsColumnsObj = this.getOptions(this.dissagregationColumnsType);
-        forkJoin([dissagregationOptionsGroupsL1Obj, dissagregationOptionsGroupsL2Obj,
-            dissagregationOptionsRowsObj, dissagregationOptionsColumnsObj])
-            .subscribe(results => {
-                this.dissagregationOptionsGroupsL1 = results[0] as SelectItemWithOrder<any>[];
-                this.dissagregationOptionsGroupsL2 = results[1] as SelectItemWithOrder<any>[];
-                this.dissagregationOptionsRows = results[2] as SelectItemWithOrder<any>[];
-                this.dissagregationOptionsColumns = results[3] as SelectItemWithOrder<any>[];
-                this.valuesGroupRowsMap = new Map<SelectItemWithOrder<any>, Map<SelectItemWithOrder<any>, IndicatorValue[][]>>();
-                this.dissagregationOptionsGroupsL1.forEach(itemL1 => {
-                    const groupL2Map: Map<SelectItemWithOrder<any>, IndicatorValue[][]> =
-                        new Map<SelectItemWithOrder<any>, IndicatorValue[][]>();
-                    this.dissagregationOptionsGroupsL2.forEach(itemL2 => {
-                        const rows = this.getRowsByGroups(itemL1, itemL2);
-                        groupL2Map.set(itemL2, rows);
-                    });
-                    this.valuesGroupRowsMap.set(itemL1, groupL2Map);
-                });
+        const dissagregationsTypesRyCEnum: EnumWeb[] = this.dissagregationType.standardDissagregationTypes
+            .map(value => {
+                return this.enumsService.resolveEnumWeb(EnumsType.DissagregationType, value)
             });
-    }
 
-    getOptions(dissagregationType: DissagregationType): Observable<SelectItemWithOrder<any>[]> {
-        if (dissagregationType !== DissagregationType.LUGAR) {
-            return this.enumsService.getByDissagregationType(dissagregationType);
-        } else {
-            let locations: SelectItemWithOrder<any>[] = this.values
-                .map(value => {
-                    return value.location;
-                }).map(value => {
-                    const selectITem = new SelectItemWithOrder();
-                    selectITem.label = value.provincia.description + ' - ' + value.description;
-                    selectITem.value = value;
-                    return selectITem;
-                }).sort((a, b) => a.label.localeCompare(b.label));
-            locations = locations.filter((thing, j, arr) => {
-                return arr.indexOf(arr.find(t => t.value.id === thing.value.id)) === j;
+        this.dissagregationGroupsL1Type = dissagregationsTypesRyCEnum[0];
+        this.dissagregationGroupsL2Type = dissagregationsTypesRyCEnum[1];
+        this.dissagregationRowsType = dissagregationsTypesRyCEnum[2];
+        this.dissagregationColumnsType = dissagregationsTypesRyCEnum[3];
+
+
+        // obtiene las opciones
+        this.dissagregationOptionsGroupsL1 = this.utilsService.getOptionsFromValuesByDissagregationType(this.values, this.dissagregationGroupsL1Type);
+        this.dissagregationOptionsGroupsL2 = this.utilsService.getOptionsFromValuesByDissagregationType(this.values, this.dissagregationGroupsL2Type);
+        this.dissagregationOptionsRows = this.utilsService.getOptionsFromValuesByDissagregationType(this.values, this.dissagregationRowsType);
+        this.dissagregationOptionsColumns = this.utilsService.getOptionsFromValuesByDissagregationType(this.values, this.dissagregationColumnsType);
+
+
+        // hace un mapa
+        this.valuesGroupRowsMap = new Map<StandardDissagregationOption, Map<StandardDissagregationOption, IndicatorValue[][]>>();
+        // para el nivel 1
+        this.dissagregationOptionsGroupsL1.forEach(optionL1 => {
+            // por cada nivel 1
+            const groupL2Map: Map<StandardDissagregationOption, IndicatorValue[][]> = new Map<StandardDissagregationOption, IndicatorValue[][]>();
+
+            this.dissagregationOptionsGroupsL2.forEach(optionL2 => {
+                // // filtro para 2 2 primeros niveles
+                let rows = this.getByL1AndL2Options(optionL1, this.dissagregationGroupsL1Type, optionL2, this.dissagregationGroupsL2Type, this.values);
+                const rowsT = this.utilsService.getRowsAndColumnsFromValues(this.dissagregationColumnsType,
+                    this.dissagregationRowsType,
+                    this.dissagregationOptionsRows,
+                    this.dissagregationOptionsColumns,
+                    rows);
+
+
+                groupL2Map.set(optionL2, rowsT);
             });
-            locations.forEach((value, index) => value.order = index);
-            return of(locations);
+            this.valuesGroupRowsMap.set(optionL1, groupL2Map);
+        });
 
-        }
     }
 
-    getRowsByGroups(itemL1: SelectItemWithOrder<any>, itemL2: SelectItemWithOrder<any>): Array<Array<IndicatorValue>> {
-        let indicatorValues: IndicatorValue[];
-        // level 1
-        indicatorValues = this.getValuesByDissagregationValues(this.values, this.dissagregationGroupsL1Type, itemL1.value);
-        // level 2
-        indicatorValues = this.getValuesByDissagregationValues(indicatorValues, this.dissagregationGroupsL2Type, itemL2.value);
-        // ordeno y clasifico
-        return this.getRowsByValues(this.dissagregationOptionsRows, this.dissagregationOptionsColumns, indicatorValues);
-    }
+    getByL1AndL2Options(optionL1: StandardDissagregationOption, dissagregationGroupsL1Type: EnumWeb, optionL2: StandardDissagregationOption, dissagregationGroupsL2Type: EnumWeb, values: IndicatorValue[]): IndicatorValue[] {
+        return values.filter(value => {
 
-    getValuesByDissagregationValues(values: IndicatorValue[], dissagregationType: DissagregationType, value: string | Canton) {
-        return values.filter(indicatorValue => {
-            if (dissagregationType === DissagregationType.LUGAR) {
-                value = value as Canton;
-                const valueOption = this.utilsService.getIndicatorValueByDissagregationType(dissagregationType, indicatorValue) as Canton;
-                return valueOption.id === value.id;
-            } else {
-                const valueOption = this.utilsService.getIndicatorValueByDissagregationType(dissagregationType, indicatorValue) as string;
-                return valueOption === value;
-            }
+            const valueOption1 = this.utilsService.getIndicatorValueByDissagregationType(dissagregationGroupsL1Type, value);
+            const valueOption2 = this.utilsService.getIndicatorValueByDissagregationType(dissagregationGroupsL2Type, value);
+            return valueOption1.id === optionL1.id && valueOption2.id === optionL2.id;
         });
     }
 
-    getRowsByValues(dissagregationOptionsRows: SelectItemWithOrder<any>[],
-                    dissagregationOptionsColumns: SelectItemWithOrder<any>[],
-                    indicatorValues: IndicatorValue[]): IndicatorValue[][] {
-        const rows = new Array<Array<IndicatorValue>>();
-        if (this.dissagregationRowsType !== DissagregationType.LUGAR) {
-            dissagregationOptionsRows.forEach(option => {
-                const row: IndicatorValue[] = indicatorValues.filter(indicatorValue => {
-                    const value = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationRowsType, indicatorValue);
-                    return value === option.value;
-                });
-                // ordeno las columnas
-                this.sortRow(row);
-                rows.push(row);
-            });
-        } else {
-            this.dissagregationOptionsRows.forEach(option => {
-                const row = indicatorValues.filter(indicatorValue => {
-                    const value = this.utilsService
-                        .getIndicatorValueByDissagregationType(this.dissagregationRowsType, indicatorValue) as Canton;
-                    return value.id === (option.value as Canton).id;
-                });
-                this.sortRow(row);
-                rows.push(row);
-            });
-        }
-        return rows;
-    }
 
-    sortRow(row: IndicatorValue[]) {
-        row.sort((a, b) => {
-            const valueA = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationColumnsType, a);
-            const valueB = this.utilsService.getIndicatorValueByDissagregationType(this.dissagregationColumnsType, b);
-            if (typeof valueA === 'string' || typeof valueB === 'string') {
-                const orderA = this.utilsService.getOrderByDissagregationOption(valueA as string,
-                    this.dissagregationOptionsColumns);
-                const orderB = this.utilsService.getOrderByDissagregationOption(valueB as string,
-                    this.dissagregationOptionsColumns);
-                return orderA - orderB;
-            } else {
-                const orderA = (valueA as Canton).code;
-                const orderB = (valueB as Canton).code;
-                return orderA > orderB ? -1 : 1;
-            }
-        });
-    }
-
-    getTotalIndicatorValuesMap(map: Map<SelectItemWithOrder<string | Canton>, IndicatorValue[][]>) {
+    getTotalIndicatorValuesMap(map: Map<StandardDissagregationOption, IndicatorValue[][]>) {
         let total = 0;
         map.forEach(value => {
             total += this.utilsService.getTotalIndicatorValuesArrayArray(value);
@@ -199,7 +139,8 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
         return total;
     }
 
-    getTotalIndicator(map: Map<SelectItemWithOrder<string | Canton>, Map<SelectItemWithOrder<string | Canton>, IndicatorValue[][]>>) {
+
+    getTotalIndicator(map: Map<StandardDissagregationOption, Map<StandardDissagregationOption, IndicatorValue[][]>>) {
         if (!map) {
             return null;
         }
@@ -217,7 +158,6 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
         const file = event.files[0];
         this.importForm.get('fileName').setValue(file.name);
         this.importForm.get('fileName').markAsTouched();
-        console.log(file);
         const fileReader = new FileReader();
 
         fileReader.readAsArrayBuffer(file);
@@ -229,14 +169,12 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
             for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
             let bstr = arr.join("");
             let workbook: WorkBook;
-            workbook = XLSX.read(bstr, {type: "binary"});
+            workbook = XLSX.read(bstr, { type: "binary" });
             this.importForm.get('workbook').patchValue(workbook);
             this.sheetOptions = [];
             workbook.SheetNames.forEach(value => {
-                console.log(value);
                 this.sheetOptions.push(value);
             });
-            console.log(this.sheetOptions);
             this.importForm.get('sheet').patchValue(null);
             this.importForm.get('sheet').markAsTouched();
         };
@@ -246,73 +184,172 @@ export class DissagregationFourIntegerDimensionsComponent implements OnInit, OnC
 
     showImportDialogF() {
         this.showImportDialog = true;
+        this.sheetOptions = [];
+        this.showImportErrorLogs = false;
     }
 
     importFile() {
+        this.showImportErrorLogs = false;
         let workbook = this.importForm.get('workbook').value as XLSX.WorkBook;
-        workbook.SheetNames.forEach(value => {
-            console.log(value);
-        });
         let spreedsheetname = this.importForm.get('sheet').value;
-        console.log(spreedsheetname);
         const ws: XLSX.WorkSheet = workbook.Sheets[spreedsheetname];
         const data = XLSX.utils.sheet_to_json(ws);
-
-        const valuesDissagregation = this.values.filter(value => {
-            console.log(value.dissagregationType);
-            console.log(this.dissagregationType);
-            console.log(value.dissagregationType === this.dissagregationType);
-            return value.dissagregationType === this.dissagregationType;
-
-        });
         this.importErroMessage = [];
-        this.showImportErroMessage = false;
+        this.showImportErrorLogs = false;
 
+        // Verificar que el arreglo no esté vacío
+        if (data.length === 0) {
+            this.importErroMessage.push('Error: El archivo se encuentra vacío')
+            this.showImportErrorLogs = true;
+            return
+        }
+        //creo el arrays de keys para la desagregacion especifica
+        const dissagregationKeys = this.dissagregationType.standardDissagregationTypes.map(value => {
+            return this.utilsService.getDissagregationKey(value)
+        })
 
-        console.log(data);
-        data.forEach(value => {
-            const canton_codigo: string = value['canton_codigo'];
-            const tipo_poblacion: string = value['tipo_poblacion'];
-            const tipo_genero: string = value['tipo_genero'];
-            const tipo_edad: string = value['tipo_edad'];
-            const valor: number = value['valor'];
+        let dissagregationLabels = dissagregationKeys.map(key => {
+            return this.utilsService.getDissagregationlabelByKey(key);
+        })
+        dissagregationLabels = [
+            ...dissagregationLabels,
+            'Valor'
+        ]
 
-            const indicatorValues = valuesDissagregation.filter(value1 => {
-                return value1.location.code === canton_codigo
-                    && value1.populationType === tipo_poblacion
-                    && value1.genderType === tipo_genero
-                    && value1.ageType === tipo_edad
-            });
-            if (indicatorValues.length < 1) {
-
-                this.importErroMessage.push('Error en la fila con los siguientes datos ' +
-                    ' provincia: ' + value['provincia'] +
-                    ' canton: ' + value['canton'] +
-                    ' tipo de población: ' + tipo_poblacion +
-                    ' tipo de género: ' + tipo_genero +
-                    ' tipo de edad: ' + tipo_edad +
-                    ' tipo de valor: ' + valor
-                );
-                this.showImportErroMessage = true;
-            } else {
-                if (valor) {
-                    indicatorValues[0].value = valor;
-                } else {
-                    indicatorValues[0].value = 0;
-                }
+        //transformo la data en un array de desagregaciones
+        const indicatorValues = data.map(value => {
+            //@ts-ignore
+            const allExist = Object.keys(value).every(item => dissagregationLabels.includes(item))
+            if (!allExist) {
+                const allowedColumnsString = dissagregationLabels.join(', ');
+                this.importErroMessage.push('Error: Uno de los encabezados en el archivo importado se encuentra mal escrito o no corresponde al tipo de desagregación, los encabezados validos son: ' +
+                    allowedColumnsString)
+                return this.showImportErrorLogs = true
 
             }
+            const obj = {};
+            dissagregationKeys.forEach(key => {
+                let cellValue = value[this.utilsService.getDissagregationlabelByKey(key)];
+                if (cellValue !== undefined) {
+                    cellValue = cellValue.replace(/;/g, ',')
+                }
+                obj[key] = cellValue
+
+            });
+            obj['value'] = value['Valor'];
+            return obj;
+
         });
-        if (this.showImportErroMessage) {
-            console.log(this.importErroMessage);
-            console.log(this.importErroMessage.length);
-        } else {
-            this.showImportDialog = false;
+
+        if (this.importErroMessage.length > 0) {
+            this.showImportErrorLogs = true;
+            return
         }
+
+        //validar los valores en cada fila
+        const validationMessages = this.utilsService.validateDataImportValues(indicatorValues, this.createdisagregationCatalogue())
+        if (validationMessages.length > 0) {
+            this.importErroMessage = validationMessages
+            this.showImportErrorLogs = true;
+            return
+        }
+
+        //Asignar los valores del array de excel creado a los valores en la tabla
+        this.valuesGroupRowsMap.forEach(L1 => {
+            L1.forEach(L2 => {
+                L2.forEach(Row => {
+                    Row.forEach(Col => {
+                        // Para cada objeto en valuesRowsMap, buscamos coincidencias en indicatorValues
+                        indicatorValues.forEach(item => {
+                            // Extraigo el valor de cada objeto de IndicatorValues
+                            const value2 = item['value'];
+
+                            // creo un arreglo sin value para comparar los keys
+                            const comparisonValues = Object.keys(item).reduce((acc, key) => {
+                                if (key !== 'value') {
+                                    if (key === 'location') {
+                                        const [provincia, canton] = item['location'].split('-')
+                                        acc['provincia'] = provincia
+                                        acc['canton'] = canton
+
+                                    } else {
+                                        acc[key] = item[key];
+                                    }
+                                }
+                                return acc;
+                            }, {});
+
+                            // Comparo cada valor de las claves en comparisionValues con cada objeto de valuesRowsMap
+                            const isMatch = Object.keys(comparisonValues).every(key => {
+                                if (key === 'provincia') {
+                                    return comparisonValues[key] === Col.location['provincia'].description
+                                } else if (key === 'canton') {
+                                    return comparisonValues[key] === Col.location.name
+                                } else {
+                                    return comparisonValues[key] === Col[key].name
+                                }
+                            });
+                            if (isMatch) {
+                                Col.value = value2;
+                            }
+                        });
+                    });
+
+                });
+            });
+        });
+
+        this.showImportDialog = false;
+
     }
+
 
     cancelImportDialog() {
         this.showImportDialog = false;
         this.importForm.reset();
+    }
+
+
+    createdisagregationCatalogue() {
+        const dissagregationTypes = [
+            this.dissagregationGroupsL1Type,
+            this.dissagregationGroupsL2Type,
+            this.dissagregationRowsType,
+            this.dissagregationColumnsType,
+        ]
+        const dissagregationOptions = [
+            this.dissagregationOptionsGroupsL1,
+            this.dissagregationOptionsGroupsL2,
+            this.dissagregationOptionsRows,
+            this.dissagregationOptionsColumns,
+        ];
+
+        const dissagregationCatalogue = dissagregationTypes.map((diss, index) => ({
+            [diss.value]: {
+                label: diss.label,
+                options: dissagregationOptions[index]
+            },
+        }));
+        return dissagregationCatalogue
+    }
+    updateTimestamp() {
+        const now = new Date();
+        this.currentTimestamp = `Error al Importar - ${now.toLocaleString()}`;
+    }
+
+    onDialogShow() {
+        this.updateTimestamp(); 
+    }
+
+    generarExcel() {
+        let templateName:string
+        if(this.indicatorExecution.indicatorType==="GENERAL"){
+            templateName="Plantilla_import_Ind_General - "+this.indicatorExecution.period.year
+        }else{
+            templateName="Plantilla_import_Indicador - "+this.indicatorExecution.indicator.code
+        }
+        this.templateService.generateExcel(this.createdisagregationCatalogue(),templateName)
+            .then(() => console.log('Archivo Excel generado exitosamente.'))
+            .catch(error => console.error('Error al generar el archivo:', error));
     }
 }

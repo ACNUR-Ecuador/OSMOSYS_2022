@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {ImportFile, MonthState, Project, ProjectResume, QuarterState} from '../shared/model/OsmosysModel';
+import {Canton, ImportFile, MonthState, Project, ProjectResume, QuarterState} from '../shared/model/OsmosysModel';
 import {EnumsState} from '../shared/model/UtilsModel';
 import {map} from 'rxjs/operators';
 
@@ -76,9 +76,17 @@ export class ProjectService {
     }
 
     public getImportTemplate(periodId:number) {
-        return this.http.get(`${mainServiceUrl}/getImportTemplate/${periodId}`, {
+        return this.http.get(`${mainServiceUrl}/getImportTemplateTotalTarget/${periodId}`, {
             observe: 'response',
             responseType: 'blob' as 'json'
         });
+    }
+    public getProjectCantonAsignations(projectId:number) {
+        return this.http.get<Canton[]>(`${mainServiceUrl}/getProjectCantonAsignations/${projectId}`);
+
+    }
+
+    updateProjectLocations(projectId: number, cantones: Canton[]) {
+        return this.http.post(`${mainServiceUrl}/updateProjectLocations/${projectId}`, cantones);
     }
 }

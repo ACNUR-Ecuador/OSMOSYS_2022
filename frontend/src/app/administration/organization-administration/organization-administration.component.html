@@ -2,39 +2,39 @@
     <div class="col-12">
         <p-toast></p-toast>
         <div class="card">
-            <h3 class="page-title">Administración de Organizaciones</h3>
-            <p-toolbar styleClass="mb-4">
-                <ng-template pTemplate="left">
-                    <button pButton pRipple label="Crear" icon="pi pi-plus" class="p-button-success mr-2 mb-2"
-                            (click)="createItem()"></button>
-                </ng-template>
-
-                <ng-template pTemplate="right">
-                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel(dt)"
-                            class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
-                </ng-template>
-            </p-toolbar>
             <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true"
-                     [rowHover]="true" dataKey="id"
-                     styleClass="p-datatable-customers"
-                     currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                     [showCurrentPageReport]="true"
+                [rowHover]="true" dataKey="id" styleClass="p-datatable-striped" 
+                styleClass="p-datatable-customers"
+                currentPageReportTemplate=" {first} a {last} de {totalRecords} "
+                [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]"
             >
                 <ng-template pTemplate="caption">
-                    <div class="flex card-container overflow-hidden">
+                    <div class="grid">
                         <div
-                            class="flex-none flex align-items-center justify-content-center m-2 px-5  border-round">
-                            <h5 class="m-0">Organizaciones</h5>
-                        </div>
+                            class="col-12 md:col-4 sm:col-12 justify-content-start">
+                            <h3 class="m-0">Administración de Implementadores</h3>
+                        </div>                        
                         <div
-                            class="flex-grow-1 flex align-items-center justify-content-center px-5  border-round"></div>
-                        <div
-                            class="flex-none flex align-items-center justify-content-center px-5  border-round">
+                            class="col-12 md:col sm:col-12 flex justify-content-end">
                             <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
-                                           selectedItemsLabel="{0} columnas seleccionadas"
-                                           [style]="{minWidth: '200px',color:'#6c757d'}"
-                                           placeholder="Seleccione las columnas"
-                                           appendTo="body"></p-multiSelect>
+                                        selectedItemsLabel="{0} columnas seleccionadas"
+                                        [style]="{minWidth: '200px',color:'#6c757d'}"
+                                        placeholder="Seleccione las columnas"
+                                        appendTo="body"></p-multiSelect>
+                            <button pButton pRipple label="Crear" icon="pi pi-plus" class="main-button mr-2 mb-2"
+                            (click)="createItem()" style="margin-left: 2rem;" pTooltip="Crear un Implementador" tooltipPosition="bottom"></button>
+
+                            <button pButton pRipple label="Exportar" icon="pi pi-file-excel" class="second-button mr-2 mb-2"
+                            (click)="exportExcel(dt)" style="margin-left: 1rem;" pTooltip="Exportar a Excel" tooltipPosition="bottom"></button>
+                            
+                            <a href="https://osmosys.unhcr.org/common/manual/#/administracion-del-sistema?id=_56-implementadores"
+                                target="_blank"  
+                                class="p-button  p-button-outlined p-button-info custom-button"
+                                style="width: auto; height: fit-content; display: inline-flex; justify-content: center; align-items: center; text-decoration: none; margin-left: 11px; " 
+                                pTooltip="Ver el manual de ayuda" tooltipPosition="bottom">
+                                <i class="pi pi-question-circle" style="margin-right: 5px;"></i> 
+                                <span>Ayuda</span>
+                            </a> 
                         </div>
                     </div>
                 </ng-template>
@@ -91,7 +91,7 @@
                 </ng-template>
                 <ng-template pTemplate="summary">
                     <div class="p-d-flex p-ai-center p-jc-between">
-                        Total {{items ? items.length : 0 }} periodos.
+                        Total {{items ? items.length : 0 }} implementadores.
                     </div>
                 </ng-template>
             </p-table>
@@ -100,14 +100,14 @@
     </div>
 </div>
 <form [formGroup]="formItem" (ngSubmit)="saveItem()">
-    <p-dialog [(visible)]="showDialog" [style]="{width: '450px'}" header="Orgqanización" [modal]="true"
+    <p-dialog [(visible)]="showDialog" [style]="{width: '450px'}" header="Implementador" [modal]="true"
               [closable]="false">
 
         <ng-template pTemplate="content">
             <p-messages></p-messages>
             <div class="card p-fluid">
                 <div class="field">
-                    <label for="codeI">Código</label>
+                    <label for="codeI">Código del Implementador *:</label>
                     <input type="text" pInputText id="codeI"
                            formControlName="code" autofocus/>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('code',formItem)">Campo
@@ -115,7 +115,7 @@
                 </div>
 
                 <div class="field">
-                    <label for="codeI">Acrónimo</label>
+                    <label for="codeI">Acrónimo *:</label>
                     <input type="text" pInputText id="acronymI"
                            formControlName="acronym" autofocus/>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('acronym',formItem)">Campo
@@ -123,7 +123,7 @@
                 </div>
 
                 <div class="field">
-                    <label for="descriptionI">Descripción Completa</label>
+                    <label for="descriptionI">Descripción Completa *:</label>
 
                     <textarea pInputTextarea id="descriptionI"
                               formControlName="description"
@@ -134,7 +134,7 @@
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="stateI">Estado</label>
+                    <label for="stateI">Estado *:</label>
 
                     <p-selectButton id="stateI"
                                     formControlName="state"

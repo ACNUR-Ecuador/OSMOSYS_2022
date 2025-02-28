@@ -1,56 +1,49 @@
 <div id="initial" class="grid col-12">
     <p-toast></p-toast>
     <div class="card grid-nogutter col">
-        <h3 class="page-title">Proyectos</h3>
-        <p-toolbar styleClass="mb-4">
-            <div class="p-toolbar-group-left"
-                 *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR'])">
-                <button pButton label="Crear Proyecto" icon="pi pi-plus"
-                        class="p-button-success p-mr-2 p-mb-2"
-                        (click)="createItem()"></button>
-            </div>
-            <div class="p-toolbar-group-center">
-                <form [formGroup]="periodForm">
-                    <div class="field grid">
-                        <label for="periodI" class="col-fixed" style="width:100px; color: white;">Periodo:</label>
-                        <div class="p-col">
-                            <p-dropdown id="periodI" [options]="periods" optionLabel="year"
-                                        formControlName="selectedPeriod"
-                                        (onChange)="onPeriodChange($event.value)"
-                                        appendTo="body"
-                            ></p-dropdown>
-                        </div>
-
-                    </div>
-                </form>
-            </div>
-            <div class="p-toolbar-group-right">
-
-                <button type="button" pButton icon="pi pi-file-excel" (click)="exportExcel(dt)"
-                        class="p-button-success p-mr-2"></button>
-            </div>
-
-        </p-toolbar>
+        
         <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true"
-                 [rowHover]="true" dataKey="id"
-                 styleClass="p-datatable-customers"
-                 currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                 [showCurrentPageReport]="true">
+                [rowHover]="true" dataKey="id"
+                styleClass="p-datatable-customers"
+                currentPageReportTemplate=" {first} a {last} de {totalRecords} "
+                [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]">
             <ng-template pTemplate="caption">
                 <div class="flex card-container overflow-hidden">
                     <div
                         class="flex-none flex align-items-center justify-content-center m-2 px-5  border-round">
-                        <h5 class="m-0">Proyectos</h5>
+                        <h3 class="m-0">Proyectos</h3>
                     </div>
                     <div
-                        class="flex-grow-1 flex align-items-center justify-content-center px-5  border-round"></div>
+                        class="flex-grow-1 flex align-items-center justify-content-center px-5  border-round">
+                        <form [formGroup]="periodForm">
+                            <div class="field grid">
+                                <label for="periodI" class="col-fixed" style="width:100px; color: rgb(49, 49, 49);">Año:</label>
+                                <div class="p-col">
+                                    <p-dropdown id="periodI" [options]="periods" optionLabel="year"
+                                                formControlName="selectedPeriod"
+                                                (onChange)="onPeriodChange($event.value)"
+                                                appendTo="body"
+                                    ></p-dropdown>
+                                </div>
+        
+                            </div>
+                        </form>
+                    </div>
                     <div
                         class="flex-none flex align-items-center justify-content-center px-5  border-round">
                         <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
-                                       selectedItemsLabel="{0} columnas seleccionadas"
-                                       [style]="{minWidth: '200px',color:'#6c757d'}"
-                                       placeholder="Seleccione las columnas"
-                                       appendTo="body"></p-multiSelect>
+                            selectedItemsLabel="{0} columnas seleccionadas"
+                            [style]="{minWidth: '200px',color:'#6c757d'}"
+                            placeholder="Seleccione las columnas"
+                            appendTo="body"></p-multiSelect>
+                            <div class="p-toolbar-group-left"
+                                *ngIf="userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL'])">
+                                <button pButton label="Crear Proyecto" icon="pi pi-plus" style="margin-left: 2rem;"
+                                        class="main-button p-mr-2 p-mb-2" pTooltip="Crear un Proyecto" tooltipPosition="bottom"
+                                        (click)="createItem()"></button>
+                            </div>
+                            <button type="button" label="Exportar" pButton icon="pi pi-file-excel" (click)="exportExcel(dt)"
+                                class="second-button p-mr-2" style="margin-left: 2rem;" pTooltip="Exportar a Excel" tooltipPosition="bottom"></button>
                     </div>
                 </div>
             </ng-template>

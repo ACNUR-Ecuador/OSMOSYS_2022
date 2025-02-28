@@ -19,6 +19,12 @@ import {FilterUtilsService} from "../../services/filter-utils.service";
 import {DialogService} from "primeng/dynamicdialog";
 import {Table} from "primeng/table";
 import {OverlayPanel} from "primeng/overlaypanel";
+/*
+import {
+    DirectImplementationPerformanceIndicatorFormComponent
+} from "../../indicator-forms/direct-implementation-performance-indicator-form/direct-implementation-performance-indicator-form.component";
+*/
+import {PercentPipe} from "@angular/common";
 import {
     DirectImplementationPerformanceIndicatorFormComponent
 } from "../../indicator-forms/direct-implementation-performance-indicator-form/direct-implementation-performance-indicator-form.component";
@@ -55,7 +61,8 @@ export class IndicatorsListComponent implements OnInit {
                 private enumsService: EnumsService,
                 private filterService: FilterService,
                 private filterUtilsService: FilterUtilsService,
-                private dialogService: DialogService
+                private dialogService: DialogService,
+                private percentPipe: PercentPipe
     ) {
         if (this.router.getCurrentNavigation().extras.state) {
             this.indicatorExecutionIds = this.router.getCurrentNavigation().extras.state.indicatorExecutionIds;
@@ -89,13 +96,15 @@ export class IndicatorsListComponent implements OnInit {
         // noinspection DuplicatedCode
         this.cols = [
             {field: 'id', header: 'id', type: ColumnDataType.numeric},
-            {field: 'reportingOffice', header: 'Oficina', type: ColumnDataType.text, pipeRef: this.officeOrganizationPipe},
-            {field: 'indicator.statement', header: 'Declaración de Producto', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
+            {field: 'reportingOffice', header: 'Oficina/Unidad', type: ColumnDataType.text, pipeRef: this.officeOrganizationPipe},
+            {field: 'indicator.statement', header: 'Enunciado de Producto', type: ColumnDataType.text, pipeRef: this.codeDescriptionPipe},
             {field: 'indicator', header: 'Indicador', type: ColumnDataType.text, pipeRef: this.indicatorPipe},
             {field: 'activityDescription', header: 'Descripción de la actividad', type: ColumnDataType.text},
             {field: 'indicator.frecuency', header: 'Frecuencia de Reporte', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text, pipeRef: this.enumValuesToLabelPipe, arg1: EnumsType.State},
+            {field: 'target', header: 'Meta', type: ColumnDataType.numeric},
             {field: 'totalExecution', header: 'Ejecución Total', type: ColumnDataType.numeric},
+            {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric,pipeRef: this.percentPipe},
             {field: 'late', header: 'Atrasado', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
             {field: 'lastReportedMonth', header: 'Último mes reportado', type: ColumnDataType.text, pipeRef: this.monthPipe},
             {field: 'lateMonths', header: 'Meses Retrasado', type: ColumnDataType.text, pipeRef: this.monthListPipe},
@@ -172,6 +181,7 @@ export class IndicatorsListComponent implements OnInit {
     viewDesagregationPerformanceIndicator(parameters: Map<string, number | IndicatorExecution>) {
         const monthId = parameters.get('monthId') as number;
         const indicatorExecution = parameters.get('indicator') as IndicatorExecution;
+
         const ref = this.dialogService.open(DirectImplementationPerformanceIndicatorFormComponent, {
                 header: 'Indicador: ' + this.getHeaderIndicatorForm(indicatorExecution),
                 width: '90%',
@@ -192,6 +202,7 @@ export class IndicatorsListComponent implements OnInit {
         }, error => {
             this.loadIndicatorExecutions();
         });
+
     }
 
     private getHeaderIndicatorForm(indicatorExecution: IndicatorExecution) {
@@ -207,6 +218,9 @@ export class IndicatorsListComponent implements OnInit {
         }
         if (indicatorExecution.assignedUserBackup && indicatorExecution.assignedUserBackup.id === userId) {
             roles.push('Responsable de reporte alterno');
+        }
+        if(indicatorExecution?.reportingOffice?.administrators.some( adm => adm.id === userId) ){
+            roles.push('Jefe de Oficina');
         }
         if (roles.length > 0) {
             header = header + ' (' + roles.join(', ') + ')';

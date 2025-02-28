@@ -5,7 +5,8 @@
             <tr>
                 <th>Año</th>
                 <th>Trimestre</th>
-                <th>Meta Trimestral</th>
+                <!--cambio a anual target-->
+                <!--<th>Meta Trimestral</th>-->
                 <th>Ejecución Trimestral</th>
                 <th>% Ejecución Trimestral</th>
                 <th>Mes</th>
@@ -23,9 +24,10 @@
                 <td *ngIf="rowdata.quarterSpan" [attr.rowspan]="rowdata.quarterSpanCount">
                     <span class="p-text-bold p-ml-2">{{rowdata.quarterQuarter}}</span>
                 </td>
-                <td *ngIf="rowdata.quarterSpan" [attr.rowspan]="rowdata.quarterSpanCount">
+                <!--cambio a anual target-->
+               <!-- <td *ngIf="rowdata.quarterSpan" [attr.rowspan]="rowdata.quarterSpanCount">
                     <span class="p-text-bold p-ml-2">{{rowdata.quarterTarget}}</span>
-                </td>
+                </td>-->
                 <td *ngIf="rowdata.quarterSpan" [attr.rowspan]="rowdata.quarterSpanCount">
                     <span class="p-text-bold p-ml-2">{{rowdata.quarterTotalExecution}}</span>
                 </td>

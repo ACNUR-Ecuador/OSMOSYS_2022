@@ -449,14 +449,14 @@ public class ReportsEndpoint {
 
     @Path("/getPartnerAnnualByProjectId/{projectId}")
     @GET
-    @Secured
+    //@Secured
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public Response getPartnerAnnualByProjectId(
             @Context SecurityContext securityContext,
             @PathParam("projectId") Long projectId
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
-        LOGGER.info("getPartnerAnnualByProjectId:" + principal.getName());
+//        LOGGER.info("getPartnerAnnualByProjectId:" + principal.getName());
         long lStartTime = System.nanoTime();
         ByteArrayOutputStream r = this.reportService.getPartnerAnnualByProjectIdV2(projectId);
         long lEndTime = System.nanoTime();
@@ -591,6 +591,26 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
+    @Path("/tagReport/{tagId}/{periodId}")
+    @GET
+    @Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getTagReport(
+            @Context SecurityContext securityContext,
+            @PathParam("tagId") Long tagId,
+            @PathParam("periodId") Long periodId
+    ) throws GeneralAppException {
+        Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getTagReport:" + principal.getName());
+        long lStartTime = System.nanoTime();
+        ByteArrayOutputStream r = this.reportService.getTagReport(tagId, periodId);
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
+        String filename = "tag-" + tagId + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+    }
+
+
     @Path("/getAllIndicatorExecutionDetailedByPeriodIdAndOfficeIdAndOfficeId/{projectId}/{officeId}")
     @GET
     @Secured
@@ -667,7 +687,7 @@ public class ReportsEndpoint {
         // Principal principal = securityContext.getUserPrincipal();
         LOGGER.info("getSupervisorLateReport:");//) + principal.getName());
         long lStartTime = System.nanoTime();
-        ByteArrayOutputStream r = this.reportService.getDirectImplementationLateReportBySupervisorId(periodId,supervisorId);
+        ByteArrayOutputStream r = this.reportService.getDirectImplementationLateReportBySupervisorId(periodId, supervisorId);
         if (r == null) {
             throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
         }
@@ -676,6 +696,7 @@ public class ReportsEndpoint {
         String filename = "Reporte_retrasos_revision_di" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
+
     @Path("/getOfficeLateDirectImplementationReport/{periodId}/{officeId}")
     @GET
     //@Secured
@@ -688,7 +709,7 @@ public class ReportsEndpoint {
         // Principal principal = securityContext.getUserPrincipal();
         LOGGER.info("getSupervisorLateReport:");//) + principal.getName());
         long lStartTime = System.nanoTime();
-        ByteArrayOutputStream r = this.reportService.getOfficeLateDirectImplementationReport(periodId,officeId);
+        ByteArrayOutputStream r = this.reportService.getOfficeLateDirectImplementationReport(periodId, officeId);
         if (r == null) {
             throw new GeneralAppException("No se encontraron retrazos", Response.Status.NO_CONTENT);
         }
@@ -740,8 +761,6 @@ public class ReportsEndpoint {
         String filename = "Reporte_retrasos_punto_focal" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
-
-
 
 
     @Path("/getAllLateReviewReportDirectImplementation")
@@ -837,6 +856,9 @@ public class ReportsEndpoint {
         // Principal principal = securityContext.getUserPrincipal();
         LOGGER.info("getIndicatorReportProgramByProjectId:");//) + principal.getName());
         long lStartTime = System.nanoTime();
+
+
+
         ByteArrayOutputStream r = this.reportService.getIndicatorReportProgramByProjectId(focalPointId);
         if (r == null) {
             throw new GeneralAppException("No se indicadores", Response.Status.NO_CONTENT);

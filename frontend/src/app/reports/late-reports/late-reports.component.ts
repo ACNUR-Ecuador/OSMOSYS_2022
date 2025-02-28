@@ -44,7 +44,7 @@ export class LateReportsComponent implements OnInit {
     ngOnInit(): void {
         this.currentUser = this.userService.getLogedUsername();
         this.userId = this.currentUser.id;
-        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
+        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL']);
         this.createForms();
         this.loadPeriods();
         this.enableReport = this.userService.getLogedUsername().organization.id === 1;
@@ -132,7 +132,7 @@ export class LateReportsComponent implements OnInit {
             next: value => {
                 this.periods = value;
                 if (this.periods.length < 1) {
-                    this.messageService.add({severity: 'error', summary: 'No se encontraron periodos', detail: ''});
+                    this.messageService.add({severity: 'error', summary: 'No se encontraron años', detail: ''});
                 } else {
                     const currentPeriod = this.utilsService.getCurrectPeriodOrDefault(this.periods);
                     this.periodForm.get('selectedPeriod').patchValue(currentPeriod);
@@ -141,7 +141,7 @@ export class LateReportsComponent implements OnInit {
             }, error: err => {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Error al cargar las los periodos',
+                    summary: 'Error al cargar las los años',
                     detail: err.error.message,
                     life: 3000
                 });
@@ -189,7 +189,7 @@ export class LateReportsComponent implements OnInit {
         } else {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Selecciona un periodo',
+                summary: 'Selecciona un año',
                 life: 3000
             });
         }
@@ -250,7 +250,7 @@ export class LateReportsComponent implements OnInit {
         } else {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Selecciona un periodo',
+                summary: 'Selecciona un año',
                 life: 3000
             });
         }
@@ -282,7 +282,7 @@ export class LateReportsComponent implements OnInit {
         } else {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Selecciona un periodo',
+                summary: 'Selecciona un año',
                 life: 3000
             });
         }
@@ -314,7 +314,7 @@ export class LateReportsComponent implements OnInit {
         } else {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Selecciona un periodo',
+                summary: 'Selecciona un año',
                 life: 3000
             });
         }

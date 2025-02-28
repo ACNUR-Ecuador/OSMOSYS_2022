@@ -1,20 +1,19 @@
 package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 
 @Entity
 @Table(schema = "osmosys", name = "period_statement_asignations",
         uniqueConstraints = @UniqueConstraint(name = "period_statament_ids_unique", columnNames = {"period_id", "statement_id"})
 )
-public class PeriodStatementAsignation extends BaseEntity<Long> {
+public class PeriodStatementAsignation extends BaseEntityIdState {
 
 
     public PeriodStatementAsignation() {
@@ -41,13 +40,7 @@ public class PeriodStatementAsignation extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private State state;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "periodStatementAsignation")
-    private Set<PeriodStatementPopulationCoverage> periodStatementPopulationCoverages = new HashSet<>();
-
     // calculated
-    @Column(name = "population_coverage")
-    private Long populationCoverage;
-
 
     @Override
     public Long getId() {
@@ -82,39 +75,6 @@ public class PeriodStatementAsignation extends BaseEntity<Long> {
         this.state = state;
     }
 
-    public void addPeriodStatementPopulationCoverage(PeriodStatementPopulationCoverage periodStatementPopulationCoverage) {
-        periodStatementPopulationCoverage.setPeriodStatementAsignation(this);
-        if (!this.periodStatementPopulationCoverages.add(periodStatementPopulationCoverage)) {
-            this.periodStatementPopulationCoverages.remove(periodStatementPopulationCoverage);
-            this.periodStatementPopulationCoverages.add(periodStatementPopulationCoverage);
-        }
-    }
-
-    public void removePeriodStatementPopulationCoverage(PeriodStatementPopulationCoverage periodStatementPopulationCoverage) {
-
-        if (periodStatementPopulationCoverage.getId() != null) {
-            periodStatementPopulationCoverage.setPopulationCoverage(0L);
-            periodStatementPopulationCoverage.setState(State.INACTIVO);
-        } else {
-            this.periodStatementPopulationCoverages.remove(periodStatementPopulationCoverage);
-        }
-    }
-
-    public Set<PeriodStatementPopulationCoverage> getPeriodStatementPopulationCoverages() {
-        return periodStatementPopulationCoverages;
-    }
-
-    public void setPeriodStatementPopulationCoverages(Set<PeriodStatementPopulationCoverage> periodStatementPopulationCoverages) {
-        this.periodStatementPopulationCoverages = periodStatementPopulationCoverages;
-    }
-
-    public Long getPopulationCoverage() {
-        return populationCoverage;
-    }
-
-    public void setPopulationCoverage(Long populationCoverage) {
-        this.populationCoverage = populationCoverage;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -139,7 +99,7 @@ public class PeriodStatementAsignation extends BaseEntity<Long> {
                 ", period=" + period +
                 ", statement=" + statement +
                 ", state=" + state +
-                ", populationCoverage=" + populationCoverage +
+
                 '}';
     }
 }

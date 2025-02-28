@@ -153,7 +153,7 @@
                 <pattern-formatter pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n"/>
             </formatter>
             <formatter name="COLOR-PATTERN">
-                <pattern-formatter pattern="%K{level}%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n"/>
+                <pattern-formatter pattern="%K{level}%d{HH:mm:ss,SSS} %-5p [%c] (%C{1})(%L) %s%e%n"/>
             </formatter>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:batch-jberet:2.0">
@@ -180,14 +180,14 @@
                     </security>
                 </datasource>
                 <datasource jta="true" jndi-name="java:jboss/datasources/osmosys" pool-name="osmosys" enabled="true" use-ccm="true" statistics-enabled="true">
-                    <connection-url>jdbc:postgresql://localhost:5432/osmosys</connection-url>
+                    <connection-url>jdbc:postgresql://localhost:5432/osmosys_sv</connection-url>
                     <driver>postgresql-driver</driver>
                     <pool>
                         <max-pool-size>100</max-pool-size>
                     </pool>
                     <security>
                         <user-name>postgres</user-name>
-                        <password>A1a2a3a4</password>
+                        <password>a1a2a3a4a5a6</password>
                     </security>
                     <validation>
                         <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"/>
@@ -195,15 +195,15 @@
                         <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter"/>
                     </validation>
                 </datasource>
-                <datasource jta="true" jndi-name="java:jboss/datasources/osmosys_capacitacion" pool-name="osmosys_capacitacion" enabled="true" use-ccm="true" statistics-enabled="true">
-                    <connection-url>jdbc:postgresql://localhost:5432/osmosys_capacitacion</connection-url>
+                <datasource jta="true" jndi-name="java:jboss/datasources/osmosys_ec" pool-name="osmosys_ec" enabled="true" use-ccm="true" statistics-enabled="true">
+                    <connection-url>jdbc:postgresql://localhost:5432/osmosys_ec</connection-url>
                     <driver>postgresql-driver</driver>
                     <pool>
                         <max-pool-size>100</max-pool-size>
                     </pool>
                     <security>
                         <user-name>postgres</user-name>
-                        <password>A1a2a3a4</password>
+                        <password>a1a2a3a4a5a6</password>
                     </security>
                     <validation>
                         <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"/>
@@ -584,6 +584,8 @@
         </outbound-socket-binding>
     </socket-binding-group>
     <deployments>
-        
+        <deployment name="osmosys_ec.war" runtime-name="osmosys_ec.war">
+            <fs-archive path="C:\Proyectos\OSMOSYS_2022\backend\target\osmosys_ec.war"/>
+        </deployment>
     </deployments>
 </server>

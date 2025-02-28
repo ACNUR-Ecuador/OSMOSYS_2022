@@ -36,7 +36,7 @@ export class DataExportComponent implements OnInit {
         this.periodService.getAll().subscribe(value => {
             this.periods = value;
             if (this.periods.length < 1) {
-                this.messageService.add({severity: 'error', summary: 'No se encontraron periodos', detail: ''});
+                this.messageService.add({severity: 'error', summary: 'No se encontraron años', detail: ''});
             } else {
                 const currentPeriod = this.utilsService.getCurrectPeriodOrDefault(this.periods);
                 const currentPeriodOption = this.periods.filter(value1 => {
@@ -47,7 +47,7 @@ export class DataExportComponent implements OnInit {
         }, error => {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Error al cargar las los periodos',
+                summary: 'Error al cargar las los años',
                 detail: error.error.message,
                 life: 3000
             });

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {
-    CustomDissagregationValues,
+    CustomDissagregationValues, EnumWeb,
     IndicatorExecution,
     IndicatorValue,
     Month,
@@ -8,13 +8,15 @@ import {
 } from '../../shared/model/OsmosysModel';
 import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {MessageService, SelectItem} from 'primeng/api';
-import {DissagregationType, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
+import {EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {IndicatorExecutionService} from '../../services/indicator-execution.service';
 import {MonthService} from '../../services/month.service';
 import {EnumsService} from '../../services/enums.service';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
+import { EnumValuesToLabelPipe } from 'src/app/shared/pipes/enum-values-to-label.pipe';
+
 
 
 @Component({
@@ -29,24 +31,28 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     isAdmin = false;
     isProjectFocalPoint = false;
     isEjecutor = false;
+    isPartnerSupervisor = false;
     monthValues: MonthValues;
     month: Month;
     monthValuesMap: Map<string, IndicatorValue[]>;
     monthCustomDissagregatoinValues: CustomDissagregationValues[];
     formItem: FormGroup;
 
-    oneDimentionDissagregations: DissagregationType[] = [];
-    twoDimentionDissagregations: DissagregationType[] = [];
-    threeDimentionDissagregations: DissagregationType[] = [];
-    fourDimentionDissagregations: DissagregationType[] = [];
-    noDimentionDissagregations: DissagregationType[] = [];
+    noDimentionDissagregations: EnumWeb[] = [];
+    oneDimentionDissagregations: EnumWeb[] = [];
+    twoDimentionDissagregations: EnumWeb[] = [];
+    threeDimentionDissagregations: EnumWeb[] = [];
+    fourDimentionDissagregations: EnumWeb[] = [];
+    fiveDimentionDissagregations: EnumWeb[] = [];
+    sixDimentionDissagregations: EnumWeb[] = [];
 
     sourceTypes: SelectItemWithOrder<any>[];
 
     render = false;
-    showErrorResume = false;
+    showTotalErrorResume = false;
+    showMissmatchErrorResume = false;
     showOtherSource: boolean;
-    totalsValidation: Map<string, number> = null;
+    totalsValidation: Map<string, any> = null;
     chekedOptions: SelectItem[];
     editable: boolean;
     noEditionMessage: string = '';
@@ -60,6 +66,7 @@ export class PerformanceIndicatorFormComponent implements OnInit {
                 private messageService: MessageService,
                 private userService: UserService,
                 private fb: FormBuilder,
+                private enumValuesToLabelPipe: EnumValuesToLabelPipe
     ) {
     }
 
@@ -70,10 +77,11 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         this.isAdmin = this.config.data.isAdmin; //
         this.isProjectFocalPoint = this.config.data.isProjectFocalPoint; //
         this.isEjecutor = this.config.data.isEjecutor; //
+        this.isPartnerSupervisor = this.config.data.isPartnerSupervisor; //
 
         this.formItem = this.fb.group({
-            commentary: new FormControl('', [Validators.maxLength(1000)]),
-            sources: new FormControl('', Validators.required),
+            commentary: new FormControl('', [Validators.maxLength(1000), Validators.required]),
+            sources: new FormControl(''),
             sourceOther: new FormControl(''),
             checked: new FormControl(''),
             usedBudget: new FormControl(''),
@@ -93,8 +101,8 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     setRoles() {
         const userId = this.userService.getLogedUsername().id;
 
-        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
-        if (this.indicatorExecution.project.focalPoint && this.indicatorExecution.project.focalPoint.id === userId) {
+        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL']);
+        if (this.indicatorExecution.project.focalPoints && this.indicatorExecution.project.focalPoints.some( fp => fp.id === userId) ) {
             this.isProjectFocalPoint = true;
         }
         this.isEjecutor = this.userService.hasAnyRole(['EJECUTOR_PROYECTOS'])
@@ -106,10 +114,10 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         this.noEditionMessage = null;
         if (this.isAdmin) {
             this.editable = true;
-        } else if (this.month.blockUpdate && (this.isEjecutor || this.isProjectFocalPoint )) {
+        } else if (this.month.blockUpdate && (this.isEjecutor || this.isProjectFocalPoint || this.isPartnerSupervisor )) {
             this.editable = false;
-            this.noEditionMessage = "El indicador está bloqueado, comuníquese con el punto focal si desea actualizarlo";
-        } else if (!this.month.blockUpdate && (this.isEjecutor || this.isProjectFocalPoint )) {
+            this.noEditionMessage = "El indicador está bloqueado, comuníquese con un responsable del proyecto si desea actualizarlo";
+        } else if (!this.month.blockUpdate && (this.isEjecutor || this.isProjectFocalPoint || this.isPartnerSupervisor )) {
             this.editable = true;
         }else {
             this.editable= false;
@@ -132,45 +140,47 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     }
 
     loadMonthValues(monthId: number) {
-        this.monthService.getMonthIndicatorValueByMonthId(monthId).subscribe(value => {
-            this.monthValues = value as MonthValues;
-            this.month = value.month;
-            this.setRoles();
-            this.monthValuesMap = value.indicatorValuesMap;
-            this.monthCustomDissagregatoinValues = value.customDissagregationValues;
-            this.formItem.get('commentary').patchValue(this.month.commentary);
-            this.formItem.get('sources').patchValue(this.month.sources);
-            this.formItem.get('checked').patchValue(this.month.checked);
-            if (this.indicatorExecution.keepBudget) {
-                this.formItem.get('usedBudget').patchValue(this.month.usedBudget);
-                this.formItem.get('usedBudget').setValidators(Validators.required);
-            } else {
-                this.formItem.get('usedBudget').clearValidators();
-            }
-            if (this.isProjectFocalPoint || this.isAdmin) {
-                this.formItem.get('checked').enable();
-            } else {
-                this.formItem.get('checked').disable();
-            }
-            this.setOtherSource(this.formItem.get('sources').value);
-            this.enumsService.getByType(EnumsType.SourceType).subscribe(value1 => {
-                this.sourceTypes = value1;
-            });
-            this.setDimentionsDissagregations();
-        }, error => {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error al cargar los valores del mes',
-                detail: error.error.message,
-                life: 3000
-            });
-        });
+        this.monthService.getMonthIndicatorValueByMonthId(monthId)
+            .subscribe({next:value => {
+                    this.monthValues = value as MonthValues;
+                    this.month = value.month;
+                    this.setRoles();
+                    this.monthValuesMap = value.indicatorValuesMap;
+                    this.monthCustomDissagregatoinValues = value.customDissagregationValues;
+                    this.formItem.get('commentary').patchValue(this.month.commentary);
+                    this.formItem.get('sources').patchValue(this.month.sources);
+                    this.formItem.get('checked').patchValue(this.month.checked);
+                    if (this.indicatorExecution.keepBudget) {
+                        this.formItem.get('usedBudget').patchValue(this.month.usedBudget);
+                        this.formItem.get('usedBudget').setValidators(Validators.required);
+                    } else {
+                        this.formItem.get('usedBudget').clearValidators();
+                    }
+                    if (this.isProjectFocalPoint || this.isAdmin) {
+                        this.formItem.get('checked').enable();
+                    } else {
+                        this.formItem.get('checked').disable();
+                    }
+                    this.setOtherSource(this.formItem.get('sources').value);
+                    this.enumsService.getByType(EnumsType.SourceType).subscribe(value1 => {
+                        this.sourceTypes = value1;
+                    });
+                    this.setDimentionsDissagregations();
+                },
+                error:error => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al cargar los valores del mes',
+                        detail: error.error.message,
+                        life: 3000
+                    });
+                }});
     }
 
     saveMonth() {
         this.utilsService.setZerosMonthValues(this.monthValuesMap);
         this.utilsService.setZerosCustomMonthValues(this.monthCustomDissagregatoinValues);
-        const totalsValidation = this.utilsService.validateMonth(this.monthValuesMap, this.monthCustomDissagregatoinValues);
+        const totalsValidation = this.utilsService.validateMonthAndOptions(this.monthValuesMap, this.monthCustomDissagregatoinValues);
         this.monthValues.month.commentary = this.formItem.get('commentary').value;
         this.monthValues.month.sources = this.formItem.get('sources').value;
         this.monthValues.month.sourceOther = this.formItem.get('sourceOther').value;
@@ -181,13 +191,46 @@ export class PerformanceIndicatorFormComponent implements OnInit {
             this.monthValues.month.checked = this.formItem.get('checked').value;
         }
         if (totalsValidation) {
-            this.showErrorResume = true;
-            this.totalsValidation = totalsValidation;
+            if(totalsValidation.type=='totalsError'){
+                this.showTotalErrorResume = true;
+                this.totalsValidation = totalsValidation.value;
+            }else{
+                this.showMissmatchErrorResume = true;
+                this.totalsValidation = totalsValidation.value;
+            }
+            
         } else {
             this.messageService.clear();
             this.totalsValidation = null;
             this.sendMonthValue();
         }
+    }
+
+    missMatchDissOption(dissagregation){
+        const dissMap=this.totalsValidation.get(dissagregation)
+        const firstKey = dissMap?.keys().next().value;
+        const firstSubkey = dissMap.get(firstKey)?.keys().next().value;
+        const result = `${this.utilsService.getDissagregationlabelByKey(firstKey)} - ${firstSubkey}`;
+
+        return result
+
+    }
+    missMatchDiss(dissagregation){
+        const result = `${this.enumValuesToLabelPipe.transform(dissagregation, 'DissagregationType')}: `;
+        return result
+
+    }
+
+    missMatchTotal(dissagregation){
+        const dissMap=this.totalsValidation.get(dissagregation)
+        const firstKey = dissMap?.keys().next().value;
+        const firstSubkey = dissMap.get(firstKey)?.keys().next().value;
+        const firstValue = dissMap.get(firstKey)?.get(firstSubkey);    
+
+        const result = `${firstValue}`;
+
+        return result
+
     }
 
     cancel() {
@@ -212,12 +255,13 @@ export class PerformanceIndicatorFormComponent implements OnInit {
     }
 
     closeErrorDialog() {
-        this.showErrorResume = false;
+        this.showTotalErrorResume = false;
+        this.showMissmatchErrorResume=false;
     }
 
     setDimentionsDissagregations(): void {
         this.render = false;
-        const dimensionsMap: Map<number, DissagregationType[]> = this.utilsService.setDimentionsDissagregations(
+        const dimensionsMap: Map<number, EnumWeb[]> = this.utilsService.setDimentionsDissagregationsV2(
             this.monthValuesMap
         );
         this.noDimentionDissagregations = dimensionsMap.get(0);
@@ -225,6 +269,8 @@ export class PerformanceIndicatorFormComponent implements OnInit {
         this.twoDimentionDissagregations = dimensionsMap.get(2);
         this.threeDimentionDissagregations = dimensionsMap.get(3);
         this.fourDimentionDissagregations = dimensionsMap.get(4);
+        this.fiveDimentionDissagregations = dimensionsMap.get(5);
+        this.sixDimentionDissagregations = dimensionsMap.get(6);
         this.render = true;
     }
 
@@ -241,4 +287,6 @@ export class PerformanceIndicatorFormComponent implements OnInit {
             this.formItem.get('sourceOther').updateValueAndValidity();
         }
     }
+
+
 }

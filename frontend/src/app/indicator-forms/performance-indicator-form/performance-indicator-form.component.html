@@ -1,7 +1,7 @@
-<div class="card p-0" *ngIf="render">
+<div *ngIf="render">
     <p-toast key="dialogToast" position="top-right"></p-toast>
     <p-messages></p-messages>
-    <div class="card p-0 border-primary text-primary"
+    <div class="card p-0 border-primary text-primary" style="margin-top: 1rem;"
          *ngIf="indicatorExecution.indicator.instructions || indicatorExecution.activityDescription"
     >
         <div class="fluid p-1">
@@ -20,73 +20,111 @@
         </div>
     </div>
     <form #myForm="ngForm" [formGroup]="formItem" (ngSubmit)="saveMonth()">
-        <div class="card p-0">
+        <!-- <div class="card p-0">
             <div *ngIf="render">
 
                 <app-chart-indicator-execution *ngIf="render"
-                                               [month]="month"
-                                               [indicatorExecution]="indicatorExecution"
+                    [month]="month"
+                    [indicatorExecution]="indicatorExecution"
                 ></app-chart-indicator-execution>
 
+            </div>
+        </div> -->
+        <div class="nota">
+            <p><strong>Nota:</strong> El color en el encabezado de las tablas de desagregación indica lo siguiente:</p>
+            <div class="leyenda">
+              <span class="cuadro-color" [style.background-color]="'#0072BC'"></span>
+              <span>Requiere validación de totales con otras tablas</span>
+            </div>
+            <div class="leyenda">
+              <span class="cuadro-color" [style.background-color]="'#0c0067'"></span>
+              <span>No requiere validación de totales con otras tablas</span>
             </div>
         </div>
         <div class="card p-0">
             <fieldset style="border-style: none; margin: unset; padding: unset" [disabled]="!editable">
                 <div class="grid m-0" *ngIf="render">
+                    <div class="col-12 md:col-6" *ngFor="let dissagregation of sixDimentionDissagregations">
+                        <app-dissagregation-six-integer-dimensions
+                                *ngIf="monthValuesMap.get(dissagregation.value)"
+                                [dissagregationType]="dissagregation"
+                                [values]="monthValuesMap.get(dissagregation.value)"
+                                [editable]="editable"
+                                [indicatorExecution]="indicatorExecution"
+                        ></app-dissagregation-six-integer-dimensions>
+                    </div>
+                    <div class="col-12 md:col-6" *ngFor="let dissagregation of fiveDimentionDissagregations">
+                        <app-dissagregation-five-integer-dimensions
+                                *ngIf="monthValuesMap.get(dissagregation.value)"
+                                [dissagregationType]="dissagregation"
+                                [values]="monthValuesMap.get(dissagregation.value)"
+                                [editable]="editable"
+                                [indicatorExecution]="indicatorExecution"
+                        ></app-dissagregation-five-integer-dimensions>
+                    </div>
+
                     <div class="col-12 md:col-6" *ngFor="let dissagregation of fourDimentionDissagregations">
                         <app-dissagregation-four-integer-dimensions
-                            *ngIf="monthValuesMap.get(dissagregation)"
-                            [dissagregationType]="dissagregation"
-                            [values]="monthValuesMap.get(dissagregation)"
-                            [editable]="editable"
-                            implementationType="partnerImplementation"
+                                *ngIf="monthValuesMap.get(dissagregation.value)"
+                                [dissagregationType]="dissagregation"
+                                [values]="monthValuesMap.get(dissagregation.value)"
+                                [editable]="editable"
+                                [indicatorExecution]="indicatorExecution"
+                                implementationType="partnerImplementation"
                         ></app-dissagregation-four-integer-dimensions>
                     </div>
                     <div class="col-12 md:col-6" *ngFor="let dissagregation of threeDimentionDissagregations">
                         <app-dissagregation-three-integer-dimensions
-                            *ngIf="monthValuesMap.get(dissagregation)"
-                            [dissagregationType]="dissagregation"
-                            [values]="monthValuesMap.get(dissagregation)"
-                            [editable]="editable"
+                                *ngIf="monthValuesMap.get(dissagregation.value)"
+                                [dissagregationType]="dissagregation"
+                                [values]="monthValuesMap.get(dissagregation.value)"
+                                [editable]="editable"
+                                [indicatorExecution]="indicatorExecution"
                         ></app-dissagregation-three-integer-dimensions>
                     </div>
-                    <div class="col-12 md:col-6" *ngFor="let dissagregation of noDimentionDissagregations">
-                        <app-dissagregation-no-dissagregation-integer
-                            *ngIf="monthValuesMap.get(dissagregation)"
-                            [month]="month"
-                            [dissagregationType]="dissagregation"
-                            [values]="monthValuesMap.get(dissagregation)"
-                            [editable]="editable"
-                        ></app-dissagregation-no-dissagregation-integer>
+
+
+                    <div class="col-12 md:col-6" *ngFor="let dissagregation of twoDimentionDissagregations">
+                        <app-dissagregation-two-integer-dimentions
+                                *ngIf="monthValuesMap.get(dissagregation.value)"
+                                [dissagregationType]="dissagregation"
+                                [values]="monthValuesMap.get(dissagregation.value)"
+                                [editable]="editable"
+                                [indicatorExecution]="indicatorExecution"
+                        ></app-dissagregation-two-integer-dimentions>
                     </div>
                     <div class="col-12 md:col-6"
                          *ngFor="let dissagregation of oneDimentionDissagregations ">
                         <app-dissagregation-one-integer-dimensions
-                            *ngIf="monthValuesMap.get(dissagregation)"
-                            [dissagregationType]="dissagregation"
-                            [values]="monthValuesMap.get(dissagregation)"
-                            [editable]="editable"
+                                *ngIf="monthValuesMap.get(dissagregation.value)"
+                                [dissagregationType]="dissagregation"
+                                [values]="monthValuesMap.get(dissagregation.value)"
+                                [editable]="editable"
+                                [indicatorExecution]="indicatorExecution"
                         ></app-dissagregation-one-integer-dimensions>
-                    </div>
-                    <div class="col-12 md:col-6" *ngFor="let dissagregation of twoDimentionDissagregations">
-                        <app-dissagregation-two-integer-dimentions
-                            *ngIf="monthValuesMap.get(dissagregation)"
-                            [dissagregationType]="dissagregation"
-                            [values]="monthValuesMap.get(dissagregation)"
-                            [editable]="editable"
-                        ></app-dissagregation-two-integer-dimentions>
                     </div>
 
                 </div>
+                <div class="col-12 md:col-6" *ngFor="let dissagregation of noDimentionDissagregations">
+                    <app-dissagregation-no-dissagregation-integer
+                            *ngIf="monthValuesMap.get(dissagregation.value)"
+                            [month]="month"
+                            [dissagregationType]="dissagregation"
+                            [values]="monthValuesMap.get(dissagregation.value)"
+                            [editable]="editable"
+                    ></app-dissagregation-no-dissagregation-integer>
+                </div>
+
                 <div class="grid"
                      *ngIf="render && monthCustomDissagregatoinValues!== null && monthCustomDissagregatoinValues.length>0"
                 >
                     <div class="col-12 md:col-6"
                          *ngFor="let monthCustomDissagregatoinValue of monthCustomDissagregatoinValues">
                         <app-custom-dissagregation-integer
-                            [values]="monthCustomDissagregatoinValue.indicatorValuesCustomDissagregation"
-                            [customDissagregation]="monthCustomDissagregatoinValue.customDissagregation"
-                            [editable]="editable"
+                                [values]="monthCustomDissagregatoinValue.indicatorValuesCustomDissagregation"
+                                [customDissagregation]="monthCustomDissagregatoinValue.customDissagregation"
+                                [editable]="editable"
+                                [indicatorExecution]="indicatorExecution"
                         ></app-custom-dissagregation-integer>
                     </div>
                 </div>
@@ -96,14 +134,14 @@
                         <label class="col-4" for="assignedBudgetI">Presupuesto Asignado: </label>
                         <div class="col-6">
                             <label
-                                for="assignedBudgetI">{{indicatorExecution.assignedBudget | currency:'USD':true:'1.2-2'}}</label>
+                                    for="assignedBudgetI">{{indicatorExecution.assignedBudget | currency:'USD':true:'1.2-2'}}</label>
                         </div>
                     </div>
                     <div class="field grid">
                         <label class="col-4" for="assignedBudgetI">Presupuesto Ejecutado: </label>
                         <div class="col-6">
                             <label
-                                for="assignedBudgetI">{{indicatorExecution.availableBudget| currency:'USD':true:'1.2-2'}}</label>
+                                    for="assignedBudgetI">{{indicatorExecution.availableBudget| currency:'USD':true:'1.2-2'}}</label>
                         </div>
 
                     </div>
@@ -112,11 +150,11 @@
                             Mes:: </label>
                         <div class="col-6">
                             <p-inputNumber
-                                id="assignedBudgetI"
-                                formControlName="usedBudget"
-                                mode="currency"
-                                currency="USD"
-                                locale="en-US"
+                                    id="assignedBudgetI"
+                                    formControlName="usedBudget"
+                                    mode="currency"
+                                    currency="USD"
+                                    locale="en-US"
                             ></p-inputNumber>
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('usedBudget',formItem)">
@@ -128,19 +166,19 @@
 
                 <div class="card">
                     <div class="p-fluid p-formgrid grid">
-                        <div class="field md:col-12">
-                            <label for="sourcesI">Fuente de Verificación</label>
+                        <!-- <div class="field md:col-12">
+                            <label for="sourcesI">Herramientas de recolección de datos</label>
                             <p-multiSelect id="sourcesI"
-                                           [options]="sourceTypes"
-                                           [filter]="true"
-                                           formControlName="sources"
-                                           (onChange)="setOtherSource($event.value)"
+                                [options]="sourceTypes"
+                                [filter]="true"
+                                formControlName="sources"
+                                (onChange)="setOtherSource($event.value)"
                             ></p-multiSelect>
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('sources',formItem)">
                                 {{utilsService.getErrorMessageForm('sources', formItem)}}
                             </small>
-                        </div>
+                        </div> -->
                         <div class="field md:col-4" *ngIf="showOtherSource">
                             <label for="sourceOtherI">Otro</label>
                             <input id="sourceOtherI" type="text" pInputText formControlName="sourceOther">
@@ -150,15 +188,15 @@
                             </small>
                         </div>
                         <div class="field md:col-12">
-                            <label for="commentaryI">Información Cualitativa</label><br>
+                            <label for="commentaryI">Información Cualitativa *</label><br>
                             <small class="col-12">
                                 {{'Máximo 1.000 caracteres. '}}{{indicatorExecution.indicator.qualitativeInstructions}}
                             </small>
                             <textarea id="commentaryI"
-                                      pInputTextarea
-                                      [autoResize]="true"
-                                      style="width: 100%"
-                                      formControlName="commentary"
+                                pInputTextarea
+                                [autoResize]="true"
+                                style="width: 100%"
+                                formControlName="commentary"
                             ></textarea>
                             <small class="p-error"
                                    *ngIf="utilsService.showErrorForm('commentary',formItem)">
@@ -188,39 +226,39 @@
             <div class="md:col-12">
                 <p-messages></p-messages>
             </div>
-            <div class="flex justify-content-end flex-wrap" *ngIf="editable || isAdmin ">
+            <div class=" col-12 flex justify-content-end flex-wrap" *ngIf="editable || isAdmin ">
                 <p-message severity="warn"
-                           *ngIf="indicatorExecution.indicator.blockAfterUpdate"
-                           text="El indicador se bloqueará despues de guardarlo." styleClass="p-mr-2"></p-message>
+                        *ngIf="indicatorExecution.indicator.blockAfterUpdate"
+                        text="El indicador se bloqueará despues de guardarlo." styleClass="p-mr-2"></p-message>
                 <button pButton type="submit" class="mx-3"
                         pRipple label="Guardar" icon="pi pi-check"
+                        [disabled]="!formItem.valid"
                 ></button>
                 <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times"
                         class="p-button-secondary"
                         (click)="cancel()"></button>
             </div>
             <div class="flex justify-content-end "
-                 *ngIf="!editable && !(isAdmin || isProjectFocalPoint && isEjecutor) ">
+                 *ngIf="!editable && !(isAdmin || isProjectFocalPoint && isEjecutor && isPartnerSupervisor) ">
                 <p-message severity="warn"
-                           [text]=noEditionMessage
-                           styleClass="p-mr-2"></p-message>
+                        [text]=noEditionMessage
+                        styleClass="p-mr-2"></p-message>
                 <button pButton type="button" pRipple label="Salir" icon="pi pi-times"
                         (click)="cancel()"></button>
             </div>
-
-
         </div>
-
     </form>
 </div>
-<p-dialog [(visible)]="showErrorResume" [closable]="false" [closeOnEscape]="false">
+
+<p-dialog [(visible)]="showTotalErrorResume" [closable]="false" [closeOnEscape]="false" appendTo="body">
     <ng-template pTemplate="header">
         Existen Errores en los Valores
     </ng-template>
-    <div *ngIf="showErrorResume">
+    <div *ngIf="showTotalErrorResume">
         <div class="grid">
             <div class="col-12">
-                <h5 class="p-error">Existen errores en los valores. Los valores totales de cada desagregación en la tabla
+                <h5 class="p-error">Existen errores en los valores. Los valores totales de cada desagregación en la
+                    tabla
                     deberían ser
                     iguales.</h5>
 
@@ -238,6 +276,45 @@
                         <tr>
                             <td>{{dissagregation | enumValuesToLabel:'DissagregationType'}}</td>
                             <td>{{totalsValidation.get(dissagregation)}}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-end flex-wrap">
+            <button pButton type="button" pRipple label="Cerrar" icon="pi pi-times"
+                    (click)="closeErrorDialog()"></button>
+        </div>
+    </ng-template>
+</p-dialog>
+<p-dialog [(visible)]="showMissmatchErrorResume" [closable]="false" [closeOnEscape]="false" appendTo="body">
+    <ng-template pTemplate="header">
+        Existen Errores en los Valores
+    </ng-template>
+    <div *ngIf="showMissmatchErrorResume">
+        <div class="grid">
+            <div class="col-12">
+                <h5 class="p-error">Existen errores en los valores. Los valores totales de cada opción de desagregación en las
+                    tablas
+                    deberían ser
+                    iguales.</h5>
+
+            </div>
+            <div class="col-12">
+                <!--suppress AngularInvalidExpressionResultType -->
+                <p-table [value]="$any(totalsValidation).keys()" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Desagregación</th>
+                            <th>Total</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-dissagregation>
+                        <tr>
+                            <td><strong>{{missMatchDiss(dissagregation)}}</strong>{{missMatchDissOption(dissagregation)}}</td>
+                            <td>{{ missMatchTotal(dissagregation)}}</td>
                         </tr>
                     </ng-template>
                 </p-table>

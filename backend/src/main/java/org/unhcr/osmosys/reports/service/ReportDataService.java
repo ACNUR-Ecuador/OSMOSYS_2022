@@ -2,12 +2,10 @@ package org.unhcr.osmosys.reports.service;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.DataFormat;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
@@ -18,23 +16,25 @@ import org.apache.poi.xssf.usermodel.*;
 import org.jboss.logging.Logger;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTAutoFilter;
 import org.unhcr.osmosys.daos.ReportDao;
-import org.unhcr.osmosys.model.DissagregationAssignationToIndicatorExecution;
-import org.unhcr.osmosys.model.IndicatorExecution;
-import org.unhcr.osmosys.model.IndicatorValue;
-import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.model.*;
+import org.unhcr.osmosys.model.cubeDTOs.OfficeDTO;
+import org.unhcr.osmosys.model.enums.Frecuency;
+import org.unhcr.osmosys.model.enums.TimeStateEnum;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedDTO;
+import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionTagDTO;
 import org.unhcr.osmosys.model.reportDTOs.LaterReportDTO;
 import org.unhcr.osmosys.reports.model.IndicatorReportProgramsDTO;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
-import org.unhcr.osmosys.services.IndicatorValueService;
 import org.unhcr.osmosys.webServices.model.IndicatorExecutionWeb;
 import org.unhcr.osmosys.webServices.model.MonthWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.math.BigDecimal;
+import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,8 +44,7 @@ public class ReportDataService {
     private static final Logger LOGGER = Logger.getLogger(ReportDataService.class);
     @Inject
     IndicatorExecutionService indicatorExecutionService;
-    @Inject
-    IndicatorValueService indicatorValueService;
+
 
     @Inject
     ReportDao reportDao;
@@ -175,6 +174,171 @@ public class ReportDataService {
         return getReportFromIndicatorExecutionDetailedDTO(resultData, columnsToRemove);
     }
 
+    private SXSSFWorkbook getReportFromIndicatorExecutionTagdDTO(List<IndicatorExecutionTagDTO> resultData, Tags tag, Period period) {
+        List<Integer> titlesWidth = Arrays.asList(3000,3000,5000,3000,3000,3000,3000);
+
+        List<Indicator> tagIndicators = tag.getIndicatorTagAssignations().stream().filter(ie -> ie.getState().equals(State.ACTIVO)).map(IndicatorTagAssignation::getIndicator).collect(Collectors.toList());
+
+        List<String> indicators = tagIndicators.stream().map(Indicator::getCode).collect(Collectors.toList());
+        List<String> titles = new ArrayList<>(Arrays.asList("Periodo", "Trimestre", "Mes"));
+        titles.addAll(indicators);
+        if(tag.getOperation() != null && !tag.getOperation().isEmpty())
+            titles.add(tag.getOperation());
+
+        List<List<String>> indicatorsList = new ArrayList<>();
+        indicators.forEach(indicator -> {
+            List<String> ind = new ArrayList<>();
+            ind.add(indicator);
+            for (int i = 1; i < 13; i++) {
+                int finalI = i;
+                Optional<IndicatorExecutionTagDTO> first = resultData.stream().filter(r -> monthtoNumber(r.getMonth()) == finalI && r.getIndicator().startsWith(indicator)).findFirst();
+                if (first.isPresent()) {
+                    String value = first.get().getTotalValue().toString();
+                    System.out.println (i + " - " + indicator + " - " + value);
+                    ind.add(value);
+                }
+                else {
+                    ind.add("0");
+                }
+            }
+            //resultData.stream().filter(r -> r.getMonthOrder() == finalI && r.getIndicator().startsWith(indicator));
+            indicatorsList.add(ind);
+        });
+        SXSSFWorkbook wb = new SXSSFWorkbook();
+        SXSSFSheet sheet = wb.createSheet();
+
+        //FONT
+        Font font = wb.createFont();
+        font.setColor(IndexedColors.WHITE.getIndex()); // Texto en blanco
+
+        // Establecer el color de fondo
+        CellStyle cellStyleTitles = wb.createCellStyle();
+        byte[] rgb = new byte[]{(byte) 68, (byte) 114, (byte) 196}; // R=68, G=114, B=196
+        XSSFColor customColor = new XSSFColor(rgb); // Usar java.awt.Color
+        cellStyleTitles.setFillForegroundColor(customColor);
+        cellStyleTitles.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        cellStyleTitles.setFont(font);
+
+        // Establecer el color de celdas
+        CellStyle cellStyleCeldas = wb.createCellStyle();
+        byte[] rgbCeldas = new byte[]{(byte) 217, (byte) 225, (byte) 242}; // R=68, G=114, B=196
+        XSSFColor customColorCeldas = new XSSFColor(rgbCeldas); // Usar java.awt.Color
+        cellStyleCeldas.setFillForegroundColor(customColorCeldas);
+        cellStyleCeldas.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        // Set which area the table should be placed in
+        int NB_ROWS = resultData.size();
+        int NB_COLS = titles.size() - 1;
+        AreaReference reference = wb.getCreationHelper()
+                .createAreaReference(
+                        new CellReference(0, 0),
+                        new CellReference(NB_ROWS, NB_COLS));
+        // title rows
+        sheet.setAutoFilter(CellRangeAddress.valueOf(reference.formatAsString()));
+        // Create
+        DataFormat format = wb.createDataFormat();
+        CellStyle cellStylePercentage;
+        cellStylePercentage = wb.createCellStyle();
+        cellStylePercentage.setDataFormat(format.getFormat("0%"));
+        // Set the values for the table
+
+        Row rowTitle = sheet.createRow(0);
+        for (int i = 0; i < titles.size(); i++) {
+            Cell cell = rowTitle.createCell(i);
+            cell.setCellValue(titles.get(i));
+            cell.setCellStyle(cellStyleTitles);
+            sheet.setColumnWidth(i, 3000);
+        }
+
+        long lStartTime2 = System.nanoTime();
+        for (int i = 1; i <= 12; i++) {
+            SXSSFRow rowData = sheet.createRow(i);
+            String mesEnEspanol = Month.of(i).getDisplayName(TextStyle.FULL, new Locale("es", "ES"));
+            mesEnEspanol = mesEnEspanol.toUpperCase();
+            //Títulos de los indicadores
+            for (int j = 0; j < indicatorsList.size(); j++) {
+                List<String> indReport = indicatorsList.get(j);
+                if(!indReport.get(0).isEmpty()) {
+                    Cell cell = rowData.createCell(3 +j);
+                    cell.setCellValue(indReport.get(i));
+                    cell.setCellStyle(cellStyleCeldas);
+                }
+            }
+            //Totales
+            int finalI = i;
+
+            List<Integer> monthValues = indicatorsList.stream()
+                    .filter(subArray -> subArray.size() > finalI)
+                    .map(subArray -> Integer.parseInt(subArray.get(finalI))).collect(Collectors.toList());
+
+            //Operations
+            Cell cellOperation = rowData.createCell(3 + indicatorsList.size());
+            cellOperation.setCellStyle(cellStyleCeldas);
+            if(tag.getOperation() != null && !tag.getOperation().isEmpty()){
+                switch (tag.getOperation()) {
+                    case "Suma":
+                        cellOperation.setCellValue(monthValues.stream().mapToInt(Integer::intValue).sum());
+                        break;
+                    case "Máximo":
+                        OptionalInt maximo = monthValues.stream().mapToInt(Integer::intValue).max();
+                        if(maximo.isPresent()) {
+                            cellOperation.setCellValue(maximo.getAsInt());
+                        } else {
+                            cellOperation.setCellValue("No aplica");
+                        }
+                        break;
+                    case "Mínimo":
+                        OptionalInt minimo = monthValues.stream().mapToInt(Integer::intValue).min();
+                        if(minimo.isPresent()) {
+                            cellOperation.setCellValue(minimo.getAsInt());
+                        } else {
+                            cellOperation.setCellValue("No aplica");
+                        }
+                        break;
+                    case "Promedio":
+                        OptionalDouble average = monthValues.stream().mapToInt(Integer::intValue).average();
+                        if(average.isPresent()) {
+                            cellOperation.setCellValue(average.getAsDouble());
+                        } else {
+                            cellOperation.setCellValue("No aplica");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            //Filas de periodos, trimestre, mes
+            for (int j = 0; j <= titles.size(); j++) {
+                if(j >= 0 && j<= 2){
+                    Cell cell = rowData.createCell(j);
+                    cell.setCellStyle(cellStyleCeldas);
+                    if(j == 0){
+                    cell.setCellValue(period.getYear());
+                    }
+                    if(j == 1){
+                        int trimestres = 0;
+                        if(i >= 1 && i <= 4 )
+                            trimestres = 1;
+                        if(i >= 4 && i <= 7 )
+                            trimestres = 2;
+                        if(i >= 7 && i <= 10 )
+                            trimestres = 3;
+                        if(i >= 10 && i <= 12 )
+                            trimestres = 4;
+                        cell.setCellValue(trimestres);
+                    }
+                    if(j == 2){
+                        cell.setCellValue(mesEnEspanol);
+                    }
+                }
+            }
+        }
+        long lEndTime2 = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds(excel construction): " + (lEndTime2 - lStartTime2) / 1000000000);
+        return wb;
+    }
+
     private SXSSFWorkbook getReportFromIndicatorExecutionDetailedDTO(List<IndicatorExecutionDetailedDTO> resultData, List<Integer> columnsToRemove) {
         List<Integer> titlesWidth = this.getTitlesWidthIndicatorExecutionDetailedDTO(columnsToRemove);
 
@@ -289,6 +453,14 @@ public class ReportDataService {
 
     }
 
+    public SXSSFWorkbook getTagReport(Tags tag, Period period) {
+        long lStartTime = System.nanoTime();
+        List<IndicatorExecutionTagDTO> resultData = this.reportDao.getTagReport(tag, period);
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds:(query))" + (lEndTime - lStartTime) / 1000000000);
+        return getReportFromIndicatorExecutionTagdDTO(resultData, tag, period);
+    }
+
     public SXSSFWorkbook getPartnerDetailedByProjectId(Long projectId) {
         long lStartTime = System.nanoTime();
         List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getPartnerDetailedByProjectId(projectId);
@@ -297,7 +469,7 @@ public class ReportDataService {
 
         List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        0, 1, 2, 3, 4, 5, 27, 28
+                        0, 1, 2, 3, 4, 5, 27, 28, 22, 23
                 )
         );
 
@@ -441,12 +613,6 @@ public class ReportDataService {
                 break;
             case "Diversidad":
                 cell.setCellValue(ie.getDiversity_type());
-                break;
-            case "Edad - Educación Primaria":
-                cell.setCellValue(ie.getAge_primary_education_type());
-                break;
-            case "Edad - Educación Terciaria":
-                cell.setCellValue(ie.getAge_tertiary_education_type());
                 break;
             case "Desagregación Personalizada":
                 cell.setCellValue(ie.getCustom_dissagregacion());
@@ -719,8 +885,11 @@ public class ReportDataService {
             case "Meses con Retraso":
                 cell.setCellValue(dataRow.getLate_months());
                 break;
-            case "Punto Focal":
+            case "Responsables del Proyecto":
                 cell.setCellValue(dataRow.getFocal_point());
+                break;
+            case "Supervisor del Proyecto":
+                cell.setCellValue(dataRow.getPartner_supervisor());
                 break;
             case "Verificador de datos":
                 cell.setCellValue(dataRow.getSupervisor());
@@ -745,7 +914,8 @@ public class ReportDataService {
             } else {
                 titles.add("Meses con Retraso");
             }
-            titles.add("Punto Focal");
+            titles.add("Responsables del Proyecto");
+            titles.add("Supervisor del Proyecto");
         } else {
             titles.add("Oficina");
             titles.add("Indicador Código");
@@ -777,7 +947,8 @@ public class ReportDataService {
             } else {
                 titles.add(7000);
             }
-            titles.add(5000);
+            titles.add(8000);
+            titles.add(8000);
         } else {
             titles.add(4000);
             titles.add(2000);
@@ -972,7 +1143,10 @@ public class ReportDataService {
                     iew.getIndicator().getDescription(),
                     iew.getIndicator().getCategory(),
                     lateMonths,
-                    iew.getProject().getFocalPoint().getName()
+                    String.valueOf(iew.getProject().getFocalPoints().stream().map(UserWeb::getName).collect(Collectors.joining(", "))),
+                    (iew.getProject().getPartnerManager()!=null)?iew.getProject().getPartnerManager().getName():null,
+                    null
+
             );
         } else {
             return new LaterReportDTO(
@@ -998,7 +1172,39 @@ public class ReportDataService {
         return this.getLateReport(data, true, true);
     }
 
+    private int monthtoNumber(String month) {
+        switch (month.toLowerCase()) {
+            case "enero":
+                return 1;
+            case "febrero":
+                return 2;
+            case "marzo":
+                return 3;
+            case "abril":
+                return 4;
+            case "mayo":
+                return 5;
+            case "junio":
+                return 6;
+            case "julio":
+                return 7;
+            case "agosto":
+                return 8;
+            case "septiembre":
+                return 9;
+            case "octubre":
+                return 10;
+            case "noviembre":
+                return 11;
+            case "diciembre":
+                return 12;
+            default:
+                return -1; // Mes no válido
+        }
+    }
 
+// todo
+/*
     public List<IndicatorReportProgramsDTO> getIndicatorReportProgramsByProjectId(Long projectId) {
         List<IndicatorExecution> indicatorExecutions = this.indicatorExecutionService.getIndicatorExecutionsByProjectId(projectId);
         indicatorExecutions = indicatorExecutions.stream().filter(
@@ -1017,16 +1223,16 @@ public class ReportDataService {
                 }).collect(Collectors.toList());
 
         return this.indicatorExecutionsToIndicatorReportPrograms(indicatorExecutions);
-    }
+    }*/
 
     private List<IndicatorReportProgramsDTO> indicatorExecutionsToIndicatorReportPrograms(List<IndicatorExecution> indicatorExecutions) {
         List<IndicatorReportProgramsDTO> r = new ArrayList<>();
         for (IndicatorExecution indicatorExecution : indicatorExecutions) {
-            r.add(this.indicatorExecutionsToIndicatorReportPrograms(indicatorExecution));
+            // r.add(this.indicatorExecutionsToIndicatorReportPrograms(indicatorExecution));
         }
         return r;
     }
-
+/*
     private IndicatorReportProgramsDTO indicatorExecutionsToIndicatorReportPrograms(IndicatorExecution ie) {
         IndicatorReportProgramsDTO r = new IndicatorReportProgramsDTO();
         r.setIeId(ie.getId());
@@ -1125,7 +1331,8 @@ public class ReportDataService {
 
         return r;
 
-    }
+    }*/
+/*
 
     private Integer getProgramValue(List<IndicatorValue> indicatorValues, DissagregationType dissagregationType, PopulationType populationType, AgeType ageType, GenderType genderType) {
         switch (dissagregationType) {
@@ -1198,5 +1405,6 @@ public class ReportDataService {
         }
     }
 
+*/
 
 }

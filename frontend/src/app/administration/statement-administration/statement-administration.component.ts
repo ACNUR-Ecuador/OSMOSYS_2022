@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ImportFile, Period, PeriodStatementAsignation, Pillar, Statement} from '../../shared/model/OsmosysModel';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {Area, ImportFile, Period, PeriodStatementAsignation, Pillar, Statement} from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ConfirmationService, FilterService, MessageService, SelectItem} from 'primeng/api';
@@ -18,6 +18,7 @@ import {
     StatementPeriodStatementAsignationsListPipe
 } from "../../shared/pipes/statement-period-statement-asignations-list.pipe";
 import {HttpResponse} from "@angular/common/http";
+import {EnumValuesToLabelPipe} from "../../shared/pipes/enum-values-to-label.pipe";
 
 
 @Component({
@@ -35,9 +36,13 @@ export class StatementAdministrationComponent implements OnInit {
     areasItems: SelectItem[];
     pillarsItems: SelectItem[];
     situationsItems: SelectItem[];
-    periodsItems: SelectItem[];
+    periodsItems: SelectItem<Period>[];
     parentStatementsItemsFiltered: SelectItem[];
     parentStatementsItems: SelectItem[];
+    areaTypesItems: SelectItem[];
+    filterAreaList: SelectItem[];
+    selectedAreaType: string;
+    previousSaveStatement: Statement
 
 
     // tslint:disable-next-line:variable-name
@@ -61,7 +66,9 @@ export class StatementAdministrationComponent implements OnInit {
         private periodService: PeriodService,
         private codeShortDescriptionPipe: CodeShortDescriptionPipe,
         private codeDescriptionPipe: CodeDescriptionPipe,
-        private statementPeriodStatementAsignationsListPipe: StatementPeriodStatementAsignationsListPipe
+        private statementPeriodStatementAsignationsListPipe: StatementPeriodStatementAsignationsListPipe,
+        private enumValuesToLabelPipe: EnumValuesToLabelPipe,
+        private cd: ChangeDetectorRef
     ) {
     }
 
@@ -70,29 +77,30 @@ export class StatementAdministrationComponent implements OnInit {
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
             {field: 'code', header: 'Código', type: ColumnDataType.text},
-            {field: 'productCode', header: 'Código de Producto', type: ColumnDataType.text},
-            {field: 'description', header: 'Descripción', type: ColumnDataType.text},
-            {field: 'state', header: 'Estado', type: ColumnDataType.text},
+            {
+                field: 'areaType',
+                header: 'Nivel de Resultado',
+                type: ColumnDataType.text,
+                pipeRef: this.enumValuesToLabelPipe,
+                arg1: EnumsType.AreaType
+            },
+            {field: 'description', header: 'Enunciado', type: ColumnDataType.text},
             {
                 field: 'parentStatement',
-                header: 'Declaración Padre',
+                header: 'Enunciado Padre',
                 type: ColumnDataType.text,
                 pipeRef: this.codeDescriptionPipe
             },
             {field: 'area', header: 'Área', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},
-            {field: 'pillar', header: 'Pillar', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},
-            {
-                field: 'situation',
-                header: 'Situación',
-                type: ColumnDataType.text,
-                pipeRef: this.codeShortDescriptionPipe
-            },
+            {field: 'pillar', header: 'Grupo Poblacional', type: ColumnDataType.text, pipeRef: this.codeShortDescriptionPipe},            
             {
                 field: 'periodStatementAsignations',
-                header: 'Periodos',
+                header: 'Años',
                 type: ColumnDataType.numeric,
                 pipeRef: this.statementPeriodStatementAsignationsListPipe
             },
+            {field: 'state', header: 'Estado', type: ColumnDataType.text},
+
         ];
         this._selectedColumns = this.cols.filter(value => value.field !== 'id');
 
@@ -104,9 +112,10 @@ export class StatementAdministrationComponent implements OnInit {
             description: new FormControl(''),
             state: new FormControl('', Validators.required),
             parentStatement: new FormControl(''),
-            area: new FormControl(''),
+            area: new FormControl('',Validators.required),
+            areaType: new FormControl('', Validators.required),
             pillar: new FormControl('', Validators.required),
-            situation: new FormControl('', Validators.required),
+            situation: new FormControl(''),
             periods: new FormControl('', Validators.required),
             periodStatementAsignations: new FormControl('')
         });
@@ -114,6 +123,9 @@ export class StatementAdministrationComponent implements OnInit {
 
         this.enumsService.getByType(EnumsType.State).subscribe(value => {
             this.states = value;
+        });
+        this.enumsService.getByType(EnumsType.AreaType).subscribe(value => {
+            this.areaTypesItems = value;
         });
 
         this.importForm = this.fb.group({
@@ -141,17 +153,14 @@ export class StatementAdministrationComponent implements OnInit {
             next: value => {
                 this.items = value;
                 this.parentStatementsItems = this.items.map(value1 => {
-                    return {
-                        label: this.codeDescriptionPipe.transform(value1),
-                        value: value1
-                    };
+                    return this.statementToSelectItem(value1);
                 });
                 this.loadAreas();
             },
             error: err => {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Error al cargar los pilares',
+                    summary: 'Error al cargar los Grupos de Población',
                     detail: err.error.message,
                     life: 3000
                 });
@@ -202,7 +211,7 @@ export class StatementAdministrationComponent implements OnInit {
                 error: err => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al cargar los pilares',
+                        summary: 'Error al cargar los Grupos de Población',
                         detail: err.error.message,
                         life: 3000
                     });
@@ -250,7 +259,7 @@ export class StatementAdministrationComponent implements OnInit {
                 error: err => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al cargar los periodos',
+                        summary: 'Error al cargar los años',
                         detail: err.error.message,
                         life: 3000
                     });
@@ -261,16 +270,13 @@ export class StatementAdministrationComponent implements OnInit {
     exportExcel(table: Table) {
         this.utilsService.exportTableAsExcel(this._selectedColumns,
             table.filteredValue ? table.filteredValue : this.items,
-            'declaraciones');
+            'marco de resultados');
     }
 
 
     createItem() {
         this.parentStatementsItems = this.items.map(value => {
-            return {
-                label: value.code + ' - ' + value.description,
-                value
-            };
+            return this.statementToSelectItem(value);
         });
         this.messageService.clear();
         this.utilsService.resetForm(this.formItem);
@@ -281,26 +287,32 @@ export class StatementAdministrationComponent implements OnInit {
     }
 
     editItem(statement: Statement) {
-        this.parentStatementsItems = this.items.filter(value => {
+        /*this.parentStatementsItems = this.items.filter(value => {
             return value.id !== statement.id;
         }).map(value => {
-            return {
-                label: value.code + ' - ' + value.description,
-                value
-            };
-        });
+            return this.statementToSelectItem(value);
+        });*/
+        // obtengo los periods
+        
+        this.previousSaveStatement=statement
         this.utilsService.resetForm(this.formItem);
         this.submitted = false;
         this.showDialog = true;
 
-        const assignedPeriods = statement.periodStatementAsignations.filter(value => {
+        const periodStatementAsignations: PeriodStatementAsignation[] =
+            statement.periodStatementAsignations;
+        const assignedPeriods: Period[] = statement.periodStatementAsignations.filter(value => {
             return value.state === EnumsState.ACTIVE;
         }).map(value => {
             return value.period;
         });
 
-        this.formItem.get('periods').patchValue(assignedPeriods);
+
         this.formItem.patchValue(statement);
+        this.formItem.get('periodStatementAsignations').patchValue(periodStatementAsignations);
+        this.formItem.get('periods').patchValue(assignedPeriods);
+        this.cd.detectChanges();
+        this.onResultLevelChange(statement.areaType)
     }
 
 
@@ -357,19 +369,64 @@ export class StatementAdministrationComponent implements OnInit {
             }
         }
         statement.periodStatementAsignations = periodStatementAsignationsCasted;
+        if(areaType==="PRODUCTO"){
+            statement.area=parentStatement.area
+        }
         // noinspection DuplicatedCode
         if (statement.id) {
+            //Actualizar los child Statements si el área cambio
+            if(this.previousSaveStatement.area.id !== statement.area.id){
+                this.statementService.getChildStatementsByParentId(Number(statement.id))
+                .subscribe({
+                    next: value => {
+                        const childStatements=value
+                        if(childStatements?.length > 0){
+                            childStatements.forEach(item =>{
+                                item.area=statement.area
+                                this.statementService.update(item)
+                                    .subscribe({
+                                        next: () => {
+                                            this.loadItems();
+                                        },
+                                        error: err => {
+                                            this.messageService.add({
+                                                severity: 'error',
+                                                summary: 'Error al actualizar los enunciados hijos',
+                                                detail: err.error.message,
+                                                life: 3000
+                                            });
+                                        }
+                                    });
+                            })
+                        }
+                    },
+                    error: err => {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error al obtener los enunciados hijos',
+                            detail: err.error.message,
+                            life: 3000
+                        });
+                    }
+                });
+            }
+            
             // tslint:disable-next-line:no-shadowed-variable
             this.statementService.update(statement)
                 .subscribe({
                     next: () => {
                         this.cancelDialog();
                         this.loadItems();
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Enunciado guardado exitosamente',
+                            life: 3000
+                        });
                     },
                     error: err => {
                         this.messageService.add({
                             severity: 'error',
-                            summary: 'Error al actualizar el pilar',
+                            summary: 'Error al actualizar el Grupo de Población',
                             detail: err.error.message,
                             life: 3000
                         });
@@ -382,11 +439,16 @@ export class StatementAdministrationComponent implements OnInit {
                     next: () => {
                         this.cancelDialog();
                         this.loadItems();
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Enunciado guardado exitosamente',
+                            life: 3000
+                        });
                     },
                     error: err => {
                         this.messageService.add({
                             severity: 'error',
-                            summary: 'Error al guardar el pilar',
+                            summary: 'Error al guardar el Grupo de Población',
                             detail: err.error.message,
                             life: 3000
                         });
@@ -397,13 +459,29 @@ export class StatementAdministrationComponent implements OnInit {
 
     cancelDialog() {
         this.parentStatementsItems = this.items.map(value => {
-            return {
-                label: value.code + ' - ' + value.description,
-                value
-            };
+            return this.statementToSelectItem(value);
         });
         this.showDialog = false;
         this.submitted = false;
+        this.filterAreaList=[];
+        this.parentStatementsItemsFiltered=[]
+        this.formItem.get('parentStatement').enable();
+        this.formItem.get('parentStatement').updateValueAndValidity();
+        this.formItem.get('area').enable();
+        this.formItem.get('area').setValidators([Validators.required]);
+        this.formItem.get('area').updateValueAndValidity();
+        this.formItem.get('pillar').enable();
+        this.formItem.get('pillar').setValidators([Validators.required]);
+        this.formItem.get('pillar').updateValueAndValidity();
+    }
+
+    statementToSelectItem(value: Statement): SelectItem {
+        return {
+            value: value,
+            label: value.areaType + "(" + (value.periodStatementAsignations.map(value1 => {
+                return value1.period.year
+            }).join("-")) + ") " + value.code + ' - ' + value.description
+        }
     }
 
     @Input() get selectedColumns(): any[] {
@@ -491,19 +569,66 @@ export class StatementAdministrationComponent implements OnInit {
 
     filterStatementsByPeriod(value) {
         let selectedPeriods: Period[] = value;
-        this.parentStatementsItemsFiltered = this.parentStatementsItems.filter(value1 => {
-            let statementTmp: Statement = value1.value;
-            let periodIds = statementTmp.periodStatementAsignations.map(value2 => {
-                return value2.period.id
-            });
-            for (let selectedPeriod of selectedPeriods) {
-                if(periodIds.includes(selectedPeriod.id)){
-                    return true;
-                }else {
-                    return false;
+        const selectedAreaType=this.formItem.get("areaType").value
+        if ( selectedAreaType && selectedPeriods && selectedPeriods.length > 0 ) {
+            const parentStatementPeriodList= this.items
+                .filter(statementTmp => {
+                let periodIds = statementTmp.periodStatementAsignations.map(value2 => {
+                    return value2.period.id
+                });
+                for (let selectedPeriod of selectedPeriods) {
+                    return periodIds.includes(selectedPeriod.id);
                 }
+                return false;
+            }).map(value1 => this.statementToSelectItem(value1));
+            this.parentStatementsItemsFiltered=parentStatementPeriodList.filter(value1 => {
+                if(selectedAreaType==='RESULTADO'){
+                   return value1.value?.areaType === 'IMPACTO'
+                }else if(selectedAreaType==='PRODUCTO'){
+                    return value1.value?.areaType === 'RESULTADO' || value1.value?.areaType === 'APOYO'
+                }else{
+                    return value1
+                }
+            })
+        } else {
+            this.parentStatementsItemsFiltered = [];
+        }
+
+    }
+
+    onResultLevelChange(areaType: string){
+        this.selectedAreaType=areaType
+        const areaList= JSON.parse(JSON.stringify(this.areasItems))
+        this.filterAreaList=areaList.filter(value1 => value1.value.areaType === areaType)
+        this.filterStatementsByPeriod(this.formItem.get("periods").value)
+        if (areaType !== "IMPACTO") {
+            if(areaType ==="PRODUCTO"){
+                this.formItem.get('parentStatement').setValidators([Validators.required]);
+                this.formItem.get('area').clearValidators();
+                this.formItem.get('area').disable();
+                this.formItem.get('pillar').setValidators([Validators.required]);
+                this.formItem.get('pillar').enable();
+            }else{
+                this.formItem.get('pillar').patchValue(null);
+                this.formItem.get('pillar').clearValidators();
+                this.formItem.get('pillar').disable();
+                this.formItem.get('area').setValidators([Validators.required]);
+                this.formItem.get('area').enable();
+                this.formItem.get('parentStatement').clearValidators();
             }
-            return false;
-        });
+            this.formItem.get('parentStatement').enable();
+        } else {
+            this.formItem.get('area').setValidators([Validators.required]);
+            this.formItem.get('area').enable();
+            this.formItem.get('parentStatement').patchValue(null);
+            this.formItem.get('parentStatement').clearValidators();
+            this.formItem.get('parentStatement').disable();
+            this.formItem.get('pillar').patchValue(null);
+            this.formItem.get('pillar').clearValidators();
+            this.formItem.get('pillar').disable();
+        }
+        this.formItem.get('area').updateValueAndValidity();
+        this.formItem.get('parentStatement').updateValueAndValidity();
+        this.formItem.get('pillar').updateValueAndValidity();
     }
 }

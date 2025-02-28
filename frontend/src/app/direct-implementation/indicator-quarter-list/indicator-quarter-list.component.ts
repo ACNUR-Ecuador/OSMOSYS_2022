@@ -57,7 +57,7 @@ export class IndicatorQuarterListComponent implements OnInit {
 
     private setRoles() {
         const userId = this.userService.getLogedUsername().id;
-        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
+        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL']);
         this.isSupervisor = this.indicatorExecution.supervisorUser.id === userId;
         if (this.indicatorExecution.assignedUserBackup) {
             this.isEjecutor = this.indicatorExecution.assignedUser.id === userId
@@ -73,21 +73,28 @@ export class IndicatorQuarterListComponent implements OnInit {
     }
 
     changeMonthBlocking(quarterMonthResume: QuarterMonthResume, $event: any) {
-        this.monthService.changeBlockedState(quarterMonthResume.monthId, $event.checked).subscribe(() => {
-            this.messageService.add({
-                severity: 'success',
-                summary: 'Mes actualizado correctamente',
-                life: 3000
+        this.monthService.changeBlockedState(quarterMonthResume.monthId, $event.checked)
+            .subscribe({
+                next:() => {
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Mes actualizado correctamente',
+                        life: 3000
+                    });
+                    this.refreshData.emit(quarterMonthResume.monthId)
+                },
+                error:error => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al actualizar el mes',
+                        detail: error.error.message,
+                        life: 3000
+                    });
+                },
+                complete:() => {
+                    this.refreshData.emit(quarterMonthResume.monthId);
+                }
             });
-        }, error => {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Error al actualizar el mes',
-                detail: error.error.message,
-                life: 3000
-            });
-        }, () => {
-            this.refreshData.emit(quarterMonthResume.monthId);
-        });
+
     }
 }

@@ -44,4 +44,8 @@ export class StatementService {
     public importStatementsCatalog(file: ImportFile) {
         return this.http.post(`${mainServiceUrl}/importStatementsCatalog`, file);
     }
+
+    public getChildStatementsByParentId(parentId: number): Observable<Statement[]> {
+        return this.http.get<Statement[]>(`${mainServiceUrl}/getChildStatementsByParentId/${parentId}`);
+    }
 }

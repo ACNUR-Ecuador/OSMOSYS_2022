@@ -1,36 +1,17 @@
 package org.unhcr.osmosys.webServices.model;
 
-import com.sagatechs.generics.persistence.model.State;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 
-public class CustomDissagregationAssignationToIndicatorWeb implements Serializable {
+public class CustomDissagregationAssignationToIndicatorWeb extends BaseWebEntity implements Serializable {
 
-    private Long id;
+    public CustomDissagregationAssignationToIndicatorWeb() {
+        super();
+    }
 
-    private State state;
     private CustomDissagregationWeb customDissagregation;
-    private List<CustomDissagregationFilterIndicatorWeb> customDissagregationFilterIndicators = new ArrayList<>();
     private PeriodWeb period;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
 
     public CustomDissagregationWeb getCustomDissagregation() {
         return customDissagregation;
@@ -38,14 +19,6 @@ public class CustomDissagregationAssignationToIndicatorWeb implements Serializab
 
     public void setCustomDissagregation(CustomDissagregationWeb customDissagregation) {
         this.customDissagregation = customDissagregation;
-    }
-
-    public List<CustomDissagregationFilterIndicatorWeb> getCustomDissagregationFilterIndicators() {
-        return customDissagregationFilterIndicators;
-    }
-
-    public void setCustomDissagregationFilterIndicators(List<CustomDissagregationFilterIndicatorWeb> customDissagregationFilterIndicators) {
-        this.customDissagregationFilterIndicators = customDissagregationFilterIndicators;
     }
 
     public PeriodWeb getPeriod() {

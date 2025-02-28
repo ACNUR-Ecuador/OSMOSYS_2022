@@ -1,6 +1,5 @@
 package org.unhcr.osmosys.webServices.model;
 
-import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.enums.AreaType;
 
 import java.io.Serializable;
@@ -9,10 +8,12 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class StatementWeb implements Serializable {
+public class StatementWeb extends BaseWebEntity implements Serializable {
 
-    private Long id;
-    private State state;
+    public StatementWeb() {
+        super();
+    }
+
     private AreaType areaType;
     private String code;
     private String productCode;
@@ -23,22 +24,6 @@ public class StatementWeb implements Serializable {
     private SituationWeb situation;
     private List<PeriodStatementAsignationWeb> periodStatementAsignations = new ArrayList<>();
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
 
     public AreaType getAreaType() {
         return areaType;

@@ -4,7 +4,6 @@ import {Period, YearMonth} from "../../shared/model/OsmosysModel";
 import {PeriodService} from "../../services/period.service";
 import {MessageService} from "primeng/api";
 import {UtilsService} from "../../services/utils.service";
-import {EmailService} from "../../services/email.service";
 import {MonthService} from "../../services/month.service";
 
 @Component({
@@ -43,7 +42,7 @@ export class MassBlockingComponent implements OnInit {
             next: value => {
                 this.periods = value;
                 if (this.periods.length < 1) {
-                    this.messageService.add({severity: 'error', summary: 'No se encontraron periodos', detail: ''});
+                    this.messageService.add({severity: 'error', summary: 'No se encontraron años', detail: ''});
                 } else {
                     const currentPeriod = this.utilsService.getCurrectPeriodOrDefault(this.periods);
                     this.periodForm.get('selectedPeriod').patchValue(currentPeriod);
@@ -52,7 +51,7 @@ export class MassBlockingComponent implements OnInit {
             }, error: err => {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Error al cargar las los periodos',
+                    summary: 'Error al cargar las los años',
                     detail: err.error.message,
                     life: 3000
                 });
@@ -64,21 +63,23 @@ export class MassBlockingComponent implements OnInit {
         this.monthService.getYearMonthByPeriodId(periodId).subscribe({
             next: value => {
                 this.yearMonths = value;
-                console.log(this.yearMonths);
-            }, error: err => {
+            }, error: () => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'error en al recuperar datos'
+                });
             }
         });
     }
 
     blockYearMonth(yearMonth: YearMonth) {
-        console.log(yearMonth);
         this.monthService.massiveBlock(yearMonth).subscribe({
-            next: value => {
+            next: () => {
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'bloquedo exitosamente ' + yearMonth.year + '-' + yearMonth.month
+                    summary: 'bloqueado exitosamente ' + yearMonth.year + '-' + yearMonth.month
                 });
-            }, error: err => {
+            }, error: () => {
                 this.messageService.add({
                     severity: 'error',
                     summary: 'error en el bloqueo de ' + yearMonth.year + '-' + yearMonth.month
@@ -89,15 +90,15 @@ export class MassBlockingComponent implements OnInit {
 
     unblockYearMonth(yearMonth: YearMonth) {
         this.monthService.massiveUnblock(yearMonth).subscribe({
-            next: value => {
+            next: () => {
                 this.messageService.add({
                     severity: 'success',
-                    summary: 'bloquedo exitosamente ' + yearMonth.year + '-' + yearMonth.month
+                    summary: 'desbloqueado exitosamente ' + yearMonth.year + '-' + yearMonth.month
                 });
-            }, error: err => {
+            }, error: () => {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'error en el bloqueo de ' + yearMonth.year + '-' + yearMonth.month
+                    summary: 'error en el desbloqueo de ' + yearMonth.year + '-' + yearMonth.month
                 });
             }
         });

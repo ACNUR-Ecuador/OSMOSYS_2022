@@ -6262,6 +6262,42 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 }
 
 .osmosys-logo {
+  height: 2.5rem;
+  margin: 0;
+  padding: 0;
+  display: block;
+  align-items: center;
+}
+
+.main-button {
+  background-color: #0072BB; /* Cambia el color de fondo */
+  color: white;             /* Cambia el color del texto */
+  border: none;             /* Quita el borde */
+  border-radius: 5px;       /* Bordes redondeados */
+}
+
+.second-button {
+  background-color: #589BE5; /* Cambia el color de fondo */
+  color: white;             /* Cambia el color del texto */
+  border: none;             /* Quita el borde */
+}
+
+.main-button:hover{
+  background-color: #004b7c !important; /* Cambia el color de fondo al pasar el cursor */
+}
+
+.p-datatable .p-datatable-header {
+  padding-bottom: 0rem !important;
+  background-color: white !important;
+  color: #666666 !important;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+.acnur-logo {
   height: 4rem;
   margin: 0;
   padding: 0;

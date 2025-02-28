@@ -1,19 +1,21 @@
-import {Component, OnInit} from '@angular/core';
-import {IndicatorExecution, IndicatorValue, Month, MonthValues} from '../../shared/model/OsmosysModel';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {Canton, EnumWeb, IndicatorExecution, IndicatorValue, Month, MonthValues} from '../../shared/model/OsmosysModel';
 import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {MessageService, SelectItem} from 'primeng/api';
-import {DissagregationType, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
+import {EnumsState, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {IndicatorExecutionService} from '../../services/indicator-execution.service';
 import {MonthService} from '../../services/month.service';
 import {EnumsService} from '../../services/enums.service';
 import {UtilsService} from '../../services/utils.service';
 import {UserService} from '../../services/user.service';
+import {CantonService} from "../../services/canton.service";
+import { EnumValuesToLabelPipe } from 'src/app/shared/pipes/enum-values-to-label.pipe';
 
 @Component({
-  selector: 'app-general-indicator-form',
-  templateUrl: './general-indicator-form.component.html',
-  styleUrls: ['./general-indicator-form.component.scss']
+    selector: 'app-general-indicator-form',
+    templateUrl: './general-indicator-form.component.html',
+    styleUrls: ['./general-indicator-form.component.scss']
 })
 export class GeneralIndicatorFormComponent implements OnInit {
     indicatorExecution: IndicatorExecution;
@@ -22,6 +24,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
     isAdmin = false;
     isProjectFocalPoint = false;
     isEjecutor = false;
+    isPartnerSupervisor = false;
     monthValues: MonthValues;
     month: Month;
     monthValuesMap: Map<string, IndicatorValue[]>;
@@ -32,17 +35,28 @@ export class GeneralIndicatorFormComponent implements OnInit {
     sourceTypes: SelectItemWithOrder<any>[];
 
     render = false;
-    showErrorResume = false;
+    
     showOtherSource: boolean;
-    totalsValidation: Map<string, number> = null;
+    totalsValidation: Map<string, any> = null;
+    showTotalErrorResume = false;
+    showMissmatchErrorResume = false;
+    noDimentionDissagregations: EnumWeb[] = [];
+    oneDimentionDissagregations: EnumWeb[] = [];
+    twoDimentionDissagregations: EnumWeb[] = [];
+    threeDimentionDissagregations: EnumWeb[] = [];
+    fourDimentionDissagregations: EnumWeb[] = [];
+    fiveDimentionDissagregations: EnumWeb[] = [];
+    sixDimentionDissagregations: EnumWeb[] = [];
 
-    oneDimentionDissagregations: DissagregationType[] = [];
-    twoDimentionDissagregations: DissagregationType[] = [];
-    threeDimentionDissagregations: DissagregationType[] = [];
-    fourDimentionDissagregations: DissagregationType[] = [];
-    noDimentionDissagregations: DissagregationType[] = [];
+
     chekedOptions: SelectItem[];
 
+    hasLocationDissagregation: boolean;
+    disableSave = false;
+    public cantonesOptions: Canton[]=[];
+    public formLocations: FormGroup;
+    cantonesAvailable: Canton[];
+    showLocationsDialog = false;
 
     constructor(public ref: DynamicDialogRef,
                 public config: DynamicDialogConfig,
@@ -52,7 +66,10 @@ export class GeneralIndicatorFormComponent implements OnInit {
                 public utilsService: UtilsService,
                 public userService: UserService,
                 private messageService: MessageService,
-                private fb: FormBuilder
+                private fb: FormBuilder,
+                private cantonService: CantonService,
+                private cd: ChangeDetectorRef,
+                private enumValuesToLabelPipe: EnumValuesToLabelPipe
     ) {
     }
 
@@ -63,9 +80,10 @@ export class GeneralIndicatorFormComponent implements OnInit {
         this.isAdmin = this.config.data.isAdmin; //
         this.isProjectFocalPoint = this.config.data.isProjectFocalPoint; //
         this.isEjecutor = this.config.data.isEjecutor; //
+        this.isPartnerSupervisor = this.config.data.isPartnerSupervisor; //
         this.formItem = this.fb.group({
-            commentary: new FormControl('', [Validators.maxLength(1000)]),
-            sources: new FormControl('', Validators.required),
+            commentary: new FormControl('', [Validators.maxLength(1000), Validators.required]),
+            sources: new FormControl(''),
             sourceOther: new FormControl(''),
             checked: new FormControl(''),
         });
@@ -83,14 +101,16 @@ export class GeneralIndicatorFormComponent implements OnInit {
             label: 'Requiere correcciones por parte del socio',
             value: false
         });
-
+        this.formLocations = this.fb.group({
+            locationsSelected: new FormControl('')
+        });
     }
 
     setRoles() {
         const userId = this.userService.getLogedUsername().id;
 
-        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
-        if (this.indicatorExecution.project.focalPoint && this.indicatorExecution.project.focalPoint.id === userId) {
+        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL']);
+        if (this.indicatorExecution.project.focalPoints.some( fp => fp.id === userId) ) {
             this.isProjectFocalPoint = true;
         }
         this.isEjecutor = this.userService.hasAnyRole(['EJECUTOR_PROYECTOS'])
@@ -102,13 +122,13 @@ export class GeneralIndicatorFormComponent implements OnInit {
         this.noEditionMessage = null;
         if (this.isAdmin) {
             this.editable = true;
-        } else if (this.month.blockUpdate && (this.isEjecutor || this.isProjectFocalPoint )) {
+        } else if (this.month.blockUpdate && (this.isEjecutor || this.isProjectFocalPoint || this.isPartnerSupervisor)) {
             this.editable = false;
-            this.noEditionMessage = "El indicador está bloqueado, comuníquese con el punto focal si desea actualizarlo";
-        } else if (!this.month.blockUpdate && (this.isEjecutor || this.isProjectFocalPoint )) {
+            this.noEditionMessage = "El indicador está bloqueado, comuníquese con un responsable del proyecto si desea actualizarlo";
+        } else if (!this.month.blockUpdate && (this.isEjecutor || this.isProjectFocalPoint || this.isPartnerSupervisor)) {
             this.editable = true;
-        }else {
-            this.editable= false;
+        } else {
+            this.editable = false;
             this.noEditionMessage = "No tiene los permisos para editar la información";
         }
 
@@ -140,6 +160,8 @@ export class GeneralIndicatorFormComponent implements OnInit {
             });
 
             this.setDimentionsDissagregations();
+            this.getHasLocationDissagregation();
+
         }, error => {
             this.messageService.add({
                 severity: 'error',
@@ -152,7 +174,7 @@ export class GeneralIndicatorFormComponent implements OnInit {
 
     saveMonth() {
         this.utilsService.setZerosMonthValues(this.monthValuesMap);
-        const totalsValidation = this.utilsService.validateMonth(this.monthValuesMap, null);
+        const totalsValidation = this.utilsService.validateMonthAndOptions(this.monthValuesMap, null);
         this.monthValues.month.commentary = this.formItem.get('commentary').value;
         this.monthValues.month.sources = this.formItem.get('sources').value;
         this.monthValues.month.sourceOther = this.formItem.get('sourceOther').value;
@@ -162,13 +184,44 @@ export class GeneralIndicatorFormComponent implements OnInit {
             this.monthValues.month.checked = this.formItem.get('checked').value;
         }
         if (totalsValidation) {
-            this.showErrorResume = true;
-            this.totalsValidation = totalsValidation;
+            if(totalsValidation.type=='totalsError'){
+                this.showTotalErrorResume = true;
+                this.totalsValidation = totalsValidation.value;
+            }else{
+                this.showMissmatchErrorResume = true;
+                this.totalsValidation = totalsValidation.value;
+            }
         } else {
             this.messageService.clear();
             this.totalsValidation = null;
             this.sendMonthValue();
         }
+    }
+    missMatchDissOption(dissagregation){
+        const dissMap=this.totalsValidation.get(dissagregation)
+        const firstKey = dissMap?.keys().next().value;
+        const firstSubkey = dissMap.get(firstKey)?.keys().next().value;
+        const result = `${this.utilsService.getDissagregationlabelByKey(firstKey)} - ${firstSubkey}`;
+
+        return result
+
+    }
+    missMatchDiss(dissagregation){
+        const result = `${this.enumValuesToLabelPipe.transform(dissagregation, 'DissagregationType')}: `;
+        return result
+
+    }
+
+    missMatchTotal(dissagregation){
+        const dissMap=this.totalsValidation.get(dissagregation)
+        const firstKey = dissMap?.keys().next().value;
+        const firstSubkey = dissMap.get(firstKey)?.keys().next().value;
+        const firstValue = dissMap.get(firstKey)?.get(firstSubkey);    
+
+        const result = `${firstValue}`;
+
+        return result
+
     }
 
     cancel() {
@@ -184,24 +237,32 @@ export class GeneralIndicatorFormComponent implements OnInit {
             this.messageService.add({severity: 'success', summary: 'Guardado con éxito', detail: ''});
             this.ref.close({test: 1});
         }, error => {
-            this.messageService.add({severity: 'error', summary: 'Error al guardar los valores:', detail: error.error.message});
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al guardar los valores:',
+                detail: error.error.message
+            });
         });
     }
 
     closeErrorDialog() {
-        this.showErrorResume = false;
+        this.showTotalErrorResume = false;
+        this.showMissmatchErrorResume = false;
     }
 
     setDimentionsDissagregations(): void {
         this.render = false;
-        const dimensionsMap: Map<number, DissagregationType[]> = this.utilsService.setDimentionsDissagregations(
+        const dimensionsMap: Map<number, EnumWeb[]> = this.utilsService.setDimentionsDissagregationsV2(
             this.monthValuesMap
         );
+
         this.noDimentionDissagregations = dimensionsMap.get(0);
         this.oneDimentionDissagregations = dimensionsMap.get(1);
         this.twoDimentionDissagregations = dimensionsMap.get(2);
         this.threeDimentionDissagregations = dimensionsMap.get(3);
         this.fourDimentionDissagregations = dimensionsMap.get(4);
+        this.fiveDimentionDissagregations = dimensionsMap.get(5);
+        this.sixDimentionDissagregations = dimensionsMap.get(6);
         this.render = true;
     }
 
@@ -217,6 +278,108 @@ export class GeneralIndicatorFormComponent implements OnInit {
             this.formItem.get('sourceOther').patchValue(null);
             this.formItem.get('sourceOther').clearValidators();
             this.formItem.get('sourceOther').updateValueAndValidity();
+        }
+    }
+
+    getHasLocationDissagregation() {
+        this.hasLocationDissagregation = false;
+        for (const entry of Array.from(this.monthValuesMap.entries())) {
+            const key = entry[0];
+            const value = entry[1];
+            if (value && this.utilsService.isLocationDissagregation(key)) {
+                this.hasLocationDissagregation = true;
+                this.validateSegregations();
+                return;
+            }
+        }
+    }
+
+    validateSegregations() {
+        this.disableSave = false;
+        this.monthValuesMap.forEach((value, key) => {
+            if (value && value.length === 0) {
+                console.log(value.length);
+                /* this.messageService.add({
+                     severity: 'error',
+                     summary: 'Actualiza los valores para ' + this.enumsService.resolveLabel(EnumsType.DissagregationType, key),
+                     detail: 'Agrega lugares de ejecución',
+                     sticky: true
+                 });*/
+                this.disableSave = true;
+            }
+        });
+    }
+
+    openLocationsDialog() {
+        this.messageService.clear();
+        this.cantonService.getByState(EnumsState.ACTIVE).subscribe(value => {
+            this.cantonesOptions = this.utilsService.sortCantones(value);
+            // noinspection JSMismatchedCollectionQueryUpdate
+            let cantonesCurrent: Canton[] = [];
+            this.monthValuesMap.forEach((value1, key) => {
+                if (this.utilsService.isLocationDissagregation(key) && value1) {
+                    const cantones = value1
+                        .filter(value2 => value2.state === EnumsState.ACTIVE)
+                        .filter(value2 => value2.location)
+                        .map(value2 => value2.location);
+                    // todo 2024 restaurar
+                    //cantonesCurrent = cantonesCurrent.concat(cantones);
+                }
+
+            });
+            const keyId = 'id';
+            const cantonesCurrentUnique: Canton[] = [...new Map(cantonesCurrent.map(item =>
+                [item[keyId], item])).values()];
+
+
+            if (!cantonesCurrentUnique || cantonesCurrentUnique.length < 1) {
+                this.formLocations.get('locationsSelected').patchValue([]);
+                this.cantonesAvailable = this.utilsService.sortCantones(this.cantonesOptions);
+            } else {
+                this.formLocations.get('locationsSelected').patchValue(this.utilsService.sortCantones(cantonesCurrentUnique));
+                this.cantonesAvailable =
+                    this.cantonesOptions.filter((canton1) => !cantonesCurrentUnique.find(canton2 => canton1.id === canton2.id));
+            }
+            this.showLocationsDialog = true;
+            this.cd.detectChanges();
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al cargar los cantones',
+                detail: error.error.message,
+                life: 3000
+            });
+        });
+
+    }
+
+    cancelLocations() {
+        this.showLocationsDialog = false;
+    }
+
+
+    saveLocations() {
+        const cantones: Canton[] = this.formLocations.get('locationsSelected').value;
+        if (!cantones || cantones.length < 1) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Selecciona al menos un lugar',
+                life: 3000
+            });
+        } else {
+            this.indicatorExecutionService
+                .updatePartnerIndicatorExecutionLocationAssigment(this.indicatorExecution.id, cantones)
+                .subscribe(() => {
+                    this.loadMonthValues(this.monthId);
+                    this.showLocationsDialog = false;
+                }, error => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al guardar los lugar',
+                        detail: error.error.message,
+                        sticky: true
+                    });
+                });
         }
     }
 }

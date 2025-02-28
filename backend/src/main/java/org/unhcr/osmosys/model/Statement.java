@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -13,7 +14,7 @@ import java.util.Set;
 
 @Entity
 @Table(schema = "osmosys", name = "statements")
-public class Statement extends BaseEntity<Long> {
+public class Statement extends BaseEntityIdState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,7 +53,7 @@ public class Statement extends BaseEntity<Long> {
     @JoinColumn(name = "pillar_id", foreignKey = @ForeignKey(name = "fk_statemet_pillar"))
     private Pillar pillar;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "situation_id", foreignKey = @ForeignKey(name = "fk_statemet_situation"))
     private Situation situation;
 

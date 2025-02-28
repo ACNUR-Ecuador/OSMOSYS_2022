@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellAddress;
@@ -90,7 +91,7 @@ public class ProjectsImportService {
                 throw new GeneralAppException("El periodo " + periodWeb.getYear() + " no existe", Response.Status.BAD_REQUEST);
 
             }
-
+            DataFormatter formatter = new DataFormatter();
             // FileInputStream file = new FileInputStream(FILE_NAME);
             //Create Workbook instance holding reference to .xlsx file
             XSSFWorkbook workbook = new XSSFWorkbook(file);
@@ -133,7 +134,7 @@ public class ProjectsImportService {
                     continue;
                 }
                 // find by year and code
-                String code = StringUtils.trimToNull(row.getCell(COL_CODE).getStringCellValue());
+                String code = StringUtils.trimToNull(formatter.formatCellValue(row.getCell(COL_CODE)));
                 if(code==null){
                     break;
                 }
@@ -173,7 +174,7 @@ public class ProjectsImportService {
                     project.setEndDate(endLocalDate);
                 } catch (IllegalStateException e) {
                     throw new GeneralAppException("La fecha final del proyecto: " + code + " no puede ser leido como fecha " +
-                            " '" + row.getCell(COL_CODE).getStringCellValue() + "'.", Response.Status.BAD_REQUEST);
+                            " '" + formatter.formatCellValue(row.getCell(COL_CODE)) + "'.", Response.Status.BAD_REQUEST);
                 }
                 String partnerAcronym = StringUtils.trimToNull(row.getCell(COL_PARTNER).getStringCellValue());
                 Organization partner = this.organizacionService.getByAcronym(partnerAcronym);
@@ -259,7 +260,7 @@ public class ProjectsImportService {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
             throw new GeneralAppException(ExceptionUtils.getMessage(e), Response.Status.BAD_REQUEST);
 
 
@@ -370,7 +371,7 @@ public class ProjectsImportService {
         int firstCol = tableOptions.getArea().getFirstCell().getCol();
 
         List<CantonWeb> cantons = this.cantonService.getByState(State.ACTIVO);
-        List<String> values = cantons.stream().map(cantonWeb -> cantonWeb.getProvincia().getDescription() + "-" + cantonWeb.getDescription())
+        List<String> values = cantons.stream().map(cantonWeb -> cantonWeb.getProvincia().getDescription() + "-" + cantonWeb.getName())
                 .sorted().collect(Collectors.toList());
 
 

@@ -19,7 +19,14 @@ public class PeriodDao extends GenericDaoJpa<Period, Long> {
     public List<Period> getByState(State state) {
 
         String jpql = "SELECT DISTINCT o FROM Period o " +
-                "WHERE o.state = :state";
+                " left join fetch o.generalIndicator gi " +
+                " left join fetch o.periodPopulationTypeDissagregationOptions " +
+                " left join fetch o.periodAgeDissagregationOptions " +
+                " left join fetch o.periodGenderDissagregationOptions " +
+                " left join fetch o.periodDiversityDissagregationOptions " +
+                " left join fetch o.periodCountryOfOriginDissagregationOptions " +
+                " WHERE o.state = :state" +
+                " order by o.year";
         Query q = getEntityManager().createQuery(jpql, Period.class);
         q.setParameter("state", state);
         return q.getResultList();
@@ -38,10 +45,17 @@ public class PeriodDao extends GenericDaoJpa<Period, Long> {
         }
     }
 
-    public Period getWithGeneralIndicatorById(Long id)  {
+    public Period getWithGeneralIndicatorById(Long id) {
 
-        String jpql = "SELECT DISTINCT o FROM Period o left join fetch o.generalIndicator gi " +
-                " WHERE o.id = :id";
+        String jpql = "SELECT DISTINCT o FROM Period o " +
+                "left join fetch o.generalIndicator gi " +
+                " left join fetch o.periodPopulationTypeDissagregationOptions " +
+                " left join fetch o.periodAgeDissagregationOptions " +
+                " left join fetch o.periodGenderDissagregationOptions " +
+                " left join fetch o.periodDiversityDissagregationOptions " +
+                " left join fetch o.periodCountryOfOriginDissagregationOptions " +
+                " WHERE o.id = :id" +
+                " order by o.year";
         Query q = getEntityManager().createQuery(jpql, Period.class);
         q.setParameter("id", id);
         try {
@@ -51,11 +65,42 @@ public class PeriodDao extends GenericDaoJpa<Period, Long> {
         }
     }
 
-    public List<Period> getWithGeneralIndicatorAll()  {
 
-        String jpql = "SELECT DISTINCT o FROM Period o left join fetch o.generalIndicator gi order by o.year " ;
+    public List<Period> getAllWithDissagregationOptions() {
+
+        String jpql = "SELECT DISTINCT o FROM Period o " +
+                " left join fetch o.generalIndicator gi " +
+                " left join fetch o.periodPopulationTypeDissagregationOptions " +
+                " left join fetch o.periodAgeDissagregationOptions " +
+                " left join fetch o.periodGenderDissagregationOptions " +
+                " left join fetch o.periodDiversityDissagregationOptions " +
+                " left join fetch o.periodCountryOfOriginDissagregationOptions " +
+                " order by o.year";
         Query q = getEntityManager().createQuery(jpql, Period.class);
-            return  q.getResultList();
+        return q.getResultList();
+    }
 
+    public Period getWithDissagregationOptionsById(Long id) {
+
+        String jpql = "SELECT DISTINCT o FROM Period o left join fetch o.generalIndicator gi " +
+                " left join fetch o.periodPopulationTypeDissagregationOptions p " +
+                " left join fetch p.populationTypeDissagregationOption " +
+                " left join fetch o.periodAgeDissagregationOptions a" +
+                " left join fetch a.ageDissagregationOption " +
+                " left join fetch o.periodGenderDissagregationOptions g " +
+                " left join fetch g.genderDissagregationOption " +
+                " left join fetch o.periodDiversityDissagregationOptions d " +
+                " left join fetch d.diversityDissagregationOption  " +
+                " left join fetch o.periodCountryOfOriginDissagregationOptions c " +
+                " left join fetch  c.countryOfOriginDissagregationOption " +
+                " WHERE o.id = :id " +
+                " order by o.year";
+        Query q = getEntityManager().createQuery(jpql, Period.class);
+        q.setParameter("id", id);
+        try {
+            return (Period) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 }

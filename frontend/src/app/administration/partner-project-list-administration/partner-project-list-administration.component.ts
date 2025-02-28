@@ -52,7 +52,7 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
         this.periodService.getAll().subscribe(value => {
             this.periods = value;
             if (this.periods.length < 1) {
-                this.messageService.add({severity: 'error', summary: 'No se encontraron periodos', detail: ''});
+                this.messageService.add({severity: 'error', summary: 'No se encontraron años', detail: ''});
             } else {
                 const currentYear = (new Date()).getFullYear();
                 if (this.periods.some(e => e.year === currentYear)) {
@@ -92,7 +92,7 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
     }
 
     private loadProjects(periodId: number) {
-        if (this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'])) {
+        if (this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL'])) {
             this.projectService.getProjectResumenWebByPeriodId(periodId).subscribe(value => {
                 this.items = value;
             }, error => {
@@ -125,13 +125,13 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
         this.cols = [
             {field: 'id', header: 'id', type: ColumnDataType.numeric},
             {field: 'code', header: 'Código', type: ColumnDataType.text},
-            {field: 'name', header: 'Nombre', type: ColumnDataType.text},
+            {field: 'name', header: 'Título', type: ColumnDataType.text},
+            // {field: 'organizationId', header: 'Id Organización', type: ColumnDataType.numeric},
+            {field: 'organizationDescription', header: 'Implementador', type: ColumnDataType.text},
+            {field: 'organizationAcronym', header: 'Implementador Acr.', type: ColumnDataType.text},
+            // {field: 'periodYear', header: 'Año', type: ColumnDataType.numeric},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
-            {field: 'organizationId', header: 'Id Organización', type: ColumnDataType.numeric},
-            {field: 'organizationDescription', header: 'Organización', type: ColumnDataType.text},
-            {field: 'organizationAcronym', header: 'Organización Acr.', type: ColumnDataType.text},
-            {field: 'periodId', header: 'Id Periodo', type: ColumnDataType.numeric},
-            {field: 'periodYear', header: 'Periodo', type: ColumnDataType.numeric},
+
         ];
 
         const hiddenColumns: string[] = ['id', 'organizationId', 'periodId'];
@@ -222,7 +222,7 @@ export class PartnerProjectListAdministrationComponent implements OnInit {
         if (!period || !period.id) {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Selecciona un periodo',
+                summary: 'Selecciona un año',
                 life: 3000
             });
         }

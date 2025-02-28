@@ -3,7 +3,8 @@ import {UtilsService} from './utils.service';
 import {
     CustomDissagregationAssignationToIndicator, CustomDissagregationOption,
     DissagregationAssignationToIndicator,
-    Marker, Period, PeriodStatementAsignation,
+    Period, PeriodStatementAsignation,
+    PeriodTagAsignation,
     Statement
 } from '../shared/model/OsmosysModel';
 import {EnumsService} from './enums.service';
@@ -80,6 +81,34 @@ export class FilterUtilsService {
         return false;
     }
 
+    cantonListFilter(valueArray: any[], fields: string[], filter: string): boolean {
+        if (filter === undefined || filter === null || filter.trim() === '') {
+            return true;
+        }
+
+        if (valueArray === undefined || valueArray === null || valueArray.length === 0) {
+            return false;
+        }
+        for (const value of valueArray) {
+            for (const field of fields) {
+                if (value[field] !== undefined || value[field] !== null) {
+                    if(field==="name"){
+                        if ((value[field]).toString().toLowerCase().includes(filter.toString().toLowerCase())) {
+                            return true;
+                        }
+                    }else{
+                        if ((value.provincia.description).toString().toLowerCase().includes(filter.toString().toLowerCase())) {
+                            return true;
+                        }
+
+                    }
+                    
+                }
+            }
+        }
+        return false;
+    }
+
     periodIndicatorFilter(value: DissagregationAssignationToIndicator[], filter): boolean {
 
         if (filter === undefined || filter === null) {
@@ -100,6 +129,14 @@ export class FilterUtilsService {
         }
         return result;
     }
+    customFilterPeriod(value: any, filter: any): boolean {
+        
+        if (!filter || !value) return true; 
+        
+        // Buscamos si el año seleccionado está presente dentro de la cadena de años concatenados
+        return String(value).includes(String(filter.year)); 
+      }
+
 
     dissagregationsAssignationToIndicatorFilter(value: DissagregationAssignationToIndicator[], filter): boolean {
 
@@ -141,36 +178,6 @@ export class FilterUtilsService {
             || value.description.toLowerCase().includes(filter.toString().toLowerCase());
     }
 
-    markersFilter(value: Marker[], filter): boolean {
-
-        if (filter === undefined || filter === null || filter.trim() === '') {
-            return true;
-        }
-
-        if (value === undefined || value === null || value.length === 0) {
-            return false;
-        }
-        let result = false;
-
-        for (const da of value) {
-
-            if (
-                da.shortDescription.toLowerCase().includes(filter.toString().toLowerCase())
-                || da.shortDescription.toLowerCase().includes(filter.toString().toLowerCase())
-                || da.subType.toLowerCase().includes(filter.toString().toLowerCase())
-                || da.subType.toLowerCase().includes(filter.toString().toLowerCase())
-                || da.type.toLowerCase().includes(filter.toString().toLowerCase())
-                || da.type.toLowerCase().includes(filter.toString().toLowerCase())
-
-
-            ) {
-                return result = true;
-            } else {
-                result = false;
-            }
-        }
-        return result;
-    }
 
     objectFilterId(value: any, filter): boolean {
 
@@ -257,5 +264,34 @@ export class FilterUtilsService {
         }
         return result;
     }
+
+    periodTagAsignationsFilter(value: PeriodTagAsignation[], filter: Period[]): boolean {
+
+        if (filter === undefined || filter === null || filter.length === 0) {
+            return true;
+        }
+
+        if (value === undefined || value === null || value.length === 0) {
+            return false;
+        }
+        let result = false;
+
+        const periodsVal: Period[] = value
+            .map(value1 => {
+                return value1.period;
+            })
+            .filter(value1 => {
+                return value1.state === EnumsState.ACTIVE;
+            });
+        for (let periodFilter of filter) {
+            for (let periodVal of periodsVal) {
+                if (periodVal.id === periodFilter.id) {
+                    result = true;
+                }
+            }
+        }
+        return result;
+    }
+
 
 }

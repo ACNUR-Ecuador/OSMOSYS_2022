@@ -12,6 +12,7 @@ import {
     CantonForList, ImportFile,
     Indicator, IndicatorExecution,
     IndicatorExecutionAssigment,
+    Organization,
     Period,
     Project,
     Quarter,
@@ -24,7 +25,6 @@ import {
 
     ColumnDataType,
     ColumnTable,
-    DissagregationType,
     EnumsIndicatorType,
     EnumsState,
     EnumsType
@@ -68,6 +68,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     public indicatorOptions: SelectItem[] = [];
     public showLocationMenu = false;
     public showPerformanceIndicatorDialog = false;
+    public partnersList: User[];
     cols: ColumnTable[];
     colsCantonList: ColumnTable[];
     colsCantonListNotEditable: ColumnTable[];
@@ -174,7 +175,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 error: error => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al cargar el periodo',
+                        summary: 'Error al cargar el año',
                         detail: error.error.message,
                         life: 3000
                     });
@@ -196,8 +197,10 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                         startDate,
                         endDate,
                         locations,
-                        focalPoint
+                        focalPoints,
+                        partnerManager
                     } = value;
+                    this.onOrganizationChange(organization)
                     this.utilsService.sortCantones(locations);
                     const originalLocations = [];
                     locations.forEach(val => originalLocations.push(Object.assign({}, val)));
@@ -211,9 +214,10 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                         startDate,
                         endDate,
                         locations,
-                        focalPoint,
+                        focalPoints,
                         originalLocations,
-                        updateAllLocationsIndicators: false
+                        updateAllLocationsIndicators: false,
+                        partnerManager
                     });
                     this.periods = [];
                     this.periods.push(period);
@@ -287,9 +291,10 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
         if (generalIndicatorsTargetsToAlert.length > 0 || performanceIndicatorsTargetsToAlert.length > 0) {
             this.showAlert = true;
+            // todo 2024 quitar para no indicador general
             this.messageAlert += 'Las metas de los siguientes indicadores están pendientes de actualización. </br>';
             generalIndicatorsTargetsToAlert.forEach(value => {
-                this.messageAlert = this.messageAlert + 'Indicador General: ' + this.indicatorPipe.transform(value.indicator) + '</br>';
+                this.messageAlert = this.messageAlert + 'Total de Beneficiarios Únicos: ' + this.indicatorPipe.transform(value.indicator) + '</br>';
             });
             performanceIndicatorsTargetsToAlert.forEach(value => {
                 this.messageAlert = this.messageAlert + 'Indicador de Producto: ' + this.indicatorPipe.transform(value.indicator) + '</br>';
@@ -322,7 +327,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 error: error => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al cargar los cantones',
+                        summary: 'Error al cargar los lugares',
                         detail: error.error.message,
                         life: 3000
                     });
@@ -358,7 +363,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 error: error => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al cargar los puntos focales',
+                        summary: 'Error al cargar los responsables del proyecto',
                         detail: error.error.message,
                         life: 3000
                     });
@@ -406,7 +411,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 error: error => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al cargar los indicadores del periodo',
+                        summary: 'Error al cargar los indicadores del año',
                         detail: error.error.message,
                         life: 3000
                     });
@@ -425,10 +430,11 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             period: new FormControl('', Validators.required),
             startDate: new FormControl('', Validators.required),
             endDate: new FormControl('', Validators.required),
-            focalPoint: new FormControl('', Validators.required),
+            focalPoints: new FormControl('', Validators.required),
             locations: new FormControl(''),
             originalLocations: new FormControl(''),
-            updateAllLocationsIndicators: new FormControl('')
+            updateAllLocationsIndicators: new FormControl(''),
+            partnerManager: new FormControl('')
         });
 
         this.formLocations = this.fb.group({
@@ -471,8 +477,9 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             startDate,
             endDate,
             locations,
-            focalPoint,
-            updateAllLocationsIndicators
+            focalPoints,
+            updateAllLocationsIndicators,
+            partnerManager
         } = this.formItem.value;
         const project: Project = {
             id,
@@ -483,14 +490,23 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             period,
             startDate,
             endDate,
-            focalPoint,
+            focalPoints: [],
             locations: [],
-            updateAllLocationsIndicators
+            updateAllLocationsIndicators,
+            partnerManager: partnerManager !== "" ? partnerManager: null
         };
         if (!locations || locations.length < 1) {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Agrega al menos un cantón'
+                summary: 'Agrega al menos un lugar'
+            });
+            return;
+        }
+
+        if (!focalPoints || focalPoints.length < 1) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Agrega al menos un Responsable de Proyecto'
             });
             return;
         }
@@ -499,6 +515,10 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             delete value1.provinciaDescription;
             delete value1.enabled;
             return value1 as Canton;
+        });
+
+        project.focalPoints = (focalPoints as any[]).map(value1 => {
+            return value1 as User;
         });
 
         if (project.id) {
@@ -528,7 +548,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             // tslint:disable-next-line:no-shadowed-variable
             this.projectService.save(project)
                 .subscribe({
-                    next: () => {
+                    next: value => {
                         this.formItem.reset();
                         this.messageService.add({
                             severity: 'success',
@@ -536,7 +556,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                             life: 3000
                         });
                         this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-                            this.router.navigate(['/administration/partnerProjectAdministration', {projectId: id}])
+                            this.router.navigate(['/administration/partnerProjectAdministration', {projectId: value}])
                         );
 
                     },
@@ -554,12 +574,13 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     cancel() {
-        if (this.idProjectParam) {
+        this._location.back();
+        /*if (this.idProjectParam) {
             const idProject = Number(this.idProjectParam);
             this.loadProject(idProject);
         } else {
             this._location.back();
-        }
+        }*/
 
     }
 
@@ -578,11 +599,11 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             const deletedLocations = locationsBefore.filter((canton1) => !cantonesG.find(canton2 => canton1.id === canton2.id));
             if (agregatedLocation.length > 0) {
                 const cantonesList = agregatedLocation.map(value => {
-                    return value.description + '-' + value.provincia.description;
+                    return value.name + '-' + value.provincia.description;
                 }).join('<br>');
                 if (this.idProjectParam) {
                     this.confirmationService.confirm({
-                        message: 'Quieres agregar los cantones nuevos a todos los indicadores de producto?<br>' + cantonesList,
+                        message: 'Quieres agregar los lugares nuevos a todos los indicadores de producto?<br>' + cantonesList,
                         header: 'Actualización de indicadores',
                         closeOnEscape: false,
                         icon: 'pi pi-exclamation-triangle',
@@ -659,13 +680,13 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
     private createTables() {
         this.cols = [
-            {field: 'provincia.description', header: 'Provincia', type: ColumnDataType.text},
-            {field: 'description', header: 'Cantón', type: ColumnDataType.text}
+            {field: 'provincia.description', header: 'Nivel Administrativo 1', type: ColumnDataType.text},
+            {field: 'name', header: 'Lugar', type: ColumnDataType.text}
         ];
 
         this.colsCantonList = [
-            {field: 'provincia.description', header: 'Provincia', type: ColumnDataType.text},
-            {field: 'description', header: 'Cantón', type: ColumnDataType.text},
+            {field: 'provincia.description', header: 'Nivel Administrativo 1', type: ColumnDataType.text},
+            {field: 'name', header: 'Lugar', type: ColumnDataType.text},
             {field: 'enabled', header: 'Activo', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe}
         ];
         this.colsCantonListNotEditable = this.colsCantonList.filter(value => {
@@ -692,13 +713,13 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
             {
                 field: 'indicator.statement',
-                header: 'Declaración Indicador',
+                header: 'Enunciado Indicador',
                 type: ColumnDataType.text,
                 pipeRef: this.codeDescriptionPipe
             },
             {
                 field: 'projectStatement',
-                header: 'Declaración de Producto',
+                header: 'Enunciado de Producto',
                 type: ColumnDataType.text,
                 pipeRef: this.codeDescriptionPipe
             },
@@ -733,7 +754,10 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         this.utilsService.resetForm(this.formTargets);
         this.formTargets.get('indicatorExecutionId').patchValue(indicator.id);
         this.formTargets.get('indicatorType').patchValue(indicator.indicatorType);
-        if (indicator.indicatorType === EnumsIndicatorType.GENERAL) {
+        // cambio a target anual
+        this.formTargets.addControl('anualTarget', new FormControl('', Validators.required));
+        this.formTargets.get('anualTarget').patchValue(indicator.target);
+/*        if (indicator.indicatorType === EnumsIndicatorType.GENERAL) {
             this.formTargets.addControl('anualTarget', new FormControl('', Validators.required));
             this.formTargets.get('anualTarget').patchValue(indicator.target);
         } else {
@@ -757,7 +781,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 });
                 this.quarterGroups.push(control);
             });
-        }
+        }*/
 
         this.showTargetDialog = true;
     }
@@ -772,6 +796,11 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         const indicatorType = this.formTargets.get('indicatorType').value as EnumsIndicatorType;
         targetUpdateDTOWeb.indicatorExecutionId = this.formTargets.get('indicatorExecutionId').value;
         targetUpdateDTOWeb.indicatorType = indicatorType;
+
+        targetUpdateDTOWeb.totalTarget =
+            this.formTargets.get('anualTarget').value;
+        // cambio a target anual
+        /*
         if (indicatorType === EnumsIndicatorType.GENERAL) {
             targetUpdateDTOWeb.totalTarget =
                 this.formTargets.get('anualTarget').value;
@@ -803,7 +832,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 return q;
             });
         }
-
+        */
 
         this.indicatorExecutionService.updateTargets(targetUpdateDTOWeb)
             .subscribe({
@@ -916,8 +945,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             if (indicatorExecution.locations.length < 1 && this.indicatorHasLocationDissagregation(indicatorExecution.indicator)) {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Seleccione al menos un cantón',
-                    detail: 'Este indicador tiene desagregación por lugar, es necesario activar al menos un cantón',
+                    summary: 'Seleccione al menos un lugar',
+                    detail: 'Este indicador tiene desagregación por lugar, es necesario activar al menos un lugar',
                     life: 3000
                 });
                 return;
@@ -958,8 +987,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             if (indicatorExecution.locations.length < 1 && this.indicatorHasLocationDissagregation(indicatorExecution.indicator)) {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Seleccione al menos un cantón',
-                    detail: 'Este indicador tiene desagregación por lugar, es necesario activar al menos un cantón',
+                    summary: 'Seleccione al menos un lugar',
+                    detail: 'Este indicador tiene desagregación por lugar, es necesario activar al menos un lugar',
                     life: 3000
                 });
                 return;
@@ -1122,8 +1151,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     return value.state === EnumsState.ACTIVE;
                 })
                 .filter(value => {
-                    const dissagregationTypeE = DissagregationType[value.dissagregationType];
-                    return this.utilsService.isLocationDissagregation(dissagregationTypeE);
+                    const dissagregationTypeE =this.enumsService.resolveEnumWeb(EnumsType.DissagregationType, value.dissagregationType);
+                    return dissagregationTypeE.locationsDissagregation;
                 }).length > 0;
         } else {
             return false;
@@ -1160,12 +1189,15 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
     updatePerformanceIndicatorsTargets() {
         this.showTargetsPerformanceIndicatorUpdateDialog = true;
-        const ieTemporal = this.performanceIndicators.pop();
-        const quarters = ieTemporal.quarters.sort((a, b) => a.order - b.order);
-
-        this.quarterOrders = quarters.map(value => value.order);
-        this.quarterTitles = quarters.map(value => value.quarter + '-' + value.year);
-        this.performanceIndicators.forEach(ie => ie.quarters.sort((a, b) => a.order - b.order));
+        if(this.performanceIndicators.length > 0){
+            const ieTemporal = this.performanceIndicators[0];
+            const quarters = ieTemporal.quarters.sort((a, b) => a.order - b.order);
+    
+            this.quarterOrders = quarters.map(value => value.order);
+            this.quarterTitles = quarters.map(value => value.quarter + '-' + value.year);
+            this.performanceIndicators.forEach(ie => ie.quarters.sort((a, b) => a.order - b.order));
+        }
+        
 
     }
 
@@ -1287,5 +1319,24 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             this.importForm.get('file').setValue(fileReader.result);
             this.importForm.get('file').markAsTouched();
         };
+    }
+
+    onOrganizationChange(org: Organization){
+        this.userService.getActivePartnerUsers(org.id)
+        .subscribe({
+            next: value => {
+                this.partnersList = value;
+            },
+            error: error => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los usuarios socios',
+                    detail: error.error.message,
+                    life: 3000
+                });
+            }
+        });
+
+
     }
 }

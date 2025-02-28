@@ -1,5 +1,6 @@
 package org.unhcr.osmosys.daos;
 
+import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.cubeDTOs.*;
 
 import javax.ejb.Stateless;
@@ -14,6 +15,7 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 @Stateless
 public class CubeDao {
+    private static final Logger LOGGER = Logger.getLogger(CubeDao.class);
     @PersistenceContext(unitName = "main-persistence-unit")
     protected EntityManager entityManager;
 
@@ -26,6 +28,32 @@ public class CubeDao {
             " count(*) " +
             "from  " +
             "cube.fact_table f";
+
+    private static final String tagsTable = "SELECT " +
+            "* " +
+            "from  " +
+            "cube.tags t ";
+
+    private static final String tagIndicatorValues = "SELECT " +
+            "* " +
+            "from  " +
+            "cube.tag_indicator_values t ";
+
+    private static final String projectManagersTable = "SELECT " +
+            "* " +
+            "from  " +
+            "cube.project_managers p ";
+
+    private static final String resultManagersTable = "SELECT " +
+            "* " +
+            "from  " +
+            "cube.result_managers r ";
+
+    private static final String tagIndicators = "SELECT " +
+            "* " +
+            "from  " +
+            "cube.tag_indicators t ";
+
     private static final String monthQuarterYearTable = "SELECT " +
             "* " +
             "from  " +
@@ -33,7 +61,8 @@ public class CubeDao {
     private static final String DissagregationTypeTable = "SELECT " +
             "* " +
             "from  " +
-            "cube.dissagregation_type t";
+            "cube.dissagregation_type t " ;
+
     private static final String DiversityTypeTable = "SELECT " +
             "* " +
             "from  " +
@@ -42,14 +71,7 @@ public class CubeDao {
             "* " +
             "from  " +
             "cube.age_type t";
-    private static final String AgePrimaryEducationTypeTable = "SELECT " +
-            "* " +
-            "from  " +
-            "cube.age_primary_education_type t";
-    private static final String AgeTertiaryEducationTable = "SELECT " +
-            "* " +
-            "from  " +
-            "cube.age_tertiary_education_type t";
+
     private static final String GenderTypeTable = "SELECT " +
             "* " +
             "from  " +
@@ -117,17 +139,37 @@ public class CubeDao {
             "cube.indicator_execution_dissagregation_simple t";
     private static final String indicatorMainDissagregationTable =
             "SELECT " +
-                    "i.id indicator_id, dai.period_id, dai.dissagregation_type " +
+                    "i.id as indicator_id, dai.period_id, dai.dissagregation_type " +
                     "FROM " +
                     "osmosys.indicators i " +
                     "INNER JOIN osmosys.dissagregation_assignation_indicator dai on i.id=dai.indicator_id " +
                     "WHERE dai.state='ACTIVO' " +
                     "ORDER BY dai.period_id, dai.indicator_id, dai.dissagregation_type";
 
+    private static final String generalndicatorMainDissagregationTable =
+           "SELECT " +
+                   "i.id as indicator_id  , i.periodo_id period_id , dai.dissagregation_type " +
+                   "FROM " +
+                   "osmosys.general_indicators i " +
+                   "INNER JOIN osmosys.dissagregation_assignation_general_indicator dai on i.id=dai.general_indicator_id " +
+                   "WHERE dai.state='ACTIVO' " +
+                   "ORDER BY  i.periodo_id,  dai.dissagregation_type";
+
+    private static final String customMainDissagregationTable =
+           "SELECT " +
+                   "cdai.indicator_id as indicator_id, cdai.period_id , cd.name indicatorlabel, 'PERSONALIZADO' AS indicatorType " +
+                   "FROM " +
+                   "osmosys.custom_dissagregation_assignation_indicator cdai " +
+                   "INNER JOIN osmosys.custom_dissagregations cd on cdai.custom_dissagregation_id=cd.id";
+
     private static final String implementersTable = "SELECT " +
             "* " +
             "from  " +
             "cube.implementers t";
+    private static final String customDissagregationTable = "SELECT " +
+            "* " +
+            "from  " +
+            "cube.custom_dissagregation_table t";
 
 
     public List<FactDTO> getFactTableByPeriodYear(Integer year) {
@@ -136,6 +178,13 @@ public class CubeDao {
         Query q = this.entityManager.createNativeQuery(sql, "FactDTOMapping");
         q.setParameter("year", year);
         return q.getResultList();
+    }
+    public Object getFactTableByPeriodYearText(Integer year) {
+
+        String sql = "SELECT CAST(json_agg(t) as VARCHAR) jsono FROM (SELECT * from cube.fact_table t where t.period_year  =:year  ) t ";
+        Query q = this.entityManager.createNativeQuery(sql);
+        q.setParameter("year", year);
+        return q.getSingleResult();
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -158,6 +207,51 @@ public class CubeDao {
         return r.longValue();
     }
 
+    public List<ProjectManagersDTO> getProjectManagers() {
+        String sql = CubeDao.projectManagersTable ;
+        Query q = this.entityManager.createNativeQuery(sql, "ProjectManagerDTOMapping");
+        return q.getResultList();
+    }
+
+    public List<ResultManagersDTO> getResultManagers() {
+        String sql = CubeDao.resultManagersTable ;
+        Query q = this.entityManager.createNativeQuery(sql, "ResultManagerDTOMapping");
+        return q.getResultList();
+    }
+
+    public List<TagIndicatorsDTO> getTagIndicatorsByPeriodYear(Integer year) {
+        String sql = CubeDao.tagIndicators +  " where t.period_year =:year";
+        Query q = this.entityManager.createNativeQuery(sql, "TagIndicatorsDTOMapping");
+        q.setParameter("year", year);
+        return q.getResultList();
+    }
+
+    public List<TagsDTO> getTagTableByPeriodYear(Integer year) {
+        String sql = CubeDao.tagsTable +  " where t.period_year =:year";
+        Query q = this.entityManager.createNativeQuery(sql, "TagsDTOMapping");
+        q.setParameter("year", year);
+        return q.getResultList();
+    }
+
+    public List<TagIndicatorsDTO> getTagIndicatorsByPeriodYear() {
+        String sql = CubeDao.tagIndicators ;
+        Query q = this.entityManager.createNativeQuery(sql, "TagIndicatorsDTOMapping");
+        return q.getResultList();
+    }
+
+    public List<TagsDTO> getTagTableByPeriodYear() {
+        String sql = CubeDao.tagsTable ;
+        Query q = this.entityManager.createNativeQuery(sql, "TagsDTOMapping");
+        return q.getResultList();
+    }
+
+
+    public List<TagIndicatorValuesDTO> getTagIndicatorValues() {
+        String sql = CubeDao.tagIndicatorValues ;
+        Query q = this.entityManager.createNativeQuery(sql, "TagIndicatorValuesDTOMapping");
+        return q.getResultList();
+    }
+
     public List<MonthQuarterYearDTO> getMonthQuarterYearTable() {
         Query q = this.entityManager.createNativeQuery(CubeDao.monthQuarterYearTable, "MonthQuarterYearDTOMapping");
         return q.getResultList();
@@ -168,38 +262,29 @@ public class CubeDao {
         return q.getResultList();
     }
 
-    public List<DiversityTypeDTO> getDiversityTypeTable() {
-        Query q = this.entityManager.createNativeQuery(CubeDao.DiversityTypeTable, "DiversityTypeDTOMapping");
+    public List<StandardDissagregationOptionDTO> getDiversityTypeTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.DiversityTypeTable, "StandardDissagregationOptionDTOMapping");
         return q.getResultList();
     }
 
-    public List<AgeTypeDTO> getAgeTypeTable() {
-        Query q = this.entityManager.createNativeQuery(CubeDao.AgeTypeTable, "AgeTypeDTOMapping");
+    public List<StandardDissagregationOptionDTO> getAgeTypeTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.AgeTypeTable, "StandardDissagregationOptionDTOMapping");
         return q.getResultList();
     }
 
-    public List<AgePrimaryEducationTypeDTO> getAgePrimaryEducationTypeTable() {
-        Query q = this.entityManager.createNativeQuery(CubeDao.AgePrimaryEducationTypeTable, "AgePrimaryEducationTypeDTOMapping");
+
+    public List<StandardDissagregationOptionDTO> getGenderTypeTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.GenderTypeTable, "StandardDissagregationOptionDTOMapping");
         return q.getResultList();
     }
 
-    public List<AgeTertiaryEducationTypeDTO> getAgeTertiaryEducationTypeTable() {
-        Query q = this.entityManager.createNativeQuery(CubeDao.AgeTertiaryEducationTable, "AgeTertiaryEducationTypeDTOMapping");
+    public List<StandardDissagregationOptionDTO> getCountryOfOriginTypeTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.CountryOfOriginTypeTable, "StandardDissagregationOptionDTOMapping");
         return q.getResultList();
     }
 
-    public List<GenderTypeDTO> getGenderTypeTable() {
-        Query q = this.entityManager.createNativeQuery(CubeDao.GenderTypeTable, "GenderTypeDTOMapping");
-        return q.getResultList();
-    }
-
-    public List<CountryOfOriginTypeDTO> getCountryOfOriginTypeTable() {
-        Query q = this.entityManager.createNativeQuery(CubeDao.CountryOfOriginTypeTable, "CountryOfOriginDTOMapping");
-        return q.getResultList();
-    }
-
-    public List<PopulationTypeDTO> getPopulationTypeTable() {
-        Query q = this.entityManager.createNativeQuery(CubeDao.PopulationTypeTable, "PopulationTypeDTOMapping");
+    public List<StandardDissagregationOptionDTO> getPopulationTypeTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.PopulationTypeTable, "StandardDissagregationOptionDTOMapping");
         return q.getResultList();
     }
 
@@ -279,8 +364,21 @@ public class CubeDao {
         Query q = this.entityManager.createNativeQuery(CubeDao.indicatorMainDissagregationTable , "IndicatorMainDissagregationDTOMapping");
         return q.getResultList();
     }
+    public List<IndicatorMainDissagregationDTO> getGeneralIndicatorMainDissagregationDTOTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.generalndicatorMainDissagregationTable , "IndicatorMainDissagregationDTOMapping");
+        return q.getResultList();
+    }
+    public List<IndicatorMainDissagregationDTO> getCustomMainDissagregationDTOTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.customMainDissagregationTable , "IndicatorMainDissagregationCustomDTOMapping");
+        return q.getResultList();
+    }
     public List<ImplementerDTO> getImplementersTable() {
         Query q = this.entityManager.createNativeQuery(CubeDao.implementersTable , "ImplementerDTOMapping");
+        return q.getResultList();
+    }
+
+    public List<CustomDissagregationDTO> getCustomDissagregationsTable() {
+        Query q = this.entityManager.createNativeQuery(CubeDao.customDissagregationTable , "CustomDissagregationDTOMapping");
         return q.getResultList();
     }
 }

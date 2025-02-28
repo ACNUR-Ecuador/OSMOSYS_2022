@@ -1,35 +1,25 @@
 package org.unhcr.osmosys.webServices.model;
 
-import com.sagatechs.generics.persistence.model.State;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.unhcr.osmosys.model.enums.DissagregationType;
+import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 
-public class DissagregationAssignationToIndicatorWeb implements Serializable {
-    private Long id;
-    private State state;
+public class DissagregationAssignationToIndicatorWeb extends BaseWebEntity implements Serializable {
+
     private DissagregationType dissagregationType;
     private PeriodWeb period;
-    private List<DissagregationFilterIndicatorWeb> dissagregationFilterIndicators = new ArrayList<>();
 
-    public Long getId() {
-        return id;
-    }
+    private Boolean useCustomAgeDissagregations= Boolean.FALSE;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private Set<StandardDissagregationOptionWeb> customIndicatorOptions = new HashSet<>();
 
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
 
     public DissagregationType getDissagregationType() {
         return dissagregationType;
@@ -39,13 +29,6 @@ public class DissagregationAssignationToIndicatorWeb implements Serializable {
         this.dissagregationType = dissagregationType;
     }
 
-    public List<DissagregationFilterIndicatorWeb> getDissagregationFilterIndicators() {
-        return dissagregationFilterIndicators;
-    }
-
-    public void setDissagregationFilterIndicators(List<DissagregationFilterIndicatorWeb> dissagregationFilterIndicators) {
-        this.dissagregationFilterIndicators = dissagregationFilterIndicators;
-    }
 
     public PeriodWeb getPeriod() {
         return period;
@@ -53,5 +36,49 @@ public class DissagregationAssignationToIndicatorWeb implements Serializable {
 
     public void setPeriod(PeriodWeb period) {
         this.period = period;
+    }
+
+    public Boolean getUseCustomAgeDissagregations() {
+        return useCustomAgeDissagregations;
+    }
+
+    public void setUseCustomAgeDissagregations(Boolean useCustomAgeDissagregations) {
+        this.useCustomAgeDissagregations = useCustomAgeDissagregations;
+    }
+
+    public Set<StandardDissagregationOptionWeb> getCustomIndicatorOptions() {
+        return this.customIndicatorOptions;
+    }
+
+    public void setCustomIndicatorOptions(Set<StandardDissagregationOptionWeb> customIndicatorOptions) {
+        this.customIndicatorOptions = customIndicatorOptions;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("dissagregationType", dissagregationType)
+                .append("period", period)
+                .append("useCustomAgeDissagregations", useCustomAgeDissagregations)
+                .append("customIndicatorOptions", customIndicatorOptions)
+                .append("id", id)
+                .append("state", state)
+                .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof DissagregationAssignationToIndicatorWeb)) return false;
+
+        DissagregationAssignationToIndicatorWeb that = (DissagregationAssignationToIndicatorWeb) o;
+
+        return new EqualsBuilder().appendSuper(super.equals(o)).append(dissagregationType, that.dissagregationType).append(period, that.period).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).appendSuper(super.hashCode()).append(dissagregationType).append(period).toHashCode();
     }
 }

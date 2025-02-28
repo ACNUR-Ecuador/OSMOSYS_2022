@@ -5,6 +5,7 @@ import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
+import org.apache.commons.collections.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.OfficeDao;
 import org.unhcr.osmosys.model.Office;
@@ -38,6 +39,10 @@ public class OfficeService {
         return this.officeDao.find(id);
     }
 
+    public OfficeWeb getWebById(Long id) {
+        return this.modelWebTransformationService.officeToOfficeWeb(this.officeDao.find(id),false, false);
+    }
+
     public Office saveOrUpdate(Office office) {
         if (office.getId() == null) {
             this.officeDao.save(office);
@@ -69,6 +74,9 @@ public class OfficeService {
     }
 
     private void updateAdministratorsOffice(Office office, List<UserWeb> userAdministratorsWebs) {
+        if(CollectionUtils.isEmpty(userAdministratorsWebs)){
+            return;
+        }
         for (UserWeb userAdministratorWeb : userAdministratorsWebs) {
             Optional<OfficeAdministrator> optionalAdministrator = office.getOfficeAdministrators().stream().filter(officeAdministrator -> officeAdministrator.getAdministrator().getId().equals(userAdministratorWeb.getId())).findFirst();
             if(optionalAdministrator.isPresent()){

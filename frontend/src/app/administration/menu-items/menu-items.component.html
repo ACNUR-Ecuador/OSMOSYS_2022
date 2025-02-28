@@ -1,0 +1,237 @@
+<div class="grid">
+    <div class="col-12">
+        <p-toast></p-toast>
+        <div class="card px-6 py-6">
+            <h3 class="page-title">Administración de Menús</h3>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button pButton pRipple label="Crear" icon="pi pi-plus" class="p-button-success mr-2 mb-2"
+                                (click)="createItem()"></button>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="right">
+                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel(dt)"
+                            class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                </ng-template>
+            </p-toolbar>
+            <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true"
+                     [rowHover]="true" dataKey="id"
+                     currentPageReportTemplate=" {first} a {last} de {totalRecords} "
+                     [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]"
+                     (sortFunction)="utilsService.customSort($event, cols)" [customSort]="true"
+            >
+                <ng-template pTemplate="caption">
+                    <div class="grid">
+                        <div
+                            class="col-12 md:col-4 sm:col-12 justify-content-start">
+                            <h5 class="m-0">Menús</h5>
+                        </div>
+                        <div
+                            class="col-12 md:col sm:col-12 flex justify-content-end">
+
+                            <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
+                                           selectedItemsLabel="{0} columnas seleccionadas"
+                                           [style]="{minWidth: '150px',color:'#6c757d'}"
+                                           placeholder="Seleccione las columnas"
+                                           appendTo="body"></p-multiSelect>
+                            <a href="https://osmosys.unhcr.org/common/manual/#/administracion-del-sistema?id=_513-men%c3%bas-de-tableros"
+                                           target="_blank"  
+                                           class="p-button  p-button-outlined p-button-info custom-button"
+                                           style="width: auto; height: fit-content; display: inline-flex; justify-content: center; align-items: center; text-decoration: none; margin-left: 11px; " 
+                                           pTooltip="Ver el manual de ayuda" tooltipPosition="bottom">
+                                           <i class="pi pi-question-circle" style="margin-right: 5px;"></i> 
+                                           <span>Ayuda</span>
+                            </a>
+                        </div>
+
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                            {{col.header}}
+                            <p-sortIcon [field]="col.field"></p-sortIcon>
+                        </th>
+                        <th>
+
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th *ngFor="let col of columns" [ngSwitch]="col.field">
+                            <p-columnFilter *ngSwitchDefault [type]="col.type" [field]="col.field"
+                                            [matchMode]="'contains'"
+                                            [showMenu]="false"> 
+                            </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'state'" type="equals" [field]="col.field"
+                                            [showMenu]="false"
+                            >
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown [ngModel]="value" [options]="states"
+                                                (onChange)="filter($event.value)"
+                                                placeholder="Selecciona..." [showClear]="true">
+                                        <ng-template let-option pTemplate="item">
+                                            <span
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                        </th>
+                        <th>
+
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <tr>
+                        <td *ngFor="let col of columns"
+                            [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) " style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;"
+                        >
+                            {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
+                        </td>
+                        <td>
+                            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-primary mr-2"
+                                    (click)="editItem(rowData)"></button>
+
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <div class="p-d-flex p-ai-center p-jc-between">
+                        {{dt.filteredValue ? dt.filteredValue.length : dt.totalRecords}} de {{items ? items.length : 0}}
+                        menús.
+                    </div>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+
+<form [formGroup]="formItem" (ngSubmit)="saveItem()">
+    <p-dialog [(visible)]="showDialog" [style]="{width: '70%'}" header="Menú Item" [modal]="true"
+              [closable]="false">
+
+        <ng-template pTemplate="content">
+            <p-messages></p-messages>
+            <div class="card p-fluid">
+                <div class="field">
+                    <label for="labelI">Etiqueta *:</label>
+                    <input type="text" pInputText id="labelI"
+                           formControlName="label" autofocus/>
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('label',formItem)">Campo
+                        obligatorio.</small>
+                </div>
+                <div class="field">
+                    <label for="parentI">Padre:</label>
+                    <p-dropdown
+                        id="parentI"
+                        [options]="parentItems"
+                        formControlName="parent"
+                        [showClear]="true"
+
+                    >
+
+                    </p-dropdown>
+                </div>
+                <div class="field">
+                    <label for="iconI">Ícono *:</label>
+                    <input type="text" pInputText id="iconI"
+                           formControlName="icon"/>
+                    <small class="p-tag-warning">Consultar iconos en primeNg V14.</small>
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('icon',formItem)">Campo
+                    obligatorio.</small>
+                </div>
+
+                <div class="field">
+                    <label for="assignedRolesI">Roles *:</label>
+                    <p-multiSelect
+                            id="assignedRolesI"
+                            [options]="rolesItems"
+                            formControlName="assignedRoles"
+                    >
+                    </p-multiSelect>
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('assignedRoles',formItem)">Campo
+                        obligatorio.</small>
+                </div>
+                <div class="field">
+                    <label for="urlI">Url:</label>
+                    <input type="text" pInputText id="urlI"
+                           formControlName="url"/>
+                </div>
+
+
+                <div class="field" style="display: flex; align-items: center; gap: 10px; width: 50px;">
+                    <label for="openInNewTabI" style="white-space: nowrap;">Abrir en otra ventana:</label>
+                    <p-inputSwitch pInputText id="openInNewTabI"
+                                   formControlName="openInNewTab" [ngStyle]="{ 'border': 'none'}"></p-inputSwitch>
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('openInNewTab', formItem)">Campo obligatorio.</small>
+                </div>
+                <div class="field">
+                    <label for="stateI">Estado *:</label>
+
+                    <p-selectButton id="stateI"
+                                    formControlName="state"
+                                    [options]="states"
+                    >
+                    </p-selectButton>
+
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('state',formItem)">Campo
+                        obligatorio.</small>
+                </div>
+
+                <div class="field">
+                    <label for="orderI">Orden *:</label>
+                    <p-inputNumber id="orderI"
+                                   [min]="1"
+                                   [maxFractionDigits]="0"
+                                   formControlName="order"></p-inputNumber>
+                </div>
+
+                <div class="field" style="display: flex; align-items: center; gap: 10px; width: 50px;">
+                    <label for="powerBiI" style="white-space: nowrap;">Es PowerBi:</label>
+                    <p-inputSwitch  pInputText id="powerBiI"
+                                   formControlName="powerBi" [ngStyle]="{ 'border': 'none'}">></p-inputSwitch>
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('powerBi',formItem)">Campo
+                        obligatorio.</small>
+                </div>
+                <div class="field" style="display: flex; align-items: center; gap: 10px; width: 50px;">
+                    <label for="isRectrictedI" style="white-space: nowrap;">Acceso Restringido:</label>
+                    <p-inputSwitch  pInputText id="isRectrictedI"
+                                   formControlName="restricted" [ngStyle]="{ 'border': 'none'}"></p-inputSwitch>
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('restricted',formItem)">Campo
+                        obligatorio.</small>
+                </div>
+
+                <div class="field" *ngIf="formItem.get('restricted').value">
+                    <label for="organizationsI">Implementadores</label>
+                    <p-multiSelect
+                        id="organizationsI"
+                        appendTo="body"
+
+                        [options]="organizationSelectItem" formControlName="organizations"
+
+                    >
+
+                    </p-multiSelect>
+                    <small class="p-error" *ngIf="utilsService.showErrorForm('organizations',formItem)">Campo
+                        obligatorio.</small>
+                </div>
+
+            </div>
+
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <button pButton type="submit"
+                    [disabled]="!formItem.valid"
+                    pRipple label="Guardar" icon="pi pi-check"
+            ></button>
+            <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
+                    (click)="cancelDialog()"></button>
+
+        </ng-template>
+    </p-dialog>
+</form>

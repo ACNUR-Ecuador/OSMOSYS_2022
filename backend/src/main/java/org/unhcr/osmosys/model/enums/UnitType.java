@@ -1,7 +1,7 @@
 package org.unhcr.osmosys.model.enums;
 
 public enum UnitType implements EnumInterface {
-    PERSONAS_INTERES("Personas de Interés", 1),
+    PERSONAS_INTERES("Personas Desplazadas y Apátridas", 1),
     PERSONAS("Personas", 2),
     ORGANIZACIONES_INSTITUCIONES("Organizaciones o Instituciones", 3),
     TRANSFERENCIAS("Transferencias", 4),

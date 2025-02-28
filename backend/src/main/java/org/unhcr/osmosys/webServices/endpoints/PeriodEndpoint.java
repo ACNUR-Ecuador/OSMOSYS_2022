@@ -48,7 +48,7 @@ public class PeriodEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public List<PeriodWeb> getAll() {
-        return this.periodService.getAll();
+        return this.periodService.getWithGeneralIndicatorAll();
     }
 
     @Path("/byState/{state}")
@@ -64,7 +64,7 @@ public class PeriodEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public PeriodWeb getByid(@PathParam("id") Long id) {
-        return this.periodService.getByid(id);
+        return this.periodService.getWebById(id);
     }
 
     @Path("/withGeneralIndicator/{id}")
@@ -72,6 +72,6 @@ public class PeriodEndpoint {
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public PeriodWeb getWithGeneralIndicatorByid(@PathParam("id") Long id) {
-        return this.periodService.getWebWithGeneralIndicatorById(id);
+        return this.periodService.getWebWithAllDataById(id);
     }
 }

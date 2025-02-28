@@ -3,72 +3,59 @@
     <div class="col-12 px-6 py-6">
 
         <div class="card">
-            <h3 class="page-title mb-1">Administración de implementación directa</h3>
-            <h5 class="page-title p-mt-1">Asignación de indicadores a oficinas ACNUR</h5>
+            <!-- <h5 class="page-title p-mt-1">Asignación de indicadores a oficinas ACNUR</h5> -->
             <p-toast></p-toast>
-            <p-messages></p-messages>
-
-            <p-toolbar styleClass="mb-4">
-                <div class="p-toolbar-group-start">
-                    <div class="flex ">
-                        <div class="my-2">
-                            <button pButton pRipple label="Asignar nuevo indicador" icon="pi pi-plus"
-                                    class="p-button-success mr-2 mb-2"
-                                    (click)="createItem()"></button>
-                        </div>
-                        <div class="my-2">
-                            <button pButton pRipple label="Importar Asignación de Indicadores" icon="pi pi-plus"
-                                    class="p-button-success mr-2 mb-2"
-                                    (click)="initiateCatalogImport()"></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-toolbar-group-center">
-                    <form [formGroup]="periodForm">
-                        <div class="field grid">
-
-                            <label for="periodI" class="col-fixed"
-                                   style="width:100px; color: white;">Periodo:</label>
-                            <div class="p-col">
-                                <p-dropdown id="periodI" [options]="periods" optionLabel="year"
-                                            formControlName="selectedPeriod"
-                                            (onChange)="onPeriodChange($event.value)"></p-dropdown>
-                            </div>
-
-                        </div>
-                    </form>
-                </div>
-                <div class="p-toolbar-group-end"> </div>
-        </p-toolbar>
+            <p-messages></p-messages>          
 
         <p-table #dtIndicatorExecutions [value]="items"
-                 [columns]="selectedColumns"
-                 [rowHover]="true" dataKey="id"
-                 styleClass="p-datatable-customers"
-                 currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                 [showCurrentPageReport]="true"
-                 (sortFunction)="utilsService.customSort($event, cols)" [customSort]="true">
+            [columns]="selectedColumns" [rows]="10" [paginator]="true"
+            [rowHover]="true" dataKey="id" styleClass="p-datatable-striped" 
+            styleClass="p-datatable-customers"
+            currentPageReportTemplate=" {first} a {last} de {totalRecords} "
+            [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]"
+            (sortFunction)="utilsService.customSort($event, cols)" [customSort]="true">
             <ng-template pTemplate="caption">
-
-                <div class="flex card-container overflow-hidden">
-                    <div
-                        class="flex-none flex align-items-center justify-content-center m-2 px-5  border-round">
-                        <h5 class="m-0">Indicadores de Producto Implementación Directa</h5>
+                <div class="grid">
+                    <div class="col-12 md:col-4 sm:col-12 flex justify-content-start">
+                        <h3 class="m-0">Administración de implementación directa</h3>
                     </div>
-                    <div
-                        class="flex-grow-1 flex align-items-center justify-content-center px-5  border-round"></div>
-                    <div
-                        class="flex-none flex align-items-center justify-content-center px-5  border-round">
+                    <div class="col-12 md:col sm:col-12 flex justify-content-center">
+                        <form [formGroup]="periodForm">    
+                            <label for="periodI" class="col-fixed"
+                                style="color: rgb(86, 86, 86);">Año:</label>                            
+                            <p-dropdown id="periodI" [options]="periods" optionLabel="year"
+                                style="height: 20px;"
+                                formControlName="selectedPeriod"
+                                (onChange)="onPeriodChange($event.value)"
+                                appendTo="body"></p-dropdown>                              
+                        </form>
+                    </div>
+                    <div class="col-12 md:col-6 sm:col-12 flex justify-content-end">
                         <p-multiSelect [options]="cols"
-                                       [(ngModel)]="selectedColumns"
-                                       optionLabel="header"
-                                       selectedItemsLabel="{0} columnas seleccionadas"
-                                       [style]="{minWidth: '200px',color:'#6c757d'}"
-                                       placeholder="Seleccione las columnas"
-                                       appendTo="body"></p-multiSelect>
-                        <button type="button" pButton pRipple icon="pi pi-file-excel"
-                                (click)="exportExcel(dtIndicatorExecutions)"
-                                class="p-button-success ml-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                            [(ngModel)]="selectedColumns"
+                            optionLabel="header"
+                            selectedItemsLabel="{0} columnas seleccionadas"
+                            [style]="{minWidth: '200px',color:'#6c757d'}"
+                            placeholder="Seleccione las columnas"
+                            appendTo="body"></p-multiSelect>
+                        <button pButton pRipple label="Asignar" icon="pi pi-plus"
+                            class="main-button mr-2 mb-2" style="margin-left: 2rem;" pTooltip="Asignar indicador" tooltipPosition="bottom"
+                            (click)="createItem()"></button>                
+                        <button pButton pRipple label="Importar" icon="pi pi-file-import"
+                            class="second-button mr-2 mb-2" style="margin-left: 2rem;" pTooltip="Importar Indicador" tooltipPosition="bottom"
+                            (click)="initiateCatalogImport()"></button>
+                        <button pButton pRipple icon="pi pi-file-excel" label="Exportar"
+                            (click)="exportExcel(dtIndicatorExecutions)" style="margin-left: 2rem;" 
+                            class="second-button mr-2 mb-2" pTooltip="Exportar a Excel" tooltipPosition="bottom"></button>
+
+                        <a href="https://osmosys.unhcr.org/common/manual/#/administracion-del-sistema?id=_510-implementaci%c3%b3n-directa"
+                            target="_blank"  
+                            class="p-button  p-button-outlined p-button-info custom-button"
+                            style="width: auto; height: fit-content; display: inline-flex; justify-content: center; align-items: center; text-decoration: none; margin-left: 2rem; " 
+                            pTooltip="Ver el manual de ayuda" tooltipPosition="bottom">
+                            <i class="pi pi-question-circle" style="margin-right: 5px;"></i> 
+                            <span>Ayuda</span>
+                        </a>
                     </div>
                 </div>
             </ng-template>
@@ -193,7 +180,7 @@
 
             <div class="p-fluid p-formgrid grid">
                 <div class="field col-12 md-12">
-                    <label for="officeI">Oficina Responsable</label>
+                    <label for="officeI">Oficina/Unidad Responsable *:</label>
                     <p-dropdown id="officeI"
                                 formControlName="reportingOffice"
                                 [options]="officeOptions"
@@ -210,18 +197,7 @@
                 </div>
 
                 <div class="field col-12 md-12">
-                    <label for="statementI">Declaración de Producto</label>
-                    <input type="text" pInputText id="statementI"
-                           formControlName="statement"/>
-                </div>
-                <div class="field col-12 md-12">
-                    <label for="productI">Código de producto</label>
-                    <input type="text" pInputText id="productI"
-                           formControlName="product"/>
-                </div>
-
-                <div class="field col-12 md-12">
-                    <label for="indicatorI">Indicador</label>
+                    <label for="indicatorI">Indicador *:</label>
                     <p-dropdown id="indicatorI"
                                 formControlName="indicator"
                                 [options]="indicatorOptions"
@@ -238,8 +214,35 @@
                         {{utilsService.getErrorMessageForm('indicator', itemForm)}}
                     </small>
                 </div>
-                <div class="field col-6 md-6">
-                    <label for="keepBudgetI">Controlar presupuesto</label>
+
+                <div class="field col-12 md-12">
+                    <label for="statementI">Enunciado de Producto:</label>
+                    <input type="text" pInputText id="statementI"
+                           formControlName="statement"/>
+                </div>
+                <!-- <div class="field col-12 md-12">
+                    <label for="productI">Código de producto:</label>
+                    <input type="text" pInputText id="productI"
+                           formControlName="product"/>
+                </div> -->
+
+
+                <div class="field col-12 md-12">
+                    <label for="indicatorI">Meta Anual *:</label>
+                    <p-inputNumber id="targetI"
+                                formControlName="target"
+                                   mode="decimal"
+                                   [min]="0"
+                    >
+                    </p-inputNumber>
+
+                    <small class="p-error"
+                           *ngIf="utilsService.showErrorForm('target',itemForm)">
+                        {{utilsService.getErrorMessageForm('target', itemForm)}}
+                    </small>
+                </div>
+                <!-- <div class="field col-6 md-6">
+                    <label for="keepBudgetI">Controlar presupuesto:</label>
                     <div>
                         <p-inputSwitch id="keepBudgetI"
                                        formControlName="keepBudget"
@@ -253,7 +256,7 @@
                     </small>
                 </div>
                 <div class="field col-6 md-6">
-                    <label for="assignedBudgetI">Presupuesto asignado</label>
+                    <label for="assignedBudgetI">Presupuesto asignado:</label>
                     <p-inputNumber
                         id="assignedBudgetI"
                         formControlName="assignedBudget"
@@ -266,9 +269,9 @@
                            *ngIf="utilsService.showErrorForm('assignedBudget',itemForm)">
                         {{utilsService.getErrorMessageForm('assignedBudget', itemForm)}}
                     </small>
-                </div>
+                </div> -->
                 <div class="field col-12 md-12">
-                    <label for="supervisorUserI">Supervisor del indicador</label>
+                    <label for="supervisorUserI">Supervisor de la Implementación *:</label>
                     <p-dropdown id="supervisorUserI"
                                 formControlName="supervisorUser"
                                 [options]="userOptions"
@@ -285,7 +288,7 @@
                     </small>
                 </div>
                 <div class="field col-12 md-12">
-                    <label for="assignedUserI">Responsable de Reporte</label>
+                    <label for="assignedUserI">Responsable de Reporte ACNUR *:</label>
                     <p-dropdown id="assignedUserI"
                                 formControlName="assignedUser"
                                 [options]="userOptions"
@@ -302,7 +305,7 @@
                     </small>
                 </div>
                 <div class="field col-12 md-12">
-                    <label for="assignedUserBackupI">Responsable de Reporte Alterno</label>
+                    <label for="assignedUserBackupI">Responsable de Reporte ACNUR Alterno:</label>
                     <p-dropdown id="assignedUserBackupI"
                                 formControlName="assignedUserBackup"
                                 [options]="userOptions"
@@ -320,7 +323,7 @@
                     </small>
                 </div>
                 <div class="field col-12 md-12">
-                    <label for="stateI">Estado</label>
+                    <label for="stateI">Estado *:</label>
                     <p-selectButton id="stateI"
                                     formControlName="state"
                                     [options]="states"
@@ -361,7 +364,7 @@
                 </h5>
 
                 <div class="field grid">
-                    <label htmlFor="periodII" class="col-12 mb-2 md:col-2 md:mb-0">Periodo</label>
+                    <label htmlFor="periodII" class="col-12 mb-2 md:col-2 md:mb-0">Año:</label>
                     <div class="col-12 md:col-10">
                         <p-dropdown
                             id="periodII"
@@ -376,7 +379,7 @@
                             </ng-template>
                         </p-dropdown>
                     </div>
-                    <label htmlFor="periodII" class="col-12 mb-2 md:col-2 md:mb-0">Oficina:</label>
+                    <label htmlFor="periodII" class="col-12 mb-2 md:col-2 md:mb-0">Oficina/Unidad:</label>
                     <div class="col-12 md:col-10">
                         <p-dropdown
                             id="officeII"

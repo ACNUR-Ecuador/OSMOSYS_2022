@@ -33,14 +33,13 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "month_year_id", type = String.class),
                                 @ColumnResult(name = "month_id", type = Long.class),
                                 @ColumnResult(name = "dissagregation_type", type = String.class),
-                                @ColumnResult(name = "age_type", type = String.class),
-                                @ColumnResult(name = "age_primary_education_type", type = String.class),
-                                @ColumnResult(name = "age_tertiary_education_type", type = String.class),
-                                @ColumnResult(name = "gender_type", type = String.class),
-                                @ColumnResult(name = "country_of_origin", type = String.class),
-                                @ColumnResult(name = "population_type", type = String.class),
-                                @ColumnResult(name = "diversity_type", type = String.class),
+                                @ColumnResult(name = "age_type", type = Long.class),
+                                @ColumnResult(name = "gender_type", type = Long.class),
+                                @ColumnResult(name = "country_of_origin", type = Long.class),
+                                @ColumnResult(name = "population_type", type = Long.class),
+                                @ColumnResult(name = "diversity_type", type = Long.class),
                                 @ColumnResult(name = "canton_id", type = Long.class),
+                                @ColumnResult(name = "custom_dissagregation_id", type = Long.class),
                                 @ColumnResult(name = "responsable_office_id", type = Long.class),
                                 @ColumnResult(name = "implementer_office_id", type = Long.class),
                                 @ColumnResult(name = "implementer_id", type = String.class),
@@ -77,61 +76,19 @@ import java.math.BigDecimal;
                         columns = {
                                 @ColumnResult(name = "dissagregation_type", type = String.class),
                         })})
+
 @SqlResultSetMapping(
-        name = "DiversityTypeDTOMapping",
+        name = "StandardDissagregationOptionDTOMapping",
         classes = {
                 @ConstructorResult(
-                        targetClass = DiversityTypeDTO.class,
+                        targetClass = StandardDissagregationOptionDTO.class,
                         columns = {
-                                @ColumnResult(name = "diversity_type", type = String.class),
-                        })})
-@SqlResultSetMapping(
-        name = "AgeTypeDTOMapping",
-        classes = {
-                @ConstructorResult(
-                        targetClass = AgeTypeDTO.class,
-                        columns = {
-                                @ColumnResult(name = "age_type", type = String.class),
-                        })})
-@SqlResultSetMapping(
-        name = "AgePrimaryEducationTypeDTOMapping",
-        classes = {
-                @ConstructorResult(
-                        targetClass = AgePrimaryEducationTypeDTO.class,
-                        columns = {
-                                @ColumnResult(name = "age_primary_education_type", type = String.class),
-                        })})
-@SqlResultSetMapping(
-        name = "AgeTertiaryEducationTypeDTOMapping",
-        classes = {
-                @ConstructorResult(
-                        targetClass = AgeTertiaryEducationTypeDTO.class,
-                        columns = {
-                                @ColumnResult(name = "age_tertiary_education_type", type = String.class),
-                        })})
-@SqlResultSetMapping(
-        name = "GenderTypeDTOMapping",
-        classes = {
-                @ConstructorResult(
-                        targetClass = GenderTypeDTO.class,
-                        columns = {
-                                @ColumnResult(name = "gender_type", type = String.class),
-                        })})
-@SqlResultSetMapping(
-        name = "CountryOfOriginDTOMapping",
-        classes = {
-                @ConstructorResult(
-                        targetClass = CountryOfOriginTypeDTO.class,
-                        columns = {
-                                @ColumnResult(name = "country_of_origin", type = String.class),
-                        })})
-@SqlResultSetMapping(
-        name = "PopulationTypeDTOMapping",
-        classes = {
-                @ConstructorResult(
-                        targetClass = PopulationTypeDTO.class,
-                        columns = {
-                                @ColumnResult(name = "population_type", type = String.class),
+                                @ColumnResult(name = "id", type = Long.class),
+                                @ColumnResult(name = "group_name", type = String.class),
+                                @ColumnResult(name = "name", type = String.class),
+                                @ColumnResult(name = "order_", type = Long.class),
+                                @ColumnResult(name = "state", type = String.class),
+                                @ColumnResult(name = "age_range", type = String.class),
                         })})
 @SqlResultSetMapping(
         name = "CantonesProvinciasDTOMapping",
@@ -241,12 +198,14 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "area_impact_id", type = Long.class),
                                 @ColumnResult(name = "area_impact_code", type = String.class),
                                 @ColumnResult(name = "area_impact", type = String.class),
+                                @ColumnResult(name = "area_impact_description", type = String.class),
                                 @ColumnResult(name = "statement_impact_id", type = Long.class),
                                 @ColumnResult(name = "statement_impact_code", type = String.class),
                                 @ColumnResult(name = "statement_impact", type = String.class),
                                 @ColumnResult(name = "area_outcome_id", type = Long.class),
                                 @ColumnResult(name = "area_outcome_code", type = String.class),
                                 @ColumnResult(name = "area_outcome", type = String.class),
+                                @ColumnResult(name = "area_outcome_description", type = String.class),
                                 @ColumnResult(name = "statement_outcome_id", type = Long.class),
                                 @ColumnResult(name = "statement_outcome_code", type = String.class),
                                 @ColumnResult(name = "statement_outcome", type = String.class),
@@ -310,6 +269,17 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "period_id", type = Long.class),
                                 @ColumnResult(name = "dissagregation_type", type = String.class)
                         })})
+@SqlResultSetMapping(
+        name = "IndicatorMainDissagregationCustomDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = IndicatorMainDissagregationDTO.class,
+                        columns = {
+                                @ColumnResult(name = "indicator_id", type = Long.class),
+                                @ColumnResult(name = "period_id", type = Long.class),
+                                @ColumnResult(name = "indicatorlabel", type = String.class),
+                                @ColumnResult(name = "indicatorType", type = String.class)
+                        })})
 
 @SqlResultSetMapping(
         name = "ImplementerDTOMapping",
@@ -323,6 +293,90 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "parent_acronym", type = String.class),
                                 @ColumnResult(name = "parent_name", type = String.class),
                                 @ColumnResult(name = "implementation_type", type = String.class)
+                        })})
+@SqlResultSetMapping(
+        name = "CustomDissagregationDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = CustomDissagregationDTO.class,
+                        columns = {
+                                @ColumnResult(name = "dissagregation_id", type = Long.class),
+                                @ColumnResult(name = "dissagregation_control", type = Boolean.class),
+                                @ColumnResult(name = "dissagregation_description", type = String.class),
+                                @ColumnResult(name = "dissagregation_name", type = String.class),
+                                @ColumnResult(name = "dissagregation_state", type = String.class),
+                                @ColumnResult(name = "option_id", type = Long.class),
+                                @ColumnResult(name = "option_description", type = String.class),
+                                @ColumnResult(name = "option_name", type = String.class),
+                                @ColumnResult(name = "option_state", type = String.class)
+                        })})
+
+@SqlResultSetMapping(
+        name = "TagsDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = TagsDTO.class,
+                        columns = {
+                                @ColumnResult(name = "tag_id", type = Long.class),
+                                @ColumnResult(name = "tag_name", type = String.class),
+                                @ColumnResult(name = "tag_description", type = String.class),
+                                @ColumnResult(name = "tag_operation", type = String.class),
+                                @ColumnResult(name = "period_year", type = Long.class),
+                        })})
+
+@SqlResultSetMapping(
+        name = "TagIndicatorsDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = TagIndicatorsDTO.class,
+                        columns = {
+                                @ColumnResult(name = "tag_id", type = Long.class),
+                                @ColumnResult(name = "tag_name", type = String.class),
+                                @ColumnResult(name = "tag_description", type = String.class),
+                                @ColumnResult(name = "tag_operation", type = String.class),
+                                @ColumnResult(name = "period_year", type = Long.class),
+                                @ColumnResult(name = "indicator_id", type = Long.class)
+                        })})
+
+@SqlResultSetMapping(
+        name = "ProjectManagerDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = ProjectManagersDTO.class,
+                        columns = {
+                                @ColumnResult(name = "id", type = Long.class),
+                                @ColumnResult(name = "project_id", type = Long.class),
+                                @ColumnResult(name = "user_id", type = Long.class),
+                                @ColumnResult(name = "user_name", type = String.class),
+                                @ColumnResult(name = "user_username", type = String.class),
+                        })})
+
+
+@SqlResultSetMapping(
+        name = "ResultManagerDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = ResultManagersDTO.class,
+                        columns = {
+                                @ColumnResult(name = "id", type = Long.class),
+                                @ColumnResult(name = "indicator_id", type = Long.class),
+                                @ColumnResult(name = "user_id", type = Long.class),
+                                @ColumnResult(name = "population_type_id", type = Long.class),
+                                @ColumnResult(name = "period_year", type = Long.class),
+                                @ColumnResult(name = "period_id", type = Long.class),
+                                @ColumnResult(name = "quarter", type = Long.class),
+                                @ColumnResult(name = "confirmed", type = Boolean.class),
+                                @ColumnResult(name = "value", type = Long.class),
+                        })})
+
+@SqlResultSetMapping(
+        name = "TagIndicatorValuesDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = TagIndicatorValuesDTO.class,
+                        columns = {
+                                @ColumnResult(name = "iv_id", type = Long.class),
+                                @ColumnResult(name = "tag_id", type = Long.class),
                         })})
 public class HelperCube extends BaseEntity<Long> {
 

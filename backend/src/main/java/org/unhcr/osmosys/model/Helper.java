@@ -3,6 +3,7 @@ package org.unhcr.osmosys.model;
 import com.sagatechs.generics.persistence.model.BaseEntity;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedDTO;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedWithOfficesDTO;
+import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionTagDTO;
 import org.unhcr.osmosys.model.reportDTOs.LaterReportDTO;
 
 import javax.persistence.*;
@@ -54,8 +55,6 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "age_type", type = String.class),
                                 @ColumnResult(name = "country_of_origin", type = String.class),
                                 @ColumnResult(name = "diversity_type", type = String.class),
-                                @ColumnResult(name = "age_primary_education_type", type = String.class),
-                                @ColumnResult(name = "age_tertiary_education_type", type = String.class),
                                 @ColumnResult(name = "custom_dissagregacion", type = String.class),
                                 @ColumnResult(name = "value", type = BigDecimal.class)
                         }
@@ -105,8 +104,6 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "age_type", type = String.class),
                                 @ColumnResult(name = "country_of_origin", type = String.class),
                                 @ColumnResult(name = "diversity_type", type = String.class),
-                                @ColumnResult(name = "age_primary_education_type", type = String.class),
-                                @ColumnResult(name = "age_tertiary_education_type", type = String.class),
                                 @ColumnResult(name = "custom_dissagregacion", type = String.class),
                                 @ColumnResult(name = "value", type = BigDecimal.class),
                                 @ColumnResult(name = "iv_id_office", type = Long.class),
@@ -135,7 +132,24 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "indicator_category", type = String.class),
                                 @ColumnResult(name = "late_months", type = String.class),
                                 @ColumnResult(name = "focal_point", type = String.class),
+                                @ColumnResult(name = "partner_supervisor", type = String.class),
                         })})
+
+@SqlResultSetMapping(
+        name = "IndicatorExecutionTagDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = IndicatorExecutionTagDTO.class,
+                        columns = {
+                                @ColumnResult(name = "performance_indicator_id", type = Long.class),
+                                @ColumnResult(name = "indicator", type = String.class),
+                                @ColumnResult(name = "period_id", type = Long.class),
+                                @ColumnResult(name = "quarter", type = String.class),
+                                @ColumnResult(name = "month", type = String.class),
+                                @ColumnResult(name = "month_order", type = Long.class),
+                                @ColumnResult(name = "value", type = Long.class),
+                        })})
+
 @SqlResultSetMapping(
         name = "LateReportMappingDTOMappingDI",
         classes = {

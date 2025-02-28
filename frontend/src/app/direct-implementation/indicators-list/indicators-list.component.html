@@ -5,12 +5,12 @@
         <p-toast></p-toast>
         <p-messages></p-messages>
         <div class="card py-6">
-            <p-table #dt [value]="items"
+            <p-table #dt [value]="items" [rows]="10" [paginator]="true"
                      [columns]="selectedColumns"
                      [rowHover]="true" dataKey="id"
                      styleClass="p-datatable-customers"
                      currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                     [showCurrentPageReport]="true">
+                     [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]">
                 <ng-template pTemplate="caption">
                     <div class="grid">
                         <div

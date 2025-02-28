@@ -2,9 +2,7 @@ package org.unhcr.osmosys.daos;
 
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
-import org.unhcr.osmosys.model.CustomDissagregationAssignationToIndicatorExecution;
-import org.unhcr.osmosys.model.DissagregationAssignationToIndicatorExecution;
-import org.unhcr.osmosys.model.Month;
+import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.Frecuency;
 import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.webServices.model.YearMonthDTO;
@@ -13,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 @Stateless
@@ -64,36 +63,8 @@ public class MonthDao extends GenericDaoJpa<Month, Long> {
         }
     }
 
-    public List<DissagregationAssignationToIndicatorExecution> getDissagregationsByMonthId(Long monthId) {
 
-        String jpql = "SELECT DISTINCT o " +
-                " FROM DissagregationAssignationToIndicatorExecution o " +
-                " inner join fetch o.indicatorExecution ie " +
-                " inner join fetch ie.quarters q " +
-                " inner join fetch q.months mon " +
-                " WHERE mon.id = :monthId " +
-                " and o.state =:state ";
-        Query q = getEntityManager().createQuery(jpql, DissagregationAssignationToIndicatorExecution.class);
-        q.setParameter("state", State.ACTIVO);
-        q.setParameter("monthId", monthId);
-        return q.getResultList();
-    }
 
-    public List<CustomDissagregationAssignationToIndicatorExecution> getCustomDissagregationsByMonthId(Long monthId) {
-
-        String jpql = "SELECT DISTINCT o " +
-                " FROM CustomDissagregationAssignationToIndicatorExecution o " +
-                " inner join fetch o.indicatorExecution ie " +
-                " inner join fetch o.customDissagregation " +
-                " inner join fetch ie.quarters q " +
-                " inner join fetch q.months mon " +
-                " WHERE mon.id = :monthId " +
-                " and o.state =:state ";
-        Query q = getEntityManager().createQuery(jpql, CustomDissagregationAssignationToIndicatorExecution.class);
-        q.setParameter("state", State.ACTIVO);
-        q.setParameter("monthId", monthId);
-        return q.getResultList();
-    }
 
     public List<Month> getActiveMonthsByProjectIdAndMonthAndYear(Long projectId, MonthEnum month, int year) {
         String jpql = "SELECT DISTINCT m " +
@@ -208,4 +179,222 @@ public class MonthDao extends GenericDaoJpa<Month, Long> {
         q.setParameter("customDissagregationId", customDissagregationId);
         return q.getResultList();
     }
+
+    public IndicatorExecution getIndicatorExecutionByMonthId(Long monhId) {
+        String jpql = "SELECT DISTINCT o " +
+                " FROM IndicatorExecution o" +
+                " inner join o.quarters q " +
+                " inner join q.months m " +
+                " where " +
+                " m.id=:monhId ";
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("monhId", monhId);
+        return (IndicatorExecution) q.getSingleResult();
+    }
+
+    public Map<String,Object> findMonthRelatedProject(Long idValue) {
+        // JPQL de la consulta
+        String jpql = "SELECT new map( "
+                + "p.code AS Código_de_Proyecto, "
+                + "p.name AS Nombre_Proyecto, "
+                + "i.code AS Código_de_Indicador, "
+                + "i.description AS Descripción_de_Indicador, "
+                + "o.acronym AS Organización_Acrónimo, "
+                + "o.description AS Organización_Descr, "
+                + "q.year AS Periodo, "
+                + "q.quarter AS Trimestre, "
+                + "m.month AS Mes, "
+                + "m.blockUpdate AS Bloqueo_de_mes "
+                + ") "
+                + "FROM Project p "
+                + "JOIN p.indicatorExecutions ie "
+                + "JOIN ie.indicator i "
+                + "JOIN p.organization o "
+                + "JOIN ie.quarters q "
+                + "JOIN q.months m "
+                + "WHERE m.id = :idValue "
+                + "AND ie.project.id = p.id "
+                + "AND ie.indicator.id = i.id "
+                + "AND o.id = p.organization.id "
+                + "AND q.indicatorExecution.id = ie.id "
+                + "AND q.id = m.quarter.id ";
+
+        // Ejecutar la consulta con el parámetro `idValue`
+        Query query = getEntityManager().createQuery(jpql);
+        query.setParameter("idValue", idValue);
+        // Obtener los resultados como una lista de Mapas
+        List<?> results = query.getResultList();
+
+        if (results.isEmpty()) {
+            return null;
+        }
+        return (Map<String, Object>) results.get(0);
+    }
+
+    public List<Map<String,Object>> findIndicatorsRelatedProjectByMonth(Long idProject, MonthEnum monthEnum, int year) {
+        // JPQL de la consulta
+        String jpql = "SELECT new map( "
+                + "p.code AS Código_de_Proyecto, "
+                + "p.name AS Nombre_Proyecto, "
+                + "i.code AS Código_de_Indicador, "
+                + "i.description AS Descripción_de_Indicador, "
+                + "o.acronym AS Organización_Acrónimo, "
+                + "o.description AS Organización_Descr, "
+                + "q.year AS Periodo, "
+                + "q.quarter AS Trimestre, "
+                + "m.month AS Mes, "
+                + "m.blockUpdate AS Bloqueo_de_mes "
+                + ") "
+                + "FROM Project p "
+                + "JOIN p.indicatorExecutions ie "
+                + "JOIN ie.indicator i "
+                + "JOIN p.organization o "
+                + "JOIN ie.quarters q "
+                + "JOIN q.months m "
+                + "WHERE m.month = :monthEnum "
+                + "AND p.id = :idProject "
+                + "AND q.year = :year "
+                + "AND ie.project.id = p.id "
+                + "AND ie.indicator.id = i.id "
+                + "AND o.id = p.organization.id "
+                + "AND q.indicatorExecution.id = ie.id "
+                + "AND q.id = m.quarter.id ";
+
+        // Ejecutar la consulta con el parámetro `idValue`
+        Query query = getEntityManager().createQuery(jpql);
+        query.setParameter("monthEnum", monthEnum);
+        query.setParameter("idProject", idProject);
+        query.setParameter("year", year);
+        // Obtener los resultados como una lista de Mapas
+        List<Map<String,Object>> results = query.getResultList();
+
+        if (results.isEmpty()) {
+            return null;
+        }
+        return  results;
+    }
+
+    public Map<String,Object> findMonthRelatedIndicator(Long idValue) {
+        // JPQL de la consulta
+        String jpql = "SELECT new map( "
+
+                + "i.code AS Código_de_Indicador, "
+                + "i.description AS Descripción_de_Indicador, "
+                + "CONCAT(ie.reportingOffice.acronym, '-', ie.reportingOffice.description) AS Oficina, "
+                + "ie.supervisorUser.name AS Supervisor, "
+                + "ie.assignedUser.name AS Responsable ,"
+                + "q.year AS Periodo, "
+                + "q.quarter AS Trimestre, "
+                + "m.month AS Mes, "
+                + "m.blockUpdate AS Bloqueo_de_mes "
+                + ") "
+                + "FROM IndicatorExecution ie "
+                + "JOIN ie.indicator i "
+                + "JOIN ie.quarters q "
+                + "JOIN q.months m "
+                + "WHERE m.id = :idValue "
+                + "AND ie.indicator.id = i.id "
+                + "AND q.indicatorExecution.id = ie.id "
+                + "AND q.id = m.quarter.id ";
+
+        // Ejecutar la consulta con el parámetro `idValue`
+        Query query = getEntityManager().createQuery(jpql);
+        query.setParameter("idValue", idValue);
+        // Obtener los resultados como una lista de Mapas
+        List<?> results = query.getResultList();
+
+        if (results.isEmpty()) {
+            return null;
+        }
+        return (Map<String, Object>) results.get(0);
+    }
+
+    public Map<String,Object> findMonthRelatedProjectGeneralIndicator(Long idValue) {
+        // JPQL de la consulta
+        String jpql = "SELECT new map( "
+                + "p.code AS Código_de_Proyecto, "
+                + "p.name AS Nombre_Proyecto, "
+                + "i.id AS ID_de_Indicador, "
+                + "ie.indicatorType AS Tipo_de_Indicador, "
+                + "i.description AS Descripción_de_Indicador, "
+                + "o.acronym AS Organización_Acrónimo, "
+                + "o.description AS Organización_Descr, "
+                + "q.year AS Periodo, "
+                + "q.quarter AS Trimestre, "
+                + "m.month AS Mes, "
+                + "m.blockUpdate AS Bloqueo_de_mes "
+                + ") "
+                + "FROM Project p "
+                + "JOIN p.indicatorExecutions ie "
+                + "JOIN p.period pe "
+                + "JOIN pe.generalIndicator i "
+                + "JOIN p.organization o "
+                + "JOIN ie.quarters q "
+                + "JOIN q.months m "
+                + "WHERE m.id = :idValue "
+                + "AND ie.project.id = p.id "
+                + "AND p.period.id = pe.id "
+                + "AND pe.generalIndicator.id = i.id "
+                + "AND o.id = p.organization.id "
+                + "AND q.indicatorExecution.id = ie.id "
+                + "AND q.id = m.quarter.id ";
+
+        // Ejecutar la consulta con el parámetro `idValue`
+        Query query = getEntityManager().createQuery(jpql);
+        query.setParameter("idValue", idValue);
+        // Obtener los resultados como una lista de Mapas
+        List<?> results = query.getResultList();
+
+        if (results.isEmpty()) {
+            return null;
+        }
+        return (Map<String, Object>) results.get(0);
+    }
+
+    public Map<String,Object> findGeneralIndicatorsRelatedProjectByMonth(Long idProject, MonthEnum monthEnum, int year) {
+        // JPQL de la consulta
+        String jpql = "SELECT new map( "
+                + "p.code AS Código_de_Proyecto, "
+                + "p.name AS Nombre_Proyecto, "
+                + "i.id AS ID_de_Indicador, "
+                + "i.description AS Descripción_de_Indicador, "
+                + "o.acronym AS Organización_Acrónimo, "
+                + "o.description AS Organización_Descr, "
+                + "q.year AS Periodo, "
+                + "q.quarter AS Trimestre, "
+                + "m.month AS Mes, "
+                + "m.blockUpdate AS Bloqueo_de_mes "
+                + ") "
+                + "FROM Project p "
+                + "JOIN p.indicatorExecutions ie "
+                + "JOIN p.period pe "
+                + "JOIN pe.generalIndicator i "
+                + "JOIN p.organization o "
+                + "JOIN ie.quarters q "
+                + "JOIN q.months m "
+                + "WHERE m.month = :monthEnum "
+                + "AND p.id = :idProject "
+                + "AND q.year = :year "
+                + "AND ie.project.id = p.id "
+                + "AND p.period.id = pe.id "
+                + "AND pe.generalIndicator.id = i.id "
+                + "AND o.id = p.organization.id "
+                + "AND q.indicatorExecution.id = ie.id "
+                + "AND q.id = m.quarter.id ";
+
+        // Ejecutar la consulta con el parámetro `idValue`
+        Query query = getEntityManager().createQuery(jpql);
+        query.setParameter("monthEnum", monthEnum);
+        query.setParameter("idProject", idProject);
+        query.setParameter("year", year);
+        // Obtener los resultados como una lista de Mapas
+        List<?> results = query.getResultList();
+
+        if (results.isEmpty()) {
+            return null;
+        }
+        return  (Map<String, Object>) results.get(0);
+    }
+
+
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="indicatorsCatalogWithImplementersSimple" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="d4000276-96a8-42bf-8921-e56312f2392a">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="local_osmosys"/>
@@ -61,14 +61,14 @@ COALESCE (offf.acronym, org.acronym) implementers,
 string_agg(DISTINCT da.dissagregation_type,', ') dissagregations,
 string_agg(DISTINCT cd.description,', ') custom_dissagregations
 FROM osmosys.indicators i
-LEFT JOIN osmosys.dissagregation_assignation_indicator da on i.id=da.indicator_id and da.state='ACTIVO'
-LEFT JOIN osmosys.custom_dissagregation_assignation_indicator dac on i.id=dac.indicator_id and dac.state='ACTIVO'
+INNER JOIN osmosys.dissagregation_assignation_indicator da on i.id=da.indicator_id and da.state='ACTIVO' and da.period_id=$P{periodId}  
+LEFT JOIN osmosys.custom_dissagregation_assignation_indicator dac on i.id=dac.indicator_id and dac.state='ACTIVO' and dac.period_id=$P{periodId}  
 LEFT JOIN osmosys.custom_dissagregations cd on dac.custom_dissagregation_id=cd.id
-LEFT JOIN osmosys.indicator_executions ie  on ie.performance_indicator_id=i.id and ie."state"='ACTIVO' AND IE.performance_indicator_id IS NOT NULL
+LEFT JOIN osmosys.indicator_executions ie  on ie.performance_indicator_id=i.id and ie."state"='ACTIVO' AND IE.performance_indicator_id IS NOT NULL and ie.period_id =$P{periodId} 
 LEFT JOIN osmosys.statements st on i.statement_id = st.id
 LEFT JOIN osmosys.areas ar on st.area_id=ar."id"
 LEFT JOIN osmosys.offices offf on ie.reporting_office_id=offf."id"
-LEFT JOIN osmosys.projects pr on ie.project_id=pr."id"
+LEFT JOIN osmosys.projects pr on ie.project_id=pr."id" and pr.period_id=$P{periodId}  
 LEFT JOIN osmosys.organizations org on pr.organization_id=org."id"
 WHERE da.period_id=$P{periodId}  or dac.period_id= $P{periodId} 
 GROUP BY ar.id,1,2,3,4,5,6

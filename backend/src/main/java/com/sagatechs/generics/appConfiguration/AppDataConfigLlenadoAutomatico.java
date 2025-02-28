@@ -1,16 +1,26 @@
 package com.sagatechs.generics.appConfiguration;
 
 
+import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.dao.RoleDao;
 import com.sagatechs.generics.security.model.Role;
 import com.sagatechs.generics.security.model.RoleType;
+import com.sagatechs.generics.security.model.User;
+import com.sagatechs.generics.security.servicio.UserService;
+import com.sagatechs.generics.webservice.webModel.RoleWeb;
+import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.jboss.logging.Logger;
+import org.unhcr.osmosys.services.OfficeService;
+import org.unhcr.osmosys.services.OrganizacionService;
+import org.unhcr.osmosys.webServices.model.OrganizationWeb;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @SuppressWarnings("WeakerAccess")
@@ -26,14 +36,54 @@ public class AppDataConfigLlenadoAutomatico {
     @Inject
     RoleDao roleDao;
 
+    @Inject
+    OrganizacionService organizacionService;
+
+    @Inject
+    OfficeService officeService;
+
+    @Inject
+    UserService userService;
+
     @PostConstruct
-    private void init() {
+    private void init() throws GeneralAppException {
         LOGGER.debug("Iniciando llenado automatico");
-       this.createAppConfigs();
-        this.cargarRoles();
-       // this.cargarUsuarios();*/
-       // this.createFileAppConfigs();
+         this.createAppConfigs();
+        // this.cargarRoles();
+        //this.cargarUsuarios();
+        // this.createFileAppConfigs();
         LOGGER.debug("Terminado llenado automático");
+    }
+
+    private void cargarUsuarios() throws GeneralAppException {
+        User superUser = this.userService.getUNHCRUsersByUsername("salazart");
+
+        if (superUser == null) {
+            UserWeb superUserWeb = new UserWeb();
+            superUserWeb.setUsername("salazart");
+            superUserWeb.setName("Sebastián Salazar");
+            superUserWeb.setEmail("salazart@unhcr.org");
+            superUserWeb.setState(State.ACTIVO);
+            OrganizationWeb org = this.organizacionService.getWebByAcronym("ACNUR");
+            superUserWeb.setOrganization(org);
+            List<RoleWeb> roles = new ArrayList<>();
+            for (RoleType roleType : RoleType.values()) {
+                if (!roleType.equals(RoleType.PUNTO_FOCAL) && !roleType.equals(RoleType.ADMINISTRADOR_OFICINA)) {
+                    RoleWeb roleWeb= new RoleWeb();
+                    roleWeb.setName(roleType.name());
+                    roleWeb.setState(State.ACTIVO);
+                    roles.add(roleWeb);
+                }
+            }
+            superUserWeb.setRoles(roles);
+            superUserWeb.setOffice(this.officeService.getWebById(1L));
+            this.userService.createUser(superUserWeb);
+            this.userService.changePasswordTest("salazart","1234");
+
+
+        }
+
+
     }
 
     private void createFileAppConfigs() {
@@ -85,6 +135,15 @@ public class AppDataConfigLlenadoAutomatico {
         instantiateConfigurationValues("day limit to report",
                 "día máximo del mes para el reporte de indicadores",
                 AppConfigurationKey.REPORT_LIMIT, "10");
+        /*instantiateConfigurationValues("Configuración de Zona horaria para la operación",
+                "Zona horaria para la operación",
+                AppConfigurationKey.TIME_ZONE, "UTC");*/
+        /*instantiateConfigurationValues("Correo recordatorio del reporte de proyectos dirigido a los socios responsables de su reporte",
+                "Correo de recordatorio del reporte de proyectos enviado en los 'REMINDER_DAYS'",
+                AppConfigurationKey.PROJECTS_REMINDER_EMAIL, "Estimado/a colega:\n" +
+                        "Este es un recordatorio de que el periodo de reporte de indicadores para el mes de %mesAReportar% ha iniciado. Contamos con su ayuda para tener sus datos al día en el sistema OSMOSYS hasta el día %limitDay% de este mes.  En caso de que ya se hayan reportado los datos, por favor haga caso omiso de este correo.\n" +
+                        "Este recordatorio ha sido generado automáticamente el por el sistema OSMOSYS. En caso de dudas por favor comunicarse al %projectManagerEmails%");*/
+
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -108,3 +167,6 @@ public class AppDataConfigLlenadoAutomatico {
     }
 
 }
+
+
+

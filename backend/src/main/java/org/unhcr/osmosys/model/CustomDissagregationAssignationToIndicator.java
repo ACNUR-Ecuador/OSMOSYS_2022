@@ -1,11 +1,10 @@
 package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(schema = "osmosys", name = "custom_dissagregation_assignation_indicator",
@@ -13,7 +12,7 @@ import java.util.Set;
                 @UniqueConstraint(name = "uk_custom_dissagregation_assignation_indicator", columnNames = {"indicator_id", "custom_dissagregation_id", "period_id"})
         }
 )
-public class CustomDissagregationAssignationToIndicator extends BaseEntity<Long> {
+public class CustomDissagregationAssignationToIndicator extends BaseEntityIdState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,9 +36,6 @@ public class CustomDissagregationAssignationToIndicator extends BaseEntity<Long>
     @JoinColumn(name = "custom_dissagregation_id", foreignKey = @ForeignKey(name = "fk_custom_dissagregation_asignation_indicator"))
     private CustomDissagregation customDissagregation;
 
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customDissagregationAssignationToIndicator")
-    private Set<CustomDissagregationFilterIndicator> customDissagregationFilterIndicators = new HashSet<>();
 
     @Override
     public Long getId() {
@@ -72,22 +68,6 @@ public class CustomDissagregationAssignationToIndicator extends BaseEntity<Long>
 
     public void setCustomDissagregation(CustomDissagregation customDissagregation) {
         this.customDissagregation = customDissagregation;
-    }
-
-    public Set<CustomDissagregationFilterIndicator> getCustomDissagregationFilterIndicators() {
-        return customDissagregationFilterIndicators;
-    }
-
-    public void setCustomDissagregationFilterIndicators(Set<CustomDissagregationFilterIndicator> customDissagregationFilterIndicators) {
-        this.customDissagregationFilterIndicators = customDissagregationFilterIndicators;
-    }
-
-    public void addCustomDissagregationFilterIndicator(CustomDissagregationFilterIndicator customDissagregationFilterIndicator) {
-        customDissagregationFilterIndicator.setCustomDissagregationAssignationToIndicator(this);
-        if (!this.customDissagregationFilterIndicators.add(customDissagregationFilterIndicator)) {
-            this.customDissagregationFilterIndicators.remove(customDissagregationFilterIndicator);
-            this.customDissagregationFilterIndicators.add(customDissagregationFilterIndicator);
-        }
     }
 
     public Period getPeriod() {

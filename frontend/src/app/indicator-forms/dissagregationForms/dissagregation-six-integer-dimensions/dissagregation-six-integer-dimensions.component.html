@@ -1,0 +1,256 @@
+<p-panel [ngClass]="validateTotalControl ? 'none':'diss-panel-secondary'">
+    <ng-template pTemplate="header">
+        <div class="flex w-full justify-content-center align-items-center">
+            <div
+                    class="flex-grow-1 justify-content-start"
+                    style="max-width: 350px;">
+                Desagregación por {{dissagregationType.label}}
+            </div>
+
+            <div
+            class="flex-grow-0 ml-2">
+            <button pButton type="button" label="Importar valores" icon="pi pi-file-excel"
+                    (click)="showImportDialogF()"
+                    class="p-button-success" [disabled]="false"
+                    style="width: auto; white-space: nowrap; margin-right: 10px; background-color: #589BE5; border: none"
+            ></button>
+        </div>
+
+            <div
+                    class="flex-auto mx-2 max-w-10rem"
+                    style="color: black;"
+                    [style.background]="getTotalIndicator(valuesGroupRowsMap)>0?'#C8E6C9':'#FEEDAF'"
+            >
+                <div class="flex">
+
+                    <div class="flex-auto mx-2">Total:</div>
+                    <div class="flex-auto mx-2"
+                         style="text-align: right">{{getTotalIndicator(valuesGroupRowsMap) | number:'1.0-0'}}</div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+    <p-accordion>
+        <p-accordionTab *ngFor="let groupL1 of dissagregationOptionsGroupsL1"
+                        [ngClass]="getTotalIndicatorValuesMapL1(valuesGroupRowsMap.get(groupL1))>0?'p-accordion-filled-parent':'p-accordion-empty-parent'"
+        >
+            <!-- level 1----------------------------------------------------------------------------------------------------->
+            <ng-template pTemplate="header">
+                <div class="flex w-full">
+                    <div
+                            class="flex-grow-1 justify-content-start">
+                        {{groupL1.name}}
+                    </div>
+                    <div
+                            class="flex-auto mx-2  max-w-10rem"
+                            style="color: black;"
+                            [style.background]="getTotalIndicator(valuesGroupRowsMap)>0?'#C8E6C9':'#FEEDAF'"
+                    >
+                        <div class="flex">
+
+                            <div class="flex-auto mx-2">Total:</div>
+                            <div class="flex-auto mx-2"
+                                 style="text-align: right">{{getTotalIndicatorValuesMapL1(valuesGroupRowsMap.get(groupL1)) | number:'1.0-0'}}</div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="content">
+                <p-accordion [multiple]="false">
+                    <p-accordionTab *ngFor="let groupL2 of dissagregationOptionsGroupsL2"
+                    >
+                        <!-- level 2----------------------------------------------------------------------------------------------------->
+                        <ng-template pTemplate="header">
+                            <div class="flex w-full">
+                                <div
+                                        class="flex-grow-1 justify-content-start">
+                                    {{groupL2.name}}
+                                </div>
+                                <div
+                                        class="flex-auto mx-2 max-w-10rem"
+                                        style="color: black;"
+                                        [style.background]="getTotalIndicatorValuesMapL2(valuesGroupRowsMap.get(groupL1).get(groupL2))>0?'#C8E6C9':'#FEEDAF'"
+                                >
+                                    <div class="flex">
+
+                                        <div class="flex-auto mx-2">Total:</div>
+                                        <div class="flex-auto mx-2"
+                                             style="text-align: right">
+                                            {{getTotalIndicatorValuesMapL2(valuesGroupRowsMap.get(groupL1).get(groupL2)) | number:'1.0-0'}}
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="content">
+                            <p-accordion [multiple]="false">
+                                <p-accordionTab *ngFor="let groupL3 of dissagregationOptionsGroupsL3"
+                                >
+                                    <!-- level 3----------------------------------------------------------------------------------------------------->
+                                    <ng-template pTemplate="header">
+                                        <div class="flex w-full">
+                                            <div
+                                                    class="flex-grow-1 justify-content-start">
+                                                {{groupL3.name}}
+                                            </div>
+                                            <div
+                                                    class="flex-auto mx-2 max-w-10rem"
+                                                    style="color: black;"
+                                                    [style.background]="getTotalIndicatorValuesMapL3(valuesGroupRowsMap.get(groupL1).get(groupL2).get(groupL3))>0?'#C8E6C9':'#FEEDAF'"
+                                            >
+                                                <div class="flex">
+
+                                                    <div class="flex-auto mx-2">Total:</div>
+                                                    <div class="flex-auto mx-2"
+                                                         style="text-align: right">
+                                                        {{getTotalIndicatorValuesMapL3(valuesGroupRowsMap.get(groupL1).get(groupL2).get(groupL3)) | number:'1.0-0'}}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </ng-template>
+                                    <ng-template pTemplate="content">
+                                        <p-accordion [multiple]="false">
+                                            <p-accordionTab *ngFor="let groupL4 of dissagregationOptionsGroupsL4"
+                                            >
+                                                <!-- level 4----------------------------------------------------------------------------------------------------->
+                                                <ng-template pTemplate="header">
+                                                    <div class="flex w-full">
+                                                        <div
+                                                                class="flex-grow-1 justify-content-start">
+                                                            {{groupL4.name}}
+                                                        </div>
+                                                        <div
+                                                                class="flex-auto mx-2 max-w-10rem"
+                                                                style="color: black;"
+                                                                [style.background]="this.utilsService.getTotalIndicatorValuesArrayArray(valuesGroupRowsMap.get(groupL1).get(groupL2).get(groupL3).get(groupL4))>0?'#C8E6C9':'#FEEDAF'"
+                                                        >
+                                                            <div class="flex">
+
+                                                                <div class="flex-auto mx-2">Total:</div>
+                                                                <div class="flex-auto mx-2"
+                                                                     style="text-align: right">
+                                                                    {{this.utilsService.getTotalIndicatorValuesArrayArray(valuesGroupRowsMap.get(groupL1).get(groupL2).get(groupL3).get(groupL4)) | number:'1.0-0'}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </ng-template>
+                                                <ng-template pTemplate="content">
+                                                    <p-table *ngIf="values"
+                                                             [value]="valuesGroupRowsMap.get(groupL1).get(groupL2).get(groupL3).get(groupL4)">
+                                                        <ng-template pTemplate="header">
+                                                            <tr>
+                                                                <th></th>
+                                                                <th *ngFor="let col of dissagregationOptionsColumns">{{col.name}}</th>
+                                                                <th>Totales</th>
+                                                            </tr>
+                                                        </ng-template>
+                                                        <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
+                                                            <tr>
+                                                                <td class="table-title">{{dissagregationOptionsRows[rowIndex].name}}</td>
+                                                                <td pEditableColumn
+                                                                    *ngFor="let rowOp of dissagregationOptionsColumns; index as indexColumn"
+                                                                    class="text-right">
+
+                                                                    <p-cellEditor *ngIf="editable">
+                                                                        <ng-template pTemplate="input">
+                                                                            <p-inputNumber
+                                                                                    name="{{row[indexColumn].id}}"
+                                                                                    [min]="0"
+                                                                                    [(ngModel)]="row[indexColumn].value"
+                                                                            ></p-inputNumber>
+                                                                        </ng-template>
+                                                                        <ng-template pTemplate="output">
+                                                                            {{row[indexColumn].value}}
+                                                                        </ng-template>
+                                                                    </p-cellEditor>
+                                                                    <div *ngIf="!editable">
+                                                                        {{row[indexColumn].value}}
+                                                                    </div>
+                                                                </td>
+
+                                                                <td class="subtotal_value">{{this.utilsService.getTotalIndicatorValuesArray(row)}}</td>
+                                                            </tr>
+                                                        </ng-template>
+                                                        <ng-template pTemplate="footer">
+                                                            <tr>
+                                                                <td class="table-title">Totales</td>
+                                                                <td class="subtotal_value"
+                                                                    *ngFor="let colOp of dissagregationOptionsColumns; index as indexColumn">
+                                                                    {{this.utilsService.getTotalIndicatorValuesColumnArrayArray(valuesGroupRowsMap.get(groupL1).get(groupL2).get(groupL3).get(groupL4), indexColumn)}}
+                                                                </td>
+                                                                <td class="total_value">{{this.utilsService.getTotalIndicatorValuesArrayArray(valuesGroupRowsMap.get(groupL1).get(groupL2).get(groupL3).get(groupL4))}}</td>
+                                                            </tr>
+                                                        </ng-template>
+                                                    </p-table>
+                                                </ng-template>
+                                            </p-accordionTab>
+                                        </p-accordion>
+                                    </ng-template>
+                                </p-accordionTab>
+                            </p-accordion>
+                        </ng-template>
+                    </p-accordionTab>
+                </p-accordion>
+            </ng-template>
+        </p-accordionTab>
+    </p-accordion>
+</p-panel>
+<form [formGroup]="importForm" (ngSubmit)="importFile()">
+    <p-dialog [(visible)]="showImportDialog" [style]="{width: '70%'}" [modal]="true" [closable]="false" [draggable]="false">
+
+        <ng-template pTemplate="header">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <span style="font-weight: bold; font-size: 1.3em;">Importación de Datos</span>
+                <div class="flex-grow-0">
+                    <button pButton type="button" label="Generar Plantilla" icon="pi pi-file-excel"
+                        (click)="generarExcel()" [disabled]="false"
+                        style="width: auto;  background-color: #589BE5; border: none;"></button>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="content">
+
+            <div class="card p-fluid">
+                <p-fileUpload name="myfile[]" [customUpload]="true" (uploadHandler)="fileUploader($event)" [auto]="true"
+                    uploadLabel="importar" chooseLabel="seleccionar archivo" cancelLabel="cancelar"></p-fileUpload>
+                <div class="field grid">
+                    <label htmlFor="name3" class="col-12 mb-2 md:col-2 md:mb-0">Hoja</label>
+                    <div class="col-12 md:col-10">
+                        <p-dropdown id="sheetI" formControlName="sheet" [options]="sheetOptions" [filter]=true
+                            appendTo="body" placeholder="Selecciona..." [showClear]="true">
+                        </p-dropdown>
+                    </div>
+                </div>
+            </div>
+
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <button pButton type="submit" [disabled]="!importForm.valid" pRipple label="Importar" icon="pi pi-check"
+                style="margin-right: 10px;"></button>
+            <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
+                (click)="cancelImportDialog()" style="margin-right: 10px;"></button>
+
+
+        </ng-template>
+    </p-dialog>
+</form>
+<p-dialog [header]="currentTimestamp" (onShow)="onDialogShow()" [(visible)]="showImportErrorLogs" [modal]="true"
+    [style]="{width: '50vw'}" [draggable]="false" [resizable]="false">
+
+    <div style="margin-top: 20px;">
+        <div style="margin-top: 10px;" *ngFor="let mess of importErroMessage">
+            <p-message severity="error" [text]="mess"></p-message>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="showImportErrorLogs=false" label="Ok"
+            styleClass="p-button-text"></p-button>
+    </ng-template>
+</p-dialog>

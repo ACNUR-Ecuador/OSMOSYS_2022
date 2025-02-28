@@ -39,7 +39,7 @@ public class User extends BaseEntity<Long> {
     private String username;
 
     @Email(message = "El correo no es una dirección válida")
-    @Column(name = "email", length = 50, unique = true)
+    @Column(name = "email", length = 100, unique = true)
     private String email;
 
     @Column(name = "password", nullable = false)

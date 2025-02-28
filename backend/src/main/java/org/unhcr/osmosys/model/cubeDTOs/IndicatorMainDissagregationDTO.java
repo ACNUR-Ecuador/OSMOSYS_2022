@@ -11,12 +11,29 @@ public class IndicatorMainDissagregationDTO {
         this.indicator_id = indicator_id;
         this.period_id = period_id;
         this.dissagregation_type = DissagregationType.valueOf(dissagregation_type);
+        this.order = null;
+        this.indicatorType = null;
+
+    }
+
+    public IndicatorMainDissagregationDTO(Long indicator_id, Long period_id, String indicatorlabel,String indicatorType) {
+        this.indicator_id = indicator_id;
+        this.period_id = period_id;
+        this.dissagregation_type = null;
+        this.order = null;
+        this.indicatorlabel = indicatorlabel;
+        this.indicatorType = indicatorType;
+
     }
 
     private Long indicator_id;
     private Long period_id;
     private DissagregationType dissagregation_type;
     private Boolean mainDissagregation;
+
+    private Integer order;
+    private String indicatorType;
+    private String indicatorlabel;
 
 
     public Long getIndicator_id() {
@@ -49,5 +66,29 @@ public class IndicatorMainDissagregationDTO {
 
     public void setMainDissagregation(Boolean mainDissagregation) {
         this.mainDissagregation = mainDissagregation;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
+    public String getIndicatorType() {
+        return indicatorType;
+    }
+
+    public void setIndicatorType(String indicatorType) {
+        this.indicatorType = indicatorType;
+    }
+
+    public String getIndicatorlabel() {
+        return indicatorlabel;
+    }
+
+    public void setIndicatorlabel(String indicatorlabel) {
+        this.indicatorlabel = indicatorlabel;
     }
 }

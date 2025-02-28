@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, PercentPipe} from '@angular/common';
 
 import {DirectImplementationRoutingModule} from './direct-implementation-routing.module';
 import {AreasMenuComponent} from './areas-menu/areas-menu.component';
@@ -62,7 +62,8 @@ import {SharedModule} from "../shared/shared.module";
         CodeDescriptionPipe,
         MonthPipe,
         MonthListPipe,
-        BooleanYesNoPipe
+        BooleanYesNoPipe,
+        PercentPipe
     ]
 })
 export class DirectImplementationModule {

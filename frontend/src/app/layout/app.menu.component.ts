@@ -15,6 +15,10 @@ export class AppMenuComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.model = this.menuService.MENUITEMS;
+        //this.model = this.menuService.MENUITEMS;
+        this.menuService.menuModel$.subscribe(value => {
+            this.model=value;
+        })
+
     }
 }

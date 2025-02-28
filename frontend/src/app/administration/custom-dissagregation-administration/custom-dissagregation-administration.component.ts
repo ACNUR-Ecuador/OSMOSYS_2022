@@ -1,13 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {CustomDissagregation, CustomDissagregationOption, Marker} from '../../shared/model/OsmosysModel';
-import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
+import {CustomDissagregation, CustomDissagregationOption} from '../../shared/model/OsmosysModel';
+import {ColumnDataType, ColumnTable, EnumsType} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ConfirmationService, FilterService, MessageService, SelectItem} from 'primeng/api';
 import {UtilsService} from '../../services/utils.service';
 import {EnumsService} from '../../services/enums.service';
 import {CustomDissagregationService} from '../../services/custom-dissagregation.service';
-import {MarkerService} from '../../services/marker.service';
-import {MarkersListPipe} from '../../shared/pipes/markers-list.pipe';
 import {CustomDissagregationOptionsListPipe} from '../../shared/pipes/custom-dissagregation-options-list.pipe';
 import {FilterUtilsService} from '../../services/filter-utils.service';
 import {Table} from 'primeng/table';
@@ -34,7 +32,7 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
     _selectedColumns: ColumnTable[];
     // tslint:disable-next-line:variable-name
     _selectedColumnsOptions: ColumnTable[];
-    markers: Marker[];
+
 
     constructor(
         private messageService: MessageService,
@@ -45,9 +43,7 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
         private filterUtilsService: FilterUtilsService,
         private enumsService: EnumsService,
         private customDissagregationService: CustomDissagregationService,
-        private markersListPipe: MarkersListPipe,
         private customDissagregationOptionsListPipe: CustomDissagregationOptionsListPipe,
-        private markerService: MarkerService,
         private booleanYesNoPipe: BooleanYesNoPipe
     ) {
     }
@@ -59,29 +55,28 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
             {field: 'name', header: 'Nombre', type: ColumnDataType.text},
-            {field: 'description', header: 'Descripción', type: ColumnDataType.text},
-            {
-                field: 'controlTotalValue',
-                header: 'Control de valores totales',
-                type: ColumnDataType.boolean,
-                pipeRef: this.booleanYesNoPipe
-            },
-            {field: 'state', header: 'Estado', type: ColumnDataType.text},
+            // {
+            //     field: 'controlTotalValue',
+            //     header: 'Valores totales',
+            //     type: ColumnDataType.boolean,
+            //     pipeRef: this.booleanYesNoPipe
+            // },
             {
                 field: 'customDissagregationOptions',
                 header: 'Desagregaciones',
                 type: ColumnDataType.text,
                 pipeRef: this.customDissagregationOptionsListPipe
-            }
+            },
+            {field: 'state', header: 'Estado', type: ColumnDataType.text},
+
         ];
         this.registerFilters();
 
         this.colOptions = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
-            {field: 'name', header: 'Nombre', type: ColumnDataType.text},
+            {field: 'name', header: 'Nombre', type: ColumnDataType.text, width: '200px'},
             {field: 'description', header: 'Descripción', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
-            {field: 'markers', header: 'Marcadores', type: ColumnDataType.text, pipeRef: this.markersListPipe},
         ];
         this._selectedColumns = this.cols.filter(value => value.field !== 'id');
         this._selectedColumnsOptions = this.colOptions.filter(value => value.field !== 'id');
@@ -89,7 +84,7 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
         this.formItem = this.fb.group({
             id: new FormControl(''),
             name: new FormControl('', Validators.required),
-            description: new FormControl('', Validators.required),
+            description: new FormControl(''),
             controlTotalValue: new FormControl('', Validators.required),
             state: new FormControl('', Validators.required),
             customDissagregationOptions: this.fb.array([])
@@ -100,7 +95,6 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
             name: new FormControl('', Validators.required),
             description: new FormControl('', Validators.required),
             state: new FormControl('', Validators.required),
-            markers: this.fb.array([])
         });
         this.enumsService.getByType(EnumsType.State).subscribe(value => {
             this.states = value;
@@ -118,7 +112,6 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
             .subscribe({
                 next: value => {
                     this.items = value;
-                    this.loadMarkers(null);
                 },
                 error: err => {
                     this.messageService.add({
@@ -132,33 +125,8 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
     }
 
     // noinspection DuplicatedCode
-    private loadMarkers(markersToRemove: Marker[]) {
-        this.markerService.getByState(EnumsState.ACTIVE)
-            .subscribe({
-                next: value => {
-                    if (markersToRemove && markersToRemove.length > 0) {
-                        this.markers = value.filter(value1 => {
-                            for (const marker of markersToRemove) {
-                                if (marker.id === value1.id) {
-                                    return false;
-                                }
-                            }
-                            return true;
-                        });
-                    } else {
-                        this.markers = value;
-                    }
-                },
-                error: err => {
-                    this.messageService.add({
-                        severity: 'error',
-                        summary: 'Error al cargar los marcadores',
-                        detail: err.error.message,
-                        life: 3000
-                    });
-                }
-            });
-    }
+
+
 
     exportExcel(table: Table) {
         this.utilsService.exportTableAsExcel(this._selectedColumns,
@@ -190,7 +158,7 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
     }
 
     createOption() {
-        this.loadMarkers(null);
+
         const op1 = new CustomDissagregationOption();
         this.utilsService.resetForm(this.formOptionItem);
         this.formOptionItem.patchValue(op1);
@@ -198,14 +166,7 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
     }
 
     editOption(customDissagregationOption: CustomDissagregationOption) {
-        if (!customDissagregationOption.markers) {
-            customDissagregationOption.markers = [];
-        }
         this.formOptionItem.patchValue(customDissagregationOption);
-        for (const marker of customDissagregationOption.markers) {
-            this.formOptionItem.get('markers').value.push(marker);
-        }
-        this.loadMarkers(customDissagregationOption.markers);
         this.showDialogOption = true;
         // this.itemsOptions.push(op1);
     }
@@ -236,6 +197,11 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
                     next: () => {
                         this.cancelDialog();
                         this.loadItems();
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Desagregación guardada exitosamente',
+                            life: 3000
+                        });
                     },
                     error: err => {
                         this.messageService.add({
@@ -253,6 +219,11 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
                     next: () => {
                         this.cancelDialog();
                         this.loadItems();
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Desagregación guardada exitosamente',
+                            life: 3000
+                        });
                     },
                     error: err => {
 
@@ -274,7 +245,6 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
             name,
             description,
             state,
-            markers,
         }
             =
             this.formOptionItem.value;
@@ -284,7 +254,6 @@ export class CustomDissagregationAdministrationComponent implements OnInit {
             name,
             description,
             state,
-            markers,
         };
 
         let options = this.formItem.get('customDissagregationOptions').value as CustomDissagregationOption[];

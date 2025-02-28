@@ -31,7 +31,7 @@ export class OfficeAdministrationComponent implements OnInit {
     officeTree: TreeNode[];
     selectedNode: TreeNode;
     activeIndex1 = 0;
-
+    allParentOffices: SelectItem[] = [];
 
     constructor(
         private messageService: MessageService,
@@ -54,7 +54,12 @@ export class OfficeAdministrationComponent implements OnInit {
             {field: 'acronym', header: 'Acrónimo', type: ColumnDataType.text},
             {field: 'type', header: 'Tipo', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
-            {field: 'parentOffice', header: 'Oficina Padre', type: ColumnDataType.text, pipeRef: this.officeOrganizationPipe}
+            {
+                field: 'parentOffice',
+                header: 'Oficina Padre',
+                type: ColumnDataType.text,
+                pipeRef: this.officeOrganizationPipe
+            }
         ];
         this._selectedColumns = this.cols.filter(value => value.field !== 'id');
 
@@ -62,7 +67,7 @@ export class OfficeAdministrationComponent implements OnInit {
             id: new FormControl(''),
             state: new FormControl('', Validators.required),
             description: new FormControl('', Validators.required),
-            acronym: new FormControl(''),
+            acronym: new FormControl('', Validators.required),
             type: new FormControl('', Validators.required),
             parentOffice: new FormControl(''),
             administrators: new FormControl(''),
@@ -72,25 +77,6 @@ export class OfficeAdministrationComponent implements OnInit {
         });
         this.enumsService.getByType(EnumsType.OfficeType).subscribe(value => {
             this.officeTypes = value;
-        });
-        this.officeService.getActive().subscribe({
-            next: value => {
-                this.parenteOffices = value.map(value1 => {
-                    const selectItem: SelectItem = {
-                        label: this.officeOrganizationPipe.transform(value1),
-                        value: value1
-                    };
-                    return selectItem;
-                });
-            },
-            error: err => {
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error al cargar las oficinas activas',
-                    detail: err.error.message,
-                    life: 3000
-                });
-            }
         });
 
         this.userService.getActiveUNHCRUsers().subscribe({
@@ -235,6 +221,27 @@ export class OfficeAdministrationComponent implements OnInit {
                     });
                 }
             });
+        this.officeService.getActive().subscribe({
+            next: value => {
+                this.parenteOffices = value.map(value1 => {
+                    const selectItem: SelectItem = {
+                        label: this.officeOrganizationPipe.transform(value1),
+                        value: value1
+                    };
+                    return selectItem;
+                });
+                this.allParentOffices=this.parenteOffices
+            },
+            error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar las oficinas activas',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+
     }
 
     exportExcel(table: Table) {
@@ -244,6 +251,7 @@ export class OfficeAdministrationComponent implements OnInit {
     }
 
     createItem() {
+        this.parenteOffices=this.allParentOffices
         this.messageService.clear();
         this.utilsService.resetForm(this.formItem);
         this.submitted = false;
@@ -253,11 +261,19 @@ export class OfficeAdministrationComponent implements OnInit {
     }
 
     editItem(office: Office) {
-
+        this.parenteOffices=this.allParentOffices
         this.utilsService.resetForm(this.formItem);
         this.submitted = false;
         this.showDialog = true;
         this.formItem.patchValue(office);
+        const officeRemoveItself=this.parenteOffices.filter(value1 =>{
+            return value1.value.id !== office.id
+            
+        })
+        this.parenteOffices=officeRemoveItself
+
+        const officeType: string = office.type;
+        this.onOfficeTypeChange(officeType)
     }
 
 
@@ -292,6 +308,11 @@ export class OfficeAdministrationComponent implements OnInit {
                     this.cancelDialog();
                     this.loadItems();
                     this.loadTree();
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Oficina guardada exitosamente',
+                        life: 3000
+                    });
                 },
                 error: err => {
                     this.messageService.add({
@@ -309,6 +330,11 @@ export class OfficeAdministrationComponent implements OnInit {
                     this.cancelDialog();
                     this.loadItems();
                     this.loadTree();
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Oficina guardada exitosamente',
+                        life: 3000
+                    });
                 },
                 error: err => {
                     this.messageService.add({
@@ -338,6 +364,31 @@ export class OfficeAdministrationComponent implements OnInit {
 
     onNodeSelect($event: any) {
         this.editItem($event.node.data);
+    }
+
+    onOfficeTypeChange(officeType: string) {
+        if (officeType) {
+            if (officeType === "BO" || officeType === "OFICINA_NACIONAL" || officeType === "OFICINA_MULTI_PAIS" ) {
+                this.formItem.get('parentOffice').patchValue(null);
+                this.formItem.get('parentOffice').clearValidators();
+                this.formItem.get('parentOffice').updateValueAndValidity();
+                this.formItem.get('parentOffice').disable();
+            } else {
+                this.formItem.get('parentOffice').setValidators([Validators.required]);
+                this.formItem.get('parentOffice').enable();
+                this.formItem.get('parentOffice').updateValueAndValidity();
+            }
+            
+        }
+    }
+
+    convertoToOfficeTypeLabel(officeType:string){
+        const officeTypeLabel=this.officeTypes.find(item => item.value === officeType)?.label
+        if(officeTypeLabel){
+            return officeTypeLabel
+        }else{
+            return ""
+        }
     }
 }
 

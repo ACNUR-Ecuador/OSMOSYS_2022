@@ -27,7 +27,6 @@ export class TokenResponseInterceptor implements HttpInterceptor {
                         }
                     }
                 }, err => {
-                    console.log(this.router.routerState.snapshot);
                     if (err instanceof HttpErrorResponse && this.router.routerState.snapshot.url !== '/login') {
                         if (err.status === 401) {
                             this.confirmationService.confirm(

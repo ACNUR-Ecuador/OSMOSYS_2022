@@ -1,7 +1,105 @@
-<div class="layout-footer">
+<div class="layout-footer" [ngStyle]="{'background-color': backgroundColor}">
     <div class="footer-logo-container">
         <img id="footer-logo" [src]="'assets/images/logo_osmosys_blue.png'" alt="osmosys"/>
-
+        <!--<span class="footer-copyright">&#169; Hecho con amor en el -salvador</span>-->
     </div>
-    <span class="footer-copyright">&#169; UNHCR - 2022</span>
+    <span (click)="showDialog = true" class="footer-copyright hover:surface-hover transition-colors transition-duration-150 cursor-pointer">V 5.0.7</span>
+    <span class="footer-copyright">&#169; UNHCR -Hecho en El Salvador y Ecuador-  2024</span> 
+    
+    <p-dialog header="Change log" [(visible)]="showDialog" [modal]="true" [style]="{width: '50vw'}" (onHide)="showDialog = false">
+        <h5 style="margin-top: 1rem;">Versión 5.0.7 - 2025-02-27 </h5>
+        <ul>
+            <li>Se aumenta la columna Lugares Asignados en la tabla de reporte de Indicadores de Producto.</li>
+            <li>En la edición de tags se remueven los indicadores seleccionados cuando se cambia a un año donde estos no existen.</li>
+            <li>Corrección al guardar cuando se edita un marco de resultado de tipo PRODUCTO.</li>
+            <li>Se ha aumentado la longitud máxima del código del Indicador.</li>
+            <li>Se han incorporado nuevos campos para el cálculo del reporte trimestral en la pantalla de Catálogo de Indicadores.</li>
+            <li>Se ha agregado una ventana para el reporte de valores trimestrales por tipo de Población en Mánager de Resultados.</li>
+            <li>Se ha añadido una ventana de tipo de Implementación en la tabla de Detalle por Periodo en Mánager de Resultados.</li>
+            <li>Se ha implementado un sistema de distinción de colores en las columnas de Confirmación en la Tabla de Detalles por Periodo en Mánager de Resultados</li>
+            <li>Se han refactorizado los nombres de las columnas en las tablas de detalles en la pantalla de Mánager de Resultados.</li>
+            <li>Ahora se calculan los valores de Ejecución Trimestral de manera acumulada.</li>
+            <li>Se han añadido estados globales por Indicador para representar el estado de la validación de datos trimestral en Mánager de Resultados.</li>
+            <li>Se ha eliminado el botón adicional de Acerca de Osmosys en el menú Principal.</li>
+            <li>Se han colocado los manuales segun los roles asignados en el menú de Perfil.</li>
+        </ul>        
+        <h5 style="margin-top: 1rem;">Versión 5.0.6 - 2025-02-12 </h5>
+        <ul>
+            <li>Creación de pantalla de Mánager de Resultado.</li>            
+            <li>Se agregan notificaciones de recordatorio para el rol de Mánager de Resultado.</li>            
+        </ul>
+        <h5 style="margin-top: 1rem;">Versión 5.0.5 - 2025-02-05 </h5>
+        <ul>
+            <li>Creación de plantilla genérica para envío de correos.</li>            
+            <li>Se agregan notificaciones de alerta y recordatorio para el rol de Supervisor de Proyecto (Socio).</li>            
+            <li>Se cambian los correos de administración por defecto.</li>            
+        </ul>
+        <h5 style="margin-top: 1rem;">Versión 5.0.4 - 2025-02-03</h5>
+        <ul>
+            <li>Corrección en la actualización de lugares para indicadores de ejecución.</li>
+            <li>Corrección en la generación de reportes para tags, ajustando el mes correctamente.</li>
+            <li>Se renombran y añaden nuevos tipos de oficinas.</li>
+            <li>El término "Oficina" se actualiza a "Oficina/Unidad".</li>
+            <li>Se restringe la visualización de usuarios según el tipo de rol asignado.</li>
+            <li>Se limita la asignación de permisos de implementador a los usuarios de tipo Socios.</li>
+            <li>Se impide la asignación de grupos poblacionales a enunciados que no sean de tipo Producto.</li>
+            <li>Corrección en la validación de reportes mensuales.</li>
+            <li>Se añade control de visualización del número de registros por tabla en los bloques de administración.</li>
+            <li>Las opciones de edades personalizadas ahora se ordenan por nombre de grupo.</li>
+            <li>Corrección en el nombre del texto en el pie de tabla de Implementadores.</li>
+            <li>El campo "Supervisor de indicador" en implementación directa cambia de nombre.</li>
+            <li>El código del indicador ahora se incluye en el nombre del archivo de la plantilla de importación de valores.</li>
+            <li>El campo de selección de enunciado padre ahora se filtra para mostrar únicamente opciones de Efecto y Apoyo en áreas de tipo Producto.</li>
+            <li>Al modificar el área de un enunciado de tipo Efecto, ahora se actualizará automáticamente el área de sus enunciados de Producto asociados.</li>
+            <li>Se añaden nuevas oficinas y se corrigen etiquetas en la tabla de oficinas.</li>
+            <li>Se elimina la posibilidad de asignar el mismo indicador más de una vez en un tag.</li>
+            <li>Se restringe la asignación de permisos de administración y de reporte de implementación directa a los usuarios de tipo Socios.</li>
+            <li>Se impide la asignación de una oficina padre a oficinas de tipo Multi-país.</li>
+            <li>El pie de página ahora se muestra en amarillo cuando se está en un ambiente de pruebas.</li>
+            <li>Al cerrar sesión, ahora se redirige automáticamente a la pantalla de inicio de sesión.</li>
+            <li>Se añade un color distintivo al encabezado de las tablas de desagregación que no requieren validación de totales.</li>
+            <li>Se incorpora ayuda informativa en varios campos y roles.</li>
+            <li>Se renombran y añaden nuevos roles y permisos.</li>
+            <li>Se actualizan etiquetas en las pantallas de proyecto y auditoría para alinearlas con los nuevos roles.</li>
+            <li>Se añade un icono informativo junto a los nombres de los roles, proporcionando una descripción clara de las acciones que puede realizar cada rol en el formulario de creación de usuarios.</li>
+            <li>Se valida los tipos de roles que pueden asignarse a un usuario de ACNUR y a un usuario socio.</li>
+            <li>Se incorpora una opción para acceder al manual de usuario debajo del icono del usuario en el menú principal.</li>
+            <li>Se añade un botón de ayuda en las pantallas de administración que redirige al usuario a la sección específica del manual correspondiente a la administración.</li>
+            <li>Actualización de manuales.</li>
+        </ul>
+        <h5 style="margin-top: 1rem;">Versión 5.0.3 - 2025-01-13 </h5>
+        <ul>
+            <li>No es obligatorio roles al crear o editar usuario.</li>            
+        </ul>
+        <h5 style="margin-top: 1rem;">Versión 5.0.2 - 2025-01-09 </h5>
+        <ul>
+            <li>Corrección de Área en Enunciados de Producto.</li>
+            <li>Se retira herramientas de recolección en Implementación Directa y Reporte de Beneficiarios Únicos.</li>
+            <li>Cambio de etiqueta, Beneficiarios Totales por Beneficiarios Únicos.</li>
+            <li>Corrección botón cancelar en Proyectos no regresaba.</li>
+            
+        </ul>
+        <h5 style="margin-top: 1rem;">Versión 5.0.1 - 2024-12-31 </h5>
+        <ul>
+            <li>Cambios en Administración de Marco de Resultados.</li>
+            <li>Nuevo parámetro de configuración para Zona Horaria.</li>
+            <li>Cambios en plantilla de reporte.</li>
+            <li>Solución no guardaba Edades Personalizadas.</li>
+            <li>Solución Tags en varias desagregaciones.</li>
+            
+        </ul>
+        <h5 style="margin-top: 1rem;">Versión 5.0 Snapshot - 2024-12-26 </h5>
+        <ul>
+            <li>Cambios varios de interfaz.</li>
+            <li>Nuevos roles Regionales y Locales.</li>
+            
+        </ul>
+        <h5>Versión 4.0 </h5>
+        <ul>
+            <li>Versión inicial Regional.</li>
+        </ul>        
+        
+        <button pButton type="button" label="Cerrar" icon="pi pi-times" (click)="showDialog = false"></button>
+    </p-dialog>
+
 </div>

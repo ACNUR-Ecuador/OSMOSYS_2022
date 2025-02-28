@@ -20,6 +20,9 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
                     "options": {
+                        "allowedCommonJsDependencies": [
+                            "file-saver", "exceljs", "quill"
+                        ],
                         "outputPath": "dist/osmosys",
                         "index": "src/index.html",
                         "main": "src/main.ts",
@@ -36,11 +39,15 @@
                         ]
                     },
                     "configurations": {
-                        "production": {
+                        "production_rba": {
+                            "baseHref": "/rba/",
+                            "optimization": true,
+                            "aot": true,
+                            "buildOptimizer": true,
                             "budgets": [
                                 {
                                     "type": "initial",
-                                    "maximumWarning": "1mb",
+                                    "maximumWarning": "4mb",
                                     "maximumError": "5mb"
                                 },
                                 {
@@ -52,7 +59,207 @@
                             "fileReplacements": [
                                 {
                                     "replace": "src/environments/environment.ts",
-                                    "with": "src/environments/environment.prod.ts"
+                                    "with": "src/environments/environment.prod_rba.ts"
+                                }
+                            ],
+                            "outputHashing": "all"
+                        },
+                        "ec_test": {
+                            "baseHref": "/osmosys_ec_test/",
+                            "optimization": true,
+                            "aot": true,
+                            "buildOptimizer": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "4mb",
+                                    "maximumError": "5mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "2kb",
+                                    "maximumError": "4kb"
+                                }
+                            ],
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.ec_test.ts"
+                                }
+                            ],
+                            "outputHashing": "all"
+                        },
+                        "production_ecu": {
+                            "baseHref": "/ecu/",
+                            "optimization": true,
+                            "aot": true,
+                            "buildOptimizer": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "4mb",
+                                    "maximumError": "5mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "2kb",
+                                    "maximumError": "4kb"
+                                }
+                            ],
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod_ecu.ts"
+                                }
+                            ],
+                            "outputHashing": "all"
+                        },
+                        "production_cri": {
+                            "baseHref": "/cri/",
+                            "optimization": true,
+                            "aot": true,
+                            "buildOptimizer": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "4mb",
+                                    "maximumError": "5mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "2kb",
+                                    "maximumError": "4kb"
+                                }
+                            ],
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod_cri.ts"
+                                }
+                            ],
+                            "outputHashing": "all"
+                        },
+                        "production_mex": {
+                            "baseHref": "/mex/",
+                            "optimization": true,
+                            "aot": true,
+                            "buildOptimizer": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "4mb",
+                                    "maximumError": "5mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "2kb",
+                                    "maximumError": "4kb"
+                                }
+                            ],
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod_mex.ts"
+                                }
+                            ],
+                            "outputHashing": "all"
+                        },
+                        "production_per": {
+                            "baseHref": "/per/",
+                            "optimization": true,
+                            "aot": true,
+                            "buildOptimizer": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "4mb",
+                                    "maximumError": "5mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "2kb",
+                                    "maximumError": "4kb"
+                                }
+                            ],
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod_per.ts"
+                                }
+                            ],
+                            "outputHashing": "all"
+                        },
+                        "production_slv": {
+                            "baseHref": "/slv/",
+                            "optimization": true,
+                            "aot": true,
+                            "buildOptimizer": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "4mb",
+                                    "maximumError": "5mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "2kb",
+                                    "maximumError": "4kb"
+                                }
+                            ],
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod_slv.ts"
+                                }
+                            ],
+                            "outputHashing": "all"
+                        },
+                        "production_test": {
+                            "baseHref": "/test/",
+                            "optimization": true,
+                            "aot": true,
+                            "buildOptimizer": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "4mb",
+                                    "maximumError": "5mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "2kb",
+                                    "maximumError": "4kb"
+                                }
+                            ],
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod_test.ts"
+                                }
+                            ],
+                            "outputHashing": "all"
+                        },
+                        "production_ven": {
+                            "baseHref": "/ven/",
+                            "optimization": true,
+                            "aot": true,
+                            "buildOptimizer": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "4mb",
+                                    "maximumError": "5mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "2kb",
+                                    "maximumError": "4kb"
+                                }
+                            ],
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod_ven.ts"
                                 }
                             ],
                             "outputHashing": "all"

@@ -1,7 +1,8 @@
 package org.unhcr.osmosys.webServices.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.model.User;
+import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.unhcr.osmosys.model.enums.*;
@@ -11,40 +12,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class IndicatorWeb implements Serializable {
-    private Long id;
+public class IndicatorWeb extends BaseWebEntity implements Serializable {
+    public IndicatorWeb() {
+        super();
+    }
+
     private String code;
+    private String regionalCode;
     private String description;
     private String category;
     private String instructions;
     private String qualitativeInstructions;
-    private State state;
     private IndicatorType indicatorType;
     private MeasureType measureType;
     private Frecuency frecuency;
     private AreaType areaType;
-    private List<MarkerWeb> markers = new ArrayList<>();
     @JsonProperty("isMonitored")
     private Boolean isMonitored;
     @JsonProperty("isCalculated")
     private Boolean isCalculated;
     private Boolean compassIndicator;
+    private Boolean coreIndicator;
     private TotalIndicatorCalculationType totalIndicatorCalculationType;
-
     private StatementWeb statement;
     private UnitType unit;
     private List<DissagregationAssignationToIndicatorWeb> dissagregationsAssignationToIndicator = new ArrayList<>();
     private List<CustomDissagregationAssignationToIndicatorWeb> customDissagregationAssignationToIndicators = new ArrayList<>();
-
+    private String periods;
     private Boolean blockAfterUpdate;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private UserWeb resultManager;
+    private QuarterReportCalculation quarterReportCalculation;
+    private String aggregationRuleComment;
 
     public String getCode() {
         return code;
@@ -62,6 +60,14 @@ public class IndicatorWeb implements Serializable {
         this.description = description;
     }
 
+    public UserWeb getResultManager() {
+        return resultManager;
+    }
+
+    public void setResultManager(UserWeb resultManager) {
+        this.resultManager = resultManager;
+    }
+
     public StatementWeb getStatement() {
         return statement;
     }
@@ -76,14 +82,6 @@ public class IndicatorWeb implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
     }
 
     public IndicatorType getIndicatorType() {
@@ -118,13 +116,6 @@ public class IndicatorWeb implements Serializable {
         this.areaType = areaType;
     }
 
-    public List<MarkerWeb> getMarkers() {
-        return markers;
-    }
-
-    public void setMarkers(List<MarkerWeb> markers) {
-        this.markers = markers;
-    }
 
     public Boolean getMonitored() {
         return isMonitored;
@@ -140,6 +131,14 @@ public class IndicatorWeb implements Serializable {
 
     public void setCalculated(Boolean calculated) {
         isCalculated = calculated;
+    }
+
+    public String getRegionalCode() {
+        return regionalCode;
+    }
+
+    public void setRegionalCode(String regionalCode) {
+        this.regionalCode = regionalCode;
     }
 
     public TotalIndicatorCalculationType getTotalIndicatorCalculationType() {
@@ -174,6 +173,14 @@ public class IndicatorWeb implements Serializable {
         this.compassIndicator = compassIndicator;
     }
 
+    public Boolean getCoreIndicator() {
+        return coreIndicator;
+    }
+
+    public void setCoreIndicator(Boolean coreIndicator) {
+        this.coreIndicator = coreIndicator;
+    }
+
     public UnitType getUnit() {
         return unit;
     }
@@ -206,6 +213,30 @@ public class IndicatorWeb implements Serializable {
         this.instructions = instructions;
     }
 
+    public String getPeriods() {
+        return periods;
+    }
+
+    public void setPeriods(String periods) {
+        this.periods = periods;
+    }
+
+    public QuarterReportCalculation getQuarterReportCalculation() {
+        return quarterReportCalculation;
+    }
+
+    public void setQuarterReportCalculation(QuarterReportCalculation quarterReportCalculation) {
+        this.quarterReportCalculation = quarterReportCalculation;
+    }
+
+    public String getAggregationRuleComment() {
+        return aggregationRuleComment;
+    }
+
+    public void setAggregationRuleComment(String aggregationRuleComment) {
+        this.aggregationRuleComment = aggregationRuleComment;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -214,11 +245,11 @@ public class IndicatorWeb implements Serializable {
 
         IndicatorWeb that = (IndicatorWeb) o;
 
-        return new EqualsBuilder().append(id, that.id).isEquals();
+        return new EqualsBuilder().appendSuper(super.equals(o)).append(code, that.code).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).toHashCode();
+        return new HashCodeBuilder(17, 37).appendSuper(super.hashCode()).append(code).toHashCode();
     }
 }

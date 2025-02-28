@@ -1,27 +1,22 @@
 package org.unhcr.osmosys.webServices.model;
 
-import com.sagatechs.generics.persistence.model.State;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class CustomDissagregationWeb implements Serializable {
-    private Long id;
+public class CustomDissagregationWeb extends BaseWebEntity implements Serializable {
+
+    public CustomDissagregationWeb() {
+        super();
+    }
+
     private String name;
     private String description;
     private Boolean controlTotalValue;
-    private State state;
+
     private List<CustomDissagregationOptionWeb> customDissagregationOptions = new ArrayList<>();
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -47,13 +42,6 @@ public class CustomDissagregationWeb implements Serializable {
         this.controlTotalValue = controlTotalValue;
     }
 
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
 
     public List<CustomDissagregationOptionWeb> getCustomDissagregationOptions() {
         return customDissagregationOptions;

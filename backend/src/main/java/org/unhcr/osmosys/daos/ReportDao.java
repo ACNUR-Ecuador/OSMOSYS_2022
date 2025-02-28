@@ -2,15 +2,24 @@ package org.unhcr.osmosys.daos;
 
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.IndicatorExecution;
+import org.unhcr.osmosys.model.Office;
+import org.unhcr.osmosys.model.Period;
+import org.unhcr.osmosys.model.Tags;
+import org.unhcr.osmosys.model.cubeDTOs.OfficeDTO;
 import org.unhcr.osmosys.model.enums.IndicatorType;
 import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionDetailedDTO;
+import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionTagDTO;
 import org.unhcr.osmosys.model.reportDTOs.LaterReportDTO;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unchecked")
 @Stateless
@@ -101,6 +110,25 @@ public class ReportDao {
         return q.getResultList();
     }
 
+    public List<IndicatorExecutionTagDTO> getTagReport(Tags tag, Period period) {
+
+        String jpql = "SELECT i.performance_indicator_id, i.indicator, i.period_id , i.quarter, i.month, i.month_order,  i.month_execution as value  " +
+                "FROM osmosys.ie_detailed i " +
+                "WHERE i.project_id IS NOT NULL " +
+                "AND i.performance_indicator_id IS NOT NULL " +
+                "AND i.period_id = :periodId " +
+                "AND i.value > 0 " +
+                "AND i.performance_indicator_id IN :indicatorIds " +
+                "GROUP BY i.performance_indicator_id, i.indicator, i.period_id, i.quarter, i.month, i.month_order,i.month_execution  " +
+                "ORDER BY i.month_order";
+
+        Query q = this.entityManager.createNativeQuery(jpql, "IndicatorExecutionTagDTOMapping");
+        List<Long> streams = tag.getIndicatorTagAssignations().stream().filter(ie -> ie.getState().equals(State.ACTIVO)).map(ia -> ia.getIndicator().getId()).collect(Collectors.toList());
+        q.setParameter("periodId", period.getId());
+        q.setParameter("indicatorIds", streams);
+        return q.getResultList();
+    }
+
     public List<IndicatorExecutionDetailedDTO> getPartnerDetailedByProjectId(Long projectId) {
         String sql = ReportDao.detailedIndicatorExecutions
                 + " WHERE project_id= :projectId ";
@@ -129,7 +157,7 @@ public class ReportDao {
             "ORDER BY 1,2,3,4";
     private static final String late_months_partners = "" +
             "SELECT " +
-            "pr.name project, org.acronym implementer, COALESCE(i.code, '00000') indicator_code, COALESCE (i.description, '# total de beneficiarios') indicator, i.category indicator_category, string_agg(m.month, ', ' ORDER BY m.month_year_order) late_months,  fp.name focal_point " +
+            "pr.name project, org.acronym implementer, COALESCE(i.code, '00000') indicator_code, COALESCE (i.description, '# total de beneficiarios') indicator, i.category indicator_category, string_agg(m.month, ', ' ORDER BY m.month_year_order) late_months,  fp.name focal_point, ps.name partner_supervisor " +
             "FROM " +
             "osmosys.indicator_executions ie  " +
             "LEFT JOIN osmosys.indicators i on ie.performance_indicator_id=i.id " +
@@ -137,7 +165,8 @@ public class ReportDao {
             "INNER JOIN osmosys.organizations org on pr.organization_id=org.id " +
             "INNER JOIN osmosys.quarters q on ie.id=q.indicator_execution_id and ie.state='ACTIVO'  and q.state='ACTIVO' " +
             "INNER JOIN osmosys.months m on q.id=m.quarter_id and m.state='ACTIVO'   " +
-            "INNER JOIN security.user fp on pr.focal_point_id=fp.id " +
+            "INNER JOIN security.user fp on fpa.focal_pointer_id=fp.id " +
+            "INNER JOIN osmosys.user ps on pr.partner_manager=ps.id " +
             " " +
             "WHERE " +
             // "pr.organization_id=22 and " +
@@ -146,7 +175,7 @@ public class ReportDao {
             "and m.total_execution is null ";
 
     private static final String late_months_review_partners = "SELECT " +
-            "pr.name project, org.acronym implementer, COALESCE(i.code, '00000') indicator_code, COALESCE (i.description, '# total de beneficiarios') indicator, i.category indicator_category, string_agg(m.month, ', ' ORDER BY m.month_year_order) late_months,  fp.name focal_point  " +
+            "pr.name project, org.acronym implementer, COALESCE(i.code, '00000') indicator_code, COALESCE (i.description, '# total de beneficiarios') indicator, i.category indicator_category, string_agg(m.month, ', ' ORDER BY m.month_year_order) late_months,  fp.name focal_point, ps.name partner_supervisor " +
             "FROM " +
             "osmosys.indicator_executions ie  " +
             "LEFT JOIN osmosys.indicators i on ie.performance_indicator_id=i.id " +
@@ -154,7 +183,9 @@ public class ReportDao {
             "INNER JOIN osmosys.organizations org on pr.organization_id=org.id " +
             "INNER JOIN osmosys.quarters q on ie.id=q.indicator_execution_id and ie.state='ACTIVO'  and q.state='ACTIVO' " +
             "INNER JOIN osmosys.months m on q.id=m.quarter_id and m.state='ACTIVO'   " +
-            "INNER JOIN security.user fp on pr.focal_point_id=fp.id " +
+            "INNER JOIN osmosys.focal_point_assignation fpa on pr.id=fpa.project_id " +
+            "INNER JOIN security.user fp on fpa.focal_pointer_id=fp.id " +
+            "INNER JOIN osmosys.user ps on pr.partner_manager=ps.id " +
             "WHERE " +
             // "pr.organization_id=16 and " +
             " m.year=:year " +
@@ -217,7 +248,7 @@ public class ReportDao {
                 " and o.state =:state " +
                 " and (q.state is null or q.state =:state )" +
                 " and (m.state is null or m.state =:state )" +
-                " and o.project.focalPoint.id =:focalPointId " +
+                " and fpu.id =:focalPointId " +
                 " and ( " +
                 " (m.year <= :currentYear )" +
                 " or (m.year = :currentYear and m.monthYearOrder <= :currentMonth )" +

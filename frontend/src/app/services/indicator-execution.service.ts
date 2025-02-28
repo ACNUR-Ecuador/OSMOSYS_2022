@@ -106,6 +106,10 @@ export class IndicatorExecutionService {
         return this.http
             .post(`${mainServiceUrl}/updateDirectImplementationIndicatorExecutionLocationAssigment/${indicatorExecutionId}`, cantones);
     }
+    public updatePartnerIndicatorExecutionLocationAssigment(indicatorExecutionId: number, cantones: Canton[]): Observable<any> {
+        return this.http
+            .post(`${mainServiceUrl}/updatePartnerIndicatorExecutionLocationAssigment/${indicatorExecutionId}`, cantones);
+    }
 
     public getDirectImplementationIndicatorByPeriodIdResponsableIdSupervisorIdAndOfficeId(
         userId: number,

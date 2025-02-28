@@ -27,6 +27,7 @@ import {UserPipe} from '../../shared/pipes/user.pipe';
 import {MonthPipe} from '../../shared/pipes/month.pipe';
 import {MonthListPipe} from '../../shared/pipes/month-list.pipe';
 import {HttpResponse} from "@angular/common/http";
+import {PercentPipe} from "@angular/common";
 
 
 @Component({
@@ -73,6 +74,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
         private monthPipe: MonthPipe,
         private monthListPipe: MonthListPipe,
         private booleanYesNoPipe: BooleanYesNoPipe,
+        private percentPipe: PercentPipe
     ) {
     }
 
@@ -90,7 +92,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
                 next: value => {
                     this.periods = value;
                     if (this.periods.length < 1) {
-                        this.messageService.add({severity: 'error', summary: 'No se encontraron periodos', detail: ''});
+                        this.messageService.add({severity: 'error', summary: 'No se encontraron años', detail: ''});
                     } else {
                         this.periodsItems = value.map(value1 => {
                             const selectItem: SelectItem = {
@@ -118,7 +120,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
                 error: error => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al cargar las áreas',
+                        summary: 'Error al cargar los años',
                         detail: error.error.message,
                         life: 3000
                     });
@@ -139,7 +141,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
                             };
                             return item;
                         });
-                    if (!this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'])
+                    if (!this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL'])
                         && this.userService.hasAnyRole(['ADMINISTRADOR_OFICINA']) ) {
                         const officesIds = this.adminOffices.map(value => value.id);
                         this.officeOptions = this.officeOptions.filter(value => {
@@ -209,7 +211,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
     }
 
     loadItems(periodId: number) {
-        if (this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR'])) {
+        if (this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL'])) {
             this.indicatorExecutionService.getPerformanceAllDirectImplementationByPeriodId(periodId)
                 .subscribe({
                     next: ies => {
@@ -258,6 +260,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             statement: new FormControl({value: '', disabled: true}),
             product: new FormControl({value: '', disabled: true}),
             indicator: new FormControl(''),
+            target: new FormControl('',Validators.required),
             supervisorUser: new FormControl('', Validators.required),
             assignedUser: new FormControl('', Validators.required),
             assignedUserBackup: new FormControl(''),
@@ -270,26 +273,22 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             {field: 'id', header: 'id', type: ColumnDataType.numeric},
             {
                 field: 'reportingOffice',
-                header: 'Oficina',
+                header: 'Oficina/Unidad',
                 type: ColumnDataType.text,
                 pipeRef: this.officeOrganizationPipe
             },
             {
                 field: 'indicator.statement',
-                header: 'Declaración de Producto',
+                header: 'Enunciado de Producto',
                 type: ColumnDataType.text,
                 pipeRef: this.codeDescriptionPipe
             },
             {field: 'indicator.statement.productCode', header: 'Código Producto', type: ColumnDataType.text},
             {field: 'indicator', header: 'Indicador', type: ColumnDataType.text, pipeRef: this.indicatorPipe},
-            {
-                field: 'state',
-                header: 'Estado',
-                type: ColumnDataType.text,
-                pipeRef: this.enumValuesToLabelPipe,
-                arg1: EnumsType.State
-            },
+           
+            {field: 'target', header: 'Meta', type: ColumnDataType.numeric},
             {field: 'totalExecution', header: 'Ejecución Total', type: ColumnDataType.numeric},
+            {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric,pipeRef: this.percentPipe},
             {field: 'late', header: 'Atrasado', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
             {
                 field: 'lastReportedMonth',
@@ -298,14 +297,21 @@ export class DirectImplementationAdministrationComponent implements OnInit {
                 pipeRef: this.monthPipe
             },
             {field: 'lateMonths', header: 'Meses Retrasado', type: ColumnDataType.text, pipeRef: this.monthListPipe},
-            {field: 'supervisorUser', header: 'Supervisor', type: ColumnDataType.text, pipeRef: this.userPipe},
+            {field: 'supervisorUser', header: 'Supervisor de la Implementación', type: ColumnDataType.text, pipeRef: this.userPipe},
             {field: 'assignedUser', header: 'Responsable', type: ColumnDataType.text, pipeRef: this.userPipe},
             {
                 field: 'assignedUserBackup',
                 header: 'Responsable alterno',
                 type: ColumnDataType.text,
                 pipeRef: this.userPipe
-            }
+            },
+            {
+                field: 'state',
+                header: 'Estado',
+                type: ColumnDataType.text,
+                pipeRef: this.enumValuesToLabelPipe,
+                arg1: EnumsType.State
+            },
         ];
 
         const hiddenColumns: string[] = ['id', 'indicator.statement.productCode', 'lateMonths', 'assignedUserBackup'];
@@ -363,7 +369,8 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             assignedUser,
             assignedUserBackup,
             keepBudget,
-            assignedBudget
+            assignedBudget,
+            target
         } = this.itemForm.getRawValue();
         if (assignedUserBackup && assignedUser.id === assignedUserBackup.id) {
             this.messageService.add({
@@ -384,7 +391,8 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             assignedUser,
             assignedUserBackup,
             keepBudget,
-            assignedBudget
+            assignedBudget,
+            target
         };
         if (assigment.id) {
             this.indicatorExecutionService
@@ -488,7 +496,8 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             assignedUser,
             assignedUserBackup,
             keepBudget,
-            assignedBudget
+            assignedBudget,
+            target
         } = indicatorExecution;
         const assigment: IndicatorExecutionAssigment = {
             id,
@@ -500,7 +509,8 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             assignedUser,
             assignedUserBackup,
             keepBudget,
-            assignedBudget
+            assignedBudget,
+            target
         };
         this.messageService.clear();
         this.utilsService.resetForm(this.itemForm);
@@ -576,7 +586,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
         if (!period || !period.id) {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Selecciona un periodo',
+                summary: 'Selecciona un año',
                 life: 3000
             });
         }

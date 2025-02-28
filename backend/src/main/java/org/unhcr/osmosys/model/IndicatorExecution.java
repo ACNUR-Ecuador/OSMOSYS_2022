@@ -1,6 +1,6 @@
 package org.unhcr.osmosys.model;
 
-import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
 import org.unhcr.osmosys.model.enums.IndicatorType;
@@ -14,7 +14,7 @@ import java.util.Set;
 @Entity
 @Table(schema = "osmosys", name = "indicator_executions")
 
-public class IndicatorExecution extends BaseEntity<Long> {
+public class IndicatorExecution extends BaseEntityIdState {
 
 
     public IndicatorExecution() {
@@ -65,12 +65,6 @@ public class IndicatorExecution extends BaseEntity<Long> {
     @OneToMany(mappedBy = "indicatorExecution", cascade = CascadeType.ALL)
     private Set<Quarter> quarters = new HashSet<>();
 
-    @OneToMany(mappedBy = "indicatorExecution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<DissagregationAssignationToIndicatorExecution> dissagregationsAssignationsToIndicatorExecutions = new HashSet<>();
-
-    @OneToMany(mappedBy = "indicatorExecution", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<CustomDissagregationAssignationToIndicatorExecution> customDissagregationAssignationToIndicatorExecutions = new HashSet<>();
-
     /*socios ii*/
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", foreignKey = @ForeignKey(name = "fk_indicator_execution_project"))
@@ -92,10 +86,6 @@ public class IndicatorExecution extends BaseEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_user_backup_id", foreignKey = @ForeignKey(name = "fk_indicator_execution_user_backup"))
     private User assignedUserBackup;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(schema = "osmosys", name = "indicator_executions_markers", joinColumns = @JoinColumn(name = "indicator_execution_id"), inverseJoinColumns = @JoinColumn(name = "marker_id"))
-    private Set<Marker> markers = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "indicatorExecution", cascade = CascadeType.ALL)
     private Set<IndicatorExecutionLocationAssigment> indicatorExecutionLocationAssigments = new HashSet<>();
@@ -154,34 +144,7 @@ public class IndicatorExecution extends BaseEntity<Long> {
         this.period = period;
     }
 
-    public void addDissagregationAssignationToIndicatorExecution(DissagregationAssignationToIndicatorExecution dissagregationAssignationToIndicatorExecution) {
-        dissagregationAssignationToIndicatorExecution.setIndicatorExecution(this);
-        dissagregationAssignationToIndicatorExecution.setState(State.ACTIVO);
-        if (!this.dissagregationsAssignationsToIndicatorExecutions.add(dissagregationAssignationToIndicatorExecution)) {
-            this.dissagregationsAssignationsToIndicatorExecutions.remove(dissagregationAssignationToIndicatorExecution);
-            this.dissagregationsAssignationsToIndicatorExecutions.add(dissagregationAssignationToIndicatorExecution);
-        }
-    }
 
-
-    public void removeDissagregationAssignationToIndicatorExecution(DissagregationAssignationToIndicatorExecution dissagregationAssignationToIndicatorExecution) {
-
-        if (dissagregationAssignationToIndicatorExecution.getId() != null) {
-            dissagregationAssignationToIndicatorExecution.setIndicatorExecution(this);
-            dissagregationAssignationToIndicatorExecution.setState(State.INACTIVO);
-        } else {
-            this.dissagregationsAssignationsToIndicatorExecutions.remove(dissagregationAssignationToIndicatorExecution);
-        }
-    }
-
-
-    public Set<DissagregationAssignationToIndicatorExecution> getDissagregationsAssignationsToIndicatorExecutions() {
-        return dissagregationsAssignationsToIndicatorExecutions;
-    }
-
-    public void setDissagregationsAssignationsToIndicatorExecutions(Set<DissagregationAssignationToIndicatorExecution> dissagregationsAssignationsToIndicatorExecutions) {
-        this.dissagregationsAssignationsToIndicatorExecutions = dissagregationsAssignationsToIndicatorExecutions;
-    }
 
     public Project getProject() {
         return project;
@@ -239,32 +202,6 @@ public class IndicatorExecution extends BaseEntity<Long> {
             this.quarters.add(quarter);
         }
     }
-
-    public Set<CustomDissagregationAssignationToIndicatorExecution> getCustomDissagregationAssignationToIndicatorExecutions() {
-        return customDissagregationAssignationToIndicatorExecutions;
-    }
-
-    public void setCustomDissagregationAssignationToIndicatorExecutions(Set<CustomDissagregationAssignationToIndicatorExecution> customDissagregationAssignationToIndicatorExecutions) {
-        this.customDissagregationAssignationToIndicatorExecutions = customDissagregationAssignationToIndicatorExecutions;
-    }
-
-    public void addCustomDissagregationAssignationToIndicatorExecution(CustomDissagregationAssignationToIndicatorExecution dissagregationAssignationToIndicatorExecution) {
-        dissagregationAssignationToIndicatorExecution.setIndicatorExecution(this);
-        dissagregationAssignationToIndicatorExecution.setState(State.ACTIVO);
-        if (!this.customDissagregationAssignationToIndicatorExecutions.add(dissagregationAssignationToIndicatorExecution)) {
-            this.customDissagregationAssignationToIndicatorExecutions.remove(dissagregationAssignationToIndicatorExecution);
-            this.customDissagregationAssignationToIndicatorExecutions.add(dissagregationAssignationToIndicatorExecution);
-        }
-    }
-
-    public Set<Marker> getMarkers() {
-        return markers;
-    }
-
-    public void setMarkers(Set<Marker> markers) {
-        this.markers = markers;
-    }
-
     public BigDecimal getTarget() {
         return target;
     }

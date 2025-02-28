@@ -7,8 +7,13 @@ export const environment = {
     hmr: false,
     locale: 'es',
     base_url: 'http://localhost:8080/osmosys/api',
-    app_code: 'OSMOSYS',
-    versionCheckURL : 'https://imecuador.unhcr.org/osmosys/version.json',
+    app_code: 'OSMOSYS_PER',
+    versionCheckURL : 'https://osmosys.unhcr.org/test/version.json',
+    loginPhoto : 'unhcr_photo_ec_old.jpg',
+    flagLoginFile : 'flag_per.png',
+    flagToolbarFile : 'flag_per.png',
+    operationName : 'TEST'
+
 };
 
 /*

@@ -10,6 +10,7 @@ export class ColumnTable {
     arg1?: any;
     arg2?: any;
     arg3?: any;
+    width?: string;
 }
 
 export enum ColumnDataType {
@@ -25,18 +26,15 @@ export enum EnumsState {
 }
 
 export enum EnumsType {
-    AgeType = 'AgeType',
-    AgePrimaryEducationType = 'AgePrimaryEducationType',
-    AgeTertiaryEducationType = 'AgeTertiaryEducationType',
+    /*AgeType = 'AgeType',
     CountryOfOrigin = 'CountryOfOrigin',
     GenderType = 'GenderType',
     DiversityType = 'DiversityType',
-    PopulationType = 'PopulationType',
+    PopulationType = 'PopulationType',*/
     AreaType = 'AreaType',
     DissagregationType = 'DissagregationType',
     Frecuency = 'Frecuency',
     IndicatorType = 'IndicatorType',
-    MarkerType = 'MarkerType',
     MeasureType = 'MeasureType',
     OfficeType = 'OfficeType',
     State = 'State',
@@ -44,57 +42,12 @@ export enum EnumsType {
     RoleType = 'RoleType',
     SourceType = 'SourceType',
     UnitType = 'UnitType',
-    TimeStateEnum = 'TimeStateEnum'
-}
-
-export enum DissagregationType {
-    TIPO_POBLACION = 'TIPO_POBLACION',
-    EDAD = 'EDAD',
-    EDAD_EDUCACION_PRIMARIA = 'EDAD_EDUCACION_PRIMARIA',
-    EDAD_EDUCACION_TERCIARIA = 'EDAD_EDUCACION_TERCIARIA',
-    GENERO = 'GENERO',
-    LUGAR = 'LUGAR',
-    PAIS_ORIGEN = 'PAIS_ORIGEN',
-    DIVERSIDAD = 'DIVERSIDAD',
-    SIN_DESAGREGACION = 'SIN_DESAGREGACION',
-    GENERO_Y_EDAD = 'GENERO_Y_EDAD',
-    GENERO_Y_DIVERSIDAD = 'GENERO_Y_DIVERSIDAD',
-    TIPO_POBLACION_Y_GENERO = 'TIPO_POBLACION_Y_GENERO',
-    TIPO_POBLACION_Y_EDAD = 'TIPO_POBLACION_Y_EDAD',
-    TIPO_POBLACION_Y_DIVERSIDAD = 'TIPO_POBLACION_Y_DIVERSIDAD',
-    TIPO_POBLACION_Y_PAIS_ORIGEN = 'TIPO_POBLACION_Y_PAIS_ORIGEN',
-    TIPO_POBLACION_Y_LUGAR = 'TIPO_POBLACION_Y_LUGAR',
-    LUGAR_EDAD_Y_GENERO = 'LUGAR_EDAD_Y_GENERO',
-    DIVERSIDAD_EDAD_Y_GENERO = 'DIVERSIDAD_EDAD_Y_GENERO',
-    DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO = 'DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO',
-    DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO = 'DIVERSIDAD_EDAD_EDUCACION_TERCIARIA_Y_GENERO',
-    TIPO_POBLACION_LUGAR_EDAD_Y_GENERO = 'TIPO_POBLACION_LUGAR_EDAD_Y_GENERO',
-    TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO = 'TIPO_POBLACION_LUGAR_EDAD_EDUCACION_PRIMARIA_Y_GENERO',
-    TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO = 'TIPO_POBLACION_LUGAR_EDAD_EDUCACION_TERCIARIA_Y_GENERO',
-    LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO = 'LUGAR_DIVERSIDAD_EDAD_EDUCACION_PRIMARIA_Y_GENERO',
-    LUGAR_Y_DIVERSIDAD = 'LUGAR_Y_DIVERSIDAD',
-    LUGAR_Y_GENERO = 'LUGAR_Y_GENERO',
-    LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO = 'LUGAR_PAIS_ORIGEN_EDAD_Y_GENERO',
-    PAIS_ORIGEN_EDAD_Y_GENERO = 'PAIS_ORIGEN_EDAD_Y_GENERO',
-    LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO = 'LUGAR_PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO',
-    PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO = 'PAIS_ORIGEN_EDAD_EDUCACION_PRIMARIA_Y_GENERO',
+    TimeStateEnum = 'TimeStateEnum',
+    AuditAction='AuditAction',
+    QuarterReportCalculation="QuarterReportCalculation"
 }
 
 
-export enum MonthType {
-    ENERO = 'Enero',
-    FEBRERO = 'Febrero',
-    MARZO = 'Marzo',
-    ABRIL = 'Abril',
-    MAYO = 'Mayo',
-    JUNIO = 'Junio',
-    JULIO = 'Julio',
-    AGOSTO = 'Agosto',
-    SEPTIEMBRE = 'Septiembre',
-    OCTUBRE = 'Octubre',
-    NOVIEMBRE = 'Noviembre',
-    DICIEMBRE = 'Diciembre',
-}
 
 export enum QuarterType {
     I = 'I',

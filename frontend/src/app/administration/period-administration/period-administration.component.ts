@@ -1,12 +1,18 @@
 import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
-import {DissagregationAssignationToGeneralIndicator, GeneralIndicator, Period} from '../../shared/model/OsmosysModel';
-import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
+import {
+    DissagregationAssignationToGeneralIndicator, GeneralIndicator,
+    Period,
+    StandardDissagregationOption
+} from '../../shared/model/OsmosysModel';
+import {ColumnDataType, ColumnTable, EnumsState, EnumsType, SelectItemWithOrder} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
+import {MessageService, SelectItem, SelectItemGroup} from 'primeng/api';
 import {UtilsService} from '../../services/utils.service';
 import {EnumsService} from '../../services/enums.service';
 import {Table} from 'primeng/table';
 import {PeriodService} from '../../services/period.service';
+import {StandardDissagregationsService} from "../../services/standardDissagregations.service";
+import {EnumValuesToLabelPipe} from "../../shared/pipes/enum-values-to-label.pipe";
 
 @Component({
     selector: 'app-period-administration',
@@ -15,6 +21,11 @@ import {PeriodService} from '../../services/period.service';
 })
 export class PeriodAdministrationComponent implements OnInit {
     items: Period[];
+    populationTypeOptions: SelectItemWithOrder<StandardDissagregationOption>[];
+    ageOptions: SelectItemWithOrder<StandardDissagregationOption>[];
+    genderOptions: SelectItemWithOrder<StandardDissagregationOption>[];
+    diversityOptions: SelectItemWithOrder<StandardDissagregationOption>[];
+    countryOfOriginOptions: SelectItemWithOrder<StandardDissagregationOption>[];
     cols: ColumnTable[];
     showDialog = false;
     private submitted = false;
@@ -22,23 +33,27 @@ export class PeriodAdministrationComponent implements OnInit {
     states: SelectItem[];
     // tslint:disable-next-line:variable-name
     _selectedColumns: ColumnTable[];
-    dissagregationTypes: SelectItem[];
+    dissagregationTypes: SelectItemGroup[];
     measureTypes: SelectItem[];
+
+    colsDissagregation: ColumnTable[];
 
     constructor(
         private messageService: MessageService,
-        private confirmationService: ConfirmationService,
         private fb: FormBuilder,
         public utilsService: UtilsService,
         private enumsService: EnumsService,
         private periodService: PeriodService,
-        private ref: ChangeDetectorRef
+        private standardDissagregationsService: StandardDissagregationsService,
+        private ref: ChangeDetectorRef,
+        private enumValuesToLabelPipe: EnumValuesToLabelPipe,
     ) {
     }
 
     ngOnInit(): void {
         this.loadOptions();
         this.loadItems();
+        this.loadDissagregationOptions();
         this.cols = [
             {field: 'id', header: 'Id', type: ColumnDataType.numeric},
             {field: 'year', header: 'Año', type: ColumnDataType.numeric},
@@ -53,12 +68,27 @@ export class PeriodAdministrationComponent implements OnInit {
             hasGeneralIndicator: new FormControl('', Validators.required),
             generalIndicatorId: new FormControl(''),
             generalIndicatorDescription: new FormControl('', [Validators.maxLength(255)]),
-            generalIndicatorMeasureType: new FormControl(''),
+            generalIndicatorMeasureType: new FormControl({value: 'NUMERO', disabled: true}),
             generalIndicatorState: new FormControl(''),
             generalIndicatorPeriod: new FormControl({value: '', disabled: true}),
-            generalIndicatorDissagregations: new FormControl(''),
-            generalIndicatorDissagregationAssignationsToGeneralIndicator: new FormControl('')
+            selectedGeneralIndicatorDissagregations: new FormControl(''),
+            totalGeneralIndicatorDissagregations: new FormControl(''),
+            ageOptions: new FormControl('', Validators.required),
+            genderOptions: new FormControl('', Validators.required),
+            populationTypeOptions: new FormControl('', Validators.required),
+            diversityOptions: new FormControl('', Validators.required),
+            countryOfOriginOptions: new FormControl('', Validators.required),
+
         });
+
+        this.colsDissagregation = [
+            {
+                field: 'dissagregationType',
+                header: 'Desagregación',
+                type: ColumnDataType.text,
+                pipeRef: this.enumValuesToLabelPipe,
+                arg1: EnumsType.DissagregationType
+            }];
     }
 
     private loadItems() {
@@ -69,13 +99,83 @@ export class PeriodAdministrationComponent implements OnInit {
             error: err => {
                 this.messageService.add({
                     severity: 'error',
-                    summary: 'Error al cargar los periodos',
+                    summary: 'Error al cargar los años',
                     detail: err.error.message,
                     life: 3000
                 });
             }
         });
     }
+
+    private loadDissagregationOptions() {
+        this.standardDissagregationsService.getActiveAgeOptions().subscribe({
+            next: value => {
+                this.ageOptions = this.utilsService.standandarDissagregationOptionsToSelectItems(value);
+            },
+            error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los tipos de edad',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+
+        this.standardDissagregationsService.getActiveGenderOptions().subscribe({
+            next: value => {
+                this.genderOptions = this.utilsService.standandarDissagregationOptionsToSelectItems(value);
+            },
+            error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los tipos de género',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+        this.standardDissagregationsService.getActivePopulationTypeOptions().subscribe({
+            next: value => {
+                this.populationTypeOptions = this.utilsService.standandarDissagregationOptionsToSelectItems(value);
+            },
+            error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los tipos de población',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+        this.standardDissagregationsService.getActiveDiversityOptions().subscribe({
+            next: value => {
+                this.diversityOptions = this.utilsService.standandarDissagregationOptionsToSelectItems(value);
+            },
+            error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los tipos de diversidad',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+        this.standardDissagregationsService.getActiveCountryOfOriginOptions().subscribe({
+            next: value => {
+                this.countryOfOriginOptions = this.utilsService.standandarDissagregationOptionsToSelectItems(value);
+            },
+            error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los países de origen',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+    }
+
 
     private loadOptions() {
         this.enumsService.getByType(EnumsType.MeasureType).subscribe(value => {
@@ -85,14 +185,35 @@ export class PeriodAdministrationComponent implements OnInit {
             this.states = value;
         });
         this.enumsService.getByType(EnumsType.DissagregationType).subscribe(value => {
-            this.dissagregationTypes = value.sort((a, b) => a.label < b.label ? -1 : 1);
+            const groupedByNumber: SelectItemGroup[] = [];
+            value
+                .map(value1 => {
+                    let objectAny: any = value1;
+                    return objectAny;
+                })
+                .forEach(value1 => {
+                    const existingGroup = groupedByNumber.find(group => group.label === value1.numberOfDissagregations + ' desagregaciones');
+                    if (existingGroup) {
+                        existingGroup.items.push(value1);
+                    } else {
+                        groupedByNumber.push({
+                            label: value1.numberOfDissagregations + ' desagregaciones',
+                            items: [value1]
+                        });
+                    }
+                });
+            this.dissagregationTypes = groupedByNumber;
+            /*let selectedDissagregations = this.dissagregationAssignationToIndicators
+                .filter(value1 => value1.state === EnumsState.ACTIVE)
+                .map(value1 => value1.dissagregationType);
+            this.formItem.get('selectedDissagregations').patchValue(selectedDissagregations);*/
         });
     }
 
     exportExcel(table: Table) {
         this.utilsService.exportTableAsExcel(this._selectedColumns,
             table.filteredValue ? table.filteredValue : this.items,
-            'periodos');
+            'años');
     }
 
     createItem() {
@@ -105,6 +226,8 @@ export class PeriodAdministrationComponent implements OnInit {
         this.formItem.get('hasGeneralIndicator').patchValue(false);
         const indicator = new GeneralIndicator();
 
+        // solo numeros
+        indicator.measureType = 'NUMERO';
         const {
             id: generalIndicatorid,
             description: generalIndicatorDescription,
@@ -112,7 +235,7 @@ export class PeriodAdministrationComponent implements OnInit {
             state: generalIndicatorState,
             period: generalIndicatorPeriod,
             // generalIndicatorDissagregations,
-            dissagregationAssignationsToGeneralIndicator: generalIndicatorDissagregationAssignationsToGeneralIndicator
+            dissagregationAssignationsToGeneralIndicator: totalGeneralIndicatorDissagregations
         } = indicator;
         this.formItem.patchValue({
             generalIndicatorid,
@@ -120,9 +243,9 @@ export class PeriodAdministrationComponent implements OnInit {
             generalIndicatorState,
             generalIndicatorDescription,
             generalIndicatorMeasureType,
-            generalIndicatorDissagregationAssignationsToGeneralIndicator
+            totalGeneralIndicatorDissagregations
         });
-        this.formItem.get('generalIndicatorDissagregations').patchValue([]);
+        this.formItem.get('selectedGeneralIndicatorDissagregations').patchValue([]);
     }
 
     editItem(period: Period) {
@@ -138,8 +261,7 @@ export class PeriodAdministrationComponent implements OnInit {
                 measureType: generalIndicatorMeasureType,
                 state: generalIndicatorState,
                 period: generalIndicatorPeriod,
-                // generalIndicatorDissagregations,
-                dissagregationAssignationsToGeneralIndicator: generalIndicatorDissagregationAssignationsToGeneralIndicator
+                dissagregationAssignationsToGeneralIndicator: totalGeneralIndicatorDissagregations
             } = period.generalIndicator;
 
             if (generalIndicatorState === EnumsState.ACTIVE) {
@@ -148,11 +270,10 @@ export class PeriodAdministrationComponent implements OnInit {
                 this.formItem.get('hasGeneralIndicator').patchValue(false);
             }
 
-            const generalIndicatorDissagregations = generalIndicatorDissagregationAssignationsToGeneralIndicator.filter(value1 => {
-                return value1.state === EnumsState.ACTIVE;
-            }).map(value1 => {
-                return value1.dissagregationType;
-            });
+            let selectedGeneralIndicatorDissagregations =
+                totalGeneralIndicatorDissagregations.filter(value1 => value1.state === EnumsState.ACTIVE)
+                    .map(value1 => value1.dissagregationType);
+
 
             this.formItem.patchValue({
                 generalIndicatorId,
@@ -160,10 +281,19 @@ export class PeriodAdministrationComponent implements OnInit {
                 generalIndicatorState,
                 generalIndicatorDescription,
                 generalIndicatorMeasureType,
-                generalIndicatorDissagregationAssignationsToGeneralIndicator,
-                generalIndicatorDissagregations
+                totalGeneralIndicatorDissagregations,
+                selectedGeneralIndicatorDissagregations
             });
+        }else {
+            this.formItem.get('hasGeneralIndicator').patchValue(false);
         }
+        this.formItem.patchValue({
+            ageOptions: period.periodAgeDissagregationOptions,
+            genderOptions: period.periodGenderDissagregationOptions,
+            populationTypeOptions: period.periodPopulationTypeDissagregationOptions as StandardDissagregationOption[],
+            diversityOptions: period.periodDiversityDissagregationOptions,
+            countryOfOriginOptions: period.periodCountryOfOriginDissagregationOptions
+        });
     }
 
 
@@ -172,52 +302,45 @@ export class PeriodAdministrationComponent implements OnInit {
         const {
             id,
             year,
-            state
+            state,
+            ageOptions,
+            genderOptions,
+            populationTypeOptions,
+            diversityOptions,
+            countryOfOriginOptions,
         }
             = this.formItem.value;
         const period: Period = {
             id,
             year,
-            state
+            state,
+            periodAgeDissagregationOptions: ageOptions,
+            periodGenderDissagregationOptions: genderOptions,
+            periodPopulationTypeDissagregationOptions: populationTypeOptions,
+            periodDiversityDissagregationOptions: diversityOptions,
+            periodCountryOfOriginDissagregationOptions: countryOfOriginOptions
+
+
         };
 
 
         const {
             generalIndicatorId,
             generalIndicatorState,
-            generalIndicatorDescription,
-            generalIndicatorMeasureType
+            generalIndicatorDescription
         }
             = this.formItem.value;
         const dissagregationAssignationsToGeneralIndicator =
-            this.formItem.get('generalIndicatorDissagregationAssignationsToGeneralIndicator')
+            this.formItem.get('totalGeneralIndicatorDissagregations')
                 .value as DissagregationAssignationToGeneralIndicator[];
 
-        const dissagregations =
-            this.formItem.get('generalIndicatorDissagregations').value as string[];
-        dissagregationAssignationsToGeneralIndicator.forEach(dissaAssig => {
-            if (dissagregations.includes(dissaAssig.dissagregationType)) {
-                dissaAssig.state = EnumsState.ACTIVE;
-            } else {
-                dissaAssig.state = EnumsState.INACTIVE;
-            }
-        });
-        dissagregations.forEach(dissa => {
-            if (!dissagregationAssignationsToGeneralIndicator.map(value => {
-                return value.dissagregationType;
-            }).includes(dissa)) {
-                const dissaAssNew = new DissagregationAssignationToGeneralIndicator();
-                dissaAssNew.dissagregationType = dissa;
-                dissagregationAssignationsToGeneralIndicator.push(dissaAssNew);
-            }
-        });
 
         period.generalIndicator = {
             id: generalIndicatorId,
             period: null,
             state: generalIndicatorState,
-            description: generalIndicatorDescription,
-            measureType: generalIndicatorMeasureType,
+            description: "General Indicator",
+            measureType: 'NUMERO',// valor por defecto
             dissagregationAssignationsToGeneralIndicator
         };
         if (this.formItem.get('hasGeneralIndicator').value) {
@@ -236,11 +359,16 @@ export class PeriodAdministrationComponent implements OnInit {
                 next: () => {
                     this.cancelDialog();
                     this.loadItems();
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Año guardado exitosamente',
+                        life: 3000
+                    });
                 },
                 error: err => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al actualizar el periodo',
+                        summary: 'Error al actualizar el año',
                         detail: err.error.message,
                         life: 3000
                     });
@@ -252,11 +380,16 @@ export class PeriodAdministrationComponent implements OnInit {
                 next: () => {
                     this.cancelDialog();
                     this.loadItems();
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Año guardado exitosamente',
+                        life: 3000
+                    });
                 },
                 error: err => {
                     this.messageService.add({
                         severity: 'error',
-                        summary: 'Error al guardar el periodo',
+                        summary: 'Error al guardar el año',
                         detail: err.error.message,
                         life: 3000
                     });
@@ -284,6 +417,7 @@ export class PeriodAdministrationComponent implements OnInit {
         this.ref.detectChanges();
         if (value && !this.formItem.get('generalIndicatorId').value) {
             const indicator = new GeneralIndicator();
+            indicator.measureType = 'NUMERO';
 
             const {
                 id: generalIndicatorid,
@@ -291,7 +425,6 @@ export class PeriodAdministrationComponent implements OnInit {
                 measureType: generalIndicatorMeasureType,
                 state: generalIndicatorState,
                 period: generalIndicatorPeriod,
-                // generalIndicatorDissagregations,
                 dissagregationAssignationsToGeneralIndicator: generalIndicatorDissagregationAssignationsToGeneralIndicator
             } = indicator;
             this.formItem.patchValue({
@@ -302,9 +435,11 @@ export class PeriodAdministrationComponent implements OnInit {
                 generalIndicatorMeasureType,
                 generalIndicatorDissagregationAssignationsToGeneralIndicator
             });
-            this.formItem.get('generalIndicatorDissagregations').patchValue([]);
+            this.formItem.get('totalGeneralIndicatorDissagregations').patchValue([]);
+            this.formItem.get('selectedGeneralIndicatorDissagregations').patchValue([]);
         } else if (value && !this.formItem.get('generalIndicatorId')) {
-            this.formItem.get('generalIndicatorDissagregations').patchValue([]);
+            this.formItem.get('totalGeneralIndicatorDissagregations').patchValue([]);
+            this.formItem.get('selectedGeneralIndicatorDissagregations').patchValue([]);
         } else if (!value && !this.formItem.get('generalIndicatorId')) {
             this.formItem.patchValue({
                 generalIndicatorid: null,
@@ -312,11 +447,44 @@ export class PeriodAdministrationComponent implements OnInit {
                 generalIndicatorState: null,
                 generalIndicatorDescription: null,
                 generalIndicatorMeasureType: null,
-                generalIndicatorDissagregationAssignationsToGeneralIndicator: null
+                totalGeneralIndicatorDissagregations: null,
+                selectedGeneralIndicatorDissagregations: null
             });
         } else {
             this.formItem.get('generalIndicatorState').patchValue(EnumsState.INACTIVE);
         }
     }
 
+    selectItemGeneralDissagregation(event: any) {
+        let selectValues: string[] = event.value;
+        let totalGeneralIndicatorDissagregations: DissagregationAssignationToGeneralIndicator[] =
+            this.formItem.get('totalGeneralIndicatorDissagregations').value;
+
+        totalGeneralIndicatorDissagregations.forEach(value => value.state=EnumsState.INACTIVE);
+
+        selectValues.forEach(value => {
+
+            let dissagregationAssignationToIndicator: DissagregationAssignationToGeneralIndicator
+                = totalGeneralIndicatorDissagregations.find(value1 => value1.dissagregationType === value);
+
+            if (dissagregationAssignationToIndicator) {
+                dissagregationAssignationToIndicator.state = EnumsState.ACTIVE;
+
+            } else {
+                dissagregationAssignationToIndicator = new DissagregationAssignationToGeneralIndicator();
+                dissagregationAssignationToIndicator.dissagregationType = value;
+                totalGeneralIndicatorDissagregations.push(dissagregationAssignationToIndicator);
+            }
+        });
+        this.formItem.get('totalGeneralIndicatorDissagregations').patchValue(totalGeneralIndicatorDissagregations);
+    }
+
+    getDissagregationAssignationToIndicators(): DissagregationAssignationToGeneralIndicator[] {
+        let dissagregationAssignationToIndicators: DissagregationAssignationToGeneralIndicator[] =
+            this.formItem.get('totalGeneralIndicatorDissagregations').value?this.formItem.get('totalGeneralIndicatorDissagregations').value:[];
+        dissagregationAssignationToIndicators = dissagregationAssignationToIndicators
+            .filter(value => value.state===EnumsState.ACTIVE)
+            .sort((a, b) => a.dissagregationType.localeCompare(b.dissagregationType));
+        return dissagregationAssignationToIndicators;
+    }
 }

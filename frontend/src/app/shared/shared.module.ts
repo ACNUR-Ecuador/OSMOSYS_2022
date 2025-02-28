@@ -7,7 +7,6 @@ import {RolesListPipe} from './pipes/roles-list.pipe';
 import { CodeShortDescriptionPipe } from './pipes/code-short-description.pipe';
 import { CodeDescriptionPipe } from './pipes/code-description.pipe';
 import { CustomDissagregationOptionsListPipe } from './pipes/custom-dissagregation-options-list.pipe';
-import { MarkersListPipe } from './pipes/markers-list.pipe';
 import {IndicatorPipe} from './pipes/indicator.pipe';
 import {EnumValuesToLabelPipe} from './pipes/enum-values-to-label.pipe';
 import {DissagregationsAssignationToIndicatorPipe} from './pipes/dissagregations-assignation-to-indicator.pipe';
@@ -21,6 +20,13 @@ import {
 } from "./pipes/custom-dissagregations-assignation-to-indicator.pipe";
 import { PeriodsFromIndicatorPipe } from './pipes/periods-from-indicator.pipe';
 import { StatementPeriodStatementAsignationsListPipe } from './pipes/statement-period-statement-asignations-list.pipe';
+import { StandardDissagreationListPipe } from './pipes/standard-dissagreation-list.pipe';
+import { SafePipe } from './pipes/safe.pipe';
+import { TagPeriodTagAsignationsListPipe } from './pipes/tag-period-tag-asignations-list.pipe';
+import { PercentagePipe } from './pipes/percentage.pipe';
+import { ResultManagerExecutionPipe } from './pipes/result-manager-execution.pipe';
+import { CantonsPipe } from './pipes/cantons.pipe';
+
 
 
 @NgModule({
@@ -31,7 +37,6 @@ import { StatementPeriodStatementAsignationsListPipe } from './pipes/statement-p
         CodeShortDescriptionPipe,
         CodeDescriptionPipe,
         CustomDissagregationOptionsListPipe,
-        MarkersListPipe,
         IndicatorPipe,
         CodeDescriptionPipe,
         EnumValuesToLabelPipe,
@@ -44,7 +49,13 @@ import { StatementPeriodStatementAsignationsListPipe } from './pipes/statement-p
         CustomDissagregationsAssignationToIndicatorPipe,
         PeriodsFromIndicatorPipe,
         StatementPeriodStatementAsignationsListPipe,
-        OfficeOrganizationPipe
+        OfficeOrganizationPipe,
+        StandardDissagreationListPipe,
+        SafePipe,
+        TagPeriodTagAsignationsListPipe,
+        PercentagePipe,
+        ResultManagerExecutionPipe,
+        CantonsPipe
     ],
     imports: [
         CommonModule
@@ -57,7 +68,8 @@ import { StatementPeriodStatementAsignationsListPipe } from './pipes/statement-p
         EnumValuesToLabelPipe,
         ValuesStatePipe,
         EnumValuesToLabelPipe,
-        OfficeOrganizationPipe
+        OfficeOrganizationPipe,
+        SafePipe
     ],
     providers: [
         MessageService,

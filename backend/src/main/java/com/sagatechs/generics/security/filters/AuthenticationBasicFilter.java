@@ -1,5 +1,7 @@
 package com.sagatechs.generics.security.filters;
 
+import com.sagatechs.generics.appConfiguration.AppConfigurationKey;
+import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.AccessDeniedException;
 import com.sagatechs.generics.security.annotations.BasicSecured;
 import org.apache.commons.lang3.StringUtils;
@@ -17,18 +19,20 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
 import java.lang.reflect.Method;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
 @BasicSecured
-//@Provider
+@Provider
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationBasicFilter implements ContainerRequestFilter {
 
 	private static final String REALM = "example";
 	private static final String AUTHENTICATION_SCHEME = "Bearer";
+
 
 	private static final String USERNAME_KEY = "username";
 	private static final String PASSWORD_KEY = "password";
@@ -51,10 +55,16 @@ public class AuthenticationBasicFilter implements ContainerRequestFilter {
 	@Context
 	private ResourceInfo resourceInfo;
 
+	@Inject
+	AppConfigurationService appConfigurationService;
+
 
 	@SuppressWarnings("unused")
 	@Override
 	public void filter(ContainerRequestContext requestContext) {
+
+		String username= this.appConfigurationService.findValorByClave(AppConfigurationKey.POWER_BI_USERNAME);
+		String password= this.appConfigurationService.findValorByClave(AppConfigurationKey.POWER_BI_PASSWORD);
 
 		Method method = resourceInfo.getResourceMethod();
 
@@ -66,15 +76,14 @@ public class AuthenticationBasicFilter implements ContainerRequestFilter {
 			String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
 			Map<String, String> mapa = decodeAuthorizacionHeader(authorizationHeader);
-			if (USERNAME.equals(mapa.get(USERNAME_KEY))
-					&& PASSWORD.equals(mapa.get(PASSWORD_KEY))) {
+			if (username.equals(mapa.get(USERNAME_KEY))
+					&& password.equals(mapa.get(PASSWORD_KEY))) {
 				LOGGER.info("Autenticación Básica autorizado: " +USERNAME);
 			} else {
 				abortWithUnauthorized(requestContext);
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
 			abortWithUnauthorized(requestContext);
 		}
 	}

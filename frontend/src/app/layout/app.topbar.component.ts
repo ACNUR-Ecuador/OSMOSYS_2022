@@ -2,18 +2,30 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {LayoutService} from 'src/app/layout/service/app.layout.service';
 import {AppSidebarComponent} from './app.sidebar.component';
 import {UserService} from "../services/user.service";
+import {environment} from "../../environments/environment";
 
 @Component({
     selector: 'app-topbar',
     templateUrl: './app.topbar.component.html'
 })
 export class AppTopbarComponent implements OnInit {
+    operationName = `${environment.operationName}`;
+    flagToolbarFile = `assets/layout/images/${environment.flagToolbarFile}`;
+    showSubMenu: boolean = false;
+    isAdmin:boolean = false;
+    isPartner:boolean = false;
+    isResultManager:boolean = false;
 
     @ViewChild('menubutton') menuButton!: ElementRef;
 
     @ViewChild(AppSidebarComponent) appSidebar!: AppSidebarComponent;
 
     public userInitials = '';
+    item: any = {
+        label: 'Acerca de OSMOSYS',
+        icon: 'pi pi-info-circle',
+        routerLink: ['/home/about-us']
+    };
 
     constructor(public layoutService: LayoutService,
                 public userService: UserService,
@@ -51,5 +63,22 @@ export class AppTopbarComponent implements OnInit {
         if (user && user.name) {
             this.userInitials = user.name.split(' ').map(n => n[0]).join('');
         }
+        this.setUserManualsByPermissions();
+        
+    }
+
+    setUserManualsByPermissions(){
+        if(this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL'])){
+            this.isAdmin=true;
+        }else{
+            this.isPartner=true;
+        }
+        if(this.userService.hasAnyRole(['RESULT_MANAGER'])){
+            this.isResultManager=true;
+        }
+        
+    }
+    toggleSubMenu() {
+        this.showSubMenu = !this.showSubMenu;
     }
 }

@@ -1,25 +1,17 @@
 package org.unhcr.osmosys.webServices.model;
 
-import com.sagatechs.generics.persistence.model.State;
-
 import java.io.Serializable;
 import java.util.Objects;
 
 
-public class PillarWeb implements Serializable {
-    private Long id;
+public class PillarWeb extends BaseWebEntity implements Serializable {
+    public PillarWeb() {
+        super();
+    }
+
     private String code;
     private String shortDescription;
     private String description;
-    private State state;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getCode() {
         return code;
@@ -43,14 +35,6 @@ public class PillarWeb implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
     }
 
     @Override

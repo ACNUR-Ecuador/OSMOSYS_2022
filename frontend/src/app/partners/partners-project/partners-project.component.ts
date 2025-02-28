@@ -1,22 +1,24 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {FormGroup} from '@angular/forms';
-import {FilterService, MenuItem, MessageService, SelectItem} from 'primeng/api';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {MenuItem, MessageService, SelectItem} from 'primeng/api';
 import {ActivatedRoute} from '@angular/router';
-import {IndicatorExecution, MonthState, Project} from '../../shared/model/OsmosysModel';
-import {ColumnDataType, ColumnTable} from '../../shared/model/UtilsModel';
-import {CodeDescriptionPipe} from '../../shared/pipes/code-description.pipe';
-import {EnumValuesToLabelPipe} from '../../shared/pipes/enum-values-to-label.pipe';
+import {Canton, IndicatorExecution, MonthState, Project} from '../../shared/model/OsmosysModel';
+import {ColumnDataType, ColumnTable, EnumsState} from '../../shared/model/UtilsModel';
 import {DialogService} from 'primeng/dynamicdialog';
-import {GeneralIndicatorFormComponent} from '../../indicator-forms/general-indicator-form/general-indicator-form.component';
-import {PerformanceIndicatorFormComponent} from '../../indicator-forms/performance-indicator-form/performance-indicator-form.component';
+import {
+    GeneralIndicatorFormComponent
+} from '../../indicator-forms/general-indicator-form/general-indicator-form.component';
+import {
+    PerformanceIndicatorFormComponent
+} from '../../indicator-forms/performance-indicator-form/performance-indicator-form.component';
 import {IndicatorPipe} from '../../shared/pipes/indicator.pipe';
 import {HttpResponse} from '@angular/common/http';
 import {UtilsService} from '../../services/utils.service';
-import {FilterUtilsService} from '../../services/filter-utils.service';
 import {ProjectService} from '../../services/project.service';
-import {IndicatorExecutionService} from '../../services/indicator-execution.service';
 import {UserService} from '../../services/user.service';
 import {ReportsService} from '../../services/reports.service';
+import {CantonService} from "../../services/canton.service";
+import {AppConfigurationService} from "../../services/app-configuration.service";
 
 @Component({
     selector: 'app-partners-project',
@@ -31,6 +33,8 @@ export class PartnersProjectComponent implements OnInit {
     public states: SelectItem[];
     public project: Project;
     public monthsState: MonthState[];
+    public viewGeneralIndicators: Boolean;
+
 
     // tslint:disable-next-line:variable-name
     _selectedColumnsGeneralIndicators: ColumnTable[];
@@ -40,29 +44,44 @@ export class PartnersProjectComponent implements OnInit {
     isAdmin = false;
     isProjectFocalPoint = false;
     isEjecutor = false;
+    isPartnerSupervisor = false;
 
     colsMonthState: ColumnTable[];
+
+
+    public cantonesOptions: Canton[];
+    cantonesAvailable: Canton[];
+    canEditCantons: boolean;
+    public formLocations: FormGroup;
+    showLocationsDialog = false;
 
     constructor(
         public dialogService: DialogService,
         public utilsService: UtilsService,
-        private filterService: FilterService,
-        private filterUtilsService: FilterUtilsService,
         private messageService: MessageService,
         private projectService: ProjectService,
-        private indicatorExecutionService: IndicatorExecutionService,
-        private codeDescriptionPipe: CodeDescriptionPipe,
-        private enumValuesToLabelPipe: EnumValuesToLabelPipe,
         private indicatorPipe: IndicatorPipe,
         private route: ActivatedRoute,
         private reportsService: ReportsService,
-        private userService: UserService
+        private userService: UserService,
+        private cantonService: CantonService,
+        private appConfigurationService: AppConfigurationService,
+        private fb: FormBuilder,
+        private cd: ChangeDetectorRef
     ) {
         this.idProjectParam = this.route.snapshot.paramMap.get('projectId');
         if (this.idProjectParam === 'null') {
             this.idProjectParam = null;
         }
+        this.formLocations = this.fb.group({
+            locationsSelected: new FormControl('')
+        });
+        this.viewGeneralIndicators = true;
 
+    }
+
+    getFocalPointsNames(project: Project): String {
+        return project.focalPoints.map(user => user.name).join(', ');
     }
 
     ngOnInit(): void {
@@ -122,7 +141,7 @@ export class PartnersProjectComponent implements OnInit {
             title = title + ' (' + month + '-' + year + ')';
         }
         const ref = this.dialogService.open(GeneralIndicatorFormComponent, {
-                header: 'Indicador General: ' + title + this.getRoleTitle(),
+                header: 'Total de Beneficiarios Únicos: ' + title + this.getRoleTitle(),
                 width: '98%',
                 height: '80%',
                 closeOnEscape: false,
@@ -138,7 +157,8 @@ export class PartnersProjectComponent implements OnInit {
                     projectId: this.project.id,
                     isAdmin: this.isAdmin,
                     isProjectFocalPoint: this.isProjectFocalPoint,
-                    isEjecutor: this.isEjecutor
+                    isEjecutor: this.isEjecutor,
+                    isPartnerSupervisor:this.isPartnerSupervisor
                 }
             }
         );
@@ -160,7 +180,7 @@ export class PartnersProjectComponent implements OnInit {
         }
         const ref = this.dialogService.open(PerformanceIndicatorFormComponent, {
                 header: 'Indicador: ' + title + this.getRoleTitle(),
-                width: '90%',
+                width: '100%',
                 height: '90%',
                 closeOnEscape: false,
                 autoZIndex: false,
@@ -172,16 +192,21 @@ export class PartnersProjectComponent implements OnInit {
                     projectId: this.project.id,
                     isAdmin: this.isAdmin,
                     isProjectFocalPoint: this.isProjectFocalPoint,
-                    isEjecutor: this.isEjecutor
+                    isEjecutor: this.isEjecutor,
+                    isPartnerSupervisor:this.isPartnerSupervisor
                 }
             }
         );
         // noinspection JSUnusedLocalSymbols
-        ref.onClose.subscribe(() => {
-            this.loadProject(this.idProjectParam);
-        }, error => {
-            this.loadProject(this.idProjectParam);
-        });
+        ref.onClose.subscribe({
+            next: value => {
+                this.loadProject(this.idProjectParam);
+            }, error: error => {
+                this.loadProject(this.idProjectParam);
+            }
+        })
+
+
     }
 
     private getRoleTitle(): string {
@@ -191,10 +216,13 @@ export class PartnersProjectComponent implements OnInit {
             roles.push('Administrador');
         }
         if (this.isProjectFocalPoint) {
-            roles.push('Punto Focal');
+            roles.push('Responsable del Proyecto');
         }
         if (this.isEjecutor) {
-            roles.push('Ejecutor');
+            roles.push('Responsable de Reporte');
+        }
+        if (this.isPartnerSupervisor) {
+            roles.push('Supervisor de Reporte');
         }
         if (roles.length > 0) {
             return ' (' + roles.join(', ') + ')';
@@ -224,12 +252,12 @@ export class PartnersProjectComponent implements OnInit {
                 label: 'Con Desagregaciones', tooltip: 'sdfgsdfg', icon: 'pi pi-file-excel', command: () => {
                     this.getReportDetailed();
                 }
-            },
+            }/*,
             {
                 label: 'Resumen Demográfico', tooltip: 'sdfgsdfg', icon: 'pi pi-file-excel', command: () => {
                     this.getDemographic();
                 }
-            }
+            }*/
         ];
     }
 
@@ -248,7 +276,8 @@ export class PartnersProjectComponent implements OnInit {
     private getReportDetailed() {
         this.getReport('Detailed');
     }
-   private getDemographic() {
+
+    private getDemographic() {
         this.getReport('Demographic');
     }
 
@@ -301,9 +330,17 @@ export class PartnersProjectComponent implements OnInit {
     private setRoles() {
         const userId = this.userService.getLogedUsername().id;
         const orgId = this.userService.getLogedUsername().organization.id;
-        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
-        this.isProjectFocalPoint = this.project.focalPoint && this.project.focalPoint.id === userId;
+        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL']);
+        this.isProjectFocalPoint = this.project.focalPoints.some( fp => fp.id === userId);
         this.isEjecutor = this.project.organization.id === orgId && this.userService.hasRole('EJECUTOR_PROYECTOS');
+        this.isPartnerSupervisor=this.project?.partnerManager?.id === userId
+        if (this.isAdmin || this.isProjectFocalPoint) {
+            this.canEditCantons = true;
+        } else {
+            this.canEditCantons =
+                this.appConfigurationService.getCanPartnerEditLocations();
+        }
+
     }
 
 
@@ -388,5 +425,78 @@ export class PartnersProjectComponent implements OnInit {
 
     reload() {
         this.loadProject(this.idProjectParam);
+    }
+
+    editLocations() {
+        this.messageService.clear();
+        this.cantonService.getByState(EnumsState.ACTIVE).subscribe(value => {
+            this.cantonesOptions = this.utilsService.sortCantones(value);
+            // noinspection JSMismatchedCollectionQueryUpdate
+
+            this.projectService.getProjectCantonAsignations(this.idProjectParam)
+                .subscribe({
+                    next: value1 => {
+                        let cantonesCurrent: Canton[] = value1;
+                        const keyId = 'id';
+                        const cantonesCurrentUnique: Canton[] = [...new Map(cantonesCurrent.map(item =>
+                            [item[keyId], item])).values()];
+                        if (!cantonesCurrentUnique || cantonesCurrentUnique.length < 1) {
+                            this.formLocations.get('locationsSelected').patchValue([]);
+                            this.cantonesAvailable = this.utilsService.sortCantones(this.cantonesOptions);
+                        } else {
+                            this.formLocations.get('locationsSelected').patchValue(this.utilsService.sortCantones(cantonesCurrentUnique));
+                            this.cantonesAvailable =
+                                this.cantonesOptions.filter((canton1) => !cantonesCurrentUnique.find(canton2 => canton1.id === canton2.id));
+                        }
+                        this.showLocationsDialog = true;
+                        this.cd.detectChanges();
+                    },
+                    error: err => {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error al cargar los cantones',
+                            detail: err.error.message,
+                            life: 3000
+                        });
+                    }
+                })
+
+        });
+
+    }
+
+    cancelLocations() {
+        this.showLocationsDialog = false;
+    }
+
+    saveLocations() {
+        const cantones: Canton[] = this.formLocations.get('locationsSelected').value;
+        if (!cantones || cantones.length < 1) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Selecciona al menos un lugar',
+                life: 3000
+            });
+        } else {
+            this.projectService.updateProjectLocations(this.project.id, cantones)
+                .subscribe({
+                    next: () => {
+                        this.showLocationsDialog = false;
+                    }, error: err => {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Selecciona al menos un lugar',
+                            detail: err.error.message,
+                            life: 3000
+                        });
+                    }
+                });
+        }
+    }
+
+    setViewGeneralIndicators($event: number) {
+        console.log('--------------------------------------');
+        console.log($event);
+        this.viewGeneralIndicators = $event && $event > 0;
     }
 }

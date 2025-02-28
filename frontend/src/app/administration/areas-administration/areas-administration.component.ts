@@ -37,14 +37,15 @@ export class AreasAdministrationComponent implements OnInit {
     ngOnInit(): void {
         this.loadItems();
         this.cols = [
-            {field: 'id', header: 'id', type: ColumnDataType.numeric},
+            {field: 'id', header: 'id', type: ColumnDataType.numeric, },
             {field: 'code', header: 'Código', type: ColumnDataType.text},
-            {field: 'shortDescription', header: 'Nombre corte', type: ColumnDataType.text},
+            {field: 'shortDescription', header: 'Nombre corto', type: ColumnDataType.text},
             {field: 'description', header: 'Nombre completo', type: ColumnDataType.text},
             {field: 'areaType', header: 'Tipo', type: ColumnDataType.text},
             {field: 'state', header: 'Estado', type: ColumnDataType.text},
         ];
         this._selectedColumns = this.cols.filter(value => value.field !== 'id');
+        this._selectedColumns = this._selectedColumns.filter(value => value.field !== 'state');
 
         this.formItem = this.fb.group({
             id: new FormControl(''),
@@ -65,7 +66,9 @@ export class AreasAdministrationComponent implements OnInit {
 
     private loadItems() {
         this.areaService.getAll().subscribe({
-            next: value => this.items = value,
+            next: value => {
+                this.items = value;
+            },
             error: err => {
                 this.messageService.add({
                     severity: 'error',
@@ -128,6 +131,11 @@ export class AreasAdministrationComponent implements OnInit {
                     next: () => {
                         this.cancelDialog();
                         this.loadItems();
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Área guardada exitosamente',
+                            life: 3000
+                        });
                     },
                     error: err => {
                         this.messageService.add({
@@ -145,6 +153,11 @@ export class AreasAdministrationComponent implements OnInit {
                     next: () => {
                         this.cancelDialog();
                         this.loadItems();
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Área guardada exitosamente',
+                            life: 3000
+                        });
                     },
                     error: err => {
                         this.messageService.add({

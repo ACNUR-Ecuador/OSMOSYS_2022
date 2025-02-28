@@ -13,7 +13,11 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jboss.logging.Logger;
+import org.unhcr.osmosys.model.Period;
+import org.unhcr.osmosys.model.Tags;
 import org.unhcr.osmosys.reports.model.IndicatorReportProgramsDTO;
+import org.unhcr.osmosys.services.PeriodService;
+import org.unhcr.osmosys.services.TagsService;
 import org.unhcr.osmosys.services.UtilsService;
 
 import javax.ejb.Stateless;
@@ -24,12 +28,15 @@ import javax.sql.DataSource;
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 @Stateless
 public class ReportService {
@@ -38,6 +45,12 @@ public class ReportService {
 
     @Inject
     ReportDataService reportDataService;
+
+    @Inject
+    TagsService tagsService;
+
+    @Inject
+    PeriodService periodService;
 
     @Inject
     UtilsService utilsService;
@@ -179,13 +192,13 @@ public class ReportService {
 
             return bos;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
             throw new GeneralAppException("Error al Generar el reporte", Response.Status.INTERNAL_SERVER_ERROR);
         } finally {
             try {
                 bos.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error(ExceptionUtils.getStackTrace(e));
             }
         }
     }
@@ -196,13 +209,13 @@ public class ReportService {
             workbook.write(bos);
             return bos;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
             throw new GeneralAppException("Error al Generar el reporte", Response.Status.INTERNAL_SERVER_ERROR);
         } finally {
             try {
                 bos.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error(ExceptionUtils.getStackTrace(e));
             }
         }
     }
@@ -314,7 +327,7 @@ public class ReportService {
         InputStream file = this.getReportFile(jrxmlFile);
         Map<String, Object> parameters = new HashMap<>();
         try {
-            JasperReport jasperReport = JasperCompileManager.compileReport(file);
+            JasperReport jasperReport =  JasperCompileManager.compileReport(file);
             List<Map<String, Object>> data = this.reportDataService.indicatorExecutionsProjectsReportsByProjectId(projectId);
             JRMapArrayDataSource dataSource = new JRMapArrayDataSource(data.toArray());
             parameters.put("DataParameter", dataSource);
@@ -382,6 +395,16 @@ public class ReportService {
         return getByteArrayOutputStreamFromWorkbook(workbook);
     }
 
+    public ByteArrayOutputStream getTagReport(Long tagId, Long periodId) throws GeneralAppException {
+
+        Tags tags = tagsService.getById(tagId);
+        Period period = periodService.find(periodId);
+        if(tags == null) return null;
+        SXSSFWorkbook workbook = this.reportDataService.getTagReport(tags, period);
+
+        return getByteArrayOutputStreamFromWorkbook(workbook);
+    }
+
 
     public InputStream getReportFile(String fileName) {
         //URL fileUrl = this.getClass().getResource("reportsJR/GeneralReportsTotal.jrxml");
@@ -393,14 +416,22 @@ public class ReportService {
     private Connection getConexion() throws GeneralAppException {
         Connection connection;
         try {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            URL resourceUrl = classLoader.getResource("app.properties");
+            InputStream resource = classLoader.getResourceAsStream("app.properties");
+            Properties p = new Properties();
+            p.load( resource );
             InitialContext initialContext = new InitialContext();
-            DataSource dataSource = (DataSource) initialContext.lookup("java:jboss/datasources/osmosys");
+            String datsourceName = p.getProperty("datasource.name");
+            DataSource dataSource = (DataSource) initialContext.lookup("java:jboss/datasources/"+datsourceName);
             connection = dataSource.getConnection();
             return connection;
         } catch (NamingException | SQLException e) {
             LOGGER.error("error al crear conexión");
             LOGGER.error(ExceptionUtils.getStackTrace(e));
             throw new GeneralAppException("Error al conectarse a la base de datos, comunícate con el administrador", Response.Status.INTERNAL_SERVER_ERROR);
+        } catch (IOException e) {
+            throw new GeneralAppException("Error al conectarse a la base de datos, comunícate con el administrador, archiv properties", Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -535,9 +566,9 @@ public class ReportService {
             String jrxmlFile = "program_partner_report.jrxml";
             Map<String, Object> parameters = new HashMap<>();
             InputStream file = this.getReportFile(jrxmlFile);
-
-            List<IndicatorReportProgramsDTO> dtos = this.reportDataService.getIndicatorReportProgramsByProjectId(projectId);
-
+            // todo
+            // List<IndicatorReportProgramsDTO> dtos = this.reportDataService.getIndicatorReportProgramsByProjectId(projectId);
+            List<IndicatorReportProgramsDTO> dtos=null;
             JRBeanCollectionDataSource itemsJRBean = new JRBeanCollectionDataSource(dtos);
             parameters.put("CollectionBeanParam", itemsJRBean);
 

@@ -2,6 +2,7 @@ package com.sagatechs.generics.security;
 
 import com.sagatechs.generics.security.credentials.UsernameJwtCredential;
 import com.sagatechs.generics.security.servicio.UserService;
+import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -14,7 +15,7 @@ import java.util.Set;
 @SuppressWarnings("unused")
 @ApplicationScoped
 public class UsernameTokenIdentityStore implements IdentityStore {
-
+	private static final Logger LOGGER = Logger.getLogger(UsernameTokenIdentityStore.class);
 	@Inject
 	UserService userService;
 

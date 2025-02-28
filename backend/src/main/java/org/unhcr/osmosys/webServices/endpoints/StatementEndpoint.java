@@ -100,4 +100,12 @@ public class StatementEndpoint {
         this.statementService.importCatalog(importFileWeb);
         return null;
     }
+
+    @Path("/getChildStatementsByParentId/{parentId}")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<StatementWeb> getChildStatementsByParentId(@PathParam("parentId") Long parentId) {
+        return this.statementService.getchildStatementsByParentId(parentId);
+    }
 }

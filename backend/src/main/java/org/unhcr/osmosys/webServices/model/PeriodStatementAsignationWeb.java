@@ -1,34 +1,18 @@
 package org.unhcr.osmosys.webServices.model;
 
-import com.sagatechs.generics.persistence.model.State;
-
 import java.io.Serializable;
 import java.util.Objects;
 
 
-public class PeriodStatementAsignationWeb implements Serializable {
+public class PeriodStatementAsignationWeb extends BaseWebEntity implements Serializable {
 
-    private Long id;
-    private State state;
+
+    public PeriodStatementAsignationWeb() {super();
+    }
+
     private PeriodWeb period;
-    private Long populationCoverage;
 
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
 
     public PeriodWeb getPeriod() {
         return period;
@@ -38,21 +22,12 @@ public class PeriodStatementAsignationWeb implements Serializable {
         this.period = period;
     }
 
-    public Long getPopulationCoverage() {
-        return populationCoverage;
-    }
-
-    public void setPopulationCoverage(Long populationCoverage) {
-        this.populationCoverage = populationCoverage;
-    }
-
     @Override
     public String toString() {
         return "PeriodStatementAsignationWeb{" +
                 "id=" + id +
                 ", state=" + state +
                 ", period=" + period +
-                ", populationCoverage=" + populationCoverage +
                 '}';
     }
 

@@ -1,0 +1,263 @@
+body {
+    font-family: 'Nunito', sans-serif;
+    line-height: 1.4;
+    margin: 0;
+    padding: 0;
+}
+
+h1{
+    font-size: 1.8rem;
+}
+
+p {
+    font-size: 1rem;
+}
+.section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 50px;
+}
+
+.photo-banner {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    background: url("/assets/images/img_aboutus/banner.png") no-repeat center center/cover;
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content: center;
+    color: #fff;
+}
+
+.photo-banner::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgb(0, 114, 188, 1), rgb(0, 114, 188, 0.5));
+}
+
+.banner-title {
+    z-index: 1;
+    background-color: #faeb00;
+    color: #2C3E50;
+}
+
+.text-content {
+    max-width: 750px;
+    margin: 0 auto;
+    z-index: 1;
+}
+
+.text-content h1 {
+    color: #2C3E50;
+    margin-bottom: 15px;
+}
+
+.funcionalidades {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 850px;
+}
+
+.funcionalidades li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1 1 calc(33.33% - 20px);
+    transition: 0.3s;
+}
+
+.funcionalidades li:hover {
+    transform: scale(1.03);
+}
+
+.funcionalidades img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
+}
+
+.func-title {
+    color: #0072BC;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    line-height: 1.2rem;
+}
+
+.func-description {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.team-section {
+    background-color: #0072BC;
+    color: #fff;
+    display: flex;
+    align-items: stretch;
+    padding: 0;
+
+}
+
+.team-image {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+}
+
+.team-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.team-image::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to left, #0072BC, rgba(0, 0, 0, 0),rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+}
+
+.team-content {
+    flex: 1;
+    margin: 3% 7% 3% 7%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.team-content p{
+    margin: 0;
+}
+
+.team-content ul{
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 13px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.team-content li{
+    flex: 0 0 calc(50% - 7.5px);
+    box-sizing: border-box;
+    list-style: none;
+    border: solid 1.5px #61a9d8;
+    padding: 15px;
+    border-radius: 10px;
+    transition: 0.3s;
+    min-height: 120px;
+    font-size: 0.9rem;
+
+}
+
+.team-content li:hover{
+    transform: scale(1.03);
+}
+
+.team-name {
+    color: #faeb00;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.team-flag {
+    height: 1.2rem;
+}
+
+
+@media (max-width: 768px) {
+
+    .section{
+        margin: 10px;
+    }
+
+    .text-content {
+        padding: 0 30px 0 30px;
+    }
+
+    .funcionalidades li {
+        flex: 1 1 50%;
+    }
+
+    .team-section {
+        flex-direction: column;
+    }
+
+    .team-image {
+        width: 100%;
+        height: auto;
+    }
+
+    .team-image::before {
+        background: linear-gradient(to top, #0072BC, rgba(0, 0, 0, 0),rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+    }
+
+    .team-content {
+        text-align: center;
+        margin: 20px;
+        padding: 10px;
+    }
+
+    .team-content ul {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .team-content li {
+        flex: 1 1 100%;
+        width: 90%;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    p {
+        font-size: 0.9rem;
+    }
+
+    .team-name {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .funcionalidades li {
+        flex: 1 1 100%;
+    }
+
+    .team-content p {
+        font-size: 0.9rem;
+    }
+
+    .team-content li {
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+}

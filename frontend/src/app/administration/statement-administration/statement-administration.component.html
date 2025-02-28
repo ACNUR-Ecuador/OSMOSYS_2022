@@ -2,47 +2,41 @@
     <div class="col-12">
         <p-toast></p-toast>
         <div class="card px-6 py-6">
-            <h3 class="page-title">Administración de Declaraciones</h3>
-            <p-toolbar styleClass="mb-4">
-                <ng-template pTemplate="left">
-                    <div class="my-2">
-                        <button pButton pRipple label="Crear" icon="pi pi-plus" class="p-button-success mr-2 mb-2"
-                                (click)="createItem()"></button>
-                    </div>
-                    <div class="my-2">
-                        <button pButton pRipple label="Importar Catálogo de Declaraciones" icon="pi pi-plus"
-                                class="p-button-success mr-2 mb-2"
-                                (click)="initiateCatalogImport()"></button>
-                    </div>
-                </ng-template>
-
-                <ng-template pTemplate="right">
-                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel(dt)"
-                            class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
-                </ng-template>
-            </p-toolbar>
-
             <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true"
-                     [rowHover]="true" dataKey="id"
-                     currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                     [showCurrentPageReport]="true"
-                     (sortFunction)="utilsService.customSort($event, cols)" [customSort]="true"
+                [rowHover]="true" dataKey="id" styleClass="p-datatable-striped" 
+                currentPageReportTemplate=" {first} a {last} de {totalRecords} "
+                [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]"
+                (sortFunction)="utilsService.customSort($event, cols)" [customSort]="true"
             >
                 <ng-template pTemplate="caption">
-                    <div class="flex card-container overflow-hidden">
+                    <div class="grid">
                         <div
-                            class="flex-none flex align-items-center justify-content-center m-2 px-5  border-round">
-                            <h5 class="m-0">Situaciones</h5>
+                            class="col-12 md:col-4 sm:col-12 justify-content-start">
+                            <h3 class="m-0">Marco de Resultados</h3>
                         </div>
-                        <div
-                            class="flex-grow-1 flex align-items-center justify-content-center px-5  border-round"></div>
-                        <div
-                            class="flex-none flex align-items-center justify-content-center px-5  border-round">
+                        <div                           
+                            class="col-12 md:col sm:col-12 flex justify-content-end">
                             <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
-                                           selectedItemsLabel="{0} columnas seleccionadas"
-                                           [style]="{minWidth: '200px',color:'#6c757d'}"
-                                           placeholder="Seleccione las columnas"
-                                           appendTo="body"></p-multiSelect>
+                                selectedItemsLabel="{0} columnas seleccionadas"
+                                [style]="{minWidth: '150px',color:'#6c757d'}"
+                                placeholder="Seleccione las columnas"
+                                appendTo="body"></p-multiSelect>
+                            <button pButton pRipple label="Crear" icon="pi pi-plus" class="main-button mr-2 mb-2"
+                            (click)="createItem()" style="margin-left: 2rem;" pTooltip="Crear un Marco de Resultado" tooltipPosition="bottom"></button>
+
+                            <button *ngIf="false" pButton pRipple label="Importar" icon="pi pi-file-import" class="second-button mr-2 mb-2"
+                            (click)="initiateCatalogImport()" style="margin-left: 1rem;" pTooltip="Importar catálogo de declaraciones" tooltipPosition="bottom"></button>                        
+                      
+                            <button pButton pRipple label="Exportar" icon="pi pi-file-excel" class="second-button mr-2 mb-2"
+                            (click)="exportExcel(dt)" style="margin-left: 1rem;" pTooltip="Exportar a Excel" tooltipPosition="bottom"></button>
+                            <a href="https://osmosys.unhcr.org/common/manual/#/administracion-del-sistema?id=_54-marco-de-resultados"
+                                target="_blank"  
+                                class="p-button  p-button-outlined p-button-info custom-button"
+                                style="width: auto; height: fit-content; display: inline-flex; justify-content: center; align-items: center; text-decoration: none; margin-left: 11px; " 
+                                pTooltip="Ver el manual de ayuda" tooltipPosition="bottom">
+                                <i class="pi pi-question-circle" style="margin-right: 5px;"></i> 
+                                <span>Ayuda</span>
+                            </a>                         
                         </div>
                     </div>
                 </ng-template>
@@ -69,7 +63,21 @@
                                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                                     <p-dropdown [ngModel]="value" [options]="states"
                                                 (onChange)="filter($event.value)"
-                                                placeholder="Selecciona..." [showClear]="true">
+                                                placeholder="Selecciona" [showClear]="true">
+                                        <ng-template let-option pTemplate="item">
+                                            <span
+                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'areaType'" type="equals" [field]="col.field"
+                                            [showMenu]="false"
+                            >
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown [ngModel]="value" [options]="areaTypesItems"
+                                                (onChange)="filter($event.value)"
+                                                placeholder="Selecciona" [showClear]="true">
                                         <ng-template let-option pTemplate="item">
                                             <span
                                                 [class]="'customer-badge status-' + option">{{option.label}}</span>
@@ -84,7 +92,7 @@
                                     <p-dropdown [ngModel]="value" [options]="areasItems"
                                                 (onChange)="filter($event.value)"
                                                 [filter]=true
-                                                placeholder="Selecciona..." [showClear]="true">
+                                                placeholder="Selecciona" [showClear]="true">
                                         <ng-template let-option pTemplate="item">
                                             <span
                                                 [class]="'customer-badge status-' + option">{{option.label}}</span>
@@ -95,33 +103,18 @@
                             <p-columnFilter *ngSwitchCase="'pillar'" type="equals" [field]="col.field"
                                             [showMenu]="false" [matchMode]="'objectIdFilter'"
                             >
-                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                    <p-dropdown [ngModel]="value" [options]="pillarsItems"
-                                                (onChange)="filter($event.value)"
-                                                [filter]=true
-                                                placeholder="Selecciona..." [showClear]="true">
-                                        <ng-template let-option pTemplate="item">
-                                            <span
-                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
-                                        </ng-template>
-                                    </p-dropdown>
-                                </ng-template>
-                            </p-columnFilter>
-                            <p-columnFilter *ngSwitchCase="'situation'" type="equals" [field]="col.field"
-                                            [showMenu]="false" [matchMode]="'objectIdFilter'"
-                            >
-                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                    <p-dropdown [ngModel]="value" [options]="situationsItems"
-                                                (onChange)="filter($event.value)"
-                                                [filter]=true
-                                                placeholder="Selecciona..." [showClear]="true">
-                                        <ng-template let-option pTemplate="item">
-                                            <span
-                                                [class]="'customer-badge status-' + option">{{option.label}}</span>
-                                        </ng-template>
-                                    </p-dropdown>
-                                </ng-template>
-                            </p-columnFilter>
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <p-dropdown [ngModel]="value" [options]="pillarsItems" 
+                                            (onChange)="filter($event.value)"
+                                            [filter]=true
+                                            placeholder="Selecciona" [showClear]="true">
+                                    <ng-template let-option pTemplate="item">
+                                        <span
+                                            [class]="'customer-badge status-' + option">{{option.label}}</span>
+                                    </ng-template>
+                                </p-dropdown>
+                            </ng-template>
+                            </p-columnFilter>                           
                             <p-columnFilter *ngSwitchCase="'parentStatement'"
                                             type="text"
                                             [field]="col.field" [showMenu]="false"
@@ -129,14 +122,13 @@
                             </p-columnFilter>
                             <p-columnFilter *ngSwitchCase="'periodStatementAsignations'" type="equals"
                                             [field]="col.field"
-                                            [showMenu]="false" [matchMode]="'periodStatementAsignationsFilter'"
-                            >
+                                            [showMenu]="false" [matchMode]="'periodStatementAsignationsFilter'">
                                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                    <p-multiSelect [ngModel]="value" [options]="periodsItems"
-                                                   (onChange)="filter($event.value)"
-                                                   [filter]=true
-                                                   appendTo="body"
-                                                   placeholder="Selecciona..." [showClear]="true">
+                                    <p-multiSelect [ngModel]="value" [options]="periodsItems" 
+                                            (onChange)="filter($event.value)"
+                                            [filter]=true
+                                            appendTo="body"
+                                            placeholder="Selecciona">
                                         <ng-template let-option pTemplate="item">
                                             <span
                                                 [class]="'customer-badge status-' + option">{{option.label}}</span>
@@ -152,8 +144,15 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr>
-                        <td *ngFor="let col of columns"
-                            [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
+                        <td *ngFor="let col of columns" [style]="{width:
+                            col.field === 'code'?'15%':
+                            col.field === 'areaType'?'10%':
+                            col.field === 'parentStatement'?'30%':
+                            col.field === 'description'?'30%':
+                            col.field === 'area'?'10%':
+                            col.field === 'periodStatementAsignations'?'10%':'0%'
+                        }"
+                            [class]="col.styleClass?col.styleClass: (col.type === 'numeric'?'text-center':null)"
                         >
                             {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
                         </td>
@@ -166,7 +165,8 @@
                 </ng-template>
                 <ng-template pTemplate="summary">
                     <div class="p-d-flex p-ai-center p-jc-between">
-                        {{dt.filteredValue?dt.filteredValue.length:dt.totalRecords}} de {{items?items.length:0}} declaraciones.
+                        {{dt.filteredValue ? dt.filteredValue.length : dt.totalRecords}} de {{items ? items.length : 0}}
+                        declaraciones.
                     </div>
                 </ng-template>
             </p-table>
@@ -174,32 +174,66 @@
     </div>
 </div>
 <form [formGroup]="formItem" (ngSubmit)="saveItem()">
-    <p-dialog [(visible)]="showDialog" header="Declaración" [modal]="true"
+    <p-dialog [(visible)]="showDialog" header="Marco de Resultados" [modal]="true"
               [closable]="false">
 
         <ng-template pTemplate="content">
             <p-messages></p-messages>
             <div class="card">
                 <div class="p-fluid p-formgrid grid">
-                    <div class="field col-4 md:col4 p-sm-12">
-                        <label for="periodsI">Periodos *</label>
-
-                        <p-multiSelect id="periodsI" [options]="periodsItems" appendTo="body"
-                                       formControlName="periods"
-                                       (onChange)="filterStatementsByPeriod($event.value)"
+                    <div class="field col-4 md:col-4">
+                        <label for="areaTypeI">Nivel de Resultado *:</label>
+                        <p-dropdown id="areaTypeI"
+                                    formControlName="areaType"
+                                    [options]="areaTypesItems"
+                                    placeholder="Selecciona"
+                                    [filter]=true
+                                    appendTo="body"
+                                    [panelStyle]="{'width':'80%'}"
+                                    (onChange)="onResultLevelChange($event.value)"
                         >
+                        </p-dropdown>
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('areaType',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+                    <div class="field col-4 md:col4 p-sm-12">
+                        <label for="periodsI">Años *:</label>
+                        <p-multiSelect id="periodsI"
+                            [options]="periodsItems"
+                            appendTo="body"
+                            formControlName="periods"
+                            [dataKey]="'id'"
+                            (onChange)="filterStatementsByPeriod($event.value)"
+                            placeholder="Selecciona">
 
                         </p-multiSelect>
 
                         <small class="p-error" *ngIf="utilsService.showErrorForm('situation',formItem)">Campo
                             obligatorio.</small>
                     </div>
+
+                    <div class="field col-3 md:col3 p-sm-12">
+                        <label for="areaI">Área:</label>
+
+                        <p-dropdown id="areaI"
+                                    formControlName="area"
+                                    [options]="filterAreaList"
+                                    placeholder="Selecciona"
+                                    [filter]=true
+                                    appendTo="body"
+                        >
+                        </p-dropdown>
+
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('area',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+                    
                     <div class="field col-4 md:col-4">
-                        <label for="areaI">Declaración padre</label>
+                        <label for="areaI">Enunciado padre:</label>
                         <p-dropdown id="parentStatementI"
                                     formControlName="parentStatement"
                                     [options]="parentStatementsItemsFiltered"
-                                    placeholder="Selecciona..."
+                                    placeholder="Selecciona"
                                     [filter]=true
                                     appendTo="body"
                                     dataKey="id"
@@ -211,15 +245,31 @@
                     </div>
 
                     <div class="field col-4 md:col-4">
-                        <label for="codeI">Código *</label>
+                        <label for="codeI">Código *:</label>
                         <input type="text" pInputText id="codeI"
                                formControlName="code" autofocus/>
                         <small class="p-error" *ngIf="utilsService.showErrorForm('code',formItem)">Campo
                             obligatorio.</small>
                     </div>
 
+                    <div class="field col-3 md:col3 p-sm-12 ">
+                        <label for="pillarI">Grupo Poblacional:</label>
+
+                        <p-dropdown id="pillarI"
+                                    formControlName="pillar"
+                                    [options]="pillarsItems"
+                                    placeholder="Selecciona"
+                                    [filter]=true
+                                    appendTo="body"
+                        >
+                        </p-dropdown>
+
+                        <small class="p-error" *ngIf="utilsService.showErrorForm('pillar',formItem)">Campo
+                            obligatorio.</small>
+                    </div>
+
                     <div class="field col-12 md:col12">
-                        <label for="descriptionI">Descripción Completa *</label>
+                        <label for="descriptionI">Descripción Completa *:</label>
 
                         <textarea pInputTextarea id="descriptionI"
                                   formControlName="description"
@@ -230,7 +280,7 @@
                             obligatorio.</small>
                     </div>
                     <div class="field col-3 md:col3 ">
-                        <label for="stateI">Estado *</label>
+                        <label for="stateI">Estado *:</label>
 
                         <p-selectButton id="stateI"
                                         formControlName="state"
@@ -241,43 +291,15 @@
                         <small class="p-error" *ngIf="utilsService.showErrorForm('state',formItem)">Campo
                             obligatorio.</small>
                     </div>
-                    <div class="field col-3 md:col3 p-sm-12">
-                        <label for="areaI">Área</label>
-
-                        <p-dropdown id="areaI"
-                                    formControlName="area"
-                                    [options]="areasItems"
-                                    placeholder="Selecciona..."
-                                    [filter]=true
-                                    appendTo="body"
-                        >
-                        </p-dropdown>
-
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('area',formItem)">Campo
-                            obligatorio.</small>
-                    </div>
-                    <div class="field col-3 md:col3 p-sm-12 ">
-                        <label for="pillarI">Pilar *</label>
-
-                        <p-dropdown id="pillarI"
-                                    formControlName="pillar"
-                                    [options]="pillarsItems"
-                                    placeholder="Selecciona..."
-                                    [filter]=true
-                                    appendTo="body"
-                        >
-                        </p-dropdown>
-
-                        <small class="p-error" *ngIf="utilsService.showErrorForm('pillar',formItem)">Campo
-                            obligatorio.</small>
-                    </div>
-                    <div class="field col-3 md:col3 p-sm-12">
+                    
+                    
+                    <!-- <div class="field col-3 md:col3 p-sm-12">
                         <label for="areaI">Situation *</label>
 
                         <p-dropdown id="situationI"
                                     formControlName="situation"
                                     [options]="situationsItems"
-                                    placeholder="Selecciona..."
+                                    placeholder="Selecciona"
                                     [filter]=true
                                     appendTo="body"
                         >
@@ -285,7 +307,7 @@
 
                         <small class="p-error" *ngIf="utilsService.showErrorForm('situation',formItem)">Campo
                             obligatorio.</small>
-                    </div>
+                    </div> -->
 
                 </div>
             </div>
@@ -320,15 +342,15 @@
                 </h5>
 
                 <div class="field grid">
-                    <label htmlFor="name3" class="col-12 mb-2 md:col-2 md:mb-0">Periodo</label>
+                    <label htmlFor="name3" class="col-12 mb-2 md:col-2 md:mb-0">Año</label>
                     <div class="col-12 md:col-10">
                         <p-dropdown
                             id="periodI"
                             formControlName="period"
                             [options]="periodsItems"
                             [filter]=true
-                            placeholder="Selecciona..." [showClear]="true"
-                        >
+                            placeholder="Selecciona" [showClear]="true">
+
                             <ng-template let-option pTemplate="item">
                                             <span
                                                 [class]="'customer-badge status-' + option">{{option.label}}</span>
@@ -338,13 +360,13 @@
                     <label htmlFor="name3" class="col-12 mb-2 md:col-2 md:mb-0">Catálogo</label>
                     <div class="col-12 md:col-10">
                         <p-fileUpload name="myfile[]"
-                                      [customUpload]="true"
-                                      (uploadHandler)="fileUploader($event)"
-                                      [auto]="true"
-                                      [fileLimit]="1"
-                                      uploadLabel="importar"
-                                      chooseLabel="seleccionar archivo"
-                                      cancelLabel="cancelar"
+                            [customUpload]="true"
+                            (uploadHandler)="fileUploader($event)"
+                            [auto]="true"
+                            [fileLimit]="1"
+                            uploadLabel="importar"
+                            chooseLabel="seleccionar archivo"
+                            cancelLabel="cancelar"
                         ></p-fileUpload>
                     </div>
                 </div>

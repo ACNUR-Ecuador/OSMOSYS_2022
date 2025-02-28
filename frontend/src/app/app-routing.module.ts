@@ -30,6 +30,10 @@ const routes: Routes = [
                 loadChildren: () => import('./partners/partners.module').then(m => m.PartnersModule)
             },
             {
+                path: 'resultManager',
+                loadChildren: () => import('./result-manager/result-manager-routing.module').then(m => m.ResultManagerRoutingModule)
+            },
+            {
                 path: 'directImplementation',
                 loadChildren: () => import('./direct-implementation/direct-implementation.module').then(m => m.DirectImplementationModule)
             },

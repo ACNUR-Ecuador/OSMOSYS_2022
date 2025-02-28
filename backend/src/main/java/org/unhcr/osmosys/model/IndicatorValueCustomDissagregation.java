@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import org.unhcr.osmosys.model.enums.*;
 
@@ -12,7 +13,7 @@ import java.math.BigDecimal;
         uniqueConstraints = {
                 @UniqueConstraint(name = "uk_iv_cd_month_option", columnNames = {"month_id", "custom_dissagregation_option"})
         })
-public class IndicatorValueCustomDissagregation extends BaseEntity<Long> {
+public class IndicatorValueCustomDissagregation extends BaseEntityIdState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -127,5 +128,19 @@ public class IndicatorValueCustomDissagregation extends BaseEntity<Long> {
 
     public void setMonthYearOrder(Integer monthYearOrder) {
         this.monthYearOrder = monthYearOrder;
+    }
+
+    public IndicatorValueCustomDissagregation deepCopy() {
+        IndicatorValueCustomDissagregation copy = new IndicatorValueCustomDissagregation();
+        copy.setId(this.id);
+        copy.setState(this.state);
+        copy.setCustomDissagregationOption(this.customDissagregationOption);
+        copy.setMonth(this.month);
+        copy.setMonthEnum(this.monthEnum);
+        copy.setMonthYearOrder(this.monthYearOrder);
+        copy.setValue(this.value);
+        copy.setNumeratorValue(this.numeratorValue);
+        copy.setDenominatorValue(this.denominatorValue);
+        return copy;
     }
 }

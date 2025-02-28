@@ -20,6 +20,8 @@ public class GeneralIndicatorEndpoint {
     @Inject
     GeneralIndicatorService generalIndicatorService;
 
+
+    // no se usa
     @Path("/")
     @POST
     @Secured
@@ -28,6 +30,8 @@ public class GeneralIndicatorEndpoint {
         return this.generalIndicatorService.save(generalIndicatorWeb);
     }
 
+
+    // no se usa
     @Path("/")
     @PUT
     @Secured

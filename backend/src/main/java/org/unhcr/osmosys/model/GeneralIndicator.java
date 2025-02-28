@@ -1,10 +1,10 @@
 package org.unhcr.osmosys.model;
 
-import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.model.enums.MeasureType;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Entity
 @Table(schema = "osmosys", name = "general_indicators")
-public class GeneralIndicator extends BaseEntity<Long> {
+public class GeneralIndicator extends BaseEntityIdState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

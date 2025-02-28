@@ -1,31 +1,22 @@
 package org.unhcr.osmosys.model;
 
-import com.sagatechs.generics.persistence.model.BaseEntity;
-import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.unhcr.osmosys.model.standardDissagregations.options.StandardDissagregationOption;
 
 import javax.persistence.*;
 
-@Entity
-@Table(schema = "osmosys", name = "cantones")
-public class Canton extends BaseEntity<Long> {
+@Entity(name = "Canton")
+@DiscriminatorValue("Canton")
+public class Canton extends StandardDissagregationOption {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column(name = "code", nullable = false, unique = true)
+
+    @Column(name = "code", unique = true)
     private String code;
 
-    @Column(name = "description", nullable = false)
-    private String description;
 
-    @Column(name = "state", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private State state;
-
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "provincia_id", foreignKey = @ForeignKey(name = "fk_cantones_provincias"))
     private Provincia provincia;
 
@@ -33,37 +24,12 @@ public class Canton extends BaseEntity<Long> {
     @JoinColumn(name = "office_id", foreignKey = @ForeignKey(name = "fk_cantones_offices"))
     private Office office;
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getCode() {
         return code;
     }
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
     }
 
     public Provincia getProvincia() {
@@ -106,7 +72,7 @@ public class Canton extends BaseEntity<Long> {
                 .appendSuper(super.hashCode())
                 .append(id)
                 .append(code)
-                .append(description)
+                .append(name)
                 .append(state)
                 .toHashCode();
     }
@@ -116,7 +82,7 @@ public class Canton extends BaseEntity<Long> {
         return "Canton{" +
                 "id=" + id +
                 ", code='" + code + '\'' +
-                ", description='" + description + '\'' +
+                ", description='" + name + '\'' +
                 ", state=" + state +
                 ", provincia=" + provincia +
                 ", office=" + office +

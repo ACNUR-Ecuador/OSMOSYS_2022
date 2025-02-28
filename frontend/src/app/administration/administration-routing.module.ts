@@ -21,10 +21,13 @@ import {
 import {
     DirectImplementationAdministrationComponent
 } from './direct-implementation-administration/direct-implementation-administration.component';
-import {MarkerAdministrationComponent} from './marker-administration/marker-administration.component';
 import {AppconfigurationComponent} from './appconfiguration/appconfiguration.component';
 import {MassMailingComponent} from "./mass-mailing/mass-mailing.component";
 import {MassBlockingComponent} from "./mass-blocking/mass-blocking.component";
+import {MenuItemsComponent} from "./menu-items/menu-items.component";
+import { TagsAdministrationComponent } from './tags-administration/tags-administration.component';
+import { auditTime } from 'rxjs';
+import { AuditAdministrationComponent } from './audit-administration/audit-administration.component';
 
 const routes: Routes = [
     {
@@ -39,7 +42,6 @@ const routes: Routes = [
             {path: 'offices', component: OfficeAdministrationComponent},
             {path: 'statements', component: StatementAdministrationComponent},
             {path: 'customDissagregation', component: CustomDissagregationAdministrationComponent},
-            {path: 'marker', component: MarkerAdministrationComponent},
             {path: 'performanceIndicator', component: PerformanceIndicatorAdministrationComponent},
             {path: 'partnerProjectAdministration', component: PartnerProjectAdministrationComponent},
             {path: 'partnerProjectListAdministration', component: PartnerProjectListAdministrationComponent},
@@ -47,6 +49,9 @@ const routes: Routes = [
             {path: 'appconfiguration', component: AppconfigurationComponent},
             {path: 'massMailing', component: MassMailingComponent},
             {path: 'massBlocking', component: MassBlockingComponent},
+            {path: 'menuItemsAdministration', component: MenuItemsComponent},
+            {path: 'tags', component: TagsAdministrationComponent},
+            {path: 'audits', component: AuditAdministrationComponent},
         ]
     }
 ];

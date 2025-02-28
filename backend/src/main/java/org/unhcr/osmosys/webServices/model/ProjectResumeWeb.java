@@ -10,8 +10,10 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 
-public class ProjectResumeWeb implements Serializable {
+@SuppressWarnings("unused")
+public class ProjectResumeWeb extends BaseWebEntity implements Serializable {
     public ProjectResumeWeb() {
+        super();
     }
 
     public ProjectResumeWeb(
@@ -27,10 +29,11 @@ public class ProjectResumeWeb implements Serializable {
             LocalDate startDate,
             LocalDate endDate
     ) {
-        this.id = id;
+        super(id, State.valueOf(state));
+
         this.code = code;
         this.name = name;
-        this.state = State.valueOf(state);
+
 
         this.organizationId = organizationId;
         this.organizationDescription = organizationDescription;
@@ -41,10 +44,9 @@ public class ProjectResumeWeb implements Serializable {
         this.endDate = endDate;
     }
 
-    private Long id;
+
     private String code;
     private String name;
-    private State state;
     private Long organizationId;
     private String organizationDescription;
     private String organizationAcronym;
@@ -58,13 +60,6 @@ public class ProjectResumeWeb implements Serializable {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate endDate;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getCode() {
         return code;
@@ -82,13 +77,6 @@ public class ProjectResumeWeb implements Serializable {
         this.name = name;
     }
 
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
 
     public Long getOrganizationId() {
         return organizationId;

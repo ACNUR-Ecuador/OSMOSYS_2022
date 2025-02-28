@@ -7,15 +7,11 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.threeten.extra.YearQuarter;
 import org.unhcr.osmosys.daos.QuarterDao;
-import org.unhcr.osmosys.model.Canton;
-import org.unhcr.osmosys.model.CustomDissagregation;
-import org.unhcr.osmosys.model.Month;
-import org.unhcr.osmosys.model.Quarter;
+import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.DissagregationType;
 import org.unhcr.osmosys.model.enums.QuarterEnum;
 import org.unhcr.osmosys.model.enums.TotalIndicatorCalculationType;
-import org.unhcr.osmosys.webServices.model.QuarterStateWeb;
-import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
+import org.unhcr.osmosys.model.standardDissagregations.options.StandardDissagregationOption;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -31,9 +27,6 @@ public class QuarterService {
 
     @Inject
     QuarterDao quarterDao;
-
-    @Inject
-    ModelWebTransformationService modelWebTransformationService;
 
     @Inject
     MonthService monthService;
@@ -58,11 +51,30 @@ public class QuarterService {
     }
 
 
+    public Set<Quarter> createQuarters(LocalDate startDate, LocalDate endDate,
+                                       Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationsMap,
+                                       List<CustomDissagregation> customDissagregations
+    ) throws GeneralAppException {
+        Set<Quarter> qs = new HashSet<>();
+        List<YearQuarter> yearQuarters = this.dateUtils.calculateQuarter(startDate, endDate);
+        if (yearQuarters.isEmpty()) {
+            throw new GeneralAppException("Error al crear los trimestres ", Response.Status.INTERNAL_SERVER_ERROR);
+        }
+
+
+        for (YearQuarter yearQuarter : yearQuarters) {
+            Quarter q = this.createQuarter(yearQuarter, startDate, endDate, dissagregationsMap, customDissagregations);
+            qs.add(q);
+        }
+        return qs;
+
+    }
+
     public Quarter createQuarter(YearQuarter yearQuarter,
                                  LocalDate startDate, LocalDate endDate,
-                                 List<DissagregationType> dissagregationTypes,
-                                 List<CustomDissagregation> customDissagregations,
-                                 List<Canton> cantones
+                                 Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationMap,
+                                 List<CustomDissagregation> customDissagregations
+
     ) throws GeneralAppException {
         Quarter q = new Quarter();
         q.setYear(yearQuarter.getYear());
@@ -72,31 +84,40 @@ public class QuarterService {
         q.setState(State.ACTIVO);
         q.setBlockUpdate(Boolean.FALSE);
         List<Month> ms = this.monthService.createMonthsForQuarter(q, startDate, endDate,
-                dissagregationTypes, customDissagregations
-                , cantones);
+                dissagregationMap, customDissagregations);
         for (Month month : ms) {
             q.addMonth(month);
         }
         return q;
     }
 
-
-    public Set<Quarter> createQuarters(LocalDate startDate, LocalDate endDate, List<DissagregationType> dissagregationTypes, List<CustomDissagregation> customDissagregations,
-                                       List<Canton> cantones) throws GeneralAppException {
-        Set<Quarter> qs = new HashSet<>();
-        List<YearQuarter> yearQuarters = this.dateUtils.calculateQuarter(startDate, endDate);
-        if (yearQuarters.size() < 1) {
-            throw new GeneralAppException("Error al crear los trimestres ", Response.Status.INTERNAL_SERVER_ERROR);
+    public void updateQuarterDissagregations(IndicatorExecution ie, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationTypeMapMap,
+                                             Set<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicators) throws GeneralAppException {
+        Set<Quarter> quarters = ie.getQuarters();
+        // reviso q solo esten las del periodo
+        if(customDissagregationAssignationToIndicators != null) {
+            customDissagregationAssignationToIndicators = customDissagregationAssignationToIndicators
+                .stream()
+                .filter(customDissagregationAssignationToIndicator ->
+                        customDissagregationAssignationToIndicator.getPeriod().getId().equals(ie.getPeriod().getId())
+                ).collect(Collectors.toSet());
         }
 
+        for (Quarter quarter : quarters) {
+            Set<Month> months = quarter.getMonths();
+            for (Month month : months) {
+                this.monthService.updateMonthDissagregations(month, dissagregationTypeMapMap);
 
-        for (YearQuarter yearQuarter : yearQuarters) {
-            Quarter q = this.createQuarter(yearQuarter, startDate, endDate, dissagregationTypes, customDissagregations, cantones);
-            qs.add(q);
+                this.monthService.updateMonthCustomDissagregations(month, customDissagregationAssignationToIndicators);
+
+
+            }
         }
-        return qs;
 
     }
+
+    /*************************************************************************************/
+
 
     public void updateQuarterTotals(Quarter quarter, TotalIndicatorCalculationType totalIndicatorCalculationType) throws GeneralAppException {
         for (Month month1 : quarter.getMonths()) {
@@ -144,27 +165,24 @@ public class QuarterService {
         }
     }
 
-    public void updateQuarterLocationsByAssignation(Quarter quarter, List<Canton> cantonesToCreate, List<DissagregationType> locationDissagregationTypes) throws GeneralAppException {
-        for (Month month : quarter.getMonths()) {
-            this.monthService.updateMonthLocationsByAssignation(month, cantonesToCreate, locationDissagregationTypes);
-        }
-    }
 
     public void blockQuarterStateByProjectId(Long projectId, QuarterEnum quarterEnum, Integer year, Boolean blockUpdate) {
-        List<Quarter> quarters= this.quarterDao.getQuarterByProjectIdQuarterEnumAndYear(projectId,quarterEnum,year);
+        List<Quarter> quarters = this.quarterDao.getQuarterByProjectIdQuarterEnumAndYear(projectId, quarterEnum, year);
         for (Quarter quarter : quarters) {
             quarter.setBlockUpdate(blockUpdate);
             for (Month month : quarter.getMonths()) {
                 // no activar si es bloqueo automatico
-                if(!(month.getBlockUpdate()
-                        && month.getQuarter().getIndicatorExecution().getIndicator()!=null
+                if (!(month.getBlockUpdate()
+                        && month.getQuarter().getIndicatorExecution().getIndicator() != null
                         && month.getQuarter().getIndicatorExecution().getIndicator().getBlockAfterUpdate()
-                        && month.getTotalExecution()!=null
-                )){
+                        && month.getTotalExecution() != null
+                )) {
                     month.setBlockUpdate(blockUpdate);
                 }
             }
             this.saveOrUpdate(quarter);
         }
     }
+
+
 }

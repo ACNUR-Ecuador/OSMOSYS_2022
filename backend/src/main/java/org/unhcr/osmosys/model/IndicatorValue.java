@@ -1,15 +1,17 @@
 package org.unhcr.osmosys.model;
 
-import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
-import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.model.enums.DissagregationType;
+import org.unhcr.osmosys.model.enums.MonthEnum;
+import org.unhcr.osmosys.model.standardDissagregations.options.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
 @Table(schema = "osmosys", name = "indicator_values")
-public class IndicatorValue extends BaseEntity<Long> {
+public class IndicatorValue extends BaseEntityIdState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,8 +19,7 @@ public class IndicatorValue extends BaseEntity<Long> {
     private Long id;
 
 
-
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "month_id", foreignKey = @ForeignKey(name = "fk_value_month"))
     private Month month;
 
@@ -38,40 +39,30 @@ public class IndicatorValue extends BaseEntity<Long> {
     @Column(name = "dissagregation_type", nullable = false, length = 60)
     private DissagregationType dissagregationType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "population_type", length = 50)
-    private PopulationType populationType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "population_type_option_id", foreignKey = @ForeignKey(name = "fk_iv_pto"))
+    private PopulationTypeDissagregationOption populationType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "country_of_origin", length = 50)
-    private CountryOfOrigin countryOfOrigin;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "country_of_origin_option_id", foreignKey = @ForeignKey(name = "fk_iv_coo"))
+    private CountryOfOriginDissagregationOption countryOfOrigin;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "gender_type", length = 50)
-    private GenderType genderType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gender_option_id", foreignKey = @ForeignKey(name = "fk_iv_go"))
+    private GenderDissagregationOption genderType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "age_type", length = 60)
-    private AgeType ageType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "age_option_id", foreignKey = @ForeignKey(name = "fk_iv_ao"))
+    private AgeDissagregationOption ageType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "age_primary_education_type", length = 50)
-    private AgePrimaryEducationType agePrimaryEducationType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "age_tertiary_education_type", length = 50)
-    private AgeTertiaryEducationType ageTertiaryEducationType;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "diversity_type", length = 50)
-    private DiversityType diversityType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "diversity_option_id", foreignKey = @ForeignKey(name = "fk_iv_do"))
+    private DiversityDissagregationOption diversityType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "canton_id", foreignKey = @ForeignKey(name = "fk_indicator_values_cantones"))
     private Canton location;
-
-    @Column(name = "show_value", nullable = false)
-    private Boolean showValue;
 
     @Column(name = "value")
     private BigDecimal value;
@@ -113,8 +104,8 @@ public class IndicatorValue extends BaseEntity<Long> {
     }
 
     public void setMonthEnum(MonthEnum monthEnum) {
-        if(monthEnum !=null){
-            this.monthYearOrder=monthEnum.getOrder();
+        if (monthEnum != null) {
+            this.monthYearOrder = monthEnum.getOrder();
         } else {
             this.monthYearOrder = null;
         }
@@ -129,35 +120,35 @@ public class IndicatorValue extends BaseEntity<Long> {
         this.dissagregationType = dissagregationType;
     }
 
-    public PopulationType getPopulationType() {
+    public PopulationTypeDissagregationOption getPopulationType() {
         return populationType;
     }
 
-    public void setPopulationType(PopulationType populationType) {
+    public void setPopulationType(PopulationTypeDissagregationOption populationType) {
         this.populationType = populationType;
     }
 
-    public CountryOfOrigin getCountryOfOrigin() {
+    public CountryOfOriginDissagregationOption getCountryOfOrigin() {
         return countryOfOrigin;
     }
 
-    public void setCountryOfOrigin(CountryOfOrigin countryOfOrigin) {
+    public void setCountryOfOrigin(CountryOfOriginDissagregationOption countryOfOrigin) {
         this.countryOfOrigin = countryOfOrigin;
     }
 
-    public GenderType getGenderType() {
+    public GenderDissagregationOption getGenderType() {
         return genderType;
     }
 
-    public void setGenderType(GenderType genderType) {
+    public void setGenderType(GenderDissagregationOption genderType) {
         this.genderType = genderType;
     }
 
-    public AgeType getAgeType() {
+    public AgeDissagregationOption getAgeType() {
         return ageType;
     }
 
-    public void setAgeType(AgeType ageType) {
+    public void setAgeType(AgeDissagregationOption ageType) {
         this.ageType = ageType;
     }
 
@@ -185,19 +176,11 @@ public class IndicatorValue extends BaseEntity<Long> {
         this.numeratorValue = numeratorValue;
     }
 
-    public Boolean getShowValue() {
-        return showValue;
-    }
-
-    public void setShowValue(Boolean showValue) {
-        this.showValue = showValue;
-    }
-
-    public DiversityType getDiversityType() {
+    public DiversityDissagregationOption getDiversityType() {
         return diversityType;
     }
 
-    public void setDiversityType(DiversityType diversityType) {
+    public void setDiversityType(DiversityDissagregationOption diversityType) {
         this.diversityType = diversityType;
     }
 
@@ -217,20 +200,21 @@ public class IndicatorValue extends BaseEntity<Long> {
         this.monthYearOrder = monthYearOrder;
     }
 
-    public AgePrimaryEducationType getAgePrimaryEducationType() {
-        return agePrimaryEducationType;
-    }
-
-    public void setAgePrimaryEducationType(AgePrimaryEducationType agePrimaryEducationType) {
-        this.agePrimaryEducationType = agePrimaryEducationType;
-    }
-
-    public AgeTertiaryEducationType getAgeTertiaryEducationType() {
-        return ageTertiaryEducationType;
-    }
-
-    public void setAgeTertiaryEducationType(AgeTertiaryEducationType ageTertiaryEducationType) {
-        this.ageTertiaryEducationType = ageTertiaryEducationType;
+    public IndicatorValue deepCopy(){
+        IndicatorValue copy = new IndicatorValue();
+        copy.setId(this.id);
+        copy.setMonth(this.month);
+        copy.setState(this.state);
+        copy.setMonthEnum(this.monthEnum);
+        copy.setDissagregationType(this.dissagregationType);
+        copy.setPopulationType(this.populationType);
+        copy.setCountryOfOrigin(this.countryOfOrigin);
+        copy.setGenderType(this.genderType);
+        copy.setAgeType(this.ageType);
+        copy.setValue(this.value);
+        copy.setDenominatorValue(this.denominatorValue);
+        copy.setNumeratorValue(this.numeratorValue);
+        return copy;
     }
 
     @Override
@@ -245,8 +229,28 @@ public class IndicatorValue extends BaseEntity<Long> {
                 ", ageType=" + ageType +
                 ", diversityType=" + diversityType +
                 ", location=" + location +
-                ", showValue=" + showValue +
                 ", value=" + value +
                 '}';
+    }
+
+
+    @Transient()
+    private IndicatorValueOptionsDTO indicatorValueOptionsDTO = null;
+
+    public IndicatorValueOptionsDTO getDissagregationDTO() {
+        if (this.indicatorValueOptionsDTO == null) {
+            this.indicatorValueOptionsDTO = new IndicatorValueOptionsDTO(this.populationType,this.countryOfOrigin,this.genderType, this.ageType, this.diversityType, this.location);
+            this.indicatorValueOptionsDTO.setAgeType(ageType);
+        }
+        return this.indicatorValueOptionsDTO;
+    }
+
+    public void setBytDTO(IndicatorValueOptionsDTO indicatorValueOptionsDTO){
+        this.populationType=indicatorValueOptionsDTO.getPopulationType();
+        this.countryOfOrigin=indicatorValueOptionsDTO.getCountryOfOrigin();
+        this.genderType=indicatorValueOptionsDTO.getGenderType();
+        this.ageType=indicatorValueOptionsDTO.getAgeType();
+        this.diversityType=indicatorValueOptionsDTO.getDiversityType();
+        this.location=indicatorValueOptionsDTO.getLocation();
     }
 }

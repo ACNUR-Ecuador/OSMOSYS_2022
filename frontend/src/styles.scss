@@ -72,6 +72,98 @@ $gutter: 1rem; //for primeflex grid system
     color: #fdfeff !important;
     background: #338EC9 !important;
 }
+//desagregaciones sin validación de totales
+/* Sobrescribir el estilo de encabezado global */
+.diss-table .p-datatable-header {
+    background: #0072BC !important;
+    color: #ffffff !important; 
+    font-weight: normal;
+    padding-bottom: 5px !important;
+  }
+.diss-table-secondary .p-datatable-header {
+    background: #0c0067  !important;
+    color: #ffffff !important; 
+    font-weight: normal;
+    padding-bottom: 5px !important;
+  }
+  .diss-panel-secondary .p-panel-header {
+    background: #009e4d  !important;
+    color: #ffffff !important; 
+    font-weight: normal;
+  }
+  .nota {
+    margin-top: 20px;
+    font-weight: normal;
+    font-size: 12px;
+    color: #333;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 10px;  /* Borde redondeado */
+    border: 2px solid #ddd;  /* Borde sutil */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    display: inline-block; 
+  }
+  
+  .leyenda {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .cuadro-color {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border-radius: 5px;
+  }
+ /* Estilos personalizados para el botón con hover */
+.custom-button {
+    transition: box-shadow 0.3s ease, border-color 0.3s ease !important; /* Suaviza la transición */
+    border-width: 1px !important; /* Asegura que tenga un borde visible */
+    padding: 6px 12px !important; /* Ajusta el padding si es necesario */
+    position: relative !important; /* Necesario para el sombreado */
+    overflow: hidden !important; /* Asegura que el sombreado no se escape fuera de los bordes */
+  }
+  
+  /* Efecto hover con borde resaltado y sombreado hacia adentro */
+  .custom-button:hover {
+    box-shadow: inset 0 0 4px rgb(136, 211, 252) !important;  /* Sombra hacia adentro */
+  }
+
+  /* Efecto de focus (si el botón es seleccionado) */
+.custom-button:focus {
+    outline: none;  
+    box-shadow: inset 0 0 0px ; 
+  }
+  .impl-table .p-datatable-header {
+    border: none !important; 
+    font-weight: normal !important;
+    //padding-bottom: 5px !important;
+  }
+  
+  //
+.table-title-secondary{
+    text-align: left;
+    padding: 1rem 1rem;
+    border: 1px solid #e9ecef;
+    font-weight: 600;
+    color: #fdfeff !important;
+    background: #0cb15e !important;
+}
+.table-headers th{
+    background: #009e4d !important;
+}
+.subtotal_value-secondary{
+    background-color: #cef2cc !important;
+    color: #000000 !important;
+    text-align: right !important;
+}
+.total_value-secondary {
+    background-color: #17bf70 !important;
+    color: #000000 !important;
+    text-align: right !important;
+}
+//
 .p-datatable .p-sortable-column.p-highlight {
     background: rgb(0, 114, 188, 0.4);
     color: #0072bc;

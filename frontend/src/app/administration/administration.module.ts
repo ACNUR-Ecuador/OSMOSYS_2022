@@ -40,8 +40,6 @@ import {CodeShortDescriptionPipe} from '../shared/pipes/code-short-description.p
 import {CodeDescriptionPipe} from '../shared/pipes/code-description.pipe';
 import {CustomDissagregationOptionsListPipe} from '../shared/pipes/custom-dissagregation-options-list.pipe';
 import {PickListModule} from 'primeng/picklist';
-import {MarkersListPipe} from '../shared/pipes/markers-list.pipe';
-import {MarkerAdministrationComponent} from './marker-administration/marker-administration.component';
 import {
     PerformanceIndicatorAdministrationComponent
 } from './performance-indicator-administration/performance-indicator-administration.component';
@@ -83,6 +81,14 @@ import {
 import {FileUploadModule} from "primeng/fileupload";
 import { MassMailingComponent } from './mass-mailing/mass-mailing.component';
 import { MassBlockingComponent } from './mass-blocking/mass-blocking.component';
+import { DissagregationSelectorComponent } from './performance-indicator-administration/dissagregation-selector/dissagregation-selector.component';
+import {StandardDissagreationListPipe} from "../shared/pipes/standard-dissagreation-list.pipe";
+import { CustomDissagregationSelectorComponent } from './performance-indicator-administration/custom-dissagregation-selector/custom-dissagregation-selector.component';
+import { MenuItemsComponent } from './menu-items/menu-items.component';
+import { TagsAdministrationComponent } from './tags-administration/tags-administration.component';
+import { TagPeriodTagAsignationsListPipe } from '../shared/pipes/tag-period-tag-asignations-list.pipe';
+import { AuditAdministrationComponent } from './audit-administration/audit-administration.component';
+import { TreeModule } from 'primeng/tree';
 
 
 @NgModule({
@@ -96,16 +102,21 @@ import { MassBlockingComponent } from './mass-blocking/mass-blocking.component';
         StatementAdministrationComponent,
         CustomDissagregationAdministrationComponent,
         OrganizationAdministrationComponent,
-        MarkerAdministrationComponent,
         PerformanceIndicatorAdministrationComponent,
         PartnerProjectListAdministrationComponent,
         PartnerProjectAdministrationComponent,
         DirectImplementationAdministrationComponent,
         AppconfigurationComponent,
         MassMailingComponent,
-        MassBlockingComponent
+        MassBlockingComponent,
+        DissagregationSelectorComponent,
+        CustomDissagregationSelectorComponent,
+        MenuItemsComponent,
+        TagsAdministrationComponent,
+        AuditAdministrationComponent
     ],
     imports: [
+        TreeModule,
         CommonModule,
         AdministrationRoutingModule,
         ToolbarModule,
@@ -151,7 +162,6 @@ import { MassBlockingComponent } from './mass-blocking/mass-blocking.component';
         CodeDescriptionPipe,
         CustomDissagregationOptionsListPipe,
         StatementPeriodStatementAsignationsListPipe,
-        MarkersListPipe,
         PercentPipe,
         BooleanYesNoPipe,
         IndicatorPipe,
@@ -161,7 +171,9 @@ import { MassBlockingComponent } from './mass-blocking/mass-blocking.component';
         MonthListPipe,
         DissagregationsAssignationToIndicatorPipe,
         CustomDissagregationsAssignationToIndicatorPipe,
-        PeriodsFromIndicatorPipe
+        PeriodsFromIndicatorPipe,
+        StandardDissagreationListPipe,
+        TagPeriodTagAsignationsListPipe
     ]
 
 })

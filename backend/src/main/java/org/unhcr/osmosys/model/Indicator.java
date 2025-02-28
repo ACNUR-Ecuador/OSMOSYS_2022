@@ -1,7 +1,8 @@
 package org.unhcr.osmosys.model;
 
-import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.model.User;
 import org.unhcr.osmosys.model.enums.*;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.util.Set;
 
 @Entity
 @Table(schema = "osmosys", name = "indicators")
-public class Indicator extends BaseEntity<Long> {
+public class Indicator extends BaseEntityIdState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +22,11 @@ public class Indicator extends BaseEntity<Long> {
     private String code;
 
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "regional_code", nullable = true, unique = true)
+    private String regionalCode;
+
+
+    @Column(name = "description", nullable = false, columnDefinition = "text")
     private String description;
 
     @Column(name = "category")
@@ -57,9 +62,7 @@ public class Indicator extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private AreaType areaType;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(schema = "osmosys", name = "indicators_markers", joinColumns = @JoinColumn(name = "indicator_id"), inverseJoinColumns = @JoinColumn(name = "marker_id"))
-    private Set<Marker> markers = new HashSet<>();
+
 
     @Column(name = "is_monitored", nullable = false)
     private Boolean isMonitored;
@@ -74,6 +77,9 @@ public class Indicator extends BaseEntity<Long> {
     @Column(name = "compass_indicator")
     private Boolean compassIndicator;
 
+    @Column(name = "core_indicator")
+    private Boolean coreIndicator;
+
     @Column(name = "unit")
     @Enumerated(EnumType.STRING)
     private UnitType unit;
@@ -81,12 +87,24 @@ public class Indicator extends BaseEntity<Long> {
     @Column(name = "block_after_update")
     private Boolean blockAfterUpdate;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "result_manager", foreignKey = @ForeignKey(name = "fk_indicator_result_manager"))
+    private User resultManager;
+
+    @Column(name = "quarter_report_calc")
+    @Enumerated(EnumType.STRING)
+    private QuarterReportCalculation quarterReportCalculation;
+
+    @Column(name = "agg_rule_comment")
+    private String aggregationRuleComment;
 
     @OneToMany(mappedBy = "indicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<DissagregationAssignationToIndicator> dissagregationsAssignationToIndicator = new HashSet<>();
 
     @OneToMany(mappedBy = "indicator", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicators = new HashSet<>();
+
+
 
     @Override
     public Long getId() {
@@ -101,6 +119,14 @@ public class Indicator extends BaseEntity<Long> {
         return code;
     }
 
+    public User getResultManager() {
+        return resultManager;
+    }
+
+    public void setResultManager(User resultManager) {
+        this.resultManager = resultManager;
+    }
+
     public void setCode(String code) {
         this.code = code;
     }
@@ -113,6 +139,13 @@ public class Indicator extends BaseEntity<Long> {
         this.description = description;
     }
 
+    public String getRegionalCode() {
+        return regionalCode;
+    }
+
+    public void setRegionalCode(String regionalCode) {
+        this.regionalCode = regionalCode;
+    }
 
     public State getState() {
         return state;
@@ -154,26 +187,7 @@ public class Indicator extends BaseEntity<Long> {
         this.areaType = areaType;
     }
 
-    public void addMarker(Marker marker) {
-        marker.getIndicators().remove(this);
-        if (!this.markers.add(marker)) {
-            this.markers.remove(marker);
-            this.markers.add(marker);
-        }
-    }
 
-    public void removeMarker(Marker marker) {
-        this.markers.remove(marker);
-    }
-
-
-    public Set<Marker> getMarkers() {
-        return markers;
-    }
-
-    public void setMarkers(Set<Marker> markers) {
-        this.markers = markers;
-    }
 
     public Boolean getMonitored() {
         return isMonitored;
@@ -296,5 +310,29 @@ public class Indicator extends BaseEntity<Long> {
 
     public void setBlockAfterUpdate(Boolean blockAfterUpdate) {
         this.blockAfterUpdate = blockAfterUpdate;
+    }
+
+    public Boolean getCoreIndicator() {
+        return coreIndicator;
+    }
+
+    public void setCoreIndicator(Boolean coreIndicator) {
+        this.coreIndicator = coreIndicator;
+    }
+
+    public QuarterReportCalculation getQuarterReportCalculation() {
+        return quarterReportCalculation;
+    }
+
+    public void setQuarterReportCalculation(QuarterReportCalculation quarterReportCalculation) {
+        this.quarterReportCalculation = quarterReportCalculation;
+    }
+
+    public String getAggregationRuleComment() {
+        return aggregationRuleComment;
+    }
+
+    public void setAggregationRuleComment(String aggregationRuleComment) {
+        this.aggregationRuleComment = aggregationRuleComment;
     }
 }

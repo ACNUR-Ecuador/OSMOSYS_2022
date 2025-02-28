@@ -8,8 +8,10 @@ public class FactDTO {
     public FactDTO() {
     }
 
-    public FactDTO(Long id, Long ie_id, Long period_id, Integer period_year, String implementation_type, Long assigned_user_id, Long assigned_user_backup_id, Long indicator_id, Long statement_id, Long project_statement_id, String indicator_type, Long organization_id, Long supervisor_id, Long office_id, Long project_id, String month_year_id, Long month_id, String dissagregation_type, String age_type, String age_primary_education_type, String age_tertiary_education_type, String gender_type, String country_of_origin, String population_type, String diversity_type,
+    public FactDTO(Long id, Long ie_id, Long period_id, Integer period_year, String implementation_type, Long assigned_user_id, Long assigned_user_backup_id, Long indicator_id, Long statement_id, Long project_statement_id, String indicator_type, Long organization_id, Long supervisor_id, Long office_id, Long project_id, String month_year_id, Long month_id,
+                   String dissagregation_type, Long age_type,  Long gender_type, Long country_of_origin, Long population_type, Long diversity_type,
                    Long canton_id,
+                   Long custom_dissagregation_id,
                    Long responsable_office_id,
                    Long implementer_office_id,
                    String implementer_id,
@@ -33,13 +35,12 @@ public class FactDTO {
         this.month_id = month_id;
         this.dissagregation_type = dissagregation_type;
         this.age_type = age_type;
-        this.age_primary_education_type = age_primary_education_type;
-        this.age_tertiary_education_type = age_tertiary_education_type;
         this.gender_type = gender_type;
         this.country_of_origin = country_of_origin;
         this.population_type = population_type;
         this.diversity_type = diversity_type;
         this.canton_id = canton_id;
+        this.custom_dissagregation_id= custom_dissagregation_id;
         this.responsable_office_id = responsable_office_id;
         this.implementer_office_id = implementer_office_id;
         this.implementer_id = implementer_id;
@@ -71,14 +72,14 @@ public class FactDTO {
     private String month_year_id;
     private Long month_id;
     private String dissagregation_type;
-    private String age_type;
-    private String age_primary_education_type;
-    private String age_tertiary_education_type;
-    private String gender_type;
-    private String country_of_origin;
-    private String population_type;
-    private String diversity_type;
+    private Long age_type;
+    private Long gender_type;
+    private Long country_of_origin;
+    private Long population_type;
+    private Long diversity_type;
     private Long canton_id;
+
+    private Long custom_dissagregation_id;
 
     private Long responsable_office_id;
     private Long implementer_office_id;
@@ -238,59 +239,44 @@ public class FactDTO {
         this.dissagregation_type = dissagregation_type;
     }
 
-    public String getAge_type() {
+    public Long getAge_type() {
         return age_type;
     }
 
-    public void setAge_type(String age_type) {
+    public void setAge_type(Long age_type) {
         this.age_type = age_type;
     }
 
-    public String getAge_primary_education_type() {
-        return age_primary_education_type;
-    }
 
-    public void setAge_primary_education_type(String age_primary_education_type) {
-        this.age_primary_education_type = age_primary_education_type;
-    }
-
-    public String getAge_tertiary_education_type() {
-        return age_tertiary_education_type;
-    }
-
-    public void setAge_tertiary_education_type(String age_tertiary_education_type) {
-        this.age_tertiary_education_type = age_tertiary_education_type;
-    }
-
-    public String getGender_type() {
+    public Long getGender_type() {
         return gender_type;
     }
 
-    public void setGender_type(String gender_type) {
+    public void setGender_type(Long gender_type) {
         this.gender_type = gender_type;
     }
 
-    public String getCountry_of_origin() {
+    public Long getCountry_of_origin() {
         return country_of_origin;
     }
 
-    public void setCountry_of_origin(String country_of_origin) {
+    public void setCountry_of_origin(Long country_of_origin) {
         this.country_of_origin = country_of_origin;
     }
 
-    public String getPopulation_type() {
+    public Long getPopulation_type() {
         return population_type;
     }
 
-    public void setPopulation_type(String population_type) {
+    public void setPopulation_type(Long population_type) {
         this.population_type = population_type;
     }
 
-    public String getDiversity_type() {
+    public Long getDiversity_type() {
         return diversity_type;
     }
 
-    public void setDiversity_type(String diversity_type) {
+    public void setDiversity_type(Long diversity_type) {
         this.diversity_type = diversity_type;
     }
 
@@ -388,5 +374,13 @@ public class FactDTO {
 
     public void setImplementer_id(String implementer_id) {
         this.implementer_id = implementer_id;
+    }
+
+    public Long getCustom_dissagregation_id() {
+        return custom_dissagregation_id;
+    }
+
+    public void setCustom_dissagregation_id(Long custom_dissagregation_id) {
+        this.custom_dissagregation_id = custom_dissagregation_id;
     }
 }

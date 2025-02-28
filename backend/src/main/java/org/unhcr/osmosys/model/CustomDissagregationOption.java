@@ -1,16 +1,15 @@
 package org.unhcr.osmosys.model;
 
 import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(schema = "osmosys", name = "custom_dissagregation_options")
-public class CustomDissagregationOption extends BaseEntity<Long> {
+public class CustomDissagregationOption extends BaseEntityIdState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,10 +29,6 @@ public class CustomDissagregationOption extends BaseEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "custom_dissagregation_id", foreignKey = @ForeignKey(name = "fk_diss_optiop_dissagretion"))
     private CustomDissagregation customDissagregation;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(schema ="osmosys" ,name = "custom_dissagregation_option_markers", joinColumns = @JoinColumn(name = "custom_dissagregation_option_id"), inverseJoinColumns = @JoinColumn(name = "marker_id"))
-    private Set<Marker> markers = new HashSet<>();
 
     @Override
     public Long getId() {
@@ -74,23 +69,6 @@ public class CustomDissagregationOption extends BaseEntity<Long> {
 
     public void setCustomDissagregation(CustomDissagregation customDissagregation) {
         this.customDissagregation = customDissagregation;
-    }
-
-    public Set<Marker> getMarkers() {
-        return markers;
-    }
-
-    public void setMarkers(Set<Marker> markers) {
-        this.markers = markers;
-    }
-
-    public void addMarker(Marker marker){
-        marker.getCustomDissagregationOptions().add(this);
-
-        if(!this.markers.add(marker)){
-            this.markers.remove(marker);
-            this.markers.add(marker);
-        }
     }
 
     @Override

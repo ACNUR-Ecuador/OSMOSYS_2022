@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../services/user.service";
-import {ProjectService} from "../../services/project.service";
 import {VersionCheckService} from "../../services/version-check.service";
 import {environment} from '../../../environments/environment';
 import {UtilsService} from "../../services/utils.service";
@@ -25,23 +24,25 @@ export class HomeComponent implements OnInit {
     periods: Period[];
 
 
+
     constructor(
         private userService: UserService,
-        private projectService: ProjectService,
         private utilsService: UtilsService,
         private periodService: PeriodService,
         private versionCheckService: VersionCheckService,
         private messageService: MessageService
+
     ) {
     }
 
     ngOnInit(): void {
         this.loadPeriods();
         this.versionCheckService.checkVersion(environment.versionCheckURL);
+
     }
 
     loadUsers() {
-        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']);
+        this.isAdmin = this.userService.hasAnyRole(['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL','ADMINISTRADOR_LOCAL']);
         this.isFocalPoint = this.userService.hasAnyRole(['PUNTO_FOCAL']);
         this.isAcnurUser = this.userService.isUNHCRUser();
         this.isPartner = !this.isAcnurUser;
@@ -64,6 +65,5 @@ export class HomeComponent implements OnInit {
             }
         });
     }
-
 
 }

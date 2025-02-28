@@ -1,12 +1,15 @@
 package org.unhcr.osmosys.webServices.endpoints;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
+import com.sagatechs.generics.persistence.model.AuditAction;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.RoleType;
 import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.services.standardDissagregations.StandardDissagregationOptionService;
 import org.unhcr.osmosys.webServices.model.EnumWeb;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -16,44 +19,42 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Path("/enums")
 @RequestScoped
 public class EnumsEndpoint {
 
+    private static final Logger logger = Logger.getLogger(EnumsEndpoint.class.getName());
+
+    @Inject
+    StandardDissagregationOptionService standardDissagregationOptionService;
 
     @Path("/{type}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<EnumWeb> getTypes(@PathParam("type") String type) throws GeneralAppException {
         switch (type) {
-            case "AgeType":
-                return this.EnumsToEnumsWeb(AgeType.values());
+
             case "AreaType":
                 return this.EnumsToEnumsWeb(AreaType.values());
-            case "CountryOfOrigin":
-                return this.EnumsToEnumsWeb(CountryOfOrigin.values());
             case "DissagregationType":
                 return this.EnumsToEnumsWeb(DissagregationType.values());
             case "Frecuency":
                 return this.EnumsToEnumsWeb(Frecuency.values());
-            case "GenderType":
-                return this.EnumsToEnumsWeb(GenderType.values());
+
             case "IndicatorType":
                 return this.EnumsToEnumsWeb(IndicatorType.values());
-            case "MarkerType":
-                return this.EnumsToEnumsWeb(MarkerType.values());
+
             case "MeasureType":
                 return this.EnumsToEnumsWeb(MeasureType.values());
             case "OfficeType":
                 return this.EnumsToEnumsWeb(OfficeType.values());
-            case "PopulationType":
-                return this.EnumsToEnumsWeb(PopulationType.values());
+
             case "State":
                 return this.EnumsToEnumsWeb(State.values());
-            case "DiversityType":
-                return this.EnumsToEnumsWeb(DiversityType.values());
+
             case "TotalIndicatorCalculationType":
                 return this.EnumsToEnumsWeb(TotalIndicatorCalculationType.values());
             case "RoleType":
@@ -62,12 +63,12 @@ public class EnumsEndpoint {
                 return this.EnumsToEnumsWeb(SourceType.values());
             case "UnitType":
                 return this.EnumsToEnumsWeb(UnitType.values());
-            case "AgePrimaryEducationType":
-                return this.EnumsToEnumsWeb(AgePrimaryEducationType.values());
-            case "AgeTertiaryEducationType":
-                return this.EnumsToEnumsWeb(AgeTertiaryEducationType.values());
             case "TimeStateEnum":
                 return this.EnumsToEnumsWeb(TimeStateEnum.values());
+            case "AuditAction":
+                return this.EnumsToEnumsWeb(AuditAction.values());
+            case "QuarterReportCalculation":
+                return this.EnumsToEnumsWeb(QuarterReportCalculation.values());
         }
         throw new GeneralAppException("Enumerador no soportado " + type, Response.Status.BAD_GATEWAY);
     }
@@ -86,6 +87,14 @@ public class EnumsEndpoint {
         ew.setValue(enumerator.getStringValue());
         ew.setLabel(enumerator.getLabel());
         ew.setOrder(enumerator.getOrder());
+
+        if(enumerator instanceof DissagregationType){
+            DissagregationType dissagregationType= (DissagregationType) enumerator;
+            ew.setStandardDissagregationTypes(dissagregationType.getStandardDissagregationTypes());
+            ew.setAgeDissagregation(dissagregationType.isAgeDissagregation());
+            ew.setLocationsDissagregation(dissagregationType.isLocationsDissagregation());
+            ew.setNumberOfDissagregations(dissagregationType.getNumberOfDissagregations());
+        }
 
         return ew;
     }

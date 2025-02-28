@@ -3,16 +3,23 @@ package org.unhcr.osmosys.webServices.services;
 import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.dao.UserDao;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.AreaDao;
 import org.unhcr.osmosys.daos.StatementDao;
+import org.unhcr.osmosys.daos.TagsDao;
+import org.unhcr.osmosys.daos.standardDissagregations.StandardDissagregationOptionDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.enums.*;
+import org.unhcr.osmosys.model.standardDissagregations.options.AgeDissagregationOption;
+import org.unhcr.osmosys.model.standardDissagregations.options.StandardDissagregationOption;
+import org.unhcr.osmosys.model.standardDissagregations.periodOptions.*;
 import org.unhcr.osmosys.services.UtilsService;
 import org.unhcr.osmosys.webServices.model.*;
+import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -20,6 +27,7 @@ import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Stateless
 public class ModelWebTransformationService {
@@ -33,10 +41,91 @@ public class ModelWebTransformationService {
     AreaDao areaDao;
 
     @Inject
+    TagsDao tagsDao;
+
+    @Inject
     AppConfigurationService appConfigurationService;
 
     @Inject
     UtilsService utilsService;
+    @Inject
+    UserDao userDao;
+    @Inject
+    StandardDissagregationOptionDao standardDissagregationOptionDao;
+
+
+    //<editor-fold desc="CoreIndicators">
+    public CoreIndicatorWeb coreIndicatorToCoreIndicatorWeb(CoreIndicator coreIndicator) {
+        if (coreIndicator == null) {
+            return null;
+        }
+        CoreIndicatorWeb coreIndicatorWeb = new CoreIndicatorWeb();
+        coreIndicatorWeb.setId(coreIndicator.getId());
+        coreIndicatorWeb.setAreaCode(coreIndicator.getAreaCode());
+        coreIndicatorWeb.setCode(coreIndicator.getCode());
+        coreIndicatorWeb.setDescription(coreIndicator.getDescription());
+        coreIndicatorWeb.setFrecuency(coreIndicator.getFrecuency());
+        coreIndicatorWeb.setMeasureType(coreIndicator.getMeasureType());
+        coreIndicatorWeb.setGuiadance(coreIndicator.getGuiadance());
+        coreIndicatorWeb.setState(coreIndicator.getState());
+
+        return coreIndicatorWeb;
+    }
+
+    public List<CoreIndicatorWeb> coreIndicatorsToCoreIndicatorsWeb(List<CoreIndicator> coreIndicators) {
+        List<CoreIndicatorWeb> r = new ArrayList<>();
+        for (CoreIndicator coreIndicator : coreIndicators) {
+            r.add(this.coreIndicatorToCoreIndicatorWeb(coreIndicator));
+        }
+        return r;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="FocalPointAssignation">
+    public FocalPointAssignationWeb focalPointerAssignationToFocalPointerAssignationWeb(FocalPointAssignation focalPointAssignation) {
+        if (focalPointAssignation == null) {
+            return null;
+        }
+        FocalPointAssignationWeb focalPointAssignationWeb = new FocalPointAssignationWeb();
+        focalPointAssignationWeb.setId(focalPointAssignation.getId());
+        focalPointAssignationWeb.setFocalPointer(focalPointAssignation.getFocalPointer());
+        focalPointAssignationWeb.setProject(focalPointAssignation.getProject());
+        focalPointAssignationWeb.setMainFocalPointer(focalPointAssignation.getMainFocalPointer());
+        focalPointAssignationWeb.setState(focalPointAssignation.getState());
+
+        return focalPointAssignationWeb;
+    }
+
+    public FocalPointAssignation focalPointerAssignationWebToFocalPointerAssignation(FocalPointAssignationWeb focalPointAssignationWeb) {
+        if (focalPointAssignationWeb == null) {
+            return null;
+        }
+        FocalPointAssignation focalPointAssignation = new FocalPointAssignation();
+        focalPointAssignation.setId(focalPointAssignationWeb.getId());
+        focalPointAssignation.setState(focalPointAssignationWeb.getState());
+        focalPointAssignation.setFocalPointer(focalPointAssignationWeb.getFocalPointer());
+        focalPointAssignation.setMainFocalPointer(focalPointAssignationWeb.getMainFocalPointer());
+        focalPointAssignation.setProject(focalPointAssignationWeb.getProject());
+        return focalPointAssignation;
+    }
+
+    public List<FocalPointAssignationWeb> focalPointerAssignationsToFocalPointerAssignationWeb(List<FocalPointAssignation> focalPointAssignations) {
+        List<FocalPointAssignationWeb> r = new ArrayList<>();
+        for (FocalPointAssignation focalPointAssignation : focalPointAssignations) {
+            r.add(this.focalPointerAssignationToFocalPointerAssignationWeb(focalPointAssignation));
+        }
+        return r;
+    }
+
+    public List<FocalPointAssignation> focalPointerAssignationWebsToFocalPointerAssignations(List<FocalPointAssignationWeb> focalPointAssignationWebs) {
+        List<FocalPointAssignation> r = new ArrayList<>();
+        for (FocalPointAssignationWeb focalPointAssignationWeb : focalPointAssignationWebs) {
+            r.add(this.focalPointerAssignationWebToFocalPointerAssignation(focalPointAssignationWeb));
+        }
+        return r;
+    }
+
+    //</editor-fold>
 
     //<editor-fold desc="Areas">
     public List<AreaWeb> areasToAreasWeb(List<Area> areas) {
@@ -98,7 +187,7 @@ public class ModelWebTransformationService {
         for (IndicatorExecutionWeb indicatorExecution : indicatorExecutions) {
             AreaWeb area = indicatorExecution.getIndicator().getStatement().getArea();
             Optional<AreaWeb> areaT = areasWeb.stream().filter(area1 -> area1.getId().equals(area.getId())).findFirst();
-            if (!areaT.isPresent()) {
+            if (areaT.isEmpty()) {
                 throw new GeneralAppException("Area no encontrada, error interno", Response.Status.INTERNAL_SERVER_ERROR);
             }
 
@@ -214,9 +303,6 @@ public class ModelWebTransformationService {
         customDissagregationOption.setState(customDissagregationOptionWeb.getState());
         customDissagregationOption.setDescription(customDissagregationOptionWeb.getDescription());
         //customDissagregationOption.setMarkers(new HashSet<>(this.markerService.markersWebToMarkers(new ArrayList<>(customDissagregationOptionWeb.getMarkers()))));
-        for (MarkerWeb marker : customDissagregationOptionWeb.getMarkers()) {
-            customDissagregationOption.addMarker(this.markerWebToMarker(marker));
-        }
         return customDissagregationOption;
     }
 
@@ -229,7 +315,6 @@ public class ModelWebTransformationService {
         customDissagregationOptionWeb.setName(customDissagregationOption.getName());
         customDissagregationOptionWeb.setState(customDissagregationOption.getState());
         customDissagregationOptionWeb.setDescription(customDissagregationOption.getDescription());
-        customDissagregationOptionWeb.setMarkers(this.markersToMarkersWeb(customDissagregationOption.getMarkers()));
         return customDissagregationOptionWeb;
     }
 
@@ -251,49 +336,14 @@ public class ModelWebTransformationService {
     }
     //</editor-fold>
 
-    //<editor-fold desc="CustomDissagregationFilterIndicator">
-    public CustomDissagregationFilterIndicatorWeb customDissagregationFilterIndicatorsToCustomDissagregationFilterIndicatorsWeb(CustomDissagregationFilterIndicator c) {
-        CustomDissagregationFilterIndicatorWeb w = new CustomDissagregationFilterIndicatorWeb();
-        w.setId(c.getId());
-        w.setState(c.getState());
-        w.setCustomDissagregationOptions(this.customDissagregationOptionsToCustomDissagregationOptionsWeb(c.getCustomDissagregationOptions()));
-        return w;
-    }
-
-    public CustomDissagregationFilterIndicator customDissagregationFilterIndicatorWebToCustomDissagregationFilterIndicator(CustomDissagregationFilterIndicatorWeb w1) {
-        CustomDissagregationFilterIndicator c = new CustomDissagregationFilterIndicator();
-        c.setId(w1.getId());
-        c.setState(w1.getState());
-        c.setCustomDissagregationOptions(this.customDissagregationOptionsWebToCustomDissagregationOptions(w1.getCustomDissagregationOptions()));
-        return c;
-    }
-
-    public List<CustomDissagregationFilterIndicatorWeb> customDissagregationFilterIndicatorsToCustomDissagregationFilterIndicatorsWeb(Set<CustomDissagregationFilterIndicator> c) {
-        List<CustomDissagregationFilterIndicatorWeb> r = new ArrayList<>();
-        for (CustomDissagregationFilterIndicator customDissagregationFilterIndicator : c) {
-            r.add(this.customDissagregationFilterIndicatorsToCustomDissagregationFilterIndicatorsWeb(customDissagregationFilterIndicator));
-        }
-        return r;
-    }
-
-    public Set<CustomDissagregationFilterIndicator> customDissagregationFilterIndicatorsWebToCustomDissagregationFilterIndicators(List<CustomDissagregationFilterIndicatorWeb> c) {
-        Set<CustomDissagregationFilterIndicator> r = new HashSet<>();
-        for (CustomDissagregationFilterIndicatorWeb customDissagregationFilterIndicator : c) {
-            r.add(this.customDissagregationFilterIndicatorWebToCustomDissagregationFilterIndicator(customDissagregationFilterIndicator));
-        }
-        return r;
-    }
-
-    //</editor-fold>
 
     //<editor-fold desc="CustomDissagregationAssignationToIndicator">
     public CustomDissagregationAssignationToIndicatorWeb customDissagregationAssignationToIndicatorToCustomDissagregationAssignationToIndicatorWeb(CustomDissagregationAssignationToIndicator c) {
         CustomDissagregationAssignationToIndicatorWeb w = new CustomDissagregationAssignationToIndicatorWeb();
         w.setId(c.getId());
         w.setState(c.getState());
-        w.setPeriod(this.periodToPeriodWeb(c.getPeriod()));
+        w.setPeriod(this.periodToPeriodWeb(c.getPeriod(), true));
         w.setCustomDissagregation(this.customDissagregationWebToCustomDissagregation(c.getCustomDissagregation()));
-        w.setCustomDissagregationFilterIndicators(this.customDissagregationFilterIndicatorsToCustomDissagregationFilterIndicatorsWeb(c.getCustomDissagregationFilterIndicators()));
         return w;
     }
 
@@ -303,7 +353,6 @@ public class ModelWebTransformationService {
         c.setState(w.getState());
         c.setPeriod(this.periodWebToPeriod(w.getPeriod()));
         c.setCustomDissagregation(this.customDissagregationWebToCustomDissagregation(w.getCustomDissagregation()));
-        c.setCustomDissagregationFilterIndicators(this.customDissagregationFilterIndicatorsWebToCustomDissagregationFilterIndicators(w.getCustomDissagregationFilterIndicators()));
 
         return c;
     }
@@ -327,13 +376,15 @@ public class ModelWebTransformationService {
     //</editor-fold>
 
     //<editor-fold desc="Indicator">
-    public IndicatorWeb indicatorToIndicatorWeb(Indicator indicator, boolean getMarkers, boolean getStatement, boolean getDissagregations) {
+    public IndicatorWeb indicatorToIndicatorWeb(Indicator indicator, boolean getStatement, boolean getDissagregations) {
         if (indicator == null) {
             return null;
         }
         IndicatorWeb indicatorWeb = new IndicatorWeb();
         indicatorWeb.setId(indicator.getId());
         indicatorWeb.setCode(indicator.getCode());
+        indicatorWeb.setRegionalCode(indicator.getRegionalCode());
+        indicatorWeb.setCoreIndicator(indicator.getCoreIndicator());
         indicatorWeb.setDescription(indicator.getDescription());
         indicatorWeb.setCategory(indicator.getCategory());
         indicatorWeb.setQualitativeInstructions(indicator.getQualitativeInstructions());
@@ -349,25 +400,39 @@ public class ModelWebTransformationService {
         indicatorWeb.setCompassIndicator(indicator.getCompassIndicator());
         indicatorWeb.setUnit(indicator.getUnit());
         indicatorWeb.setBlockAfterUpdate(indicator.getBlockAfterUpdate());
-        if (getMarkers) {
-            List<MarkerWeb> markers = this.markersToMarkersWeb(indicator.getMarkers());
-            indicatorWeb.setMarkers(markers);
-        }
+        indicatorWeb.setResultManager(userToUserWebSimple(indicator.getResultManager(), false, false));
+        indicatorWeb.setQuarterReportCalculation(indicator.getQuarterReportCalculation());
+        indicatorWeb.setAggregationRuleComment(indicator.getAggregationRuleComment());
         if (getStatement) {
-            indicatorWeb.setStatement(this.statementToStatementWeb(indicator.getStatement(), false, true, false, false, false));
+            indicatorWeb.setStatement(this.statementToStatementWeb(indicator.getStatement(), true, true, false, false, false));
         }
         if (getDissagregations) {
             indicatorWeb.setDissagregationsAssignationToIndicator(this.dissagregationAssignationToIndicatorsToDissagregationAssignationToIndicatorsWeb(indicator.getDissagregationsAssignationToIndicator()));
             indicatorWeb.setCustomDissagregationAssignationToIndicators(this.customDissagregationAssignationToIndicatorsToCustomDissagregationAssignationToIndicatorsWeb(indicator.getCustomDissagregationAssignationToIndicators()));
+            List<DissagregationAssignationToIndicatorWeb> dissagregationAssignationToIndicatorWebs = indicatorWeb.getDissagregationsAssignationToIndicator();
+            List<CustomDissagregationAssignationToIndicatorWeb> customDissagregationAssignationToIndicatorWebs = indicatorWeb.getCustomDissagregationAssignationToIndicators();
+            String periods= Stream.concat(
+                            dissagregationAssignationToIndicatorWebs.stream()
+                                    .filter(d -> d.getPeriod() != null)
+                                    .map(d -> String.valueOf(d.getPeriod().getYear())),
+
+                            customDissagregationAssignationToIndicatorWebs.stream()
+                                    .filter(c -> c.getPeriod() != null)
+                                    .map(c -> String.valueOf(c.getPeriod().getYear()))
+                    )
+                    .distinct()  // Elimina los duplicados
+                    .sorted()    // Ordena los años
+                    .collect(Collectors.joining("-"));
+            indicatorWeb.setPeriods(periods);
         }
         return indicatorWeb;
     }
 
 
-    public List<IndicatorWeb> indicatorsToIndicatorsWeb(List<Indicator> indicators, boolean getMarkers, boolean getStatement, boolean getDissagregations) {
+    public List<IndicatorWeb> indicatorsToIndicatorsWeb(List<Indicator> indicators, boolean getStatement, boolean getDissagregations) {
         List<IndicatorWeb> r = new ArrayList<>();
         for (Indicator indicator : indicators) {
-            r.add(this.indicatorToIndicatorWeb(indicator, getMarkers, getStatement, getDissagregations));
+            r.add(this.indicatorToIndicatorWeb(indicator, getStatement, getDissagregations));
         }
         return r;
     }
@@ -378,9 +443,16 @@ public class ModelWebTransformationService {
         DissagregationAssignationToIndicatorWeb w = new DissagregationAssignationToIndicatorWeb();
         w.setId(d.getId());
         w.setState(d.getState());
-        w.setPeriod(this.periodToPeriodWeb(d.getPeriod()));
+        w.setPeriod(this.periodToPeriodWeb(d.getPeriod(), true));
         w.setDissagregationType(d.getDissagregationType());
-        w.setDissagregationFilterIndicators(this.dissagregationFilterIndicatorsToDissagregationFilterIndicatorsWeb(d.getDissagregationFilterIndicators()));
+        w.setUseCustomAgeDissagregations(d.getUseCustomAgeDissagregations());
+        w.setCustomIndicatorOptions(new HashSet<>());
+
+        Set<StandardDissagregationOptionWeb> customIndicatorOptions = d.getDissagregationAssignationToIndicatorPeriodCustomizations()
+                .stream()
+                .filter(dissagregationAssignationToIndicatorPeriodCustomization -> dissagregationAssignationToIndicatorPeriodCustomization.getState().equals(State.ACTIVO))
+                .map(dissagregationAssignationToIndicatorPeriodCustomization -> this.standardDissagregationOptionToStandardDissagregationOptionWeb(dissagregationAssignationToIndicatorPeriodCustomization.getAgeDissagregationOption())).collect(Collectors.toSet());
+        w.setCustomIndicatorOptions(customIndicatorOptions);
         return w;
     }
 
@@ -390,10 +462,7 @@ public class ModelWebTransformationService {
         d.setState(w.getState());
         d.setDissagregationType(w.getDissagregationType());
         d.setPeriod(this.periodWebToPeriod(w.getPeriod()));
-        Set<DissagregationFilterIndicator> dissagregationFilterIndicators = this.dissagregationFilterIndicatorsWebToDissagregationFilterIndicators(w.getDissagregationFilterIndicators());
-        for (DissagregationFilterIndicator dissagregationFilterIndicator : dissagregationFilterIndicators) {
-            d.addDissagregationFilterIndicator(dissagregationFilterIndicator);
-        }
+
         return d;
     }
 
@@ -417,94 +486,6 @@ public class ModelWebTransformationService {
     }
     //</editor-fold>
 
-    //<editor-fold desc="DissagregationFilterIndicator">
-    public DissagregationFilterIndicatorWeb dissagregationFilterIndicatorToDissagregationFilterIndicatorWeb(DissagregationFilterIndicator d) {
-        DissagregationFilterIndicatorWeb w = new DissagregationFilterIndicatorWeb();
-        w.setId(d.getId());
-        w.setState(d.getState());
-        w.setDissagregationType(d.getDissagregationType());
-        w.setPopulationType(d.getPopulationType());
-        w.setCountryOfOrigin(d.getCountryOfOrigin());
-        w.setGenderType(d.getGenderType());
-        w.setAgeType(d.getAgeType());
-        return w;
-    }
-
-    public DissagregationFilterIndicator dissagregationFilterIndicatorWebToDissagregationFilterIndicator(DissagregationFilterIndicatorWeb w) {
-        DissagregationFilterIndicator d = new DissagregationFilterIndicator();
-        d.setId(w.getId());
-        d.setState(w.getState());
-        d.setDissagregationType(w.getDissagregationType());
-        d.setPopulationType(w.getPopulationType());
-        d.setCountryOfOrigin(w.getCountryOfOrigin());
-        d.setGenderType(w.getGenderType());
-        d.setAgeType(w.getAgeType());
-        return d;
-    }
-
-    public List<DissagregationFilterIndicatorWeb> dissagregationFilterIndicatorsToDissagregationFilterIndicatorsWeb(Set<DissagregationFilterIndicator> d) {
-        List<DissagregationFilterIndicatorWeb> r = new ArrayList<>();
-        for (DissagregationFilterIndicator dissagregationFilterIndicator : d) {
-            r.add(this.dissagregationFilterIndicatorToDissagregationFilterIndicatorWeb(dissagregationFilterIndicator));
-        }
-        return r;
-    }
-
-    public Set<DissagregationFilterIndicator> dissagregationFilterIndicatorsWebToDissagregationFilterIndicators(List<DissagregationFilterIndicatorWeb> d) {
-        Set<DissagregationFilterIndicator> r = new HashSet<>();
-        for (DissagregationFilterIndicatorWeb dissagregationFilterIndicatorWeb : d) {
-            r.add(this.dissagregationFilterIndicatorWebToDissagregationFilterIndicator(dissagregationFilterIndicatorWeb));
-        }
-        return r;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Marker">
-    public MarkerWeb markerToMarkerWeb(Marker marker) {
-        if (marker == null) {
-            return null;
-        }
-        MarkerWeb markerWeb = new MarkerWeb();
-        markerWeb.setId(marker.getId());
-        markerWeb.setSubType(marker.getSubType());
-        markerWeb.setType(marker.getType());
-        markerWeb.setDescription(marker.getDescription());
-        markerWeb.setShortDescription(marker.getShortDescription());
-        markerWeb.setState(marker.getState());
-        return markerWeb;
-    }
-
-    public Marker markerWebToMarker(MarkerWeb markerWeb) {
-        if (markerWeb == null) {
-            return null;
-        }
-        Marker marker = new Marker();
-        marker.setId(markerWeb.getId());
-        marker.setType(markerWeb.getType());
-        marker.setSubType(markerWeb.getSubType());
-        marker.setState(markerWeb.getState());
-        marker.setDescription(markerWeb.getDescription());
-        marker.setShortDescription(markerWeb.getShortDescription());
-        return marker;
-    }
-
-
-    public List<MarkerWeb> markersToMarkersWeb(Set<Marker> markers) {
-        List<MarkerWeb> r = new ArrayList<>();
-        for (Marker marker : markers) {
-            r.add(this.markerToMarkerWeb(marker));
-        }
-        return r;
-    }
-
-    public Set<Marker> markersWebToMarkers(List<MarkerWeb> markersWebs) {
-        Set<Marker> r = new HashSet<>();
-        for (MarkerWeb markerWeb : markersWebs) {
-            r.add(this.markerWebToMarker(markerWeb));
-        }
-        return r;
-    }
-    //</editor-fold>
 
     //<editor-fold desc="Office">
     public OfficeWeb officeToOfficeWeb(Office office, boolean returnChilds, boolean returnAdministrators) {
@@ -612,7 +593,7 @@ public class ModelWebTransformationService {
     //</editor-fold>
 
     //<editor-fold desc="Period">
-    public PeriodWeb periodToPeriodWeb(Period period) {
+    public PeriodWeb periodToPeriodWeb(Period period, boolean simple) {
         if (period == null) {
             return null;
         }
@@ -620,6 +601,42 @@ public class ModelWebTransformationService {
         periodWeb.setId(period.getId());
         periodWeb.setYear(period.getYear());
         periodWeb.setState(period.getState());
+
+        if (simple)
+            return periodWeb;
+
+        for (PeriodAgeDissagregationOption option : period.getPeriodAgeDissagregationOptions()) {
+            if (option.getState().equals(State.ACTIVO)) {
+                periodWeb.getPeriodAgeDissagregationOptions().add(this.standardDissagregationOptionToStandardDissagregationOptionWeb(option.getDissagregationOption()));
+            }
+        }
+
+        for (PeriodGenderDissagregationOption option : period.getPeriodGenderDissagregationOptions()) {
+            if (option.getState().equals(State.ACTIVO)) {
+                periodWeb.getPeriodGenderDissagregationOptions().add(this.standardDissagregationOptionToStandardDissagregationOptionWeb(option.getDissagregationOption()));
+            }
+        }
+
+        for (PeriodPopulationTypeDissagregationOption option : period.getPeriodPopulationTypeDissagregationOptions()) {
+            if (option.getState().equals(State.ACTIVO)) {
+                periodWeb.getPeriodPopulationTypeDissagregationOptions().add(this.standardDissagregationOptionToStandardDissagregationOptionWeb(option.getDissagregationOption()));
+            }
+        }
+
+        for (PeriodDiversityDissagregationOption option : period.getPeriodDiversityDissagregationOptions()) {
+            if (option.getState().equals(State.ACTIVO)) {
+                periodWeb.getPeriodDiversityDissagregationOptions().add(this.standardDissagregationOptionToStandardDissagregationOptionWeb(option.getDissagregationOption()));
+            }
+        }
+
+        for (PeriodCountryOfOriginDissagregationOption option : period.getPeriodCountryOfOriginDissagregationOptions()) {
+            if (option.getState().equals(State.ACTIVO)) {
+                periodWeb.getPeriodCountryOfOriginDissagregationOptions().add(this.standardDissagregationOptionToStandardDissagregationOptionWeb(option.getDissagregationOption()));
+            }
+        }
+        if (period.getGeneralIndicator() != null) {
+            periodWeb.setGeneralIndicator(this.generalIndicatorToGeneralIndicatorWeb(period.getGeneralIndicator()));
+        }
 
         return periodWeb;
     }
@@ -636,10 +653,40 @@ public class ModelWebTransformationService {
         return period;
     }
 
-    public List<PeriodWeb> periodsToPeriodsWeb(List<Period> periods) {
+    public Indicator indicatorWebToIndicator(IndicatorWeb indicatorWeb) {
+        if (indicatorWeb == null) {
+            return null;
+        }
+        Indicator indicator = new Indicator();
+        indicator.setId(indicatorWeb.getId());
+        indicator.setInstructions(indicatorWeb.getInstructions());
+        indicator.setCode(indicatorWeb.getCode());
+        indicator.setRegionalCode(indicatorWeb.getRegionalCode());
+        indicator.setCoreIndicator(indicatorWeb.getCoreIndicator());
+        indicator.setDescription(indicatorWeb.getDescription());
+        indicator.setCategory(indicatorWeb.getCategory());
+        indicator.setQualitativeInstructions(indicatorWeb.getQualitativeInstructions());
+        indicator.setIndicatorType(indicatorWeb.getIndicatorType());
+        indicator.setMeasureType(indicatorWeb.getMeasureType());
+        indicator.setFrecuency(indicatorWeb.getFrecuency());
+        indicator.setAreaType(indicatorWeb.getAreaType());
+        indicator.setMonitored(indicatorWeb.getMonitored());
+        indicator.setCalculated(indicatorWeb.getCalculated());
+        indicator.setCompassIndicator(indicatorWeb.getCompassIndicator());
+        indicator.setTotalIndicatorCalculationType(indicatorWeb.getTotalIndicatorCalculationType());
+        indicator.setStatement(this.statementWebToStatement(indicatorWeb.getStatement()));
+        indicator.setUnit(indicatorWeb.getUnit());
+        indicator.setDissagregationsAssignationToIndicator(this.dissagregationAssignationToIndicatorsWebToDissagregationAssignationToIndicators(indicatorWeb.getDissagregationsAssignationToIndicator()));
+        indicator.setCustomDissagregationAssignationToIndicators(this.customDissagregationAssignationToIndicatorsWebToCustomDissagregationAssignationToIndicators(indicatorWeb.getCustomDissagregationAssignationToIndicators()));
+        indicator.setState(indicatorWeb.getState());
+        //indicator.setResultManager(indicatorWeb.getResultManager());
+        return indicator;
+    }
+
+    public List<PeriodWeb> periodsToPeriodsWeb(List<Period> periods, boolean simple) {
         List<PeriodWeb> r = new ArrayList<>();
         for (Period period : periods) {
-            r.add(this.periodToPeriodWeb(period));
+            r.add(this.periodToPeriodWeb(period, simple));
         }
         return r;
     }
@@ -762,7 +809,7 @@ public class ModelWebTransformationService {
         statementWeb.setDescription(statement.getDescription());
         statementWeb.setState(statement.getState());
         if (getParent) {
-            statementWeb.setParentStatement(this.statementToStatementWeb(statement.getParentStatement(), false, false, false, false, false));
+            statementWeb.setParentStatement(this.statementToStatementWeb(statement.getParentStatement(), false, true, false, false, false));
         }
         if (getArea) {
             statementWeb.setArea(this.areaToAreaWeb(statement.getArea()));
@@ -793,7 +840,6 @@ public class ModelWebTransformationService {
             statement.setDescription(statementWeb.getDescription());
             statement.setCode(statementWeb.getCode());
             statement.setProductCode(statementWeb.getProductCode());
-            statement.setAreaType(statementWeb.getArea().getAreaType());
             /*
             statement.setParentStatement(this.statementWebToStatement(statementWeb.getParentStatement()));
 
@@ -817,9 +863,6 @@ public class ModelWebTransformationService {
             statement.setDescription(statementWeb.getDescription());
             statement.setCode(statementWeb.getCode());
             statement.setProductCode(statementWeb.getProductCode());
-            if (statementWeb.getArea() != null) { // todo controlar
-                statement.setAreaType(statementWeb.getArea().getAreaType());
-            }
             /*statement.setParentStatement(this.statementWebToStatement(statementWeb.getParentStatement()));
             statement.setArea(this.areaToAreaWeb(statementWeb.getArea()));*/
             if (statementWeb.getParentStatement() != null && statementWeb.getParentStatement().getId() != null) {
@@ -844,10 +887,10 @@ public class ModelWebTransformationService {
                 PeriodStatementAsignation psa = new PeriodStatementAsignation();
                 psa.setState(periodStatementAsignationWeb.getState());
                 psa.setPeriod(this.periodWebToPeriod(periodStatementAsignationWeb.getPeriod()));
-                psa.setPopulationCoverage(0L);
                 statement.addPeriodStatementAsignation(psa);
             }
         }
+        statement.setAreaType(statementWeb.getAreaType());
         return statement;
     }
 
@@ -859,14 +902,6 @@ public class ModelWebTransformationService {
         return r;
     }
 
-    @SuppressWarnings("unused")
-    public Set<Statement> statementsWebToStatements(List<StatementWeb> statementsWebs) {
-        Set<Statement> r = new HashSet<>();
-        for (StatementWeb statementWeb : statementsWebs) {
-            r.add(this.statementWebToStatement(statementWeb));
-        }
-        return r;
-    }
     //</editor-fold>
 
     //<editor-fold desc="PeriodStatementAsignation">
@@ -874,8 +909,7 @@ public class ModelWebTransformationService {
         PeriodStatementAsignationWeb paw = new PeriodStatementAsignationWeb();
         paw.setId(periodStatementAsignation.getId());
         paw.setState(periodStatementAsignation.getState());
-        paw.setPopulationCoverage(periodStatementAsignation.getPopulationCoverage());
-        paw.setPeriod(this.periodToPeriodWeb(periodStatementAsignation.getPeriod()));
+        paw.setPeriod(this.periodToPeriodWeb(periodStatementAsignation.getPeriod(), true));
         return paw;
     }
 
@@ -895,12 +929,17 @@ public class ModelWebTransformationService {
         w.setId(project.getId());
         w.setName(project.getName());
         w.setCode(project.getCode());
-        w.setPeriod(this.periodToPeriodWeb(project.getPeriod()));
+        w.setPeriod(this.periodToPeriodWeb(project.getPeriod(), true));
         w.setOrganization(this.organizationToOrganizationWeb(project.getOrganization()));
         w.setStartDate(project.getStartDate());
         w.setEndDate(project.getEndDate());
         w.setState(project.getState());
-        w.setFocalPoint(this.userToUserWebSimple(project.getFocalPoint(), true, true));
+        w.setPartnerManager(userToUserWebSimple(project.getPartnerManager(),false,false));
+        List<User> focalPoints = project.getFocalPointAssignations().stream()
+                .filter(focalPointAssignation -> focalPointAssignation.getState().equals(State.ACTIVO)).map(FocalPointAssignation::getFocalPointer).filter(user -> user.getState().equals(State.ACTIVO)).collect(Collectors.toList());
+
+        w.setFocalPoints(new HashSet<>(this.usersToUsersWebSimple(focalPoints, true, true)));
+
         Set<Canton> cantones = project.getProjectLocationAssigments().stream()
                 .filter(projectLocationAssigment -> projectLocationAssigment.getState().equals(State.ACTIVO))
                 .map(ProjectLocationAssigment::getLocation).collect(Collectors.toSet());
@@ -933,7 +972,7 @@ public class ModelWebTransformationService {
         CantonWeb w = new CantonWeb();
         w.setId(canton.getId());
         w.setState(canton.getState());
-        w.setDescription(canton.getDescription());
+        w.setName(canton.getName());
         w.setProvincia(this.provinciaToProvinciaWeb(canton.getProvincia()));
         w.setOffice(this.officeToOfficeWeb(canton.getOffice(), false, false));
         w.setCode(canton.getCode());
@@ -963,7 +1002,7 @@ public class ModelWebTransformationService {
         Canton w = new Canton();
         w.setId(cantonWeb.getId());
         w.setState(cantonWeb.getState());
-        w.setDescription(cantonWeb.getDescription());
+        w.setName(cantonWeb.getName());
         w.setCode(cantonWeb.getCode());
         return w;
     }
@@ -1033,7 +1072,7 @@ public class ModelWebTransformationService {
         indicatorWeb.setDescription(indicator.getDescription());
         indicatorWeb.setState(indicator.getState());
         indicatorWeb.setMeasureType(indicator.getMeasureType());
-        indicatorWeb.setPeriod(this.periodToPeriodWeb(indicator.getPeriod()));
+        indicatorWeb.setPeriod(this.periodToPeriodWeb(indicator.getPeriod(), true));
         indicatorWeb.setDissagregationAssignationsToGeneralIndicator(this.dissagregationAssignationToGeneralIndicatorsToDissagregationAssignationToGeneralIndicatorsWeb(indicator.getDissagregationAssignationsToGeneralIndicator()));
         return indicatorWeb;
     }
@@ -1089,7 +1128,7 @@ public class ModelWebTransformationService {
         iw.setCompassIndicator(ie.getCompassIndicator());
         iw.setTotalExecution(ie.getTotalExecution());
         iw.setProjectStatement(this.statementToStatementWeb(ie.getProjectStatement(), false, true, true, true, false));
-        iw.setPeriod(this.periodToPeriodWeb(ie.getPeriod()));
+        iw.setPeriod(this.periodToPeriodWeb(ie.getPeriod(), true));
         iw.setKeepBudget(ie.getKeepBudget());
         iw.setAssignedBudget(ie.getAssignedBudget());
         iw.setAvailableBudget(ie.getAvailableBudget());
@@ -1111,8 +1150,8 @@ public class ModelWebTransformationService {
 
 
         } else {
-            iw.setIndicator(this.indicatorToIndicatorWeb(ie.getIndicator(), false, true, true));
-            iw.setReportingOffice(this.officeToOfficeWeb(ie.getReportingOffice(), false, false));
+            iw.setIndicator(this.indicatorToIndicatorWeb(ie.getIndicator(), true, true));
+            iw.setReportingOffice(this.officeToOfficeWeb(ie.getReportingOffice(), false, true));
             iw.setSupervisorUser(this.userToUserWebSimple(ie.getSupervisorUser(), false, true));
             iw.setAssignedUser(this.userToUserWebSimple(ie.getAssignedUser(), false, true));
             iw.setAssignedUserBackup(this.userToUserWebSimple(ie.getAssignedUserBackup(), false, true));
@@ -1383,15 +1422,12 @@ public class ModelWebTransformationService {
         q.setState(indicatorValue.getState());
         q.setMonthEnum(indicatorValue.getMonthEnum());
         q.setDissagregationType(indicatorValue.getDissagregationType());
-        q.setPopulationType(indicatorValue.getPopulationType());
-        q.setCountryOfOrigin(indicatorValue.getCountryOfOrigin());
-        q.setGenderType(indicatorValue.getGenderType());
-        q.setDiversityType(indicatorValue.getDiversityType());
-        q.setAgeType(indicatorValue.getAgeType());
-        q.setAgePrimaryEducationType(indicatorValue.getAgePrimaryEducationType());
-        q.setAgeTertiaryEducationType(indicatorValue.getAgeTertiaryEducationType());
+        q.setPopulationType(this.standardDissagregationOptionToStandardDissagregationOptionWeb(indicatorValue.getPopulationType()));
+        q.setCountryOfOrigin(this.standardDissagregationOptionToStandardDissagregationOptionWeb(indicatorValue.getCountryOfOrigin()));
+        q.setGenderType(this.standardDissagregationOptionToStandardDissagregationOptionWeb(indicatorValue.getGenderType()));
+        q.setDiversityType(this.standardDissagregationOptionToStandardDissagregationOptionWeb(indicatorValue.getDiversityType()));
+        q.setAgeType(this.standardDissagregationOptionToStandardDissagregationOptionWeb(indicatorValue.getAgeType()));
         q.setLocation(this.cantonToCantonWeb(indicatorValue.getLocation()));
-        q.setShowValue(indicatorValue.getShowValue());
         q.setValue(indicatorValue.getValue());
         q.setNumeratorValue(indicatorValue.getNumeratorValue());
         q.setDenominatorValue(indicatorValue.getDenominatorValue());
@@ -1461,6 +1497,243 @@ public class ModelWebTransformationService {
 
     }
 
+    //</editor-fold>
+
+    //<editor-fold desc="Tags">
+    public List<TagsWeb> tagsToTagsWeb(List<Tags> tags) {
+        List<TagsWeb> r = new ArrayList<>();
+        for (Tags tag : tags) {
+            r.add(this.tagToTagWeb(tag));
+        }
+        return r;
+    }
+
+    public TagsWeb tagToTagWeb(Tags tag) {
+        if (tag == null) {
+            return null;
+        }
+        TagsWeb tagweb = new TagsWeb();
+        tagweb.setId(tag.getId());
+        tagweb.setName(tag.getName());
+        tagweb.setDescription(tag.getDescription());
+        tagweb.setPeriodTagAsignations(this.periodTagAsignationsToPeriodTagAsignationsWeb(tag.getPeriodTagAssignations()));
+        tagweb.setIndicatorTagAsignations(this.indicatorTagAsignationsToIndicatorTagAsignationsWeb(tag.getIndicatorTagAssignations()));
+        tagweb.setOperation(tag.getOperation());
+        tagweb.setState(tag.getState());
+
+        return tagweb;
+    }
+
+    @SuppressWarnings("unused")
+    public List<Tags> tagsWebToTags(List<TagsWeb> tagsWebs) {
+        List<Tags> r = new ArrayList<>();
+        for (TagsWeb tagWeb : tagsWebs) {
+            r.add(this.tagWebToTag(tagWeb));
+        }
+        return r;
+    }
+
+
+    public Tags tagWebToTag(TagsWeb tagWeb) {
+        if (tagWeb == null) {
+            return null;
+        }
+        Tags tag;
+        if(tagWeb.getId()==null){
+            tag = new Tags();
+        } else {
+            tag = tagsDao.find(tagWeb.getId());
+        }
+
+        tag.setName(tagWeb.getName().toUpperCase());
+        tag.setDescription(tagWeb.getDescription());
+        tag.setState(tagWeb.getState());
+        tag.setOperation(tagWeb.getOperation());
+
+        for (PeriodTagAsignationWeb periodTagAsignationWeb : tagWeb.getPeriodTagAsignations()) {
+            Optional<PeriodTagAssignation> assignation = tag.getPeriodTagAssignations().stream().filter(periodTagAssignation -> periodTagAssignation.getPeriod().getId().equals(periodTagAsignationWeb.getPeriod().getId())).findFirst();
+            if (assignation.isPresent()) {
+                assignation.get().setState(periodTagAsignationWeb.getState());
+            } else {
+                PeriodTagAssignation psa = new PeriodTagAssignation();
+                psa.setState(periodTagAsignationWeb.getState());
+                psa.setPeriod(this.periodWebToPeriod(periodTagAsignationWeb.getPeriod()));
+                tag.addPeriodTagAssignation(psa);
+            }
+        }
+
+        List<IndicatorTagAsignationWeb> indicatorTagAsignations = tagWeb.getIndicatorTagAsignations();
+        for (int i = 0; i < indicatorTagAsignations.size(); i++) {
+            IndicatorTagAsignationWeb indicatorTagAsignationWeb = indicatorTagAsignations.get(i);
+            Optional<IndicatorTagAssignation> assignation = tag.getIndicatorTagAssignations().stream().filter(indicatorTagAssignation -> indicatorTagAssignation.getIndicator().getId().equals(indicatorTagAsignationWeb.getIndicator().getId())).findFirst();
+            if (assignation.isPresent()) {
+                assignation.get().setState(indicatorTagAsignationWeb.getState());
+            } else {
+                IndicatorTagAssignation psa = new IndicatorTagAssignation();
+                psa.setState(indicatorTagAsignationWeb.getState());
+                psa.setIndicator(this.indicatorWebToIndicator(indicatorTagAsignationWeb.getIndicator()));
+                tag.addIndicatorTagAssignation(psa);
+            }
+        }
+
+        return tag;
+    }
+    //</editor-fold>
+    //<editor-fold desc="PeriodTagAsignation">}
+    private PeriodTagAsignationWeb periodTagAsignationToPeriodTagAsignationWeb(PeriodTagAssignation periodTagAsignation) {
+        PeriodTagAsignationWeb paw = new PeriodTagAsignationWeb();
+        paw.setId(periodTagAsignation.getId());
+        paw.setState(periodTagAsignation.getState());
+        paw.setPeriod(this.periodToPeriodWeb(periodTagAsignation.getPeriod(), true));
+        return paw;
+    }
+
+    private List<PeriodTagAsignationWeb> periodTagAsignationsToPeriodTagAsignationsWeb(Set<PeriodTagAssignation> periodTagAssignations) {
+        List<PeriodTagAsignationWeb> periodTagAsignationWebs = new ArrayList<>();
+        for (PeriodTagAssignation periodTagAssignation : periodTagAssignations) {
+            periodTagAsignationWebs.add(this.periodTagAsignationToPeriodTagAsignationWeb(periodTagAssignation));
+
+        }
+        return periodTagAsignationWebs;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="IndicatorTagAsignation">}
+    private IndicatorTagAsignationWeb indicatorTagAsignationToIndicatorTagAsignationWeb(IndicatorTagAssignation indicatorTagAsignation) {
+        IndicatorTagAsignationWeb paw = new IndicatorTagAsignationWeb();
+        paw.setId(indicatorTagAsignation.getId());
+        paw.setState(indicatorTagAsignation.getState());
+        paw.setIndicator(this.indicatorToIndicatorWeb(indicatorTagAsignation.getIndicator(), true, true));
+        //paw.setTags(this.tagToTagWeb(indicatorTagAsignation.getTag()));
+        return paw;
+    }
+
+    private List<IndicatorTagAsignationWeb> indicatorTagAsignationsToIndicatorTagAsignationsWeb(Set<IndicatorTagAssignation> indicatorTagAssignations) {
+        List<IndicatorTagAsignationWeb> indicatorTagAsignationWebs = new ArrayList<>();
+        for (IndicatorTagAssignation indicatorTagAssignation : indicatorTagAssignations) {
+            indicatorTagAsignationWebs.add(this.indicatorTagAsignationToIndicatorTagAsignationWeb(indicatorTagAssignation));
+
+        }
+        return indicatorTagAsignationWebs;
+    }
+    //</editor-fold>
 
     //</editor-fold>
+    //<editor-fold desc="Audit">}
+    public List<AuditWeb> auditsToAuditsWeb(List<Audit> audits) {
+        List<AuditWeb> r = new ArrayList<>();
+        for (Audit audit : audits) {
+            r.add(this.auditToAuditWeb(audit));
+        }
+        return r;
+    }
+
+    public AuditWeb auditToAuditWeb(Audit audit) {
+        if (audit == null) {
+            return null;
+        }
+        AuditWeb auditWeb = new AuditWeb();
+        auditWeb.setId(audit.getId());
+        auditWeb.setEntity(audit.getEntity());
+        auditWeb.setProjectCode(audit.getProjectCode());
+        auditWeb.setIndicatorCode(audit.getIndicatorCode());
+        auditWeb.setAction(audit.getAction());
+        auditWeb.setResponsibleUser(userToUserWebSimple(audit.getResponsibleUser(),true,true));
+        auditWeb.setChangeDate(audit.getChangeDate());
+        auditWeb.setOldData(audit.getOldData());
+        auditWeb.setNewData(audit.getNewData());
+        auditWeb.setState(audit.getState());
+
+
+        return auditWeb;
+    }
+
+    @SuppressWarnings("unused")
+    public List<Audit> auditsWebToAudits(List<AuditWeb> auditWebs) {
+        List<Audit> r = new ArrayList<>();
+        for (AuditWeb auditWeb : auditWebs) {
+            r.add(this.auditWebToAudit(auditWeb));
+        }
+        return r;
+    }
+
+    public Audit auditWebToAudit(AuditWeb auditWeb) {
+        if (auditWeb == null) {
+            return null;
+        }
+        Audit audit = new Audit();
+        audit.setId(auditWeb.getId());
+        audit.setEntity(auditWeb.getEntity());
+        audit.setProjectCode(auditWeb.getProjectCode());
+        audit.setIndicatorCode(auditWeb.getIndicatorCode());
+        audit.setAction(auditWeb.getAction());
+        audit.setResponsibleUser(userDao.find(auditWeb.getResponsibleUser().getId()));
+        audit.setChangeDate(auditWeb.getChangeDate());
+        audit.setOldData(auditWeb.getOldData());
+        audit.setNewData(auditWeb.getNewData());
+        audit.setState(auditWeb.getState());
+
+        return audit;
+    }
+    //</editor-fold>
+    /////////////////******** standar dissagregations*********///////////////////////////////
+
+    public <D extends StandardDissagregationOption> StandardDissagregationOptionWeb standardDissagregationOptionToStandardDissagregationOptionWeb(D dissagregationOption) {
+        if(dissagregationOption==null)return null;
+        StandardDissagregationOptionWeb d = new StandardDissagregationOptionWeb();
+        d.setId(dissagregationOption.getId());
+        d.setState(dissagregationOption.getState());
+        d.setOrder(dissagregationOption.getOrder());
+        if (dissagregationOption instanceof AgeDissagregationOption) {
+            AgeDissagregationOption ageOption = (AgeDissagregationOption) dissagregationOption;
+            d.setName(dissagregationOption.getName() + " " + ageOption.getAgeRange());
+        } else {
+            d.setName(dissagregationOption.getName());
+        }
+        d.setGroupName(dissagregationOption.getGroupName());
+        d.setRegionGroupName(dissagregationOption.getRegionGroupName());
+        d.setOtherGroupName(dissagregationOption.getOtherGroupName());
+        return d;
+
+    }
+
+    public <LD extends StandardDissagregationOption> List<StandardDissagregationOptionWeb> standardDissagregationOptionsToStandardDissagregationOptionWebs(List<LD> options) {
+        List<StandardDissagregationOptionWeb> r = new ArrayList<>();
+        for (LD option : options) {
+            r.add(this.standardDissagregationOptionToStandardDissagregationOptionWeb(option));
+        }
+        return r;
+
+    }
+
+    public ResultManagerIndicator resultManagerDtoToResultManager(ResultManagerIndicatorDTO resultManagerDto){
+        if (resultManagerDto == null) {
+            return null;
+        }
+        ResultManagerIndicator rmi = new ResultManagerIndicator();
+        rmi.setId(resultManagerDto.getId());
+        rmi.setIndicator(this.indicatorWebToIndicator(resultManagerDto.getIndicator()));
+        rmi.setQuarterYearOrder(resultManagerDto.getQuarterYearOrder());
+        rmi.setPopulationType(this.standardDissagregationOptionDao.find(resultManagerDto.getPopulationType().getId()));
+        rmi.setConfirmed(resultManagerDto.isConfirmed());
+        rmi.setReportValue(resultManagerDto.getReportValue());
+        rmi.setPeriod(this.periodWebToPeriod(resultManagerDto.getPeriod()));
+        return rmi;
+    }
+
+    public ResultManagerIndicatorQuarterReport resultManIndQuarterReportDTOToResultManIndQuarterReport(ResultManagerIndicatorQuarterReportDTO resultManagerIndicatorQuarterReportDTO){
+        if (resultManagerIndicatorQuarterReportDTO == null) {
+            return null;
+        }
+        ResultManagerIndicatorQuarterReport rmiqr = new ResultManagerIndicatorQuarterReport();
+        rmiqr.setId(resultManagerIndicatorQuarterReportDTO.getId());
+        rmiqr.setIndicator(this.indicatorWebToIndicator(resultManagerIndicatorQuarterReportDTO.getIndicator()));
+        rmiqr.setQuarterYearOrder(resultManagerIndicatorQuarterReportDTO.getQuarterYearOrder());
+        rmiqr.setReportComment(resultManagerIndicatorQuarterReportDTO.getReportComment());
+        rmiqr.setPeriod(this.periodWebToPeriod(resultManagerIndicatorQuarterReportDTO.getPeriod()));
+
+        return rmiqr;
+    }
+
+
 }

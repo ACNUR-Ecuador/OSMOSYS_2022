@@ -75,6 +75,11 @@
                                 type="text"
                                 [field]="col.field" [showMenu]="false"
                                 [matchMode]="'monthFilter'"></p-columnFilter>
+                <p-columnFilter *ngSwitchCase="'locations'"
+                                type="text"
+                                [field]="col.field" [showMenu]="false"
+                                [matchMode]="'cantonsFilter'"></p-columnFilter>
+                                
 
             </th>
             <th>
@@ -105,7 +110,6 @@
                             [isProjectFocalPoint]="isProjectFocalPoint"
                             (callMonth)="callMonth($event, op)"
                             (refreshData)="refreshData($event, op)"
-
                         >
                         </app-partners-indicator-quarter-list>
                     </ng-template>

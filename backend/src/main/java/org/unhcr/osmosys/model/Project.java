@@ -1,6 +1,6 @@
 package org.unhcr.osmosys.model;
 
-import com.sagatechs.generics.persistence.model.BaseEntity;
+import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -10,7 +10,9 @@ import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -44,7 +46,7 @@ import java.util.Set;
                 @NamedAttributeNode("projectLocationAssigments"),
         }
 )
-public class Project extends BaseEntity<Long> {
+public class Project extends BaseEntityIdState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -76,6 +78,9 @@ public class Project extends BaseEntity<Long> {
     @JoinColumn(name = "focal_point_id", foreignKey = @ForeignKey(name = "fk_project_focal_point"))
     private User focalPoint;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL)
+    private Set<FocalPointAssignation> focalPointAssignations = new HashSet<>();
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "period_id", foreignKey = @ForeignKey(name = "fk_project_period"))
     private Period period;
@@ -86,6 +91,9 @@ public class Project extends BaseEntity<Long> {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL)
     private Set<IndicatorExecution> indicatorExecutions = new HashSet<>();
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "partner_manager", foreignKey = @ForeignKey(name = "fk_indicator_partner_manager"))
+    private User partnerManager;
 
     @Override
     public Long getId() {
@@ -190,6 +198,39 @@ public class Project extends BaseEntity<Long> {
 
     public void setFocalPoint(User focalPoint) {
         this.focalPoint = focalPoint;
+    }
+
+    public Project deepCopy() {
+        Project copy = new Project();
+        copy.setId(this.id);
+        copy.setOrganization(this.organization);
+        copy.setCode(this.code);
+        copy.setPeriod(this.period);
+        copy.setState(this.state);
+        copy.setName(this.name);
+        copy.setFocalPointAssignations(this.focalPointAssignations);
+        copy.setStartDate(this.startDate);
+        copy.setEndDate(this.endDate);
+        copy.setIndicatorExecutions(this.indicatorExecutions);
+        copy.setProjectLocationAssigments(this.projectLocationAssigments);
+        copy.setPartnerManager(partnerManager);
+
+        return copy;
+    }
+    public Set<FocalPointAssignation> getFocalPointAssignations() {
+        return focalPointAssignations;
+    }
+
+    public void setFocalPointAssignations(Set<FocalPointAssignation> focalPointAssignations) {
+        this.focalPointAssignations = focalPointAssignations;
+    }
+
+    public User getPartnerManager() {
+        return partnerManager;
+    }
+
+    public void setPartnerManager(User partnerManager) {
+        this.partnerManager = partnerManager;
     }
 
     @Override

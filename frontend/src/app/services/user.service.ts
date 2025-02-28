@@ -110,6 +110,10 @@ export class UserService {
         return this.http.get<User[]>(`${mainServiceUrl}/users/active/UNHCR`);
     }
 
+    public getActivePartnerUsers(orgId: number) {
+        return this.http.get<User[]>(`${mainServiceUrl}/users/active/${orgId}`);
+    }
+
     public getAllUser() {
         return this.http.get<User[]>(`${mainServiceUrl}/users`);
     }

@@ -2,19 +2,6 @@
     <div class="col-12">
         <p-toast></p-toast>
         <div class="card">
-            <h3 class="page-title">Administración de Oficinas</h3>
-            <p-toolbar styleClass="mb-4">
-                <ng-template pTemplate="left">
-                    <div class="my-2">
-                        <button pButton pRipple label="Crear" icon="pi pi-plus" class="p-button-success mr-2 mb-2"
-                                (click)="createItem()"></button>
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="right">
-                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel(dt)"
-                            class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
-                </ng-template>
-            </p-toolbar>
             <p-tabView [(activeIndex)]="activeIndex1">
                 <p-tabPanel>
                     <ng-template pTemplate="header">
@@ -22,27 +9,38 @@
                         <span>Tabla</span>
                     </ng-template>
                     <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" [paginator]="true"
-                             [rowHover]="true" dataKey="id"
-                             styleClass="p-datatable-customers"
-                             currentPageReportTemplate=" {first} a {last} de {totalRecords} "
-                             [showCurrentPageReport]="true">
+                            [rowHover]="true" dataKey="id" styleClass="p-datatable-striped" 
+                            styleClass="p-datatable-customers"
+                            currentPageReportTemplate=" {first} a {last} de {totalRecords} "
+                            [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]">
                         <ng-template pTemplate="caption">
-                            <div class="flex card-container overflow-hidden">
+                            <div class="grid">
                                 <div
-                                    class="flex-none flex align-items-center justify-content-center m-2 px-5  border-round">
-                                    <h5 class="m-0">Oficinas</h5>
+                                    class="col-12 md:col-4 sm:col-12 justify-content-start">
+                                    <h3 class="m-0">Administración de Oficinas</h3>
                                 </div>
-                                <div
-                                    class="flex-grow-1 flex align-items-center justify-content-center px-5  border-round"></div>
-                                <div
-                                    class="flex-none flex align-items-center justify-content-center px-5  border-round">
+                                    <div
+                                        class="col-12 md:col sm:col-12 flex justify-content-end">
 
-                                    <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
-                                                   selectedItemsLabel="{0} columnas seleccionadas"
-                                                   [style]="{minWidth: '200px',color:'#6c757d'}"
-                                                   placeholder="Seleccione las columnas"
-                                    appendTo="body"></p-multiSelect>
-                                </div>
+                                        <p-multiSelect [options]="cols" [(ngModel)]="selectedColumns" optionLabel="header"
+                                            selectedItemsLabel="{0} columnas seleccionadas"
+                                            [style]="{minWidth: '200px',color:'#6c757d'}"
+                                            placeholder="Seleccione las columnas"
+                                        appendTo="body"></p-multiSelect>
+                                        <button pButton pRipple label="Crear" icon="pi pi-plus" class="main-button mr-2 mb-2"
+                                        (click)="createItem()" style="margin-left: 2rem;" pTooltip="Crear una Oficina" tooltipPosition="bottom"></button>
+            
+                                        <button pButton pRipple label="Exportar" icon="pi pi-file-excel" class="second-button mr-2 mb-2"
+                                        (click)="exportExcel(dt)" style="margin-left: 1rem;" pTooltip="Exportar a Excel" tooltipPosition="bottom"></button>
+                                        <a href="https://osmosys.unhcr.org/common/manual/#/administracion-del-sistema?id=_53-oficinas"
+                                            target="_blank"  
+                                            class="p-button  p-button-outlined p-button-info custom-button"
+                                            style="width: auto; height: fit-content; display: inline-flex; justify-content: center; align-items: center; text-decoration: none; margin-left: 11px; " 
+                                            pTooltip="Ver el manual de ayuda" tooltipPosition="bottom">
+                                            <i class="pi pi-question-circle" style="margin-right: 5px;"></i> 
+                                            <span>Ayuda</span>
+                                        </a>                                                         
+                                    </div>
                             </div>
 
                         </ng-template>
@@ -88,7 +86,10 @@
                                 <td *ngFor="let col of columns"
                                     [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) "
                                 >
-                                    {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) : utilsService.resolveFieldData(rowData, col.field) }}
+                                    {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1, col.arg2, col.arg3) 
+                                        : (col.field === 'type') 
+                                        ? (convertoToOfficeTypeLabel(utilsService.resolveFieldData(rowData, col.field))) 
+                                        : utilsService.resolveFieldData(rowData, col.field) }}
                                 </td>
                                 <td>
                                     <button pButton pRipple icon="pi pi-pencil"
@@ -129,21 +130,21 @@
     </div>
 </div>
 <form [formGroup]="formItem" (ngSubmit)="saveItem()">
-    <p-dialog [(visible)]="showDialog" [style]="{width: '450px'}" header="Área" [modal]="true"
+    <p-dialog [(visible)]="showDialog" [style]="{width: '450px'}" header="Oficina/Unidad" [modal]="true"
               [closable]="false">
 
         <ng-template pTemplate="content">
             <p-messages></p-messages>
             <div class="card p-fluid">
                 <div class="field">
-                    <label for="acronymI">Acrónimo</label>
+                    <label for="acronymI">Acrónimo *:</label>
                     <input type="text" pInputText id="acronymI"
                            formControlName="acronym" autofocus/>
                     <small class="p-error" *ngIf="utilsService.showErrorForm('acronym',formItem)">Campo
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="descriptionI">Nombre</label>
+                    <label for="descriptionI">Nombre *:</label>
 
                     <input type="text" pInputText id="descriptionI"
                            formControlName="description"
@@ -153,12 +154,13 @@
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="officeTypeI">Tipo de oficina</label>
+                    <label for="officeTypeI">Tipo de oficina *:</label>
 
                     <p-dropdown id="officeTypeI"
                                 formControlName="type"
                                 [options]="officeTypes"
                                 placeholder="Selecciona..."
+                                (onChange)="onOfficeTypeChange($event.value)"
                                 appendTo="body">
                     </p-dropdown>
 
@@ -166,7 +168,7 @@
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="officeTypeI">Oficina padre</label>
+                    <label for="officeTypeI">Oficina padre:</label>
 
                     <p-dropdown id="parentOfficeI"
                                 [filter]="true"
@@ -180,7 +182,7 @@
                         obligatorio.</small>
                 </div>
                 <div class="field">
-                    <label for="administratorsI">Administradores</label>
+                    <label for="administratorsI">Jefe de Oficina/Unidad:</label>
 
                     <p-multiSelect id="administratorsI"
                                     formControlName="administrators"
@@ -190,7 +192,7 @@
                     </p-multiSelect>
                 </div>
                 <div class="field">
-                    <label for="stateI">Estado</label>
+                    <label for="stateI">Estado *:</label>
 
                     <p-selectButton id="stateI"
                                     formControlName="state"

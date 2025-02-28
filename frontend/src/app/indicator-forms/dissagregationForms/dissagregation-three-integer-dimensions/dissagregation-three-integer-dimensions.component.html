@@ -1,14 +1,22 @@
-<p-panel>
+<p-panel [ngClass]="validateTotalControl ? 'none':'diss-panel-secondary'">
     <ng-template pTemplate="header">
-        <div class="flex w-full">
+        <div class="flex w-full justify-content-center align-items-center">
             <div
-                class="flex-grow-1 justify-content-start">
-                Desagregación por {{this.enumsService.resolveLabel($any('DissagregationType'), dissagregationType)}}
+                    class="flex-grow-1 justify-content-start">
+                Desagregación por {{ dissagregationType.label}}
             </div>
             <div
-                class="flex-auto mx-2 max-w-10rem"
-                style="color: black;"
-                [style.background]="getTotalIndicator(valuesGroupRowsMap)>0?'#C8E6C9':'#FEEDAF'"
+            class="flex-grow-0 mr-3">
+            <button pButton type="button" label="Importar valores" icon="pi pi-file-excel"
+                    (click)="showImportDialogF()"
+                    [disabled]="false"
+                    style="width: auto;  background-color: #589BE5; border: none;"
+            ></button>
+            </div>
+            <div
+                    class="flex-auto mx-2 max-w-10rem"
+                    style="color: black;"
+                    [style.background]="getTotalIndicator(valuesGroupRowsMap)>0?'#C8E6C9':'#FEEDAF'"
             >
                 <div class="flex">
 
@@ -27,13 +35,13 @@
             <ng-template pTemplate="header">
                 <div class="flex w-full">
                     <div
-                        class="flex-grow-1 justify-content-start">
-                        {{group.label}}
+                            class="flex-grow-1 justify-content-start">
+                        {{group.name}}
                     </div>
                     <div
-                        class="flex-auto mx-2  max-w-10rem"
-                        style="color: black;"
-                        [style.background]="this.utilsService.getTotalIndicatorValuesArrayArray(valuesGroupRowsMap.get(group))>0?'#C8E6C9':'#FEEDAF'"
+                            class="flex-auto mx-2  max-w-10rem"
+                            style="color: black;"
+                            [style.background]="this.utilsService.getTotalIndicatorValuesArrayArray(valuesGroupRowsMap.get(group))>0?'#C8E6C9':'#FEEDAF'"
                     >
                         <div class="flex">
 
@@ -51,22 +59,22 @@
                     <ng-template pTemplate="header">
                         <tr>
                             <th></th>
-                            <th *ngFor="let col of dissagregationOptionsColumns">{{col.label}}</th>
+                            <th *ngFor="let col of dissagregationOptionsColumns">{{col.name}}</th>
                             <th>Totales</th>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
                         <tr>
-                            <td class="table-title">{{dissagregationOptionsRows[rowIndex].label}}</td>
+                            <td class="table-title">{{dissagregationOptionsRows[rowIndex].name}}</td>
                             <td pEditableColumn
                                 *ngFor="let rowOp of dissagregationOptionsColumns; index as indexColumn"
                                 class="text-right">
                                 <p-cellEditor *ngIf="editable">
                                     <ng-template pTemplate="input">
                                         <p-inputNumber
-                                            name="{{row[indexColumn].id}}"
-                                            [min]="0"
-                                            [(ngModel)]="row[indexColumn].value"
+                                                name="{{row[indexColumn].id}}"
+                                                [min]="0"
+                                                [(ngModel)]="row[indexColumn].value"
                                         ></p-inputNumber>
                                     </ng-template>
                                     <ng-template pTemplate="output">
@@ -96,3 +104,57 @@
         </p-accordionTab>
     </p-accordion>
 </p-panel>
+<form [formGroup]="importForm" (ngSubmit)="importFile()">
+    <p-dialog [(visible)]="showImportDialog" [style]="{width: '70%'}" [modal]="true" [closable]="false" [draggable]="false">
+
+        <ng-template pTemplate="header">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <span style="font-weight: bold; font-size: 1.3em;">Importación de Datos</span>
+                <div class="flex-grow-0">
+                    <button pButton type="button" label="Generar Plantilla" icon="pi pi-file-excel"
+                        (click)="generarExcel()" [disabled]="false"
+                        style="width: auto;  background-color: #589BE5; border: none;"></button>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="content">
+
+            <div class="card p-fluid">
+                <p-fileUpload name="myfile[]" [customUpload]="true" (uploadHandler)="fileUploader($event)" [auto]="true"
+                    uploadLabel="importar" chooseLabel="seleccionar archivo" cancelLabel="cancelar"></p-fileUpload>
+                <div class="field grid">
+                    <label htmlFor="name3" class="col-12 mb-2 md:col-2 md:mb-0">Hoja</label>
+                    <div class="col-12 md:col-10">
+                        <p-dropdown id="sheetI" formControlName="sheet" [options]="sheetOptions" [filter]=true
+                            appendTo="body" placeholder="Selecciona..." [showClear]="true">
+                        </p-dropdown>
+                    </div>
+                </div>
+            </div>
+
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <button pButton type="submit" [disabled]="!importForm.valid" pRipple label="Importar" icon="pi pi-check"
+                style="margin-right: 10px;"></button>
+            <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
+                (click)="cancelImportDialog()" style="margin-right: 10px;"></button>
+
+
+        </ng-template>
+    </p-dialog>
+</form>
+<p-dialog [header]="currentTimestamp" (onShow)="onDialogShow()" [(visible)]="showImportErrorLogs" [modal]="true"
+    [style]="{width: '50vw'}" [draggable]="false" [resizable]="false">
+
+    <div style="margin-top: 20px;">
+        <div style="margin-top: 10px;" *ngFor="let mess of importErroMessage">
+            <p-message severity="error" [text]="mess"></p-message>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="showImportErrorLogs=false" label="Ok"
+            styleClass="p-button-text"></p-button>
+    </ng-template>
+</p-dialog>

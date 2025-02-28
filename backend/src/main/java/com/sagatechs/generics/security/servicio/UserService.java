@@ -1,5 +1,7 @@
 package com.sagatechs.generics.security.servicio;
 
+import com.sagatechs.generics.appConfiguration.AppConfigurationKey;
+import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.AccessDeniedException;
 import com.sagatechs.generics.exceptions.AuthorizationException;
 import com.sagatechs.generics.exceptions.GeneralAppException;
@@ -20,8 +22,10 @@ import io.jsonwebtoken.security.SignatureException;
 import io.jsonwebtoken.security.WeakKeyException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.jboss.logging.Logger;
+import org.unhcr.osmosys.model.Indicator;
 import org.unhcr.osmosys.model.Office;
 import org.unhcr.osmosys.model.OfficeAdministrator;
 import org.unhcr.osmosys.model.Organization;
@@ -43,6 +47,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
+@SuppressWarnings("JavadocDeclaration")
 @Stateless
 public class UserService implements Serializable {
 
@@ -75,6 +80,8 @@ public class UserService implements Serializable {
 
     @Inject
     ModelWebTransformationService modelWebTransformationService;
+    @Inject
+    AppConfigurationService appConfigurationService;
 
 
     private static final int EXPIRATION_TIME_SECONDS = 6400;
@@ -115,8 +122,9 @@ public class UserService implements Serializable {
             }
             user.setOffice(office);
         }
+        List<RoleWeb> userValidRoles = validateUserRoles(userWeb);
 
-        for (RoleWeb roleWeb : userWeb.getRoles()) {
+        for (RoleWeb roleWeb : userValidRoles) {
             if (roleWeb.getState().equals(State.ACTIVO)) {
                 try {
                     RoleType roleType = RoleType.valueOf(roleWeb.getName());
@@ -143,15 +151,15 @@ public class UserService implements Serializable {
         // send email
         String message = "<p>Bienvenid@:</p>" +
                 "<p>Se ha creado un nuevo usuario para su acceso Osmosys.</p>" +
-                "<p>Puede acceder al sistema utilizando los siguientes datos:</p>" +
-                "<p>Direcci&oacute;n: <a href=\"https://imecuador.unhcr.org/osmosys\">" + "https://imecuador.unhcr.org/osmosys" + "</a> (Se recomienda el uso de Google Chrome)</p>" +
+                "<p>Puede acceder al sistema utilizando los siguientes datos:</p>"+
+                "<p>Direcci&oacute;n: <a href=\""+this.appConfigurationService.getAppUrl()+"\">" + this.appConfigurationService.getAppUrl() + "</a> (Se recomienda el uso de Google Chrome)</p>" +
                 "<p>Nombre de usuario: " + user.getUsername() + "</p>" +
                 "<p>Contrase&ntilde;a: " + password + "</p>" +
                 "<p>&nbsp;</p>" +
 
                 "<p>Al ingresar al sistema, comprende y acepta que la informaci&oacute;n presentada es de uso interno de la organización y no ha de ser reproducida/compartida con otros actores sin consentimiento por escrito por parte del equipo de IM-ACNUR.</p>" +
                 "<p>&nbsp;</p>" +
-                "<p>Si necesitas ayuda por favor cont&aacute;ctate con la Unidad de Gesti&oacute;n de la Informaci&oacute;n con <a href=\"\\&quot;mailto:salazart@unhcr.org\\&quot;\">salazart@unhcr.org.</a></p>";
+                "<p>Si necesitas ayuda por favor cont&aacute;ctate con la Unidad de Gesti&oacute;n de la Informaci&oacute;n con <a href=\"\\&quot;mailto:"+this.appConfigurationService.findValorByClave(AppConfigurationKey.IM_EMAIL)+"\\&quot;\">"+this.appConfigurationService.findValorByClave(AppConfigurationKey.IM_EMAIL)+".</a></p>";
 
         // todo quitar email
         this.asyncService.sendEmail(
@@ -281,6 +289,12 @@ public class UserService implements Serializable {
                 .map(OfficeAdministrator::getOffice).collect(Collectors.toList());
         // find focal points ()
         List<Long> projectsIds = this.userDao.findProjectsFocalPoints(user.getId());
+        //result manager Indicators
+        List<Indicator> resultManagerIndicators = this.userDao.findIndicatorsByResultManager(user.getId());
+        //partner Manager(supervisor reporte) Projects
+        List<Long> partnerManagerProjects=this.userDao.findProjectsPartnerManager(user.getId());
+        //impl dir supervisor Indicatorexecutions
+        List<Long> supervisorDirectImplementations=this.userDao.findSupervisorDirectImplementations(user.getId());
         if (CollectionUtils.isNotEmpty(projectsIds)) {
             RoleWeb fpr = new RoleWeb();
             fpr.setId(0L);
@@ -297,6 +311,29 @@ public class UserService implements Serializable {
             userWeb.getRoles().add(fpr);
             userWeb.setAdministratedOffices(this.modelWebTransformationService.officesToOfficesWeb(administeredOfficess,false, false));
         }
+        if (CollectionUtils.isNotEmpty(resultManagerIndicators)) {
+            RoleWeb fpr = new RoleWeb();
+            fpr.setId(-2L);
+            fpr.setName(RoleType.RESULT_MANAGER.name());
+            fpr.setState(State.ACTIVO);
+            userWeb.getRoles().add(fpr);
+        }
+        if (CollectionUtils.isNotEmpty(partnerManagerProjects)) {
+            RoleWeb fpr = new RoleWeb();
+            fpr.setId(-3L);
+            fpr.setName(RoleType.SUPERVISOR_REPORTE_SOCIO.name());
+            fpr.setState(State.ACTIVO);
+            userWeb.getRoles().add(fpr);
+        }
+        if (CollectionUtils.isNotEmpty(supervisorDirectImplementations)) {
+            RoleWeb fpr = new RoleWeb();
+            fpr.setId(-4L);
+            fpr.setName(RoleType.SUPERVISOR_REPORTE_ID.name());
+            fpr.setState(State.ACTIVO);
+            userWeb.getRoles().add(fpr);
+        }
+
+
 
 
         return userWeb;
@@ -359,7 +396,7 @@ public class UserService implements Serializable {
             }
             return key;
         } catch (WeakKeyException e) {
-            e.printStackTrace();
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
         }
         return null;
 
@@ -379,6 +416,7 @@ public class UserService implements Serializable {
             Jws<Claims> jws = Jwts.parser() // (1)
                     // .deserializeJsonWith(deserializer)
                     .setSigningKey(getSecretKey()) // (2)
+                    .build()
                     .parseClaimsJws(token); // (3)
 
             // hasta ahi se valida el token*
@@ -388,7 +426,7 @@ public class UserService implements Serializable {
                 try {
                     id = ((Integer) jws.getBody().get("id")).longValue();
                 } catch (NumberFormatException e) {
-                    e.printStackTrace();
+                    LOGGER.error(ExceptionUtils.getStackTrace(e));
                 }
             }
 
@@ -416,7 +454,7 @@ public class UserService implements Serializable {
 
             @SuppressWarnings("rawtypes")
             LinkedHashMap organizationMap = (LinkedHashMap) jws.getBody().get("organization");
-            if (organizationMap != null && organizationMap.size() > 0) {
+            if (organizationMap != null && !organizationMap.isEmpty()) {
                 OrganizationWeb organizationWeb = new OrganizationWeb();
                 organizationWeb.setId(Long.valueOf((Integer) organizationMap.get("id")));
                 organizationWeb.setState(State.valueOf((String) organizationMap.get("state")));
@@ -427,7 +465,7 @@ public class UserService implements Serializable {
             }
             @SuppressWarnings("rawtypes")
             LinkedHashMap officeMap = (LinkedHashMap) jws.getBody().get("office");
-            if (officeMap != null && officeMap.size() > 0) {
+            if (officeMap != null && !officeMap.isEmpty()) {
                 OfficeWeb officeWeb = new OfficeWeb();
                 officeWeb.setId(Long.valueOf((Integer) officeMap.get("id")));
                 officeWeb.setState(State.valueOf((String) officeMap.get("state")));
@@ -438,13 +476,13 @@ public class UserService implements Serializable {
             }
             @SuppressWarnings("unchecked")
             List<Long> focalPointProjectsMap = (List<Long>) jws.getBody().get("focalPointProjects");
-            if (focalPointProjectsMap != null && focalPointProjectsMap.size() > 0) {
+            if (focalPointProjectsMap != null && !focalPointProjectsMap.isEmpty()) {
                 user.setFocalPointProjects(focalPointProjectsMap);
             } else {
                 user.setFocalPointProjects(null);
             }
             List<OfficeWeb> administratedOffices = (List<OfficeWeb>) jws.getBody().get("administratedOffices");
-            if (administratedOffices != null && administratedOffices.size() > 0) {
+            if (administratedOffices != null && !administratedOffices.isEmpty()) {
                 user.setAdministratedOffices(administratedOffices);
             } else {
                 user.setFocalPointProjects(null);
@@ -467,6 +505,10 @@ public class UserService implements Serializable {
 
     public User getUNHCRUsersByName(String name) throws GeneralAppException {
         return this.userDao.getUNHCRUsersByName(name);
+    }
+
+    public User getUNHCRUsersByUsername(String username) throws GeneralAppException {
+        return this.userDao.getUNHCRUsersByUsername(username);
     }
 
     public User getById(Long id) {
@@ -492,16 +534,15 @@ public class UserService implements Serializable {
         user.setState(userWeb.getState());
         user.setOffice(this.modelWebTransformationService.officeWebToOffice(userWeb.getOffice()));
         user.setOrganization(this.modelWebTransformationService.organizationWebToOrganization(userWeb.getOrganization()));
-        // roles
+
 
         this.userDao.update(user);
+        // roles
+        List<RoleWeb> userValidRoles = validateUserRoles(userWeb);
 
-        for (RoleWeb roleWeb : userWeb.getRoles()) {
+        for (RoleWeb roleWeb : userValidRoles) {
             try {
                 RoleType roleType = RoleType.valueOf(roleWeb.getName());
-                if (roleType.equals(RoleType.PUNTO_FOCAL)) {
-                    continue;
-                }
                 Role role = this.roleService.findByRoleType(roleType);
                 if (roleWeb.getState().equals(State.ACTIVO)) {
                     user.addRole(role);
@@ -531,19 +572,14 @@ public class UserService implements Serializable {
             user.setPassword(pass);
 
             userDao.save(user);
-            String message = "<p>Bienvenid@:</p>" +
+            String message = "<p><strong>Bienvenid@:</strong></p>" +
                     "<p>Se ha generado una nueva contraseña para el acceso al Osmosys.</p>" +
                     "<p>Puede acceder al sistema utilizando los siguientes datos:</p>" +
-                    "<p>Direcci&oacute;n: <a href=\"https://imecuador.unhcr.org/osmosys\">" + "https://imecuador.unhcr.org/osmosys" + "</a> (Se recomienda el uso de Google Chrome)</p>" +
                     "<p>Nombre de usuario: " + user.getUsername() + "</p>" +
                     "<p>Contraseña: " + password + "</p>" +
                     "<p>&nbsp;</p>" +
                     "<p>&nbsp;</p>";
             LOGGER.debug("------------------llamo");
-            /*Future<String> futureMail = this.emailService.sendEmailMessage(user.getEmail(), null,
-                    "Bienvenid@ al Sistema de Monitoreo de Programas.",
-                    message
-            );*/
             this.asyncService.sendEmail(user.getEmail(), null,
                     "Bienvenid@ al Sistema de Monitoreo de Programas.",
                     message);
@@ -600,5 +636,46 @@ public class UserService implements Serializable {
     public User getByEmail(String email) {
         return this.userDao.getByEmail(email);
     }
+
+    public List<RoleWeb> validateUserRoles(UserWeb userWeb){
+        Long orgId=userWeb.getOrganization().getId();
+        Set<RoleType> invalidRoles = new HashSet<>();
+        invalidRoles.add(RoleType.PUNTO_FOCAL);
+        invalidRoles.add(RoleType.ADMINISTRADOR_OFICINA);
+        invalidRoles.add(RoleType.RESULT_MANAGER);
+        invalidRoles.add(RoleType.SUPERVISOR_REPORTE_SOCIO);
+        invalidRoles.add(RoleType.SUPERVISOR_REPORTE_ID);
+
+        Set<RoleType> userAcnurRoles = new HashSet<>();
+        userAcnurRoles.add(RoleType.SUPER_ADMINISTRADOR);
+        userAcnurRoles.add(RoleType.ADMINISTRADOR_REGIONAL);
+        userAcnurRoles.add(RoleType.ADMINISTRADOR_LOCAL);
+        userAcnurRoles.add(RoleType.MONITOR_ID);
+        userAcnurRoles.add(RoleType.EJECUTOR_ID);
+
+
+        List<RoleWeb> validRoles = new ArrayList<>();
+        for (RoleWeb roleWeb : userWeb.getRoles()) {
+            RoleType roleType = RoleType.valueOf(roleWeb.getName());
+            if(orgId == 1){
+                if(!userAcnurRoles.contains(roleType) || invalidRoles.contains(roleType)){
+                    continue;
+                }
+                validRoles.add(roleWeb);
+
+            }else{
+                if(!invalidRoles.contains(roleType) && !userAcnurRoles.contains(roleType)){
+                    validRoles.add(roleWeb);
+                }
+            }
+        }
+        return validRoles;
+    }
+
+    public List<User> getActiveResultManagerUsers() {
+        return this.userDao.getActiveResultManagerUsers();
+    }
+
+
 }
 

@@ -1,5 +1,9 @@
 eclipse.preferences.version=1
 encoding/indicatorCatalog.jrxml=UTF-8
+encoding/indicatorsCatalogWithImplementersDetailed.jrxml=UTF-8
+encoding/indicatorsCatalogWithImplementersSimple.jrxml=UTF-8
 encoding/partner_anual_by_project_idV2.jrxml=UTF-8
+encoding/partner_detailed_by_project_id.jrxml=UTF-8
+encoding/partner_monthly_by_project_id.jrxml=UTF-8
 encoding/partner_quarterly_by_project_id.jrxml=UTF-8
 encoding/program_partner_report.jrxml=UTF-8

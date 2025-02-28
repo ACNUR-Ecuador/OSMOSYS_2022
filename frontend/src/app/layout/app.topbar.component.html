@@ -3,96 +3,123 @@
         <a #menubutton tabindex="0" class="menu-button p-trigger" (click)="onMenuButtonClick()">
             <i class="pi pi-chevron-left"></i>
         </a>
-        <img class="horizontal-logo" [routerLink]="['/']" [src]="'assets/layout/images/unhcr_logo_horizontal_white.png'"
-             alt="osmosys"/>
-        <span class="topbar-separator"></span>
-        <app-breadcrumb></app-breadcrumb>
-        <!--<img class="mobile-logo" [src]="'assets/layout/images/Logo_osmosys_white.png'" alt="osmosys"/>-->
     </div>
 
     <app-sidebar></app-sidebar>
     <div class="layout-mask modal-in"></div>
-    <div style="display: flex; align-items: center; flex-grow: 2; justify-content: center;">
-        <img class="osmosys-logo" [routerLink]="['/']" [src]="'assets/layout/images/Logo_osmosys_white.png'"
-             alt="osmosys"/>
+
+    <div style="display: flex; align-items: center; justify-content: center;">
+
+        <!-- <img class="osmosys-logo " style="margin-left: 3rem;" [routerLink]="['/home/about-us']" [src]=flagToolbarFile
+            alt="osmosys"/> -->
     </div>
 
     <div class="topbar-right">
+
+        <img class="acnur-logo" style="margin-top: 4px !important; cursor: pointer;" [routerLink]="['/']"
+             [src]="'assets/layout/images/unhcr_logo_horizontal_white.png'"
+             alt="osmosys"/>
+        <span class="topbar-separator"></span>
+        <img class="osmosys-logo" style="margin-top: 12px !important;" [routerLink]="['/home/about-us']"
+             [src]="'assets/layout/images/Logo_osmosys_white.png'"
+             alt="osmosys"/>
+        <span class="topbar-separator"></span>
+        <h5 style="color: #ffffff; font-size: 20px;font-weight:100">{{ operationName.toUpperCase() }}</h5>
+        <span class="topbar-separator"></span>
         <ul class="topbar-menu">
-            <!--            <li class="search-item">
-                <a tabindex="0" (click)="onSearchClick()" class="p-trigger">
-                    <i class="pi pi-search"></i>
-                </a>
-                        </li>-->
+            <a [routerLink]="['/home/about-us'] " style="color: white"
+               class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                <i class="pi pi-info-circle mr-3" style="font-size: 1.5rem;"></i>
+                <span class="flex flex-column">
+                                <span class="font-semibold">Acerca de<br> OSMOSYS</span>
+                            </span>
+            </a>
+        </ul>
 
-<!--
+        <ul class="topbar-menu">
+            <li class="search-item">
 
-            <li class="static sm:relative">
-                <a tabindex="0" pStyleClass="@next" enterClass="hidden" enterActiveClass="scalein" leaveToClass="hidden"
-                   leaveActiveClass="fadeout" [hideOnOutsideClick]="true">
-                    <i class="pi pi-bell"></i>
-                    <span class="topbar-badge">5</span>
-                </a>
-                <ul class="list-none p-3 m-0 border-round shadow-2 absolute surface-overlay hidden origin-top w-full sm:w-19rem mt-2 left-0 top-auto"
-                    style="left:-70px !important; background-color: #0072BC !important;">
-                    <li>
-                        <a pRipple
-                           class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
-                            <i class="pi pi-shopping-cart mr-3"></i>
-                            <span class="flex flex-column">
-                                <span class="font-semibold">New Order</span>
-                                <span class="text-color-secondary">You have <strong>3</strong> new orders.</span>
-                            </span>
-                        </a>
-                        <a pRipple
-                           class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
-                            <i class="pi pi-check-square mr-3"></i>
-                            <span class="flex flex-column">
-                                <span class="font-semibold">Withdrawn Completed</span>
-                                <span class="text-color-secondary">Funds are on their way.</span>
-                            </span>
-                        </a>
-                        <a pRipple
-                           class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
-                            <i class="pi pi-chart-line mr-3"></i>
-                            <span class="flex flex-column">
-                                <span class="font-semibold">Monthly Reports</span>
-                                <span class="text-color-secondary">Monthly Reports are ready.</span>
-                            </span>
-                        </a>
-                        <a pRipple
-                           class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
-                            <i class="pi pi-comments mr-3"></i>
-                            <span class="flex flex-column">
-                                <span class="font-semibold">Comments</span>
-                                <span class="text-color-secondary"><strong>2</strong> new comments.</span>
-                            </span>
-                        </a>
-                        <a pRipple
-                           class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
-                            <i class="pi pi-exclamation-circle mr-3"></i>
-                            <span class="flex flex-column">
-                                <span class="font-semibold">Chargeback Request</span>
-                                <span class="text-color-secondary"><strong>1</strong> to review.</span>
-                            </span>
-                        </a>
-                    </li>
-                </ul>
             </li>
 
--->
+            <!--
+
+                        <li class="static sm:relative">
+                            <a tabindex="0" pStyleClass="@next" enterClass="hidden" enterActiveClass="scalein" leaveToClass="hidden"
+                               leaveActiveClass="fadeout" [hideOnOutsideClick]="true">
+                                <i class="pi pi-bell"></i>
+                                <span class="topbar-badge">5</span>
+                            </a>
+                            <ul class="list-none p-3 m-0 border-round shadow-2 absolute surface-overlay hidden origin-top w-full sm:w-19rem mt-2 left-0 top-auto"
+                                style="left:-70px !important; background-color: #0072BC !important;">
+                                <li>
+                                    <a pRipple
+                                       class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                                        <i class="pi pi-shopping-cart mr-3"></i>
+                                        <span class="flex flex-column">
+                                            <span class="font-semibold">New Order</span>
+                                            <span class="text-color-secondary">You have <strong>3</strong> new orders.</span>
+                                        </span>
+                                    </a>
+                                    <a pRipple
+                                       class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                                        <i class="pi pi-check-square mr-3"></i>
+                                        <span class="flex flex-column">
+                                            <span class="font-semibold">Withdrawn Completed</span>
+                                            <span class="text-color-secondary">Funds are on their way.</span>
+                                        </span>
+                                    </a>
+                                    <a pRipple
+                                       class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                                        <i class="pi pi-chart-line mr-3"></i>
+                                        <span class="flex flex-column">
+                                            <span class="font-semibold">Monthly Reports</span>
+                                            <span class="text-color-secondary">Monthly Reports are ready.</span>
+                                        </span>
+                                    </a>
+                                    <a pRipple
+                                       class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                                        <i class="pi pi-comments mr-3"></i>
+                                        <span class="flex flex-column">
+                                            <span class="font-semibold">Comments</span>
+                                            <span class="text-color-secondary"><strong>2</strong> new comments.</span>
+                                        </span>
+                                    </a>
+                                    <a pRipple
+                                       class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                                        <i class="pi pi-exclamation-circle mr-3"></i>
+                                        <span class="flex flex-column">
+                                            <span class="font-semibold">Chargeback Request</span>
+                                            <span class="text-color-secondary"><strong>1</strong> to review.</span>
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+            -->
 
             <li class="profile-item static sm:relative">
                 <a tabindex="0" pStyleClass="@next" enterClass="hidden" enterActiveClass="scalein" leaveToClass="hidden"
-                   leaveActiveClass="fadeout" [hideOnOutsideClick]="true">
+                   leaveActiveClass="fadeout" [hideOnOutsideClick]="true" (click)="showSubMenu=false">
                     <p-avatar label="{{userInitials}}" styleClass="p-mr-2"
                               size="large" shape="circle"
                               [style]="{'background-color': '#ffffff', 'color': '#0072BC'}"
                     ></p-avatar>
                 </a>
                 <ul class="list-none p-3 m-0 border-round shadow-2 absolute surface-overlay hidden origin-top w-full sm:w-24rem mt-2 top-auto"
-                style="left:-80px !important; background-color: #0072BC !important;">
+                    style="left:-95px !important; background-color: #0072BC !important;">
                     <li>
+
+                        <!-- <a pRipple
+                           [routerLink]="['/home/help']"
+                           class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
+                        >
+                            <i class="pi pi-question-circle mr-3"></i>
+                            <span class="flex flex-column">
+                                <span class="font-semibold">Ayuda</span>
+                            </span>
+                        </a> -->
+
                         <a pRipple
                            [routerLink]="['/users/userProfile']"
                            class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer"
@@ -111,6 +138,44 @@
                                 <span class="font-semibold">Cambiar contraseña</span>
                             </span>
                         </a>
+                        <!-- Opción Manual de Usuario con Submenú -->
+                        <div (click)="toggleSubMenu()" class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                            <i class="pi pi-book mr-3"></i>
+                            <span class="flex flex-column">
+                                <span class="font-semibold">Manual del Usuario</span>
+                            </span>
+                            <i [class]="showSubMenu ? 'pi pi-angle-up': 'pi pi-angle-down'" class="ml-3"></i>
+                        </div>
+
+                        <ul *ngIf="showSubMenu" class="pl-5 list-none transition-all transition-duration-200" style="margin-left: -15px;">
+                            <li *ngIf="isAdmin">
+                                <a pRipple
+                                href="https://osmosys.unhcr.org/common/manual-admin-local/#/"
+                                target="_blank"
+                                class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                                    <i class="pi pi-book mr-2"></i>
+                                    <span class="font-semibold">Administrador Local</span>
+                                </a>
+                            </li>
+                            <li *ngIf="isPartner">
+                                <a pRipple
+                                href="https://osmosys.unhcr.org/common/manual-socios/#/"
+                                target="_blank"
+                                class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                                    <i class="pi pi-book mr-2"></i>
+                                    <span class="font-semibold">Socio</span>
+                                </a>
+                            </li>
+                            <li *ngIf="isResultManager">
+                                <a pRipple
+                                href="https://osmosys.unhcr.org/common/manual-result-manager/#/"
+                                target="_blank"
+                                class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                                    <i class="pi pi-book mr-2"></i>
+                                    <span class="font-semibold">Mánager de Resultado</span>
+                                </a>
+                            </li>
+                        </ul>
                         <a pRipple
                            (click)="logout()"
                            class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">

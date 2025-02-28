@@ -28,20 +28,20 @@ public class AppConfigurationService {
     @PostConstruct
     public void init() {
         // Arracar el sistema
-        LOGGER.info("Cargando configuración del sistema");
+        LOGGER.info("Cargando configuración del sistema --------");
+        LOGGER.info("****** no cargar");
         llenarAppConfigurationCache();
         LOGGER.info("Terminado Cargando configuración del sistema");
 
     }
 
-    private void llenarAppConfigurationCache() {
+    public void llenarAppConfigurationCache() {
         appConfigurationCache.clear();
 
         List<AppConfiguration> appConfs = appConfigurationDao.findAll();
         if (CollectionUtils.isNotEmpty(appConfs)) {
             for (AppConfiguration appConfiguration : appConfs) {
                 appConfigurationCache.put(appConfiguration.getClave(), appConfiguration);
-                LOGGER.info(appConfiguration.getClave() + ":" + appConfiguration);
             }
         }
     }
@@ -74,13 +74,11 @@ public class AppConfigurationService {
 
     @SuppressWarnings("unused")
     public String crearMensajeProblemaValorConfiguracion(AppConfigurationKey clave, String valor) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("El valor de configuración ");
 
-        sb.append(clave);
-        sb.append(" de la aplicación no es correcto. (").append(valor).append(")");
-        LOGGER.error(sb.toString());
-        return sb.toString();
+        String sb = "El valor de configuración " +
+                clave +
+                " de la aplicación no es correcto. (" + valor + ")";
+        return sb;
 
     }
 
@@ -93,6 +91,16 @@ public class AppConfigurationService {
         } else {
             return Integer.parseInt(valusS);
         }
+    }
+    public String getAppUrl() {
+        return this.findValorByClave(AppConfigurationKey.APP_URL);
+
+
+    }
+    public String getTimeZone() {
+        return this.findValorByClave(AppConfigurationKey.TIME_ZONE);
+
+
     }
 
     public List<Integer> getReminderDays() {

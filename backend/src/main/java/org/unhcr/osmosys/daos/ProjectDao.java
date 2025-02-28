@@ -4,6 +4,7 @@ import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.GenericDaoJpa;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
+import org.unhcr.osmosys.model.Organization;
 import org.unhcr.osmosys.model.Project;
 import org.unhcr.osmosys.webServices.model.MonthStateWeb;
 import org.unhcr.osmosys.webServices.model.ProjectResumeWeb;
@@ -92,7 +93,9 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
 
     public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndFocalPointId(Long periodId, Long focalPointId) {
 
-        String sql = this.projectResumeWebQuery + " WHERE pe.id =:periodId and pr.focal_point_id =:focalPointId";
+        String sql = this.projectResumeWebQuery
+                +"LEFT JOIN osmosys.focal_point_assignation fpa ON pr.id = fpa.project_id "
+                + " WHERE pe.id =:periodId and fpa.focal_pointer_id =:focalPointId";
         Query q = getEntityManager().createNativeQuery(sql, "ProjectResumeWebMapping");
         q.setParameter("periodId", periodId);
         q.setParameter("focalPointId", focalPointId);
@@ -141,10 +144,17 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         String jpql = "SELECT DISTINCT " +
                 " o FROM Project o " +
                 " left outer join fetch o.organization " +
-                " left outer join fetch o.focalPoint fp " +
+                " left outer join fetch o.focalPointAssignations fpa " +
+                " left outer join fetch fpa.focalPointer " +
+                " left outer join fetch fpa.focalPointer fp " +
                 " left outer join fetch fp.organization " +
                 " left outer join fetch fp.office " +
                 " left outer join fetch o.period pe " +
+                " left outer join fetch pe.periodPopulationTypeDissagregationOptions " +
+                " left outer join fetch pe.periodGenderDissagregationOptions " +
+                " left outer join fetch pe.periodDiversityDissagregationOptions " +
+                " left outer join fetch pe.periodCountryOfOriginDissagregationOptions " +
+                " left outer join fetch pe.periodAgeDissagregationOptions " +
                 " left outer join fetch pe.generalIndicator " +
                 " left outer join fetch o.projectLocationAssigments pla " +
                 " left outer join fetch pla.location " +
@@ -161,6 +171,7 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
         }
     }
 
+    @SuppressWarnings("JpaQueryApiInspection")
     public List<QuarterStateWeb> getQuartersStateByProjectId(Long projectId) {
 
         String sql = "SELECT DISTINCT " +
@@ -198,12 +209,55 @@ public class ProjectDao extends GenericDaoJpa<Project, Long> {
     }
 
     public List<User> getFocalPointByPeriodId(Long periodId) {
-        String jpql = "SELECT DISTINCT o FROM Project pr " +
-                " inner join pr.focalPoint o " +
-                "  WHERE o.state =:state and pr.period.id=:periodId";
+        String jpql = "SELECT DISTINCT fpa FROM Project pr " +
+                " inner join pr.focalPointAssignations o " +
+                " inner join o.focalPointer fpa " +
+                "  WHERE o.state =:state and pr.period.id=:periodId and pr.state=:state";
         Query q = getEntityManager().createQuery(jpql, User.class);
         q.setParameter("periodId", periodId);
         q.setParameter("state", State.ACTIVO);
         return q.getResultList();
     }
+    public List<User> getPartnerSupervisorsByPeriodId(Long periodId) {
+        String jpql = "SELECT DISTINCT pm FROM Project pr " +
+                " inner join pr.partnerManager pm " +
+                "  WHERE pm.state =:state and pr.period.id=:periodId and pr.state=:state";
+        Query q = getEntityManager().createQuery(jpql, User.class);
+        q.setParameter("periodId", periodId);
+        q.setParameter("state", State.ACTIVO);
+        return q.getResultList();
+    }
+
+    public List<ProjectResumeWeb> getProjectResumenWebByPeriodIdAndPartnerSupervisorId(Long periodId, Long partnerSupervisorId) {
+        String sql = this.projectResumeWebQuery
+                + " WHERE pe.id =:periodId and pr.partner_manager =:partnerSupervisorId";
+        Query q = getEntityManager().createNativeQuery(sql, "ProjectResumeWebMapping");
+        q.setParameter("periodId", periodId);
+        q.setParameter("partnerSupervisorId", partnerSupervisorId);
+        return q.getResultList();
+    }
+
+    public List<Organization> getActiveProjectsPartnersByPeriodId(Long periodId) {
+        String jpql = "SELECT DISTINCT o FROM Project pr " +
+                " inner join pr.organization o " +
+                "  WHERE o.state =:state and pr.period.id=:periodId and pr.state=:state";
+        Query q = getEntityManager().createQuery(jpql, Organization.class);
+        q.setParameter("periodId", periodId);
+        q.setParameter("state", State.ACTIVO);
+        return q.getResultList();
+    }
+
+    public List<Project> getProjectsByPeriodIdAndOrganizationId(Long periodId , Long organizationId) {
+        String jpql = "SELECT DISTINCT pr FROM Project pr " +
+                " inner join pr.organization o " +
+                "  WHERE o.state =:state and pr.period.id=:periodId and o.id =:organizationId and pr.state=:state";
+        Query q = getEntityManager().createQuery(jpql, Project.class);
+        q.setParameter("periodId", periodId);
+        q.setParameter("organizationId", organizationId);
+        q.setParameter("state", State.ACTIVO);
+        return q.getResultList();
+    }
+
+
+
 }

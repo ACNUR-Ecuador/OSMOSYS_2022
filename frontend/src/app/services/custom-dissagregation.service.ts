@@ -18,8 +18,8 @@ export class CustomDissagregationService {
         return this.http.get<CustomDissagregation[]>(`${mainServiceUrl}`);
     }
 
-    public save(marker: CustomDissagregation): Observable<number> {
-        return this.http.post<number>(`${mainServiceUrl}`, marker);
+    public save(customDissagregation: CustomDissagregation): Observable<number> {
+        return this.http.post<number>(`${mainServiceUrl}`, customDissagregation);
     }
 
     public update(marker: CustomDissagregation): Observable<number> {

@@ -1,5 +1,7 @@
 package com.sagatechs.generics.security.filters;
 
+import com.sagatechs.generics.security.CustomPrincipal;
+import com.sagatechs.generics.security.UserSecurityContext;
 import com.sagatechs.generics.security.annotations.Secured;
 import com.sagatechs.generics.security.credentials.UsernameJwtCredential;
 import com.sagatechs.generics.security.servicio.UserService;
@@ -37,6 +39,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     @Inject
     private SecurityContext securityContext;
 
+
     @Inject
     UserService userService;
 
@@ -68,6 +71,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
             // Validate the token
             UserWeb user = userService.validateTokenGetUserWeb(token);
+
             Set<String> roles = new HashSet<>();
             for (RoleWeb role : user.getRoles()) {
                 roles.add(role.getName());
@@ -82,9 +86,11 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 abortWithUnauthorized(requestContext);
             }
 
+            UserSecurityContext.setCurrentUser(user);
+
+
 
         } catch (Exception e) {
-            e.printStackTrace();
             abortWithUnauthorized(requestContext);
         }
     }

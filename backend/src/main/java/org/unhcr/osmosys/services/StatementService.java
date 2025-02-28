@@ -164,4 +164,11 @@ public class StatementService {
         return this.modelWebTransformationService.statementsToStatementsWeb(r, true, true, true, true, true);
 
     }
+    public List<StatementWeb> getchildStatementsByParentId(Long parentId) {
+
+        List<Statement> r = this.statementDao.getChildStatementsByParentId(parentId);
+
+        return this.modelWebTransformationService.statementsToStatementsWeb(r, true, true, true, true, true);
+
+    }
 }

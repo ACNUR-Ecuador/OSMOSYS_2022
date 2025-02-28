@@ -1,0 +1,105 @@
+/* Clase personalizada para p-tag*/
+::ng-deep .custom-ptag .p-tag-value {
+    font-size: 13px !important;  
+  }
+
+  ::ng-deep .custom-ptag2 .p-tag-value  {
+    font-size: 13px !important; 
+  }
+
+  ::ng-deep .custom-ptag2 .p-tag-success  {
+    background-color: #deecfb;
+    color: #3d4551;
+  }
+
+.lateConfirm{
+    padding: 0 3px;
+    font-weight: bold;
+    background-color: red;
+    color:#ffffff;
+}
+
+.progressConfirm{
+    padding: 0 3px;
+    background-color: yellow;
+    font-weight: bold;
+    color:none;
+}
+
+.onTimeConfirm{
+    background-color: none;
+    color:none;
+}
+
+.completedConfirm{
+    padding: 0 3px;
+    font-weight: bold;
+    background-color: green;
+    color:#ffffff;
+}
+
+
+/* Estilos específicos para el OverlayPanel */
+.overlay-card {
+    padding: 20px;
+    max-width: 400px; /* Ajusta el tamaño máximo del panel */
+    display: flex;
+    flex-direction: column;
+  }
+
+  .overlay-content-report {
+    display: flex;
+    flex-direction: column;
+  }
+
+
+  
+  /* Estilo para los radio buttons dentro del overlay */
+  .overlay-radio-button {
+    margin-bottom: 10px; /* Separación entre los radio buttons */
+  }
+  
+  /* Estilo para el contenedor del textarea */
+  .overlay-textarea-container {
+    margin-top: 10px;
+    width: 100%;
+  }
+  
+  /* Estilo para el textarea */
+  .overlay-comment-textarea {
+    width: 100%;
+    margin-top: 10px; /* Separación de 10px entre el textarea y el label */
+  }
+  
+  /* Estilo para el mensaje de error debajo del textarea */
+  .p-error {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 5px;
+  }
+  
+  /* Botones con separación */
+  .overlay-button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  /* Estilo para los botones */
+  .overlay-button-group .p-button {
+    width: 48%; /* Ancho de 48% para que se separen los botones */
+  }
+
+  .overlay-newvalue-container {
+    display: flex; /* Usamos flexbox para que los elementos estén en línea */
+    align-items: center; /* Centra verticalmente los elementos */
+    gap: 10px; /* Añade un espacio entre el label y el input */
+  }
+  
+ 
+  
+  
+ 
+  
+
+

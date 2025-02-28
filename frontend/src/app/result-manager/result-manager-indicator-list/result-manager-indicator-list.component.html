@@ -1,0 +1,256 @@
+<div class="grid">
+    <div class="col-12">
+        <p-toast></p-toast>
+        <div class="card px-6 py-6">
+            <p-table #dt [value]="items" [columns]="selectedColumns" [rows]="10" 
+                [paginator]="true" [rowHover]="true" dataKey="id"
+                styleClass="p-datatable-striped" 
+                currentPageReportTemplate=" {first} a {last} de {totalRecords} "
+                [showCurrentPageReport]="true"
+                (sortFunction)="utilsService.customSort($event, cols)" [customSort]="true" 
+                [rowsPerPageOptions]="[10,25,50]">
+            <ng-template pTemplate="caption">
+                    <div class="grid">
+                        <div class="col-12 md:col-4 sm:col-12 flex justify-content-start">
+                            <h3 class="m-0">Indicadores de Mánager de Resultado</h3>
+                        </div>
+                        <div class="col-12 md:col-3 sm:col-12 flex justify-content-center">
+                                <form [formGroup]="periodForm">
+                                        <label for="periodI2" class="col-fixed" style="color: rgb(91, 91, 91);">Año:</label>
+                                        <p-dropdown id="periodI2" [options]="periods" optionLabel="year"
+                                                    formControlName="selectedPeriod"
+                                                    (onChange)="onPeriodChange($event.value)"
+                                                    appendTo="body"></p-dropdown>
+                                </form>
+                        </div>
+                        
+                        <div class="col-12 md:col-5 sm:col-12 flex justify-content-end">
+
+                           
+                        </div>
+                    </div>
+            </ng-template>
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th style="width: 3rem"></th> <!-- Columna para el botón de expansión -->
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+        
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr>
+            <td>
+                <button pButton pRipple type="button"
+                        [icon]="expandedRowKeys[rowData.indicator.id] ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
+                        [pRowToggler]="rowData"
+                        (click)="toggleRow(rowData)"
+                        [disabled]="!rowData.hasExecutions">
+                </button>
+
+
+            </td>
+            <td *ngFor="let col of columns">
+                <!-- Condición para 'hasExecutions' -->
+                <ng-container *ngIf="col.field === 'hasExecutions'">
+                  <p-tag *ngIf="rowData.hasExecutions" [severity]="getAnualReportStatus(rowData).confirmationSeverity" [value]="getAnualReportStatus(rowData).confirmationValue" class="custom-ptag"></p-tag>
+                  <p-tag *ngIf="!rowData.hasExecutions" severity="success" value="Sin Implementaciones" class="custom-ptag2"></p-tag>
+                </ng-container>
+            
+                <!-- Lógica normal para los otros campos -->
+                <ng-container *ngIf="col.field !== 'hasExecutions' && col.field !== 'confirmation'">
+                  {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field)) : utilsService.resolveFieldData(rowData, col.field) }}
+                </ng-container>
+              </td>
+        
+        </tr>
+        <!-- Sección de expansión -->
+        <tr *ngIf="expandedRowKeys[rowData.indicator.id]">
+            <td colspan="100%">
+                <div class="p-3">
+                    <h5>Detalles por Periodo</h5>
+                    <p-table [value]="rowData.resultManagerIndicatorQuarter" dataKey="quarter" >
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th style="width: 15%;">Periodo</th>
+                                <th style="width: 15%;">Ejecución Acumulada</th>
+                                <th style="width: 15%;">Datos Validados</th>
+                                <th style="width: 40%; text-align: center;">Detalles</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-quarterData>
+                            <tr>
+                                <td>Q{{ quarterData.quarter }}</td>
+                                <td>{{ getQuarterAccumulatedExecution(quarterData.quarter,rowData.resultManagerIndicatorQuarter) }}</td>
+                                <td>
+                                    <span [ngClass]="{
+                                        'lateConfirm': getQuarterConfirmationRate(quarterData).confirmationStatus === 'late',
+                                        'progressConfirm': getQuarterConfirmationRate(quarterData).confirmationStatus === 'inProgress',
+                                        'completedConfirm': getQuarterConfirmationRate(quarterData).confirmationStatus === 'completed',
+                                        'onTimeConfirm': getQuarterConfirmationRate(quarterData).confirmationStatus === 'onTime'
+                                      }">
+                                        {{getQuarterConfirmationRate(quarterData).confirmationRate}}</span>
+                                </td>
+                                <td>
+                                    <div style="display: flex; gap: 10px; width: 100%; justify-content: center;">
+                                        <button pButton icon="pi pi-check-square" label="Validación de Datos"
+                                            class="p-button p-button-primary p-mr-2"
+                                            
+                                            (click)="showDissPopulationView(quarterData,rowData)">
+        
+                                        </button>
+                                        <button pButton icon="pi pi-eye" label="Ver por Implementación"
+                                            class="p-button p-button-primary p-mr-2"
+                                            style="background-color: #3a87d4; border: none;"
+                                            (click)="showImplementationTypeView(quarterData,rowData)">
+                                        </button>
+                                                            
+                                    
+
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                    
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+
+</p-table>
+
+
+        </div>
+    </div>
+</div>
+
+<!--Population Type View -->
+    <p-dialog [(visible)]="showPopulationDialog" [style]="{width: '60%'}" [header]="'Ejecución por Tipo de Población del Q'+selectedQuarterYearOrder" [modal]="true"
+              [closable]="false">
+        <ng-template pTemplate="content">
+            <p-messages></p-messages>
+            <p-messages severity="warn" *ngIf="selectedIndicator.quarterReportCalculation=='AGGREGATION_RULE'">
+              <ng-template pTemplate>
+                  <span class="custom-message" style="color: #D9A301; margin-right: 0.5rem;font-weight: bold;">RECUERDA, 
+                    
+                  </span>
+                  <span class="custom-message"> {{selectedIndicator?.aggregationRuleComment}}</span>
+              </ng-template>
+            </p-messages>
+            <br *ngIf="selectedIndicator.quarterReportCalculation!=='AGGREGATION_RULE'">
+            <p-table [value]="tableData">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Tipo de Población</th>
+                    <th>Ejecución Acumulada</th>
+                    <th *ngIf="selectedIndicator.quarterReportCalculation=='AGGREGATION_RULE'">Valor a Reportar</th>
+                    <th>Confirmado</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row>
+                  <tr>
+                    <td>{{ row.populationType.name }}</td>
+                    <td>{{ row.accumulatedExecution }}</td>
+                    <td *ngIf="selectedIndicator.quarterReportCalculation=='AGGREGATION_RULE'">
+                      <input style="width: 45%;" type="number" pInputText [min]="0"
+                              [(ngModel)]="row.reportValue" >
+                    </td>
+                    <td>
+                      <p-checkbox (onChange)="onCheckedChange()" [(ngModel)]="row.confirmation" [binary]="true"></p-checkbox>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="footer" *ngIf="selectedIndicator.quarterReportCalculation=='AGGREGATION_RULE'">
+                  <tr>
+                      <td ><strong>Total:</strong></td>
+                      <td>
+                      </td>
+                      <td>{{getAccumulatedTotal()}}</td>
+                      <td></td>
+                  </tr>
+              </ng-template>
+              </p-table>
+
+              <div class="overlay-textarea-container" *ngIf="tableData.length > 0">
+                <label for="reportCommentI">Comentario:</label>
+                <textarea pInputTextarea
+                          id="reportCommentI"
+                          [(ngModel)]="selectedQuarter.reportComment"
+                          [autoResize]="true"
+                          rows="3"
+                          class="overlay-comment-textarea">
+                </textarea>
+        
+                <small class="p-error" *ngIf="(selectedIndicator.quarterReportCalculation=='AGGREGATION_RULE' ||(selectedIndicator.quarterReportCalculation!=='AGGREGATION_RULE' && !isAllChecked))  && !selectedQuarter.reportComment">
+                  El comentario es obligatorio
+                </small>
+              </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <button *ngIf="tableData.length > 0" pButton type="button"
+                    pRipple label="Guardar" icon="pi pi-check" [disabled]="validateReportForm()" (click)="saveItem()"
+            ></button>
+            <button pButton type="button" pRipple label="Cancelar" icon="pi pi-times" class="p-button-secondary"
+                    (click)="cancelDialog()"></button>
+
+        </ng-template>
+    </p-dialog>
+<!--Quarter Implementation Type View -->
+    <p-dialog [(visible)]="showImplementationDialog" [style]="{width: '50%'}"  [header]="'Ejecución por Tipo de Implementación del Q'+selectedQuarterYearOrder" [modal]="true"
+              [closable]="false">
+        <ng-template pTemplate="content">
+            <p-messages></p-messages>
+            <br>
+            <p-table [value]="implTable.partnerImpl" ngClass="impl-table">
+                <ng-template pTemplate="caption">
+                    <h5>Implementación por Socios</h5>
+                </ng-template>
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Socio</th>
+                    <th>Ejecución Acumulada</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row>
+                  <tr>
+                    <td class="table-title">{{ row.partner }}</td>
+                    <td>{{ row.execution }}</td>
+                  </tr>
+                </ng-template>
+            </p-table>
+              <br>
+              <p-table [value]="implTable.officeImpl" ngClass="impl-table">
+                <ng-template pTemplate="caption">
+                    <h5>Implementación Directa</h5>
+                </ng-template>
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Oficina</th>
+                    <th>Ejecución Acumulada</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row>
+                  <tr>
+                    <td class="table-title">{{ row.office }}</td>
+                    <td>{{ row.execution }}</td>
+                  </tr>
+                </ng-template>
+            </p-table>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <button pButton type="button" pRipple label="Cerrar" icon="pi pi-times" class="p-button-secondary"
+                    (click)="cancelDialog()"></button>
+
+        </ng-template>
+    </p-dialog>
+
+
+
+
+

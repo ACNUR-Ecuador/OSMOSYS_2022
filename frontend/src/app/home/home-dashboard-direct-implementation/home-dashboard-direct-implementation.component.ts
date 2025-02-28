@@ -131,7 +131,7 @@ export class HomeDashboardDirectImplementationComponent implements OnInit {
         ).subscribe(value => {
             this.indicatorExecutions = value;
             this.countPerformanceIndicators = this.indicatorExecutions.length;
-            this.countPerformanceIndicatorsLate = this.indicatorExecutions.filter(value1 => value1.late).length;
+            this.countPerformanceIndicatorsLate = this.indicatorExecutions.filter(value1 => value1.late==='LATE').length;
             this.indicatorExecutionOptions = this.indicatorExecutions
                 .map(value1 => {
                     return {
