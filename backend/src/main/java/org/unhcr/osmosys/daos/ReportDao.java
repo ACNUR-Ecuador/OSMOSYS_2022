@@ -249,6 +249,7 @@ public class ReportDao {
                 " and (q.state is null or q.state =:state )" +
                 " and (m.state is null or m.state =:state )" +
                 " and fpu.id =:focalPointId " +
+                " and fpa.state =:state " +
                 " and ( " +
                 " (m.year <= :currentYear )" +
                 " or (m.year = :currentYear and m.monthYearOrder <= :currentMonth )" +

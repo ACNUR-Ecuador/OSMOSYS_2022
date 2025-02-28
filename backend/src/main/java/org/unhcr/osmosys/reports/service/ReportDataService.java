@@ -784,7 +784,7 @@ public class ReportDataService {
             if (CollectionUtils.isEmpty(dataDto)) {
                 return null;
             }
-            return this.getLateReport(dataDto, false, false);
+            return this.getLateReport(dataDto, true, true);
         }
     }
 
