@@ -42,6 +42,16 @@
             </build>
         </profile>
         <profile>
+            <id>rba</id>
+            <properties>
+                <datasource.name>osmosys_rba</datasource.name>
+                <context-root>osmosys_rba</context-root>
+                <hibernate.show_sql>false</hibernate.show_sql>
+                <warName>osmosys_rba</warName>
+                <output.dir>${project.build.directory}/rba</output.dir>
+            </properties>
+        </profile>
+        <profile>
             <id>ectest</id>
             <properties>
                 <datasource.name>osmosys_ec_test</datasource.name>

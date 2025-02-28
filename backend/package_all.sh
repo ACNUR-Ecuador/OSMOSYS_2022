@@ -1,6 +1,6 @@
 #!/bin/bash
 mvn clean
-profiles=("cri" "ecu" "mex" "per" "slv" "test" "ven")
+profiles=("cri" "ecu" "mex" "per" "slv" "test" "ven" "rba")
 for profile in "${profiles[@]}"
 do
   mvn package -P$profile
