@@ -132,6 +132,7 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "indicator_category", type = String.class),
                                 @ColumnResult(name = "late_months", type = String.class),
                                 @ColumnResult(name = "focal_point", type = String.class),
+                                @ColumnResult(name = "partner_supervisor", type = String.class),
                         })})
 
 @SqlResultSetMapping(
