@@ -1,10 +1,12 @@
 package com.sagatechs.generics.webservice.service;
 
 
+import com.sagatechs.generics.appConfiguration.AppConfigurationKey;
 import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.servicio.UserService;
+import com.sagatechs.generics.service.EmailService;
 import com.sagatechs.generics.utils.DateUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.ReportDao;
@@ -93,6 +95,9 @@ public class TestEndpoint {
     StatementImportService statementImportService;
 
     @Inject
+    EmailService emailService;
+
+    @Inject
     ProjectsImportService projectsImportService;
     @Inject
     ProjectIndicatorsImportService projectIndicatorsImportService;
@@ -139,22 +144,11 @@ public class TestEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public PeriodWeb test2() throws GeneralAppException {
         // this.importService.catalogImport();
-        LOGGER.info("inicio");
-        PeriodWeb period = this.periodService.getWebById(2L);
-        LOGGER.info(period.getPeriodGenderDissagregationOptions());
-        LOGGER.info(period.getPeriodPopulationTypeDissagregationOptions());
-             LOGGER.info(period.getPeriodGenderDissagregationOptions());
-// indicator values creation
-/*        Period period = this.periodService.getWithDissagregationOptionsById(2L);
+        LOGGER.info("Envio de email");
+        LOGGER.info("Puerto: " + this.appConfigurationService.findValorByClave(AppConfigurationKey.EMAIL_SMTP_PORT));
 
-
-        List<IndicatorValue> r = this.indicatorValueService.createIndicatorValueDissagregationStandardForMonth(DissagregationType.DIVERSIDAD_EDAD, null, period);
-
-        for (IndicatorValue indicatorValue : r) {
-            LOGGER.info(indicatorValue);
-        }*/
-
-        return period;
+        emailService.sendEmailMessage("danygancino@gmail.com", "danygancino@gmail.com", "Hola", "Hola");
+        return null;
     }
 
     @Path("tester")

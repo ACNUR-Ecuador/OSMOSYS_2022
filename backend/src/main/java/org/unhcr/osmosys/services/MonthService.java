@@ -551,15 +551,15 @@ public class MonthService {
         List<Month> unlockedMonthsMonthlyGeneral = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusGeneralIndicators(month, year, !block);
         unlockedMonthsMonthlyGeneral.forEach(month1 -> month1.setBlockUpdate(block));
         monthsToUpdate.addAll(unlockedMonthsMonthly);
-        // quarterly
+        // quarterly // desbloqueo siempre
         if (currentMonth == 3 || currentMonth == 6 || currentMonth == 9 || currentMonth == 12) {
             // this is last month of quarter
             QuarterEnum quarter = MonthEnum.getQuarterByMonthNumber(currentMonth);
             List<MonthEnum> monthsOfQuarter = Arrays.stream(MonthEnum.values()).filter(monthEnum -> monthEnum.getQuarterEnum().equals(quarter)).sorted((o1, o2) -> o2.getOrder() - o1.getOrder()).collect(Collectors.toList());
             for (MonthEnum monthEnum : monthsOfQuarter) {
-                List<Month> unlockedMonthsQuarterM = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, year, false, Frecuency.TRIMESTRAL);
+                List<Month> unlockedMonthsQuarterM = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, year, !block, Frecuency.TRIMESTRAL);
                 unlockedMonthsQuarterM.forEach(month1 -> month1.setBlockUpdate(block));
-                List<Month> unlockedMonthsQuarterMGI = this.monthDao.getActiveGeneralIndicatorMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, year, false);
+                List<Month> unlockedMonthsQuarterMGI = this.monthDao.getActiveGeneralIndicatorMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, year, !block);
                 unlockedMonthsQuarterMGI.forEach(month1 -> month1.setBlockUpdate(block));
                 monthsToUpdate.addAll(unlockedMonthsQuarterMGI);
             }
@@ -575,7 +575,11 @@ public class MonthService {
                 monthsOfSemester = new ArrayList<>(Arrays.asList(MonthEnum.JULIO, MonthEnum.AGOSTO, MonthEnum.SEPTIEMBRE, MonthEnum.OCTUBRE, MonthEnum.NOVIEMBRE, MonthEnum.DICIEMBRE));
             }
             for (MonthEnum monthEnum : monthsOfSemester) {
-                List<Month> unlockedMonthsSemesterM = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, year, false, Frecuency.SEMESTRAL);
+
+
+
+
+                List<Month> unlockedMonthsSemesterM = this.monthDao.getActiveMonthsAndMonthAndYearAndBlockingStatusAndFrecuency(monthEnum, year, !block, Frecuency.SEMESTRAL);
                 unlockedMonthsSemesterM.forEach(month1 -> month1.setBlockUpdate(block));
                 monthsToUpdate.addAll(unlockedMonthsSemesterM);
             }

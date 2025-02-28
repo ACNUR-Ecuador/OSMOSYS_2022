@@ -19,11 +19,10 @@
                         <div class="field col-12 md:col-4">
                             <!--suppress HtmlUnknownAttribute -->
                             <label htmlFor="codeI">Número de Acuerdo *:</label>
-                            <input type="text" pInputText id="codeI" formControlName="code" autofocus />
+                            <input type="text" pInputText id="codeI" formControlName="code" autofocus  autocomplete="new-password"/>
                             <small class="p-error"
                                 *ngIf="utilsService.showErrorForm('code',formItem)">{{utilsService.getErrorMessageForm('code',
                                 formItem)}}</small>
-
                         </div>
                         <div class="field col-12 md:col-8">
                             <label htmlFor="nameI">Título del Proyecto *:</label>
