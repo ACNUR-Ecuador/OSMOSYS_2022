@@ -1,6 +1,4 @@
-
-`npm install` solo para la primera compilacion 
-# osmosys Ecuador
+# osmosys el salvador
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.6.
 
@@ -10,9 +8,8 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app w
 
 ## Production
 run
-`ng build --configuration production --base-href /osmosys/`
-
-`node ./build/post-build.js`
+`npm run build:all`
+`./build-all-operation.sh`
 
 ## Code scaffolding
 

@@ -9,37 +9,37 @@ import {HabitabilityComponent} from "./2022/habitability/habitability.component"
 import {ResettlementComponent} from "./2022/resettlement/resettlement.component";
 import {SpecialNeedsComponent} from "./2022/special-needs/special-needs.component";
 import {LivehoodsComponent} from "./2022/livehoods/livehoods.component";
-import {ProductIndicatorsComponent} from "./2022/product-indicators/product-indicators.component";
+import {ProductIndicatorsComponent} from "./powerbi/2023/product-indicators/product-indicators.component";
 import {RbaIndicatorsComponent} from "./2022/rba-indicators/rba-indicators.component";
 import {IndicatorComparisonComponent} from "./2022/indicator-comparison/indicator-comparison.component";
 import {IndicatorTrendsComponent} from "./2022/indicator-trends/indicator-trends.component";
 import {ProductIndicators2021Component} from "./2021/product-indicators2021/product-indicators2021.component";
 import {Beneficiaries2021Component} from "./2021/beneficiaries2021/beneficiaries2021.component";
 import {DataExportComponent} from "./data-export/data-export.component";
-import { PiIndicators2023Component } from './2023/pi-indicators2023/pi-indicators2023.component';
-import {ProductIndicators2023Component} from "./2023/product-indicators2023/product-indicators2023.component";
-import { TrendsIndicators2023Component } from './2023/trends-indicators2023/trends-indicators2023.component';
-import { GeneralIndicators2023Component } from './2023/general-indicators2023/general-indicators2023.component';
-import { RBAIndicators2023Component } from './2023/rbaindicators2023/rbaindicators2023.component';
-import { MYRP2023Component } from './2023/myrp2023/myrp2023.component';
-import { Myrp2022Component } from './2022/myrp2022/myrp2022.component';
-import { M } from '@fullcalendar/resource/internal-common';
+
+
+import {GeneralIndicatorComponent} from "./powerbi/2023/general-indicator/general-indicator.component";
+import {PerfilesDePoblacionComponent} from "./2024/perfiles-de-poblacion/perfiles-de-poblacion.component";
+import {ComunidadesComponent} from "./2024/comunidades/comunidades.component";
+import {PowerBiReportTemplateComponent} from "./power-bi-report-template/power-bi-report-template.component";
 
 const routes: Routes = [
     {
         path: '',
         children: [
+            {path: 'powerbiReportTemplate', component: PowerBiReportTemplateComponent},
             {path: 'indicatorsCatalog', component: IndicatorCatalogReportsComponent},
             {path: 'lateReports', component: LateReportsComponent},
             {path: 'lateReports', component: LateReportsComponent},
             {path: 'dataExport', component: DataExportComponent},
+            //2024 sv
+            // powerbi sv
+            {path: 'powerbi/perfilesDePoblacion', component: PerfilesDePoblacionComponent},
+            {path: 'powerbi/mapaComunidades', component: ComunidadesComponent},
+            {path: 'powerbi/productIndicators2023', component: ProductIndicatorsComponent},
+            {path: 'powerbi/generalIndicator2023', component: GeneralIndicatorComponent},
             //2023
-            {path: '2023/productIndicators2023', component: ProductIndicators2023Component},
-            {path: '2023/piIndicators2023', component: PiIndicators2023Component},
-            {path: '2023/trendsIndicators2023', component: TrendsIndicators2023Component},
-            {path: '2023/generalIndicators2023', component: GeneralIndicators2023Component},
-            {path: '2023/rbaindicators2023', component: RBAIndicators2023Component},
-            {path: '2023/myrp2023', component: MYRP2023Component},
+
             // 2022
             {path: '2022/shelter', component: ShelterComponent},
             {path: '2022/cbi', component: CbiComponent},
@@ -52,7 +52,6 @@ const routes: Routes = [
             {path: '2022/rbaIndicators', component: RbaIndicatorsComponent},
             {path: '2022/indicatorComparison', component: IndicatorComparisonComponent},
             {path: '2022/indicatorTrends', component: IndicatorTrendsComponent},
-            {path: '2022/myrp2022', component: Myrp2022Component},
             // 2021
             {path: '2021/productIndicators2021', component: ProductIndicators2021Component},
             {path: '2021/beneficiaries2021', component: Beneficiaries2021Component},

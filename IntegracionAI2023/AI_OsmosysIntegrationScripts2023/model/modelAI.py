@@ -1741,7 +1741,7 @@ class SubFormAT4_01:
 class SubFormACBI1_01:
     def __init__(self,
                  mes,
-                 ccjq8tlcza3zqdb,
+                 colltmgkykvhxgij6,
                  rmrp,
                  poblacion_meta,
                  modalidad_impl,
@@ -1759,7 +1759,7 @@ class SubFormACBI1_01:
                  CBI1_01_CUAL
                  ):
         self.mes = mes
-        self.ccjq8tlcza3zqdb = ccjq8tlcza3zqdb
+        self.colltmgkykvhxgij6 = colltmgkykvhxgij6
         self.rmrp = rmrp
         self.poblacion_meta = poblacion_meta
         self.modalidad_impl = modalidad_impl
@@ -1779,7 +1779,7 @@ class SubFormACBI1_01:
     def __str__(self):
         to_return = {
             "mes": self.mes,
-            "ccjq8tlcza3zqdb": self.ccjq8tlcza3zqdb,
+            "colltmgkykvhxgij6": self.colltmgkykvhxgij6,
             "rmrp": self.rmrp,
             "poblacion_meta": self.poblacion_meta,
             "modalidad_impl": self.modalidad_impl,

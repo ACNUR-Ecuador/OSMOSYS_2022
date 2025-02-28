@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {PrimeNGConfig} from 'primeng/api';
 import {LayoutService} from './layout/service/app.layout.service';
 import {EnumsService} from './services/enums.service';
@@ -7,6 +7,8 @@ import {CalendarOptions} from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import {VersionCheckService} from "./services/version-check.service";
 import {environment} from "../environments/environment";
+import {StandardDissagregationsService} from "./services/standardDissagregations.service";
+import {AppConfigurationService} from "./services/app-configuration.service";
 
 @Component({
     selector: 'app-root',
@@ -24,6 +26,8 @@ export class AppComponent implements OnInit {
         private primengConfig: PrimeNGConfig,
         private layoutService: LayoutService,
         private enumsService: EnumsService,
+        private appConfigurationService: AppConfigurationService,
+        private standardDissagregationsService: StandardDissagregationsService,
         private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
         private versionCheckService: VersionCheckService) {
         angulartics2GoogleAnalytics.startTracking();
@@ -46,9 +50,19 @@ export class AppComponent implements OnInit {
             scale: 12                           // size of the body font size to scale the whole application
         };
         this.layoutService.onConfigUpdate();
+
+        if (window.innerWidth && window.innerWidth < 1281) {
+            this.layoutService.config.scale = 10;
+        } else {
+            this.layoutService.config.scale = 12;
+        }
+
         this.applyScale();
 
+
         this.enumsService.loadcache();
+        this.standardDissagregationsService.loadcache();
+        this.appConfigurationService.loadcache();
 
         this.versionCheckService.initVersionCheck(environment.versionCheckURL);
         this.versionCheckService.checkVersion(environment.versionCheckURL);
@@ -56,5 +70,20 @@ export class AppComponent implements OnInit {
 
     applyScale() {
         document.documentElement.style.fontSize = this.layoutService.config.scale + 'px';
+    }
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+        console.log(window.innerWidth);
+        if (window.innerWidth && window.innerWidth < 1281) {
+            this.layoutService.config.scale = 10;
+        } else {
+            this.layoutService.config.scale = 12;
+        }
+        console.log("new scale: "+this.layoutService.config.scale)
+        this.layoutService.onConfigUpdate();
+        this.applyScale();
+
+
     }
 }

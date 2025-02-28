@@ -18,7 +18,7 @@ import { HabitabilityComponent } from './2022/habitability/habitability.componen
 import { LivehoodsComponent } from './2022/livehoods/livehoods.component';
 import { ResettlementComponent } from './2022/resettlement/resettlement.component';
 import { SpecialNeedsComponent } from './2022/special-needs/special-needs.component';
-import { ProductIndicatorsComponent } from './2022/product-indicators/product-indicators.component';
+
 import { RbaIndicatorsComponent } from './2022/rba-indicators/rba-indicators.component';
 import { IndicatorComparisonComponent } from './2022/indicator-comparison/indicator-comparison.component';
 import { IndicatorTrendsComponent } from './2022/indicator-trends/indicator-trends.component';
@@ -30,10 +30,12 @@ import {SplitButtonModule} from "primeng/splitbutton";
 import { PiIndicators2023Component } from './2023/pi-indicators2023/pi-indicators2023.component';
 import { ProductIndicators2023Component } from './2023/product-indicators2023/product-indicators2023.component';
 import { TrendsIndicators2023Component } from './2023/trends-indicators2023/trends-indicators2023.component';
-import { GeneralIndicators2023Component } from './2023/general-indicators2023/general-indicators2023.component';
-import { RBAIndicators2023Component } from './2023/rbaindicators2023/rbaindicators2023.component';
-import { MYRP2023Component } from './2023/myrp2023/myrp2023.component';
-import { Myrp2022Component } from './2022/myrp2022/myrp2022.component';
+import { GeneralIndicatorComponent } from './powerbi/2023/general-indicator/general-indicator.component';
+import {ProductIndicatorsComponent} from "./powerbi/2023/product-indicators/product-indicators.component";
+import { PerfilesDePoblacionComponent } from './2024/perfiles-de-poblacion/perfiles-de-poblacion.component';
+import { ComunidadesComponent } from './2024/comunidades/comunidades.component';
+import { PowerBiReportTemplateComponent } from './power-bi-report-template/power-bi-report-template.component';
+import {SharedModule} from "../shared/shared.module";
 
 
 @NgModule({
@@ -57,10 +59,11 @@ import { Myrp2022Component } from './2022/myrp2022/myrp2022.component';
     PiIndicators2023Component,
     ProductIndicators2023Component,
     TrendsIndicators2023Component,
-    GeneralIndicators2023Component,
-    RBAIndicators2023Component,
-    MYRP2023Component,
-    Myrp2022Component
+    GeneralIndicatorComponent,
+    PerfilesDePoblacionComponent,
+    ComunidadesComponent,
+    PowerBiReportTemplateComponent,
+
   ],
     imports: [
         CommonModule,
@@ -74,7 +77,8 @@ import { Myrp2022Component } from './2022/myrp2022/myrp2022.component';
         ButtonModule,
         FormsModule,
         CardModule,
-        SplitButtonModule
+        SplitButtonModule,
+        SharedModule
     ]
 })
 export class ReportsModule { }
