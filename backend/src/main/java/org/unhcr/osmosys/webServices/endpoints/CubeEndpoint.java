@@ -208,6 +208,19 @@ public class CubeEndpoint {
         return tagsDTOS;
     }
 
+
+    @Path("/tagIndicatorValues/")
+    @GET
+    @BasicSecured
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<TagIndicatorValuesDTO> getTagIndicatorValues() {
+        long lStartTime = System.nanoTime();
+        List<TagIndicatorValuesDTO> tagIndicatorValues  = this.cubeService.getTagIndicatorValues();
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds count TagIndicatorValues:" + (lEndTime - lStartTime) / 1000000000);
+        return tagIndicatorValues;
+    }
+
     @Path("/monthQuarterYearTable")
     @GET
     @BasicSecured

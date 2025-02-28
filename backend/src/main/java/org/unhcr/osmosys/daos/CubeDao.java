@@ -34,6 +34,11 @@ public class CubeDao {
             "from  " +
             "cube.tags t ";
 
+    private static final String tagIndicatorValues = "SELECT " +
+            "* " +
+            "from  " +
+            "cube.tag_indicator_values t ";
+
     private static final String projectManagersTable = "SELECT " +
             "* " +
             "from  " +
@@ -241,6 +246,11 @@ public class CubeDao {
     }
 
 
+    public List<TagIndicatorValuesDTO> getTagIndicatorValues() {
+        String sql = CubeDao.tagIndicatorValues ;
+        Query q = this.entityManager.createNativeQuery(sql, "TagIndicatorValuesDTOMapping");
+        return q.getResultList();
+    }
 
     public List<MonthQuarterYearDTO> getMonthQuarterYearTable() {
         Query q = this.entityManager.createNativeQuery(CubeDao.monthQuarterYearTable, "MonthQuarterYearDTOMapping");

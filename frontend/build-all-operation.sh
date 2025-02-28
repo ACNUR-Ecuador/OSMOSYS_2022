@@ -5,5 +5,6 @@ node ./build/post-build-operation.js per
 node ./build/post-build-operation.js slv
 node ./build/post-build-operation.js test
 node ./build/post-build-operation.js ven
+node ./build/post-build-operation.js rba
 
 zip -r dist.zip dist

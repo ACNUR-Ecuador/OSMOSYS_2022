@@ -168,6 +168,12 @@ public class CubeService {
     }
 
 
+  public List<TagIndicatorValuesDTO> getTagIndicatorValues() {
+        List<TagIndicatorValuesDTO> tagIndicatorValuesDTOS = this.cubeDao.getTagIndicatorValues();
+        return tagIndicatorValuesDTOS;
+    }
+
+
 
     public List<MonthQuarterYearDTO> getMonthQuarterYearTable() {
         return this.cubeDao.getMonthQuarterYearTable();

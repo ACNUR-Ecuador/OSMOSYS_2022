@@ -368,6 +368,16 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "confirmed", type = Boolean.class),
                                 @ColumnResult(name = "value", type = Long.class),
                         })})
+
+@SqlResultSetMapping(
+        name = "TagIndicatorValuesDTOMapping",
+        classes = {
+                @ConstructorResult(
+                        targetClass = TagIndicatorValuesDTO.class,
+                        columns = {
+                                @ColumnResult(name = "iv_id", type = Long.class),
+                                @ColumnResult(name = "tag_id", type = Long.class),
+                        })})
 public class HelperCube extends BaseEntity<Long> {
 
     @Id
