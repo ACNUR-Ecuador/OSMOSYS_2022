@@ -157,7 +157,7 @@ public class ReportDao {
             "ORDER BY 1,2,3,4";
     private static final String late_months_partners = "" +
             "SELECT " +
-            "pr.name project, org.acronym implementer, COALESCE(i.code, '00000') indicator_code, COALESCE (i.description, '# total de beneficiarios') indicator, i.category indicator_category, string_agg(m.month, ', ' ORDER BY m.month_year_order) late_months,  fp.name focal_point " +
+            "pr.name project, org.acronym implementer, COALESCE(i.code, '00000') indicator_code, COALESCE (i.description, '# total de beneficiarios') indicator, i.category indicator_category, string_agg(m.month, ', ' ORDER BY m.month_year_order) late_months,  fp.name focal_point, ps.name partner_supervisor " +
             "FROM " +
             "osmosys.indicator_executions ie  " +
             "LEFT JOIN osmosys.indicators i on ie.performance_indicator_id=i.id " +
@@ -165,7 +165,8 @@ public class ReportDao {
             "INNER JOIN osmosys.organizations org on pr.organization_id=org.id " +
             "INNER JOIN osmosys.quarters q on ie.id=q.indicator_execution_id and ie.state='ACTIVO'  and q.state='ACTIVO' " +
             "INNER JOIN osmosys.months m on q.id=m.quarter_id and m.state='ACTIVO'   " +
-            "INNER JOIN security.user fp on pr.focal_point_id=fp.id " +
+            "INNER JOIN security.user fp on fpa.focal_pointer_id=fp.id " +
+            "INNER JOIN osmosys.user ps on pr.partner_manager=ps.id " +
             " " +
             "WHERE " +
             // "pr.organization_id=22 and " +
@@ -174,7 +175,7 @@ public class ReportDao {
             "and m.total_execution is null ";
 
     private static final String late_months_review_partners = "SELECT " +
-            "pr.name project, org.acronym implementer, COALESCE(i.code, '00000') indicator_code, COALESCE (i.description, '# total de beneficiarios') indicator, i.category indicator_category, string_agg(m.month, ', ' ORDER BY m.month_year_order) late_months,  fp.name focal_point  " +
+            "pr.name project, org.acronym implementer, COALESCE(i.code, '00000') indicator_code, COALESCE (i.description, '# total de beneficiarios') indicator, i.category indicator_category, string_agg(m.month, ', ' ORDER BY m.month_year_order) late_months,  fp.name focal_point, ps.name partner_supervisor " +
             "FROM " +
             "osmosys.indicator_executions ie  " +
             "LEFT JOIN osmosys.indicators i on ie.performance_indicator_id=i.id " +
@@ -182,7 +183,9 @@ public class ReportDao {
             "INNER JOIN osmosys.organizations org on pr.organization_id=org.id " +
             "INNER JOIN osmosys.quarters q on ie.id=q.indicator_execution_id and ie.state='ACTIVO'  and q.state='ACTIVO' " +
             "INNER JOIN osmosys.months m on q.id=m.quarter_id and m.state='ACTIVO'   " +
-            "INNER JOIN security.user fp on pr.focal_point_id=fp.id " +
+            "INNER JOIN osmosys.focal_point_assignation fpa on pr.id=fpa.project_id " +
+            "INNER JOIN security.user fp on fpa.focal_pointer_id=fp.id " +
+            "INNER JOIN osmosys.user ps on pr.partner_manager=ps.id " +
             "WHERE " +
             // "pr.organization_id=16 and " +
             " m.year=:year " +
@@ -245,7 +248,7 @@ public class ReportDao {
                 " and o.state =:state " +
                 " and (q.state is null or q.state =:state )" +
                 " and (m.state is null or m.state =:state )" +
-                " and o.project.focalPoint.id =:focalPointId " +
+                " and fpu.id =:focalPointId " +
                 " and ( " +
                 " (m.year <= :currentYear )" +
                 " or (m.year = :currentYear and m.monthYearOrder <= :currentMonth )" +

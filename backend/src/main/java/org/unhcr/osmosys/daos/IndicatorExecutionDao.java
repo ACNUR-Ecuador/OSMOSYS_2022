@@ -69,7 +69,8 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
             " SELECT DISTINCT o FROM IndicatorExecution o " +
                     " left join fetch o.indicator i " +
                     " left join fetch o.project pr " +
-                    " left join fetch pr.focalPoint fpu " +
+                    " left join fetch pr.focalPointAssignations fpa " +
+                    " left join fetch fpa.focalPointer fpu " +
                     " left join fetch pr.organization org " +
                     " left join fetch i.statement ist " +
                     " left join fetch ist.area " +
@@ -241,7 +242,8 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 " SELECT DISTINCT o FROM IndicatorExecution o " +
                         " left join fetch o.indicator i " +
                         " left join fetch o.project pr " +
-                        " left join fetch pr.focalPoint fpu " +
+                        " left join fetch pr.focalPointAssignations fpa " +
+                        " left join fetch fpa.focalPointer fpu " +
                         " left join fetch pr.organization org " +
                         " left join fetch i.statement ist " +
                         " left join fetch ist.area " +

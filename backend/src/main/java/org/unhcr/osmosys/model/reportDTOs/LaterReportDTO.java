@@ -5,7 +5,7 @@ public class LaterReportDTO {
     public LaterReportDTO() {
     }
 
-    public LaterReportDTO(String project, String implementer, String indicator_code, String indicator, String indicator_category, String late_months, String focal_point) {
+    public LaterReportDTO(String project, String implementer, String indicator_code, String indicator, String indicator_category, String late_months, String focal_point, String partner_supervisor, String helper) {
         this.project = project;
         this.implementer = implementer;
         this.indicator_code = indicator_code;
@@ -13,6 +13,8 @@ public class LaterReportDTO {
         this.indicator_category = indicator_category;
         this.late_months = late_months;
         this.focal_point=focal_point;
+        this.partner_supervisor=partner_supervisor;
+
     }
 
     public LaterReportDTO(String implementer, String indicator_code, String indicator, String indicator_category, String late_months, String supervisor, String responsible, String helper) {
@@ -32,6 +34,7 @@ public class LaterReportDTO {
     private String indicator_category;
     private String late_months;
     private String focal_point;
+    private String partner_supervisor;
 
     private  String supervisor;
     private String responsible;
@@ -106,5 +109,13 @@ public class LaterReportDTO {
 
     public void setResponsible(String responsible) {
         this.responsible = responsible;
+    }
+
+    public String getPartner_supervisor() {
+        return partner_supervisor;
+    }
+
+    public void setPartner_supervisor(String partner_supervisor) {
+        this.partner_supervisor = partner_supervisor;
     }
 }

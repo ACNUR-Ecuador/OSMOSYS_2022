@@ -885,8 +885,11 @@ public class ReportDataService {
             case "Meses con Retraso":
                 cell.setCellValue(dataRow.getLate_months());
                 break;
-            case "Punto Focal":
+            case "Responsables del Proyecto":
                 cell.setCellValue(dataRow.getFocal_point());
+                break;
+            case "Supervisor del Proyecto":
+                cell.setCellValue(dataRow.getPartner_supervisor());
                 break;
             case "Verificador de datos":
                 cell.setCellValue(dataRow.getSupervisor());
@@ -911,7 +914,8 @@ public class ReportDataService {
             } else {
                 titles.add("Meses con Retraso");
             }
-            titles.add("Punto Focal");
+            titles.add("Responsables del Proyecto");
+            titles.add("Supervisor del Proyecto");
         } else {
             titles.add("Oficina");
             titles.add("Indicador Código");
@@ -943,7 +947,8 @@ public class ReportDataService {
             } else {
                 titles.add(7000);
             }
-            titles.add(5000);
+            titles.add(8000);
+            titles.add(8000);
         } else {
             titles.add(4000);
             titles.add(2000);
@@ -1138,7 +1143,10 @@ public class ReportDataService {
                     iew.getIndicator().getDescription(),
                     iew.getIndicator().getCategory(),
                     lateMonths,
-                    iew.getProject().getFocalPoints().stream().map(UserWeb::getName).collect(Collectors.joining())
+                    String.valueOf(iew.getProject().getFocalPoints().stream().map(UserWeb::getName).collect(Collectors.joining(", "))),
+                    (iew.getProject().getPartnerManager()!=null)?iew.getProject().getPartnerManager().getName():null,
+                    null
+
             );
         } else {
             return new LaterReportDTO(
