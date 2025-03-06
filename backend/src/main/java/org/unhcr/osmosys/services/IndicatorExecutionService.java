@@ -986,7 +986,8 @@ public class IndicatorExecutionService {
         List<Canton> cantones = project.getProjectLocationAssigments().stream().filter(projectLocationAssigment -> projectLocationAssigment.getState().equals(State.ACTIVO)).map(ProjectLocationAssigment::getLocation).collect(Collectors.toList());
 
         for (IndicatorExecution indicatorExecution : indicatorExecutions) {
-            Period period = indicatorExecution.getPeriod();
+            Long periodId = indicatorExecution.getPeriod().getId();
+            Period period = periodService.getWithAllDataById(periodId);
             Indicator indicator;
 
             // recupero las asignaciones del proyecto para indicadores
