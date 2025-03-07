@@ -809,10 +809,20 @@ export class UtilsService {
             });
         });
 
+        quarterMonthResumes.sort((a, b) => {
+            const yearA = Number(a.quarterYear);
+            const yearB = Number(b.quarterYear);
+        
+            // Primero comparamos por el año
+            if (yearA !== yearB) {
+                return yearA - yearB;
+            }
+            // Si los años son iguales, comparamos por el mes
+            return a.monthOrder - b.monthOrder;
+        });
 
 
-
-        return quarterMonthResumes.sort((a, b) => a.monthOrder - b.monthOrder);
+        return quarterMonthResumes;
     }
 
 

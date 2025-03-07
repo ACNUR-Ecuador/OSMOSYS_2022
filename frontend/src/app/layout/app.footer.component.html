@@ -3,11 +3,20 @@
         <img id="footer-logo" [src]="'assets/images/logo_osmosys_blue.png'" alt="osmosys"/>
         <!--<span class="footer-copyright">&#169; Hecho con amor en el -salvador</span>-->
     </div>
-    <span (click)="showDialog = true" class="footer-copyright hover:surface-hover transition-colors transition-duration-150 cursor-pointer">V 5.0.8</span>
+    <span (click)="showDialog = true" class="footer-copyright hover:surface-hover transition-colors transition-duration-150 cursor-pointer">V 5.0.9</span>
     <span class="footer-copyright">&#169; UNHCR -Hecho en El Salvador y Ecuador-  2024</span> 
     
     <p-dialog header="Change log" [(visible)]="showDialog" [modal]="true" [style]="{width: '50vw'}" (onHide)="showDialog = false">
+        <h5 style="margin-top: 1rem;">Versión 5.0.9 - 2025-03-07 </h5>
+        <ul>
+            <li>Se corrigen los valores de la columna "Desagregaciones" en el reporte anual de Proyecto.</li>
+            <li>Se corrige el despliegue de la tabla de reporte de valores trimestrales al extender la fecha final de un proyecto.</li>
+        </ul>
         <h5 style="margin-top: 1rem;">Versión 5.0.8 - 2025-03-06 </h5>
+        <ul>
+            <li>Se corrige la actualización de fechas en la edición de indicadores Socios.</li>
+        </ul>
+        <h5 style="margin-top: 1rem;">Versión 5.0.7 - 2025-02-27 </h5>
         <ul>
             <li>Se corrige la actualización de fechas en la edición de indicadores Socios.</li>
             <li>Se actualiza reportes de retraso para socios.</li>

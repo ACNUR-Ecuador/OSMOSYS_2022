@@ -1034,6 +1034,15 @@ public class ModelWebTransformationService {
         return w;
     }
 
+    public DissagregationAssignationToIndicatorWeb dissagregationAssignationToGeneralIndicatorToDissagregationAssignationIndicatorWeb(DissagregationAssignationToGeneralIndicator d, PeriodWeb period) {
+        DissagregationAssignationToIndicatorWeb w = new DissagregationAssignationToIndicatorWeb();
+        w.setId(d.getId());
+        w.setState(d.getState());
+        w.setDissagregationType(d.getDissagregationType());
+        w.setPeriod(period);
+        return w;
+    }
+
     public DissagregationAssignationToGeneralIndicator dissagregationAssignationToGeneralIndicatorWebToDissagregationAssignationToGeneralIndicator(DissagregationAssignationToGeneralIndicatorWeb w) {
         DissagregationAssignationToGeneralIndicator d = new DissagregationAssignationToGeneralIndicator();
         d.setId(w.getId());
@@ -1047,6 +1056,15 @@ public class ModelWebTransformationService {
         List<DissagregationAssignationToGeneralIndicatorWeb> r = new ArrayList<>();
         for (DissagregationAssignationToGeneralIndicator dissagregationAssignationToGeneralIndicator : d) {
             r.add(this.dissagregationAssignationToGeneralIndicatorToDissagregationAssignationToGeneralIndicatorWeb(dissagregationAssignationToGeneralIndicator));
+        }
+
+        return r;
+    }
+
+    public List<DissagregationAssignationToIndicatorWeb> dissagregationAssignationToGeneralIndicatorsToDissagregationAssignationToIndicatorsWeb(Set<DissagregationAssignationToGeneralIndicator> d, PeriodWeb period) {
+        List<DissagregationAssignationToIndicatorWeb> r = new ArrayList<>();
+        for (DissagregationAssignationToGeneralIndicator dissagregationAssignationToGeneralIndicator : d) {
+            r.add(this.dissagregationAssignationToGeneralIndicatorToDissagregationAssignationIndicatorWeb(dissagregationAssignationToGeneralIndicator, period));
         }
 
         return r;
@@ -1146,6 +1164,7 @@ public class ModelWebTransformationService {
             indicatorWeb.setCode("General");
             indicatorWeb.setDescription(ie.getPeriod().getGeneralIndicator().getDescription());
             indicatorWeb.setBlockAfterUpdate(Boolean.FALSE);
+            indicatorWeb.setDissagregationsAssignationToIndicator(this.dissagregationAssignationToGeneralIndicatorsToDissagregationAssignationToIndicatorsWeb(ie.getPeriod().getGeneralIndicator().getDissagregationAssignationsToGeneralIndicator(), iw.getPeriod()));
             iw.setIndicator(indicatorWeb);
 
 
