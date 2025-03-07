@@ -117,10 +117,11 @@ public class ReportDataService {
             map.put("indicator", ie.getIndicator() == null ? "General" : ie.getIndicator().getCode() + " - " + ie.getIndicator().getDescription());
             map.put("category", ie.getIndicator() != null ? ie.getIndicator().getCategory() : null);
             map.put("frecuency", ie.getIndicator() != null && ie.getIndicator().getFrecuency() != null ? ie.getIndicator().getFrecuency().getLabel() : Frecuency.MENSUAL.getLabel());
-            map.put("dissagregations", ie.getIndicator().getDissagregationsAssignationToIndicator().stream().map(dissagregationAssignationToIndicatorWeb -> dissagregationAssignationToIndicatorWeb.getDissagregationType().getLabel()).collect(Collectors.joining(", ")));
-            map.put("custom_dissagregations", ie.getIndicator().getCustomDissagregationAssignationToIndicators() != null ?
+            map.put("dissagregations", ie.getIndicator().getDissagregationsAssignationToIndicator().stream().filter(dissweb -> Objects.equals(dissweb.getPeriod().getId(), ie.getPeriod().getId())).map(dissagregationAssignationToIndicatorWeb -> dissagregationAssignationToIndicatorWeb.getDissagregationType().toString()).collect(Collectors.joining(", ")));
+            map.put("custom_dissagregations", ie.getIndicator().getCustomDissagregationAssignationToIndicators() != null && !ie.getIndicator().getCustomDissagregationAssignationToIndicators().isEmpty() ?
                     ie.getIndicator().getCustomDissagregationAssignationToIndicators()
                             .stream()
+                            .filter(customdissweb -> Objects.equals(customdissweb.getPeriod().getId(), ie.getPeriod().getId()))
                             .map(customDissagregationAssignationToIndicatorWeb -> customDissagregationAssignationToIndicatorWeb.getCustomDissagregation().getName())
                             .collect(Collectors.joining(", "))
                     : null
