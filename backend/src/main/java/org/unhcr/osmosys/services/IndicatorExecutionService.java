@@ -1562,6 +1562,11 @@ public class IndicatorExecutionService {
         return indicatorExecutionDao.getIndicatorExecutionsByResultManagerAndPeriodId(userId, periodId);
     }
 
+    public List<IndicatorExecutionWeb> getDirectImplementationsIndicatorExecutionsByReportUserId(Long periodId, Long userId) throws GeneralAppException {
+        List<IndicatorExecution> r = this.indicatorExecutionDao.getDirectImplementationsIndicatorExecutionsByReportUserId(periodId, userId);
+        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(r, false);
+    }
+
 
 
 

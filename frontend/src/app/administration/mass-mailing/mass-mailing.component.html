@@ -29,17 +29,24 @@ s
                     <div class="col-6 border_div text-primary"><h5>Descripción</h5></div>
                     <div class="col-6 border_div text-primary"><h5>Enviar</h5></div>
 
-                    <div class="col-6 border_div">Enviar recordatorio de reporte a socios</div>
+                    <div class="col-6 border_div flex align-items-center">Enviar recordatorio de reporte a socios</div>
                     <div class="col-6 border_div">
                         <p-button label="Enviar recordatorio a Socios" icon="pi pi-file-excel"
                                   (onClick)="sendRecordatoryToPartners()"
                                   styleClass="p-button-success mb-2"></p-button>
                     </div>
 
-                    <div class="col-6 border_div">Enviar recordatorio de reporte a colegas de Implementación directa</div>
+                    <div class="col-6 border_div flex align-items-center">Enviar recordatorio de reporte a colegas de Implementación directa</div>
                     <div class="col-6 border_div">
                         <p-button label="Enviar recordatorio Implementación Directa" icon="pi pi-file-excel"
                                   (onClick)="sendRecordatoryToId()"
+                                  styleClass="p-button-success mb-2"></p-button>
+                    </div>
+
+                    <div class="col-6 border_div flex align-items-center">Enviar recordatorio de reporte a colegas Mánagers de Resultados</div>
+                    <div class="col-6 border_div">
+                        <p-button label="Enviar recordatorio a Mánagers de Resultados" icon="pi pi-file-excel"
+                                  (onClick)="sendRecordatoryToResultManagers()"
                                   styleClass="p-button-success mb-2"></p-button>
                     </div>
 
@@ -52,17 +59,31 @@ s
                     <div class="col-6 border_div text-primary"><h5>Descripción</h5></div>
                     <div class="col-6 border_div text-primary"><h5>Enviar</h5></div>
 
-                    <div class="col-6 border_div">Enviar alerta de retrasos a socios</div>
+                    <div class="col-6 border_div flex align-items-center">Enviar alerta de retrasos a Mánagers de Proyecto</div>
                     <div class="col-6 border_div">
-                        <p-button label="Enviar alerta de retrasos a socios" icon="pi pi-file-excel"
+                        <p-button label="Enviar alerta de retrasos a Mánagers de Proyecto" icon="pi pi-file-excel"
+                                  (onClick)="sendAlertToProjectManagers()"
+                                  styleClass="p-button-success mb-2"></p-button>
+                    </div>
+
+                    <div class="col-6 border_div flex align-items-center">Enviar alerta de retrasos a Socios</div>
+                    <div class="col-6 border_div">
+                        <p-button label="Enviar alerta de retrasos a Socios" icon="pi pi-file-excel"
                                   (onClick)="sendAlertToPartners()"
                                   styleClass="p-button-success mb-2"></p-button>
                     </div>
 
-                    <div class="col-6 border_div">Enviar alerta de retrasos a colegas de Implementación Directa</div>
+                    <div class="col-6 border_div flex align-items-center">Enviar alerta de retrasos a colegas de Implementación Directa</div>
                     <div class="col-6 border_div">
                         <p-button label="Enviar alerta de retrasos a colegas de Implementación Directa" icon="pi pi-file-excel"
                                   (onClick)="sendAlertToId()"
+                                  styleClass="p-button-success mb-2"></p-button>
+                    </div>
+
+                    <div class="col-6 border_div flex align-items-center">Enviar alerta de retrasos a Mánagers de Resultados</div>
+                    <div class="col-6 border_div">
+                        <p-button label="Enviar alerta de retrasos a Mánagers de Resultados" icon="pi pi-file-excel"
+                                  (onClick)="sendAlertToResultManagers()"
                                   styleClass="p-button-success mb-2"></p-button>
                     </div>
 

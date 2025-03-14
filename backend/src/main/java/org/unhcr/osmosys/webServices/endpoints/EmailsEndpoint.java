@@ -38,12 +38,20 @@ public class EmailsEndpoint {
         this.messageReminderService.sendDirectImplementationReminders();
     }
 
+    @Path("/recordatoryResultManagers")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public void recordatoryResultManagers() throws GeneralAppException {
+        this.messageReminderService.sendResultsManagerReminders();
+    }
+
     @Path("/alertPartners")
     @GET
     @Secured
     @Produces(MediaType.APPLICATION_JSON)
     public void alertPartners() throws GeneralAppException {
-        this.messageAlertServiceV2.sendPartnersAlertsToFocalPoints();
+        this.messageAlertServiceV2.sendPartnersAlertsToPartners();
     }
 
     @Path("/alertsId")
@@ -53,5 +61,22 @@ public class EmailsEndpoint {
     public void alertsId() throws GeneralAppException {
         this.messageAlertServiceV2.sendDirectImplementationAlertsToSupervisors();
     }
+
+    @Path("/alertProjectManagers")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public void alertProjectManagers() throws GeneralAppException {
+        this.messageAlertServiceV2.sendPartnersAlertsToFocalPoints();
+    }
+
+    @Path("/alertResultManagers")
+    @GET
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public void alertResultManagers() throws GeneralAppException {
+        this.messageAlertServiceV2.sendIndicatorAlertsToResultManagers();
+    }
+
 
 }

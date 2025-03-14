@@ -129,4 +129,22 @@ public class AppConfigurationService {
         }
         return Arrays.stream(valuesString).map(Integer::parseInt).collect(Collectors.toList());
     }
+    public Integer getResultManagerLimitDay() {
+        String valusS = this.findValorByClave(AppConfigurationKey.RESULT_MANAGER_LIMIT_DAY);
+
+        if (StringUtils.isBlank(valusS)) {
+            return null;
+        } else {
+            return Integer.parseInt(valusS);
+        }
+    }
+    public Integer getResultManagerReminderDay() {
+        String valusS = this.findValorByClave(AppConfigurationKey.RESULT_MANAGER_REMINDER_DAY);
+
+        if (StringUtils.isBlank(valusS)) {
+            return null;
+        } else {
+            return Integer.parseInt(valusS);
+        }
+    }
 }
