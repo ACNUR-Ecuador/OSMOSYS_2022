@@ -612,6 +612,30 @@ export class ResultManagerIndicatorListComponent implements OnInit {
         this.isAllChecked=this.tableData.every(item=>item.confirmation===true)
       }
 
+      generateResultManagerIndicatorReport(){
+        const period:Period=this.periodForm.get('selectedPeriod').value
+        const user=this.userService.getLogedUsername();
+        let reportObservable = null;
+        reportObservable = this.reportsService.getResultManagerIndicatorsValidationReportByPeriodIdAndUserId(period.id,user.id);
+        reportObservable.subscribe((response: HttpResponse<Blob>) => {
+            if (response.status === 204) {
+                this.messageService.add({
+                    severity: 'info',
+                    summary: 'No se encontraron Indicadores con implementaciones para este Año',
+                });
+            } else {
+                this.utilsService.downloadFileResponse(response);
+            }
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al Generar el Reporte',
+                detail: error.error.message,
+                life: 3000
+            });
+        });
+      }
+
    
 
     

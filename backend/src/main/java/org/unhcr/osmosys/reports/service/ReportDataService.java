@@ -85,6 +85,15 @@ public class ReportDataService {
         return this.resultManagersIndicatorsReports(resultManagers, periodId);
 
     }
+
+    public List<Map<String, Object>> resultManagersIndicatorsReportByPeriodIdAndUserId(Long periodId, Long resultManagerId) throws GeneralAppException {
+        List<User> resultManagers = new ArrayList<>();
+        User rm= userService.getById(resultManagerId);
+        resultManagers.add(rm);
+        return this.resultManagersIndicatorsReports(resultManagers, periodId);
+
+    }
+
     /*--Result Managers indicators validation Maps--*/
     public List<Map<String, Object>> resultManagersIndicatorsReports(List<User> resultManagers, Long periodId) throws GeneralAppException{
         List<Map<String, Object>> r = new ArrayList();
