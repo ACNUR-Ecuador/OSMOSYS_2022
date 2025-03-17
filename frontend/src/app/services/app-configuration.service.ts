@@ -57,4 +57,8 @@ export class AppConfigurationService {
         const value=this.cacheMap.get('CAN_UNHCR_EDIT_LOCATION');
         return value?(value.toLowerCase()==='true'):false;
     }
+    public getResultManagerLimitDay(): number {
+        const value=this.cacheMap.get('RESULT_MANAGER_LIMIT_DAY');
+        return value?isNaN(Number(value)) ? 28 : Number(value):20;
+    }
 }

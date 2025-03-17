@@ -332,4 +332,11 @@ export class ReportsService {
             responseType: 'blob' as 'json'
         });
     }
+    /****************result managers indicators report***********/
+    public getAllResultManagersIndicatorsValidationReportByPeriodId(periodId: number) {
+        return this.http.get(`${mainServiceUrl}/getAllResultManagersIndicatorsValidationReportByPeriodId/${periodId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
 }
