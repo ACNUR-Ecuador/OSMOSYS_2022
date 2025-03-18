@@ -962,7 +962,13 @@ public class ModelWebTransformationService {
 
 
     //</editor-fold>
-
+    public List<IndicatorExecutionDissagregationAssigmentWeb> indicatorExecutionDissagregationAssignationToindicatorExecutionDissagregationAssignationWeb (List<IndicatorExecutionDissagregationAssigment> dissagregationAssigments) {
+        List<IndicatorExecutionDissagregationAssigmentWeb> r = new ArrayList<>();
+        for (IndicatorExecutionDissagregationAssigment dissagregationAssigment : dissagregationAssigments) {
+            //r.add(this.cantonToCantonWeb(canton));
+        }
+        return r;
+    }
 
     //<editor-fold desc="Canton">
     public CantonWeb cantonToCantonWeb(Canton canton) {
@@ -1204,6 +1210,12 @@ public class ModelWebTransformationService {
                 .map(IndicatorExecutionLocationAssigment::getLocation)
                 .collect(Collectors.toList());
         iw.setLocations(this.cantonsToCantonsWeb(activeCantons));
+        /*Dissagregation Assigments*/
+        List<IndicatorExecutionDissagregationAssigment> activeDissagregationAssigments = ie.getIndicatorExecutionDissagregationAssigments()
+                .stream()
+                .filter(indicatorExecutionDissagregationAssigment -> indicatorExecutionDissagregationAssigment.getState().equals(State.ACTIVO))
+                .collect(Collectors.toList());
+
         return iw;
     }
 

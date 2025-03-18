@@ -50,7 +50,7 @@ public class IndicatorExecutionWeb extends BaseWebEntity implements Serializable
 
     /**************administration*********/
     private List<CantonWeb> locations;
-
+    private List<IndicatorExecutionDissagregationAssigmentWeb> dissagregationAssigments;
 
 
     public String getActivityDescription() {
@@ -236,5 +236,13 @@ public class IndicatorExecutionWeb extends BaseWebEntity implements Serializable
 
     public void setTotalUsedBudget(BigDecimal totalUsedBudget) {
         this.totalUsedBudget = totalUsedBudget;
+    }
+
+    public List<IndicatorExecutionDissagregationAssigmentWeb> getDissagregationAssigments() {
+        return dissagregationAssigments;
+    }
+
+    public void setDissagregationAssigments(List<IndicatorExecutionDissagregationAssigmentWeb> dissagregationAssigments) {
+        this.dissagregationAssigments = dissagregationAssigments;
     }
 }
