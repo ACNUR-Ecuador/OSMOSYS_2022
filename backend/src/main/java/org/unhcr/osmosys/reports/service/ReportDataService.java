@@ -192,11 +192,15 @@ public class ReportDataService {
             ind.add(indicator);
             for (int i = 1; i < 13; i++) {
                 int finalI = i;
-                Optional<IndicatorExecutionTagDTO> first = resultData.stream().filter(r -> monthtoNumber(r.getMonth()) == finalI && r.getIndicator().startsWith(indicator)).findFirst();
-                if (first.isPresent()) {
-                    String value = first.get().getTotalValue().toString();
-                    System.out.println (i + " - " + indicator + " - " + value);
-                    ind.add(value);
+                List<IndicatorExecutionTagDTO> iets = resultData.stream().filter(r -> monthtoNumber(r.getMonth()) == finalI && r.getIndicator().startsWith(indicator)).collect(Collectors.toList());
+                if (!iets.isEmpty()) {
+                    int totalValue=0;
+                    for(IndicatorExecutionTagDTO iet: iets ){
+                        totalValue += iet.getTotalValue();
+                    }
+                        System.out.println (i + " - " + indicator + " - " + totalValue);
+
+                    ind.add(totalValue+"");
                 }
                 else {
                     ind.add("0");

@@ -141,6 +141,7 @@ import java.math.BigDecimal;
                 @ConstructorResult(
                         targetClass = IndicatorExecutionTagDTO.class,
                         columns = {
+                                @ColumnResult(name = "ie_id", type = Long.class),
                                 @ColumnResult(name = "performance_indicator_id", type = Long.class),
                                 @ColumnResult(name = "indicator", type = String.class),
                                 @ColumnResult(name = "period_id", type = Long.class),
