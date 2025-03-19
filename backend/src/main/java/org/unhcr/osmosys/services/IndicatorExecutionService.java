@@ -146,6 +146,10 @@ public class IndicatorExecutionService {
                 ie.addIndicatorExecutionLocationAssigment(indicatorExecutionLocationAssigment);
             }
         }
+        // disagregationAssigments
+        if (!indicatorExecutionWeb.getDissagregationAssigments().isEmpty()) {
+           ie.setIndicatorExecutionDissagregationAssigments(new HashSet<>(this.modelWebTransformationService.indicatorExecutionDissagregationAssignationsWebToindicatorExecutionDissagregationAssignations(indicatorExecutionWeb.getDissagregationAssigments())));
+        }
 
 
         // todo 2024 separar a actualizador
@@ -231,6 +235,14 @@ public class IndicatorExecutionService {
                                         .map(PeriodAgeDissagregationOption::getDissagregationOption)
                                         .collect(Collectors.toList());
                             }
+                        }
+                        if(!ie.getIndicatorExecutionDissagregationAssigments().isEmpty()){
+                            List<StandardDissagregationOption> ageSelectedOptions=ie.getIndicatorExecutionDissagregationAssigments()
+                                        .stream()
+                                        .filter(option -> option.getDissagregationType().equals("age") && option.getState().equals(State.ACTIVO))
+                                        .map(IndicatorExecutionDissagregationAssigment::getDisagregationOption).collect(Collectors.toList());
+
+                            //ageOptions=ageOptions.stream().filter(option -> option.getId().equals(State.ACTIVO)).collect(Collectors.toList());
                         }
                         simpleDissagregationsMap.put(DissagregationType.EDAD, new ArrayList<>(ageOptions));
                         break;

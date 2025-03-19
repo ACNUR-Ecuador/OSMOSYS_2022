@@ -962,14 +962,49 @@ public class ModelWebTransformationService {
 
 
     //</editor-fold>
-    public List<IndicatorExecutionDissagregationAssigmentWeb> indicatorExecutionDissagregationAssignationToindicatorExecutionDissagregationAssignationWeb (List<IndicatorExecutionDissagregationAssigment> dissagregationAssigments) {
+
+    //<editor-fold desc="IndicatorExecutionDissagregationAssigment">
+    public List<IndicatorExecutionDissagregationAssigmentWeb> indicatorExecutionDissagregationAssignationsToindicatorExecutionDissagregationAssignationsWeb (List<IndicatorExecutionDissagregationAssigment> dissagregationAssigments) {
         List<IndicatorExecutionDissagregationAssigmentWeb> r = new ArrayList<>();
         for (IndicatorExecutionDissagregationAssigment dissagregationAssigment : dissagregationAssigments) {
-            //r.add(this.cantonToCantonWeb(canton));
+            r.add(this.indicatorExecutionDissagregationAssignationToindicatorExecutionDissagregationAssignationWeb(dissagregationAssigment));
+        }
+        return r;
+    }
+    public IndicatorExecutionDissagregationAssigmentWeb indicatorExecutionDissagregationAssignationToindicatorExecutionDissagregationAssignationWeb(IndicatorExecutionDissagregationAssigment indicatorExecutionDissagregationAssigment) {
+        if (indicatorExecutionDissagregationAssigment == null) {
+            return null;
+        }
+        IndicatorExecutionDissagregationAssigmentWeb w = new IndicatorExecutionDissagregationAssigmentWeb();
+        w.setId(indicatorExecutionDissagregationAssigment.getId());
+        w.setState(indicatorExecutionDissagregationAssigment.getState());
+        w.setDissagregationType(indicatorExecutionDissagregationAssigment.getDissagregationType());
+        w.setDisagregationOption(this.standardDissagregationOptionToStandardDissagregationOptionWeb(indicatorExecutionDissagregationAssigment.getDisagregationOption()));
+        return w;
+    }
+
+    public List<IndicatorExecutionDissagregationAssigment> indicatorExecutionDissagregationAssignationsWebToindicatorExecutionDissagregationAssignations (List<IndicatorExecutionDissagregationAssigmentWeb> dissagregationAssigmentsWeb) {
+        List<IndicatorExecutionDissagregationAssigment> r = new ArrayList<>();
+        for (IndicatorExecutionDissagregationAssigmentWeb dissagregationAssigment : dissagregationAssigmentsWeb) {
+            r.add(this.indicatorExecutionDissagregationAssignationWebToindicatorExecutionDissagregationAssignation(dissagregationAssigment));
         }
         return r;
     }
 
+    public IndicatorExecutionDissagregationAssigment indicatorExecutionDissagregationAssignationWebToindicatorExecutionDissagregationAssignation(IndicatorExecutionDissagregationAssigmentWeb indicatorExecutionDissagregationAssigmentWeb) {
+        if (indicatorExecutionDissagregationAssigmentWeb == null) {
+            return null;
+        }
+        IndicatorExecutionDissagregationAssigment w = new IndicatorExecutionDissagregationAssigment();
+        w.setId(indicatorExecutionDissagregationAssigmentWeb.getId());
+        w.setState(indicatorExecutionDissagregationAssigmentWeb.getState());
+        w.setDissagregationType(indicatorExecutionDissagregationAssigmentWeb.getDissagregationType());
+        w.setDisagregationOption(this.standardDissagregationOptionDao.find(indicatorExecutionDissagregationAssigmentWeb.getId()));
+        return w;
+    }
+
+
+    //</editor-fold>
     //<editor-fold desc="Canton">
     public CantonWeb cantonToCantonWeb(Canton canton) {
         if (canton == null) {
@@ -1211,11 +1246,13 @@ public class ModelWebTransformationService {
                 .collect(Collectors.toList());
         iw.setLocations(this.cantonsToCantonsWeb(activeCantons));
         /*Dissagregation Assigments*/
-        List<IndicatorExecutionDissagregationAssigment> activeDissagregationAssigments = ie.getIndicatorExecutionDissagregationAssigments()
-                .stream()
-                .filter(indicatorExecutionDissagregationAssigment -> indicatorExecutionDissagregationAssigment.getState().equals(State.ACTIVO))
-                .collect(Collectors.toList());
-
+        if(ie.getIndicatorExecutionDissagregationAssigments()!=null) {
+            List<IndicatorExecutionDissagregationAssigment> activeDissagregationAssigments = ie.getIndicatorExecutionDissagregationAssigments()
+                    .stream()
+                    .filter(indicatorExecutionDissagregationAssigment -> indicatorExecutionDissagregationAssigment.getState().equals(State.ACTIVO))
+                    .collect(Collectors.toList());
+            iw.setDissagregationAssigments(this.indicatorExecutionDissagregationAssignationsToindicatorExecutionDissagregationAssignationsWeb(activeDissagregationAssigments));
+        }
         return iw;
     }
 

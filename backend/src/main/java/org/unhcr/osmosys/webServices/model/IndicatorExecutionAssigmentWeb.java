@@ -27,6 +27,7 @@ public class IndicatorExecutionAssigmentWeb extends BaseWebEntity implements Ser
     private StatementWeb projectStatement;
 
     private List<CantonWeb> locations = new ArrayList<>();
+    private List<IndicatorExecutionDissagregationAssigmentWeb> dissagregationAssigments;
     /* implementación directa*/
     private OfficeWeb reportingOffice;
     private UserWeb assignedUser;
@@ -134,6 +135,14 @@ public class IndicatorExecutionAssigmentWeb extends BaseWebEntity implements Ser
 
     public void setAssignedBudget(BigDecimal assignedBudget) {
         this.assignedBudget = assignedBudget;
+    }
+
+    public List<IndicatorExecutionDissagregationAssigmentWeb> getDissagregationAssigments() {
+        return dissagregationAssigments;
+    }
+
+    public void setDissagregationAssigments(List<IndicatorExecutionDissagregationAssigmentWeb> dissagregationAssigments) {
+        this.dissagregationAssigments = dissagregationAssigments;
     }
 
     @Override
