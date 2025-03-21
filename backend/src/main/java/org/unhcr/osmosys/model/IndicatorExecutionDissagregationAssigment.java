@@ -26,9 +26,6 @@ public class IndicatorExecutionDissagregationAssigment extends BaseEntityIdState
     private IndicatorExecution indicatorExecution;
 
 
-    @Column(name = "dissagregation_type", nullable = false)
-    private String dissagregationType;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "disagregation_type_option_id", nullable = false, foreignKey = @ForeignKey(name = "fk_indicator_execution_standardDissOption"))
     private StandardDissagregationOption disagregationOption;
@@ -54,13 +51,6 @@ public class IndicatorExecutionDissagregationAssigment extends BaseEntityIdState
         this.indicatorExecution = indicatorExecution;
     }
 
-    public String getDissagregationType() {
-        return dissagregationType;
-    }
-
-    public void setDissagregationType(String dissagregationType) {
-        this.dissagregationType = dissagregationType;
-    }
 
     public StandardDissagregationOption getDisagregationOption() {
         return disagregationOption;
@@ -84,7 +74,6 @@ public class IndicatorExecutionDissagregationAssigment extends BaseEntityIdState
         return "IndicatorExecutionDissagregationAssigment{" +
                 "id=" + id +
                 ", indicatorExecution=" + indicatorExecution +
-                ", dissagregationType='" + dissagregationType + '\'' +
                 ", disagregationOption=" + disagregationOption +
                 ", state=" + state +
                 '}';
@@ -95,11 +84,11 @@ public class IndicatorExecutionDissagregationAssigment extends BaseEntityIdState
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         IndicatorExecutionDissagregationAssigment that = (IndicatorExecutionDissagregationAssigment) o;
-        return Objects.equals(id, that.id) && Objects.equals(indicatorExecution, that.indicatorExecution) && Objects.equals(dissagregationType, that.dissagregationType) && Objects.equals(disagregationOption, that.disagregationOption) && state == that.state;
+        return Objects.equals(id, that.id) && Objects.equals(indicatorExecution, that.indicatorExecution) && Objects.equals(disagregationOption, that.disagregationOption) && state == that.state;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, indicatorExecution, dissagregationType, disagregationOption, state);
+        return Objects.hash(id, indicatorExecution, disagregationOption, state);
     }
 }

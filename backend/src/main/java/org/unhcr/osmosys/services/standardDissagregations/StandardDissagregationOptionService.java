@@ -106,6 +106,10 @@ public class StandardDissagregationOptionService {
         return this.standardDissagregationOptionDao.getCantonByIds(ids);
     }
 
+    public List<StandardDissagregationOption> getDissagregationOptionsByIds(List<Long> ids) {
+        return this.standardDissagregationOptionDao.getDissagregationOptionsByIds(ids);
+    }
+
     public Canton getByCantonDescriptionAndProvinceDescription(String cantonDescription, String provinceDescription) throws GeneralAppException {
         return this.standardDissagregationOptionDao.getByCantonDescriptionAndProvinceDescription(cantonDescription, provinceDescription);
     }

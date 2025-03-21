@@ -116,6 +116,15 @@ public class StandardDissagregationOptionDao extends GenericDaoJpa<StandardDissa
         return q.getResultList();
     }
 
+    public List<StandardDissagregationOption> getDissagregationOptionsByIds(List<Long> ids) {
+
+        String jpql = "SELECT DISTINCT o FROM StandardDissagregationOption o " +
+                "WHERE o.id in (:ids)";
+        Query q = getEntityManager().createQuery(jpql, StandardDissagregationOption.class);
+        q.setParameter("ids", ids);
+        return q.getResultList();
+    }
+
     public Canton getByCantonDescriptionAndProvinceDescription(String cantonDescription,String provinceDescription) throws GeneralAppException {
 
         String jpql = "SELECT DISTINCT o FROM Canton o " +

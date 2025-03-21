@@ -4,6 +4,7 @@ import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
 import org.unhcr.osmosys.model.enums.IndicatorType;
+import org.unhcr.osmosys.webServices.model.IndicatorExecutionDissagregationAssigmentWeb;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -266,6 +267,14 @@ public class IndicatorExecution extends BaseEntityIdState {
         if (!this.indicatorExecutionLocationAssigments.add(indicatorExecutionLocationAssigment)) {
             this.indicatorExecutionLocationAssigments.remove(indicatorExecutionLocationAssigment);
             this.indicatorExecutionLocationAssigments.add(indicatorExecutionLocationAssigment);
+        }
+    }
+
+    public void addIndicatorExecutionDissOptionAssigment(IndicatorExecutionDissagregationAssigment indicatorExecutionDissOptionAssigment) {
+        indicatorExecutionDissOptionAssigment.setIndicatorExecution(this);
+        if (!this.indicatorExecutionDissagregationAssigments.add(indicatorExecutionDissOptionAssigment)) {
+            this.indicatorExecutionDissagregationAssigments.remove(indicatorExecutionDissOptionAssigment);
+            this.indicatorExecutionDissagregationAssigments.add(indicatorExecutionDissOptionAssigment);
         }
     }
 

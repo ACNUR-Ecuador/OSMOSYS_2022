@@ -978,7 +978,6 @@ public class ModelWebTransformationService {
         IndicatorExecutionDissagregationAssigmentWeb w = new IndicatorExecutionDissagregationAssigmentWeb();
         w.setId(indicatorExecutionDissagregationAssigment.getId());
         w.setState(indicatorExecutionDissagregationAssigment.getState());
-        w.setDissagregationType(indicatorExecutionDissagregationAssigment.getDissagregationType());
         w.setDisagregationOption(this.standardDissagregationOptionToStandardDissagregationOptionWeb(indicatorExecutionDissagregationAssigment.getDisagregationOption()));
         return w;
     }
@@ -998,7 +997,6 @@ public class ModelWebTransformationService {
         IndicatorExecutionDissagregationAssigment w = new IndicatorExecutionDissagregationAssigment();
         w.setId(indicatorExecutionDissagregationAssigmentWeb.getId());
         w.setState(indicatorExecutionDissagregationAssigmentWeb.getState());
-        w.setDissagregationType(indicatorExecutionDissagregationAssigmentWeb.getDissagregationType());
         w.setDisagregationOption(this.standardDissagregationOptionDao.find(indicatorExecutionDissagregationAssigmentWeb.getId()));
         return w;
     }

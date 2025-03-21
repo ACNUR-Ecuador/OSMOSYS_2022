@@ -8,16 +8,8 @@ import java.util.Objects;
 
 public class IndicatorExecutionDissagregationAssigmentWeb extends BaseWebEntity implements Serializable {
     public IndicatorExecutionDissagregationAssigmentWeb(){super();}
-    private String dissagregationType;
     private StandardDissagregationOptionWeb disagregationOption;
 
-    public String getDissagregationType() {
-        return dissagregationType;
-    }
-
-    public void setDissagregationType(String dissagregationType) {
-        this.dissagregationType = dissagregationType;
-    }
 
     public StandardDissagregationOptionWeb getDisagregationOption() {
         return disagregationOption;
@@ -30,8 +22,7 @@ public class IndicatorExecutionDissagregationAssigmentWeb extends BaseWebEntity 
     @Override
     public String toString() {
         return "IndicatorExecutionDissagregationAssigmentWeb{" +
-                "dissagregationType='" + dissagregationType + '\'' +
-                ", disagregationOption=" + disagregationOption +
+                "disagregationOption=" + disagregationOption +
                 '}';
     }
 
@@ -41,11 +32,11 @@ public class IndicatorExecutionDissagregationAssigmentWeb extends BaseWebEntity 
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         IndicatorExecutionDissagregationAssigmentWeb that = (IndicatorExecutionDissagregationAssigmentWeb) o;
-        return Objects.equals(dissagregationType, that.dissagregationType) && Objects.equals(disagregationOption, that.disagregationOption);
+        return Objects.equals(disagregationOption, that.disagregationOption);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), dissagregationType, disagregationOption);
+        return Objects.hash(super.hashCode(), disagregationOption);
     }
 }
