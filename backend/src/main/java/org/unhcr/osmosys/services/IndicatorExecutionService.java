@@ -412,7 +412,7 @@ public class IndicatorExecutionService {
 
         this.updateIndicatorExecutionTotals(indicatorExecution);
         this.updatePartnerIndicatorExecutionLocationAssigment(indicatorExecutionAssigmentWeb.getId(),indicatorExecutionAssigmentWeb.getLocations());
-
+        //updatePartnerIndicatorExecutionDissagregationOptionsAssigment
         // Registrar auditoría
         List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
         auditService.logAction("Proyecto", project.getCode(), null, AuditAction.UPDATE, responsibleUser, oldprojectAudit, newprojectAudit, State.ACTIVO);
@@ -508,6 +508,23 @@ public class IndicatorExecutionService {
                 .stream()
                 .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getState().equals(State.ACTIVO))
                 .map(IndicatorExecutionLocationAssigment::getLocation).collect(Collectors.toList());
+
+        periodDissagregationMap.forEach((dissagregationType, dissagregationTypeListMap) -> {
+            if (dissagregationType.isLocationsDissagregation()) {
+                dissagregationTypeListMap.forEach((dissagregationType1, standardDissagregationOptions) -> {
+                    if (dissagregationType1.equals(DissagregationType.LUGAR)) {
+                        periodDissagregationMap.get(dissagregationType).put(DissagregationType.LUGAR, locations);
+                    }
+                });
+            }
+        });
+    }
+    private void setStandardDissagregationSelectedOptionsForIndicatorExecutions(IndicatorExecution ie, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> periodDissagregationMap) {
+        List<StandardDissagregationOption> locations = ie.getIndicatorExecutionLocationAssigments()
+                .stream()
+                .filter(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.getState().equals(State.ACTIVO))
+                .map(IndicatorExecutionLocationAssigment::getLocation).collect(Collectors.toList());
+        /*Alternativa traer todas la opciones por tipo de dasagregacion y filtrar por id para obtener solo las seleccionadas*/
 
         periodDissagregationMap.forEach((dissagregationType, dissagregationTypeListMap) -> {
             if (dissagregationType.isLocationsDissagregation()) {
@@ -1522,7 +1539,7 @@ public class IndicatorExecutionService {
             }*/
         } else {
             IndicatorExecutionService.DissagregationOptionsToActivateDesactivate dissOptionsToActivateDessactivate = this.getDissOptionsToActivateDessactivate(ie, indicatorExecutionDissagregationAssigmentWebs);
-            this.updateIndicatorExecutionsLocations(ie, locationToActivateDessactivate.locationsToActivate, locationToActivateDessactivate.locationsToDissable);
+            this.updateIndicatorExecutionsDissOptions(ie, dissOptionsToActivateDessactivate.dissagregationOptionToActivate, dissOptionsToActivateDessactivate.dissagregationOptionToDissable);
         }
 
         return ie.getId();
