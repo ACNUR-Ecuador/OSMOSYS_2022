@@ -27,6 +27,12 @@ public class Audit extends BaseEntityIdState {
     @Column(name = "indicator_code")
     private String indicatorCode;
 
+    @Column(name = "blocked_month")
+    private String blockedMonth;
+
+    @Column(name = "blocked_year")
+    private String blockedYear;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "action", nullable = false, length = 22)
     private AuditAction action;
@@ -41,7 +47,7 @@ public class Audit extends BaseEntityIdState {
     @Column(name = "old_data", columnDefinition = "TEXT")
     private String oldData;
 
-    @Column(name = "new_data",  nullable = false, columnDefinition = "TEXT")
+    @Column(name = "new_data", columnDefinition = "TEXT")
     private String newData;
 
     @Enumerated(EnumType.STRING)
@@ -129,17 +135,20 @@ public class Audit extends BaseEntityIdState {
         this.indicatorCode = indicatorCode;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Audit audit = (Audit) o;
-        return Objects.equals(id, audit.id) && Objects.equals(entity, audit.entity) && Objects.equals(projectCode, audit.projectCode) && Objects.equals(indicatorCode, audit.indicatorCode) && action == audit.action && Objects.equals(responsibleUser, audit.responsibleUser) && Objects.equals(changeDate, audit.changeDate) && Objects.equals(oldData, audit.oldData) && Objects.equals(newData, audit.newData) && state == audit.state;
+    public String getBlockedMonth() {
+        return blockedMonth;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, entity, projectCode, indicatorCode, action, responsibleUser, changeDate, oldData, newData, state);
+    public void setBlockedMonth(String blockedMonth) {
+        this.blockedMonth = blockedMonth;
+    }
+
+    public String getBlockedYear() {
+        return blockedYear;
+    }
+
+    public void setBlockedYear(String blockedYear) {
+        this.blockedYear = blockedYear;
     }
 
     @Override
@@ -149,6 +158,8 @@ public class Audit extends BaseEntityIdState {
                 ", entity='" + entity + '\'' +
                 ", projectCode='" + projectCode + '\'' +
                 ", indicatorCode='" + indicatorCode + '\'' +
+                ", blockedMonth='" + blockedMonth + '\'' +
+                ", blockedYear='" + blockedYear + '\'' +
                 ", action=" + action +
                 ", responsibleUser=" + responsibleUser +
                 ", changeDate=" + changeDate +
@@ -156,5 +167,18 @@ public class Audit extends BaseEntityIdState {
                 ", newData='" + newData + '\'' +
                 ", state=" + state +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Audit audit = (Audit) o;
+        return Objects.equals(id, audit.id) && Objects.equals(entity, audit.entity) && Objects.equals(projectCode, audit.projectCode) && Objects.equals(indicatorCode, audit.indicatorCode) && Objects.equals(blockedMonth, audit.blockedMonth) && Objects.equals(blockedYear, audit.blockedYear) && action == audit.action && Objects.equals(responsibleUser, audit.responsibleUser) && Objects.equals(changeDate, audit.changeDate) && Objects.equals(oldData, audit.oldData) && Objects.equals(newData, audit.newData) && state == audit.state;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, entity, projectCode, indicatorCode, blockedMonth, blockedYear, action, responsibleUser, changeDate, oldData, newData, state);
     }
 }

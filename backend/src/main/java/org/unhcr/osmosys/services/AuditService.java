@@ -6,13 +6,17 @@ import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.AuditAction;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.UserSecurityContext;
+import com.sagatechs.generics.security.dao.UserDao;
 import com.sagatechs.generics.security.model.User;
+import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.AuditDao;
 import org.unhcr.osmosys.model.*;
 import org.unhcr.osmosys.model.auditDTOs.*;
 import org.unhcr.osmosys.model.enums.IndicatorType;
+import org.unhcr.osmosys.model.enums.MonthEnum;
 import org.unhcr.osmosys.webServices.model.AuditWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
@@ -37,6 +41,9 @@ public class AuditService {
 
     @Inject
     AppConfigurationService configService;
+
+    @Inject
+    UserDao userDao;
 
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(AuditService.class);
@@ -118,11 +125,13 @@ public class AuditService {
 
     }
 
-    public void logAction(String entity, String projectCode, String indicatorCode, AuditAction action, User responsibleUser, Object oldData, Object newData, State state) {
+    public void logAction(String entity, String projectCode, String indicatorCode, AuditAction action, Object oldData, Object newData, Integer blockedYear, MonthEnum blockedMonth, State state) {
 
         Gson gson = new Gson();
         String oldDataJson="";
         String newDataJson="";
+        UserWeb principal = UserSecurityContext.getCurrentUser();
+        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
 
         if(entity.equals("Proyecto")){
             if(oldData!=null){
@@ -131,12 +140,6 @@ public class AuditService {
             newDataJson= gson.toJson(newData);
         }
         if(entity.equals("Bloqueo de Mes Indicador")){
-            if(oldData!=null){
-                oldDataJson= convertMapToString((Map)oldData);
-            }
-            newDataJson= convertMapToString((Map)newData);
-        }
-        if(entity.equals("Bloqueo de Mes Masivo")){
             if(oldData!=null){
                 oldDataJson= convertListToString((List)oldData);
             }
@@ -165,7 +168,7 @@ public class AuditService {
         ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
 
         // Comparar las representaciones en JSON
-        if (!oldDataJson.equals(newDataJson)) {
+        if (!oldDataJson.equals(newDataJson) || (blockedMonth!=null && blockedYear!=null)) {
             Audit audit = new Audit();
             audit.setEntity(entity);
             audit.setProjectCode(projectCode);
@@ -175,6 +178,8 @@ public class AuditService {
             audit.setChangeDate(zonedDateTime.toLocalDateTime());
             audit.setOldData(oldDataJson);
             audit.setNewData(newDataJson);
+            audit.setBlockedYear(blockedYear!=null?blockedYear.toString():null);
+            audit.setBlockedMonth(blockedMonth!=null?blockedMonth.getLabel():null);
             audit.setState(state);
 
             auditDao.save(audit);

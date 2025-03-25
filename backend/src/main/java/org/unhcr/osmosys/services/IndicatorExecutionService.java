@@ -116,9 +116,7 @@ public class IndicatorExecutionService {
         Project oldProject = projectDao.find(indicatorExecutionWeb.getProject().getId()).deepCopy();
         List<LabelValue> oldprojectAudit = auditService.convertToProjectAuditDTO(oldProject).toLabelValueList();
 
-        UserWeb principal = UserSecurityContext.getCurrentUser();
-        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
-        if (indicator == null) {
+         if (indicator == null) {
             throw new GeneralAppException("Indicador no encontrado " + indicatorExecutionWeb.getIndicator().getId(), Response.Status.BAD_REQUEST);
         }
         ie.setIndicator(indicator);
@@ -179,7 +177,7 @@ public class IndicatorExecutionService {
 
         // Registrar auditoría
         List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
-        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.UPDATE, responsibleUser, oldprojectAudit, newprojectAudit, State.ACTIVO);
+        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.UPDATE, oldprojectAudit, newprojectAudit, null, null, State.ACTIVO);
 
         this.saveOrUpdate(ie);
 
@@ -317,8 +315,6 @@ public class IndicatorExecutionService {
         Project project = projectDao.find(indicatorExecutionAssigmentWeb.getProject().getId()).deepCopy();
         List<LabelValue> oldprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
 
-        UserWeb principal = UserSecurityContext.getCurrentUser();
-        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
 
         indicatorExecution.setState(indicatorExecutionAssigmentWeb.getState());
 
@@ -332,7 +328,7 @@ public class IndicatorExecutionService {
 
         // Registrar auditoría
         List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
-        auditService.logAction("Proyecto", project.getCode(), null, AuditAction.UPDATE, responsibleUser, oldprojectAudit, newprojectAudit, State.ACTIVO);
+        auditService.logAction("Proyecto", project.getCode(), null, AuditAction.UPDATE, oldprojectAudit, newprojectAudit, null, null, State.ACTIVO);
 
         this.saveOrUpdate(indicatorExecution);
         return indicatorExecution.getId();
@@ -610,8 +606,6 @@ public class IndicatorExecutionService {
         IndicatorExecution ie = this.indicatorExecutionDao.getByIdWithIndicatorValues(targetUpdateDTOWeb.getIndicatorExecutionId());
         Project project = projectDao.find(ie.getProject().getId()).deepCopy();
         List<LabelValue> oldprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
-        UserWeb principal = UserSecurityContext.getCurrentUser();
-        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
 
         ie.setTarget(targetUpdateDTOWeb.getTotalTarget());
         /*
@@ -634,7 +628,7 @@ public class IndicatorExecutionService {
         this.updateIndicatorExecutionTotals(ie);
         // Registrar auditoría
         List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
-        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.UPDATE, responsibleUser, oldprojectAudit, newprojectAudit, State.ACTIVO);
+        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.UPDATE, oldprojectAudit, newprojectAudit,null, null, State.ACTIVO);
         this.saveOrUpdate(ie);
     }
 
@@ -768,10 +762,6 @@ public class IndicatorExecutionService {
                 monthToUpdate.addSource(source);
             }
         }
-
-        UserWeb principal = UserSecurityContext.getCurrentUser();
-
-        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
 
         List<IndicatorValueWeb> totalIndicatorValueWebs = new ArrayList<>();
         List<Object> newIndicatorValues = new ArrayList<>();
@@ -934,7 +924,7 @@ public class IndicatorExecutionService {
             }else{
                 indicatorCode=indicatorExecution.getProject().getPeriod().getGeneralIndicator().getId().toString();
             }
-            auditService.logAction("Reporte", projectCode, indicatorCode, AuditAction.REPORT, responsibleUser, oldIndicatorValues, newIndicatorValues, State.ACTIVO);
+            auditService.logAction("Reporte", projectCode, indicatorCode, AuditAction.REPORT, oldIndicatorValues, newIndicatorValues,null, null, State.ACTIVO);
         }
 
 

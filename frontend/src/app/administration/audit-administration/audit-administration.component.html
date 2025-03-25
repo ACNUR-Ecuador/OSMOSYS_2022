@@ -113,10 +113,17 @@
             <td *ngFor="let col of columns"
               [class]="  col.styleClass?col.styleClass: (col.type === 'numeric'?'text-right':null) ">
 
-              <ng-container *ngIf="col.field === 'changeDate'; else defaultContent">
+              <ng-container *ngIf="col.field === 'changeDate'; else anotherField">
                 {{ col.pipeRef ? col.pipeRef.transform(convertDatetoString(rowData.changeDate), col.arg1, col.arg2,
                 col.arg3) : convertDatetoString(rowData.changeDate) }}
               </ng-container>
+
+              <ng-template #anotherField>
+                <ng-container *ngIf="col.field === 'responsibleUser.name'; else defaultContent">
+                  {{ utilsService.resolveFieldData(rowData, col.field) 
+                    ? utilsService.resolveFieldData(rowData, col.field) 
+                    : 'System' }}</ng-container>
+              </ng-template>
 
               <ng-template #defaultContent>
                 {{ col.pipeRef ? col.pipeRef.transform(utilsService.resolveFieldData(rowData, col.field), col.arg1,
@@ -124,10 +131,9 @@
               </ng-template>
 
             </td>
-            <td>
+            <td *ngIf="rowData.entity!=='Bloqueo de Mes Masivo'">
               <button pButton pRipple icon="pi pi-eye" label="Ver cambios"
                 class="p-button-rounded p-button-primary mr-2" (click)="changesView(rowData)"></button>
-
             </td>
           </tr>
         </ng-template>

@@ -67,6 +67,7 @@ public class MonthService {
     @Inject
     private ProjectDao projectDao;
 
+
     @SuppressWarnings("unused")
     private final static Logger LOGGER = Logger.getLogger(MonthService.class);
 
@@ -438,10 +439,8 @@ public class MonthService {
             month.setChecked(false);
             // todo send alert email
         }
-
-        UserWeb principal = UserSecurityContext.getCurrentUser();
-
-        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
+        List<Map<String,Object>> oldMonthList=new ArrayList<>();
+        oldMonthList.add(oldMonth);
 
 
         month.setBlockUpdate(blockinState);
@@ -456,6 +455,9 @@ public class MonthService {
             newMonth=monthDao.findMonthRelatedIndicator(monthId);
         }
 
+        List<Map<String,Object>> newMonthList=new ArrayList<>();
+        newMonthList.add(newMonth);
+
         if (blockinState) {
             // Registrar auditoría con validación
             auditService.logAction(
@@ -463,9 +465,10 @@ public class MonthService {
                     indicatorExecution.getProject() != null ? indicatorExecution.getProject().getCode() : null,
                     indicatorExecution.getIndicator() != null ? indicatorExecution.getIndicator().getCode(): newMonth.get("ID_de_Indicador").toString(),
                     AuditAction.LOCK,
-                    responsibleUser,
-                    oldMonth,
-                    newMonth,
+                    oldMonthList,
+                    newMonthList,
+                    null,
+                    null,
                     State.ACTIVO
             );
         } else {
@@ -475,9 +478,10 @@ public class MonthService {
                     indicatorExecution.getProject() != null ? indicatorExecution.getProject().getCode() : null,
                     indicatorExecution.getIndicator() != null ? indicatorExecution.getIndicator().getCode(): newMonth.get("ID_de_Indicador").toString() ,
                     AuditAction.UNLOCK,
-                    responsibleUser,
-                    oldMonth,
-                    newMonth,
+                    oldMonthList,
+                    newMonthList,
+                    null,
+                    null,
                     State.ACTIVO
             );
         }
@@ -489,9 +493,7 @@ public class MonthService {
     public void getActiveMonthsByProjectIdAndMonthAndYear(Long projectId, MonthEnum month, int year, Boolean blockUpdate) {
         // get all months active by project
         List<Month> months = this.monthDao.getActiveMonthsByProjectIdAndMonthAndYear(projectId, month, year);
-        UserWeb principal = UserSecurityContext.getCurrentUser();
-        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
-        Project project=projectDao.find(projectId);
+         Project project=projectDao.find(projectId);
         List<Map<String,Object>> oldIndicatorsMonthState=monthDao.findIndicatorsRelatedProjectByMonth(projectId, month, year);
         if (oldIndicatorsMonthState == null) {
             oldIndicatorsMonthState = new ArrayList<>();
@@ -514,10 +516,10 @@ public class MonthService {
         }
         if(blockUpdate) {
             // Registrar auditoría
-            auditService.logAction("Bloqueo de Mes Masivo", project.getCode(),null, AuditAction.LOCK, responsibleUser, oldIndicatorsMonthState, newIndicatorsMonthState, State.ACTIVO);
+            auditService.logAction("Bloqueo de Mes Indicador", project.getCode(),"Varios Indicadores", AuditAction.LOCK, oldIndicatorsMonthState, newIndicatorsMonthState, null, null, State.ACTIVO);
         }else {
             // Registrar auditoría
-            auditService.logAction("Bloqueo de Mes Masivo", project.getCode(),null, AuditAction.UNLOCK, responsibleUser, oldIndicatorsMonthState, newIndicatorsMonthState, State.ACTIVO);
+            auditService.logAction("Bloqueo de Mes Indicador", project.getCode(),"Varios Indicadores", AuditAction.UNLOCK, oldIndicatorsMonthState, newIndicatorsMonthState,null, null, State.ACTIVO);
 
         }
 
@@ -594,6 +596,9 @@ public class MonthService {
                 monthsToUpdate.addAll(unlockedMonthsAnnual);
             }
         }
+
+        //auditoría
+        auditService.logAction("Bloqueo de Mes Masivo", null, null, block? AuditAction.LOCK: AuditAction.UNLOCK , null, null, year, month, State.ACTIVO);
 
         for (Month month1 : monthsToUpdate) {
             this.saveOrUpdate(month1);

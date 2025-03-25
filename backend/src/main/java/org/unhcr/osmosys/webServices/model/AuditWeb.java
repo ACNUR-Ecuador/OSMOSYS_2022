@@ -13,6 +13,8 @@ public class AuditWeb extends BaseWebEntity implements Serializable {
     private String entity;
     private String projectCode;
     private String indicatorCode;
+    private String blockedMonth;
+    private String blockedYear;
     private AuditAction action;
     private UserWeb responsibleUser;
     private LocalDateTime changeDate;
@@ -83,33 +85,49 @@ public class AuditWeb extends BaseWebEntity implements Serializable {
         this.indicatorCode = indicatorCode;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        AuditWeb auditWeb = (AuditWeb) o;
-        return Objects.equals(entity, auditWeb.entity) && Objects.equals(projectCode, auditWeb.projectCode) && Objects.equals(indicatorCode, auditWeb.indicatorCode) && action == auditWeb.action && Objects.equals(responsibleUser, auditWeb.responsibleUser) && Objects.equals(changeDate, auditWeb.changeDate) && Objects.equals(oldData, auditWeb.oldData) && Objects.equals(newData, auditWeb.newData);
+    public String getBlockedMonth() {
+        return blockedMonth;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), entity, projectCode, indicatorCode, action, responsibleUser, changeDate, oldData, newData);
+    public void setBlockedMonth(String blockedMonth) {
+        this.blockedMonth = blockedMonth;
+    }
+
+    public String getBlockedYear() {
+        return blockedYear;
+    }
+
+    public void setBlockedYear(String blockedYear) {
+        this.blockedYear = blockedYear;
     }
 
     @Override
     public String toString() {
         return "AuditWeb{" +
-                "id=" + id +
-                ", state=" + state +
-                ", entity='" + entity + '\'' +
+                "entity='" + entity + '\'' +
                 ", projectCode='" + projectCode + '\'' +
                 ", indicatorCode='" + indicatorCode + '\'' +
+                ", blockedMonth='" + blockedMonth + '\'' +
+                ", blockedYear='" + blockedYear + '\'' +
                 ", action=" + action +
                 ", responsibleUser=" + responsibleUser +
                 ", changeDate=" + changeDate +
                 ", oldData='" + oldData + '\'' +
                 ", newData='" + newData + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        AuditWeb auditWeb = (AuditWeb) o;
+        return Objects.equals(entity, auditWeb.entity) && Objects.equals(projectCode, auditWeb.projectCode) && Objects.equals(indicatorCode, auditWeb.indicatorCode) && Objects.equals(blockedMonth, auditWeb.blockedMonth) && Objects.equals(blockedYear, auditWeb.blockedYear) && action == auditWeb.action && Objects.equals(responsibleUser, auditWeb.responsibleUser) && Objects.equals(changeDate, auditWeb.changeDate) && Objects.equals(oldData, auditWeb.oldData) && Objects.equals(newData, auditWeb.newData);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), entity, projectCode, indicatorCode, blockedMonth, blockedYear, action, responsibleUser, changeDate, oldData, newData);
     }
 }
