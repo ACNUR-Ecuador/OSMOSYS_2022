@@ -292,6 +292,23 @@ export class FilterUtilsService {
         }
         return result;
     }
+    lateStateFilter(value: any, filter: any): boolean {
+        if (filter === undefined || filter === null) {
+            return true;
+        }
+        if (value === undefined || value === null) {
+            return false;
+        }
+        let result=false
+
+        if (value !== undefined && value !== null) {
+            if ((value === "LATE" && filter===true) || (value !== "LATE" && filter===false)) {
+                result=true;
+            }
+        }
+        
+        return result;
+    }
 
 
 }
