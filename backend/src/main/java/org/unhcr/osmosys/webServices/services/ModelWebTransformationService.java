@@ -1656,6 +1656,8 @@ public class ModelWebTransformationService {
         auditWeb.setEntity(audit.getEntity());
         auditWeb.setProjectCode(audit.getProjectCode());
         auditWeb.setIndicatorCode(audit.getIndicatorCode());
+        auditWeb.setBlockedMonth(audit.getBlockedMonth());
+        auditWeb.setBlockedYear(audit.getBlockedYear());
         auditWeb.setAction(audit.getAction());
         auditWeb.setResponsibleUser(userToUserWebSimple(audit.getResponsibleUser(),true,true));
         auditWeb.setChangeDate(audit.getChangeDate());
@@ -1685,6 +1687,8 @@ public class ModelWebTransformationService {
         audit.setEntity(auditWeb.getEntity());
         audit.setProjectCode(auditWeb.getProjectCode());
         audit.setIndicatorCode(auditWeb.getIndicatorCode());
+        audit.setBlockedMonth(auditWeb.getBlockedMonth());
+        audit.setBlockedYear(auditWeb.getBlockedYear());
         audit.setAction(auditWeb.getAction());
         audit.setResponsibleUser(userDao.find(auditWeb.getResponsibleUser().getId()));
         audit.setChangeDate(auditWeb.getChangeDate());

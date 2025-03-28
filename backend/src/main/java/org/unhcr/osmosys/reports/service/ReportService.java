@@ -95,7 +95,7 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream indicatorsCatalogByPeriodId(Long periodId) throws GeneralAppException {
-        String jrxmlFile = "indicatorCatalog.jrxml";
+        String jrxmlFile = "indicatorCatalogV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
@@ -103,14 +103,14 @@ public class ReportService {
 
     public ByteArrayOutputStream indicatorsCatalogWithImplementersSimpleByPeriodId(Long periodId) throws GeneralAppException {
 
-        String jrxmlFile = "indicatorsCatalogWithImplementersSimple.jrxml";
+        String jrxmlFile = "indicatorsCatalogWithImplementersSimpleV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 
     public ByteArrayOutputStream indicatorsCatalogWithImplementersDetailedByPeriodId(Long periodId) throws GeneralAppException {
-        String jrxmlFile = "indicatorsCatalogWithImplementersDetailed.jrxml";
+        String jrxmlFile = "indicatorsCatalogWithImplementersDetailedV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);

@@ -687,10 +687,12 @@ export class Audit{
     public entity:string;
     public recordId:number;
     public action:string;
-    public responsibleUser:User;
+    public responsibleUser?:User;
     public changeDate:Date;
     public oldData:string;
     public newData:string;
+    public blockedMonth?:string;
+    public blockedYear?:string;
     public state:string;
 
 

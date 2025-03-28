@@ -216,6 +216,23 @@ export class UtilsService {
                 return 'white';
         }
     }
+    getLateStatusToolTip(timeState: string): string {
+        switch (timeState) {
+            case 'ON_TIME':
+                return 'A tiempo';
+            case 'SOON_REPORT':
+                return 'Próximo a reportar';
+            case 'LATE':
+                return 'Atrasado';
+            case 'INVALID':
+                return 'No válido';
+            case 'NO_TIME':
+                return 'Por reportar';
+            default:
+                return 'Por reportar';
+        }
+    }
+
 
     public getTimeStateButtonClass(timeState: string) {
         switch (timeState) {

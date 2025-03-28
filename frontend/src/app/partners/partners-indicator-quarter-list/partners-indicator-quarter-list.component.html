@@ -39,6 +39,7 @@
                 </td>
                 <td style="text-align: center !important;">
                         <span
+                            [pTooltip]="utilsService.getLateStatusToolTip(rowdata.monthLate)"
                             [class]="'values-badge status-'+utilsService.valueToBadgeStatusAlert(rowdata.monthLate)"
                             class="p-text-bold p-ml-2">{{rowdata.monthTotalExecution | valuesState:rowdata.monthMonth :rowdata.monthYear}}</span>
                 </td>

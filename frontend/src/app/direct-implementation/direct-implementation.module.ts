@@ -27,6 +27,7 @@ import {TableModule} from "primeng/table";
 import {OverlayPanelModule} from "primeng/overlaypanel";
 import {ToggleButtonModule} from "primeng/togglebutton";
 import {SharedModule} from "../shared/shared.module";
+import { LateStatePipe } from '../shared/pipes/late-state.pipe';
 
 
 @NgModule({
@@ -63,7 +64,8 @@ import {SharedModule} from "../shared/shared.module";
         MonthPipe,
         MonthListPipe,
         BooleanYesNoPipe,
-        PercentPipe
+        PercentPipe,
+        LateStatePipe
     ]
 })
 export class DirectImplementationModule {

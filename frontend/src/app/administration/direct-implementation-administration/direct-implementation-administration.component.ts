@@ -28,6 +28,7 @@ import {MonthPipe} from '../../shared/pipes/month.pipe';
 import {MonthListPipe} from '../../shared/pipes/month-list.pipe';
 import {HttpResponse} from "@angular/common/http";
 import {PercentPipe} from "@angular/common";
+import { LateStatePipe } from 'src/app/shared/pipes/late-state.pipe';
 
 
 @Component({
@@ -73,7 +74,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
         private userPipe: UserPipe,
         private monthPipe: MonthPipe,
         private monthListPipe: MonthListPipe,
-        private booleanYesNoPipe: BooleanYesNoPipe,
+        private lateStatePipe: LateStatePipe,
         private percentPipe: PercentPipe
     ) {
     }
@@ -289,7 +290,7 @@ export class DirectImplementationAdministrationComponent implements OnInit {
             {field: 'target', header: 'Meta', type: ColumnDataType.numeric},
             {field: 'totalExecution', header: 'Ejecución Total', type: ColumnDataType.numeric},
             {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric,pipeRef: this.percentPipe},
-            {field: 'late', header: 'Atrasado', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
+            {field: 'late', header: 'Atrasado', type: ColumnDataType.boolean, pipeRef: this.lateStatePipe},
             {
                 field: 'lastReportedMonth',
                 header: 'Último mes reportado',
@@ -482,6 +483,9 @@ export class DirectImplementationAdministrationComponent implements OnInit {
         });
         this.filterService.register('objectIdFilter', (value, filter): boolean => {
             return this.filterUtilsService.objectFilterId(value, filter);
+        });
+        this.filterService.register('lateStateFilter', (value, filter): boolean => {
+            return this.filterUtilsService.lateStateFilter(value, filter);
         });
     }
 

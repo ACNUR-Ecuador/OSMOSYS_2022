@@ -96,11 +96,6 @@ public class ProjectService {
         }
         this.validate(projectWeb);
 
-        UserWeb principal = UserSecurityContext.getCurrentUser();
-
-        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
-
-
         Project project = new Project();
         project.setName(projectWeb.getName());
         project.setState(projectWeb.getState());
@@ -141,7 +136,7 @@ public class ProjectService {
 
         // Registrar auditoría
         List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
-        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.INSERT,responsibleUser , null, newprojectAudit, State.ACTIVO);
+        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.INSERT, null, newprojectAudit,null, null, State.ACTIVO);
         return project.getId();
     }
 
@@ -162,9 +157,6 @@ public class ProjectService {
         Project project = this.projectDao.find(projectWeb.getId());
 
         List<LabelValue> oldprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
-
-        UserWeb principal = UserSecurityContext.getCurrentUser();
-        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
 
         if (project == null) {
             throw new GeneralAppException("No se puede encontrar el proyecto con id " + projectWeb.getId(), Response.Status.NOT_FOUND);
@@ -212,7 +204,7 @@ public class ProjectService {
         // Registrar auditoría
         JobStatusService.updateJob(jobId, 90, "Guardando auditorías");
         List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
-        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.UPDATE, responsibleUser, oldprojectAudit, newprojectAudit, State.ACTIVO);
+        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.UPDATE, oldprojectAudit, newprojectAudit,null, null, State.ACTIVO);
         JobStatusService.updateJob(jobId, 95, "Actualizado proyecto");
         this.saveOrUpdate(project);
         return project.getId();
