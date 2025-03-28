@@ -1,5 +1,6 @@
 import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {
+    AsyncResponse,
     DissagregationAssignationToGeneralIndicator, GeneralIndicator,
     Period,
     StandardDissagregationOption
@@ -356,7 +357,13 @@ export class PeriodAdministrationComponent implements OnInit {
         if (period.id) {
             // tslint:disable-next-line:no-shadowed-variable
             this.periodService.update(period).subscribe({
-                next: () => {
+
+                next: (response: AsyncResponse | number) => {
+
+                    if (typeof response === 'object' && response.progress !== undefined && response.progress < 100) {
+                        return;
+                    }
+
                     this.cancelDialog();
                     this.loadItems();
                     this.messageService.add({

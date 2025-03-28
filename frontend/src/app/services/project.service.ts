@@ -25,7 +25,7 @@ export class ProjectService {
     }
 
     public update(project: Project): Observable<number> {
-        return this.http.put<number>(`${mainServiceUrl}`, project);
+        return this.http.put<number>(`${mainServiceUrl}/updateAsync`, project);
     }
 
     public getByState(state: EnumsState): Observable<Project[]> {

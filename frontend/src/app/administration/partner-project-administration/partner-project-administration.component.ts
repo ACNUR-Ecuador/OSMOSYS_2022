@@ -8,6 +8,7 @@ import {FilterUtilsService} from '../../services/filter-utils.service';
 import {Location, PercentPipe} from '@angular/common';
 import {
     AreaType,
+    AsyncResponse,
     Canton,
     CantonForList, ImportFile,
     Indicator, IndicatorExecution,
@@ -525,7 +526,11 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             // tslint:disable-next-line:no-shadowed-variable
             this.projectService.update(project)
                 .subscribe({
-                    next: () => {
+                    next: (response: AsyncResponse | number) => {
+                        if (typeof response === 'object' && response.progress !== undefined && response.progress < 100) {
+                            return;
+                        }
+
                         this.formItem.reset();
                         this.loadProject(id);
                         this.messageService.add({

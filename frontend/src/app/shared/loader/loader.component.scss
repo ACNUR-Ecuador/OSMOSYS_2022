@@ -6,18 +6,67 @@
     display: none;
 }
 
+/* Main container covering the viewport and centering its content */
 .loader-wrapper {
-    height: 100%;
+    height: 100vh; /* full viewport height */
     width: 100%;
-    display: block;
+    display: flex;
     align-items: center;
     justify-content: center;
     position: fixed;
     z-index: 10001;
     top: 0;
+    background-color: red; /* For debugging; remove or change as needed */
 }
 
+/* Internal container arranging loader and footer in two rows */
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* Optionally, remove width if not required */
+}
+
+/* Loader (animation) row */
 .loader {
-    position: relative;
-    margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: blue; /* For debugging; remove or change as needed */
+}
+
+/* Footer row: progress bar and status text */
+.footer {  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  margin-top: 100px;  
+}
+
+/* Progress bar styling */
+.progress {
+  width: 80%;  /* Adjust this value as needed for desired width */
+  height: 20px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #3f51b5;
+  width: 0%;
+  transition: width 0.5s ease;
+}
+
+/* Status text styling */
+.status {
+  margin-top: 5px;
+  font-weight: bold;
+  text-align: center;
 }

@@ -709,3 +709,6 @@ export class IndicatorTagAsignation {
     public indicator: Indicator;
 }
 
+export interface AsyncResponse {
+    progress: number;
+    state: string;}

@@ -142,6 +142,10 @@ public class IndicatorService {
 */
 
     public Long update(IndicatorWeb indicatorWeb) throws GeneralAppException {
+        return update(indicatorWeb, null);
+    }
+
+    public Long update(IndicatorWeb indicatorWeb, String jobId) throws GeneralAppException {
         if (indicatorWeb == null) {
             throw new GeneralAppException("No se puede actualizar un indicator null", Response.Status.BAD_REQUEST);
         }
@@ -150,6 +154,8 @@ public class IndicatorService {
             throw new GeneralAppException("No se puede crear un indicator sin id", Response.Status.BAD_REQUEST);
         }
         this.validate(indicatorWeb);
+
+        JobStatusService.updateJob(jobId, 10, "Actualizando indicador");
         Indicator indicator = this.indicatorDao.findWithData(indicatorWeb.getId());
         this.indicatorWebToIndicator(indicatorWeb, indicator);
         // dissagregationAssiment
@@ -161,7 +167,7 @@ public class IndicatorService {
         // to create
         List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToCreate = this.dissagregationAssignationToIndicatorService.getToCreate(dissagregationAssignationToIndicatorsNews, dissagregationAssignationToIndicatorsOriginals);
         for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicatorsToCreate) {
-
+            JobStatusService.updateJob(jobId, 20, "Actualizando desagregaciones");
             if (dissagregationAssignationToIndicator.getUseCustomAgeDissagregations()) {
                 Optional<DissagregationAssignationToIndicatorWeb> webOptional = dissagregationAssignationToIndicatorsNews.stream()
                         .filter(dissagregationAssignationToIndicatorWeb -> this.dissagregationAssignationToIndicatorService.equalsWebToEntity(dissagregationAssignationToIndicatorWeb, dissagregationAssignationToIndicator))
@@ -184,24 +190,24 @@ public class IndicatorService {
 
         // to dissable
         List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToDisable = this.dissagregationAssignationToIndicatorService.getToDisableTotal(dissagregationAssignationToIndicatorsNews, dissagregationAssignationToIndicatorsOriginals);
+        JobStatusService.updateJob(jobId, 30, "Limpiando desagregaciones");
         for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicatorsToDisable) {
             dissagregationAssignationToIndicator.setState(State.INACTIVO);
             // no update customs
         }
         // to enable
         List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToEnable = this.dissagregationAssignationToIndicatorService.getToEnable(dissagregationAssignationToIndicatorsNews, dissagregationAssignationToIndicatorsOriginals);
+        JobStatusService.updateJob(jobId, 30, "Activando desagregaciones");
         for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : dissagregationAssignationToIndicatorsToEnable) {
             dissagregationAssignationToIndicator.setState(State.ACTIVO);
-
-
         }
+        JobStatusService.updateJob(jobId, 40, "Actualizando desagregaciones personalizadas");
         updateCustomOptions(dissagregationAssignationToIndicatorsToDisable, dissagregationAssignationToIndicatorsNews);
 
         List<DissagregationAssignationToIndicator> dissagregationAssignationToIndicatorsToKeep = this.dissagregationAssignationToIndicatorService.getToKeep(dissagregationAssignationToIndicatorsNews, dissagregationAssignationToIndicatorsOriginals);
         updateCustomOptions(dissagregationAssignationToIndicatorsToKeep, dissagregationAssignationToIndicatorsNews);
 
         ///customs dissagregations
-
         List<CustomDissagregationAssignationToIndicatorWeb> customDissagregationAssignationToIndicatorsNews = indicatorWeb.getCustomDissagregationAssignationToIndicators();
 
         List<CustomDissagregationAssignationToIndicator> customDissagregationAssignationToIndicatorsOriginals = new ArrayList<>(indicator.getCustomDissagregationAssignationToIndicators());
@@ -222,9 +228,12 @@ public class IndicatorService {
             customDissagregationAssignationToIndicator.setState(State.ACTIVO);
         }
 
-
+        JobStatusService.updateJob(jobId, 50, "Actualizando indicador");
         this.saveOrUpdate(indicator);
+        JobStatusService.updateJob(jobId, 60, "Actualizando periodo");
         updatePeriodStatementAssigment(indicator);
+        JobStatusService.updateJob(jobId, 70, "Finalizando actualización");
+
         this.updateIndicatorExecutionsDissagregationsByIndicator(
                 indicator
         );

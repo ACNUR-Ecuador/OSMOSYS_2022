@@ -146,12 +146,18 @@ public class ProjectService {
     }
 
     public Long update(ProjectWeb projectWeb) throws GeneralAppException {
+        return this.update(projectWeb, null);
+    }
+
+
+    public Long update(ProjectWeb projectWeb, String jobId) throws GeneralAppException {
         if (projectWeb == null) {
             throw new GeneralAppException("No se puede actualizar un proyecto null", Response.Status.BAD_REQUEST);
         }
         if (projectWeb.getId() == null) {
             throw new GeneralAppException("No se puede actualizar un proyecto sin id", Response.Status.BAD_REQUEST);
         }
+        JobStatusService.updateJob(jobId, 10, "Iniciando actualización");
         this.validate(projectWeb);
         Project project = this.projectDao.find(projectWeb.getId());
 
@@ -194,17 +200,21 @@ public class ProjectService {
         if (projectDatesChanged) {
             this.indicatorExecutionService.updateIndicatorExecutionProjectDates(project, project.getStartDate(), project.getEndDate());
         }
-        // update focal points
+
+            // update focal points
+        JobStatusService.updateJob(jobId, 10, "Actualizando puntos focales");
         this.updateProjectFocalPoints(projectWeb.focalPoints, project.getId());
 
         // update localidades
-        this.updateProjectLocations(projectWeb.getLocations(), project.getId());
+        JobStatusService.updateJob(jobId, 20, "Actualizado lugares de ejecución");
+        this.updateProjectLocations(projectWeb.getLocations(), project.getId(), jobId);
 
         // Registrar auditoría
+        JobStatusService.updateJob(jobId, 90, "Guardando auditorías");
         List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
         auditService.logAction("Proyecto", project.getCode(),null, AuditAction.UPDATE, responsibleUser, oldprojectAudit, newprojectAudit, State.ACTIVO);
+        JobStatusService.updateJob(jobId, 95, "Actualizado proyecto");
         this.saveOrUpdate(project);
-
         return project.getId();
     }
 
@@ -268,13 +278,20 @@ public class ProjectService {
     }
 
     public void updateProjectLocations(Set<CantonWeb> cantonWebs, Long projectId) throws GeneralAppException {
+        updateProjectLocations(cantonWebs, projectId, null);
+    }
+    public void updateProjectLocations(Set<CantonWeb> cantonWebs, Long projectId, String jobId) throws GeneralAppException {
         Project project = this.getById(projectId);
-        // recupero el proyecto
         LocationToActivateDesativate locationsToActivateDesactive = this.setLocationsInProject(project, List.copyOf(cantonWebs));
+        int index = 1;
         for (IndicatorExecution indicatorExecution : project.getIndicatorExecutions()) {
             this.indicatorExecutionService.updateIndicatorExecutionsLocations(indicatorExecution, locationsToActivateDesactive.locationsToActivate, locationsToActivateDesactive.locationsToDissable);
+            int progress = 20 + (int) (80 * ((double) index / project.getIndicatorExecutions().size()));
+            JobStatusService.updateJob(jobId,  progress, "Actualizando lugares de ejecución");
+            index++;
         }
     }
+
     public LocationToActivateDesativate setLocationsInProject(Project project, List<CantonWeb> cantonsWeb) {
         Set<Canton> locationsToActivate = new HashSet<>();
         Set<Canton> locationsToDissable = new HashSet<>();

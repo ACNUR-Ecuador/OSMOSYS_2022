@@ -10,7 +10,8 @@ import {
     ImportFile,
     Indicator,
     Period,
-    Statement
+    Statement,
+    AsyncResponse
 } from '../../shared/model/OsmosysModel';
 import {ColumnDataType, ColumnTable, EnumsState, EnumsType} from '../../shared/model/UtilsModel';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
@@ -475,7 +476,10 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             // tslint:disable-next-line:no-shadowed-variable
             this.indicatorService.update(indicator)
                 .subscribe({
-                    next: () => {
+                    next: (response: AsyncResponse | number ) => {
+                        if (typeof response === 'object' && response.progress !== undefined && response.progress < 100) {
+                            return;
+                        }
                         this.cancelDialog();
                         this.loadItems();
                         this.messageService.add({

@@ -338,12 +338,17 @@ public class IndicatorExecutionService {
         return indicatorExecution.getId();
     }
 
+
     public void updateAllIndicatorExecutionsDissagregationsByPeriod(Period period) throws GeneralAppException {
+        updateAllIndicatorExecutionsDissagregationsByPeriod(period, null);
+    }
+
+    public void updateAllIndicatorExecutionsDissagregationsByPeriod(Period period, String jobId) throws GeneralAppException {
 
         Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> periodDissagregationMapGeneralIndicator = this.getPeriodDessagregationMap(true, period, null);
 
         LOGGER.debug("updateAllIndicatorExecutionsDissagregationsByPeriod ");
-        this.updateGeneralIndicatorExecutionsDissagregations(period, periodDissagregationMapGeneralIndicator);
+        this.updateGeneralIndicatorExecutionsDissagregations(period, periodDissagregationMapGeneralIndicator, jobId);
         // performance indicators
         // recupero todos los indicadores afectados
         List<Indicator> indicatorsToUpdate = this.indicatorDao.getByPeriodDissagregationAssignment(period.getId());
@@ -352,6 +357,8 @@ public class IndicatorExecutionService {
         int i=0;
         for (Indicator indicator : indicatorsToUpdate) {
             i++;
+            int progress = 40 + (int) (60 * ((double) i / indicatorsToUpdate.size()));
+            JobStatusService.updateJob(jobId, progress, "Actualizando Indicadores de Producto " + i + "/" + indicatorsToUpdate.size());
             LOGGER.debug("updateAllIndicatorExecutionsDissagregationsByPeriod "+i+"/"+totalIndicators);
             this.updatePerformanceIndicatorExecutionsDissagregations(period, indicator);
         }
@@ -415,6 +422,10 @@ public class IndicatorExecutionService {
     }
 
     public void updateGeneralIndicatorExecutionsDissagregations(Period period, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationTypeMapMap) throws GeneralAppException {
+        updateGeneralIndicatorExecutionsDissagregations(period, dissagregationTypeMapMap, null);
+    }
+
+    public void updateGeneralIndicatorExecutionsDissagregations(Period period, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationTypeMapMap, String jobId) throws GeneralAppException {
         // busco los ies que pueden ser actualizados
         LOGGER.debug("updateGeneralIndicatorExecutionsDissagregations ");
         List<IndicatorExecution> iesToUpdate = this.indicatorExecutionDao.getGeneralIndicatorsExecutionsByPeriodId(period.getId());
@@ -423,6 +434,8 @@ public class IndicatorExecutionService {
         int i=0;
         for (IndicatorExecution ie : iesToUpdate) {
             i++;
+            int progress = 20 + (int) (20 * ((double) i / iesToUpdate.size()));
+            JobStatusService.updateJob(jobId, progress, "Actualizando Indicadores Generales " + i + "/" + iesToUpdate.size());
             LOGGER.debug("updateGeneralIndicatorExecutionsDissagregations : " +i+"/"+ total);
             this.setStandardDissagregationOptionsForIndicatorExecutions(ie, dissagregationTypeMapMap);
             this.quarterService.updateQuarterDissagregations(ie, dissagregationTypeMapMap, null);

@@ -3,6 +3,7 @@ package org.unhcr.osmosys.webServices.endpoints;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
+import org.unhcr.osmosys.services.JobStatusService;
 import org.unhcr.osmosys.services.PeriodService;
 import org.unhcr.osmosys.webServices.model.PeriodWeb;
 
@@ -10,6 +11,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.Collections;
 import java.util.List;
 
 @Path("/periods")
@@ -33,6 +36,24 @@ public class PeriodEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Long update(PeriodWeb periodWeb) throws GeneralAppException {
         return this.periodService.update(periodWeb);
+    }
+
+    @Path("/asyncUpdate")
+    @PUT
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response asyncUpdate(PeriodWeb periodWeb) throws GeneralAppException {
+        String jobId = JobStatusService.createJob();
+        // Inicia un hilo para procesar la tarea asíncrona
+        new Thread(() -> {
+            try {
+                Long result =  this.periodService.update(periodWeb, jobId);
+                JobStatusService.finalizeJob(jobId, result);
+            } catch (GeneralAppException ex) {
+
+            }
+        }).start();
+        return Response.ok(Collections.singletonMap("jobId", jobId)).build();
     }
 
     @Path("/withGeneralIndicatorAll")

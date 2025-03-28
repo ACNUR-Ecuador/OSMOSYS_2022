@@ -42,7 +42,22 @@ export class LoaderService {
         }
         if (this.loadingMap.size === 0) {
             this.loader.next({id: 'global', status: false});
+            console.log('hideLoader 1');
+
         }
+    }
+
+    /**
+     * Update progress
+     * @param {string} url
+     * @param {number} progress
+     */
+    public updateProgress(url: string, progress: number, statusText?: string): void {
+        if (progress >= 100) {
+            progress = undefined;
+        }
+        this.loader.next({ id: 'global', status: true, progress: progress, statusText: statusText });
+
     }
 
     /**
@@ -59,5 +74,6 @@ export class LoaderService {
      */
     public hideLoader(id: string = 'global'): void {
         this.loader.next({id, status: false});
+        console.log('hideLoader');
     }
 }

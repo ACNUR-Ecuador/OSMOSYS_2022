@@ -39,9 +39,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 
 @SuppressWarnings("ALL")
@@ -154,12 +152,28 @@ public class TestEndpoint {
     @Path("tester")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> tester() throws GeneralAppException {
+    public Response tester() throws GeneralAppException {
 
-        //return this.indicatorValueService.getDissagregationMapIndicatorValuesByMonthId(1772l);
+        String jobId = UUID.randomUUID().toString();
+        JobStatusService.createJob(jobId);
+        new Thread(() -> {
+            try {
+                for (int i = 0; i <= 100; i++) {
+                    // Simula el trabajo de la tarea
+                    Thread.sleep(100); // 50 ms por iteración (aprox. 5 segundos en total)
+                    // Actualiza el porcentaje de avance
+                    JobStatusService.setJob(jobId, i, "Sigo Procesando..." + i + "%");
+                }
+                // Una vez completado, actualiza el estado
+                JobStatusService.setState(jobId, "Completado");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                JobStatusService.setState(jobId, "Error");
+            }
+        }).start();
 
-        return null;
-
+        // Devuelve inmediatamente el jobId para que el cliente inicie el polling
+        return Response.ok(Collections.singletonMap("jobId", jobId)).build();
     }
 
     @Path("tester2")
