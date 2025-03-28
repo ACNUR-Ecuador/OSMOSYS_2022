@@ -12,7 +12,10 @@ import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @SuppressWarnings("unchecked")
 @Stateless
@@ -368,4 +371,42 @@ public class UserDao extends GenericDaoJpa<User, Long> {
         query.setParameter("state", state);
         return query.getResultList();
     }
+    public List<User> getActiveResponsableAndAlternsDirectImplementationUsers(Long periodId) {
+        State state = State.ACTIVO;
+
+        // Consulta para los assignedUser
+        String jpqlAssignedUser = "SELECT DISTINCT u FROM IndicatorExecution ie " +
+                "LEFT JOIN ie.assignedUser u " +
+                "WHERE ie.state = :state " +
+                "AND ie.period.id = :periodId " +
+                "AND u.state = :state";
+
+        Query queryAssignedUser = getEntityManager().createQuery(jpqlAssignedUser, User.class);
+        queryAssignedUser.setParameter("periodId", periodId);
+        queryAssignedUser.setParameter("state", state);
+
+        List<User> assignedUsers = queryAssignedUser.getResultList();
+
+        // Consulta para los assignedUserBackup
+        String jpqlAssignedUserBackup = "SELECT DISTINCT ub FROM IndicatorExecution ie " +
+                "LEFT JOIN ie.assignedUserBackup ub " +
+                "WHERE ie.state = :state " +
+                "AND ie.period.id = :periodId " +
+                "AND ub.state = :state";
+
+        Query queryAssignedUserBackup = getEntityManager().createQuery(jpqlAssignedUserBackup, User.class);
+        queryAssignedUserBackup.setParameter("periodId", periodId);
+        queryAssignedUserBackup.setParameter("state", state);
+
+        List<User> assignedUserBackups = queryAssignedUserBackup.getResultList();
+
+        // Combinamos los dos resultados y eliminamos duplicados
+        Set<User> allUsers = new HashSet<>();
+        allUsers.addAll(assignedUsers);
+        allUsers.addAll(assignedUserBackups);
+
+        return new ArrayList<>(allUsers);
+    }
+
+
 }

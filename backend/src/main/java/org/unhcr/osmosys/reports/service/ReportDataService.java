@@ -1,7 +1,10 @@
 package org.unhcr.osmosys.reports.service;
 
+import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.model.User;
+import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,14 +28,17 @@ import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionTagDTO;
 import org.unhcr.osmosys.model.reportDTOs.LaterReportDTO;
 import org.unhcr.osmosys.reports.model.IndicatorReportProgramsDTO;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
-import org.unhcr.osmosys.webServices.model.IndicatorExecutionWeb;
-import org.unhcr.osmosys.webServices.model.MonthWeb;
+import org.unhcr.osmosys.services.PeriodService;
+import org.unhcr.osmosys.services.UtilsService;
+import org.unhcr.osmosys.services.scheduledTasks.MessageAlertServiceV2;
+import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.io.ByteArrayOutputStream;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -51,6 +57,17 @@ public class ReportDataService {
 
     @Inject
     ModelWebTransformationService modelWebTransformationService;
+    @Inject
+    UserService userService;
+
+    @Inject
+    PeriodService periodService;
+
+    @Inject
+    AppConfigurationService appConfigurationService;
+
+    @Inject
+    UtilsService utilsService;
 
     public List<Map<String, Object>> indicatorExecutionsProjectsReportsByPeriodId(Long periodId) throws GeneralAppException {
         List<IndicatorExecutionWeb> indicatorExecutions = this.indicatorExecutionService.getActiveProjectIndicatorExecutionsByPeriodId(periodId);
@@ -61,6 +78,107 @@ public class ReportDataService {
         List<IndicatorExecutionWeb> indicatorExecutions = this.indicatorExecutionService.getActivePartnersIndicatorExecutionsByProjectId(projectId);
         return this.indicatorExecutionsProjectsToProjectReport(indicatorExecutions);
 
+    }
+
+    public List<Map<String, Object>> resultManagersIndicatorsReportsByPeriodId(Long periodId) throws GeneralAppException {
+        List<User> resultManagers = this.userService.getActiveResultManagerUsers();
+        return this.resultManagersIndicatorsReports(resultManagers, periodId);
+
+    }
+
+    public List<Map<String, Object>> resultManagersIndicatorsReportByPeriodIdAndUserId(Long periodId, Long resultManagerId) throws GeneralAppException {
+        List<User> resultManagers = new ArrayList<>();
+        User rm= userService.getById(resultManagerId);
+        resultManagers.add(rm);
+        return this.resultManagersIndicatorsReports(resultManagers, periodId);
+
+    }
+
+    /*--Result Managers indicators validation Maps--*/
+    public List<Map<String, Object>> resultManagersIndicatorsReports(List<User> resultManagers, Long periodId) throws GeneralAppException{
+        List<Map<String, Object>> r = new ArrayList();
+        Period selectedPeriod = this.periodService.getById(periodId);
+        Integer rmLimitDay = this.appConfigurationService.getResultManagerLimitDay();
+        Integer currentMonthYearOrder = this.utilsService.getCurrentMonthYearOrder();
+        int mes = currentMonthYearOrder % 100;
+
+        // Determinar el trimestre a reportar
+        Integer quarterReport;
+        Calendar now = Calendar.getInstance();
+        Calendar limitDay = Calendar.getInstance();
+        if (mes >= 1 && mes <= 3) {
+            quarterReport = 4;  // Primer trimestre (Enero, Febrero, Marzo)
+            limitDay.set(selectedPeriod.getYear()+1, 0, rmLimitDay, 6, 0, 0);
+        } else if (mes >= 4 && mes <= 6) {
+            quarterReport = 1; // Segundo trimestre (Abril, Mayo, Junio)
+            limitDay.set(selectedPeriod.getYear(), 3, rmLimitDay, 6, 0, 0);
+        } else if (mes >= 7 && mes <= 9) {
+            quarterReport = 2;  // Tercer trimestre (Julio, Agosto, Septiembre)
+            limitDay.set(selectedPeriod.getYear(), 6, rmLimitDay, 6, 0, 0);
+        } else if (mes >= 10 && mes <= 12) {
+            quarterReport = 3;  // Cuarto trimestre (Octubre, Noviembre, Diciembre)
+            limitDay.set(selectedPeriod.getYear(), 9, rmLimitDay, 6, 0, 0);
+        } else {
+            quarterReport = 0;  // Si el mes no es válido (aunque no se espera que ocurra)
+            limitDay.set(selectedPeriod.getYear(), 0, rmLimitDay, 6, 0, 0);
+        }
+
+
+        boolean isOverLimit = now.after(limitDay);
+
+        for (User resultManager : resultManagers) {
+
+            List<ResultManagerIndicatorWeb> rmiw= indicatorExecutionService.getResultManagerIndicators(resultManager.getId(), selectedPeriod.getId());
+            if(rmiw.isEmpty()){
+                continue;
+            }
+            for (ResultManagerIndicatorWeb rmi : rmiw) {
+                if(!rmi.isHasExecutions()){
+                    continue;
+                }
+                List<ResultManagerIndicatorQuarterWeb> resultManagerIndicatorQuarterWebList =rmi.getResultManagerIndicatorQuarter();
+                for(ResultManagerIndicatorQuarterWeb resultManagerIndicatorQuarterWeb : resultManagerIndicatorQuarterWebList){
+                        List<ResultManagerQuarterPopulationTypeWeb> rmqpws= resultManagerIndicatorQuarterWeb.getResultManagerQuarterPopulationType();
+
+                    // Determinar si está atrasado
+                    boolean isLate = rmqpws.stream()
+                            .anyMatch(rmqpw -> resultManagerIndicatorQuarterWeb.getQuarter() <= quarterReport
+                                    && !rmqpw.isConfirmation()
+                                    && isOverLimit);
+                    // Determinar si está completo
+                    boolean isCompleted = rmqpws.stream()
+                            .allMatch(rmqpw -> resultManagerIndicatorQuarterWeb.getQuarter() <= quarterReport
+                                    && rmqpw.isConfirmation()
+                                    && isOverLimit);
+                    String quarterState;
+                    if(isLate){
+                        quarterState = "Retrasado";
+                    } else if (isCompleted) {
+                        quarterState = "Completado";
+                    }else{
+                        quarterState = "A tiempo";
+                    }
+                    //Obtener el ccomentario
+                    String reportComment = Optional.ofNullable(resultManagerIndicatorQuarterWeb.getReportComment()).orElse("");
+                    for (ResultManagerQuarterPopulationTypeWeb rmqpw : rmqpws) {
+                        Map<String, Object> map = new HashMap();
+                        map.put("indicator", rmi.getIndicator().getCode() + "-" + rmi.getIndicator().getDescription());
+                        map.put("resultManager", resultManager.getName());
+                        map.put("quarter", "Q" + resultManagerIndicatorQuarterWeb.getQuarter());
+                        map.put("quarterCalculationType", rmi.getIndicator().getQuarterReportCalculation()!=null ? rmi.getIndicator().getQuarterReportCalculation().getLabel() : "");
+                        map.put("populationType", rmqpw.getPopulationType().getName());
+                        map.put("reportValue", rmqpw.getReportValue()!=null?rmqpw.getReportValue().toString():"");
+                        map.put("reportState", rmqpw.isConfirmation() ? "Validado" : "Sin Validar");
+                        map.put("year", selectedPeriod.getYear());
+                        map.put("quarterState", quarterState);
+                        map.put("reportComment", reportComment);
+                        r.add(map);
+                    }
+                }
+            }
+
+        }
+        return r;
     }
 
 

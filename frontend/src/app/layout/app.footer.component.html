@@ -3,11 +3,22 @@
         <img id="footer-logo" [src]="'assets/images/logo_osmosys_blue.png'" alt="osmosys"/>
         <!--<span class="footer-copyright">&#169; Hecho con amor en el -salvador</span>-->
     </div>
-    <span (click)="showDialog = true" class="footer-copyright hover:surface-hover transition-colors transition-duration-150 cursor-pointer">V 5.0.9</span>
+    <span (click)="showDialog = true" class="footer-copyright hover:surface-hover transition-colors transition-duration-150 cursor-pointer">V 5.1.0</span>
     <span class="footer-copyright">&#169; UNHCR -Hecho en El Salvador y Ecuador-  2024</span> 
     
     <p-dialog header="Change log" [(visible)]="showDialog" [modal]="true" [style]="{width: '50vw'}" (onHide)="showDialog = false">
-        <h5 style="margin-top: 1rem;">Versión 5.0.9 - 2025-03-26</h5>
+        <h5 style="margin-top: 1rem;">Versión 5.1.0 - 2025-03-28</h5>
+        <ul>
+            <li>Se añade un estado de carga del proceso cuando se actualizan Periodos, Proyectos, Reportes e Indicadores.</li>
+            <li>Se han añadido los mensajes de los correos masivos como parámetros de configuración global, lo que permite a los administradores editarlos según sea necesario.</li>
+            <li>Se han actualizado los mensajes y destinatarios de los correos de recordatorio y alertas por retraso.</li>
+            <li>Se han creado nuevos parámetros de configuración global que especifican el día de envío de los recordatorios y el límite máximo para la verificación de indicadores por parte de los Managers de Resultados.</li>
+            <li>Se ha actualizado la lógica de estados en la pantalla del Manager de Resultados, alineada con el límite máximo de reporte.</li>
+            <li>Se han añadido nuevos correos de alerta y recordatorio para los Managers de Resultados.</li>
+            <li>Se ha creado un nuevo reporte en la sección de Exportación de Datos, que detalla las verificaciones de indicadores realizadas por los Managers de Resultados.</li>
+            <li>Se agrega un botón en la pantalla de Mánager de Resultado para generar un reporte de la Validación de Indicadores realizado por el usuario actual.</li>
+        </ul>        
+        <h5 style="margin-top: 1rem;">Versión 5.0.9 - 2025-03-26 </h5>
         <ul>
             <li>Se añade una leyenda que indica el estado del reporte sobre el valor de Ejecución mensual en el panel de resumen de indicadores.</li>
             <li>Se corrigen los valores en la columna "Atrasado" en la tabla de Indicadores de reporte para Implementación directa</li>

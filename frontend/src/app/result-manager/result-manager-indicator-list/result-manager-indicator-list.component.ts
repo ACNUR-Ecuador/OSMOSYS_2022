@@ -45,6 +45,7 @@ import {
 import { ResultManagerService } from 'src/app/services/result-manager.service';
 import { UserService } from 'src/app/services/user.service';
 import { ResultManagerExecutionPipe } from 'src/app/shared/pipes/result-manager-execution.pipe';
+import { AppConfigurationService } from 'src/app/services/app-configuration.service';
 
 @Component({
     selector: 'app-result-manager-indicator-list',
@@ -93,6 +94,7 @@ export class ResultManagerIndicatorListComponent implements OnInit {
         private resultManagerService: ResultManagerService,
         private userService: UserService,
         private resultMangerExecutionPipe: ResultManagerExecutionPipe,
+        private appConfigurationService: AppConfigurationService,
     ) {}
 
     ngOnInit(): void {
@@ -465,14 +467,17 @@ export class ResultManagerIndicatorListComponent implements OnInit {
         confirmationRate=`${confirmationsDone}/${totalPopulationTypes}`
 
         let confirmationStatus:string
-        const isPeriodPast = new Date().getFullYear()>this.periodForm.get("selectedPeriod").value.year;
-        
+        const currentDate = new Date();
+        const {quarterReport, limitDate}=this.getQuarterToReport();
+        const isOverLimit:boolean=currentDate>limitDate;
+        const isCurrentYear = new Date().getFullYear()==limitDate.getFullYear();
+
 
         if( confirmationsDone === totalPopulationTypes && totalPopulationTypes!=0){
             confirmationStatus="completed"
-        }else if(rmiq.quarter<this.getCurrentQuarter() && confirmationsDone<totalPopulationTypes || isPeriodPast){
+        }else if(rmiq.quarter<=quarterReport && confirmationsDone<totalPopulationTypes && isOverLimit){
             confirmationStatus="late"
-        }else if(rmiq.quarter === this.getCurrentQuarter() && confirmationsDone>0){
+        }else if(rmiq.quarter === quarterReport && confirmationsDone>0 && isCurrentYear){
             confirmationStatus="inProgress"
         }else{
             confirmationStatus="onTime"
@@ -486,20 +491,31 @@ export class ResultManagerIndicatorListComponent implements OnInit {
         return obj
     }
 
-    getCurrentQuarter(): number {
+    getQuarterToReport() {
         const currentMonth = new Date().getMonth();
-        let currentQuarter:number;
+        let quarterReport:number;
+        let limitDate:Date
+        const limitDay=this.appConfigurationService.getResultManagerLimitDay()
         if (currentMonth >= 0 && currentMonth <= 2) {
-          currentQuarter = 1;  // Primer trimestre: Enero, Febrero, Marzo
+          quarterReport = 4;  // Primer trimestre: Enero, Febrero, Marzo se reporta lo del trimestre anterior
+          limitDate= new Date(this.periodForm.get("selectedPeriod").value.year+1, 0, limitDay);
         } else if (currentMonth >= 3 && currentMonth <= 5) {
-          currentQuarter = 2;  // Segundo trimestre: Abril, Mayo, Junio
+          quarterReport = 1;  // Segundo trimestre: Abril, Mayo, Junio
+          limitDate= new Date(this.periodForm.get("selectedPeriod").value.year, 3, limitDay);
         } else if (currentMonth >= 6 && currentMonth <= 8) {
-          currentQuarter = 3;  // Tercer trimestre: Julio, Agosto, Septiembre
+          quarterReport = 2;  // Tercer trimestre: Julio, Agosto, Septiembre
+          limitDate= new Date(this.periodForm.get("selectedPeriod").value.year, 6, limitDay);
+
         } else {
-          currentQuarter = 4;  // Cuarto trimestre: Octubre, Noviembre, Diciembre
+          quarterReport = 3;  // Cuarto trimestre: Octubre, Noviembre, Diciembre
+          limitDate= new Date(this.periodForm.get("selectedPeriod").value.year, 9, limitDay);
+        }
+        const obj={
+            quarterReport,
+            limitDate
         }
 
-        return currentQuarter;
+        return obj;
 
       }
       saveQuarterReport(quarterData:ResultManagerIndicatorQuarter,indicator:Indicator){
@@ -594,6 +610,30 @@ export class ResultManagerIndicatorListComponent implements OnInit {
 
       onCheckedChange(){
         this.isAllChecked=this.tableData.every(item=>item.confirmation===true)
+      }
+
+      generateResultManagerIndicatorReport(){
+        const period:Period=this.periodForm.get('selectedPeriod').value
+        const user=this.userService.getLogedUsername();
+        let reportObservable = null;
+        reportObservable = this.reportsService.getResultManagerIndicatorsValidationReportByPeriodIdAndUserId(period.id,user.id);
+        reportObservable.subscribe((response: HttpResponse<Blob>) => {
+            if (response.status === 204) {
+                this.messageService.add({
+                    severity: 'info',
+                    summary: 'No se encontraron Indicadores con implementaciones para este Año',
+                });
+            } else {
+                this.utilsService.downloadFileResponse(response);
+            }
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al Generar el Reporte',
+                detail: error.error.message,
+                life: 3000
+            });
+        });
       }
 
    

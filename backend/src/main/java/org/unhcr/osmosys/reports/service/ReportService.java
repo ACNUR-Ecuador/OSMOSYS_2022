@@ -338,6 +338,51 @@ public class ReportService {
             throw new GeneralAppException("Error al generar el reporte", Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
         }
     }
+    /*--Reporte anual de Indicadores Verificados por Result Managers--*/
+    public ByteArrayOutputStream getResultManagerIndicatorsReport(Long periodId) throws GeneralAppException {
+        if (ReportService.dissableJasperReport) {
+            throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
+        }
+
+        String jrxmlFile = "result_manager_indicators_report.jrxml";
+        InputStream file = this.getReportFile(jrxmlFile);
+        Map<String, Object> parameters = new HashMap<>();
+        try{
+            JasperReport jasperReport =  JasperCompileManager.compileReport(file);
+            List<Map<String, Object>> data = this.reportDataService.resultManagersIndicatorsReportsByPeriodId(periodId);
+            JRMapArrayDataSource dataSource = new JRMapArrayDataSource(data.toArray());
+            parameters.put("DataParameter", dataSource);
+            JasperPrint jasperprint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
+            return getByteArrayOutputStreamFromJasperPrint(jasperprint);
+        } catch (JRException e) {
+            throw new GeneralAppException("Error al generar el reporte", Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        }
+
+    }
+
+    public ByteArrayOutputStream getResultManagerIndicatorsReportByPeriodAndUserId(Long periodId, Long resultManagerId) throws GeneralAppException {
+        if (ReportService.dissableJasperReport) {
+            throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
+        }
+
+        String jrxmlFile = "result_manager_indicators_report.jrxml";
+        InputStream file = this.getReportFile(jrxmlFile);
+        Map<String, Object> parameters = new HashMap<>();
+        try{
+            JasperReport jasperReport =  JasperCompileManager.compileReport(file);
+            List<Map<String, Object>> data = this.reportDataService.resultManagersIndicatorsReportByPeriodIdAndUserId(periodId, resultManagerId);
+            JRMapArrayDataSource dataSource = new JRMapArrayDataSource(data.toArray());
+            if(data.isEmpty()){
+                return null;
+            }
+            parameters.put("DataParameter", dataSource);
+            JasperPrint jasperprint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
+            return getByteArrayOutputStreamFromJasperPrint(jasperprint);
+        } catch (JRException e) {
+            throw new GeneralAppException("Error al generar el reporte", Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        }
+
+    }
 
     public ByteArrayOutputStream getPartnerQuarterlyByProjectId(Long projectId) throws GeneralAppException {
         if (ReportService.dissableJasperReport) {

@@ -25,7 +25,7 @@ public class AppConfiguration extends BaseEntity<Long> {
 	@NotNull
 	@NotEmpty
 	@Column(name = "nombre", unique = true)
-	@Size(min = 4, max = 100)
+	@Size(min = 4, max = 255)
 	private String nombre;
 
 	@NotNull

@@ -869,4 +869,44 @@ public class ReportsEndpoint {
         return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
     }
 
+    @Path("/getAllResultManagersIndicatorsValidationReportByPeriodId/{periodId}")
+    @GET
+    @Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getAllResultManagersIndicatorsValidationReportByPeriodId(
+            @Context SecurityContext securityContext,
+            @PathParam("periodId") Long periodId
+    ) throws GeneralAppException {
+        Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getAllResultManagersIndicatorsValidationReportByPeriodId:" + principal.getName());
+        long lStartTime = System.nanoTime();
+        ByteArrayOutputStream r = this.reportService.getResultManagerIndicatorsReport(periodId);
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
+        String filename = "Reporte_indicadores_result_managers" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+    }
+
+    @Path("/getResultManagerIndicatorsValidationReportByPeriodIdAndUserId/{periodId}/{userId}")
+    @GET
+    @Secured
+    @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response getResultManagerIndicatorsValidationReportByPeriodIdAndUserId(
+            @Context SecurityContext securityContext,
+            @PathParam("periodId") Long periodId,
+            @PathParam("userId") Long userId
+    ) throws GeneralAppException {
+        Principal principal = securityContext.getUserPrincipal();
+        LOGGER.info("getResultManagerIndicatorsValidationReportByPeriodIdAndUserId:" + principal.getName());
+        long lStartTime = System.nanoTime();
+        ByteArrayOutputStream r = this.reportService.getResultManagerIndicatorsReportByPeriodAndUserId(periodId, userId);
+        if (r == null) {
+            throw new GeneralAppException("No se encontraron Indicadores con implementaciones", Response.Status.NO_CONTENT);
+        }
+        long lEndTime = System.nanoTime();
+        LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
+        String filename = "Reporte_indicadores_por_result_manager" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
+        return Response.ok(r.toByteArray()).header("Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+    }
+
 }

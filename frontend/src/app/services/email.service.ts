@@ -15,6 +15,10 @@ export class EmailService {
         return this.http.get(`${mainServiceUrl}/recordatoryPartners`);
     }
 
+    public recordatoryResultManagers() {
+        return this.http.get(`${mainServiceUrl}/recordatoryResultManagers`);
+    }
+
     public recordatoryId() {
         return this.http.get(`${mainServiceUrl}/recordatoryId`);
     }
@@ -25,5 +29,13 @@ export class EmailService {
 
     public alertsId() {
         return this.http.get(`${mainServiceUrl}/alertsId`);
+    }
+
+    public alertProjectManagers() {
+        return this.http.get(`${mainServiceUrl}/alertProjectManagers`);
+    }
+    
+    public alertResultManagers() {
+        return this.http.get(`${mainServiceUrl}/alertResultManagers`);
     }
 }

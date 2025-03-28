@@ -117,6 +117,16 @@
                                styleClass="p-button-success mb-2"></p-splitButton>
             </div>
 
+            <div class="col-4 border_div">Verificación de Indicadores</div>
+            <div class="col-4 border_div">Este reporte tiene el detalle de todas las verificaciones de indicadores en el sistema por los Mánager de Resultados. *
+            </div>
+            <div class="col-4 border_div">
+                <p-button label="Generar Reporte" icon="pi pi-file-excel"
+                                  (onClick)="generateResultManagersReport()"
+                                  styleClass="p-button-success mb-2"></p-button>
+            </div>
+
+
         </div>
     </p-fieldset>
     <cite>* Los reportes "Con Desagregaciones" exportará solo los datos reportados mayores a 0 (cero) </cite>
