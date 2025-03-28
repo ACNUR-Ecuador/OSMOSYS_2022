@@ -4,7 +4,6 @@ import com.sagatechs.generics.persistence.model.BaseEntityIdState;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.model.User;
 import org.unhcr.osmosys.model.enums.IndicatorType;
-import org.unhcr.osmosys.webServices.model.IndicatorExecutionDissagregationAssigmentWeb;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -91,7 +90,7 @@ public class IndicatorExecution extends BaseEntityIdState {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "indicatorExecution", cascade = CascadeType.ALL)
     private Set<IndicatorExecutionLocationAssigment> indicatorExecutionLocationAssigments = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "disagregationOption", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "indicatorExecution", cascade = CascadeType.ALL)
     private Set<IndicatorExecutionDissagregationAssigment> indicatorExecutionDissagregationAssigments = new HashSet<>();
 
     @Column(name = "keep_budget")

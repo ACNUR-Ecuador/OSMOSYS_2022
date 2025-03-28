@@ -16,7 +16,10 @@ public class IndicatorExecutionDissagregationAssigment extends BaseEntityIdState
         this.state = State.ACTIVO;
     }
 
-
+    public IndicatorExecutionDissagregationAssigment(StandardDissagregationOption disagregationOption) {
+        this.disagregationOption = disagregationOption;
+        this.state = State.ACTIVO;
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

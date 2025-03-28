@@ -951,6 +951,34 @@ public class ModelWebTransformationService {
         return w;
     }
 
+    /*Proyecto ccon las información completa*/
+    public ProjectWeb projectWithAllDataToProjectWeb(Project project) {
+        ProjectWeb w = new ProjectWeb();
+        w.setId(project.getId());
+        w.setName(project.getName());
+        w.setCode(project.getCode());
+        w.setPeriod(this.periodToPeriodWeb(project.getPeriod(), false));
+        w.setOrganization(this.organizationToOrganizationWeb(project.getOrganization()));
+        w.setStartDate(project.getStartDate());
+        w.setEndDate(project.getEndDate());
+        w.setState(project.getState());
+        w.setPartnerManager(userToUserWebSimple(project.getPartnerManager(),false,false));
+        List<User> focalPoints = project.getFocalPointAssignations().stream()
+                .filter(focalPointAssignation -> focalPointAssignation.getState().equals(State.ACTIVO)).map(FocalPointAssignation::getFocalPointer).filter(user -> user.getState().equals(State.ACTIVO)).collect(Collectors.toList());
+
+        w.setFocalPoints(new HashSet<>(this.usersToUsersWebSimple(focalPoints, true, true)));
+
+        Set<Canton> cantones = project.getProjectLocationAssigments().stream()
+                .filter(projectLocationAssigment -> projectLocationAssigment.getState().equals(State.ACTIVO))
+                .map(ProjectLocationAssigment::getLocation).collect(Collectors.toSet());
+
+        for (Canton canton : cantones) {
+            w.getLocations().add(this.cantonToCantonWeb(canton));
+        }
+
+        return w;
+    }
+
 
     public List<ProjectWeb> projectsToProjectsWeb(List<Project> projects) {
         List<ProjectWeb> r = new ArrayList<>();
@@ -959,50 +987,9 @@ public class ModelWebTransformationService {
         }
         return r;
     }
-
-
     //</editor-fold>
 
-    //<editor-fold desc="IndicatorExecutionDissagregationAssigment">
-    public List<IndicatorExecutionDissagregationAssigmentWeb> indicatorExecutionDissagregationAssignationsToindicatorExecutionDissagregationAssignationsWeb (List<IndicatorExecutionDissagregationAssigment> dissagregationAssigments) {
-        List<IndicatorExecutionDissagregationAssigmentWeb> r = new ArrayList<>();
-        for (IndicatorExecutionDissagregationAssigment dissagregationAssigment : dissagregationAssigments) {
-            r.add(this.indicatorExecutionDissagregationAssignationToindicatorExecutionDissagregationAssignationWeb(dissagregationAssigment));
-        }
-        return r;
-    }
-    public IndicatorExecutionDissagregationAssigmentWeb indicatorExecutionDissagregationAssignationToindicatorExecutionDissagregationAssignationWeb(IndicatorExecutionDissagregationAssigment indicatorExecutionDissagregationAssigment) {
-        if (indicatorExecutionDissagregationAssigment == null) {
-            return null;
-        }
-        IndicatorExecutionDissagregationAssigmentWeb w = new IndicatorExecutionDissagregationAssigmentWeb();
-        w.setId(indicatorExecutionDissagregationAssigment.getId());
-        w.setState(indicatorExecutionDissagregationAssigment.getState());
-        w.setDisagregationOption(this.standardDissagregationOptionToStandardDissagregationOptionWeb(indicatorExecutionDissagregationAssigment.getDisagregationOption()));
-        return w;
-    }
 
-    public List<IndicatorExecutionDissagregationAssigment> indicatorExecutionDissagregationAssignationsWebToindicatorExecutionDissagregationAssignations (List<IndicatorExecutionDissagregationAssigmentWeb> dissagregationAssigmentsWeb) {
-        List<IndicatorExecutionDissagregationAssigment> r = new ArrayList<>();
-        for (IndicatorExecutionDissagregationAssigmentWeb dissagregationAssigment : dissagregationAssigmentsWeb) {
-            r.add(this.indicatorExecutionDissagregationAssignationWebToindicatorExecutionDissagregationAssignation(dissagregationAssigment));
-        }
-        return r;
-    }
-
-    public IndicatorExecutionDissagregationAssigment indicatorExecutionDissagregationAssignationWebToindicatorExecutionDissagregationAssignation(IndicatorExecutionDissagregationAssigmentWeb indicatorExecutionDissagregationAssigmentWeb) {
-        if (indicatorExecutionDissagregationAssigmentWeb == null) {
-            return null;
-        }
-        IndicatorExecutionDissagregationAssigment w = new IndicatorExecutionDissagregationAssigment();
-        w.setId(indicatorExecutionDissagregationAssigmentWeb.getId());
-        w.setState(indicatorExecutionDissagregationAssigmentWeb.getState());
-        w.setDisagregationOption(this.standardDissagregationOptionDao.find(indicatorExecutionDissagregationAssigmentWeb.getId()));
-        return w;
-    }
-
-
-    //</editor-fold>
     //<editor-fold desc="Canton">
     public CantonWeb cantonToCantonWeb(Canton canton) {
         if (canton == null) {
@@ -1245,11 +1232,12 @@ public class ModelWebTransformationService {
         iw.setLocations(this.cantonsToCantonsWeb(activeCantons));
         /*Dissagregation Assigments*/
         if(ie.getIndicatorExecutionDissagregationAssigments()!=null) {
-            List<IndicatorExecutionDissagregationAssigment> activeDissagregationAssigments = ie.getIndicatorExecutionDissagregationAssigments()
+            List<StandardDissagregationOption> activeDissagregationOptions = ie.getIndicatorExecutionDissagregationAssigments()
                     .stream()
                     .filter(indicatorExecutionDissagregationAssigment -> indicatorExecutionDissagregationAssigment.getState().equals(State.ACTIVO))
+                    .map(IndicatorExecutionDissagregationAssigment::getDisagregationOption)
                     .collect(Collectors.toList());
-            iw.setDissagregationAssigments(this.indicatorExecutionDissagregationAssignationsToindicatorExecutionDissagregationAssignationsWeb(activeDissagregationAssigments));
+            iw.setDissagregationAssigments(this.standardDissagregationOptionsToStandardDissagregationOptionWebs(activeDissagregationOptions));
         }
         return iw;
     }

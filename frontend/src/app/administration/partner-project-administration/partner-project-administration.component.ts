@@ -16,6 +16,7 @@ import {
     Period,
     Project,
     Quarter,
+    StandardDissagregationOption,
     Statement,
     TargetUpdateDTOWeb
 } from '../../shared/model/OsmosysModel';
@@ -27,7 +28,8 @@ import {
     ColumnTable,
     EnumsIndicatorType,
     EnumsState,
-    EnumsType
+    EnumsType,
+    SelectItemWithOrder
 } from '../../shared/model/UtilsModel';
 import {EnumsService} from '../../services/enums.service';
 
@@ -43,6 +45,7 @@ import {IndicatorPipe} from '../../shared/pipes/indicator.pipe';
 import {Table} from 'primeng/table';
 import {OfficeOrganizationPipe} from '../../shared/pipes/office-organization.pipe';
 import {HttpResponse} from "@angular/common/http";
+import { StandardDissagregationsService } from 'src/app/services/standardDissagregations.service';
 
 @Component({
     selector: 'app-partner-project-administration',
@@ -53,7 +56,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     public periods: Period[];
     public cantones: Canton[];
     public cantonesAvailable: Canton[];
-
+       
     public generalIndicators: IndicatorExecution[] = [];
     public performanceIndicators: IndicatorExecution[] = [];
     public organizations: SelectItem[];
@@ -91,7 +94,14 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     quarterOrders: number[];
     quarterTitles: string[];
     quartersToUpdate: Quarter[] = [];
-
+    /*Dissagregation Options*/
+    populationTypeOptions: StandardDissagregationOption[];
+    ageOptions: StandardDissagregationOption[];
+    genderOptions: StandardDissagregationOption[];
+    diversityOptions: StandardDissagregationOption[];
+    countryOfOriginOptions: StandardDissagregationOption[];
+    
+    
     showDialogImport = false;
     importForm: FormGroup;
 
@@ -122,7 +132,9 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         private indicatorPipe: IndicatorPipe,
         // tslint:disable-next-line:variable-name
         private _location: Location,
-        private ref: ChangeDetectorRef
+        private ref: ChangeDetectorRef,
+        private standardDissagregationsService: StandardDissagregationsService,
+        
     ) {
 
         this.idProjectParam = this.route.snapshot.paramMap.get('projectId');
@@ -139,8 +151,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     ngOnInit(): void {
         this.createForms();
         this.createTables();
-
-
         if (this.idProjectParam) {
             const idProject = Number(this.idProjectParam);
             this.loadProject(idProject);
@@ -169,8 +179,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     this.periods.push(value);
                     const project = new Project();
                     project.period = value;
-                    this.formItem.patchValue(project);
-                    this.loadOptions(project);
                 },
                 error: error => {
                     this.messageService.add({
@@ -221,6 +229,12 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     });
                     this.periods = [];
                     this.periods.push(period);
+                    this.ageOptions=period.periodAgeDissagregationOptions
+                    this.populationTypeOptions=period.periodPopulationTypeDissagregationOptions
+                    this.genderOptions=period.periodGenderDissagregationOptions
+                    this.countryOfOriginOptions=period.periodCountryOfOriginDissagregationOptions
+                    this.diversityOptions=period.periodDiversityDissagregationOptions
+                   
                     this.loadOptions(value);
                     this.loadPerformanceIndicatorsOptions(value as Project);
                 },
@@ -432,6 +446,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             endDate: new FormControl('', Validators.required),
             focalPoints: new FormControl('', Validators.required),
             locations: new FormControl(''),
+            dissagregationOptions: new FormControl(''),
+            originalDissagregationOptions: new FormControl(''),
             originalLocations: new FormControl(''),
             updateAllLocationsIndicators: new FormControl(''),
             partnerManager: new FormControl('')
@@ -455,6 +471,11 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             state: new FormControl('', Validators.required),
             project: new FormControl(''),
             locations: new FormControl(''),
+            ageOptions: new FormControl(''),
+            genderOptions: new FormControl(''),
+            populationTypeOptions: new FormControl(''),
+            diversityOptions: new FormControl(''),
+            countryOfOriginOptions: new FormControl(''),
             keepBudget: new FormControl(''),
             assignedBudget: new FormControl(''),
         });
@@ -866,6 +887,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     }
 
     assignNewPerformanceIndicator() {
+        this.ref.detectChanges();
         this.messageService.clear();
         this.utilsService.resetForm(this.formPerformanceIndicator);
         const newItem = new IndicatorExecutionAssigment();
@@ -883,6 +905,13 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         this.formPerformanceIndicator.get('locations').patchValue(locations);
         this.formPerformanceIndicator.get('keepBudget').patchValue(false);
         this.setUpAssignedBudget(this.formPerformanceIndicator.get('keepBudget').value);
+        this.formPerformanceIndicator.patchValue({
+            ageOptions: this.ageOptions,
+            genderOptions: this.genderOptions,
+            populationTypeOptions: this.populationTypeOptions,
+            diversityOptions: this.diversityOptions,
+            countryOfOriginOptions: this.countryOfOriginOptions
+        });
     }
 
     exportExcelPerformancceIndicators(table: Table) {
@@ -905,7 +934,12 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             projectStatement,
             state,
             keepBudget,
-            assignedBudget
+            assignedBudget,
+            ageOptions,
+            genderOptions,
+            populationTypeOptions,
+            diversityOptions,
+            countryOfOriginOptions
         } = this.formPerformanceIndicator.value;
         const indicatorExecution: IndicatorExecutionAssigment = new IndicatorExecutionAssigment();
         const indicator = this.formPerformanceIndicator.get('indicator').value;
@@ -951,6 +985,65 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 });
                 return;
             }
+            /*Desagregaciones seleccionadas*/
+             let selectedDissagregationOptions: StandardDissagregationOption[]=[]
+             if(ageOptions.length > 0 && this.indicatorHasDissagregationType(indicator,"EDAD")){
+                
+                selectedDissagregationOptions.push(...ageOptions)
+             }else if(ageOptions.length < 1 && this.indicatorHasDissagregationType(indicator,"EDAD")){
+                 this.messageService.add({
+                     severity: 'error',
+                     summary: 'Seleccione al menos una Opción de Edad',
+                     detail: 'Este indicador tiene desagregación por Edad, es necesario activar al menos una opción',
+                     life: 3000
+                 });
+                 return;
+             }
+             if(genderOptions.length > 0 && this.indicatorHasDissagregationType(indicator,"GENDER")){
+                selectedDissagregationOptions.push(...genderOptions)
+             }else if(genderOptions.length < 1 && this.indicatorHasDissagregationType(indicator,"GENDER")){
+                 this.messageService.add({
+                     severity: 'error',
+                     summary: 'Seleccione al menos una Opción de Género',
+                     detail: 'Este indicador tiene desagregación por Género, es necesario activar al menos una opción',
+                     life: 3000
+                 });
+                 return;
+             }
+             if(populationTypeOptions.length > 0 && this.indicatorHasDissagregationType(indicator,"TIPO_POBLACION")){
+                selectedDissagregationOptions.push(...populationTypeOptions)
+             }else if(populationTypeOptions.length < 1 && this.indicatorHasDissagregationType(indicator,"TIPO_POBLACION")){
+                 this.messageService.add({
+                     severity: 'error',
+                     summary: 'Seleccione al menos una Opción de Tipo de Población',
+                     detail: 'Este indicador tiene desagregación por Tipo de Población, es necesario activar al menos una opción',
+                     life: 3000
+                 });
+                 return;
+             }
+             if(countryOfOriginOptions.length > 0 && this.indicatorHasDissagregationType(indicator,"PAIS_ORIGEN")){
+                 selectedDissagregationOptions.push(...countryOfOriginOptions)
+             }else if(countryOfOriginOptions.length < 1 && this.indicatorHasDissagregationType(indicator,"PAIS_ORIGEN")){
+                 this.messageService.add({
+                     severity: 'error',
+                     summary: 'Seleccione al menos una Opción de País de Origen',
+                     detail: 'Este indicador tiene desagregación por de País de Origen, es necesario activar al menos una opción',
+                     life: 3000
+                 });
+                 return;
+             }
+             if(diversityOptions.length > 0 && this.indicatorHasDissagregationType(indicator,"DIVERSIDAD")){
+                 selectedDissagregationOptions.push(...diversityOptions)
+             }else if(diversityOptions.length < 1 && this.indicatorHasDissagregationType(indicator,"DIVERSIDAD")){
+                 this.messageService.add({
+                     severity: 'error',
+                     summary: 'Seleccione al menos una Opción de Diversidad',
+                     detail: 'Este indicador tiene desagregación por Diversidad, es necesario activar al menos una opción',
+                     life: 3000
+                 });
+                 return;
+             }
+            indicatorExecution.dissagregationAssigments=selectedDissagregationOptions;
             this.indicatorExecutionService
                 .updateAssignPerformanceIndicatoToProject(indicatorExecution)
                 .subscribe({
@@ -993,6 +1086,65 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 });
                 return;
             }
+            /*Desagregaciones seleccionadas*/
+            let selectedDissagregationOptions: StandardDissagregationOption[]=[]
+            if(ageOptions.length > 0 && this.indicatorHasDissagregationType(indicator,"EDAD")){
+               
+               selectedDissagregationOptions.push(...ageOptions)
+            }else if(ageOptions.length < 1 && this.indicatorHasDissagregationType(indicator,"EDAD")){
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Seleccione al menos una Opción de Edad',
+                    detail: 'Este indicador tiene desagregación por Edad, es necesario activar al menos una opción',
+                    life: 3000
+                });
+                return;
+            }
+            if(genderOptions.length > 0 && this.indicatorHasDissagregationType(indicator,"GENDER")){
+               selectedDissagregationOptions.push(...genderOptions)
+            }else if(genderOptions.length < 1 && this.indicatorHasDissagregationType(indicator,"GENDER")){
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Seleccione al menos una Opción de Género',
+                    detail: 'Este indicador tiene desagregación por Género, es necesario activar al menos una opción',
+                    life: 3000
+                });
+                return;
+            }
+            if(populationTypeOptions.length > 0 && this.indicatorHasDissagregationType(indicator,"TIPO_POBLACION")){
+               selectedDissagregationOptions.push(...populationTypeOptions)
+            }else if(populationTypeOptions.length < 1 && this.indicatorHasDissagregationType(indicator,"TIPO_POBLACION")){
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Seleccione al menos una Opción de Tipo de Población',
+                    detail: 'Este indicador tiene desagregación por Tipo de Población, es necesario activar al menos una opción',
+                    life: 3000
+                });
+                return;
+            }
+            if(countryOfOriginOptions.length > 0 && this.indicatorHasDissagregationType(indicator,"PAIS_ORIGEN")){
+                selectedDissagregationOptions.push(...countryOfOriginOptions)
+            }else if(countryOfOriginOptions.length < 1 && this.indicatorHasDissagregationType(indicator,"PAIS_ORIGEN")){
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Seleccione al menos una Opción de País de Origen',
+                    detail: 'Este indicador tiene desagregación por de País de Origen, es necesario activar al menos una opción',
+                    life: 3000
+                });
+                return;
+            }
+            if(diversityOptions.length > 0 && this.indicatorHasDissagregationType(indicator,"DIVERSIDAD")){
+                selectedDissagregationOptions.push(...diversityOptions)
+            }else if(diversityOptions.length < 1 && this.indicatorHasDissagregationType(indicator,"DIVERSIDAD")){
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Seleccione al menos una Opción de Diversidad',
+                    detail: 'Este indicador tiene desagregación por Diversidad, es necesario activar al menos una opción',
+                    life: 3000
+                });
+                return;
+            }
+            indicatorExecution.dissagregationAssigments=selectedDissagregationOptions;
             this.indicatorExecutionService.assignPerformanceIndicatoToProject(indicatorExecution)
                 .subscribe({
                     next: value => {
@@ -1053,7 +1205,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             this.formPerformanceIndicator.get('projectStatement').clearValidators();
         }
         this.formPerformanceIndicator.get('projectStatement').updateValueAndValidity();
-        this.ref.detectChanges();
     }
 
     onChangePerformanceIndicator(indicator: Indicator) {
@@ -1071,6 +1222,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         this.formPerformanceIndicator.get('isBorrowedStatement').patchValue(false);
         this.formPerformanceIndicator.get('projectStatement').disable();
         this.formPerformanceIndicator.get('projectStatement').patchValue(projectStatement);
+        
     }
 
     updatePerformanceIndicator(indicatorExecution: IndicatorExecution) {
@@ -1120,9 +1272,36 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         });
         editinItem.locations = projectCantons;
         /**********locations**********/
-
+        /**********dissagregation Options**********/
+        editinItem.dissagregationAssigments=indicatorExecution?.dissagregationAssigments
         this.formPerformanceIndicator.patchValue(editinItem);
+        if(indicatorExecution?.dissagregationAssigments.length>0){
+            const dissagregationOptionsIds=indicatorExecution?.dissagregationAssigments.map(option=> {
+                return option.id
+            })
+            const selectedAgeOptions=this.ageOptions.filter(ageOption=> dissagregationOptionsIds.includes(ageOption.id))
+            const selectedGenderOptions=this.genderOptions.filter(genderOption=> dissagregationOptionsIds.includes(genderOption.id))
+            const selectedPopulationTypeOptions=this.populationTypeOptions.filter(populationTypeOption=> dissagregationOptionsIds.includes(populationTypeOption.id))
+            const selectedDiversityOptions=this.diversityOptions.filter(diversityOption=> dissagregationOptionsIds.includes(diversityOption.id))
+            const selectedCountryOfOriginOptions=this.countryOfOriginOptions.filter(countryOfOriginOption=> dissagregationOptionsIds.includes(countryOfOriginOption.id))
+            this.formPerformanceIndicator.patchValue({
+                ageOptions: selectedAgeOptions,
+                genderOptions: selectedGenderOptions,
+                populationTypeOptions: selectedPopulationTypeOptions,
+                diversityOptions: selectedDiversityOptions,
+                countryOfOriginOptions: selectedCountryOfOriginOptions
+            });
+        }else{
+            this.formPerformanceIndicator.patchValue({
+                ageOptions: this.ageOptions,
+                genderOptions: this.genderOptions,
+                populationTypeOptions: this.populationTypeOptions,
+                diversityOptions: this.diversityOptions,
+                countryOfOriginOptions: this.countryOfOriginOptions
+            });
 
+        }
+        /********************/
         this.formPerformanceIndicator.get('state').patchValue(indicatorExecution.state === 'ACTIVO');
         this.formPerformanceIndicator.get('indicator').disable();
         if (editinItem.projectStatement.id === editinItem.indicator.statement.id) {
@@ -1155,6 +1334,25 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     return dissagregationTypeE.locationsDissagregation;
                 }).length > 0;
         } else {
+            return false;
+        }
+    }
+
+    indicatorHasDissagregationType(indicator:Indicator, simpleDiss:string):boolean{
+        if(indicator){
+            if(indicator.dissagregationsAssignationToIndicator.length>0){
+                const hasSimpleDiss=indicator.dissagregationsAssignationToIndicator.some(item=>{
+                    return item.dissagregationType.includes(simpleDiss)
+                })
+                if(hasSimpleDiss){
+                    return true
+                }else{
+                    return false;
+                }
+            }else{
+                return false
+            }
+        }else{
             return false;
         }
     }
@@ -1339,4 +1537,12 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
 
     }
+    ngOnChanges() {
+        if (this.formPerformanceIndicator.get('indicator').value) {
+          // Asegúrate de que los controles del formulario estén correctamente inicializados o actualizados.
+          this.ref.detectChanges();
+          this.formPerformanceIndicator.get('populationTypeOptions')?.updateValueAndValidity();
+          
+        }
+      }
 }

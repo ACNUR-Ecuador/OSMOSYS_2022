@@ -3,6 +3,7 @@ package org.unhcr.osmosys.webServices.model;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.unhcr.osmosys.model.enums.IndicatorType;
 import org.unhcr.osmosys.model.enums.TimeStateEnum;
+import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -50,7 +51,7 @@ public class IndicatorExecutionWeb extends BaseWebEntity implements Serializable
 
     /**************administration*********/
     private List<CantonWeb> locations;
-    private List<IndicatorExecutionDissagregationAssigmentWeb> dissagregationAssigments;
+    private List<StandardDissagregationOptionWeb> dissagregationAssigments;
 
 
     public String getActivityDescription() {
@@ -238,11 +239,11 @@ public class IndicatorExecutionWeb extends BaseWebEntity implements Serializable
         this.totalUsedBudget = totalUsedBudget;
     }
 
-    public List<IndicatorExecutionDissagregationAssigmentWeb> getDissagregationAssigments() {
+    public List<StandardDissagregationOptionWeb> getDissagregationAssigments() {
         return dissagregationAssigments;
     }
 
-    public void setDissagregationAssigments(List<IndicatorExecutionDissagregationAssigmentWeb> dissagregationAssigments) {
+    public void setDissagregationAssigments(List<StandardDissagregationOptionWeb> dissagregationAssigments) {
         this.dissagregationAssigments = dissagregationAssigments;
     }
 }
