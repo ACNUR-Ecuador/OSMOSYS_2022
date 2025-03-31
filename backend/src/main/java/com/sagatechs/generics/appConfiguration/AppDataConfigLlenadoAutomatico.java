@@ -135,14 +135,15 @@ public class AppDataConfigLlenadoAutomatico {
         instantiateConfigurationValues("day limit to report",
                 "día máximo del mes para el reporte de indicadores",
                 AppConfigurationKey.REPORT_LIMIT, "10");
-        /*--Result manager days--*/
+        /*
+        /---Result manager days---/
         instantiateConfigurationValues("Días en que se recuerda que se debe realizar la verificación de indicadores por parte de los Result Managers",
                 "día del 1 al 30 para envío de recordatorios a los Result Managers",
                 AppConfigurationKey.RESULT_MANAGER_REMINDER_DAY, "1");
         instantiateConfigurationValues("Día limite de verificación de indicadores para los Result Managers",
                 "día máximo del mes para la verificación de indicadores por parte de los Result Managers",
                 AppConfigurationKey.RESULT_MANAGER_LIMIT_DAY, "28");
-        /*--Correos de recordatorio--*/
+        /---Correos de recordatorio---/
         instantiateConfigurationValues("Correo recordatorio del reporte de proyectos dirigido a los socios responsables de su reporte",
                 "Correo de recordatorio del reporte de proyectos enviado en los 'REMINDER_DAYS'",
                 AppConfigurationKey.PROJECTS_REMINDER_EMAIL, "<strong>Estimado/a colega:</strong><br>Este es un recordatorio de que el periodo de reporte de indicadores para el mes de %mesAReportar% ha iniciado. Contamos con su ayuda para tener sus datos al día en el sistema OSMOSYS hasta el día %limitDay% de este mes.  En caso de que ya se hayan reportado los datos, por favor haga caso omiso de este correo.<br>Este recordatorio ha sido generado automáticamente por el sistema OSMOSYS. En caso de dudas por favor comunicarse con el responsable correspondiente del proyecto: %projectManagerEmails%");
@@ -154,11 +155,11 @@ public class AppDataConfigLlenadoAutomatico {
         instantiateConfigurationValues("Correo recordatorio de la verificación de indicadores dirigido a los Result Managers",
                 "Correo de recordatorio de la verificación de indicadores enviado en el 'RESULT_MANAGER_REMINDER_DAY'",
                 AppConfigurationKey.RESULT_MANAGER_REMINDER_EMAIL, "<strong>Estimado/a colega:</strong><br>Este es un recordatorio de que el periodo de reporte de indicadores validación de indicadores para el periodo %quarterReport% ha iniciado. Agradecemos su colaboración para revisar y validar los datos reportados en el sistema OSMOSYS hasta el día %limitDay% de este mes.<br>En caso de que ya haya realizado la validación de los datos, le pedimos que ignore este mensaje.<br>Este recordatorio ha sido generado automáticamente por el sistema OSMOSYS. Si tiene alguna duda, por favor comuníquese con la Unidad de Programas.");
-        /*--Correos de notificación--*/
+        /---Correos de notificación---/
         instantiateConfigurationValues("Correo de notificación enviado a usuarios nuevos con sus credenciales de acceso al sistema.",
                 "Correo de notificación para usuarios nuevos",
                 AppConfigurationKey.NEW_USER_NOTIFICATION_EMAIL, "<strong>Bienvenido/a:</strong><br>Se ha creado un nuevo usuario para su acceso OSMOSYS.<br>Puede acceder al sistema utilizando los siguientes datos:<br><br>Nombre de usuario: %username%<br>Contraseña: %password%<br><br>Al ingresar al sistema, comprende y acepta que la información presentada es de uso interno de la organización y no ha de ser reproducida/compartida con otros actores sin consentimiento por escrito por parte del equipo de ACNUR.<br><br>Si necesitas ayuda por favor contáctate con la unidad de programas y/o manejo de información del ACNUR. <strong>Se recomienda el uso de Google Chrome.</strong>");
-        /*--Correos de alerta--*/
+        /---Correos de alerta---/
         instantiateConfigurationValues("Correo de alerta de retraso en el reporte de proyectos dirigido a los Mánager de proyectos.",
                 "Correo de alerta de retraso en el reporte de proyectos para Mánager de proyectos enviado en los 'LIMIT_DAYS'",
                 AppConfigurationKey.PROJECT_MANAGER_ALERT_EMAIL, "<strong>Estimado/a colega:</strong><br>Se ha encontrado que los socios <strong>%partnersList%</strong> no han reportado todos los indicadores correspondientes a sus proyectos este mes en el sistema OSMOSYS. Agradecemos hacer seguimiento con las organizaciones para asegurar que completen su reporte de forma adecuada. Este reporte ha sido generado automáticamente por el sistema OSMOSYS. En caso de dudas por favor comunicarse con la Unidad de Programas.");
@@ -171,7 +172,7 @@ public class AppDataConfigLlenadoAutomatico {
         instantiateConfigurationValues("Correo de alerta de retraso en la validación de indicadores dirigido a los Mánager de Resultado.",
                 "Correo de alerta de retraso en la validación de indicadores para Mánagers de Resultados enviado en el 'RESULT_MANAGER_LIMIT_DAY'",
                 AppConfigurationKey.RESULT_MANAGER_ALERT_EMAIL, "<strong>Estimado/a colega</strong><br>Hemos identificado que aún no ha completado el proceso de validación de indicadores para el período %quarter%.<br>Agradecemos su apoyo en este proceso, el cual es fundamental para garantizar la calidad de los datos reportados en el sistema OSMOSYS.<br>En el archivo adjunto, encontrará el detalle de los indicadores que aún no han sido validados.<br>Este reporte ha sido generado automáticamente por el sistema OSMOSYS. En caso de dudas, por favor comuníquese con la Unidad de Programas.");
-
+        */
 
     }
 
