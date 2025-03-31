@@ -418,8 +418,9 @@ public class IndicatorExecutionService {
         indicatorExecution.setAssignedBudget(indicatorExecutionAssigmentWeb.getAssignedBudget());
 
         this.updateIndicatorExecutionTotals(indicatorExecution);
-        this.updatePartnerIndicatorExecutionLocationAssigment(indicatorExecutionAssigmentWeb.getId(),indicatorExecutionAssigmentWeb.getLocations());
-        this.updatePartnerIndicatorExecutionDissagregationOptionsAssigment(indicatorExecutionAssigmentWeb.getId(), indicatorExecutionAssigmentWeb.getDissagregationAssigments() );
+        //this.updatePartnerIndicatorExecutionLocationAssigment(indicatorExecutionAssigmentWeb.getId(),indicatorExecutionAssigmentWeb.getLocations());
+        //this.updatePartnerIndicatorExecutionDissagregationOptionsAssigment(indicatorExecutionAssigmentWeb.getId(), indicatorExecutionAssigmentWeb.getDissagregationAssigments() );
+        this.updatePartnerIndicatorExecutionLocationsAndDissagregationOptionsAssigment(indicatorExecutionAssigmentWeb.getId(),indicatorExecutionAssigmentWeb.getLocations(), indicatorExecutionAssigmentWeb.getDissagregationAssigments());
         // Registrar auditoría
         List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
         auditService.logAction("Proyecto", project.getCode(), null, AuditAction.UPDATE, responsibleUser, oldprojectAudit, newprojectAudit, State.ACTIVO);
@@ -462,8 +463,12 @@ public class IndicatorExecutionService {
             periodDissagregationMap = this.getPeriodDessagregationMap(false, period, indicatorExecution.getIndicator());
         }
         if (periodDissagregationMap == null) return;
+
         this.updateIndicatorExecutionLocationsAssignations(indicatorExecution, locationsToActivate, locationsToDesactive);
         this.setStandardDissagregationOptionsForIndicatorExecutions(indicatorExecution, periodDissagregationMap);
+        if(!indicatorExecution.getIndicatorExecutionDissagregationAssigments().isEmpty()) {
+            this.setStandardDissagregationSelectedOptionsForIndicatorExecutions(indicatorExecution, periodDissagregationMap);
+        }
         this.quarterService.updateQuarterDissagregations(indicatorExecution, periodDissagregationMap, null);
         this.updateIndicatorExecutionTotals(indicatorExecution);
         this.saveOrUpdate(indicatorExecution);
@@ -1615,6 +1620,51 @@ public class IndicatorExecutionService {
 
         return ie.getId();
     }
+
+    /*Actualizar lugares y opciones de desagregación en conjunto*/
+    public Long updatePartnerIndicatorExecutionLocationsAndDissagregationOptionsAssigment(Long indicatorExecutionId, List<CantonWeb> cantonesWeb, List<StandardDissagregationOptionWeb> indicatorExecutionDissagregationOptionsWeb) throws GeneralAppException {
+        if (indicatorExecutionId == null) {
+            throw new GeneralAppException("indicador execution id es dato obligatorio", Response.Status.BAD_REQUEST);
+        }
+        if (CollectionUtils.isEmpty(cantonesWeb)) {
+            throw new GeneralAppException("Al menos debe haber un cantón", Response.Status.BAD_REQUEST);
+        }
+        // recupero el ie
+        IndicatorExecution ie = this.indicatorExecutionDao.getPartnerIndicatorExecutionById(indicatorExecutionId);
+        if (ie == null) {
+            throw new GeneralAppException("No se pudo encontrar el indicador (indicatorExecutionId =" + indicatorExecutionId + ")", Response.Status.BAD_REQUEST);
+        }
+        if (ie.getProject() == null) {
+            throw new GeneralAppException("Este indicador no es ejecutado por un Socio (indicatorExecutionId =" + indicatorExecutionId + ")", Response.Status.BAD_REQUEST);
+        }
+
+        //seteo locatios para ie
+        Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> periodDissagregationMap;
+        Period period = this.periodService.getWithAllDataById(ie.getPeriod().getId());
+
+        if (ie.getIndicatorType().equals(IndicatorType.GENERAL)) {
+            ProjectService.LocationToActivateDesativate locatoinActiveNoActive = this.projectService.setLocationsInProject(ie.getProject(), cantonesWeb);
+            Project project = ie.getProject();
+            for (IndicatorExecution indicatorExecution : project.getIndicatorExecutions()) {
+                this.updateIndicatorExecutionsLocations(indicatorExecution, locatoinActiveNoActive.locationsToActivate, locatoinActiveNoActive.locationsToDissable);
+            }
+        } else {
+            ProjectService.LocationToActivateDesativate locationToActivateDessactivate = this.getLocationToActivateDessactivate(ie, cantonesWeb);
+            IndicatorExecutionService.DissagregationOptionsToActivateDesactivate dissOptionsToActivateDessactivate = this.getDissOptionsToActivateDessactivate(ie, indicatorExecutionDissagregationOptionsWeb);
+            periodDissagregationMap = this.getPeriodDessagregationMap(false, period, ie.getIndicator());
+            if (periodDissagregationMap == null) return ie.getId();
+            this.updateIndicatorExecutionLocationsAssignations(ie, locationToActivateDessactivate.locationsToActivate, locationToActivateDessactivate.locationsToDissable);
+            this.updateIndicatorExecutionDissagregationOptionAssignations(ie, dissOptionsToActivateDessactivate.dissagregationOptionToActivate, dissOptionsToActivateDessactivate.dissagregationOptionToDissable);
+            this.setStandardDissagregationOptionsForIndicatorExecutions(ie, periodDissagregationMap);
+            this.setStandardDissagregationSelectedOptionsForIndicatorExecutions(ie, periodDissagregationMap);
+            this.quarterService.updateQuarterDissagregations(ie, periodDissagregationMap, null);
+            this.updateIndicatorExecutionTotals(ie);
+            this.saveOrUpdate(ie);
+        }
+
+        return ie.getId();
+    }
+    /****************/
 
     static class DissagregationOptionsToActivateDesactivate {
         public final Set<StandardDissagregationOption> dissagregationOptionToActivate;

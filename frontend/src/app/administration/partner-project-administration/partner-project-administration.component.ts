@@ -95,12 +95,17 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     quarterTitles: string[];
     quartersToUpdate: Quarter[] = [];
     /*Dissagregation Options*/
+    populationTypeSelectOptions:SelectItemWithOrder<StandardDissagregationOption>[]
+    ageSelectOptions:SelectItemWithOrder<StandardDissagregationOption>[]
+    genderSelectOptions:SelectItemWithOrder<StandardDissagregationOption>[]
+    diversitySelectOptions:SelectItemWithOrder<StandardDissagregationOption>[]
+    countryOfOriginSelectOptions:SelectItemWithOrder<StandardDissagregationOption>[]
+
     populationTypeOptions: StandardDissagregationOption[];
     ageOptions: StandardDissagregationOption[];
     genderOptions: StandardDissagregationOption[];
     diversityOptions: StandardDissagregationOption[];
     countryOfOriginOptions: StandardDissagregationOption[];
-    
     
     showDialogImport = false;
     importForm: FormGroup;
@@ -229,6 +234,13 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     });
                     this.periods = [];
                     this.periods.push(period);
+                    /*Select options*/
+                    this.ageSelectOptions=this.utilsService.standandarDissagregationOptionsToSelectItems(period.periodAgeDissagregationOptions)
+                    this.populationTypeSelectOptions=this.utilsService.standandarDissagregationOptionsToSelectItems(period.periodPopulationTypeDissagregationOptions)
+                    this.genderSelectOptions=this.utilsService.standandarDissagregationOptionsToSelectItems(period.periodGenderDissagregationOptions)
+                    this.countryOfOriginSelectOptions=this.utilsService.standandarDissagregationOptionsToSelectItems(period.periodCountryOfOriginDissagregationOptions)
+                    this.diversitySelectOptions=this.utilsService.standandarDissagregationOptionsToSelectItems(period.periodDiversityDissagregationOptions)
+                    /****/
                     this.ageOptions=period.periodAgeDissagregationOptions
                     this.populationTypeOptions=period.periodPopulationTypeDissagregationOptions
                     this.genderOptions=period.periodGenderDissagregationOptions
@@ -1217,6 +1229,13 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                 .filter(statement => {
                     return statement.id === this.formPerformanceIndicator.get('indicator').value.statement.id;
                 }).pop();
+                this.formPerformanceIndicator.patchValue({
+                    ageOptions: this.ageOptions,
+                    genderOptions: this.genderOptions,
+                    populationTypeOptions: this.populationTypeOptions,
+                    diversityOptions: this.diversityOptions,
+                    countryOfOriginOptions: this.countryOfOriginOptions
+                });
 
         }
         this.formPerformanceIndicator.get('isBorrowedStatement').patchValue(false);
@@ -1537,12 +1556,5 @@ export class PartnerProjectAdministrationComponent implements OnInit {
 
 
     }
-    ngOnChanges() {
-        if (this.formPerformanceIndicator.get('indicator').value) {
-          // Asegúrate de que los controles del formulario estén correctamente inicializados o actualizados.
-          this.ref.detectChanges();
-          this.formPerformanceIndicator.get('populationTypeOptions')?.updateValueAndValidity();
-          
-        }
-      }
+   
 }

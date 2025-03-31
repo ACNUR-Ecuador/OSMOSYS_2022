@@ -618,14 +618,14 @@
 
             </div>
             <!--Opciones de desagregación-->
-            <p-panel  *ngIf="formPerformanceIndicator.get('indicator').value" class="col-12" header="Desagregaciones *"  >
+            <p-panel  *ngIf="formPerformanceIndicator.get('indicator').value" class="col-12" header="Desagregaciones *"  [toggleable]="true">
                 <div class="p-fluid grid formgrid">
                     <p-panel
                         *ngIf="indicatorHasDissagregationType(formPerformanceIndicator.get('indicator').value, 'TIPO_POBLACION')"
                         class="col-6" header="Tipos de Población" >
 
                         <div class="field-checkbox col-12 md:col-12"
-                             *ngFor="let option of utilsService.standandarDissagregationOptionsToSelectItems(populationTypeOptions)
+                             *ngFor="let option of populationTypeSelectOptions
                              ">
                             <!--suppress AngularInvalidExpressionResultType -->
                             <p-checkbox name="grouppopulationTypeOptions"
@@ -642,7 +642,7 @@
                         *ngIf="indicatorHasDissagregationType(formPerformanceIndicator.get('indicator').value, 'GENERO')"
                         class="col-6" header="Género" >
                         <div class="field-checkbox col-12 md:col-12"
-                             *ngFor="let option of utilsService.standandarDissagregationOptionsToSelectItems(genderOptions)">
+                             *ngFor="let option of genderSelectOptions">
                             <!--suppress AngularInvalidExpressionResultType -->
                             <p-checkbox name="groupgenderOptions"
                                         [value]="option.value"
@@ -657,7 +657,7 @@
                         *ngIf="indicatorHasDissagregationType(formPerformanceIndicator.get('indicator').value, 'EDAD')"
                         class="col-6" header="Edad" >
                         <div class="field-checkbox col-12 md:col-12"
-                             *ngFor="let option of utilsService.standandarDissagregationOptionsToSelectItems(ageOptions)">
+                             *ngFor="let option of ageSelectOptions">
                             <!--suppress AngularInvalidExpressionResultType -->
                             <p-checkbox name="group2"
                                         [value]="option.value"
@@ -671,7 +671,7 @@
                     *ngIf="indicatorHasDissagregationType(formPerformanceIndicator.get('indicator').value, 'DIVERSIDAD')"
                         class="col-6" header="Diversidad" >
                         <div class="field-checkbox col-12 md:col-12"
-                             *ngFor="let option of utilsService.standandarDissagregationOptionsToSelectItems(diversityOptions)">
+                             *ngFor="let option of diversitySelectOptions">
                             <!--suppress AngularInvalidExpressionResultType -->
                             <p-checkbox name="groupdiversityOptions"
                                         [value]="option.value"
@@ -685,7 +685,7 @@
                         *ngIf="indicatorHasDissagregationType(formPerformanceIndicator.get('indicator').value, 'PAIS_ORIGEN')"
                         class="col-6" header="País de Origen" >
                         <div class="field-checkbox col-12 md:col-12"
-                             *ngFor="let option of utilsService.standandarDissagregationOptionsToSelectItems(countryOfOriginOptions)">
+                             *ngFor="let option of countryOfOriginSelectOptions">
                             <!--suppress AngularInvalidExpressionResultType -->
                             <p-checkbox name="groupgenderOptions"
                                         [value]="option.value"
