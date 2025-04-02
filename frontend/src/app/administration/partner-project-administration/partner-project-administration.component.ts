@@ -1011,9 +1011,10 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                  });
                  return;
              }
-             if(genderOptions.length > 0 && this.indicatorHasDissagregationType(indicator,"GENDER")){
+             if(genderOptions.length > 0 && this.indicatorHasDissagregationType(indicator,"GENERO")){
+                console.log("entre")
                 selectedDissagregationOptions.push(...genderOptions)
-             }else if(genderOptions.length < 1 && this.indicatorHasDissagregationType(indicator,"GENDER")){
+             }else if(genderOptions.length < 1 && this.indicatorHasDissagregationType(indicator,"GENERO")){
                  this.messageService.add({
                      severity: 'error',
                      summary: 'Seleccione al menos una Opción de Género',
@@ -1056,6 +1057,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                  return;
              }
             indicatorExecution.dissagregationAssigments=selectedDissagregationOptions;
+            console.log(indicatorExecution.dissagregationAssigments)
             this.indicatorExecutionService
                 .updateAssignPerformanceIndicatoToProject(indicatorExecution)
                 .subscribe({
@@ -1247,7 +1249,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     updatePerformanceIndicator(indicatorExecution: IndicatorExecution) {
         this.messageService.clear();
         this.utilsService.resetForm(this.formPerformanceIndicator);
-
+        console.log(indicatorExecution)
         const editinItem = new IndicatorExecutionAssigment();
         editinItem.id = indicatorExecution.id;
         editinItem.project = new Project();
@@ -1346,7 +1348,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             }
             return indicatorTotal.dissagregationsAssignationToIndicator
                 .filter(value => {
-                    return value.state === EnumsState.ACTIVE;
+                    return value.state === EnumsState.ACTIVE && this.formItem.get('period').value?.year===value.period.year;
                 })
                 .filter(value => {
                     const dissagregationTypeE =this.enumsService.resolveEnumWeb(EnumsType.DissagregationType, value.dissagregationType);
@@ -1361,7 +1363,7 @@ export class PartnerProjectAdministrationComponent implements OnInit {
         if(indicator){
             if(indicator.dissagregationsAssignationToIndicator.length>0){
                 const hasSimpleDiss=indicator.dissagregationsAssignationToIndicator.some(item=>{
-                    return item.dissagregationType.includes(simpleDiss)
+                    return item.state==="ACTIVO" && item.dissagregationType.includes(simpleDiss) && this.formItem.get('period').value?.year===item.period.year
                 })
                 if(hasSimpleDiss){
                     return true
