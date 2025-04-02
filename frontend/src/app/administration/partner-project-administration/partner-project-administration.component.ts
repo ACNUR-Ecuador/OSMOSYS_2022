@@ -1012,7 +1012,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                  return;
              }
              if(genderOptions.length > 0 && this.indicatorHasDissagregationType(indicator,"GENERO")){
-                console.log("entre")
                 selectedDissagregationOptions.push(...genderOptions)
              }else if(genderOptions.length < 1 && this.indicatorHasDissagregationType(indicator,"GENERO")){
                  this.messageService.add({
@@ -1057,7 +1056,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                  return;
              }
             indicatorExecution.dissagregationAssigments=selectedDissagregationOptions;
-            console.log(indicatorExecution.dissagregationAssigments)
             this.indicatorExecutionService
                 .updateAssignPerformanceIndicatoToProject(indicatorExecution)
                 .subscribe({
@@ -1249,7 +1247,6 @@ export class PartnerProjectAdministrationComponent implements OnInit {
     updatePerformanceIndicator(indicatorExecution: IndicatorExecution) {
         this.messageService.clear();
         this.utilsService.resetForm(this.formPerformanceIndicator);
-        console.log(indicatorExecution)
         const editinItem = new IndicatorExecutionAssigment();
         editinItem.id = indicatorExecution.id;
         editinItem.project = new Project();
