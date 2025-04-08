@@ -90,7 +90,7 @@
                             "outputHashing": "all"
                         },
                         "production_ecu": {
-                            "baseHref": "/ecu/",
+                            "baseHref": "/osmosys_ec_test/",
                             "optimization": true,
                             "aot": true,
                             "buildOptimizer": true,

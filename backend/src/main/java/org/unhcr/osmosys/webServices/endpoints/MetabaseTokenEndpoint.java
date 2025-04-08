@@ -1,10 +1,13 @@
 package org.unhcr.osmosys.webServices.endpoints;
 
+import com.sagatechs.generics.appConfiguration.AppConfigurationKey;
+import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.security.CustomPrincipal;
 import com.sagatechs.generics.security.annotations.Secured;
-import com.sagatechs.generics.security.model.User;
+import com.sagatechs.generics.security.model.RoleType;
 import com.sagatechs.generics.security.servicio.UserService;
+import com.sagatechs.generics.webservice.webModel.RoleWeb;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -19,35 +22,45 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.nio.charset.StandardCharsets;
-import java.security.Principal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Path("/metabase-token")
 public class MetabaseTokenEndpoint {
 
     @Inject
     OrganizacionService organizacionService;
+    @Inject
+    AppConfigurationService appConfigurationService;
 
     @Inject
     UserService userService;
-    private static final String METABASE_SITE_URL = "http://osmosys.trilogiconline.com:3000";
-    private static final String METABASE_SECRET_KEY = "3459acdd7bf1e2a7876ce2226f46d2099cacc872ed29af36f4fbb97d1a022de2";
 
+    @Path("/")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Secured
     public Response getMetabaseToken(@Context SecurityContext securityContext) throws GeneralAppException {
-        // Tiempo actual y fecha de expiración (10 minutos)
 
-        Principal principal = securityContext.getUserPrincipal();
+        final String METABASE_SITE_URL = appConfigurationService.findValorByClave(AppConfigurationKey.METABASE_SITE_URL);
+        final String METABASE_SECRET_KEY = appConfigurationService.findValorByClave(AppConfigurationKey.METABASE_SECRET_KEY);
+
+        if(METABASE_SECRET_KEY == null || METABASE_SITE_URL == null) {
+            Map<String, String> responseMap = new HashMap<>();
+            responseMap.put("iframeUrl", null);
+            return Response.ok(responseMap).build();
+        }
+
         CustomPrincipal customPrincipal = (CustomPrincipal) securityContext.getUserPrincipal();
         UserWeb userWeb = customPrincipal.getUser();
         String acronym =  "";
         if (userWeb != null) {
             acronym = userWeb.getOrganization().getAcronym();
         }
+
+
 
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
@@ -59,8 +72,18 @@ public class MetabaseTokenEndpoint {
         Map<String, Object> resource = new HashMap<>();
         Map<String, Object> params = new HashMap<>();
 
+        long dashboardId = 0;
+        for (RoleWeb role : userWeb.getRoles()) {
+            dashboardId = role.getName().equals(RoleType.MONITOR_PROYECTOS.getStringValue()) && dashboardId  < 2 ? 2 :
+             role.getName().equals(RoleType.EJECUTOR_PROYECTOS.getStringValue()) && dashboardId  < 2 ? 2 :
+             role.getName().equals(RoleType.MONITOR_ID.getStringValue()) && dashboardId  < 3 ? 3 :
+             role.getName().equals(RoleType.EJECUTOR_ID.getStringValue()) && dashboardId  < 3 ? 3 :
+             role.getName().equals(RoleType.RESULT_MANAGER.getStringValue()) && dashboardId  < 4 ? 4 :
+             role.getName().equals(RoleType.ADMINISTRADOR_LOCAL.getStringValue()) && dashboardId  < 5 ? 5 :
+             role.getName().equals(RoleType.ADMINISTRADOR_REGIONAL.getStringValue()) && dashboardId  < 6 ? 6 : dashboardId;
+        }
 
-        resource.put("dashboard", 2); // Id del dashboard a incrustar
+        resource.put("dashboard", dashboardId); // Id del dashboard a incrustar
         params.put("implementador", new String[]{acronym});
 
         payload.put("resource", resource);
@@ -76,7 +99,7 @@ public class MetabaseTokenEndpoint {
                 .compact();
 
         // Construir el URL de incrustación
-        String iframeUrl = METABASE_SITE_URL + "/embed/dashboard/" + token + "#bordered=true&titled=false";
+        String iframeUrl = METABASE_SITE_URL + "/embed/dashboard/" + token + "#bordered=false&titled=false";
 
         // Retornar la respuesta JSON
         Map<String, String> responseMap = new HashMap<>();

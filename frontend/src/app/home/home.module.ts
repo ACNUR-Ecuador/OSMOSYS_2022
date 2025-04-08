@@ -5,6 +5,7 @@ import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home/home.component';
 import { HomeDashboardDirectImplementationComponent } from './home-dashboard-direct-implementation/home-dashboard-direct-implementation.component';
 import { HomeDashboardFocalPointComponent } from './home-dashboard-focal-point/home-dashboard-focal-point.component';
+import { HomeDashboardPartnerComponent } from './home-dashboard-partner/home-dashboard-partner.component';
 import {CardModule} from "primeng/card";
 import {ButtonModule} from "primeng/button";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -26,6 +27,7 @@ import { AboutUsComponent } from './about-us/about-us.component';
     HomeComponent,
     HomeDashboardDirectImplementationComponent,
     HomeDashboardFocalPointComponent,
+    HomeDashboardPartnerComponent,
     AboutUsComponent,
   ],
     imports: [

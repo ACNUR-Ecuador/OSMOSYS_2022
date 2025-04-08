@@ -7,12 +7,13 @@ export const environment = {
     hmr: false,
     locale: 'es',
     base_url: 'http://localhost:8080/osmosys/api',
-    app_code: 'OSMOSYS_PER',
+    app_code: 'OSMOSYS_SLV',
     versionCheckURL : 'https://osmosys.unhcr.org/test/version.json',
     loginPhoto : 'unhcr_photo_ec_old.jpg',
-    flagLoginFile : 'flag_per.png',
-    flagToolbarFile : 'flag_per.png',
-    operationName : 'TEST'
+    flagLoginFile : 'flag_test.png',
+    flagToolbarFile : 'flag_test.png',
+    operationName : 'TEST',
+    legacyDashboards: true
 
 };
 

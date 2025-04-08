@@ -6,35 +6,22 @@ import {
     HttpInterceptor, HttpResponse
 } from '@angular/common/http';
 import {LoaderService} from '../../services/loader.service';
-import {catchError, finalize, map, mergeMap, switchMap, takeWhile, tap} from 'rxjs/operators';
+import {catchError, map, mergeMap, switchMap, takeWhile, tap} from 'rxjs/operators';
 import {interval, Observable, of, throwError} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { LogService } from 'src/app/services/log.service';
+import {environment} from '../../../environments/environment';
 
 
 @Injectable()
 export class LoaderInterceptor implements HttpInterceptor {
-    constructor(private loaderService: LoaderService, private http: HttpClient) {
+    constructor(private loaderService: LoaderService, private http: HttpClient, private logService: LogService) {
     }
-
-    // intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    //     this.loaderService.setLoading(true, request.url);
-    //     return next.handle(request)
-    //         .pipe(catchError((err) => {
-    //             this.loaderService.setLoading(false, request.url);
-    //             return throwError(err);
-    //         }))
-    //         .pipe(map<HttpEvent<any>, any>((evt: HttpEvent<any>) => {
-    //             if (evt instanceof HttpResponse) {
-    //                 this.loaderService.setLoading(false, request.url);
-    //             }
-    //             return evt;
-    //         }));
-    // }
 
     intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 
         if (request.url.includes('jobStatus')) {
-            console.log('Evitando intercept de request por ser jobStatus');
+            this.logService.log('Evitando intercept de request por ser jobStatus');
             return next.handle(request);
         }                        
 
@@ -44,7 +31,7 @@ export class LoaderInterceptor implements HttpInterceptor {
         return next.handle(request)
             .pipe(catchError((err) => {
                 this.loaderService.setLoading(false, request.url);
-                console.log('cerrando loader por ser error');
+                this.logService.log('cerrando loader por ser error');
 
                 return throwError(err);
             }),
@@ -53,11 +40,12 @@ export class LoaderInterceptor implements HttpInterceptor {
                     // Verificamos si el response indica procesamiento asíncrono.
                     // Se asume que el body incluye una propiedad 'jobId' si el proceso es asíncrono.
                     if (evt.body && (evt.body.jobId)) {
-                        console.log('Iniciando reques asincrono');
+                        this.logService.log('Iniciando reques asincrono');
                         this.loaderService.setLoading(true, request.url);
 
                         const jobId = evt.body.jobId;
-                        var urlJobStatus = `http://localhost:8080/osmosys/api/jobStatus/${jobId}`;
+                        var base_url = environment.base_url;
+                        var urlJobStatus = `${base_url}/jobStatus/${jobId}`;
 
                         // Inicia el polling al endpoint de jobStatus cada 2 segundos.
                         return interval(2000).pipe(
@@ -69,22 +57,22 @@ export class LoaderInterceptor implements HttpInterceptor {
                             takeWhile(status => status.progress < 100 && status.state !== 'Completado', true),
                             tap(status => {
                                 this.loaderService.updateProgress(urlJobStatus, status.progress, status.state);
-                                console.log('progresando - ' + status.progress);
+                                this.logService.log('progresando - ' + status.progress);
                             }),
                             map(finalStatus => {
-                                console.log('mapeando loader');
+                                this.logService.log('mapeando loader');
 
                                 // Sólo se cierra el loader cuando se cumple la condición de finalización.
                                 if (finalStatus.state === 'Completado' || finalStatus.progress >= 100) {
                                     this.loaderService.setLoading(false, request.url);
-                                    console.log('cerrando loader por finalizar Job');
+                                    this.logService.log('cerrando loader por finalizar Job');
                                 }
                                 return new HttpResponse({ body: finalStatus });
                             })
                         );
                     } else {
                         this.loaderService.setLoading(false, request.url);
-                        console.log('cerrando loader por terminar request sincrono');
+                        this.logService.log('cerrando loader por terminar request sincrono');
                                             
                         return of(evt);
                     }
