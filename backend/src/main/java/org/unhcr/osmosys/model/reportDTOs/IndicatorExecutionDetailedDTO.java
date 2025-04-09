@@ -7,7 +7,7 @@ public class IndicatorExecutionDetailedDTO {
     public IndicatorExecutionDetailedDTO() {
     }
 
-    public IndicatorExecutionDetailedDTO(Long ie_id, Long period_id, Long project_id, Long reporting_office_id, Long organization_id, Long performance_indicator_id, String implementation_type, String area, String statement, String statement_project, String indicator_type, String indicator, String category, String frecuency, String project, String implementers, BigDecimal total_execution, BigDecimal target, BigDecimal execution_percentage, Integer quarter_order, String quarter, BigDecimal quarter_execution, BigDecimal quarter_target, BigDecimal quarter_percentage, String month_order, String month, BigDecimal month_execution, Long iv_id, Long ivc_id, String dissagregation_type, String lugar_canton, String lugar_provincia, String population_type, String gender_type, String age_type, String country_of_origin, String diversity_type, String custom_dissagregacion, BigDecimal value) {
+    public IndicatorExecutionDetailedDTO(Long ie_id, Long period_id, Long project_id, Long reporting_office_id, Long organization_id, Long performance_indicator_id, String implementation_type, String area, String statement, String statement_project, String indicator_type, String indicator, String tags, String category, String frecuency, String project, String implementers, BigDecimal total_execution, BigDecimal target, BigDecimal execution_percentage, Integer quarter_order, String quarter, BigDecimal quarter_execution, BigDecimal quarter_target, BigDecimal quarter_percentage, String month_order, String month, BigDecimal month_execution, Long iv_id, Long ivc_id, String dissagregation_type, String lugar_canton, String lugar_provincia, String population_type, String gender_type, String age_type, String country_of_origin, String diversity_type, String custom_dissagregacion, BigDecimal value) {
         this.ie_id = ie_id;
         this.period_id = period_id;
         this.project_id = project_id;
@@ -20,6 +20,7 @@ public class IndicatorExecutionDetailedDTO {
         this.statement_project = statement_project;
         this.indicator_type = indicator_type;
         this.indicator = indicator;
+        this.tags = tags;
         this.category = category;
         this.frecuency = frecuency;
         this.project = project;
@@ -61,6 +62,7 @@ public class IndicatorExecutionDetailedDTO {
     private String statement_project;
     private String indicator_type;
     private String indicator;
+    private String tags;
     private String category;
     private String frecuency;
     private String project;
@@ -391,5 +393,21 @@ public class IndicatorExecutionDetailedDTO {
 
     public void setValue(BigDecimal value) {
         this.value = value;
+    }
+
+    public Long getPerformance_indicator_id() {
+        return performance_indicator_id;
+    }
+
+    public void setPerformance_indicator_id(Long performance_indicator_id) {
+        this.performance_indicator_id = performance_indicator_id;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 }

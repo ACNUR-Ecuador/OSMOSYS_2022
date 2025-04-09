@@ -29,6 +29,7 @@ import org.unhcr.osmosys.model.reportDTOs.LaterReportDTO;
 import org.unhcr.osmosys.reports.model.IndicatorReportProgramsDTO;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
 import org.unhcr.osmosys.services.PeriodService;
+import org.unhcr.osmosys.services.TagsService;
 import org.unhcr.osmosys.services.UtilsService;
 import org.unhcr.osmosys.services.scheduledTasks.MessageAlertServiceV2;
 import org.unhcr.osmosys.webServices.model.*;
@@ -68,6 +69,9 @@ public class ReportDataService {
 
     @Inject
     UtilsService utilsService;
+
+    @Inject
+    TagsService tagsService;
 
     public List<Map<String, Object>> indicatorExecutionsProjectsReportsByPeriodId(Long periodId) throws GeneralAppException {
         List<IndicatorExecutionWeb> indicatorExecutions = this.indicatorExecutionService.getActiveProjectIndicatorExecutionsByPeriodId(periodId);
@@ -161,8 +165,10 @@ public class ReportDataService {
                     //Obtener el ccomentario
                     String reportComment = Optional.ofNullable(resultManagerIndicatorQuarterWeb.getReportComment()).orElse("");
                     for (ResultManagerQuarterPopulationTypeWeb rmqpw : rmqpws) {
+                        List<Tags> tags=tagsService.getTagsByIndicatorIdAndPeriodId(rmi.getIndicator().getId(), selectedPeriod.getId());
                         Map<String, Object> map = new HashMap();
                         map.put("indicator", rmi.getIndicator().getCode() + "-" + rmi.getIndicator().getDescription());
+                        map.put("tags", tags!=null && !tags.isEmpty()? tags.stream().map(Tags::getName).collect(Collectors.joining(", ")) :"");
                         map.put("resultManager", resultManager.getName());
                         map.put("quarter", "Q" + resultManagerIndicatorQuarterWeb.getQuarter());
                         map.put("quarterCalculationType", rmi.getIndicator().getQuarterReportCalculation()!=null ? rmi.getIndicator().getQuarterReportCalculation().getLabel() : "");
@@ -271,7 +277,7 @@ public class ReportDataService {
 
         List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        0, 1, 2, 3, 4, 5, 27, 28
+                        0, 1, 2, 3, 4, 5, 28, 29
                 )
         );
 
@@ -285,7 +291,7 @@ public class ReportDataService {
         List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getAllPerformanceIndicatorsIndicatorExecutionDetailed(projectId);
         List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        0, 1, 2, 3, 4, 5, 27, 28
+                        0, 1, 2, 3, 4, 5, 28, 29
                 )
         );
 
@@ -514,7 +520,7 @@ public class ReportDataService {
         List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getPartnersIndicatorsExecutionsDetailedByPeriodId(projectId);
         List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        0, 1, 2, 3, 4, 5, 27, 28
+                        0, 1, 2, 3, 4, 5, 28, 29
                 )
         );
 
@@ -532,7 +538,7 @@ public class ReportDataService {
 
         List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        0, 1, 2, 3, 4, 5, 27, 28
+                        0, 1, 2, 3, 4, 5, 28, 29
                 )
         );
 
@@ -549,7 +555,7 @@ public class ReportDataService {
 
         List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        0, 1, 2, 3, 4, 5, 27, 28
+                        0, 1, 2, 3, 4, 5, 28, 29
                 )
         );
 
@@ -568,7 +574,7 @@ public class ReportDataService {
 
         List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        0, 1, 2, 3, 4, 5, 27, 28
+                        0, 1, 2, 3, 4, 5, 28, 29
                 )
         );
 
@@ -592,7 +598,7 @@ public class ReportDataService {
 
         List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        0, 1, 2, 3, 4, 5, 27, 28, 22, 23
+                        0, 1, 2, 3, 4, 5, 28, 29, 23, 24
                 )
         );
 
@@ -639,6 +645,9 @@ public class ReportDataService {
                 break;
             case "Indicador":
                 cell.setCellValue(ie.getIndicator());
+                break;
+            case "Tags":
+                cell.setCellValue(ie.getTags());
                 break;
             case "Categoría":
                 cell.setCellValue(ie.getCategory());
@@ -765,35 +774,37 @@ public class ReportDataService {
         titlesMap.put(9, "Declaración de Proyecto");
         titlesMap.put(10, "Tipo de Indicador");
         titlesMap.put(11, "Indicador");
-        titlesMap.put(12, "Categoría");
-        titlesMap.put(13, "Frecuencia");
-        titlesMap.put(14, "Proyecto");
-        titlesMap.put(15, "Implementador");
-        titlesMap.put(16, "Ejecución Total");
-        titlesMap.put(17, "Meta Total");
-        titlesMap.put(18, "% de Ejecución Total");
-        titlesMap.put(19, "Trimestre Orden");
-        titlesMap.put(20, "Trimestre");
-        titlesMap.put(21, "Ejecucion Trimestral");
-        titlesMap.put(22, "Meta Trimestral");
-        titlesMap.put(23, "% de Ejecución Trimestral");
-        titlesMap.put(24, "Mes Orden");
-        titlesMap.put(25, "Mes");
-        titlesMap.put(26, "Ejecucion Mensual");
-        titlesMap.put(27, "Valor Id");
-        titlesMap.put(28, "Valor Personalizado Id");
-        titlesMap.put(29, "Tipo de Desagregacion");
-        titlesMap.put(30, "Cantón");
-        titlesMap.put(31, "Provincia");
-        titlesMap.put(32, "Tipo de Población");
-        titlesMap.put(33, "Género");
-        titlesMap.put(34, "Edad");
-        titlesMap.put(35, "País de Origen");
-        titlesMap.put(36, "Diversidad");
-        titlesMap.put(37, "Edad - Educación Primaria");
-        titlesMap.put(38, "Edad - Educación Terciaria");
-        titlesMap.put(39, "Desagregación Personalizada");
-        titlesMap.put(40, "Valor Reportado");
+        titlesMap.put(12, "Tags");
+        titlesMap.put(13, "Categoría");
+        titlesMap.put(14, "Frecuencia");
+        titlesMap.put(15, "Proyecto");
+        titlesMap.put(16, "Implementador");
+        titlesMap.put(17, "Ejecución Total");
+        titlesMap.put(18, "Meta Total");
+        titlesMap.put(19, "% de Ejecución Total");
+        titlesMap.put(20, "Trimestre Orden");
+        titlesMap.put(21, "Trimestre");
+        titlesMap.put(22, "Ejecucion Trimestral");
+        titlesMap.put(23, "Meta Trimestral");
+        titlesMap.put(24, "% de Ejecución Trimestral");
+        titlesMap.put(25, "Mes Orden");
+        titlesMap.put(26, "Mes");
+        titlesMap.put(27, "Ejecucion Mensual");
+        titlesMap.put(28, "Valor Id");
+        titlesMap.put(29, "Valor Personalizado Id");
+        titlesMap.put(30, "Tipo de Desagregacion");
+        titlesMap.put(31, "Cantón");
+        titlesMap.put(32, "Provincia");
+        titlesMap.put(33, "Tipo de Población");
+        titlesMap.put(34, "Género");
+        titlesMap.put(35, "Edad");
+        titlesMap.put(36, "País de Origen");
+        titlesMap.put(37, "Diversidad");
+        titlesMap.put(38, "Edad - Educación Primaria");
+        titlesMap.put(39, "Edad - Educación Terciaria");
+        titlesMap.put(40, "Desagregación Personalizada");
+        titlesMap.put(41, "Valor Reportado");
+
 
 
         List<String> titles = new ArrayList<>();
@@ -820,35 +831,36 @@ public class ReportDataService {
         titlesMap.put(9, 6000);// "Declaración de Proyecto");
         titlesMap.put(10, 4000);// "Tipo de Indicador");
         titlesMap.put(11, 7000);// "Indicador");
-        titlesMap.put(12, 6500);// "Categoría");
-        titlesMap.put(13, 5000);// "Frecuencia");
-        titlesMap.put(14, 7000);// "Proyecto");
-        titlesMap.put(15, 5000);// "Implementador");
-        titlesMap.put(16, 5000);// "Ejecución Total");
-        titlesMap.put(17, 5000);// "Meta Total");
-        titlesMap.put(18, 5000);// "% de Ejecución Total");
-        titlesMap.put(19, 5000);// "Trimestre Orden");
-        titlesMap.put(20, 5000);// "Trimestre");
-        titlesMap.put(21, 5000);// "Ejecucion Trimestral");
-        titlesMap.put(22, 5000);// "Meta Trimestral");
-        titlesMap.put(23, 5000);// "% de Ejecución Trimestral");
-        titlesMap.put(24, 5000);// "Mes Orden");
-        titlesMap.put(25, 5000);// "Mes");
-        titlesMap.put(26, 5000);// "Ejecucion Mensual");
-        titlesMap.put(27, 5000);// "Valor Id");
-        titlesMap.put(28, 5000);// "Valor Personalizado Id");
-        titlesMap.put(29, 7000);// "Tipo de Desagregacion");
-        titlesMap.put(30, 5000);// "Cantón");
-        titlesMap.put(31, 5000);// "Provincia");
-        titlesMap.put(32, 6000);// "Tipo de Población");
-        titlesMap.put(33, 5000);// "Género");
-        titlesMap.put(34, 5000);// "Edad");
-        titlesMap.put(35, 5000);// "País de Origen");
-        titlesMap.put(36, 5000);// "Diversidad");
-        titlesMap.put(37, 5000);// "Edad - Educación Primaria");
-        titlesMap.put(38, 5000);// "Edad - Educación Terciaria");
-        titlesMap.put(39, 5000);// "Desagregación Personalizada");
-        titlesMap.put(40, 5000);// "Valor Reportado");
+        titlesMap.put(12, 7000);// "Tags");
+        titlesMap.put(13, 6500);// "Categoría");
+        titlesMap.put(14, 5000);// "Frecuencia");
+        titlesMap.put(15, 7000);// "Proyecto");
+        titlesMap.put(16, 5000);// "Implementador");
+        titlesMap.put(17, 5000);// "Ejecución Total");
+        titlesMap.put(18, 5000);// "Meta Total");
+        titlesMap.put(19, 5000);// "% de Ejecución Total");
+        titlesMap.put(20, 5000);// "Trimestre Orden");
+        titlesMap.put(21, 5000);// "Trimestre");
+        titlesMap.put(22, 5000);// "Ejecucion Trimestral");
+        titlesMap.put(23, 5000);// "Meta Trimestral");
+        titlesMap.put(24, 5000);// "% de Ejecución Trimestral");
+        titlesMap.put(25, 5000);// "Mes Orden");
+        titlesMap.put(26, 5000);// "Mes");
+        titlesMap.put(27, 5000);// "Ejecucion Mensual");
+        titlesMap.put(28, 5000);// "Valor Id");
+        titlesMap.put(29, 5000);// "Valor Personalizado Id");
+        titlesMap.put(30, 7000);// "Tipo de Desagregacion");
+        titlesMap.put(31, 5000);// "Cantón");
+        titlesMap.put(32, 5000);// "Provincia");
+        titlesMap.put(33, 6000);// "Tipo de Población");
+        titlesMap.put(34, 5000);// "Género");
+        titlesMap.put(35, 5000);// "Edad");
+        titlesMap.put(36, 5000);// "País de Origen");
+        titlesMap.put(37, 5000);// "Diversidad");
+        titlesMap.put(38, 5000);// "Edad - Educación Primaria");
+        titlesMap.put(39, 5000);// "Edad - Educación Terciaria");
+        titlesMap.put(40, 5000);// "Desagregación Personalizada");
+        titlesMap.put(41, 5000);// "Valor Reportado");
 
 
         List<Integer> widths = new ArrayList<>();
@@ -866,7 +878,7 @@ public class ReportDataService {
 
         List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        0, 1, 2, 3, 4, 5, 27, 28
+                        0, 1, 2, 3, 4, 5, 28, 29
                 )
         );
 

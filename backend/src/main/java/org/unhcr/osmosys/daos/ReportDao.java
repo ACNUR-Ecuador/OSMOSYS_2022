@@ -31,14 +31,14 @@ public class ReportDao {
     private static final String detailedIndicatorExecutions =
             "SELECT * " +
                     "FROM " +
-                    "osmosys.ie_detailed ";
+                    "osmosys.ie_detailed_plus_tags ";
     private static final String detailedIndicatorExecutionsWithOffices =
             "SELECT * " +
                     "FROM " +
                     "osmosys.ie_detailed_with_offices_ids ie ";
 
 
-    private static final String detailedIndicatorExecutionsOrder = " ORDER BY 1,2,3,4,5,6,7,8,9,15,16,17,18,19,20,23,24,25 ";
+    private static final String detailedIndicatorExecutionsOrder = " ORDER BY 1,2,3,4,5,6,7,8,9,16,17,18,19,20,21,24,25,26 ";
 
 
     public List<IndicatorExecutionDetailedDTO> getAllIndicatorExecutionDetailed(Long periodId) {

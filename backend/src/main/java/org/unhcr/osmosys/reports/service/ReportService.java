@@ -117,21 +117,21 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream getAllImplementationsAnnualByPeriodId(Long periodId) throws GeneralAppException {
-        String jrxmlFile = "all_implementations_anual_by_period_id.jrxml";
+        String jrxmlFile = "all_implementations_anual_by_period_idV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 
     public ByteArrayOutputStream getAllImplementationsQuarterlyByPeriodId(Long periodId) throws GeneralAppException {
-        String jrxmlFile = "all_implementations_quarterly_by_period_id.jrxml";
+        String jrxmlFile = "all_implementations_quarterly_by_period_idV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 
     public ByteArrayOutputStream getAllImplementationsMonthlyByPeriodId(Long periodId) throws GeneralAppException {
-        String jrxmlFile = "all_implementations_monthly_by_period_id.jrxml";
+        String jrxmlFile = "all_implementations_monthly_by_period_idV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
@@ -151,7 +151,7 @@ public class ReportService {
         if (ReportService.dissableJasperReport) {
             throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
         }
-        String jrxmlFile = "all_implementations_pi_anual_by_period_id.jrxml";
+        String jrxmlFile = "all_implementations_pi_anual_by_period_idV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
@@ -161,7 +161,7 @@ public class ReportService {
         if (ReportService.dissableJasperReport) {
             throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
         }
-        String jrxmlFile = "all_implementations_pi_quarterly_by_period_id.jrxml";
+        String jrxmlFile = "all_implementations_pi_quarterly_by_period_idV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
@@ -171,7 +171,7 @@ public class ReportService {
         if (ReportService.dissableJasperReport) {
             throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
         }
-        String jrxmlFile = "all_implementations_pi_monthly_by_period_id.jrxml";
+        String jrxmlFile = "all_implementations_pi_monthly_by_period_idV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
@@ -225,7 +225,7 @@ public class ReportService {
         if (ReportService.dissableJasperReport) {
             throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
         }
-        String jrxmlFile = "partners_anual_by_period_id.jrxml";
+        String jrxmlFile = "partners_anual_by_period_idV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
@@ -235,7 +235,7 @@ public class ReportService {
         if (ReportService.dissableJasperReport) {
             throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
         }
-        String jrxmlFile = "partners_quarterly_by_period_id.jrxml";
+        String jrxmlFile = "partners_quarterly_by_period_idV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
@@ -245,7 +245,7 @@ public class ReportService {
         if (ReportService.dissableJasperReport) {
             throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
         }
-        String jrxmlFile = "partners_monthly_by_period_id.jrxml";
+        String jrxmlFile = "partners_monthly_by_period_idV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
@@ -279,7 +279,7 @@ public class ReportService {
     }
 
     public ByteArrayOutputStream getPartnersPerformanceIndicatorsAnnualByPeriodId(Long periodId) throws GeneralAppException {
-        String jrxmlFile = "partners_pi_anual_by_period_id.jrxml";
+        String jrxmlFile = "partners_pi_anual_by_period_idV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
@@ -287,7 +287,7 @@ public class ReportService {
 
 
     public ByteArrayOutputStream getPartnersPerformanceIndicatorsQuarterlyByPeriodId(Long periodId) throws GeneralAppException {
-        String jrxmlFile = "partners_pi_quarterly_by_period_id.jrxml";
+        String jrxmlFile = "partners_pi_quarterly_by_period_idV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
@@ -295,7 +295,7 @@ public class ReportService {
 
 
     public ByteArrayOutputStream getPartnersPerformanceIndicatorsMonthlyByPeriodId(Long periodId) throws GeneralAppException {
-        String jrxmlFile = "partners_pi_monthly_by_period_id.jrxml";
+        String jrxmlFile = "partners_pi_monthly_by_period_idV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
@@ -344,7 +344,7 @@ public class ReportService {
             throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
         }
 
-        String jrxmlFile = "result_manager_indicators_report.jrxml";
+        String jrxmlFile = "result_manager_indicators_reportV2.jrxml";
         InputStream file = this.getReportFile(jrxmlFile);
         Map<String, Object> parameters = new HashMap<>();
         try{
@@ -365,7 +365,7 @@ public class ReportService {
             throw new GeneralAppException("Reporte en mantenimiento", Response.Status.BAD_REQUEST);
         }
 
-        String jrxmlFile = "result_manager_indicators_report.jrxml";
+        String jrxmlFile = "result_manager_indicators_reportV2.jrxml";
         InputStream file = this.getReportFile(jrxmlFile);
         Map<String, Object> parameters = new HashMap<>();
         try{
@@ -414,21 +414,21 @@ public class ReportService {
     /*************direct implementation ************/
 
     public ByteArrayOutputStream getDirectImplementationPerformanceIndicatorsAnnualByPeriodId(Long periodId) throws GeneralAppException {
-        String jrxmlFile = "direct_implementation_anual_by_period_id.jrxml";
+        String jrxmlFile = "direct_implementation_anual_by_period_idV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 
     public ByteArrayOutputStream getDirectImplementationPerformanceIndicatorsQuarterlyByPeriodId(Long periodId) throws GeneralAppException {
-        String jrxmlFile = "direct_implementation_quarterly_by_period_id.jrxml";
+        String jrxmlFile = "direct_implementation_quarterly_by_period_idV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 
     public ByteArrayOutputStream getDirectImplementationPerformanceIndicatorsMonthlyByPeriodId(Long periodId) throws GeneralAppException {
-        String jrxmlFile = "direct_implementation_monthly_by_period_id.jrxml";
+        String jrxmlFile = "direct_implementation_monthly_by_period_idV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);

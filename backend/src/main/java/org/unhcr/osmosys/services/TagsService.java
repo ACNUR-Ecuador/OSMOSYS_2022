@@ -129,6 +129,10 @@ public class TagsService {
 
     }
 
+    public  List<Tags> getTagsByIndicatorIdAndPeriodId(Long indicatorId, Long periodId) throws GeneralAppException {
+        return this.tagsDao.getTagsByIndicatorIdAndPeriodId(indicatorId, periodId);
+    }
+
 
 
 

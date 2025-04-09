@@ -1,0 +1,592 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="indicatorsCatalogWithImplementersSimple" pageWidth="1600" pageHeight="595" orientation="Landscape" columnWidth="1560" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="d4000276-96a8-42bf-8921-e56312f2392a">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="local_osmosys"/>
+	<property name="net.sf.jasperreports.export.xls.one.page.per.sheet" value="true"/>
+	<property name="net.sf.jasperreports.page.break.no.pagination" value="apply"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false"/>
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.ignore.graphics" value="false"/>
+	<property name="net.sf.jasperreports.export.xls.sheet.names.all" value="Data/Footnotes"/>
+	<property name="net.sf.jasperreports.export.xls.freeze.row" value="1"/>
+	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.auto.fit.row" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.auto.fit.column" value="true"/>
+	<property name="net.sf.jasperreports.export.jxl.cell.complex.format" value="true"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Dataset1" uuid="88484b51-9cb8-4c54-af54-94dce68ca70e">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="local_osmosys"/>
+		<parameter name="periodId" class="java.lang.Long"/>
+		<queryString language="SQL">
+			<![CDATA[SELECT
+ar.code || ' - '||  ar.short_description as area,
+st.code || ' - '|| st.description as statement,
+i.code || ' - '|| i.description as indicator,
+i.category,
+i.frecuency,
+COALESCE (offf.acronym, org.acronym) implementers,
+string_agg(DISTINCT da.dissagregation_type,', ') dissagregations,
+string_agg(DISTINCT cd.description,', ') custom_dissagregations,
+string_agg(DISTINCT tg."name",', ') tags
+FROM osmosys.indicators i
+LEFT JOIN osmosys.dissagregation_assignation_indicator da on i.id=da.indicator_id
+LEFT JOIN osmosys.custom_dissagregation_assignation_indicator dac on i.id=dac.indicator_id
+LEFT JOIN osmosys.custom_dissagregations cd on dac.custom_dissagregation_id=cd.id
+LEFT JOIN osmosys.indicator_executions ie  on ie.performance_indicator_id=i.id and ie."state"='ACTIVO' AND IE.performance_indicator_id IS NOT NULL
+LEFT JOIN osmosys.statements st on i.statement_id = st.id
+LEFT JOIN osmosys.areas ar on st.area_id=ar."id"
+LEFT JOIN osmosys.offices offf on ie.reporting_office_id=offf."id"
+LEFT JOIN osmosys.projects pr on ie.project_id=pr."id"
+LEFT JOIN osmosys.organizations org on pr.organization_id=org."id"
+LEFT JOIN osmosys.indicator_tag_asignation ita on i."id"=ita.indicator_id
+LEFT JOIN osmosys.tags tg on ita.tag_id=tg."id"
+WHERE da.period_id=$P{periodId}  or dac.period_id= $P{periodId} 
+GROUP BY ar.id,1,2,3,4,5,6
+ORDER BY ar.id,1,2,3,4,5,6]]>
+		</queryString>
+		<field name="area" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="area"/>
+			<property name="com.jaspersoft.studio.field.label" value="area"/>
+		</field>
+		<field name="statement" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="statement"/>
+			<property name="com.jaspersoft.studio.field.label" value="statement"/>
+		</field>
+		<field name="indicator" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="indicator"/>
+			<property name="com.jaspersoft.studio.field.label" value="indicator"/>
+		</field>
+		<field name="category" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="category"/>
+			<property name="com.jaspersoft.studio.field.label" value="category"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="indicators"/>
+		</field>
+		<field name="frecuency" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="frecuency"/>
+			<property name="com.jaspersoft.studio.field.label" value="frecuency"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="indicators"/>
+		</field>
+		<field name="implementers" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="implementers"/>
+			<property name="com.jaspersoft.studio.field.label" value="implementers"/>
+		</field>
+		<field name="dissagregations" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="dissagregations"/>
+			<property name="com.jaspersoft.studio.field.label" value="dissagregations"/>
+		</field>
+		<field name="custom_dissagregations" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="custom_dissagregations"/>
+			<property name="com.jaspersoft.studio.field.label" value="custom_dissagregations"/>
+		</field>
+		<field name="tags" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="tags"/>
+			<property name="com.jaspersoft.studio.field.label" value="tags"/>
+		</field>
+	</subDataset>
+	<subDataset name="Dataset2" uuid="1050bde6-003f-4630-84ab-966a9184f322">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="local_osmosys"/>
+		<parameter name="periodId" class="java.lang.Long"/>
+		<queryString language="SQL">
+			<![CDATA[SELECT
+ie.id as ie_id,
+CASE 
+	WHEN ie.project_id is null THEN	'Implementación Directa'
+	WHEN ie.project_id is not null THEN	'Implementación Socios'
+END AS implementation_type,
+ar.code || ' - '||  ar.short_description as area,
+st.code || ' - '|| st.description as statement,
+stb.code || ' - '|| stb.description as statement_project,
+CASE
+	WHEN i.id is null THEN 'General'
+	WHEN i.id is not null THEN 'Producto' 
+END as indicator_type,
+CASE
+	WHEN i.id is null THEN gi.description
+	WHEN i.id is not null THEN i.code || ' - '|| i.description 
+END as indicator,
+i.category,
+i.frecuency,
+COALESCE (offf.acronym, org.acronym) implementers,
+pr."name" projects,
+string_agg(DISTINCT da.dissagregation_type,', ') dissagregations,
+string_agg(DISTINCT cd.description,', ') custom_dissagregations,
+ie.total_execution,
+ie.target,
+ie.execution_percentage,
+CASE 
+	WHEN osmosys.months_late(ie.id) is null THEN 'A tiempo'
+	WHEN osmosys.months_late(ie.id) is not null THEN 'Retrasado'
+END is_late,
+
+osmosys.months_late(ie.id),
+string_agg(DISTINCT tg."name",', ') tags
+FROM
+osmosys.indicator_executions ie
+LEFT JOIN osmosys.indicators i on ie.performance_indicator_id=i.id
+LEFT JOIN osmosys.statements stb on ie.project_statement_id= stb.id
+LEFT JOIN osmosys.dissagregation_assignation_indicator da on i.id=da.indicator_id and da."state"='ACTIVO'
+LEFT JOIN osmosys.custom_dissagregation_assignation_indicator dac on i.id=dac.indicator_id and dac."state"='ACTIVO'
+LEFT JOIN osmosys.custom_dissagregations cd on dac.custom_dissagregation_id=cd.id
+LEFT JOIN osmosys.statements st on i.statement_id = st.id
+LEFT JOIN osmosys.areas ar on st.area_id=ar."id"
+LEFT JOIN osmosys.offices offf on ie.reporting_office_id=offf."id"
+LEFT JOIN osmosys.projects pr on ie.project_id=pr."id"
+LEFT JOIN osmosys.organizations org on pr.organization_id=org."id"
+LEFT JOIN osmosys.indicator_tag_asignation ita on i."id"=ita.indicator_id
+LEFT JOIN osmosys.tags tg on ita.tag_id=tg."id"
+LEFT JOIN osmosys.periods per on ie.period_id=per."id"
+LEFT JOIN osmosys.general_indicators gi on per.id=gi.periodo_id
+LEFT JOIN osmosys.dissagregation_assignation_general_indicator dagi on gi.id=dagi.general_indicator_id and dagi."state"='ACTIVO'
+WHERE ie."state"='ACTIVO' AND ie.performance_indicator_id is not null AND ie.period_id=$P{periodId} 
+GROUP BY ar.id,1,2,3,4,5,6,7,8,9,10,11
+ORDER BY ar.id,1,2,3,4,5,6,7,8,9,10,11]]>
+		</queryString>
+		<field name="ie_id" class="java.lang.Long">
+			<property name="com.jaspersoft.studio.field.name" value="ie_id"/>
+			<property name="com.jaspersoft.studio.field.label" value="ie_id"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="indicator_executions"/>
+		</field>
+		<field name="implementation_type" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="implementation_type"/>
+			<property name="com.jaspersoft.studio.field.label" value="implementation_type"/>
+		</field>
+		<field name="area" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="area"/>
+			<property name="com.jaspersoft.studio.field.label" value="area"/>
+		</field>
+		<field name="statement" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="statement"/>
+			<property name="com.jaspersoft.studio.field.label" value="statement"/>
+		</field>
+		<field name="statement_project" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="statement_project"/>
+			<property name="com.jaspersoft.studio.field.label" value="statement_project"/>
+		</field>
+		<field name="indicator_type" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="indicator_type"/>
+			<property name="com.jaspersoft.studio.field.label" value="indicator_type"/>
+		</field>
+		<field name="indicator" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="indicator"/>
+			<property name="com.jaspersoft.studio.field.label" value="indicator"/>
+		</field>
+		<field name="category" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="category"/>
+			<property name="com.jaspersoft.studio.field.label" value="category"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="indicators"/>
+		</field>
+		<field name="frecuency" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="frecuency"/>
+			<property name="com.jaspersoft.studio.field.label" value="frecuency"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="indicators"/>
+		</field>
+		<field name="implementers" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="implementers"/>
+			<property name="com.jaspersoft.studio.field.label" value="implementers"/>
+		</field>
+		<field name="dissagregations" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="dissagregations"/>
+			<property name="com.jaspersoft.studio.field.label" value="dissagregations"/>
+		</field>
+		<field name="custom_dissagregations" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="custom_dissagregations"/>
+			<property name="com.jaspersoft.studio.field.label" value="custom_dissagregations"/>
+		</field>
+		<field name="total_execution" class="java.math.BigDecimal">
+			<property name="com.jaspersoft.studio.field.name" value="total_execution"/>
+			<property name="com.jaspersoft.studio.field.label" value="total_execution"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="indicator_executions"/>
+		</field>
+		<field name="target" class="java.math.BigDecimal">
+			<property name="com.jaspersoft.studio.field.name" value="target"/>
+			<property name="com.jaspersoft.studio.field.label" value="target"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="indicator_executions"/>
+		</field>
+		<field name="execution_percentage" class="java.math.BigDecimal">
+			<property name="com.jaspersoft.studio.field.name" value="execution_percentage"/>
+			<property name="com.jaspersoft.studio.field.label" value="execution_percentage"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="indicator_executions"/>
+		</field>
+		<field name="is_late" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="is_late"/>
+			<property name="com.jaspersoft.studio.field.label" value="is_late"/>
+		</field>
+		<field name="months_late" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="months_late"/>
+			<property name="com.jaspersoft.studio.field.label" value="months_late"/>
+		</field>
+		<field name="projects" class="java.lang.String"/>
+		<field name="tags" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="tags"/>
+			<property name="com.jaspersoft.studio.field.label" value="tags"/>
+		</field>
+	</subDataset>
+	<parameter name="periodId" class="java.lang.Long"/>
+	<queryString language="SQL">
+		<![CDATA[select 1=1 as test]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="309" splitType="Stretch">
+			<componentElement>
+				<reportElement x="0" y="0" width="1560" height="309" uuid="84be4eed-8a0d-449f-b96d-1bbeff3cf708">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Dataset2" uuid="8d5458aa-a3f6-4a92-9a04-5aea31ae15ef">
+						<datasetParameter name="periodId">
+							<datasetParameterExpression><![CDATA[$P{periodId}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="98" uuid="df172449-06da-4a0e-b036-88715407e14f">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="98" height="30" uuid="29591d50-31b3-4e10-ab41-e2b28d96c799"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Tipo de Implementación]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="98" height="30" uuid="b4e841a8-2a34-47ed-a8a3-c4c236b52dd3"/>
+								<textFieldExpression><![CDATA[$F{implementation_type}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="126" uuid="617419f7-e126-4e93-a419-9a7047e036fc">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="126" height="30" uuid="aaf6275d-f784-4b27-b498-c8b3e6c6bb6a"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Área]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="126" height="30" uuid="bc23f3cc-6cbe-4f30-a994-1694eb48cd29"/>
+								<textFieldExpression><![CDATA[$F{area}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="126" uuid="96a3932c-6eb2-40b8-a105-9b86c013039d">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="126" height="30" uuid="d121a604-bee6-46c0-9ef2-dcddb7b5ced4"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Declaración]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="126" height="30" uuid="10ff725f-8881-4d88-bcf2-7d955d59f99a"/>
+								<textFieldExpression><![CDATA[$F{statement}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="108" uuid="3cb7bac3-368d-4ef1-9b23-d5fa2dedac41">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="108" height="30" uuid="80d5f14f-b29c-4665-93e8-e1db5e0f874e"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Declaración de proyecto]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="108" height="30" uuid="38e8222d-c4b9-49b0-a957-86dfa8821a1d"/>
+								<textFieldExpression><![CDATA[$F{statement_project}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="125" uuid="380ddc43-1a18-4d1c-b4a6-c41291974900">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="125" height="30" uuid="9324a1dc-6c43-46bd-8f2b-42545ba4da7e"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Tipo de Indicador]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="125" height="30" uuid="29d43532-719c-4e8d-bf41-e58380182239"/>
+								<textFieldExpression><![CDATA[$F{indicator_type}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="125" uuid="9b7c870d-0cdf-4e04-be44-81d3202cd0f7">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="125" height="30" uuid="ec5e0f1b-abe6-4b5b-a0f8-f16959f99383"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Indicador]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="125" height="30" uuid="10d6e9e0-42f5-4707-8d52-79da22150f8b"/>
+								<textFieldExpression><![CDATA[$F{category}==null?$F{indicator}:$F{indicator}.concat( "(Categoria: ").concat($F{category}).concat(" )" )]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="189" uuid="906ba0d0-9594-43fc-bb44-f0470f46cc38">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="189" height="30" uuid="a421272d-d201-4228-b604-22e0fd78587d"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Tags]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="189" height="30" uuid="a3f032c6-a5f9-4809-859d-b804e817680d"/>
+								<textFieldExpression><![CDATA[$F{tags}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="125" uuid="4607e08e-bc89-48bd-a3b6-7c2ee8d7239b">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="125" height="30" uuid="10584b20-4237-4d79-ab66-ceb9e120a51e"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Frecuencia]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="125" height="30" uuid="209d3562-10e6-403e-aa8b-640a282cacf3"/>
+								<textFieldExpression><![CDATA[$F{frecuency}.toLowerCase()]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="170" uuid="d6f676d0-8114-43ee-a2e8-37d00390ce15">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="170" height="30" uuid="e088a7a8-42c9-4f8d-95ad-0733737859c2"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Proyecto]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="170" height="30" uuid="3b9654b1-1e10-444d-850f-09bd85899660"/>
+								<textFieldExpression><![CDATA[$F{projects}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="122" uuid="fe863114-4d3a-4249-955f-8e7e8d31814d">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="122" height="30" uuid="2c0ce02a-4f6f-47a1-87e3-f23c242974d5"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Implementador]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="122" height="30" uuid="382de36a-b301-4384-b235-df488900a2d9"/>
+								<textFieldExpression><![CDATA[$F{implementers}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="121" uuid="218dc8c3-967d-4778-a1fd-b0f2ada8feac">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="121" height="30" uuid="6c56317b-f386-473c-927a-dfd6b75ff047"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Desagregaciones]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="121" height="30" uuid="e60b7b96-9108-4ae8-beb1-cde0d3d51514"/>
+								<textFieldExpression><![CDATA[$F{dissagregations}!=null?$F{custom_dissagregations}==null?$F{dissagregations}.replaceAll("_"," ").toLowerCase():$F{dissagregations}.replaceAll("_"," ").toLowerCase().concat(", ").concat($F{custom_dissagregations}):null]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="83" uuid="d59f56e7-49ff-43e9-a956-82f7079ef1f4">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="83" height="30" uuid="c7302c3f-99f7-4fd8-9cdb-3d73a323fed0"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Ejecución Total]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="83" height="30" uuid="4875cdf3-8a97-4b8c-9078-5fc62b719f4c"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$F{total_execution}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="91" uuid="26c19022-4669-49a9-b8d6-34c5e394a312">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="91" height="30" uuid="b888929b-03f2-4599-9665-94fc4352e5f0"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Meta Total]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="91" height="30" uuid="6e75672e-4b92-47df-a7e4-040ab0408c07"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$F{target}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="82" uuid="7c6b9abc-97b1-4620-8034-d06331707b86">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="82" height="30" uuid="fd9bffce-ebbf-43cb-871d-63f41a3aff1e"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Porcentaje de ejecución total]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="82" height="30" uuid="d6773ce2-6e8f-47f3-b328-d1c9f309b578"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$F{execution_percentage}]]></textFieldExpression>
+								<patternExpression><![CDATA["#,##0%"]]></patternExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="107" uuid="b2192981-beaf-43ba-9856-f0b4422807e9">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="107" height="30" uuid="02373967-2026-441e-9482-ad362f6a2afd"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Estado de reporte]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="107" height="30" uuid="ea249ff9-ad1a-4503-9332-ebbc9f5c4cbd"/>
+								<textFieldExpression><![CDATA[$F{is_late}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="121" uuid="4e5dd232-41b5-4b41-98c7-f96ad9595971">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="121" height="30" uuid="e4457da9-eea2-4bb5-9903-24f4073e6d14"/>
+								<textElement textAlignment="Center">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[Meses retrasados]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement stretchType="ContainerHeight" x="0" y="0" width="121" height="30" uuid="d3bc2ea7-8d55-49f3-ae03-205ba64f89da"/>
+								<textFieldExpression><![CDATA[$F{months_late}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
