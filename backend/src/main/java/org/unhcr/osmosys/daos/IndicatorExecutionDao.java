@@ -1018,7 +1018,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 "LEFT JOIN q.months m " +
                 "LEFT JOIN m.indicatorValues iv " +
                 "LEFT JOIN iv.populationType sdo " +
-                "WHERE ie.indicator.id = :indicatorId AND q.quarterYearOrder= :quarterOrder AND q.year= :year AND sdo.state=:state AND ie.state = :state " +
+                "WHERE ie.indicator.id = :indicatorId AND q.quarterYearOrder= :quarterOrder AND q.year= :year AND sdo.state=:state AND ie.state = :state AND iv.state = :state " +
                 "GROUP BY sdo.id";
 
         Query query = getEntityManager().createQuery(psql);
