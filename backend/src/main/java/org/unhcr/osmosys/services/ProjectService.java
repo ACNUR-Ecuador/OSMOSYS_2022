@@ -432,7 +432,7 @@ public class ProjectService {
 
         public ProjectWeb getWebById(Long id) {
             Project project = this.projectDao.findWithData(id);
-            return this.modelWebTransformationService.projectToProjectWeb(project);
+            return this.modelWebTransformationService.projectWithAllDataToProjectWeb(project);
         }
 
         public List<ProjectWeb> getWebByIds(List<Long> ids) {

@@ -951,6 +951,34 @@ public class ModelWebTransformationService {
         return w;
     }
 
+    /*Proyecto ccon las información completa*/
+    public ProjectWeb projectWithAllDataToProjectWeb(Project project) {
+        ProjectWeb w = new ProjectWeb();
+        w.setId(project.getId());
+        w.setName(project.getName());
+        w.setCode(project.getCode());
+        w.setPeriod(this.periodToPeriodWeb(project.getPeriod(), false));
+        w.setOrganization(this.organizationToOrganizationWeb(project.getOrganization()));
+        w.setStartDate(project.getStartDate());
+        w.setEndDate(project.getEndDate());
+        w.setState(project.getState());
+        w.setPartnerManager(userToUserWebSimple(project.getPartnerManager(),false,false));
+        List<User> focalPoints = project.getFocalPointAssignations().stream()
+                .filter(focalPointAssignation -> focalPointAssignation.getState().equals(State.ACTIVO)).map(FocalPointAssignation::getFocalPointer).filter(user -> user.getState().equals(State.ACTIVO)).collect(Collectors.toList());
+
+        w.setFocalPoints(new HashSet<>(this.usersToUsersWebSimple(focalPoints, true, true)));
+
+        Set<Canton> cantones = project.getProjectLocationAssigments().stream()
+                .filter(projectLocationAssigment -> projectLocationAssigment.getState().equals(State.ACTIVO))
+                .map(ProjectLocationAssigment::getLocation).collect(Collectors.toSet());
+
+        for (Canton canton : cantones) {
+            w.getLocations().add(this.cantonToCantonWeb(canton));
+        }
+
+        return w;
+    }
+
 
     public List<ProjectWeb> projectsToProjectsWeb(List<Project> projects) {
         List<ProjectWeb> r = new ArrayList<>();
@@ -959,8 +987,6 @@ public class ModelWebTransformationService {
         }
         return r;
     }
-
-
     //</editor-fold>
 
 
@@ -1204,6 +1230,15 @@ public class ModelWebTransformationService {
                 .map(IndicatorExecutionLocationAssigment::getLocation)
                 .collect(Collectors.toList());
         iw.setLocations(this.cantonsToCantonsWeb(activeCantons));
+        /*Dissagregation Assigments*/
+        if(ie.getIndicatorExecutionDissagregationAssigments()!=null) {
+            List<StandardDissagregationOption> activeDissagregationOptions = ie.getIndicatorExecutionDissagregationAssigments()
+                    .stream()
+                    .filter(indicatorExecutionDissagregationAssigment -> indicatorExecutionDissagregationAssigment.getState().equals(State.ACTIVO))
+                    .map(IndicatorExecutionDissagregationAssigment::getDisagregationOption)
+                    .collect(Collectors.toList());
+            iw.setDissagregationAssigments(this.standardDissagregationOptionsToStandardDissagregationOptionWebs(activeDissagregationOptions));
+        }
         return iw;
     }
 

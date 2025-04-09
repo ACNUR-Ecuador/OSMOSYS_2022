@@ -375,6 +375,7 @@ export class IndicatorExecution {
     public assignedUser: User;
     public assignedUserBackup: User;
     public locations: Canton[];
+    public dissagregationAssigments: StandardDissagregationOption[]
     public keepBudget: boolean;
     public assignedBudget: number;
     public availableBudget: number;
@@ -461,6 +462,7 @@ export class IndicatorExecutionAssigment {
     public projectStatement?: Statement;
     public activityDescription?: string;
     public locations?: Canton[];
+    public dissagregationAssigments?: StandardDissagregationOption[]
     // direct implementation
     public target?: number;
     public reportingOffice?: Office;

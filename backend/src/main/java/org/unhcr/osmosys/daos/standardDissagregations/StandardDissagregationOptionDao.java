@@ -116,6 +116,15 @@ public class StandardDissagregationOptionDao extends GenericDaoJpa<StandardDissa
         return q.getResultList();
     }
 
+    public List<StandardDissagregationOption> getDissagregationOptionsByIds(List<Long> ids) {
+
+        String jpql = "SELECT DISTINCT o FROM StandardDissagregationOption o " +
+                "WHERE o.id in (:ids)";
+        Query q = getEntityManager().createQuery(jpql, StandardDissagregationOption.class);
+        q.setParameter("ids", ids);
+        return q.getResultList();
+    }
+
     public Canton getByCantonDescriptionAndProvinceDescription(String cantonDescription,String provinceDescription) throws GeneralAppException {
 
         String jpql = "SELECT DISTINCT o FROM Canton o " +
@@ -158,6 +167,5 @@ public class StandardDissagregationOptionDao extends GenericDaoJpa<StandardDissa
             throw new GeneralAppException("Se encontró más de un item con  " + codeCanton+"-"+descriptionCanton, Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
-
 
 }
