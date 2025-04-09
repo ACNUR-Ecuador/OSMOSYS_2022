@@ -118,6 +118,15 @@ public class AppConfigurationService {
         }
     }
 
+    public boolean getSendEmailAlerts() {
+        String valusS = this.findValorByClave(AppConfigurationKey.SEND_EMAIL_ALERTS);
+        return Boolean.parseBoolean(valusS);
+    }
+    public boolean getSendEmailReminders() {
+        String valusS = this.findValorByClave(AppConfigurationKey.SEND_EMAIL_REMINDERS);
+        return Boolean.parseBoolean(valusS);
+    }
+
     private List<Integer> getLisOfNumberFromString(String stringList) {
         List<Integer> result = new ArrayList<>();
         if (StringUtils.isBlank(stringList)) {

@@ -259,7 +259,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             });
         this.enumsService.getByType(EnumsType.QuarterReportCalculation).subscribe(value => {
                 this.quarterReportCalcTypes = value;
-                console.log(this.quarterReportCalcTypes)
         });
         this.isCalculatedOptions = [{label: 'Calculado', value: true}, {label: 'No Calculado', value: false}];
         this.isMonitoredOptions = [{label: 'Monitoreado', value: true}, {label: 'No Monitoreado', value: false}];
@@ -374,6 +373,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
     }
 
     editItem(indicator: Indicator) {
+        console.log(indicator)
         this.onResultManagerSelect(indicator?.resultManager)
         this.onQuarterReportCalcChange(indicator?.quarterReportCalculation)
         this.onIsCoreIndicatorChange(indicator.coreIndicator)
@@ -384,15 +384,17 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
         this.formItem.patchValue(indicator);
         this.formItem.get('dissagregationAssignationToIndicators').patchValue(indicator.dissagregationsAssignationToIndicator);
         this.formItem.get('customDissagregationAssignationToIndicators').patchValue(indicator.customDissagregationAssignationToIndicators);
-        
+        const state:boolean=indicator.state === EnumsState.ACTIVE;
+        this.formItem.get('state').patchValue(state)
+
         if(indicator.resultManager?.id){
             const resultManager = this.focalPoints.find(fp => fp.id === indicator.resultManager.id);
             this.formItem.get('resultManager').patchValue(resultManager);
 
         }
-        
         this.filterStatementsByAreaType(indicator.areaType as AreaType, false);
         this.ref.detectChanges();
+        console.log(this.formItem)
     }
 
 
@@ -453,7 +455,6 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
             quarterReportCalculation,
             aggregationRuleComment
         };
-        console.log(indicator)
         if (indicator.state) {
             indicator.state = 'ACTIVO';
         } else {

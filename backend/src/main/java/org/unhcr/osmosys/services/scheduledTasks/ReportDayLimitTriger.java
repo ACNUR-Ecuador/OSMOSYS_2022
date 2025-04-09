@@ -139,32 +139,44 @@ public class ReportDayLimitTriger {
             LOGGER.error(ExceptionUtils.getRootCauseMessage(e));
             LOGGER.error(ExceptionUtils.getStackTrace(e));
         }
+        boolean sendEmailsEnabled = appConfigurationService.getSendEmailAlerts();
+        if (sendEmailsEnabled) {
+            LOGGER.debug("Envío de alertas socios");
+            try {
+                messageAlertService.sendPartnersAlertsToFocalPoints();
+            } catch (GeneralAppException e) {
+                LOGGER.error("ERROR en el envío de alertas a socios");
+                LOGGER.error(ExceptionUtils.getStackTrace(e));
+            }
+            try {
+                messageAlertService.sendDirectImplementationAlertsToSupervisors();
+            } catch (GeneralAppException e) {
+                LOGGER.error("ERROR en el envío de alertas a ID");
+                LOGGER.error(ExceptionUtils.getStackTrace(e));
+            }
+            LOGGER.debug("Envío de alertas-fin");
+        }else{
+            LOGGER.info("Envío de correos de alerta deshabilitado según configuración.");
+        }
 
-        LOGGER.debug("Envío de alertas socios");
-        try {
-            messageAlertService.sendPartnersAlertsToFocalPoints();
-        } catch (GeneralAppException e) {
-            LOGGER.error("ERROR en el envío de alertas a socios");
-            LOGGER.error(ExceptionUtils.getStackTrace(e));
-        }
-        try {
-            messageAlertService.sendDirectImplementationAlertsToSupervisors();
-        } catch (GeneralAppException e) {
-            LOGGER.error("ERROR en el envío de alertas a ID");
-            LOGGER.error(ExceptionUtils.getStackTrace(e));
-        }
-        LOGGER.debug("Envío de alertas-fin");
     }
     public void runQuarterlyTask() {
-        try {
-            // Lógica de la tarea trimestral que se ejecutará cada trimestre
-            this.messageAlertService.sendIndicatorAlertsToResultManagers();
-        } catch (Exception e) {
-            LOGGER.error("Error en envío de recordatorio trimestral");
-            LOGGER.error(ExceptionUtils.getRootCauseMessage(e));
-            LOGGER.error(ExceptionUtils.getStackTrace(e));
+
+        boolean sendEmailsEnabled = appConfigurationService.getSendEmailAlerts();
+        if (sendEmailsEnabled) {
+            try {
+                // Lógica de la tarea trimestral que se ejecutará cada trimestre
+                this.messageAlertService.sendIndicatorAlertsToResultManagers();
+            } catch (Exception e) {
+                LOGGER.error("Error en envío de recordatorio trimestral");
+                LOGGER.error(ExceptionUtils.getRootCauseMessage(e));
+                LOGGER.error(ExceptionUtils.getStackTrace(e));
+            }
+
+            LOGGER.info("Envío de alertas trimestral - fin");
+        }else{
+            LOGGER.info("Envío de correos de alerta deshabilitado según configuración.");
         }
 
-        LOGGER.info("Envío de alertas trimestral - fin");
     }
 }

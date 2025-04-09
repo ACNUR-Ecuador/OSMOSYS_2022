@@ -131,38 +131,45 @@ public class ReminderDaysTrigger {
     }
 
     public void run() {
+        boolean sendEmailsEnabled = appConfigurationService.getSendEmailReminders();
+        if (sendEmailsEnabled) {
+            try {
+                this.messageReminderService.sendPartnersRemindersToFocalPoints();
+            } catch (Exception e) {
+                LOGGER.error("Error en envío de recordatorio de socios");
+                LOGGER.error(ExceptionUtils.getRootCauseMessage(e));
+                LOGGER.error(ExceptionUtils.getStackTrace(e));
+            }
 
-        try {
-            this.messageReminderService.sendPartnersRemindersToFocalPoints();
-        } catch (Exception e) {
-            LOGGER.error("Error en envío de recordatorio de socios");
-            LOGGER.error(ExceptionUtils.getRootCauseMessage(e));
-            LOGGER.error(ExceptionUtils.getStackTrace(e));
+            try {
+                this.messageReminderService.sendDirectImplementationReminders();
+            } catch (Exception e) {
+                LOGGER.error("Error en envío de recordatorio de socios");
+                LOGGER.error(ExceptionUtils.getRootCauseMessage(e));
+                LOGGER.error(ExceptionUtils.getStackTrace(e));
+            }
+            LOGGER.info("Envío de recordatorios-fin");
+        }else{
+            LOGGER.info("Envío de correos de recordatorio deshabilitado según configuración.");
         }
-
-
-        try {
-            this.messageReminderService.sendDirectImplementationReminders();
-        } catch (Exception e) {
-            LOGGER.error("Error en envío de recordatorio de socios");
-            LOGGER.error(ExceptionUtils.getRootCauseMessage(e));
-            LOGGER.error(ExceptionUtils.getStackTrace(e));
-        }
-
-
-        LOGGER.info("Envío de recordatorios-fin");
     }
     public void runQuarterlyTask() {
-        try {
-            // Lógica de la tarea trimestral que se ejecutará cada trimestre
-            this.messageReminderService.sendResultsManagerReminders();
-        } catch (Exception e) {
-            LOGGER.error("Error en envío de recordatorio trimestral");
-            LOGGER.error(ExceptionUtils.getRootCauseMessage(e));
-            LOGGER.error(ExceptionUtils.getStackTrace(e));
+        boolean sendEmailsEnabled = appConfigurationService.getSendEmailReminders();
+        if (sendEmailsEnabled) {
+            try {
+                // Lógica de la tarea trimestral que se ejecutará cada trimestre
+                this.messageReminderService.sendResultsManagerReminders();
+            } catch (Exception e) {
+                LOGGER.error("Error en envío de recordatorio trimestral");
+                LOGGER.error(ExceptionUtils.getRootCauseMessage(e));
+                LOGGER.error(ExceptionUtils.getStackTrace(e));
+            }
+
+            LOGGER.info("Envío de recordatorio trimestral - fin");
+        }else{
+            LOGGER.info("Envío de correos de recordatorio deshabilitado según configuración.");
         }
 
-        LOGGER.info("Envío de recordatorio trimestral - fin");
     }
 
 }
