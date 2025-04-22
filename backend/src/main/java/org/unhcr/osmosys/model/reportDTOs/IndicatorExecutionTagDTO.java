@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class IndicatorExecutionTagDTO {
+    private Long id;
     private Long performanceIndicatorId;
     private String indicator;
     private Long periodId;
@@ -15,13 +16,14 @@ public class IndicatorExecutionTagDTO {
     public IndicatorExecutionTagDTO() {
     }
 
-    public IndicatorExecutionTagDTO(Long performanceIndicatorId,
+    public IndicatorExecutionTagDTO(Long id,Long performanceIndicatorId,
                                     String indicator,
                                     Long periodId,
                                     String quarter,
                                     String month,
                                     Long monthOrder,
                                     Long totalValue) {
+        this.id=id;
         this.performanceIndicatorId = performanceIndicatorId;
         this.indicator = indicator;
         this.periodId = periodId;
@@ -85,5 +87,13 @@ public class IndicatorExecutionTagDTO {
 
     public void setTotalValue(Long totalValue) {
         this.totalValue = totalValue;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

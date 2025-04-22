@@ -199,7 +199,7 @@ public class ProjectService {
 
         // update localidades
         JobStatusService.updateJob(jobId, 20, "Actualizado lugares de ejecución");
-        this.updateProjectLocations(projectWeb.getLocations(), project.getId(), jobId);
+        this.updateProjectLocations(projectWeb.getLocations(), project.getId(), jobId, projectWeb.getUpdateAllLocationsIndicators());
 
         // Registrar auditoría
         JobStatusService.updateJob(jobId, 90, "Guardando auditorías");
@@ -270,14 +270,14 @@ public class ProjectService {
     }
 
     public void updateProjectLocations(Set<CantonWeb> cantonWebs, Long projectId) throws GeneralAppException {
-        updateProjectLocations(cantonWebs, projectId, null);
+        updateProjectLocations(cantonWebs, projectId, null, true);
     }
-    public void updateProjectLocations(Set<CantonWeb> cantonWebs, Long projectId, String jobId) throws GeneralAppException {
+    public void updateProjectLocations(Set<CantonWeb> cantonWebs, Long projectId, String jobId, Boolean updateAllLocationsIndicators) throws GeneralAppException {
         Project project = this.getById(projectId);
         LocationToActivateDesativate locationsToActivateDesactive = this.setLocationsInProject(project, List.copyOf(cantonWebs));
         int index = 1;
         for (IndicatorExecution indicatorExecution : project.getIndicatorExecutions()) {
-            this.indicatorExecutionService.updateIndicatorExecutionsLocations(indicatorExecution, locationsToActivateDesactive.locationsToActivate, locationsToActivateDesactive.locationsToDissable);
+            this.indicatorExecutionService.updateIndicatorExecutionsLocations(indicatorExecution, updateAllLocationsIndicators? locationsToActivateDesactive.locationsToActivate: new HashSet<>(), locationsToActivateDesactive.locationsToDissable);
             int progress = 20 + (int) (80 * ((double) index / project.getIndicatorExecutions().size()));
             JobStatusService.updateJob(jobId,  progress, "Actualizando lugares de ejecución");
             index++;

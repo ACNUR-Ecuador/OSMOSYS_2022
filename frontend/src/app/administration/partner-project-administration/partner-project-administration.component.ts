@@ -185,6 +185,8 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     this.periods.push(value);
                     const project = new Project();
                     project.period = value;
+                    this.formItem.patchValue(project);
+                    this.loadOptions(project);
                 },
                 error: error => {
                     this.messageService.add({
@@ -635,6 +637,14 @@ export class PartnerProjectAdministrationComponent implements OnInit {
             }
             const agregatedLocation = cantonesG.filter((canton1) => !locationsBefore.find(canton2 => canton1.id === canton2.id));
             const deletedLocations = locationsBefore.filter((canton1) => !cantonesG.find(canton2 => canton1.id === canton2.id));
+            if (
+                (agregatedLocation && agregatedLocation.length > 0)
+                ||
+                (deletedLocations && deletedLocations.length > 0)
+            ) {
+                this.formItem.get('locations').markAsDirty();
+            }
+            this.formItem.get('locations').patchValue(cantonesG);
             if (agregatedLocation.length > 0) {
                 const cantonesList = agregatedLocation.map(value => {
                     return value.name + '-' + value.provincia.description;
@@ -667,16 +677,11 @@ export class PartnerProjectAdministrationComponent implements OnInit {
                     this.formItem.get('updateAllLocationsIndicators').patchValue(false);
                     this.showLocationsDialog = false;
                 }
+            }else{
+                this.showLocationsDialog = false;
+
             }
-            if (
-                (agregatedLocation && agregatedLocation.length > 0)
-                ||
-                (deletedLocations && deletedLocations.length > 0)
-            ) {
-                this.formItem.get('locations').markAsDirty();
-            }
-            this.formItem.get('locations').patchValue(cantonesG);
-            this.showLocationsDialog = false;
+            
         }
     }
 

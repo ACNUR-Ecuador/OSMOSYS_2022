@@ -43,6 +43,7 @@ public class EmailService {
     private String mailUsername;
     private String mailPassword;
     private String adminEmailAdress;
+    private String replyEmailAdress;
 
 
     @PostConstruct
@@ -59,7 +60,7 @@ public class EmailService {
             mailUsername = this.appConfigurationService.findValorByClave(AppConfigurationKey.EMAIL_USERNAME);
             mailPassword = this.appConfigurationService.findValorByClave(AppConfigurationKey.EMAIL_PASSOWRD);
             adminEmailAdress = this.appConfigurationService.findValorByClave(AppConfigurationKey.EMAIL_ADDRES);
-
+            replyEmailAdress= this.appConfigurationService.findValorByClave(AppConfigurationKey.PROGRAMS_EMAIL);
             session = Session.getInstance(prop, new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
@@ -84,10 +85,11 @@ public class EmailService {
             if (StringUtils.isNotBlank(destinationCopyAdress)) {
                 message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(destinationCopyAdress));
             }
+
             message.setSubject(subject);
             message.setReplyTo(new javax.mail.Address[]
                     {
-                            new javax.mail.internet.InternetAddress("gancino@unhcr.org")
+                            new javax.mail.internet.InternetAddress(replyEmailAdress)
                     });
 
 
@@ -119,7 +121,7 @@ public class EmailService {
             message.setSubject(subject);
             message.setReplyTo(new javax.mail.Address[]
                     {
-                            new javax.mail.internet.InternetAddress("gancino@unhcr.org")
+                            new javax.mail.internet.InternetAddress(replyEmailAdress)
                     });
 
 
