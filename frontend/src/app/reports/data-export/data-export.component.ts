@@ -32,7 +32,8 @@ export class DataExportComponent implements OnInit {
     months:any
     projectsItems:SelectItem[];
     indicatorItems: SelectItem[];
-    selectedIndicatorsLabel: string = '';
+    filterOptions: SelectItem[];
+    selectedFilters:any[]=[]
     constructor(private fb: FormBuilder,
                 private periodService: PeriodService,
                 private messageService: MessageService,
@@ -62,34 +63,53 @@ export class DataExportComponent implements OnInit {
         this.implementationTypes = [
             {
               label:"Socios",
-              value:"Socios"
+              value:"partners"
             },
             {
               label:"Implementación Directa",
-              value:"Implementación Directa"
+              value:"direct_impl"
             },
             {
               label:"Implementación Directa y Socios",
-              value:"Implementación Directa y Socios"
+              value:"partner_direct_impl"
             },
         ]
         this.indicatorTypes = [
-        {
-            label:"Indicadores de Producto",
-            value:"Producto"
-        },
-        {
-            label:"Indicadores Generales",
-            value:"General"
-        },
-        {
-            label:"Indicadores Generales y de Producto",
-            value:"Producto y General"
-        },
+            {
+                label:"Indicadores de Producto",
+                value:"Producto"
+            },
+            {
+                label:"Indicadores Generales",
+                value:"General"
+            },
+            {
+                label:"Indicadores Generales y de Producto",
+                value:"Producto y General"
+            },
         ]
-        
-        
-
+        this.filterOptions = [
+            {
+                label:"Mes",
+                value:"month"
+            },
+            {
+                label:"Área",
+                value:"area"
+            },
+            {
+                label:"Proyecto",
+                value:"project"
+            },
+            {
+                label:"Indicador",
+                value:"indicator"
+            },
+            {
+                label:"Tags",
+                value:"tags"
+            },
+        ]    
     }
 
     getMonths(): { value: number; label: string }[] {
@@ -236,7 +256,14 @@ export class DataExportComponent implements OnInit {
             selectedPeriod: new FormControl(''),
             selectedReport: new FormControl(''),
             indicatorType: new FormControl(''),
+            implementationType: new FormControl('partners'),
+            selectedFilters: new FormControl(''),
+            selectedMonths: new FormControl(''),
+            selectedAreas: new FormControl(''),
+            selectedProjects: new FormControl(''),
             selectedIndicators: new FormControl(''),
+            selectedTags: new FormControl(''),
+            
         });
     }
 
@@ -245,6 +272,14 @@ export class DataExportComponent implements OnInit {
         this.messageService.clear();
         const report: string = reportName.replace('XXX', type);
         let reportObservable = null;
+        const selectedMonthList = this.periodForm.get("selectedMonths")?.value;
+
+        const monthList = Array.isArray(this.periodForm.get("selectedMonths").value)
+        ? selectedMonthList.map(month => month.value): [];
+        
+        const areaList = Array.isArray(this.periodForm.get("selectedAreas").value)
+        ? selectedMonthList.map(month => month.value): [];  
+        console.log(monthList)
         switch (report) {
             case 'getAllImplementationsAnnualByPeriodId':
                 reportObservable = this.reportsService.getAllImplementationsAnnualByPeriodId(period.id);
@@ -449,14 +484,24 @@ export class DataExportComponent implements OnInit {
             this.periodForm.get('selectedIndicators').enable();
         }
     }
-    // Cada vez que cambian los ítems seleccionados
-    /*onIndicatorChange() {
-        const selectedCount = this.selectedIndicators.length;
-        
-        if (selectedCount > 3) {
-        this.selectedItemsLabel = `${selectedCount} items seleccionados`;
-        } else {
-        this.selectedItemsLabel = ''; // Si son 3 o menos, no se personaliza el texto
-        }
-    }*/
+
+    onFilterChange(){
+        this.selectedFilters=this.periodForm.get('selectedFilters').value.map(item=>{
+            return item.value
+        })
+    }
+
+    onFilterClear(){
+        this.selectedFilters=[]
+        this.periodForm.get('selectedIndicators').patchValue(null);
+        this.periodForm.get('selectedMonths').patchValue(null);
+        this.periodForm.get('selectedAreas').patchValue(null);
+        this.periodForm.get('selectedProjects').patchValue(null);
+        this.periodForm.get('selectedTags').patchValue(null);
+    }
+
+    onImplementationTypeChange(){
+        console.log(this.periodForm.get('implementationType').value)
+    }
+    
 }

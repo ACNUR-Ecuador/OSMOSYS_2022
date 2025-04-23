@@ -1,216 +1,236 @@
-<p-card>
-    <ng-template pTemplate="header">
-        <h3 class="page-title mb-1">Exportación de datos</h3>
+<div class="grid">
+    <div class="col-12">
         <p-toast></p-toast>
         <p-messages></p-messages>
+        <div class="card px-6 py-6">
+            <h3 class="page-title">Exportación de datos</h3>
+            <p-toolbar styleClass="mb-4">
+                <form [formGroup]="periodForm">
+                    <div class="field grid">
+                        <!-- Dropdown Año -->
+                        <div class="flex align-items-center justify-content-start mt-2">
+                            <label for="periodI" class="col-fixed" style="color: white;">Año:</label>
+                            <p-dropdown id="periodI"
+                                        formControlName="selectedPeriod"
+                                        [options]="periods"
+                                        optionLabel="year"
+                                        (onChange)="onPeriodChange($event.value)"
+                            ></p-dropdown>
+                        </div>
 
-        <p-toolbar styleClass="mb-4">
-            <form [formGroup]="periodForm">
-                <div class="field grid">
-                     <!-- Dropdown Año -->
-                    <div class="flex align-items-center justify-content-start mt-2">
-                        <label for="periodI" class="col-fixed" style="color: white;">Año:</label>
-                        <p-dropdown id="periodI"
-                                    formControlName="selectedPeriod"
-                                    [options]="periods"
-                                    optionLabel="year"
-                                    (onChange)="onPeriodChange($event.value)"
-                        ></p-dropdown>
-                    </div>
-                    
-                     <!-- MultiSelect Meses -->
-                    <div class="flex align-items-center justify-content-start mt-2">
-                        <label for="monthI" class="col-fixed" style="color: white;">Mes:</label>
-                        <p-multiSelect 
-                            id="monthI" 
-                            [options]="months" 
-                            optionLabel="label" 
-                            formControlName="selectedMonths" 
-                            appendTo="body"
-                            placeholder="Selecciona..."
-                            [showClear]="true"
-                        >
-                        </p-multiSelect>
-                    </div>
+                        <!-- Dropdown Tipo de Implementación -->
+                        <div class="flex align-items-center justify-content-start mt-2">
+                            <label for="implementationI" class="col-fixed" style="color: white;">Tipo de Implementación:</label>
+                            <p-dropdown id="implementationI" [options]="implementationTypes" formControlName="implementationType" appendTo="body" (onChange)="onImplementationTypeChange()"></p-dropdown>
+                        </div>
 
-                    <!-- MultiSelect Áreas -->
-                    <div class="flex align-items-center justify-content-start mt-2">
-                        <label for="areaI" class="col-fixed" style="color: white;">Área:</label>
-                        <p-multiSelect 
-                            id="areaI" 
-                            [options]="areasItems"  
-                            formControlName="selectedAreas" 
-                            appendTo="body"
-                            placeholder="Selecciona..."
-                            [showClear]="true"
-                        >
-                        </p-multiSelect>
-                    </div>
+                        <!-- MultiSelect Filtros -->
+                        <div class="flex align-items-center justify-content-start mt-2">
+                            <label for="filtersI" class="col-fixed" style="color: white;">Filtrar por:</label>
+                            <p-multiSelect 
+                                id="filtersI" 
+                                [options]="filterOptions" 
+                                optionLabel="label"
+                                formControlName="selectedFilters"
+                                appendTo="body"
+                                placeholder="Selecciona..."
+                                [showClear]="true"
+                                selectedItemsLabel="{0} filtros seleccionados"
+                                (onChange)="onFilterChange()"
+                                (onClear)="onFilterClear()"
+                            >
+                            </p-multiSelect>
+                        </div>
+                        <div class="w-full"></div>
+                        <br *ngIf="selectedFilters.length>0" >
+                        <!-- MultiSelect Meses -->
+                        <div  *ngIf="selectedFilters.includes('month')" class="flex align-items-center justify-content-start mt-2">
+                            <label for="monthI" class="col-fixed" style="color: white;">Mes:</label>
+                            <p-multiSelect 
+                                id="monthI" 
+                                [options]="months" 
+                                optionLabel="label" 
+                                formControlName="selectedMonths" 
+                                appendTo="body"
+                                placeholder="Selecciona..."
+                                selectedItemsLabel="{0} meses seleccionados"
+                            >
+                            </p-multiSelect>
+                        </div>
 
-                    <!-- Dropdown Tipo de Implementación -->
-                    <div class="flex align-items-center justify-content-start mt-2">
-                        <label for="implementationI" class="col-fixed" style="color: white;">Tipo de Implementación:</label>
-                        <p-dropdown id="implementationI" [options]="implementationTypes" formControlName="selectedImplementation" appendTo="body"></p-dropdown>
-                    </div>
+                        <!-- MultiSelect Áreas -->
+                        <div *ngIf="selectedFilters.includes('area')" class="flex align-items-center justify-content-start mt-2">
+                            <label for="areaI" class="col-fixed" style="color: white;">Área:</label>
+                            <p-multiSelect 
+                                id="areaI" 
+                                [options]="areasItems"  
+                                formControlName="selectedAreas" 
+                                appendTo="body"
+                                placeholder="Selecciona..."
+                                selectedItemsLabel="{0} áreas seleccionados"
+                            >
+                            </p-multiSelect>
+                        </div>
 
-                     <!-- MultiSelect Projects -->
-                     <div class="flex align-items-center justify-content-start mt-2">
-                        <label for="proyectoI" class="col-fixed" style="color: white;">Proyecto:</label>
-                        <p-multiSelect 
-                            id="proyectoI" 
-                            [options]="projectsItems"  
-                            formControlName="selectedProjects" 
-                            appendTo="body"
-                            placeholder="Selecciona..."
-                            [showClear]="true"
-                        >
-                        </p-multiSelect>
-                    </div>
+                        <!-- MultiSelect Projects -->
+                        <div *ngIf="selectedFilters.includes('project')" class="flex align-items-center justify-content-start mt-2">
+                            <label for="proyectoI" class="col-fixed" style="color: white;">Proyecto:</label>
+                            <p-multiSelect 
+                                id="proyectoI" 
+                                [options]="projectsItems"  
+                                formControlName="selectedProjects" 
+                                appendTo="body"
+                                placeholder="Selecciona..."
+                                selectedItemsLabel="{0} proyectos seleccionados"
+                            >
+                            </p-multiSelect>
+                        </div>
 
-                    <!-- Dropdown Tipo de Indicador -->
-                    <div class="flex align-items-center justify-content-start mt-2">
-                        <label for="indicatorTypeI" class="col-fixed" style="color: white;">Tipo de Indicador:</label>
-                        <p-dropdown id="indicatorTypeI" [options]="indicatorTypes" formControlName="indicatorType" appendTo="body"
-                            (onChange)="onIndicatorTypeChange($event.value)"></p-dropdown>
-                    </div>
+                        <!-- Dropdown Tipo de Indicador -->
+                        <div *ngIf="selectedFilters.includes('indicator')" class="flex align-items-center justify-content-start mt-2">
+                            <label for="indicatorTypeI" class="col-fixed" style="color: white;">Tipo de Indicador:</label>
+                            <p-dropdown id="indicatorTypeI" [options]="indicatorTypes" formControlName="indicatorType" appendTo="body"
+                                (onChange)="onIndicatorTypeChange($event.value)"></p-dropdown>
+                        </div>
 
-                    <!-- MultiSelect Indicators -->
-                    <div class="flex align-items-center justify-content-start mt-2">
-                        <label for="indicatorsI" class="col-fixed" style="color: white;">Indicador:</label>
-                        <p-multiSelect 
-                            id="indicatorsI" 
-                            [options]="indicatorItems"
-                            formControlName="selectedIndicators" 
-                            appendTo="body"
-                            placeholder="Selecciona..."
-                            [showClear]="true"
-                        >
-                        </p-multiSelect>
-                    </div>
-                     <!-- MultiSelect Tags -->
-                     <div class="flex align-items-center justify-content-start mt-2">
-                        <label for="tagsI" class="col-fixed" style="color: white;">Tags:</label>
-                        <p-multiSelect 
-                            id="tagsI" 
-                            [options]="tagsItems"  
-                            formControlName="selectedTags" 
-                            appendTo="body"
-                            placeholder="Selecciona..."
-                            [showClear]="true"
-                        >
-                        </p-multiSelect>
-                    </div>
+                        <!-- MultiSelect Indicators -->
+                        <div *ngIf="selectedFilters.includes('indicator')" class="flex align-items-center justify-content-start mt-2">
+                            <label for="indicatorsI" class="col-fixed" style="color: white;">Indicador:</label>
+                            <p-multiSelect 
+                                id="indicatorsI" 
+                                [options]="indicatorItems"
+                                formControlName="selectedIndicators" 
+                                appendTo="body"
+                                placeholder="Selecciona..."
+                                selectedItemsLabel="{0} indicadores seleccionados"
+                            >
+                            </p-multiSelect>
+                        </div>
+                        <!-- MultiSelect Tags -->
+                        <div *ngIf="selectedFilters.includes('tags')" class="flex align-items-center justify-content-start mt-2">
+                            <label for="tagsI" class="col-fixed" style="color: white;">Tags:</label>
+                            <p-multiSelect 
+                                id="tagsI" 
+                                [options]="tagsItems"  
+                                formControlName="selectedTags" 
+                                appendTo="body"
+                                placeholder="Selecciona..."
+                                selectedItemsLabel="{0} tags seleccionados"
+                            >
+                            </p-multiSelect>
+                        </div>
 
+                    </div>
+                </form>
+
+            </p-toolbar>
+
+            <p-fieldset *ngIf="periodForm.get('implementationType').value==='partners'">
+                <ng-template pTemplate="header">Socios</ng-template>
+                <div class="grid">
+                    <div class="col-4 border_div"><h5>Reporte</h5></div>
+                    <div class="col-4 border_div"><h5>Descripción</h5></div>
+                    <div class="col-4 border_div"><h5>Generar</h5></div>
+    
+                    <div class="col-4 border_div">Indicadores Generales</div>
+                    <div class="col-4 border_div">Este reporte tiene todos los indicadores generales reportados en el
+                        sistema por socios. *
+                    </div>
+                    <div class="col-4 border_div">
+                        <p-splitButton label="Generar Reporte" icon="pi pi-file-excel"
+                                    [model]="itemsReportTypeAnualMonthlyDetailed"
+                                    (onDropdownClick)="setReport('getPartnersGeneralIndicatorsXXXByPeriodId')"
+                                    styleClass="p-button-success mb-2"></p-splitButton>
+                    </div>
+    
+                    <div class="col-4 border_div">Indicadores de Producto</div>
+                    <div class="col-4 border_div">Este reporte tiene todos los indicadores de producto reportados en el
+                        sistema por socios. *
+                    </div>
+                    <div class="col-4 border_div">
+                        <p-splitButton label="Generar Reporte" icon="pi pi-file-excel"
+                                    [model]="itemsReportTypeFull"
+                                    (onDropdownClick)="setReport('getPartnersPerformanceIndicatorsXXXByPeriodId')"
+                                    styleClass="p-button-success mb-2"></p-splitButton>
+                    </div>
+    
+                    <div class="col-4 border_div">Indicadores Generales y de Producto</div>
+                    <div class="col-4 border_div">Este reporte tiene todos los indicadores reportados en el sistema
+                        socios, incluyendo indicadores de producto y generales. *
+                    </div>
+                    <div class="col-4 border_div">
+                        <p-splitButton label="Generar Reporte" icon="pi pi-file-excel"
+                                    [model]="itemsReportTypeFull"
+                                    (onDropdownClick)="setReport('getPartnersXXXByPeriodId')"
+                                    styleClass="p-button-success mb-2"></p-splitButton>
+                    </div>
+    
                 </div>
-            </form>
-
-        </p-toolbar>
-
-    </ng-template>
-
-    <p-fieldset>
-        <ng-template pTemplate="header">Socios</ng-template>
-        <div class="grid">
-            <div class="col-4 border_div"><h5>Reporte</h5></div>
-            <div class="col-4 border_div"><h5>Descripción</h5></div>
-            <div class="col-4 border_div"><h5>Generar</h5></div>
-
-            <div class="col-4 border_div">Indicadores Generales</div>
-            <div class="col-4 border_div">Este reporte tiene todos los indicadores generales reportados en el
-                sistema por socios. *
-            </div>
-            <div class="col-4 border_div">
-                <p-splitButton label="Generar Reporte" icon="pi pi-file-excel"
-                               [model]="itemsReportTypeAnualMonthlyDetailed"
-                               (onDropdownClick)="setReport('getPartnersGeneralIndicatorsXXXByPeriodId')"
-                               styleClass="p-button-success mb-2"></p-splitButton>
-            </div>
-
-            <div class="col-4 border_div">Indicadores de Producto</div>
-            <div class="col-4 border_div">Este reporte tiene todos los indicadores de producto reportados en el
-                sistema por socios. *
-            </div>
-            <div class="col-4 border_div">
-                <p-splitButton label="Generar Reporte" icon="pi pi-file-excel"
-                               [model]="itemsReportTypeFull"
-                               (onDropdownClick)="setReport('getPartnersPerformanceIndicatorsXXXByPeriodId')"
-                               styleClass="p-button-success mb-2"></p-splitButton>
-            </div>
-
-            <div class="col-4 border_div">Indicadores Generales y de Producto</div>
-            <div class="col-4 border_div">Este reporte tiene todos los indicadores reportados en el sistema
-                socios, incluyendo indicadores de producto y generales. *
-            </div>
-            <div class="col-4 border_div">
-                <p-splitButton label="Generar Reporte" icon="pi pi-file-excel"
-                               [model]="itemsReportTypeFull"
-                               (onDropdownClick)="setReport('getPartnersXXXByPeriodId')"
-                               styleClass="p-button-success mb-2"></p-splitButton>
-            </div>
-
-        </div>
-    </p-fieldset>
-    <p-fieldset>
-        <ng-template pTemplate="header">Implementación Directa</ng-template>
-        <div class="grid">
-            <div class="col-4 border_div"><h5>Reporte</h5></div>
-            <div class="col-4 border_div"><h5>Descripción</h5></div>
-            <div class="col-4 border_div"><h5>Generar</h5></div>
-
-            <div class="col-4 border_div">Indicadores de Producto</div>
-            <div class="col-4 border_div">Este reporte tiene todos los indicadores de producto reportados en el
-                sistema por implementación directa. *
-            </div>
-            <div class="col-4 border_div">
-                <p-splitButton label="Generar Reporte" icon="pi pi-file-excel"
-                               [model]="itemsReportTypeFull"
-                               (onDropdownClick)="setReport('getDirectImplementationPerformanceIndicatorsXXXByPeriodId')"
-                               styleClass="p-button-success mb-2"></p-splitButton>
-            </div>
+            </p-fieldset>
+            <p-fieldset *ngIf="periodForm.get('implementationType').value==='direct_impl'">
+                <ng-template pTemplate="header">Implementación Directa</ng-template>
+                <div class="grid">
+                    <div class="col-4 border_div"><h5>Reporte</h5></div>
+                    <div class="col-4 border_div"><h5>Descripción</h5></div>
+                    <div class="col-4 border_div"><h5>Generar</h5></div>
+    
+                    <div class="col-4 border_div">Indicadores de Producto</div>
+                    <div class="col-4 border_div">Este reporte tiene todos los indicadores de producto reportados en el
+                        sistema por implementación directa. *
+                    </div>
+                    <div class="col-4 border_div">
+                        <p-splitButton label="Generar Reporte" icon="pi pi-file-excel"
+                                    [model]="itemsReportTypeFull"
+                                    (onDropdownClick)="setReport('getDirectImplementationPerformanceIndicatorsXXXByPeriodId')"
+                                    styleClass="p-button-success mb-2"></p-splitButton>
+                    </div>
+    
+                </div>
+            </p-fieldset>
+            <p-fieldset *ngIf="periodForm.get('implementationType').value==='partner_direct_impl'">
+                <ng-template pTemplate="header">Implementación Directa y Socios</ng-template>
+                <div class="grid">
+                    <div class="col-4 border_div"><h5>Reporte</h5></div>
+                    <div class="col-4 border_div"><h5>Descripción</h5></div>
+                    <div class="col-4 border_div"><h5>Generar</h5></div>
+    
+                    <div class="col-4 border_div">Indicadores de Producto</div>
+                    <div class="col-4 border_div">Este reporte tiene todos los indicadores de producto reportados en el
+                        sistema, tanto por socios como por implementación directa. *
+                    </div>
+                    <div class="col-4 border_div">
+                        <p-splitButton label="Generar Reporte" icon="pi pi-file-excel"
+                                    [model]="itemsReportTypeFull"
+                                    (onDropdownClick)="setReport('getAllImplementationsPerformanceIndicatorsXXXByPeriodId')"
+                                    styleClass="p-button-success mb-2"></p-splitButton>
+                    </div>
+    
+                    <div class="col-4 border_div">Todos los indicadores</div>
+                    <div class="col-4 border_div">Este reporte tiene todos los indicadores reportados en el sistema tanto por
+                        socios como por implementación directa, incluyendo indicadores de producto y generales. *
+                    </div>
+                    <div class="col-4 border_div">
+                        <p-splitButton label="Generar Reporte" icon="pi pi-file-excel"
+                                    [model]="itemsReportTypeFull"
+                                    (onDropdownClick)="setReport('getAllImplementationsXXXByPeriodId')"
+                                    styleClass="p-button-success mb-2"></p-splitButton>
+                    </div>
+    
+                    <div class="col-4 border_div">Verificación de Indicadores</div>
+                    <div class="col-4 border_div">Este reporte tiene el detalle de todas las verificaciones de indicadores en el sistema por los Mánager de Resultados. *
+                    </div>
+                    <div class="col-4 border_div">
+                        <p-button label="Generar Reporte" icon="pi pi-file-excel"
+                                        (onClick)="generateResultManagersReport()"
+                                        styleClass="p-button-success mb-2"></p-button>
+                    </div>
+    
+    
+                </div>
+            </p-fieldset>
+            <cite>* Los reportes "Con Desagregaciones" exportará solo los datos reportados mayores a 0 (cero) </cite>
 
         </div>
-    </p-fieldset>
-    <p-fieldset>
-        <ng-template pTemplate="header">Implementación Directa y Socios</ng-template>
-        <div class="grid">
-            <div class="col-4 border_div"><h5>Reporte</h5></div>
-            <div class="col-4 border_div"><h5>Descripción</h5></div>
-            <div class="col-4 border_div"><h5>Generar</h5></div>
 
-            <div class="col-4 border_div">Indicadores de Producto</div>
-            <div class="col-4 border_div">Este reporte tiene todos los indicadores de producto reportados en el
-                sistema, tanto por socios como por implementación directa. *
-            </div>
-            <div class="col-4 border_div">
-                <p-splitButton label="Generar Reporte" icon="pi pi-file-excel"
-                               [model]="itemsReportTypeFull"
-                               (onDropdownClick)="setReport('getAllImplementationsPerformanceIndicatorsXXXByPeriodId')"
-                               styleClass="p-button-success mb-2"></p-splitButton>
-            </div>
-
-            <div class="col-4 border_div">Todos los indicadores</div>
-            <div class="col-4 border_div">Este reporte tiene todos los indicadores reportados en el sistema tanto por
-                socios como por implementación directa, incluyendo indicadores de producto y generales. *
-            </div>
-            <div class="col-4 border_div">
-                <p-splitButton label="Generar Reporte" icon="pi pi-file-excel"
-                               [model]="itemsReportTypeFull"
-                               (onDropdownClick)="setReport('getAllImplementationsXXXByPeriodId')"
-                               styleClass="p-button-success mb-2"></p-splitButton>
-            </div>
-
-            <div class="col-4 border_div">Verificación de Indicadores</div>
-            <div class="col-4 border_div">Este reporte tiene el detalle de todas las verificaciones de indicadores en el sistema por los Mánager de Resultados. *
-            </div>
-            <div class="col-4 border_div">
-                <p-button label="Generar Reporte" icon="pi pi-file-excel"
-                                  (onClick)="generateResultManagersReport()"
-                                  styleClass="p-button-success mb-2"></p-button>
-            </div>
-
-
-        </div>
-    </p-fieldset>
-    <cite>* Los reportes "Con Desagregaciones" exportará solo los datos reportados mayores a 0 (cero) </cite>
-
-</p-card>
+    </div>
+</div>
