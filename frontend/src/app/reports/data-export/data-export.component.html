@@ -7,16 +7,98 @@
         <p-toolbar styleClass="mb-4">
             <form [formGroup]="periodForm">
                 <div class="field grid">
-
-                    <label for="periodI" class="col-fixed" style="width:100px; color: white;">Año:</label>
-                    <div class="p-col">
+                     <!-- Dropdown Año -->
+                    <div class="flex align-items-center justify-content-start mt-2">
+                        <label for="periodI" class="col-fixed" style="color: white;">Año:</label>
                         <p-dropdown id="periodI"
                                     formControlName="selectedPeriod"
                                     [options]="periods"
                                     optionLabel="year"
-
-
+                                    (onChange)="onPeriodChange($event.value)"
                         ></p-dropdown>
+                    </div>
+                    
+                     <!-- MultiSelect Meses -->
+                    <div class="flex align-items-center justify-content-start mt-2">
+                        <label for="monthI" class="col-fixed" style="color: white;">Mes:</label>
+                        <p-multiSelect 
+                            id="monthI" 
+                            [options]="months" 
+                            optionLabel="label" 
+                            formControlName="selectedMonths" 
+                            appendTo="body"
+                            placeholder="Selecciona..."
+                            [showClear]="true"
+                        >
+                        </p-multiSelect>
+                    </div>
+
+                    <!-- MultiSelect Áreas -->
+                    <div class="flex align-items-center justify-content-start mt-2">
+                        <label for="areaI" class="col-fixed" style="color: white;">Área:</label>
+                        <p-multiSelect 
+                            id="areaI" 
+                            [options]="areasItems"  
+                            formControlName="selectedAreas" 
+                            appendTo="body"
+                            placeholder="Selecciona..."
+                            [showClear]="true"
+                        >
+                        </p-multiSelect>
+                    </div>
+
+                    <!-- Dropdown Tipo de Implementación -->
+                    <div class="flex align-items-center justify-content-start mt-2">
+                        <label for="implementationI" class="col-fixed" style="color: white;">Tipo de Implementación:</label>
+                        <p-dropdown id="implementationI" [options]="implementationTypes" formControlName="selectedImplementation" appendTo="body"></p-dropdown>
+                    </div>
+
+                     <!-- MultiSelect Projects -->
+                     <div class="flex align-items-center justify-content-start mt-2">
+                        <label for="proyectoI" class="col-fixed" style="color: white;">Proyecto:</label>
+                        <p-multiSelect 
+                            id="proyectoI" 
+                            [options]="projectsItems"  
+                            formControlName="selectedProjects" 
+                            appendTo="body"
+                            placeholder="Selecciona..."
+                            [showClear]="true"
+                        >
+                        </p-multiSelect>
+                    </div>
+
+                    <!-- Dropdown Tipo de Indicador -->
+                    <div class="flex align-items-center justify-content-start mt-2">
+                        <label for="indicatorTypeI" class="col-fixed" style="color: white;">Tipo de Indicador:</label>
+                        <p-dropdown id="indicatorTypeI" [options]="indicatorTypes" formControlName="indicatorType" appendTo="body"
+                            (onChange)="onIndicatorTypeChange($event.value)"></p-dropdown>
+                    </div>
+
+                    <!-- MultiSelect Indicators -->
+                    <div class="flex align-items-center justify-content-start mt-2">
+                        <label for="indicatorsI" class="col-fixed" style="color: white;">Indicador:</label>
+                        <p-multiSelect 
+                            id="indicatorsI" 
+                            [options]="indicatorItems"
+                            formControlName="selectedIndicators" 
+                            appendTo="body"
+                            placeholder="Selecciona..."
+                            [showClear]="true"
+                        >
+                        </p-multiSelect>
+                    </div>
+                     <!-- MultiSelect Tags -->
+                     <div class="flex align-items-center justify-content-start mt-2">
+                        <label for="tagsI" class="col-fixed" style="color: white;">Tags:</label>
+                        <p-multiSelect 
+                            id="tagsI" 
+                            [options]="tagsItems"  
+                            formControlName="selectedTags" 
+                            appendTo="body"
+                            placeholder="Selecciona..."
+                            [showClear]="true"
+                        >
+                        </p-multiSelect>
                     </div>
 
                 </div>

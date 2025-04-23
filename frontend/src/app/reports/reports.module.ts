@@ -36,6 +36,7 @@ import { PerfilesDePoblacionComponent } from './2024/perfiles-de-poblacion/perfi
 import { ComunidadesComponent } from './2024/comunidades/comunidades.component';
 import { PowerBiReportTemplateComponent } from './power-bi-report-template/power-bi-report-template.component';
 import {SharedModule} from "../shared/shared.module";
+import { MultiSelectModule } from 'primeng/multiselect';
 
 
 @NgModule({
@@ -78,7 +79,8 @@ import {SharedModule} from "../shared/shared.module";
         FormsModule,
         CardModule,
         SplitButtonModule,
-        SharedModule
+        SharedModule,
+        MultiSelectModule,
     ]
 })
 export class ReportsModule { }

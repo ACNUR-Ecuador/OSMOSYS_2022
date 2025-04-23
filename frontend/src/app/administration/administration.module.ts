@@ -90,6 +90,7 @@ import { TagPeriodTagAsignationsListPipe } from '../shared/pipes/tag-period-tag-
 import { AuditAdministrationComponent } from './audit-administration/audit-administration.component';
 import { TreeModule } from 'primeng/tree';
 import { LateStatePipe } from '../shared/pipes/late-state.pipe';
+import { CodeNamePipe } from '../shared/pipes/code-name.pipe';
 
 
 @NgModule({
@@ -175,7 +176,8 @@ import { LateStatePipe } from '../shared/pipes/late-state.pipe';
         PeriodsFromIndicatorPipe,
         StandardDissagreationListPipe,
         TagPeriodTagAsignationsListPipe,
-        LateStatePipe
+        LateStatePipe,
+        CodeNamePipe
     ]
 
 })

@@ -1,11 +1,19 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
-import {MenuItem, MessageService} from 'primeng/api';
-import {Period} from "../../shared/model/OsmosysModel";
+import {MenuItem, MessageService, SelectItem} from 'primeng/api';
+import {Period, Project} from "../../shared/model/OsmosysModel";
 import {PeriodService} from "../../services/period.service";
 import {UtilsService} from "../../services/utils.service";
 import {ReportsService} from "../../services/reports.service";
 import {HttpResponse} from "@angular/common/http";
+import { EnumsState } from 'src/app/shared/model/UtilsModel';
+import { AreaService } from 'src/app/services/area.service';
+import { CodeShortDescriptionPipe } from 'src/app/shared/pipes/code-short-description.pipe';
+import { ProjectService } from 'src/app/services/project.service';
+import { CodeNamePipe } from 'src/app/shared/pipes/code-name.pipe';
+import { IndicatorService } from 'src/app/services/indicator.service';
+import { IndicatorPipe } from 'src/app/shared/pipes/indicator.pipe';
+import { TagService } from 'src/app/services/tag.service';
 
 @Component({
     selector: 'app-data-export',
@@ -15,21 +23,84 @@ import {HttpResponse} from "@angular/common/http";
 export class DataExportComponent implements OnInit {
     periodForm: FormGroup;
     periods: Period[];
-
+    areasItems: SelectItem[];
+    implementationTypes: SelectItem[];
+    indicatorTypes: SelectItem[];
+    tagsItems: SelectItem[];
     itemsReportTypeFull: MenuItem[];
     itemsReportTypeAnualMonthlyDetailed: MenuItem[];
-
+    months:any
+    projectsItems:SelectItem[];
+    indicatorItems: SelectItem[];
+    selectedIndicatorsLabel: string = '';
     constructor(private fb: FormBuilder,
                 private periodService: PeriodService,
                 private messageService: MessageService,
                 public utilsService: UtilsService,
-                private reportsService: ReportsService) {
+                private reportsService: ReportsService,
+                private areaService: AreaService,
+                private codeShortDescriptionPipe: CodeShortDescriptionPipe,
+                private codeNamePipe: CodeNamePipe,
+                private projectService: ProjectService,
+                private indicatorService: IndicatorService,
+                private indicatorPipe: IndicatorPipe,
+                private tagService: TagService) {
     }
 
     ngOnInit(): void {
-        this.loadPeriods();
+        this.loadItems();
         this.createForms();
         this.generateItemsReportType();
+    }
+
+    
+
+    loadItems(){
+        this.loadPeriods();
+        this.months=this.getMonths();
+        this.loadAreas();
+        this.implementationTypes = [
+            {
+              label:"Socios",
+              value:"Socios"
+            },
+            {
+              label:"Implementación Directa",
+              value:"Implementación Directa"
+            },
+            {
+              label:"Implementación Directa y Socios",
+              value:"Implementación Directa y Socios"
+            },
+        ]
+        this.indicatorTypes = [
+        {
+            label:"Indicadores de Producto",
+            value:"Producto"
+        },
+        {
+            label:"Indicadores Generales",
+            value:"General"
+        },
+        {
+            label:"Indicadores Generales y de Producto",
+            value:"Producto y General"
+        },
+        ]
+        
+        
+
+    }
+
+    getMonths(): { value: number; label: string }[] {
+        const formatter = new Intl.DateTimeFormat('es-ES', { month: 'long' }); // Cambia 'es-ES' por el idioma deseado
+        return Array.from({ length: 12 }, (_, index) => {
+            const date = new Date(0, index); // Crea una fecha para cada mes
+            return { 
+                value: index + 1, // El valor numérico del mes (1 a 12)
+                label: formatter.format(date).charAt(0).toUpperCase() + formatter.format(date).slice(1) // Nombre del mes con capitalización
+            };
+        });
     }
 
     loadPeriods() {
@@ -43,6 +114,9 @@ export class DataExportComponent implements OnInit {
                     return value1.id === currentPeriod.id
                 })[0];
                 this.periodForm.get('selectedPeriod').patchValue(currentPeriodOption);
+                this.loadProjects(currentPeriod.id);
+                this.loadPerformanceIndicatorsOptions(currentPeriod.id);
+                this.loadTags(currentPeriod.id);
             }
         }, error => {
             this.messageService.add({
@@ -52,12 +126,117 @@ export class DataExportComponent implements OnInit {
                 life: 3000
             });
         });
+        
+    }
+
+    private loadAreas() {
+        this.areaService.getByState(EnumsState.ACTIVE)
+            .subscribe({
+                next: value => {
+                    this.areasItems = value.map(value1 => {
+                        const selectItem: SelectItem = {
+                            label: this.codeShortDescriptionPipe.transform(value1),
+                            value: value1
+                        };
+                        return selectItem;
+                    });
+                    this.areasItems.sort((a, b) => {
+                        return a.value.code.localeCompare(b.value.code);
+                    });
+                },
+                error: err => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al cargar las áreas',
+                        detail: err.error.message,
+                        life: 3000
+                    });
+                }
+            });
+    }
+
+    private loadProjects(periodId: number) {
+            this.projectService.getProjectResumenWebByPeriodId(periodId)
+            .subscribe({
+                next: value => {
+                    this.projectsItems = value.map(value1 => {
+                        const selectItem: SelectItem = {
+                            label: this.codeNamePipe.transform(value1),
+                            value: value1
+                        };
+                        return selectItem;
+                    });
+                    this.projectsItems.sort((a, b) => {
+                        return a.value.code.localeCompare(b.value.code);
+                    });
+                }, 
+                error: err => {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error al cargar los proyectos',
+                        detail: err.error.message,
+                        life: 3000
+                    });
+                }
+            });
+
+
+    }
+
+    loadPerformanceIndicatorsOptions(periodId: number) {
+            this.indicatorService.getByPeriodAssignment(periodId)
+                .subscribe({
+                    next: value => {
+                        this.indicatorItems = value
+                            .map(value1 => {
+                                const selectItem: SelectItem = {
+                                    value: value1,
+                                    label: this.indicatorPipe.transform(value1)
+                                };
+                                return selectItem;
+                            });
+                    },
+                    error: error => {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Error al cargar los indicadores del año',
+                            detail: error.error.message,
+                            life: 3000
+                        });
+                    }
+                });
+    }
+
+    loadTags(periodId: number){
+        this.tagService.getActiveByPeriodId(periodId).subscribe({
+            next: value => {
+                this.tagsItems = value
+                            .map(value1 => {
+                                const selectItem: SelectItem = {
+                                    value: value1,
+                                    label: value1.name
+                                };
+                                return selectItem;
+                            });
+
+            },
+            error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al cargar los tags',
+                    detail: err.error.message,
+                    life: 3000,
+                });
+            },
+        });
     }
 
     private createForms() {
         this.periodForm = this.fb.group({
             selectedPeriod: new FormControl(''),
-            selectedReport: new FormControl('')
+            selectedReport: new FormControl(''),
+            indicatorType: new FormControl(''),
+            selectedIndicators: new FormControl(''),
         });
     }
 
@@ -255,4 +434,29 @@ export class DataExportComponent implements OnInit {
         });
 
     }
+
+    onPeriodChange(period: Period){
+        this.loadProjects(period.id)
+        this.loadPerformanceIndicatorsOptions(period.id)
+        this.loadTags(period.id)
+    }
+    onIndicatorTypeChange(indicatorType: string){
+        if(indicatorType==="Producto"){
+            this.periodForm.get('selectedIndicators').enable();
+        }else if(indicatorType==="General"){
+            this.periodForm.get('selectedIndicators').disable();
+        }else{
+            this.periodForm.get('selectedIndicators').enable();
+        }
+    }
+    // Cada vez que cambian los ítems seleccionados
+    /*onIndicatorChange() {
+        const selectedCount = this.selectedIndicators.length;
+        
+        if (selectedCount > 3) {
+        this.selectedItemsLabel = `${selectedCount} items seleccionados`;
+        } else {
+        this.selectedItemsLabel = ''; // Si son 3 o menos, no se personaliza el texto
+        }
+    }*/
 }

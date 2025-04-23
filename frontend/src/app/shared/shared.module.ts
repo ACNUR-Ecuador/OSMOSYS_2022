@@ -27,6 +27,7 @@ import { PercentagePipe } from './pipes/percentage.pipe';
 import { ResultManagerExecutionPipe } from './pipes/result-manager-execution.pipe';
 import { CantonsPipe } from './pipes/cantons.pipe';
 import { LateStatePipe } from './pipes/late-state.pipe';
+import { CodeNamePipe } from './pipes/code-name.pipe';
 
 
 
@@ -57,7 +58,8 @@ import { LateStatePipe } from './pipes/late-state.pipe';
         PercentagePipe,
         ResultManagerExecutionPipe,
         CantonsPipe,
-        LateStatePipe
+        LateStatePipe,
+        CodeNamePipe
     ],
     imports: [
         CommonModule
