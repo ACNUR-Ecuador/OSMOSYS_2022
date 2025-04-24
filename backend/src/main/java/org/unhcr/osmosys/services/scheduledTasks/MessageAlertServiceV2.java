@@ -562,22 +562,24 @@ public class MessageAlertServiceV2 {
         for (ProjectResumeWeb project : projects) {
             LOGGER.info("   " + project.getOrganizationAcronym() + "-" + project.getName());
             List<IndicatorExecutionWeb> generalIndicators = this.indicatorExecutionService.getGeneralIndicatorExecutionsByProjectIdAndState(project.getId(), State.ACTIVO);
-            LOGGER.info("       " + "General:" + generalIndicators.size());
-            IndicatorExecutionWeb generaIndicator = generalIndicators.get(0);
-            LOGGER.info("       " + "General:" + generaIndicator.getLate());
-            if (generaIndicator.getLate().equals(TimeStateEnum.LATE) || generaIndicator.getLate().equals(TimeStateEnum.SOON_REPORT)) {
-                PartnerAlertDTO alertDTO = new PartnerAlertDTO();
-                alertDTO.setProjectId(project.getId());
-                alertDTO.setPartner(project.getOrganizationAcronym());
-                alertDTO.setProjectName(project.getName());
-                alertDTO.setIndicator(generaIndicator.getIndicator().getDescription());
-                alertDTO.setIndicatorType(generaIndicator.getIndicatorType().getLabel());
-                alertDTO.setLateMonths(generaIndicator.getQuarters().stream().flatMap(quarterWeb -> quarterWeb.getMonths().stream()).filter(monthWeb -> monthWeb.getLate().equals(TimeStateEnum.LATE) || monthWeb.getLate().equals(TimeStateEnum.SOON_REPORT))
-                        .map(MonthWeb::getMonth)
-                        .sorted()
-                        .map(MonthEnum::getLabel)
-                        .collect(Collectors.joining(", ")));
-                alerts.add(alertDTO);
+            if (CollectionUtils.isNotEmpty(generalIndicators)) {
+                LOGGER.info("       " + "General:" + generalIndicators.size());
+                IndicatorExecutionWeb generaIndicator = generalIndicators.get(0);
+                LOGGER.info("       " + "General:" + generaIndicator.getLate());
+                if (generaIndicator.getLate().equals(TimeStateEnum.LATE) || generaIndicator.getLate().equals(TimeStateEnum.SOON_REPORT)) {
+                    PartnerAlertDTO alertDTO = new PartnerAlertDTO();
+                    alertDTO.setProjectId(project.getId());
+                    alertDTO.setPartner(project.getOrganizationAcronym());
+                    alertDTO.setProjectName(project.getName());
+                    alertDTO.setIndicator(generaIndicator.getIndicator().getDescription());
+                    alertDTO.setIndicatorType(generaIndicator.getIndicatorType().getLabel());
+                    alertDTO.setLateMonths(generaIndicator.getQuarters().stream().flatMap(quarterWeb -> quarterWeb.getMonths().stream()).filter(monthWeb -> monthWeb.getLate().equals(TimeStateEnum.LATE) || monthWeb.getLate().equals(TimeStateEnum.SOON_REPORT))
+                            .map(MonthWeb::getMonth)
+                            .sorted()
+                            .map(MonthEnum::getLabel)
+                            .collect(Collectors.joining(", ")));
+                    alerts.add(alertDTO);
+                }
             }
             List<IndicatorExecutionWeb> performanceIndicators = this.indicatorExecutionService.getPerformanceIndicatorExecutionsByProjectId(project.getId(), State.ACTIVO);
             LOGGER.info("       " + "Performance:" + performanceIndicators.size());
