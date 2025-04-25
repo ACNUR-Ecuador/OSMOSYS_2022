@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {MenuItem, MessageService, SelectItem} from 'primeng/api';
-import {Period, Project} from "../../shared/model/OsmosysModel";
+import {Period, Project, ReportFilters} from "../../shared/model/OsmosysModel";
 import {PeriodService} from "../../services/period.service";
 import {UtilsService} from "../../services/utils.service";
 import {ReportsService} from "../../services/reports.service";
@@ -267,22 +267,31 @@ export class DataExportComponent implements OnInit {
         });
     }
 
+    public getMappedList (controlName: string, mapFn: (item: any) => any){
+        const list = this.periodForm.get(controlName)?.value;
+        return Array.isArray(list) ? list.map(mapFn) : [];
+      };
+
 
     public getReport(period: Period, reportName: string, type: string) {
         this.messageService.clear();
         const report: string = reportName.replace('XXX', type);
         let reportObservable = null;
-        const selectedMonthList = this.periodForm.get("selectedMonths")?.value;
-
-        const monthList = Array.isArray(this.periodForm.get("selectedMonths").value)
-        ? selectedMonthList.map(month => month.value): [];
+        const monthList = this.getMappedList("selectedMonths", month => month.value);
+        const areaList = this.getMappedList("selectedAreas", area => area.id);
+        const projectList = this.getMappedList("selectedProjects", project => project.id);
+        const indicatorList = this.getMappedList("selectedIndicators", indicator => indicator.id);
+        const tagsList = this.getMappedList("selectedTags", tag => tag.id);
+        const reportFilters= new ReportFilters();
+        reportFilters.monthsId=monthList
+        reportFilters.areasId=areaList
+        reportFilters.projectsId=projectList
+        reportFilters.indicatorsId=indicatorList
+        reportFilters.tagsId=tagsList
         
-        const areaList = Array.isArray(this.periodForm.get("selectedAreas").value)
-        ? selectedMonthList.map(month => month.value): [];  
-        console.log(monthList)
         switch (report) {
             case 'getAllImplementationsAnnualByPeriodId':
-                reportObservable = this.reportsService.getAllImplementationsAnnualByPeriodId(period.id);
+                reportObservable = this.reportsService.getAllImplementationsAnnualByPeriodId(period.id,reportFilters);
                 break;
             case 'getAllImplementationsQuarterlyByPeriodId':
                 reportObservable = this.reportsService.getAllImplementationsQuarterlyByPeriodId(period.id);

@@ -15,6 +15,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.Period;
 import org.unhcr.osmosys.model.Tags;
+import org.unhcr.osmosys.model.reportDTOs.ReportFiltersDTO;
 import org.unhcr.osmosys.reports.model.IndicatorReportProgramsDTO;
 import org.unhcr.osmosys.services.PeriodService;
 import org.unhcr.osmosys.services.TagsService;
@@ -116,10 +117,15 @@ public class ReportService {
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 
-    public ByteArrayOutputStream getAllImplementationsAnnualByPeriodId(Long periodId) throws GeneralAppException {
+    public ByteArrayOutputStream getAllImplementationsAnnualByPeriodId(Long periodId, ReportFiltersDTO filters) throws GeneralAppException {
         String jrxmlFile = "all_implementations_anual_by_period_idV2.jrxml";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("periodId", periodId);
+        parameters.put("monthsId", filters.getMonthsId());
+        parameters.put("areasId", filters.getAreasId());
+        parameters.put("projectsId", filters.getProjectsId());
+        parameters.put("indicatorsId", filters.getIndicatorsId());
+        parameters.put("tagsId", filters.getTagsId());
         return this.generateReporWithJdbcConnecion(jrxmlFile, parameters);
     }
 

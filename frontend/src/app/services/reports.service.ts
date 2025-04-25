@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
-import { Period, Tag } from '../shared/model/OsmosysModel';
+import { Period, ReportFilters, Tag } from '../shared/model/OsmosysModel';
 
 const mainServiceUrl = environment.base_url + '/reports';
 
@@ -20,8 +20,8 @@ export class ReportsService {
         });
     }
 
-    public getAllImplementationsAnnualByPeriodId(periodId: number) {
-        return this.http.get(`${mainServiceUrl}/getAllImplementationsAnnualByPeriodId/${periodId}`, {
+    public getAllImplementationsAnnualByPeriodId(periodId: number, filters:ReportFilters) {
+        return this.http.post(`${mainServiceUrl}/getAllImplementationsAnnualByPeriodId/${periodId}`, filters, {
             observe: 'response',
             responseType: 'blob' as 'json'
         });

@@ -716,3 +716,11 @@ export class IndicatorTagAsignation {
 export interface AsyncResponse {
     progress: number;
     state: string;}
+
+export class ReportFilters {
+    public monthsId: number[];
+    public areasId: number[];
+    public projectsId: number[];
+    public indicatorsId: number[];
+    public tagsId: number[];
+}

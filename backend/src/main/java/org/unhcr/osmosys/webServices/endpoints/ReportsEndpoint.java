@@ -3,14 +3,12 @@ package org.unhcr.osmosys.webServices.endpoints;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.security.annotations.Secured;
 import org.jboss.logging.Logger;
+import org.unhcr.osmosys.model.reportDTOs.ReportFiltersDTO;
 import org.unhcr.osmosys.reports.service.ReportService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -19,6 +17,7 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Path("/reports")
 @RequestScoped
@@ -101,17 +100,18 @@ public class ReportsEndpoint {
     }
 
     @Path("/getAllImplementationsAnnualByPeriodId/{periodId}")
-    @GET
+    @POST
     @Secured
     @Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public Response getAllImplementationsAnnualByPeriodId(
             @Context SecurityContext securityContext,
-            @PathParam("periodId") Long periodId
+            @PathParam("periodId") Long periodId,
+            ReportFiltersDTO filters
     ) throws GeneralAppException {
         Principal principal = securityContext.getUserPrincipal();
         LOGGER.info("getAllImplementationsAnnualByPeriodId:" + principal.getName());
         long lStartTime = System.nanoTime();
-        ByteArrayOutputStream r = this.reportService.getAllImplementationsAnnualByPeriodId(periodId);
+        ByteArrayOutputStream r = this.reportService.getAllImplementationsAnnualByPeriodId(periodId,filters);
         long lEndTime = System.nanoTime();
         LOGGER.info("Elapsed time in seconds: " + (lEndTime - lStartTime) / 1000000000);
         String filename = "Exportacion_datos_total_anual" + "_" + LocalDateTime.now(ZoneId.of("America/Bogota")).format(DateTimeFormatter.ofPattern("dd_MM_yyyy-HH_ss")) + " .xlsx";
