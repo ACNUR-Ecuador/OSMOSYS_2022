@@ -2,7 +2,10 @@ package org.unhcr.osmosys.webServices.endpoints;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.CustomPrincipal;
+import com.sagatechs.generics.security.UserSecurityContext;
 import com.sagatechs.generics.security.annotations.Secured;
+import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.services.JobStatusService;
@@ -39,6 +42,9 @@ public class ProjectEndpoint {
     @Inject
     ProjectsImportService projectsImportService;
 
+    @Context
+    SecurityContext securityContext;
+
     @Path("/")
     @POST
     @Secured
@@ -65,9 +71,13 @@ public class ProjectEndpoint {
         // Se recomienda usar un ExecutorService administrado por el contenedor en producción.
 
         String jobId = JobStatusService.createJob();
+
+        CustomPrincipal customPrincipal = (CustomPrincipal) securityContext.getUserPrincipal();
+        UserWeb userWeb = customPrincipal.getUser();
         // Inicia un hilo para procesar la tarea asíncrona
         new Thread(() -> {
             try {
+                UserSecurityContext.setCurrentUser(userWeb);
                 Long result = projectService.update(projectWeb, jobId);
                 JobStatusService.finalizeJob(jobId, result);
 

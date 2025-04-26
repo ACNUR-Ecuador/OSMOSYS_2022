@@ -7,6 +7,7 @@ public class IndicatorExecutionDTO {
     private String target;
     private String projectStatement;
     private String indicator;
+    private String code;
     private String compassIndicator;
     private String indicatorType;
     private String state;
@@ -192,6 +193,14 @@ public class IndicatorExecutionDTO {
         this.locationAssigments = locationAssigments;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -200,6 +209,7 @@ public class IndicatorExecutionDTO {
                 ", \"Meta\":\"" + target + "\"" +
                 ", \"Declaración de Proyecto\":\"" + projectStatement + "\"" +
                 ", \"Indicador\":\"" + indicator + "\"" +
+                ", \"Código de Indicador\":\"" + code + "\"" +
                 ", \"Indicador Compass\":\"" + compassIndicator + "\"" +
                 ", \"Tipo de Indicador\":\"" + indicatorType + "\"" +
                 ", \"Estado\":\"" + state + "\"" +

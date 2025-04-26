@@ -240,12 +240,14 @@ public class AuditService {
                                 dto.setTarget(target != null ? target.toString() : "");
                             }
                             if (indicatorExecution.getProjectStatement() != null) {
-                                String statement = indicatorExecution.getProjectStatement().getDescription().replace("\"", "");;
-                                dto.setProjectStatement(statement != null ? statement : "");
+                                String statement = indicatorExecution.getProjectStatement().getDescription().replace("\"", "");
+                                dto.setProjectStatement(statement);
                             }
                             if (indicatorExecution.getIndicator() != null) {
-                                String indicatorId = indicatorExecution.getIndicator().getDescription().replace("\"", "");;
-                                dto.setIndicator(indicatorId != null ? indicatorId : "");
+                                String indicatorId = indicatorExecution.getIndicator().getDescription().replace("\"", "");
+                                String indicatorCode = indicatorExecution.getIndicator().getCode().replace("\"", "");
+                                dto.setIndicator(indicatorId);
+                                dto.setCode(indicatorCode);
                             }
                             if (indicatorExecution.getCompassIndicator() != null) {
                                 Boolean compassIndicator = indicatorExecution.getCompassIndicator();

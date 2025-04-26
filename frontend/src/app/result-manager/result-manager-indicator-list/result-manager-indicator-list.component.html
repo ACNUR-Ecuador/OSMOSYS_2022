@@ -134,6 +134,14 @@
               [closable]="false">
         <ng-template pTemplate="content">
             <p-messages></p-messages>
+            <p-messages severity="warn" *ngIf="tableData.length === 0">
+              <ng-template pTemplate>
+                <span class="custom-message" style="color: #D9A301; margin-right: 0.5rem; font-weight: bold;">ADVERTENCIA:</span>
+                <span class="custom-message">
+                  Este indicador no cuenta con una desagregación por <strong>Tipo de Población</strong>, por lo tanto, no es posible realizar ningún tipo de validación.
+                </span>
+              </ng-template>
+            </p-messages>
             <p-messages severity="warn" *ngIf="selectedIndicator.quarterReportCalculation=='AGGREGATION_RULE'">
               <ng-template pTemplate>
                   <span class="custom-message" style="color: #D9A301; margin-right: 0.5rem;font-weight: bold;">RECUERDA, 
@@ -142,8 +150,8 @@
                   <span class="custom-message"> {{selectedIndicator?.aggregationRuleComment}}</span>
               </ng-template>
             </p-messages>
-            <br *ngIf="selectedIndicator.quarterReportCalculation!=='AGGREGATION_RULE'">
-            <p-table [value]="tableData">
+            <br *ngIf="selectedIndicator.quarterReportCalculation!=='AGGREGATION_RULE' && tableData.length > 0">
+            <p-table [value]="tableData" *ngIf="tableData.length > 0">
                 <ng-template pTemplate="header">
                   <tr>
                     <th>Tipo de Población</th>

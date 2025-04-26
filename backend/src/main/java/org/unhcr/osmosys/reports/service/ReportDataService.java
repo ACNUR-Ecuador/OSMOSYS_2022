@@ -164,6 +164,7 @@ public class ReportDataService {
                     }
                     //Obtener el ccomentario
                     String reportComment = Optional.ofNullable(resultManagerIndicatorQuarterWeb.getReportComment()).orElse("");
+                    String aggregationRule = Optional.ofNullable(rmi.getIndicator().getAggregationRuleComment()).orElse("");
                     for (ResultManagerQuarterPopulationTypeWeb rmqpw : rmqpws) {
                         List<Tags> tags=tagsService.getTagsByIndicatorIdAndPeriodId(rmi.getIndicator().getId(), selectedPeriod.getId());
                         Map<String, Object> map = new HashMap();
@@ -172,6 +173,7 @@ public class ReportDataService {
                         map.put("resultManager", resultManager.getName());
                         map.put("quarter", "Q" + resultManagerIndicatorQuarterWeb.getQuarter());
                         map.put("quarterCalculationType", rmi.getIndicator().getQuarterReportCalculation()!=null ? rmi.getIndicator().getQuarterReportCalculation().getLabel() : "");
+                        map.put("aggregationRule", aggregationRule);
                         map.put("populationType", rmqpw.getPopulationType().getName());
                         map.put("reportValue", rmqpw.getReportValue()!=null?rmqpw.getReportValue().toString():"");
                         map.put("reportState", rmqpw.isConfirmation() ? "Validado" : "Sin Validar");
