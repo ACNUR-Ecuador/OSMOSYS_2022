@@ -74,17 +74,20 @@ public class MetabaseTokenEndpoint {
 
         long dashboardId = 0;
         for (RoleWeb role : userWeb.getRoles()) {
-            dashboardId = role.getName().equals(RoleType.MONITOR_PROYECTOS.getStringValue()) && dashboardId  < 2 ? 2 :
-             role.getName().equals(RoleType.EJECUTOR_PROYECTOS.getStringValue()) && dashboardId  < 2 ? 2 :
-             role.getName().equals(RoleType.MONITOR_ID.getStringValue()) && dashboardId  < 3 ? 3 :
-             role.getName().equals(RoleType.EJECUTOR_ID.getStringValue()) && dashboardId  < 3 ? 3 :
+            dashboardId = role.getName().equals(RoleType.MONITOR_PROYECTOS.getStringValue()) && dashboardId  < 5 ? 5 :
+             role.getName().equals(RoleType.EJECUTOR_PROYECTOS.getStringValue()) && dashboardId  < 5 ? 5 :
+             role.getName().equals(RoleType.MONITOR_ID.getStringValue()) && dashboardId  < 5 ? 5 :
+             role.getName().equals(RoleType.EJECUTOR_ID.getStringValue()) && dashboardId  < 5 ? 5 :
              role.getName().equals(RoleType.RESULT_MANAGER.getStringValue()) && dashboardId  < 4 ? 4 :
-             role.getName().equals(RoleType.ADMINISTRADOR_LOCAL.getStringValue()) && dashboardId  < 5 ? 5 :
-             role.getName().equals(RoleType.ADMINISTRADOR_REGIONAL.getStringValue()) && dashboardId  < 6 ? 6 : dashboardId;
+             role.getName().equals(RoleType.ADMINISTRADOR_LOCAL.getStringValue()) && dashboardId  < 4 ? 4 :
+             role.getName().equals(RoleType.ADMINISTRADOR_REGIONAL.getStringValue()) && dashboardId  < 4 ? 4 : dashboardId;
         }
 
-        resource.put("dashboard", dashboardId); // Id del dashboard a incrustar
-        params.put("implementador", new String[]{acronym});
+        resource.put("dashboard", dashboardId);
+        if (!acronym.equals("ACNUR"))// Id del dashboard a incrustar
+        {
+            params.put("implementador", new String[]{acronym});
+        }
 
         payload.put("resource", resource);
         payload.put("params", params); // parámetros vacíos

@@ -16,7 +16,7 @@
     position: fixed;
     z-index: 10001;
     top: 0;
-    background-color: red; /* For debugging; remove or change as needed */
+    background-color: red; 
 }
 
 /* Internal container arranging loader and footer in two rows */
@@ -59,7 +59,7 @@
 
 .progress-bar {
   height: 100%;
-  background-color: #3f51b5;
+  background-color: #1D72BC;
   width: 0%;
   transition: width 0.5s ease;
 }

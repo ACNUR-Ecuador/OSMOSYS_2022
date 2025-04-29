@@ -6,7 +6,6 @@ import {UtilsService} from "../../services/utils.service";
 import {PeriodService} from "../../services/period.service";
 import {MessageService} from "primeng/api";
 import {Period} from "../../shared/model/OsmosysModel";
-import { AppConfigurationService } from 'src/app/services/app-configuration.service';
 
 @Component({
     selector: 'app-home',
@@ -15,7 +14,6 @@ import { AppConfigurationService } from 'src/app/services/app-configuration.serv
 })
 export class HomeComponent implements OnInit {
     render = false;
-    renderLegacyDashboards = false;
     isAcnurUser: boolean;
     isFocalPoint: boolean;
     isPartner: boolean;
@@ -25,13 +23,14 @@ export class HomeComponent implements OnInit {
     currentPeriod: Period;
     periods: Period[];
 
+
+
     constructor(
         private userService: UserService,
         private utilsService: UtilsService,
         private periodService: PeriodService,
         private versionCheckService: VersionCheckService,
-        private messageService: MessageService,
-        private appConfigurationService: AppConfigurationService,
+        private messageService: MessageService
 
     ) {
     }
@@ -39,14 +38,7 @@ export class HomeComponent implements OnInit {
     ngOnInit(): void {
         this.loadPeriods();
         this.versionCheckService.checkVersion(environment.versionCheckURL);
-
-        if (environment && 'legacyDashboards' in environment) {
-            this.renderLegacyDashboards = true;
-        } else {
-            this.renderLegacyDashboards = false;
-        }
-        
-         
+        //getValueByKey
     }
 
     loadUsers() {
