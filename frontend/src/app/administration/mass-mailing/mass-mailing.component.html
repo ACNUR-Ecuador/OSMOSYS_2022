@@ -3,26 +3,7 @@
         <p-toast></p-toast>
         <p-messages></p-messages>
         <div class="card px-6 py-6">
-            <h3 class="page-title">Envío Masivo de correos</h3>
-            <p-toolbar styleClass="mb-4 p-fluid">
-                <form [formGroup]="periodForm" class="w-full">
-                    <div class="fluid">
-                        <div class="field grid">
-                            <label for="periodI" class="col-12 mb-2" style="width:100px; color: white;">Año:</label>
-                            <div class="">
-                                <p-dropdown id="periodI" [options]="periods" optionLabel="year"
-                                            [filter]="true"
-                                            formControlName="selectedPeriod"
-s
-                                ></p-dropdown>
-                            </div>
-
-                        </div>
-                    </div>
-                </form>
-
-            </p-toolbar>
-
+            <h3 class="page-title mb-5">Envío Masivo de correos</h3>
             <p-fieldset>
                 <ng-template pTemplate="header">Recordatorios</ng-template>
                 <div class="grid">
