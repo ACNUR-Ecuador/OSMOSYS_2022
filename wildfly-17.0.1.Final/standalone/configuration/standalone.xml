@@ -180,14 +180,14 @@
                     </security>
                 </datasource>
                 <datasource jta="true" jndi-name="java:jboss/datasources/osmosys" pool-name="osmosys" enabled="true" use-ccm="true" statistics-enabled="true">
-                    <connection-url>jdbc:postgresql://localhost:5432/osmosys_sv</connection-url>
+                    <connection-url>jdbc:postgresql://localhost:5432/osmosys_slv</connection-url>
                     <driver>postgresql-driver</driver>
                     <pool>
                         <max-pool-size>100</max-pool-size>
                     </pool>
                     <security>
                         <user-name>postgres</user-name>
-                        <password>a1a2a3a4a5a6</password>
+                        <password>holacomoestas</password>
                     </security>
                     <validation>
                         <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"/>
@@ -584,8 +584,8 @@
         </outbound-socket-binding>
     </socket-binding-group>
     <deployments>
-        <deployment name="osmosys_ec.war" runtime-name="osmosys_ec.war">
-            <fs-archive path="C:\Proyectos\OSMOSYS_2022\backend\target\osmosys_ec.war"/>
+        <deployment name="osmosys_backend-5.0" runtime-name="osmosys_backend-5.0.war">
+            <fs-exploded path="/Users/aladar/Documents/Proyectos/ACNUR/code/osmosys/backend/target/osmosys_backend-5.0"/>
         </deployment>
     </deployments>
 </server>

@@ -1,17 +1,10 @@
-/* Asegúrate de que el contenedor ocupe todo el espacio deseado */
-.iframe-container {
-    position: relative;
-    width: 100%;
-    height: 81vh;  /* o 100% si su contenedor padre tiene altura definida */
-    overflow: hidden;
-  }
-  
-  /* Estilos para que el iframe ocupe el 100% del contenedor */
-  .iframe-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 90vh;
-    border: none;
-  }
+.tooltip {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 8px;
+  font-size: 12px;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  border-radius: 4px;
+}

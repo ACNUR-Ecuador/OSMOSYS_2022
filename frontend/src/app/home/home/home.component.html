@@ -1,5 +1,5 @@
     <app-home-dashboard-focal-point
-            *ngIf="render && !renderLegacyDashboards && (isFocalPoint || isPartner || isAdmin)"
+            *ngIf="render && !renderLegacyDashboards && (isFocalPoint  || isAdmin)"
             [currentPeriod]="currentPeriod"
             [periods]="periods"
             [isFocalPoint]="isFocalPoint"
@@ -19,7 +19,7 @@
     ></app-home-dashboard-direct-implementation>
 
     <app-home-dashboard-partner style="height: 500;"
-        *ngIf="render &&  renderLegacyDashboards"
+        *ngIf="render &&  isPartner"
         [currentPeriod]="currentPeriod"
         [periods]="periods"
         [isPartner]="isPartner"

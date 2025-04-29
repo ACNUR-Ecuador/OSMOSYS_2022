@@ -3,6 +3,8 @@ package org.unhcr.osmosys.webServices.endpoints;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import com.sagatechs.generics.security.annotations.Secured;
+import com.sagatechs.generics.security.servicio.UserService;
+import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.JobStatus;
 import org.unhcr.osmosys.services.AreaService;
 import org.unhcr.osmosys.services.JobStatusService;
@@ -22,6 +24,8 @@ import java.util.List;
 @RequestScoped
 public class JobStatusEndpoint {
 
+    private static final Logger LOGGER = Logger.getLogger(JobStatusEndpoint.class);
+
     @GET
     @Path("/{jobId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -30,7 +34,7 @@ public class JobStatusEndpoint {
         if (status == null) {
             return Response.status(Response.Status.NOT_FOUND).entity("Job no encontrado").build();
         }
-        System.out.println("Job status: " + status);
+        LOGGER.debug("Job status: " + status);
         return Response.ok(status).build();
     }
 }

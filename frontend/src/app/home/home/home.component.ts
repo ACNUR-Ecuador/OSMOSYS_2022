@@ -40,11 +40,11 @@ export class HomeComponent implements OnInit {
         this.loadPeriods();
         this.versionCheckService.checkVersion(environment.versionCheckURL);
 
-        if (environment && 'legacyDashboards' in environment) {
-            this.renderLegacyDashboards = true;
-        } else {
-            this.renderLegacyDashboards = false;
-        }
+        // if (environment && 'legacyDashboards' in environment) {
+        //     this.renderLegacyDashboards = environment.legacyDashboards;
+        // } else {
+        //this.renderLegacyDashboards = false;
+        // }
         
          
     }

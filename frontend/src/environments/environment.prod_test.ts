@@ -8,5 +8,7 @@ export const environment = {
     loginPhoto : 'unhcr_photo_ec.png',
     flagLoginFile : 'flag_test.png',
     flagToolbarFile : 'flag_test.png',
-    operationName : 'Test'
+    operationName : 'Test',
+    legacyDashboards: true
+
 };
