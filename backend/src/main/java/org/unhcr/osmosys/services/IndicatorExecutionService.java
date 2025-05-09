@@ -1437,7 +1437,7 @@ public class IndicatorExecutionService {
                 .map(option -> option.getDisagregationOption().getId())
                 .collect(Collectors.toSet());
         for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : indicatorExecution.getIndicator().getDissagregationsAssignationToIndicator()) {
-            if (dissagregationAssignationToIndicator.getDissagregationType().equals(DissagregationType.SIN_DESAGREGACION) && Objects.equals(dissagregationAssignationToIndicator.getPeriod().getId(), indicatorExecution.getPeriod().getId())) {
+            if (dissagregationAssignationToIndicator.getDissagregationType().equals(DissagregationType.SIN_DESAGREGACION) && Objects.equals(dissagregationAssignationToIndicator.getPeriod().getId(), indicatorExecution.getPeriod().getId()) && dissagregationAssignationToIndicator.getState().equals(State.ACTIVO)) {
                 dissOptionsToDissable = indicatorExecution.getIndicatorExecutionDissagregationAssigments().stream().map(IndicatorExecutionDissagregationAssigment::getDisagregationOption).collect(Collectors.toSet());
                 break;
             }
