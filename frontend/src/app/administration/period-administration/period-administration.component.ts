@@ -369,7 +369,7 @@ export class PeriodAdministrationComponent implements OnInit {
                     this.messageService.add({
                         severity: 'success',
                         summary: 'Año guardado exitosamente',
-                        life: 3000
+                        sticky: true
                     });
                 },
                 error: err => {

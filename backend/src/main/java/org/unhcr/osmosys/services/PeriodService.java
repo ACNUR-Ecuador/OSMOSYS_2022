@@ -3,6 +3,7 @@ package org.unhcr.osmosys.services;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.collections4.CollectionUtils;
+import org.jboss.ejb3.annotation.TransactionTimeout;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.PeriodDao;
 import org.unhcr.osmosys.model.GeneralIndicator;
@@ -21,6 +22,7 @@ import javax.ws.rs.core.Response;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -127,6 +129,7 @@ public class PeriodService {
         return update(periodWeb, null);
     }
 
+    @TransactionTimeout(value = 80000, unit = TimeUnit.SECONDS)
     public Long update(PeriodWeb periodWeb, String jobId) throws GeneralAppException {
         if (periodWeb == null) {
             throw new GeneralAppException("No se puede actualizar un period null", Response.Status.BAD_REQUEST);

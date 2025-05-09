@@ -306,6 +306,7 @@
                             "src/assets"
                         ],
                         "styles": [
+                            "src/assets/fonts/proximanova.css",
                             "src/styles.scss"
                         ],
                         "scripts": []

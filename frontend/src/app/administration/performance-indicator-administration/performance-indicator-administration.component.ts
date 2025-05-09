@@ -486,7 +486,7 @@ export class PerformanceIndicatorAdministrationComponent implements OnInit {
                         this.messageService.add({
                             severity: 'success',
                             summary: 'Indicador guardado exitosamente',
-                            life: 3000
+                            closable: true  // Asegúrate de que el mensaje tenga un botón para cerrarlo
                         });
                     },
                     error: err => {

@@ -55,7 +55,10 @@ export class EnumsService {
 
 
     resolveLabel(enumName: EnumsType, value: string): string {
-        const enumerador = this.cacheMap.get(enumName).filter(
+
+        let enumList = this.getOrLoadEnumList(enumName)
+
+        const enumerador = enumList.filter(
             enume => {
                 return enume.value === value;
             });
@@ -66,7 +69,8 @@ export class EnumsService {
         }
     }
     resolveEnum(enumName: EnumsType, value: string): any {
-        const enumerador = this.cacheMap.get(enumName).filter(
+        let enumList = this.getOrLoadEnumList(enumName)
+        const enumerador = enumList.filter(
             enume => {
                 return enume.value === value;
             });
@@ -78,7 +82,9 @@ export class EnumsService {
     }
 
     resolveEnumWeb(enumName: EnumsType, value: string): EnumWeb {
-        const enumerador = this.cacheMap.get(enumName).filter(
+        let enumList = this.getOrLoadEnumList(enumName)
+        
+        const enumerador = enumList.filter(
             enume => {
                 return enume.value === value;
             });
@@ -87,5 +93,14 @@ export class EnumsService {
         } else {
             return null;
         }
+    }
+
+    private getOrLoadEnumList(enumName: EnumsType): any[] {
+        let enumList = this.cacheMap.get(enumName);
+        if (!enumList) {
+            this.loadcache(); // Asegúrate de que este método llene `cacheMap` completamente
+            enumList = this.cacheMap.get(enumName);
+        }
+        return enumList || [];
     }
 }
