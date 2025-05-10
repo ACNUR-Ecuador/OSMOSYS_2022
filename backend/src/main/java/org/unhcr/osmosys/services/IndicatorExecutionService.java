@@ -3,13 +3,11 @@ package org.unhcr.osmosys.services;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.AuditAction;
 import com.sagatechs.generics.persistence.model.State;
-import com.sagatechs.generics.security.UserSecurityContext;
 import com.sagatechs.generics.security.dao.UserDao;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.service.AsyncService;
 import com.sagatechs.generics.utils.DateUtils;
-import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.threeten.extra.YearQuarter;
@@ -121,7 +119,7 @@ public class IndicatorExecutionService {
         Project oldProject = projectDao.find(indicatorExecutionWeb.getProject().getId()).deepCopy();
         List<LabelValue> oldprojectAudit = auditService.convertToProjectAuditDTO(oldProject).toLabelValueList();
 
-         if (indicator == null) {
+        if (indicator == null) {
             throw new GeneralAppException("Indicador no encontrado " + indicatorExecutionWeb.getIndicator().getId(), Response.Status.BAD_REQUEST);
         }
         ie.setIndicator(indicator);
@@ -248,9 +246,9 @@ public class IndicatorExecutionService {
                         /*Se filtran Solo edades seleccionadas*/
                         if(!ie.getIndicatorExecutionDissagregationAssigments().isEmpty()){
                             List<Long> ageSelectedOptionsIds=ie.getIndicatorExecutionDissagregationAssigments()
-                                        .stream()
-                                        .filter(option ->  option.getState().equals(State.ACTIVO))
-                                        .map(option -> option.getDisagregationOption().getId()).collect(Collectors.toList());
+                                    .stream()
+                                    .filter(option ->  option.getState().equals(State.ACTIVO))
+                                    .map(option -> option.getDisagregationOption().getId()).collect(Collectors.toList());
 
                             List<AgeDissagregationOption> filteredAges = new ArrayList<>();
                             for (AgeDissagregationOption ageOption : ageOptions) {
@@ -436,18 +434,17 @@ public class IndicatorExecutionService {
         this.updateGeneralIndicatorExecutionsDissagregations(period, periodDissagregationMapGeneralIndicator, jobId);
         // performance indicators
         // recupero todos los indicadores afectados
-        List<Indicator> indicatorsToUpdate = this.indicatorDao.getByPeriodDissagregationAssignment(period.getId());
-        int totalIndicators=indicatorsToUpdate.size();
-        LOGGER.debug("updateAllIndicatorExecutionsDissagregationsByPeriod : "+ totalIndicators);
-        int i=0;
+        List<Indicator> indicatorsToUpdate = this.indicatorDao.getByPeriodDissagregationAssignment(period.getId()).stream().filter(i -> (i.getState().equals(State.ACTIVO))).collect(Collectors.toList());
+        int totalIndicators = indicatorsToUpdate.size();
+        LOGGER.debug("updateAllIndicatorExecutionsDissagregationsByPeriod : " + totalIndicators);
+        int i = 0;
         for (Indicator indicator : indicatorsToUpdate) {
             i++;
-            int progress = 40 + (int) (60 * ((double) i / indicatorsToUpdate.size()));
+            int progress = 40 + (int) (60 * ((double) i / indicatorsToUpdate.size()))-1;
             JobStatusService.updateJob(jobId, progress, "Actualizando Indicadores de Producto " + i + "/" + indicatorsToUpdate.size());
-            LOGGER.debug("updateAllIndicatorExecutionsDissagregationsByPeriod "+i+"/"+totalIndicators);
+            LOGGER.debug("updateAllIndicatorExecutionsDissagregationsByPeriod " + i + "/" + totalIndicators);
             this.updatePerformanceIndicatorExecutionsDissagregations(period, indicator);
         }
-
     }
 
     public void updateIndicatorExecutionsLocations(IndicatorExecution indicatorExecution,
@@ -973,17 +970,17 @@ public class IndicatorExecutionService {
                 if(valueToUpdate.getValue()!=null){
                     if(valueToUpdate.getValue().compareTo(indicatorValueWeb.getValue()) !=0){
                         if(indicatorExecution.getProject() == null){
-                                oldValues = indicatorExecutionDao.findIndicatorDirectImplementationValuesById(valueToUpdate.getId());
+                            oldValues = indicatorExecutionDao.findIndicatorDirectImplementationValuesById(valueToUpdate.getId());
                         }else {
-                                if(indicatorType==IndicatorType.GENERAL){
-                                    oldValues = indicatorExecutionDao.findGeneralIndicatorDissagregationValuesById(valueToUpdate.getId());
-                                }else{
-                                    oldValues = indicatorExecutionDao.findIndicatorDissagregationValuesById(valueToUpdate.getId());
-                                }
+                            if(indicatorType==IndicatorType.GENERAL){
+                                oldValues = indicatorExecutionDao.findGeneralIndicatorDissagregationValuesById(valueToUpdate.getId());
+                            }else{
+                                oldValues = indicatorExecutionDao.findIndicatorDissagregationValuesById(valueToUpdate.getId());
+                            }
                         }
-                            oldIndicatorValues.add(oldValues);
-                            isnewValue = true;
-                            auditChange = true;
+                        oldIndicatorValues.add(oldValues);
+                        isnewValue = true;
+                        auditChange = true;
                     }
                 }else{
                     //solo agrego cambios si el valor a actualizar es diferente de cero
@@ -1193,7 +1190,7 @@ public class IndicatorExecutionService {
                         .getCustomDissagregationAssignationToIndicators().stream()
                         .filter(customDissagregationAssignationToIndicatorExecution ->
                                 customDissagregationAssignationToIndicatorExecution.getState().equals(State.ACTIVO)
-                                && customDissagregationAssignationToIndicatorExecution.getPeriod().getId().equals(period.getId())
+                                        && customDissagregationAssignationToIndicatorExecution.getPeriod().getId().equals(period.getId())
                         )
                         .map(CustomDissagregationAssignationToIndicator::getCustomDissagregation).collect(Collectors.toList());
             }

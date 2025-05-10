@@ -226,7 +226,7 @@ public class EmailService {
                         "                    <!-- Footer -->\n" +
                         "                    <tr>\n" +
                         "                        <td align=\"center\" style=\"font-family: Arial, sans-serif; font-size: 12px; color: #777; padding: 10px; border-top: 1px solid #ddd;\">\n" +
-                        "                            <p>© UNHCR - Hecho en El Salvador y Ecuador - 2025</p>\n" +
+                        "                            <p>© UNHCR - 2025</p>\n" +
                         "                        </td>\n" +
                         "                    </tr>\n" +
                         "                </table>\n" +
