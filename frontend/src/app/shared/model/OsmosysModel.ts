@@ -375,6 +375,7 @@ export class IndicatorExecution {
     public assignedUser: User;
     public assignedUserBackup: User;
     public locations: Canton[];
+    public dissagregationAssigments: StandardDissagregationOption[]
     public keepBudget: boolean;
     public assignedBudget: number;
     public availableBudget: number;
@@ -461,6 +462,7 @@ export class IndicatorExecutionAssigment {
     public projectStatement?: Statement;
     public activityDescription?: string;
     public locations?: Canton[];
+    public dissagregationAssigments?: StandardDissagregationOption[]
     // direct implementation
     public target?: number;
     public reportingOffice?: Office;
@@ -687,10 +689,12 @@ export class Audit{
     public entity:string;
     public recordId:number;
     public action:string;
-    public responsibleUser:User;
+    public responsibleUser?:User;
     public changeDate:Date;
     public oldData:string;
     public newData:string;
+    public blockedMonth?:string;
+    public blockedYear?:string;
     public state:string;
 
 
@@ -709,3 +713,6 @@ export class IndicatorTagAsignation {
     public indicator: Indicator;
 }
 
+export interface AsyncResponse {
+    progress: number;
+    state: string;}

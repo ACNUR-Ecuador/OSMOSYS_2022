@@ -20,9 +20,11 @@
              [src]="'assets/layout/images/unhcr_logo_horizontal_white.png'"
              alt="osmosys"/>
         <span class="topbar-separator"></span>
-        <img class="osmosys-logo" style="margin-top: 12px !important;" [routerLink]="['/home/about-us']"
-             [src]="'assets/layout/images/Logo_osmosys_white.png'"
-             alt="osmosys"/>
+     
+             <div style="display: flex; flex-direction: column; align-items: center; color: #ffffff; font-family: 'Proxima Nova', sans-serif;">
+                <p style="margin-top: 10px !important; font-size: 25px; font-weight: 700; margin: 0; line-height: 1;">OSMOSYS</p>
+                <p style="font-size: 10px; font-weight: 400; margin: 0; line-height: 1;">Operation Monitoring System</p>
+              </div>  
         <span class="topbar-separator"></span>
         <h5 style="color: #ffffff; font-size: 20px;font-weight:100">{{ operationName.toUpperCase() }}</h5>
         <span class="topbar-separator"></span>
@@ -176,6 +178,14 @@
                                 </a>
                             </li>
                         </ul>
+                        <a pRipple
+                            href="https://osmosys.unhcr.org/issues/"
+                            class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">
+                            <i class="pi pi-circle mr-3"></i>
+                            <span class="flex flex-column">
+                                <span class="font-semibold">Reportar un problema</span>
+                            </span>
+                        </a>
                         <a pRipple
                            (click)="logout()"
                            class="flex p-2 border-round align-items-center hover:surface-hover transition-colors transition-duration-150 cursor-pointer">

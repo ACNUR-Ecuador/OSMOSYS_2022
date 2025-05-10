@@ -40,6 +40,8 @@ public class ReminderDaysTrigger {
         List<Integer> reminderDays = this.appConfigurationService.getReminderDays();
         LOGGER.debug("ReminderDaysTrigger" + reminderDays);
 
+        Integer rmReminderDay = this.appConfigurationService.getResultManagerReminderDay();
+
         // this.scheduler.scheduleAtFixedRate(this::run, 500, 500, TimeUnit.MILLISECONDS);
         for (final Integer reminderDay : reminderDays) {
             Trigger trigg = new Trigger() {
@@ -85,7 +87,7 @@ public class ReminderDaysTrigger {
             ScheduledFuture<?> f = this.scheduler.schedule(this::run, trigg);
             LOGGER.info(f.isDone());
         }
-        // Trigger trimestral
+        // Trigger trimestral para result Managers
         Trigger quarterlyTrigger = new Trigger() {
             @Override
             public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
@@ -99,16 +101,16 @@ public class ReminderDaysTrigger {
                 Calendar nextQuarter = Calendar.getInstance();
                 if (currentMonth < 3) {
                     // Primer trimestre (enero-marzo)
-                    nextQuarter.set(now.get(Calendar.YEAR), 3, 1, 6, 0, 0); // 1 de abril
+                    nextQuarter.set(now.get(Calendar.YEAR), 3, rmReminderDay, 6, 0, 0); // X de abril
                 } else if (currentMonth < 6) {
                     // Segundo trimestre (abril-junio)
-                    nextQuarter.set(now.get(Calendar.YEAR), 6, 1, 6, 0, 0); // 1 de julio
+                    nextQuarter.set(now.get(Calendar.YEAR), 6, rmReminderDay, 6, 0, 0); // X de julio
                 } else if (currentMonth < 9) {
                     // Tercer trimestre (julio-septiembre)
-                    nextQuarter.set(now.get(Calendar.YEAR), 9, 1, 6, 0, 0); // 1 de octubre
+                    nextQuarter.set(now.get(Calendar.YEAR), 9, rmReminderDay, 6, 0, 0); // X de octubre
                 } else {
                     // Cuarto trimestre (octubre-diciembre)
-                    nextQuarter.set(now.get(Calendar.YEAR) + 1, 0, 1, 6, 0, 0); // 1 de enero del siguiente año
+                    nextQuarter.set(now.get(Calendar.YEAR) + 1, 0, rmReminderDay, 6, 0, 0); // X de enero del siguiente año
                 }
 
                 LOGGER.info("Next quarterly run time: " + nextQuarter.getTime());
@@ -129,38 +131,45 @@ public class ReminderDaysTrigger {
     }
 
     public void run() {
+        boolean sendEmailsEnabled = appConfigurationService.getSendEmailReminders();
+        if (sendEmailsEnabled) {
+            try {
+                this.messageReminderService.sendPartnersRemindersToFocalPoints();
+            } catch (Exception e) {
+                LOGGER.error("Error en envío de recordatorio de socios");
+                LOGGER.error(ExceptionUtils.getRootCauseMessage(e));
+                LOGGER.error(ExceptionUtils.getStackTrace(e));
+            }
 
-        try {
-            this.messageReminderService.sendPartnersRemindersToFocalPoints();
-        } catch (Exception e) {
-            LOGGER.error("Error en envío de recordatorio de socios");
-            LOGGER.error(ExceptionUtils.getRootCauseMessage(e));
-            LOGGER.error(ExceptionUtils.getStackTrace(e));
+            try {
+                this.messageReminderService.sendDirectImplementationReminders();
+            } catch (Exception e) {
+                LOGGER.error("Error en envío de recordatorio de socios");
+                LOGGER.error(ExceptionUtils.getRootCauseMessage(e));
+                LOGGER.error(ExceptionUtils.getStackTrace(e));
+            }
+            LOGGER.info("Envío de recordatorios-fin");
+        }else{
+            LOGGER.info("Envío de correos de recordatorio deshabilitado según configuración.");
         }
-
-
-        try {
-            this.messageReminderService.sendDirectImplementationReminders();
-        } catch (Exception e) {
-            LOGGER.error("Error en envío de recordatorio de socios");
-            LOGGER.error(ExceptionUtils.getRootCauseMessage(e));
-            LOGGER.error(ExceptionUtils.getStackTrace(e));
-        }
-
-
-        LOGGER.info("Envío de recordatorios-fin");
     }
     public void runQuarterlyTask() {
-        try {
-            // Lógica de la tarea trimestral que se ejecutará cada trimestre
-            this.messageReminderService.sendResultsManagerReminders();
-        } catch (Exception e) {
-            LOGGER.error("Error en envío de recordatorio trimestral");
-            LOGGER.error(ExceptionUtils.getRootCauseMessage(e));
-            LOGGER.error(ExceptionUtils.getStackTrace(e));
+        boolean sendEmailsEnabled = appConfigurationService.getSendEmailReminders();
+        if (sendEmailsEnabled) {
+            try {
+                // Lógica de la tarea trimestral que se ejecutará cada trimestre
+                this.messageReminderService.sendResultsManagerReminders();
+            } catch (Exception e) {
+                LOGGER.error("Error en envío de recordatorio trimestral");
+                LOGGER.error(ExceptionUtils.getRootCauseMessage(e));
+                LOGGER.error(ExceptionUtils.getStackTrace(e));
+            }
+
+            LOGGER.info("Envío de recordatorio trimestral - fin");
+        }else{
+            LOGGER.info("Envío de correos de recordatorio deshabilitado según configuración.");
         }
 
-        LOGGER.info("Envío de recordatorio trimestral - fin");
     }
 
 }

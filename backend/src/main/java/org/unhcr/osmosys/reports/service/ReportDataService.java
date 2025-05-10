@@ -1,7 +1,10 @@
 package org.unhcr.osmosys.reports.service;
 
+import com.sagatechs.generics.appConfiguration.AppConfigurationService;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.model.User;
+import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,14 +28,18 @@ import org.unhcr.osmosys.model.reportDTOs.IndicatorExecutionTagDTO;
 import org.unhcr.osmosys.model.reportDTOs.LaterReportDTO;
 import org.unhcr.osmosys.reports.model.IndicatorReportProgramsDTO;
 import org.unhcr.osmosys.services.IndicatorExecutionService;
-import org.unhcr.osmosys.webServices.model.IndicatorExecutionWeb;
-import org.unhcr.osmosys.webServices.model.MonthWeb;
+import org.unhcr.osmosys.services.PeriodService;
+import org.unhcr.osmosys.services.TagsService;
+import org.unhcr.osmosys.services.UtilsService;
+import org.unhcr.osmosys.services.scheduledTasks.MessageAlertServiceV2;
+import org.unhcr.osmosys.webServices.model.*;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.io.ByteArrayOutputStream;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -51,6 +58,20 @@ public class ReportDataService {
 
     @Inject
     ModelWebTransformationService modelWebTransformationService;
+    @Inject
+    UserService userService;
+
+    @Inject
+    PeriodService periodService;
+
+    @Inject
+    AppConfigurationService appConfigurationService;
+
+    @Inject
+    UtilsService utilsService;
+
+    @Inject
+    TagsService tagsService;
 
     public List<Map<String, Object>> indicatorExecutionsProjectsReportsByPeriodId(Long periodId) throws GeneralAppException {
         List<IndicatorExecutionWeb> indicatorExecutions = this.indicatorExecutionService.getActiveProjectIndicatorExecutionsByPeriodId(periodId);
@@ -61,6 +82,111 @@ public class ReportDataService {
         List<IndicatorExecutionWeb> indicatorExecutions = this.indicatorExecutionService.getActivePartnersIndicatorExecutionsByProjectId(projectId);
         return this.indicatorExecutionsProjectsToProjectReport(indicatorExecutions);
 
+    }
+
+    public List<Map<String, Object>> resultManagersIndicatorsReportsByPeriodId(Long periodId) throws GeneralAppException {
+        List<User> resultManagers = this.userService.getActiveResultManagerUsers();
+        return this.resultManagersIndicatorsReports(resultManagers, periodId);
+
+    }
+
+    public List<Map<String, Object>> resultManagersIndicatorsReportByPeriodIdAndUserId(Long periodId, Long resultManagerId) throws GeneralAppException {
+        List<User> resultManagers = new ArrayList<>();
+        User rm= userService.getById(resultManagerId);
+        resultManagers.add(rm);
+        return this.resultManagersIndicatorsReports(resultManagers, periodId);
+
+    }
+
+    /*--Result Managers indicators validation Maps--*/
+    public List<Map<String, Object>> resultManagersIndicatorsReports(List<User> resultManagers, Long periodId) throws GeneralAppException{
+        List<Map<String, Object>> r = new ArrayList();
+        Period selectedPeriod = this.periodService.getById(periodId);
+        Integer rmLimitDay = this.appConfigurationService.getResultManagerLimitDay();
+        Integer currentMonthYearOrder = this.utilsService.getCurrentMonthYearOrder();
+        int mes = currentMonthYearOrder % 100;
+
+        // Determinar el trimestre a reportar
+        Integer quarterReport;
+        Calendar now = Calendar.getInstance();
+        Calendar limitDay = Calendar.getInstance();
+        if (mes >= 1 && mes <= 3) {
+            quarterReport = 4;  // Primer trimestre (Enero, Febrero, Marzo)
+            limitDay.set(selectedPeriod.getYear()+1, 0, rmLimitDay, 6, 0, 0);
+        } else if (mes >= 4 && mes <= 6) {
+            quarterReport = 1; // Segundo trimestre (Abril, Mayo, Junio)
+            limitDay.set(selectedPeriod.getYear(), 3, rmLimitDay, 6, 0, 0);
+        } else if (mes >= 7 && mes <= 9) {
+            quarterReport = 2;  // Tercer trimestre (Julio, Agosto, Septiembre)
+            limitDay.set(selectedPeriod.getYear(), 6, rmLimitDay, 6, 0, 0);
+        } else if (mes >= 10 && mes <= 12) {
+            quarterReport = 3;  // Cuarto trimestre (Octubre, Noviembre, Diciembre)
+            limitDay.set(selectedPeriod.getYear(), 9, rmLimitDay, 6, 0, 0);
+        } else {
+            quarterReport = 0;  // Si el mes no es válido (aunque no se espera que ocurra)
+            limitDay.set(selectedPeriod.getYear(), 0, rmLimitDay, 6, 0, 0);
+        }
+
+
+        boolean isOverLimit = now.after(limitDay);
+
+        for (User resultManager : resultManagers) {
+
+            List<ResultManagerIndicatorWeb> rmiw= indicatorExecutionService.getResultManagerIndicators(resultManager.getId(), selectedPeriod.getId());
+            if(rmiw.isEmpty()){
+                continue;
+            }
+            for (ResultManagerIndicatorWeb rmi : rmiw) {
+                if(!rmi.isHasExecutions()){
+                    continue;
+                }
+                List<ResultManagerIndicatorQuarterWeb> resultManagerIndicatorQuarterWebList =rmi.getResultManagerIndicatorQuarter();
+                for(ResultManagerIndicatorQuarterWeb resultManagerIndicatorQuarterWeb : resultManagerIndicatorQuarterWebList){
+                        List<ResultManagerQuarterPopulationTypeWeb> rmqpws= resultManagerIndicatorQuarterWeb.getResultManagerQuarterPopulationType();
+
+                    // Determinar si está atrasado
+                    boolean isLate = rmqpws.stream()
+                            .anyMatch(rmqpw -> resultManagerIndicatorQuarterWeb.getQuarter() <= quarterReport
+                                    && !rmqpw.isConfirmation()
+                                    && isOverLimit);
+                    // Determinar si está completo
+                    boolean isCompleted = rmqpws.stream()
+                            .allMatch(rmqpw -> resultManagerIndicatorQuarterWeb.getQuarter() <= quarterReport
+                                    && rmqpw.isConfirmation()
+                                    && isOverLimit);
+                    String quarterState;
+                    if(isLate){
+                        quarterState = "Retrasado";
+                    } else if (isCompleted) {
+                        quarterState = "Completado";
+                    }else{
+                        quarterState = "A tiempo";
+                    }
+                    //Obtener el ccomentario
+                    String reportComment = Optional.ofNullable(resultManagerIndicatorQuarterWeb.getReportComment()).orElse("");
+                    String aggregationRule = Optional.ofNullable(rmi.getIndicator().getAggregationRuleComment()).orElse("");
+                    for (ResultManagerQuarterPopulationTypeWeb rmqpw : rmqpws) {
+                        List<Tags> tags=tagsService.getTagsByIndicatorIdAndPeriodId(rmi.getIndicator().getId(), selectedPeriod.getId());
+                        Map<String, Object> map = new HashMap();
+                        map.put("indicator", rmi.getIndicator().getCode() + "-" + rmi.getIndicator().getDescription());
+                        map.put("tags", tags!=null && !tags.isEmpty()? tags.stream().map(Tags::getName).collect(Collectors.joining(", ")) :"");
+                        map.put("resultManager", resultManager.getName());
+                        map.put("quarter", "Q" + resultManagerIndicatorQuarterWeb.getQuarter());
+                        map.put("quarterCalculationType", rmi.getIndicator().getQuarterReportCalculation()!=null ? rmi.getIndicator().getQuarterReportCalculation().getLabel() : "");
+                        map.put("aggregationRule", aggregationRule);
+                        map.put("populationType", rmqpw.getPopulationType().getName());
+                        map.put("reportValue", rmqpw.getReportValue()!=null?rmqpw.getReportValue().toString():"");
+                        map.put("reportState", rmqpw.isConfirmation() ? "Validado" : "Sin Validar");
+                        map.put("year", selectedPeriod.getYear());
+                        map.put("quarterState", quarterState);
+                        map.put("reportComment", reportComment);
+                        r.add(map);
+                    }
+                }
+            }
+
+        }
+        return r;
     }
 
 
@@ -153,7 +279,7 @@ public class ReportDataService {
 
         List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        0, 1, 2, 3, 4, 5, 27, 28
+                        0, 1, 2, 3, 4, 5, 28, 29
                 )
         );
 
@@ -167,7 +293,7 @@ public class ReportDataService {
         List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getAllPerformanceIndicatorsIndicatorExecutionDetailed(projectId);
         List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        0, 1, 2, 3, 4, 5, 27, 28
+                        0, 1, 2, 3, 4, 5, 28, 29
                 )
         );
 
@@ -192,11 +318,15 @@ public class ReportDataService {
             ind.add(indicator);
             for (int i = 1; i < 13; i++) {
                 int finalI = i;
-                Optional<IndicatorExecutionTagDTO> first = resultData.stream().filter(r -> monthtoNumber(r.getMonth()) == finalI && r.getIndicator().startsWith(indicator)).findFirst();
-                if (first.isPresent()) {
-                    String value = first.get().getTotalValue().toString();
-                    System.out.println (i + " - " + indicator + " - " + value);
-                    ind.add(value);
+                List<IndicatorExecutionTagDTO> iets = resultData.stream().filter(r -> monthtoNumber(r.getMonth()) == finalI && r.getIndicator().startsWith(indicator)).collect(Collectors.toList());
+                if (!iets.isEmpty()) {
+                    int totalValue=0;
+                    for(IndicatorExecutionTagDTO iet: iets ){
+                        totalValue += iet.getTotalValue();
+                    }
+                        System.out.println (i + " - " + indicator + " - " + totalValue);
+
+                    ind.add(totalValue+"");
                 }
                 else {
                     ind.add("0");
@@ -392,7 +522,7 @@ public class ReportDataService {
         List<IndicatorExecutionDetailedDTO> resultData = this.reportDao.getPartnersIndicatorsExecutionsDetailedByPeriodId(projectId);
         List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        0, 1, 2, 3, 4, 5, 27, 28
+                        0, 1, 2, 3, 4, 5, 28, 29
                 )
         );
 
@@ -410,7 +540,7 @@ public class ReportDataService {
 
         List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        0, 1, 2, 3, 4, 5, 27, 28
+                        0, 1, 2, 3, 4, 5, 28, 29
                 )
         );
 
@@ -427,7 +557,7 @@ public class ReportDataService {
 
         List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        0, 1, 2, 3, 4, 5, 27, 28
+                        0, 1, 2, 3, 4, 5, 28, 29
                 )
         );
 
@@ -446,7 +576,7 @@ public class ReportDataService {
 
         List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        0, 1, 2, 3, 4, 5, 27, 28
+                        0, 1, 2, 3, 4, 5, 28, 29
                 )
         );
 
@@ -470,7 +600,7 @@ public class ReportDataService {
 
         List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        0, 1, 2, 3, 4, 5, 27, 28, 22, 23
+                        0, 1, 2, 3, 4, 5, 28, 29, 23, 24
                 )
         );
 
@@ -517,6 +647,9 @@ public class ReportDataService {
                 break;
             case "Indicador":
                 cell.setCellValue(ie.getIndicator());
+                break;
+            case "Tags":
+                cell.setCellValue(ie.getTags());
                 break;
             case "Categoría":
                 cell.setCellValue(ie.getCategory());
@@ -643,35 +776,37 @@ public class ReportDataService {
         titlesMap.put(9, "Declaración de Proyecto");
         titlesMap.put(10, "Tipo de Indicador");
         titlesMap.put(11, "Indicador");
-        titlesMap.put(12, "Categoría");
-        titlesMap.put(13, "Frecuencia");
-        titlesMap.put(14, "Proyecto");
-        titlesMap.put(15, "Implementador");
-        titlesMap.put(16, "Ejecución Total");
-        titlesMap.put(17, "Meta Total");
-        titlesMap.put(18, "% de Ejecución Total");
-        titlesMap.put(19, "Trimestre Orden");
-        titlesMap.put(20, "Trimestre");
-        titlesMap.put(21, "Ejecucion Trimestral");
-        titlesMap.put(22, "Meta Trimestral");
-        titlesMap.put(23, "% de Ejecución Trimestral");
-        titlesMap.put(24, "Mes Orden");
-        titlesMap.put(25, "Mes");
-        titlesMap.put(26, "Ejecucion Mensual");
-        titlesMap.put(27, "Valor Id");
-        titlesMap.put(28, "Valor Personalizado Id");
-        titlesMap.put(29, "Tipo de Desagregacion");
-        titlesMap.put(30, "Cantón");
-        titlesMap.put(31, "Provincia");
-        titlesMap.put(32, "Tipo de Población");
-        titlesMap.put(33, "Género");
-        titlesMap.put(34, "Edad");
-        titlesMap.put(35, "País de Origen");
-        titlesMap.put(36, "Diversidad");
-        titlesMap.put(37, "Edad - Educación Primaria");
-        titlesMap.put(38, "Edad - Educación Terciaria");
-        titlesMap.put(39, "Desagregación Personalizada");
-        titlesMap.put(40, "Valor Reportado");
+        titlesMap.put(12, "Tags");
+        titlesMap.put(13, "Categoría");
+        titlesMap.put(14, "Frecuencia");
+        titlesMap.put(15, "Proyecto");
+        titlesMap.put(16, "Implementador");
+        titlesMap.put(17, "Ejecución Total");
+        titlesMap.put(18, "Meta Total");
+        titlesMap.put(19, "% de Ejecución Total");
+        titlesMap.put(20, "Trimestre Orden");
+        titlesMap.put(21, "Trimestre");
+        titlesMap.put(22, "Ejecucion Trimestral");
+        titlesMap.put(23, "Meta Trimestral");
+        titlesMap.put(24, "% de Ejecución Trimestral");
+        titlesMap.put(25, "Mes Orden");
+        titlesMap.put(26, "Mes");
+        titlesMap.put(27, "Ejecucion Mensual");
+        titlesMap.put(28, "Valor Id");
+        titlesMap.put(29, "Valor Personalizado Id");
+        titlesMap.put(30, "Tipo de Desagregacion");
+        titlesMap.put(31, "Cantón");
+        titlesMap.put(32, "Provincia");
+        titlesMap.put(33, "Tipo de Población");
+        titlesMap.put(34, "Género");
+        titlesMap.put(35, "Edad");
+        titlesMap.put(36, "País de Origen");
+        titlesMap.put(37, "Diversidad");
+        titlesMap.put(38, "Edad - Educación Primaria");
+        titlesMap.put(39, "Edad - Educación Terciaria");
+        titlesMap.put(40, "Desagregación Personalizada");
+        titlesMap.put(41, "Valor Reportado");
+
 
 
         List<String> titles = new ArrayList<>();
@@ -698,35 +833,36 @@ public class ReportDataService {
         titlesMap.put(9, 6000);// "Declaración de Proyecto");
         titlesMap.put(10, 4000);// "Tipo de Indicador");
         titlesMap.put(11, 7000);// "Indicador");
-        titlesMap.put(12, 6500);// "Categoría");
-        titlesMap.put(13, 5000);// "Frecuencia");
-        titlesMap.put(14, 7000);// "Proyecto");
-        titlesMap.put(15, 5000);// "Implementador");
-        titlesMap.put(16, 5000);// "Ejecución Total");
-        titlesMap.put(17, 5000);// "Meta Total");
-        titlesMap.put(18, 5000);// "% de Ejecución Total");
-        titlesMap.put(19, 5000);// "Trimestre Orden");
-        titlesMap.put(20, 5000);// "Trimestre");
-        titlesMap.put(21, 5000);// "Ejecucion Trimestral");
-        titlesMap.put(22, 5000);// "Meta Trimestral");
-        titlesMap.put(23, 5000);// "% de Ejecución Trimestral");
-        titlesMap.put(24, 5000);// "Mes Orden");
-        titlesMap.put(25, 5000);// "Mes");
-        titlesMap.put(26, 5000);// "Ejecucion Mensual");
-        titlesMap.put(27, 5000);// "Valor Id");
-        titlesMap.put(28, 5000);// "Valor Personalizado Id");
-        titlesMap.put(29, 7000);// "Tipo de Desagregacion");
-        titlesMap.put(30, 5000);// "Cantón");
-        titlesMap.put(31, 5000);// "Provincia");
-        titlesMap.put(32, 6000);// "Tipo de Población");
-        titlesMap.put(33, 5000);// "Género");
-        titlesMap.put(34, 5000);// "Edad");
-        titlesMap.put(35, 5000);// "País de Origen");
-        titlesMap.put(36, 5000);// "Diversidad");
-        titlesMap.put(37, 5000);// "Edad - Educación Primaria");
-        titlesMap.put(38, 5000);// "Edad - Educación Terciaria");
-        titlesMap.put(39, 5000);// "Desagregación Personalizada");
-        titlesMap.put(40, 5000);// "Valor Reportado");
+        titlesMap.put(12, 7000);// "Tags");
+        titlesMap.put(13, 6500);// "Categoría");
+        titlesMap.put(14, 5000);// "Frecuencia");
+        titlesMap.put(15, 7000);// "Proyecto");
+        titlesMap.put(16, 5000);// "Implementador");
+        titlesMap.put(17, 5000);// "Ejecución Total");
+        titlesMap.put(18, 5000);// "Meta Total");
+        titlesMap.put(19, 5000);// "% de Ejecución Total");
+        titlesMap.put(20, 5000);// "Trimestre Orden");
+        titlesMap.put(21, 5000);// "Trimestre");
+        titlesMap.put(22, 5000);// "Ejecucion Trimestral");
+        titlesMap.put(23, 5000);// "Meta Trimestral");
+        titlesMap.put(24, 5000);// "% de Ejecución Trimestral");
+        titlesMap.put(25, 5000);// "Mes Orden");
+        titlesMap.put(26, 5000);// "Mes");
+        titlesMap.put(27, 5000);// "Ejecucion Mensual");
+        titlesMap.put(28, 5000);// "Valor Id");
+        titlesMap.put(29, 5000);// "Valor Personalizado Id");
+        titlesMap.put(30, 7000);// "Tipo de Desagregacion");
+        titlesMap.put(31, 5000);// "Cantón");
+        titlesMap.put(32, 5000);// "Provincia");
+        titlesMap.put(33, 6000);// "Tipo de Población");
+        titlesMap.put(34, 5000);// "Género");
+        titlesMap.put(35, 5000);// "Edad");
+        titlesMap.put(36, 5000);// "País de Origen");
+        titlesMap.put(37, 5000);// "Diversidad");
+        titlesMap.put(38, 5000);// "Edad - Educación Primaria");
+        titlesMap.put(39, 5000);// "Edad - Educación Terciaria");
+        titlesMap.put(40, 5000);// "Desagregación Personalizada");
+        titlesMap.put(41, 5000);// "Valor Reportado");
 
 
         List<Integer> widths = new ArrayList<>();
@@ -744,7 +880,7 @@ public class ReportDataService {
 
         List<Integer> columnsToRemove = new ArrayList<>(
                 Arrays.asList(
-                        0, 1, 2, 3, 4, 5, 27, 28
+                        0, 1, 2, 3, 4, 5, 28, 29
                 )
         );
 

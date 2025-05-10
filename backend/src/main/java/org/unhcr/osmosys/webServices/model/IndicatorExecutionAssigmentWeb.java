@@ -1,6 +1,7 @@
 package org.unhcr.osmosys.webServices.model;
 
 import com.sagatechs.generics.webservice.webModel.UserWeb;
+import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -27,6 +28,7 @@ public class IndicatorExecutionAssigmentWeb extends BaseWebEntity implements Ser
     private StatementWeb projectStatement;
 
     private List<CantonWeb> locations = new ArrayList<>();
+    private List<StandardDissagregationOptionWeb> dissagregationAssigments;
     /* implementación directa*/
     private OfficeWeb reportingOffice;
     private UserWeb assignedUser;
@@ -134,6 +136,14 @@ public class IndicatorExecutionAssigmentWeb extends BaseWebEntity implements Ser
 
     public void setAssignedBudget(BigDecimal assignedBudget) {
         this.assignedBudget = assignedBudget;
+    }
+
+    public List<StandardDissagregationOptionWeb> getDissagregationAssigments() {
+        return dissagregationAssigments;
+    }
+
+    public void setDissagregationAssigments(List<StandardDissagregationOptionWeb> dissagregationAssigments) {
+        this.dissagregationAssigments = dissagregationAssigments;
     }
 
     @Override

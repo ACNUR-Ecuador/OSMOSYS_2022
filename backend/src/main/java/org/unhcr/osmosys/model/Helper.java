@@ -30,6 +30,7 @@ import java.math.BigDecimal;
                                 @ColumnResult(name = "statement_project", type = String.class),
                                 @ColumnResult(name = "indicator_type", type = String.class),
                                 @ColumnResult(name = "indicator", type = String.class),
+                                @ColumnResult(name = "tags", type = String.class),
                                 @ColumnResult(name = "category", type = String.class),
                                 @ColumnResult(name = "frecuency", type = String.class),
                                 @ColumnResult(name = "project", type = String.class),
@@ -141,6 +142,7 @@ import java.math.BigDecimal;
                 @ConstructorResult(
                         targetClass = IndicatorExecutionTagDTO.class,
                         columns = {
+                                @ColumnResult(name = "ie_id", type = Long.class),
                                 @ColumnResult(name = "performance_indicator_id", type = Long.class),
                                 @ColumnResult(name = "indicator", type = String.class),
                                 @ColumnResult(name = "period_id", type = Long.class),

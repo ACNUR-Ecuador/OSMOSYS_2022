@@ -118,6 +118,15 @@ public class AppConfigurationService {
         }
     }
 
+    public boolean getSendEmailAlerts() {
+        String valusS = this.findValorByClave(AppConfigurationKey.SEND_EMAIL_ALERTS);
+        return Boolean.parseBoolean(valusS);
+    }
+    public boolean getSendEmailReminders() {
+        String valusS = this.findValorByClave(AppConfigurationKey.SEND_EMAIL_REMINDERS);
+        return Boolean.parseBoolean(valusS);
+    }
+
     private List<Integer> getLisOfNumberFromString(String stringList) {
         List<Integer> result = new ArrayList<>();
         if (StringUtils.isBlank(stringList)) {
@@ -128,5 +137,23 @@ public class AppConfigurationService {
             return result;
         }
         return Arrays.stream(valuesString).map(Integer::parseInt).collect(Collectors.toList());
+    }
+    public Integer getResultManagerLimitDay() {
+        String valusS = this.findValorByClave(AppConfigurationKey.RESULT_MANAGER_LIMIT_DAY);
+
+        if (StringUtils.isBlank(valusS)) {
+            return null;
+        } else {
+            return Integer.parseInt(valusS);
+        }
+    }
+    public Integer getResultManagerReminderDay() {
+        String valusS = this.findValorByClave(AppConfigurationKey.RESULT_MANAGER_REMINDER_DAY);
+
+        if (StringUtils.isBlank(valusS)) {
+            return null;
+        } else {
+            return Integer.parseInt(valusS);
+        }
     }
 }

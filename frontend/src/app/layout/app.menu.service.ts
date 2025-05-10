@@ -78,7 +78,7 @@ export class MenuService {
         {
             label: 'Administración',
             icon: 'pi pi-cog',
-            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR_LOCAL','ADMINISTRADOR_REGIONAL'],
+            roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR_LOCAL','ADMINISTRADOR_REGIONAL','PUNTO_FOCAL'],
             items: [
                 // {label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'], roles: ['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']},
 
@@ -160,7 +160,7 @@ export class MenuService {
                 {
                     label: 'Indicadores de Producto',
                     icon: 'pi pi-fw pi-box',
-                    roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL'],
+                    roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL', 'PUNTO_FOCAL'],
                     items: [
 
 
@@ -180,7 +180,7 @@ export class MenuService {
                             label: 'Indicadores Socios',
                             icon: 'pi pi-fw pi-user-plus',
                             routerLink: ['/administration/partnerProjectListAdministration'],
-                            roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL']
+                            roles: ['SUPER_ADMINISTRADOR','ADMINISTRADOR_REGIONAL', 'ADMINISTRADOR_LOCAL','PUNTO_FOCAL']
                         },
                         {
                             label: 'Indicadores Implementación Directa',

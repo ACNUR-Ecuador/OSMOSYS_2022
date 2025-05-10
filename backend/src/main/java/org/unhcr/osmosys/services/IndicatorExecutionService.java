@@ -3,13 +3,11 @@ package org.unhcr.osmosys.services;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.AuditAction;
 import com.sagatechs.generics.persistence.model.State;
-import com.sagatechs.generics.security.UserSecurityContext;
 import com.sagatechs.generics.security.dao.UserDao;
 import com.sagatechs.generics.security.model.User;
 import com.sagatechs.generics.security.servicio.UserService;
 import com.sagatechs.generics.service.AsyncService;
 import com.sagatechs.generics.utils.DateUtils;
-import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jboss.logging.Logger;
 import org.threeten.extra.YearQuarter;
@@ -20,7 +18,9 @@ import org.unhcr.osmosys.model.enums.*;
 import org.unhcr.osmosys.model.standardDissagregations.DissagregationAssignationToIndicatorPeriodCustomization;
 import org.unhcr.osmosys.model.standardDissagregations.options.*;
 import org.unhcr.osmosys.model.standardDissagregations.periodOptions.*;
+import org.unhcr.osmosys.services.standardDissagregations.StandardDissagregationOptionService;
 import org.unhcr.osmosys.webServices.model.*;
+import org.unhcr.osmosys.webServices.model.standardDissagregations.StandardDissagregationOptionWeb;
 import org.unhcr.osmosys.webServices.services.ModelWebTransformationService;
 
 import javax.ejb.EJB;
@@ -79,6 +79,9 @@ public class IndicatorExecutionService {
     @Inject
     private UtilsService utilsService;
 
+    @Inject
+    private StandardDissagregationOptionService standardDissagregationOptionService;
+
     @EJB
     AsyncService asyncService;
 
@@ -116,8 +119,6 @@ public class IndicatorExecutionService {
         Project oldProject = projectDao.find(indicatorExecutionWeb.getProject().getId()).deepCopy();
         List<LabelValue> oldprojectAudit = auditService.convertToProjectAuditDTO(oldProject).toLabelValueList();
 
-        UserWeb principal = UserSecurityContext.getCurrentUser();
-        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
         if (indicator == null) {
             throw new GeneralAppException("Indicador no encontrado " + indicatorExecutionWeb.getIndicator().getId(), Response.Status.BAD_REQUEST);
         }
@@ -144,6 +145,16 @@ public class IndicatorExecutionService {
             for (Canton canton : cantones) {
                 IndicatorExecutionLocationAssigment indicatorExecutionLocationAssigment = new IndicatorExecutionLocationAssigment(canton);
                 ie.addIndicatorExecutionLocationAssigment(indicatorExecutionLocationAssigment);
+            }
+        }
+
+        // disagregationAssigments
+        List<StandardDissagregationOption> dissagregationOptions = new ArrayList<>();
+        if (!indicatorExecutionWeb.getDissagregationAssigments().isEmpty()) {
+            dissagregationOptions=standardDissagregationOptionService.getDissagregationOptionsByIds(indicatorExecutionWeb.getDissagregationAssigments().stream().map(BaseWebEntity::getId).collect(Collectors.toList()));
+            for (StandardDissagregationOption option : dissagregationOptions) {
+                IndicatorExecutionDissagregationAssigment indicatorExecutionDissagregationAssigment = new IndicatorExecutionDissagregationAssigment(option);
+                ie.addIndicatorExecutionDissOptionAssigment(indicatorExecutionDissagregationAssigment);
             }
         }
 
@@ -179,7 +190,7 @@ public class IndicatorExecutionService {
 
         // Registrar auditoría
         List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
-        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.UPDATE, responsibleUser, oldprojectAudit, newprojectAudit, State.ACTIVO);
+        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.UPDATE, oldprojectAudit, newprojectAudit, null, null, State.ACTIVO);
 
         this.saveOrUpdate(ie);
 
@@ -232,6 +243,21 @@ public class IndicatorExecutionService {
                                         .collect(Collectors.toList());
                             }
                         }
+                        /*Se filtran Solo edades seleccionadas*/
+                        if(!ie.getIndicatorExecutionDissagregationAssigments().isEmpty()){
+                            List<Long> ageSelectedOptionsIds=ie.getIndicatorExecutionDissagregationAssigments()
+                                    .stream()
+                                    .filter(option ->  option.getState().equals(State.ACTIVO))
+                                    .map(option -> option.getDisagregationOption().getId()).collect(Collectors.toList());
+
+                            List<AgeDissagregationOption> filteredAges = new ArrayList<>();
+                            for (AgeDissagregationOption ageOption : ageOptions) {
+                                if (ageSelectedOptionsIds.contains(ageOption.getId())) {
+                                    filteredAges.add(ageOption);
+                                }
+                            }
+                            ageOptions=filteredAges;
+                        }
                         simpleDissagregationsMap.put(DissagregationType.EDAD, new ArrayList<>(ageOptions));
                         break;
                     case GENERO:
@@ -240,6 +266,21 @@ public class IndicatorExecutionService {
                                 .filter(option -> option.getState().equals(State.ACTIVO))
                                 .map(PeriodGenderDissagregationOption::getDissagregationOption)
                                 .collect(Collectors.toList());
+                        /*Se filtran Solo géneros seleccionadgs*/
+                        if(!ie.getIndicatorExecutionDissagregationAssigments().isEmpty()){
+                            List<Long> genderSelectedOptionsIds=ie.getIndicatorExecutionDissagregationAssigments()
+                                    .stream()
+                                    .filter(option -> option.getState().equals(State.ACTIVO))
+                                    .map(option -> option.getDisagregationOption().getId()).collect(Collectors.toList());
+
+                            List<GenderDissagregationOption> filteredGenders = new ArrayList<>();
+                            for (GenderDissagregationOption genderOption : genderOptions) {
+                                if (genderSelectedOptionsIds.contains(genderOption.getId())) {
+                                    filteredGenders.add(genderOption);
+                                }
+                            }
+                            genderOptions=filteredGenders;
+                        }
                         simpleDissagregationsMap.put(DissagregationType.GENERO, new ArrayList<>(genderOptions));
                         break;
                     case DIVERSIDAD:
@@ -248,6 +289,21 @@ public class IndicatorExecutionService {
                                 .filter(option -> option.getState().equals(State.ACTIVO))
                                 .map(PeriodDiversityDissagregationOption::getDissagregationOption)
                                 .collect(Collectors.toList());
+                        /*Se filtran Solo diversidades seleccionadas*/
+                        if(!ie.getIndicatorExecutionDissagregationAssigments().isEmpty()){
+                            List<Long> diversitySelectedOptionsIds=ie.getIndicatorExecutionDissagregationAssigments()
+                                    .stream()
+                                    .filter(option -> option.getState().equals(State.ACTIVO))
+                                    .map(option -> option.getDisagregationOption().getId()).collect(Collectors.toList());
+
+                            List<DiversityDissagregationOption> filteredDiversities = new ArrayList<>();
+                            for (DiversityDissagregationOption diversityOption : diversityOptions) {
+                                if (diversitySelectedOptionsIds.contains(diversityOption.getId())) {
+                                    filteredDiversities.add(diversityOption);
+                                }
+                            }
+                            diversityOptions=filteredDiversities;
+                        }
                         simpleDissagregationsMap.put(DissagregationType.DIVERSIDAD, new ArrayList<>(diversityOptions));
                         break;
                     case PAIS_ORIGEN:
@@ -256,6 +312,21 @@ public class IndicatorExecutionService {
                                 .filter(option -> option.getState().equals(State.ACTIVO))
                                 .map(PeriodCountryOfOriginDissagregationOption::getDissagregationOption)
                                 .collect(Collectors.toList());
+                        /*Se filtran Solo países seleccionados*/
+                        if(!ie.getIndicatorExecutionDissagregationAssigments().isEmpty()){
+                            List<Long> diversitySelectedOptionsIds=ie.getIndicatorExecutionDissagregationAssigments()
+                                    .stream()
+                                    .filter(option -> option.getState().equals(State.ACTIVO))
+                                    .map(option -> option.getDisagregationOption().getId()).collect(Collectors.toList());
+
+                            List<CountryOfOriginDissagregationOption> filteredCountrys = new ArrayList<>();
+                            for (CountryOfOriginDissagregationOption countryOption : countryOfOriginOptions) {
+                                if (diversitySelectedOptionsIds.contains(countryOption.getId())) {
+                                    filteredCountrys.add(countryOption);
+                                }
+                            }
+                            countryOfOriginOptions=filteredCountrys;
+                        }
                         simpleDissagregationsMap.put(DissagregationType.PAIS_ORIGEN, new ArrayList<>(countryOfOriginOptions));
                         break;
                     case TIPO_POBLACION:
@@ -264,6 +335,21 @@ public class IndicatorExecutionService {
                                 .filter(option -> option.getState().equals(State.ACTIVO))
                                 .map(PeriodPopulationTypeDissagregationOption::getDissagregationOption)
                                 .collect(Collectors.toList());
+                        /*Se filtran Solo tipos de Población seleccionados*/
+                        if(!ie.getIndicatorExecutionDissagregationAssigments().isEmpty()){
+                            List<Long> diversitySelectedOptionsIds=ie.getIndicatorExecutionDissagregationAssigments()
+                                    .stream()
+                                    .filter(option -> option.getState().equals(State.ACTIVO))
+                                    .map(option -> option.getDisagregationOption().getId()).collect(Collectors.toList());
+
+                            List<PopulationTypeDissagregationOption> filteredPopulationTypes = new ArrayList<>();
+                            for (PopulationTypeDissagregationOption populationOption : populationTypesOptions) {
+                                if (diversitySelectedOptionsIds.contains(populationOption.getId())) {
+                                    filteredPopulationTypes.add(populationOption);
+                                }
+                            }
+                            populationTypesOptions=filteredPopulationTypes;
+                        }
                         simpleDissagregationsMap.put(DissagregationType.TIPO_POBLACION, new ArrayList<>(populationTypesOptions));
                         break;
 
@@ -317,8 +403,6 @@ public class IndicatorExecutionService {
         Project project = projectDao.find(indicatorExecutionAssigmentWeb.getProject().getId()).deepCopy();
         List<LabelValue> oldprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
 
-        UserWeb principal = UserSecurityContext.getCurrentUser();
-        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
 
         indicatorExecution.setState(indicatorExecutionAssigmentWeb.getState());
 
@@ -328,34 +412,39 @@ public class IndicatorExecutionService {
         indicatorExecution.setAssignedBudget(indicatorExecutionAssigmentWeb.getAssignedBudget());
 
         this.updateIndicatorExecutionTotals(indicatorExecution);
-        this.updatePartnerIndicatorExecutionLocationAssigment(indicatorExecutionAssigmentWeb.getId(),indicatorExecutionAssigmentWeb.getLocations());
-
+        this.updatePartnerIndicatorExecutionLocationsAndDissagregationOptionsAssigment(indicatorExecutionAssigmentWeb.getId(),indicatorExecutionAssigmentWeb.getLocations(), indicatorExecutionAssigmentWeb.getDissagregationAssigments());
         // Registrar auditoría
         List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
-        auditService.logAction("Proyecto", project.getCode(), null, AuditAction.UPDATE, responsibleUser, oldprojectAudit, newprojectAudit, State.ACTIVO);
+        auditService.logAction("Proyecto", project.getCode(), null, AuditAction.UPDATE, oldprojectAudit, newprojectAudit, null, null, State.ACTIVO);
 
         this.saveOrUpdate(indicatorExecution);
         return indicatorExecution.getId();
     }
 
+
     public void updateAllIndicatorExecutionsDissagregationsByPeriod(Period period) throws GeneralAppException {
+        updateAllIndicatorExecutionsDissagregationsByPeriod(period, null);
+    }
+
+    public void updateAllIndicatorExecutionsDissagregationsByPeriod(Period period, String jobId) throws GeneralAppException {
 
         Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> periodDissagregationMapGeneralIndicator = this.getPeriodDessagregationMap(true, period, null);
 
         LOGGER.debug("updateAllIndicatorExecutionsDissagregationsByPeriod ");
-        this.updateGeneralIndicatorExecutionsDissagregations(period, periodDissagregationMapGeneralIndicator);
+        this.updateGeneralIndicatorExecutionsDissagregations(period, periodDissagregationMapGeneralIndicator, jobId);
         // performance indicators
         // recupero todos los indicadores afectados
-        List<Indicator> indicatorsToUpdate = this.indicatorDao.getByPeriodDissagregationAssignment(period.getId());
-        int totalIndicators=indicatorsToUpdate.size();
-        LOGGER.debug("updateAllIndicatorExecutionsDissagregationsByPeriod : "+ totalIndicators);
-        int i=0;
+        List<Indicator> indicatorsToUpdate = this.indicatorDao.getByPeriodDissagregationAssignment(period.getId()).stream().filter(i -> (i.getState().equals(State.ACTIVO))).collect(Collectors.toList());
+        int totalIndicators = indicatorsToUpdate.size();
+        LOGGER.debug("updateAllIndicatorExecutionsDissagregationsByPeriod : " + totalIndicators);
+        int i = 0;
         for (Indicator indicator : indicatorsToUpdate) {
             i++;
-            LOGGER.debug("updateAllIndicatorExecutionsDissagregationsByPeriod "+i+"/"+totalIndicators);
+            int progress = 40 + (int) (60 * ((double) i / indicatorsToUpdate.size()))-1;
+            JobStatusService.updateJob(jobId, progress, "Actualizando Indicadores de Producto " + i + "/" + indicatorsToUpdate.size());
+            LOGGER.debug("updateAllIndicatorExecutionsDissagregationsByPeriod " + i + "/" + totalIndicators);
             this.updatePerformanceIndicatorExecutionsDissagregations(period, indicator);
         }
-
     }
 
     public void updateIndicatorExecutionsLocations(IndicatorExecution indicatorExecution,
@@ -372,12 +461,15 @@ public class IndicatorExecutionService {
             periodDissagregationMap = this.getPeriodDessagregationMap(false, period, indicatorExecution.getIndicator());
         }
         if (periodDissagregationMap == null) return;
+
         this.updateIndicatorExecutionLocationsAssignations(indicatorExecution, locationsToActivate, locationsToDesactive);
         this.setStandardDissagregationOptionsForIndicatorExecutions(indicatorExecution, periodDissagregationMap);
+        this.setStandardDissagregationSelectedOptionsForIndicatorExecutions(indicatorExecution, periodDissagregationMap);
         this.quarterService.updateQuarterDissagregations(indicatorExecution, periodDissagregationMap, null);
         this.updateIndicatorExecutionTotals(indicatorExecution);
         this.saveOrUpdate(indicatorExecution);
     }
+
 
     public void updatePerformanceIndicatorExecutionsDissagregations(Period period, Indicator indicator) throws GeneralAppException {
         // obtengo las segregaciones y las opciones standard
@@ -390,6 +482,11 @@ public class IndicatorExecutionService {
         for (IndicatorExecution ie : ies) {
             // debo agregar localizaciones si es el caso
             this.setStandardDissagregationOptionsForIndicatorExecutions(ie, periodDissagregationMap);
+            if(!ie.getIndicatorExecutionDissagregationAssigments().isEmpty()){
+                IndicatorExecutionService.DissagregationOptionsToActivateDesactivate dissOptionsToActivateDessactivate=this.getDissOptionsToActivateDessactivateByIndicatorAssignations(ie);
+                this.updateIndicatorExecutionDissagregationOptionAssignations(ie, dissOptionsToActivateDessactivate.dissagregationOptionToActivate, dissOptionsToActivateDessactivate.dissagregationOptionToDissable);
+            }
+            this.setStandardDissagregationSelectedOptionsForIndicatorExecutions(ie, periodDissagregationMap);
             this.quarterService.updateQuarterDissagregations(ie, periodDissagregationMap, indicator.getCustomDissagregationAssignationToIndicators());
             this.updateIndicatorExecutionTotals(ie);
             this.saveOrUpdate(ie);
@@ -413,8 +510,92 @@ public class IndicatorExecutionService {
             }
         });
     }
+    private void setStandardDissagregationSelectedOptionsForIndicatorExecutions(IndicatorExecution ie, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> periodDissagregationMap) {
+
+        if(ie.getIndicatorExecutionDissagregationAssigments().isEmpty()){
+            return;
+        }
+        Set<Long> dissagregationsSelectedOptionsIds = ie.getIndicatorExecutionDissagregationAssigments().stream()
+                .filter(option -> option.getState().equals(State.ACTIVO))
+                .map(option -> option.getDisagregationOption().getId())
+                .collect(Collectors.toSet());
+        /*Obtengo las opciones de desagregación a configurar*/
+        /*AgeDissagregations*/
+        List<AgeDissagregationOption> ageOptions=standardDissagregationOptionService.getAgeDissagregationOptionByState(State.ACTIVO);
+        List<AgeDissagregationOption> selectedAgeOptions = ageOptions.stream()
+                .filter(ageOption -> dissagregationsSelectedOptionsIds.contains(ageOption.getId()))
+                .collect(Collectors.toList());
+        /*GenderDissagregations*/
+        List<GenderDissagregationOption> genderOptions=standardDissagregationOptionService.getGenderDissagregationOptionByState(State.ACTIVO);
+        List<GenderDissagregationOption> selectedGenderOptions = genderOptions.stream()
+                .filter(genderOption -> dissagregationsSelectedOptionsIds.contains(genderOption.getId()))
+                .collect(Collectors.toList());
+        /*PopulationTypeDissagregations*/
+        List<PopulationTypeDissagregationOption> populationTypeOptions=standardDissagregationOptionService.getPopulationTypeOptionsByState(State.ACTIVO);
+        List<PopulationTypeDissagregationOption> selectedPopulationTypeOptions = populationTypeOptions.stream()
+                .filter(populationTypeOption -> dissagregationsSelectedOptionsIds.contains(populationTypeOption.getId()))
+                .collect(Collectors.toList());
+        /*CountryOfOriginDissagregations*/
+        List<CountryOfOriginDissagregationOption> countryOfOriginOptions=standardDissagregationOptionService.getCountryOfOriginDissagregationOptionByState(State.ACTIVO);
+        List<CountryOfOriginDissagregationOption> selectedCountryOfOriginOptions = countryOfOriginOptions.stream()
+                .filter(countryOfOriginOption -> dissagregationsSelectedOptionsIds.contains(countryOfOriginOption.getId()))
+                .collect(Collectors.toList());
+        /*DiversityDissagregations*/
+        List<DiversityDissagregationOption> diversityOptions=standardDissagregationOptionService.getDiversityeOptionsByState(State.ACTIVO);
+        List<DiversityDissagregationOption> selectedDiversityOptions = diversityOptions.stream()
+                .filter(diversityOption -> dissagregationsSelectedOptionsIds.contains(diversityOption.getId()))
+                .collect(Collectors.toList());
+
+        /*asigno en el mapa las opciones a la desagreación correspondiente*/
+        periodDissagregationMap.forEach((dissagregationType, dissagregationTypeListMap) -> {
+            /*AgeDissagregation*/
+            if (dissagregationType.getSimpleDissagregations().contains(DissagregationType.EDAD)) {
+                dissagregationTypeListMap.forEach((dissagregationType1, standardDissagregationOptions) -> {
+                    if (dissagregationType1.equals(DissagregationType.EDAD)) {
+                        periodDissagregationMap.get(dissagregationType).put(DissagregationType.EDAD, new ArrayList<>(selectedAgeOptions));
+                    }
+                });
+            }
+            /*GenderDissagregation*/
+            if (dissagregationType.getSimpleDissagregations().contains(DissagregationType.GENERO)) {
+                dissagregationTypeListMap.forEach((dissagregationType1, standardDissagregationOptions) -> {
+                    if (dissagregationType1.equals(DissagregationType.GENERO)) {
+                        periodDissagregationMap.get(dissagregationType).put(DissagregationType.GENERO, new ArrayList<>(selectedGenderOptions));
+                    }
+                });
+            }
+            /*PopulationTypeDissagregation*/
+            if (dissagregationType.getSimpleDissagregations().contains(DissagregationType.TIPO_POBLACION)) {
+                dissagregationTypeListMap.forEach((dissagregationType1, standardDissagregationOptions) -> {
+                    if (dissagregationType1.equals(DissagregationType.TIPO_POBLACION)) {
+                        periodDissagregationMap.get(dissagregationType).put(DissagregationType.TIPO_POBLACION, new ArrayList<>(selectedPopulationTypeOptions));
+                    }
+                });
+            }
+            /*CountryOfOriginDissagregation*/
+            if (dissagregationType.getSimpleDissagregations().contains(DissagregationType.PAIS_ORIGEN)) {
+                dissagregationTypeListMap.forEach((dissagregationType1, standardDissagregationOptions) -> {
+                    if (dissagregationType1.equals(DissagregationType.PAIS_ORIGEN)) {
+                        periodDissagregationMap.get(dissagregationType).put(DissagregationType.PAIS_ORIGEN, new ArrayList<>(selectedCountryOfOriginOptions));
+                    }
+                });
+            }
+            /*DiversityDissagregation*/
+            if (dissagregationType.getSimpleDissagregations().contains(DissagregationType.DIVERSIDAD)) {
+                dissagregationTypeListMap.forEach((dissagregationType1, standardDissagregationOptions) -> {
+                    if (dissagregationType1.equals(DissagregationType.DIVERSIDAD)) {
+                        periodDissagregationMap.get(dissagregationType).put(DissagregationType.DIVERSIDAD, new ArrayList<>(selectedDiversityOptions));
+                    }
+                });
+            }
+        });
+    }
 
     public void updateGeneralIndicatorExecutionsDissagregations(Period period, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationTypeMapMap) throws GeneralAppException {
+        updateGeneralIndicatorExecutionsDissagregations(period, dissagregationTypeMapMap, null);
+    }
+
+    public void updateGeneralIndicatorExecutionsDissagregations(Period period, Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> dissagregationTypeMapMap, String jobId) throws GeneralAppException {
         // busco los ies que pueden ser actualizados
         LOGGER.debug("updateGeneralIndicatorExecutionsDissagregations ");
         List<IndicatorExecution> iesToUpdate = this.indicatorExecutionDao.getGeneralIndicatorsExecutionsByPeriodId(period.getId());
@@ -423,6 +604,8 @@ public class IndicatorExecutionService {
         int i=0;
         for (IndicatorExecution ie : iesToUpdate) {
             i++;
+            int progress = 20 + (int) (20 * ((double) i / iesToUpdate.size()));
+            JobStatusService.updateJob(jobId, progress, "Actualizando Indicadores Generales " + i + "/" + iesToUpdate.size());
             LOGGER.debug("updateGeneralIndicatorExecutionsDissagregations : " +i+"/"+ total);
             this.setStandardDissagregationOptionsForIndicatorExecutions(ie, dissagregationTypeMapMap);
             this.quarterService.updateQuarterDissagregations(ie, dissagregationTypeMapMap, null);
@@ -610,8 +793,6 @@ public class IndicatorExecutionService {
         IndicatorExecution ie = this.indicatorExecutionDao.getByIdWithIndicatorValues(targetUpdateDTOWeb.getIndicatorExecutionId());
         Project project = projectDao.find(ie.getProject().getId()).deepCopy();
         List<LabelValue> oldprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
-        UserWeb principal = UserSecurityContext.getCurrentUser();
-        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
 
         ie.setTarget(targetUpdateDTOWeb.getTotalTarget());
         /*
@@ -634,7 +815,7 @@ public class IndicatorExecutionService {
         this.updateIndicatorExecutionTotals(ie);
         // Registrar auditoría
         List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
-        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.UPDATE, responsibleUser, oldprojectAudit, newprojectAudit, State.ACTIVO);
+        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.UPDATE, oldprojectAudit, newprojectAudit,null, null, State.ACTIVO);
         this.saveOrUpdate(ie);
     }
 
@@ -769,10 +950,6 @@ public class IndicatorExecutionService {
             }
         }
 
-        UserWeb principal = UserSecurityContext.getCurrentUser();
-
-        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
-
         List<IndicatorValueWeb> totalIndicatorValueWebs = new ArrayList<>();
         List<Object> newIndicatorValues = new ArrayList<>();
         List<Object> oldIndicatorValues = new ArrayList<>();
@@ -793,17 +970,17 @@ public class IndicatorExecutionService {
                 if(valueToUpdate.getValue()!=null){
                     if(valueToUpdate.getValue().compareTo(indicatorValueWeb.getValue()) !=0){
                         if(indicatorExecution.getProject() == null){
-                                oldValues = indicatorExecutionDao.findIndicatorDirectImplementationValuesById(valueToUpdate.getId());
+                            oldValues = indicatorExecutionDao.findIndicatorDirectImplementationValuesById(valueToUpdate.getId());
                         }else {
-                                if(indicatorType==IndicatorType.GENERAL){
-                                    oldValues = indicatorExecutionDao.findGeneralIndicatorDissagregationValuesById(valueToUpdate.getId());
-                                }else{
-                                    oldValues = indicatorExecutionDao.findIndicatorDissagregationValuesById(valueToUpdate.getId());
-                                }
+                            if(indicatorType==IndicatorType.GENERAL){
+                                oldValues = indicatorExecutionDao.findGeneralIndicatorDissagregationValuesById(valueToUpdate.getId());
+                            }else{
+                                oldValues = indicatorExecutionDao.findIndicatorDissagregationValuesById(valueToUpdate.getId());
+                            }
                         }
-                            oldIndicatorValues.add(oldValues);
-                            isnewValue = true;
-                            auditChange = true;
+                        oldIndicatorValues.add(oldValues);
+                        isnewValue = true;
+                        auditChange = true;
                     }
                 }else{
                     //solo agrego cambios si el valor a actualizar es diferente de cero
@@ -934,7 +1111,7 @@ public class IndicatorExecutionService {
             }else{
                 indicatorCode=indicatorExecution.getProject().getPeriod().getGeneralIndicator().getId().toString();
             }
-            auditService.logAction("Reporte", projectCode, indicatorCode, AuditAction.REPORT, responsibleUser, oldIndicatorValues, newIndicatorValues, State.ACTIVO);
+            auditService.logAction("Reporte", projectCode, indicatorCode, AuditAction.REPORT, oldIndicatorValues, newIndicatorValues,null, null, State.ACTIVO);
         }
 
 
@@ -1013,7 +1190,7 @@ public class IndicatorExecutionService {
                         .getCustomDissagregationAssignationToIndicators().stream()
                         .filter(customDissagregationAssignationToIndicatorExecution ->
                                 customDissagregationAssignationToIndicatorExecution.getState().equals(State.ACTIVO)
-                                && customDissagregationAssignationToIndicatorExecution.getPeriod().getId().equals(period.getId())
+                                        && customDissagregationAssignationToIndicatorExecution.getPeriod().getId().equals(period.getId())
                         )
                         .map(CustomDissagregationAssignationToIndicator::getCustomDissagregation).collect(Collectors.toList());
             }
@@ -1144,6 +1321,194 @@ public class IndicatorExecutionService {
             }
         }
         return new ProjectService.LocationToActivateDesativate(cantonesToActivate, cantonesToDissable);
+    }
+
+    public IndicatorExecutionService.DissagregationOptionsToActivateDesactivate getDissOptionsToActivateDessactivate(IndicatorExecution indicatorExecution, List<StandardDissagregationOptionWeb> dissagregationsOptionsWeb) {
+
+        Set<StandardDissagregationOption> dissOptionsToActivate = new HashSet<>(this.standardDissagregationOptionService.getDissagregationOptionsByIds(dissagregationsOptionsWeb.stream().map(StandardDissagregationOptionWeb::getId).collect(Collectors.toList())));
+        //desactivo los q ya no existen
+        Set<StandardDissagregationOption> dissOptionsToDissable = new HashSet<>();
+        // cantones que ya existent
+        List<StandardDissagregationOption> existingDissOptions = indicatorExecution.getIndicatorExecutionDissagregationAssigments()
+                .stream()
+                .map(IndicatorExecutionDissagregationAssigment::getDisagregationOption).collect(Collectors.toList());
+        for (StandardDissagregationOption existingOption : existingDissOptions) {
+            Optional<StandardDissagregationOptionWeb> dissOptionWebFound = dissagregationsOptionsWeb.stream().filter(option -> option.getId().equals(existingOption.getId()))
+                    .findFirst();
+            if (dissOptionWebFound.isEmpty()) {
+                dissOptionsToDissable.add(existingOption);
+            }
+        }
+        return new IndicatorExecutionService.DissagregationOptionsToActivateDesactivate(dissOptionsToActivate, dissOptionsToDissable);
+    }
+
+    public IndicatorExecutionService.DissagregationOptionsToActivateDesactivate getDissOptionsToActivateDessactivateByIndicatorAssignations(IndicatorExecution indicatorExecution) {
+        Set<Long> dissagregationsSelectedOptionsIds = indicatorExecution.getIndicatorExecutionDissagregationAssigments().stream()
+                .filter(option -> option.getState().equals(State.ACTIVO))
+                .map(option -> option.getDisagregationOption().getId())
+                .collect(Collectors.toSet());
+
+        Set<StandardDissagregationOption> dissOptionsToActivate = new HashSet<>();
+        Set<StandardDissagregationOption> dissOptionsToDissable = new HashSet<>();
+        /*Actualizando por cambios en el Indicador*/
+        for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : indicatorExecution.getIndicator().getDissagregationsAssignationToIndicator()) {
+            if(dissagregationAssignationToIndicator.getDissagregationType().equals(DissagregationType.SIN_DESAGREGACION) && Objects.equals(dissagregationAssignationToIndicator.getPeriod().getId(), indicatorExecution.getPeriod().getId()) && dissagregationAssignationToIndicator.getState().equals(State.ACTIVO) && indicatorExecution.getIndicator().getDissagregationsAssignationToIndicator().size()==1){
+                dissOptionsToDissable=indicatorExecution.getIndicatorExecutionDissagregationAssigments().stream().map(IndicatorExecutionDissagregationAssigment::getDisagregationOption).collect(Collectors.toSet());
+                break;
+            }
+            for (DissagregationType dissagregationType: dissagregationAssignationToIndicator.getDissagregationType().getSimpleDissagregations()){
+                /*AgeDissagregations*/
+                if(dissagregationType.equals(DissagregationType.EDAD) && Objects.equals(dissagregationAssignationToIndicator.getPeriod().getId(), indicatorExecution.getPeriod().getId())){
+                    List<AgeDissagregationOption> ageOptions=standardDissagregationOptionService.getAgeDissagregationOptionByState(State.ACTIVO);
+                    List<AgeDissagregationOption> selectedAgeOptions = ageOptions.stream()
+                            .filter(ageOption -> dissagregationsSelectedOptionsIds.contains(ageOption.getId()))
+                            .collect(Collectors.toList());
+                    if(selectedAgeOptions.isEmpty() && dissagregationAssignationToIndicator.getState().equals(State.ACTIVO)){
+                        dissOptionsToActivate.addAll(ageOptions);
+                    }
+                    if(!selectedAgeOptions.isEmpty()&& dissagregationAssignationToIndicator.getState().equals(State.INACTIVO)){
+                        dissOptionsToDissable.addAll(selectedAgeOptions);
+                    }
+                }
+                /*GenderDissagregations*/
+                if(dissagregationType.equals(DissagregationType.GENERO) && Objects.equals(dissagregationAssignationToIndicator.getPeriod().getId(), indicatorExecution.getPeriod().getId())){
+                    List<GenderDissagregationOption> genderOptions=standardDissagregationOptionService.getGenderDissagregationOptionByState(State.ACTIVO);
+                    List<GenderDissagregationOption> selectedGenderOptions = genderOptions.stream()
+                            .filter(genderOption -> dissagregationsSelectedOptionsIds.contains(genderOption.getId()))
+                            .collect(Collectors.toList());
+                    if(selectedGenderOptions.isEmpty() && dissagregationAssignationToIndicator.getState().equals(State.ACTIVO)){
+                        dissOptionsToActivate.addAll(genderOptions);
+                    }
+                    if(!selectedGenderOptions.isEmpty()&& dissagregationAssignationToIndicator.getState().equals(State.INACTIVO)){
+                        dissOptionsToDissable.addAll(selectedGenderOptions);
+                    }
+                }
+                /*PopulationTypeDissagregations*/
+                if(dissagregationType.equals(DissagregationType.TIPO_POBLACION) && Objects.equals(dissagregationAssignationToIndicator.getPeriod().getId(), indicatorExecution.getPeriod().getId())){
+                    List<PopulationTypeDissagregationOption> populationTypeOptions=standardDissagregationOptionService.getPopulationTypeOptionsByState(State.ACTIVO);
+                    List<PopulationTypeDissagregationOption> selectedPopulationTypeOptions = populationTypeOptions.stream()
+                            .filter(populationTypeOption -> dissagregationsSelectedOptionsIds.contains(populationTypeOption.getId()))
+                            .collect(Collectors.toList());
+                    if(selectedPopulationTypeOptions.isEmpty() && dissagregationAssignationToIndicator.getState().equals(State.ACTIVO)){
+                        dissOptionsToActivate.addAll(populationTypeOptions);
+                    }
+                    if(!selectedPopulationTypeOptions.isEmpty()&& dissagregationAssignationToIndicator.getState().equals(State.INACTIVO)){
+                        dissOptionsToDissable.addAll(selectedPopulationTypeOptions);
+                    }
+                }
+                /*CountryOfOriginDissagregations*/
+                if(dissagregationType.equals(DissagregationType.PAIS_ORIGEN) && Objects.equals(dissagregationAssignationToIndicator.getPeriod().getId(), indicatorExecution.getPeriod().getId())){
+                    List<CountryOfOriginDissagregationOption> countryOfOriginOptions=standardDissagregationOptionService.getCountryOfOriginDissagregationOptionByState(State.ACTIVO);
+                    List<CountryOfOriginDissagregationOption> selectedCountryOfOriginOptions = countryOfOriginOptions.stream()
+                            .filter(countryOfOriginOption -> dissagregationsSelectedOptionsIds.contains(countryOfOriginOption.getId()))
+                            .collect(Collectors.toList());
+                    if(selectedCountryOfOriginOptions.isEmpty() && dissagregationAssignationToIndicator.getState().equals(State.ACTIVO)){
+                        dissOptionsToActivate.addAll(countryOfOriginOptions);
+                    }
+                    if(!selectedCountryOfOriginOptions.isEmpty()&& dissagregationAssignationToIndicator.getState().equals(State.INACTIVO)){
+                        dissOptionsToDissable.addAll(selectedCountryOfOriginOptions);
+                    }
+                }
+                /*DiversityDissagregations*/
+                if(dissagregationType.equals(DissagregationType.DIVERSIDAD) && Objects.equals(dissagregationAssignationToIndicator.getPeriod().getId(), indicatorExecution.getPeriod().getId())){
+                    List<DiversityDissagregationOption> diversityOptions=standardDissagregationOptionService.getDiversityeOptionsByState(State.ACTIVO);
+                    List<DiversityDissagregationOption> selectedDiversityOptions = diversityOptions.stream()
+                            .filter(diversityOption -> dissagregationsSelectedOptionsIds.contains(diversityOption.getId()))
+                            .collect(Collectors.toList());
+                    if(selectedDiversityOptions.isEmpty() && dissagregationAssignationToIndicator.getState().equals(State.ACTIVO)){
+                        dissOptionsToActivate.addAll(diversityOptions);
+                    }
+                    if(!selectedDiversityOptions.isEmpty()&& dissagregationAssignationToIndicator.getState().equals(State.INACTIVO)){
+                        dissOptionsToDissable.addAll(selectedDiversityOptions);
+                    }
+                }
+            }
+        }
+
+        if(!dissOptionsToActivate.isEmpty() || !dissOptionsToDissable.isEmpty()){
+            return new IndicatorExecutionService.DissagregationOptionsToActivateDesactivate(dissOptionsToActivate, dissOptionsToDissable);
+        }
+
+        /*Actualizando por cambios en el Periodo*/
+        Set<Long> allDissagregationsSelectedOptionsIds = indicatorExecution.getIndicatorExecutionDissagregationAssigments().stream()
+                .map(option -> option.getDisagregationOption().getId())
+                .collect(Collectors.toSet());
+        for (DissagregationAssignationToIndicator dissagregationAssignationToIndicator : indicatorExecution.getIndicator().getDissagregationsAssignationToIndicator()) {
+            if (dissagregationAssignationToIndicator.getDissagregationType().equals(DissagregationType.SIN_DESAGREGACION) && Objects.equals(dissagregationAssignationToIndicator.getPeriod().getId(), indicatorExecution.getPeriod().getId()) && dissagregationAssignationToIndicator.getState().equals(State.ACTIVO) && indicatorExecution.getIndicator().getDissagregationsAssignationToIndicator().size()==1) {
+                dissOptionsToDissable = indicatorExecution.getIndicatorExecutionDissagregationAssigments().stream().map(IndicatorExecutionDissagregationAssigment::getDisagregationOption).collect(Collectors.toSet());
+                break;
+            }
+            for (DissagregationType dissagregationType : dissagregationAssignationToIndicator.getDissagregationType().getSimpleDissagregations()) {
+                /*AgeDissagregationOptions*/
+                if (dissagregationType.equals(DissagregationType.EDAD) && Objects.equals(dissagregationAssignationToIndicator.getPeriod().getId(), indicatorExecution.getPeriod().getId()) && dissagregationAssignationToIndicator.getState().equals(State.ACTIVO)) {
+                    Set<PeriodAgeDissagregationOption> periodAgeDissagregationOptions = indicatorExecution.getPeriod().getPeriodAgeDissagregationOptions();
+                    for (PeriodAgeDissagregationOption option : periodAgeDissagregationOptions) {
+                        if (!allDissagregationsSelectedOptionsIds.contains(option.getDissagregationOption().getId()) && option.getState().equals(State.ACTIVO)) {
+                            dissOptionsToActivate.add(option.getAgeDissagregationOption());
+                        }
+                        if (dissagregationsSelectedOptionsIds.contains(option.getAgeDissagregationOption().getId()) && option.getState().equals(State.INACTIVO)) {
+                            dissOptionsToDissable.add(option.getAgeDissagregationOption());
+                        }
+
+                    }
+                }
+                /*GenderDissagregationOptions*/
+                if (dissagregationType.equals(DissagregationType.GENERO) && Objects.equals(dissagregationAssignationToIndicator.getPeriod().getId(), indicatorExecution.getPeriod().getId()) && dissagregationAssignationToIndicator.getState().equals(State.ACTIVO)) {
+                    Set<PeriodGenderDissagregationOption> periodGenderDissagregationOptions =indicatorExecution.getPeriod().getPeriodGenderDissagregationOptions();
+                    for(PeriodGenderDissagregationOption option: periodGenderDissagregationOptions){
+                        if(!allDissagregationsSelectedOptionsIds.contains(option.getDissagregationOption().getId()) && option.getState().equals(State.ACTIVO)){
+                            dissOptionsToActivate.add(option.getDissagregationOption());
+                        }
+                        if(dissagregationsSelectedOptionsIds.contains(option.getDissagregationOption().getId()) && option.getState().equals(State.INACTIVO)){
+                            dissOptionsToDissable.add(option.getDissagregationOption());
+                        }
+
+                    }
+                }
+                /*PopulationTypeDissagregationOptions*/
+                if (dissagregationType.equals(DissagregationType.TIPO_POBLACION) && Objects.equals(dissagregationAssignationToIndicator.getPeriod().getId(), indicatorExecution.getPeriod().getId()) && dissagregationAssignationToIndicator.getState().equals(State.ACTIVO)) {
+                    Set<PeriodPopulationTypeDissagregationOption> periodPopulationTypeDissagregationOptions =indicatorExecution.getPeriod().getPeriodPopulationTypeDissagregationOptions();
+                    for(PeriodPopulationTypeDissagregationOption option: periodPopulationTypeDissagregationOptions){
+                        if(!allDissagregationsSelectedOptionsIds.contains(option.getDissagregationOption().getId()) && option.getState().equals(State.ACTIVO)){
+                            dissOptionsToActivate.add(option.getDissagregationOption());
+                        }
+                        if(dissagregationsSelectedOptionsIds.contains(option.getDissagregationOption().getId()) && option.getState().equals(State.INACTIVO)){
+                            dissOptionsToDissable.add(option.getDissagregationOption());
+                        }
+
+                    }
+                }
+                /*CountryOfOriginDissagregationOptions*/
+                if (dissagregationType.equals(DissagregationType.PAIS_ORIGEN) && Objects.equals(dissagregationAssignationToIndicator.getPeriod().getId(), indicatorExecution.getPeriod().getId()) && dissagregationAssignationToIndicator.getState().equals(State.ACTIVO)) {
+                    Set<PeriodCountryOfOriginDissagregationOption> periodCountryOfOriginDissagregationOptions =indicatorExecution.getPeriod().getPeriodCountryOfOriginDissagregationOptions();
+                    for(PeriodCountryOfOriginDissagregationOption option: periodCountryOfOriginDissagregationOptions){
+                        if(!allDissagregationsSelectedOptionsIds.contains(option.getDissagregationOption().getId()) && option.getState().equals(State.ACTIVO)){
+                            dissOptionsToActivate.add(option.getDissagregationOption());
+                        }
+                        if(dissagregationsSelectedOptionsIds.contains(option.getDissagregationOption().getId()) && option.getState().equals(State.INACTIVO)){
+                            dissOptionsToDissable.add(option.getDissagregationOption());
+                        }
+
+                    }
+                }
+                /*DiversityDissagregationOptions*/
+                if (dissagregationType.equals(DissagregationType.DIVERSIDAD) && Objects.equals(dissagregationAssignationToIndicator.getPeriod().getId(), indicatorExecution.getPeriod().getId()) && dissagregationAssignationToIndicator.getState().equals(State.ACTIVO)) {
+                    Set<PeriodDiversityDissagregationOption> periodDiversityDissagregationOptions =indicatorExecution.getPeriod().getPeriodDiversityDissagregationOptions();
+                    for(PeriodDiversityDissagregationOption option: periodDiversityDissagregationOptions){
+                        if(!allDissagregationsSelectedOptionsIds.contains(option.getDissagregationOption().getId()) && option.getState().equals(State.ACTIVO)){
+                            dissOptionsToActivate.add(option.getDissagregationOption());
+                        }
+                        if(dissagregationsSelectedOptionsIds.contains(option.getDissagregationOption().getId()) && option.getState().equals(State.INACTIVO)){
+                            dissOptionsToDissable.add(option.getDissagregationOption());
+                        }
+
+                    }
+                }
+
+            }
+        }
+
+        return new IndicatorExecutionService.DissagregationOptionsToActivateDesactivate(dissOptionsToActivate, dissOptionsToDissable);
     }
 
 
@@ -1371,6 +1736,65 @@ public class IndicatorExecutionService {
         return ie.getId();
     }
 
+
+    /*Actualizar lugares y opciones de desagregación en conjunto*/
+    public Long updatePartnerIndicatorExecutionLocationsAndDissagregationOptionsAssigment(Long indicatorExecutionId, List<CantonWeb> cantonesWeb, List<StandardDissagregationOptionWeb> indicatorExecutionDissagregationOptionsWeb) throws GeneralAppException {
+        if (indicatorExecutionId == null) {
+            throw new GeneralAppException("indicador execution id es dato obligatorio", Response.Status.BAD_REQUEST);
+        }
+        if (CollectionUtils.isEmpty(cantonesWeb)) {
+            throw new GeneralAppException("Al menos debe haber un cantón", Response.Status.BAD_REQUEST);
+        }
+        // recupero el ie
+        IndicatorExecution ie = this.indicatorExecutionDao.getPartnerIndicatorExecutionById(indicatorExecutionId);
+        if (ie == null) {
+            throw new GeneralAppException("No se pudo encontrar el indicador (indicatorExecutionId =" + indicatorExecutionId + ")", Response.Status.BAD_REQUEST);
+        }
+        if (ie.getProject() == null) {
+            throw new GeneralAppException("Este indicador no es ejecutado por un Socio (indicatorExecutionId =" + indicatorExecutionId + ")", Response.Status.BAD_REQUEST);
+        }
+
+        //seteo locatios para ie
+        Map<DissagregationType, Map<DissagregationType, List<StandardDissagregationOption>>> periodDissagregationMap;
+        Period period = this.periodService.getWithAllDataById(ie.getPeriod().getId());
+
+        if (ie.getIndicatorType().equals(IndicatorType.GENERAL)) {
+            ProjectService.LocationToActivateDesativate locatoinActiveNoActive = this.projectService.setLocationsInProject(ie.getProject(), cantonesWeb);
+            Project project = ie.getProject();
+            for (IndicatorExecution indicatorExecution : project.getIndicatorExecutions()) {
+                this.updateIndicatorExecutionsLocations(indicatorExecution, locatoinActiveNoActive.locationsToActivate, locatoinActiveNoActive.locationsToDissable);
+            }
+        } else {
+            periodDissagregationMap = this.getPeriodDessagregationMap(false, period, ie.getIndicator());
+            if (periodDissagregationMap == null) return ie.getId();
+            ProjectService.LocationToActivateDesativate locationToActivateDessactivate = this.getLocationToActivateDessactivate(ie, cantonesWeb);
+            this.updateIndicatorExecutionLocationsAssignations(ie, locationToActivateDessactivate.locationsToActivate, locationToActivateDessactivate.locationsToDissable);
+            if(!indicatorExecutionDissagregationOptionsWeb.isEmpty()){
+                IndicatorExecutionService.DissagregationOptionsToActivateDesactivate dissOptionsToActivateDessactivate = this.getDissOptionsToActivateDessactivate(ie, indicatorExecutionDissagregationOptionsWeb);
+                this.updateIndicatorExecutionDissagregationOptionAssignations(ie, dissOptionsToActivateDessactivate.dissagregationOptionToActivate, dissOptionsToActivateDessactivate.dissagregationOptionToDissable);
+            }
+            this.setStandardDissagregationOptionsForIndicatorExecutions(ie, periodDissagregationMap);
+            this.setStandardDissagregationSelectedOptionsForIndicatorExecutions(ie, periodDissagregationMap);
+            this.quarterService.updateQuarterDissagregations(ie, periodDissagregationMap, null);
+            this.updateIndicatorExecutionTotals(ie);
+            this.saveOrUpdate(ie);
+        }
+
+        return ie.getId();
+    }
+    /****************/
+
+    static class DissagregationOptionsToActivateDesactivate {
+        public final Set<StandardDissagregationOption> dissagregationOptionToActivate;
+        public final Set<StandardDissagregationOption> dissagregationOptionToDissable;
+
+        public DissagregationOptionsToActivateDesactivate(Set<StandardDissagregationOption> dissagregationOptionToActivate, Set<StandardDissagregationOption> dissagregationOptionToDissable) {
+            this.dissagregationOptionToActivate = dissagregationOptionToActivate;
+            this.dissagregationOptionToDissable = dissagregationOptionToDissable;
+        }
+    }
+
+
     public Long updateDirectImplementationIndicatorExecutionLocationAssigment(Long indicatorExecutionId, List<CantonWeb> cantonesWeb) throws GeneralAppException {
         if (indicatorExecutionId == null) {
             throw new GeneralAppException("indicador execution id es dato obligatorio", Response.Status.BAD_REQUEST);
@@ -1446,6 +1870,41 @@ public class IndicatorExecutionService {
                             .filter(indicatorExecutionLocationAssigment -> cantonToDissable.getId().equals(indicatorExecutionLocationAssigment.getLocation().getId()))
                             .findFirst();
             indicatorExecutionLocationAssigmentToDissableOpt.ifPresent(indicatorExecutionLocationAssigment -> indicatorExecutionLocationAssigment.setState(State.INACTIVO));
+        });
+    }
+
+    /*Actualizar Opciones de Desagregaciones Indicator Executions*/
+
+    public void updateIndicatorExecutionDissagregationOptionAssignations(
+            IndicatorExecution indicatorExecution,
+            Set<StandardDissagregationOption> dissOptionsToActivate,
+            Set<StandardDissagregationOption> dissOptionsToDissable
+    ) {
+        dissOptionsToActivate.forEach(dissOptionToActivate -> {
+            Optional<IndicatorExecutionDissagregationAssigment> indicatorExecutionDissOptionAssigmentToActivateOpt =
+                    indicatorExecution.getIndicatorExecutionDissagregationAssigments()
+                            .stream()
+                            .filter(indicatorExecutionDissOptionAssigment ->
+                                    dissOptionToActivate.getId().equals(indicatorExecutionDissOptionAssigment.getDisagregationOption().getId()))
+                            .findFirst();
+            if (indicatorExecutionDissOptionAssigmentToActivateOpt.isPresent()) {
+                indicatorExecutionDissOptionAssigmentToActivateOpt.get().setState(State.ACTIVO);
+            } else {
+                IndicatorExecutionDissagregationAssigment newIndicatorExecutionDissOptionAssigment = new IndicatorExecutionDissagregationAssigment();
+                newIndicatorExecutionDissOptionAssigment.setDisagregationOption(dissOptionToActivate);
+                newIndicatorExecutionDissOptionAssigment.setState(State.ACTIVO);
+                indicatorExecution.addIndicatorExecutionDissOptionAssigment(newIndicatorExecutionDissOptionAssigment);
+
+            }
+        });
+
+        dissOptionsToDissable.forEach(dissOptionToDissable -> {
+            Optional<IndicatorExecutionDissagregationAssigment> indicatorExecutionDissOptionAssigmentToDissableOpt =
+                    indicatorExecution.getIndicatorExecutionDissagregationAssigments()
+                            .stream()
+                            .filter(indicatorExecutionDissOptionAssigment -> dissOptionToDissable.getId().equals(indicatorExecutionDissOptionAssigment.getDisagregationOption().getId()))
+                            .findFirst();
+            indicatorExecutionDissOptionAssigmentToDissableOpt.ifPresent(indicatorExecutionDissOptionAssigment -> indicatorExecutionDissOptionAssigment.setState(State.INACTIVO));
         });
     }
 
@@ -1560,6 +2019,11 @@ public class IndicatorExecutionService {
 
     public List<IndicatorExecution> getIndicatorExecutionsByResultManagerAndPeriodId(Long userId, Long periodId){
         return indicatorExecutionDao.getIndicatorExecutionsByResultManagerAndPeriodId(userId, periodId);
+    }
+
+    public List<IndicatorExecutionWeb> getDirectImplementationsIndicatorExecutionsByReportUserId(Long periodId, Long userId) throws GeneralAppException {
+        List<IndicatorExecution> r = this.indicatorExecutionDao.getDirectImplementationsIndicatorExecutionsByReportUserId(periodId, userId);
+        return this.modelWebTransformationService.indicatorExecutionsToIndicatorExecutionsWeb(r, false);
     }
 
 

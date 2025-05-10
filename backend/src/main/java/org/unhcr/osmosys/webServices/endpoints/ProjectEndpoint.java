@@ -2,9 +2,13 @@ package org.unhcr.osmosys.webServices.endpoints;
 
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
+import com.sagatechs.generics.security.CustomPrincipal;
+import com.sagatechs.generics.security.UserSecurityContext;
 import com.sagatechs.generics.security.annotations.Secured;
+import com.sagatechs.generics.webservice.webModel.UserWeb;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jboss.logging.Logger;
+import org.unhcr.osmosys.services.JobStatusService;
 import org.unhcr.osmosys.services.ProjectService;
 import org.unhcr.osmosys.services.dataImport.ProjectsImportService;
 import org.unhcr.osmosys.webServices.model.*;
@@ -12,14 +16,20 @@ import org.unhcr.osmosys.webServices.model.*;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.io.ByteArrayOutputStream;
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Path("/projects")
 @RequestScoped
@@ -31,6 +41,9 @@ public class ProjectEndpoint {
 
     @Inject
     ProjectsImportService projectsImportService;
+
+    @Context
+    SecurityContext securityContext;
 
     @Path("/")
     @POST
@@ -46,6 +59,33 @@ public class ProjectEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Long update(ProjectWeb projectWeb) throws GeneralAppException {
         return this.projectService.update(projectWeb);
+    }
+
+  
+    @Path("/updateAsync")
+    @PUT
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateAsync(ProjectWeb projectWeb) {
+        // Se recomienda usar un ExecutorService administrado por el contenedor en producción.
+
+        String jobId = JobStatusService.createJob();
+
+        CustomPrincipal customPrincipal = (CustomPrincipal) securityContext.getUserPrincipal();
+        UserWeb userWeb = customPrincipal.getUser();
+        // Inicia un hilo para procesar la tarea asíncrona
+        new Thread(() -> {
+            try {
+                UserSecurityContext.setCurrentUser(userWeb);
+                Long result = projectService.update(projectWeb, jobId);
+                JobStatusService.finalizeJob(jobId, result);
+
+            } catch (GeneralAppException ex) {
+
+            }
+        }).start();
+        return Response.ok(Collections.singletonMap("jobId", jobId)).build();
     }
 
     @Path("/")

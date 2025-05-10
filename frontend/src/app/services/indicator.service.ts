@@ -23,7 +23,7 @@ export class IndicatorService {
     }
 
     public update(indicator: Indicator): Observable<number> {
-        return this.http.put<number>(`${mainServiceUrl}`, indicator);
+        return this.http.put<number>(`${mainServiceUrl}/asyncUpdate`, indicator);
     }
 
     public getByState(state: EnumsState): Observable<Indicator[]> {

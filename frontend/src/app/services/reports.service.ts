@@ -332,4 +332,17 @@ export class ReportsService {
             responseType: 'blob' as 'json'
         });
     }
+    /****************result managers indicators report***********/
+    public getAllResultManagersIndicatorsValidationReportByPeriodId(periodId: number) {
+        return this.http.get(`${mainServiceUrl}/getAllResultManagersIndicatorsValidationReportByPeriodId/${periodId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
+    public getResultManagerIndicatorsValidationReportByPeriodIdAndUserId(periodId: number, userId: number) {
+        return this.http.get(`${mainServiceUrl}/getResultManagerIndicatorsValidationReportByPeriodIdAndUserId/${periodId}/${userId}`, {
+            observe: 'response',
+            responseType: 'blob' as 'json'
+        });
+    }
 }

@@ -3,6 +3,7 @@ package com.sagatechs.generics.webservice.service;
 import com.sagatechs.generics.appConfiguration.AppConfiguration;
 import com.sagatechs.generics.appConfiguration.AppConfigurationKey;
 import com.sagatechs.generics.appConfiguration.AppConfigurationService;
+import com.sagatechs.generics.security.annotations.Secured;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Path("/appconfiguration")
 @RequestScoped
+@Secured
 public class AppConfigurationEndpoint {
 
     @SuppressWarnings("unused")

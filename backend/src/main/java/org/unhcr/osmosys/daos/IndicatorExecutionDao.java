@@ -1018,7 +1018,7 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
                 "LEFT JOIN q.months m " +
                 "LEFT JOIN m.indicatorValues iv " +
                 "LEFT JOIN iv.populationType sdo " +
-                "WHERE ie.indicator.id = :indicatorId AND q.quarterYearOrder= :quarterOrder AND q.year= :year AND sdo.state=:state AND ie.state = :state " +
+                "WHERE ie.indicator.id = :indicatorId AND q.quarterYearOrder= :quarterOrder AND q.year= :year AND sdo.state=:state AND ie.state = :state AND iv.state = :state " +
                 "GROUP BY sdo.id";
 
         Query query = getEntityManager().createQuery(psql);
@@ -1064,6 +1064,27 @@ public class IndicatorExecutionDao extends GenericDaoJpa<IndicatorExecution, Lon
         return query.getResultList();
 
     }
+    public List<IndicatorExecution> getDirectImplementationsIndicatorExecutionsByReportUserId(Long periodId, Long userId) {
+        String jpql =
+                IndicatorExecutionDao.jpqlDirectImplementationIndicators +
+                        " WHERE p.id = :periodId " +
+                        " and o.indicatorType <> :generalType " +
+                        " and o.project.id is null " +
+                        " and (au.id = :userId or aub.id = :userId) " +
+                        " and o.state = :state " +
+                        " and q.state = :state " +
+                        " and au.state = :state " +
+                        " and aub.state = :state " +
+                        " and m.state = :state ";
+
+        Query q = getEntityManager().createQuery(jpql, IndicatorExecution.class);
+        q.setParameter("periodId", periodId);
+        q.setParameter("generalType", IndicatorType.GENERAL);
+        q.setParameter("userId", userId);
+        q.setParameter("state", State.ACTIVO);
+        return q.getResultList();
+    }
+
 
 
 

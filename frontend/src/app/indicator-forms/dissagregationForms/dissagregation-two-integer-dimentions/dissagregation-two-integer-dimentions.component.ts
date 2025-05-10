@@ -191,7 +191,6 @@ export class DissagregationTwoIntegerDimentionsComponent implements OnInit, OnCh
         }
 
         //Asignar los valores del array de excel creado a los valores en la tabla
-
         this.rows.forEach(Row => {
             Row.forEach(Col => {
                 // Para cada objeto en valuesRowsMap, buscamos coincidencias en indicatorValues
@@ -219,7 +218,12 @@ export class DissagregationTwoIntegerDimentionsComponent implements OnInit, OnCh
                         if (key === 'provincia') {
                             return comparisonValues[key] === Col.location['provincia'].description
                         } else if (key === 'canton') {
-                            return comparisonValues[key] === Col.location.name
+                            if(Col.location.name.includes("--")){
+                                const compoundName=comparisonValues['provincia']+" -- "+comparisonValues[key]
+                                return compoundName === Col.location.name
+                            }else{
+                                return comparisonValues[key] === Col.location.name
+                            }                        
                         } else {
                             return comparisonValues[key] === Col[key].name
                         }

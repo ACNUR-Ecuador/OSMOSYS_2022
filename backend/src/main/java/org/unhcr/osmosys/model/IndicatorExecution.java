@@ -90,6 +90,9 @@ public class IndicatorExecution extends BaseEntityIdState {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "indicatorExecution", cascade = CascadeType.ALL)
     private Set<IndicatorExecutionLocationAssigment> indicatorExecutionLocationAssigments = new HashSet<>();
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "indicatorExecution", cascade = CascadeType.ALL)
+    private Set<IndicatorExecutionDissagregationAssigment> indicatorExecutionDissagregationAssigments = new HashSet<>();
+
     @Column(name = "keep_budget")
     private Boolean keepBudget;
 
@@ -266,15 +269,48 @@ public class IndicatorExecution extends BaseEntityIdState {
         }
     }
 
+    public void addIndicatorExecutionDissOptionAssigment(IndicatorExecutionDissagregationAssigment indicatorExecutionDissOptionAssigment) {
+        indicatorExecutionDissOptionAssigment.setIndicatorExecution(this);
+        if (!this.indicatorExecutionDissagregationAssigments.add(indicatorExecutionDissOptionAssigment)) {
+            this.indicatorExecutionDissagregationAssigments.remove(indicatorExecutionDissOptionAssigment);
+            this.indicatorExecutionDissagregationAssigments.add(indicatorExecutionDissOptionAssigment);
+        }
+    }
+
+    public Set<IndicatorExecutionDissagregationAssigment> getIndicatorExecutionDissagregationAssigments() {
+        return indicatorExecutionDissagregationAssigments;
+    }
+
+    public void setIndicatorExecutionDissagregationAssigments(Set<IndicatorExecutionDissagregationAssigment> indicatorExecutionDissagregationAssigments) {
+        this.indicatorExecutionDissagregationAssigments = indicatorExecutionDissagregationAssigments;
+    }
+
     @Override
     public String toString() {
         return "IndicatorExecution{" +
                 "id=" + id +
+                ", activityDescription='" + activityDescription + '\'' +
                 ", target=" + target +
+                ", projectStatement=" + projectStatement +
                 ", indicator=" + indicator +
                 ", compassIndicator=" + compassIndicator +
                 ", indicatorType=" + indicatorType +
                 ", state=" + state +
+                ", period=" + period +
+                ", totalExecution=" + totalExecution +
+                ", executionPercentage=" + executionPercentage +
+                ", quarters=" + quarters +
+                ", project=" + project +
+                ", reportingOffice=" + reportingOffice +
+                ", supervisorUser=" + supervisorUser +
+                ", assignedUser=" + assignedUser +
+                ", assignedUserBackup=" + assignedUserBackup +
+                ", indicatorExecutionLocationAssigments=" + indicatorExecutionLocationAssigments +
+                ", indicatorExecutionDissagregationAssigments=" + indicatorExecutionDissagregationAssigments +
+                ", keepBudget=" + keepBudget +
+                ", assignedBudget=" + assignedBudget +
+                ", availableBudget=" + availableBudget +
+                ", totalUsedBudget=" + totalUsedBudget +
                 '}';
     }
 

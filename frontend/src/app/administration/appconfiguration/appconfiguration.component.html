@@ -48,7 +48,7 @@
                             <td>
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
-                                        <input pInputText type="text" [(ngModel)]="item.valor">
+                                        <textarea style="width: 100%; overflow: hidden; min-height: 50px;" [autoResize]="true" pInputTextarea type="text" [(ngModel)]="item.valor"></textarea>
                                     </ng-template>
                                     <ng-template pTemplate="output">
                                         {{item.valor}}

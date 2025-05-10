@@ -27,7 +27,7 @@ export class AuditAdministrationComponent implements OnInit {
   auditTableData: any[] = [];
   filteredAuditTableData: any[] = [];
   isFiltered: boolean = false;
-  tables: string[];
+  tables: SelectItem[];
   selectedTable: string;
   _selectedColumns: ColumnTable[];
   showAuditTable = false;
@@ -47,20 +47,39 @@ export class AuditAdministrationComponent implements OnInit {
     private fb: FormBuilder,) { }
 
   ngOnInit(): void {
-    this.tables = ["Proyecto", "Reporte", "Bloqueo de Mes Indicador", "Bloqueo de Mes Masivo"]
+    this.tables = [
+      {
+        label:"Proyecto",
+        value:"Proyecto"
+      },
+      {
+        label:"Reporte",
+        value:"Reporte"
+      },
+      {
+        label:"Bloqueo de Mes por Indicador",
+        value:"Bloqueo de Mes Indicador"
+      },
+      {
+        label:"Bloqueo de Mes Masivo",
+        value:"Bloqueo de Mes Masivo"
+      }
+    ]
     this.months=this.getMonths();
     this.loadPeriods();
     this.createForms();
     this.cols = [
-      { field: 'entity', header: 'Tabla', type: ColumnDataType.text },
+      { field: 'entity', header: 'Auditoría', type: ColumnDataType.text },
       { field: 'projectCode', header: 'Número de Acuerdo', type: ColumnDataType.text },
       { field: 'indicatorCode', header: 'Código de Indicador', type: ColumnDataType.text },
       { field: 'action', header: 'Acción', type: ColumnDataType.text },
+      { field: 'blockedMonth', header: 'Mes', type: ColumnDataType.text },
+      { field: 'blockedYear', header: 'Año', type: ColumnDataType.text },
       { field: 'responsibleUser.name', header: 'Usuario', type: ColumnDataType.text },
       { field: 'changeDate', header: 'Fecha de cambio', type: ColumnDataType.date },
 
     ];
-    this._selectedColumns = this.cols.filter(value => value.field !== 'indicatorCode');
+    this._selectedColumns = this.cols.filter(value => value.field !== 'indicatorCode' && value.field !== 'blockedMonth' && value.field !== 'blockedYear');
     this.enumsService.getByType(EnumsType.AuditAction).subscribe(value => {
       this.auditActions = value;
     });
@@ -242,7 +261,7 @@ getMonths(): { value: number; label: string }[] {
     if (audit.entity === "Reporte") {
       this.showAuditTable = true;
       this.prepareReportTableData();
-    } if (audit.entity === "Bloqueo de Mes Masivo" || audit.entity === "Bloqueo de Mes Indicador") {
+    } if (audit.entity === "Bloqueo de Mes Indicador") {
       this.showAuditTable = true;
       this.prepareMonthBlockTableData();
     } if (audit.entity === "Proyecto") {
@@ -370,9 +389,12 @@ getMonths(): { value: number; label: string }[] {
     this.selectedTable = selectedTable
     this.loadItems(selectedTable,selectedYear.year,selectedMonth.value);
     if (this.selectedTable !== "Proyecto" && this.selectedTable !== "Bloqueo de Mes Masivo") {
-      this._selectedColumns = this.cols;
+      this._selectedColumns = this.cols.filter(value => value.field !== 'blockedMonth' && value.field !== 'blockedYear' );
+    }else if(this.selectedTable === "Bloqueo de Mes Masivo"){
+      this._selectedColumns = this.cols.filter(value => value.field !== 'indicatorCode' && value.field !== 'projectCode' );
+
     } else {
-      this._selectedColumns = this.cols.filter(value => value.field !== 'indicatorCode');
+      this._selectedColumns = this.cols.filter(value => value.field !== 'indicatorCode' && value.field !== 'blockedMonth' && value.field !== 'blockedYear');
     }
 
   }

@@ -96,11 +96,6 @@ public class ProjectService {
         }
         this.validate(projectWeb);
 
-        UserWeb principal = UserSecurityContext.getCurrentUser();
-
-        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
-
-
         Project project = new Project();
         project.setName(projectWeb.getName());
         project.setState(projectWeb.getState());
@@ -141,24 +136,27 @@ public class ProjectService {
 
         // Registrar auditoría
         List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
-        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.INSERT,responsibleUser , null, newprojectAudit, State.ACTIVO);
+        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.INSERT, null, newprojectAudit,null, null, State.ACTIVO);
         return project.getId();
     }
 
     public Long update(ProjectWeb projectWeb) throws GeneralAppException {
+        return this.update(projectWeb, null);
+    }
+
+
+    public Long update(ProjectWeb projectWeb, String jobId) throws GeneralAppException {
         if (projectWeb == null) {
             throw new GeneralAppException("No se puede actualizar un proyecto null", Response.Status.BAD_REQUEST);
         }
         if (projectWeb.getId() == null) {
             throw new GeneralAppException("No se puede actualizar un proyecto sin id", Response.Status.BAD_REQUEST);
         }
+        JobStatusService.updateJob(jobId, 10, "Iniciando actualización");
         this.validate(projectWeb);
         Project project = this.projectDao.find(projectWeb.getId());
 
         List<LabelValue> oldprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
-
-        UserWeb principal = UserSecurityContext.getCurrentUser();
-        User responsibleUser = principal != null ? userDao.findByUserName(principal.getUsername()) : null;
 
         if (project == null) {
             throw new GeneralAppException("No se puede encontrar el proyecto con id " + projectWeb.getId(), Response.Status.NOT_FOUND);
@@ -194,17 +192,21 @@ public class ProjectService {
         if (projectDatesChanged) {
             this.indicatorExecutionService.updateIndicatorExecutionProjectDates(project, project.getStartDate(), project.getEndDate());
         }
-        // update focal points
+
+            // update focal points
+        JobStatusService.updateJob(jobId, 10, "Actualizando puntos focales");
         this.updateProjectFocalPoints(projectWeb.focalPoints, project.getId());
 
         // update localidades
-        this.updateProjectLocations(projectWeb.getLocations(), project.getId());
+        JobStatusService.updateJob(jobId, 20, "Actualizado lugares de ejecución");
+        this.updateProjectLocations(projectWeb.getLocations(), project.getId(), jobId, projectWeb.getUpdateAllLocationsIndicators());
 
         // Registrar auditoría
+        JobStatusService.updateJob(jobId, 90, "Guardando auditorías");
         List<LabelValue> newprojectAudit = auditService.convertToProjectAuditDTO(project).toLabelValueList();
-        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.UPDATE, responsibleUser, oldprojectAudit, newprojectAudit, State.ACTIVO);
+        auditService.logAction("Proyecto", project.getCode(),null, AuditAction.UPDATE, oldprojectAudit, newprojectAudit,null, null, State.ACTIVO);
+        JobStatusService.updateJob(jobId, 95, "Actualizado proyecto");
         this.saveOrUpdate(project);
-
         return project.getId();
     }
 
@@ -268,13 +270,20 @@ public class ProjectService {
     }
 
     public void updateProjectLocations(Set<CantonWeb> cantonWebs, Long projectId) throws GeneralAppException {
+        updateProjectLocations(cantonWebs, projectId, null, true);
+    }
+    public void updateProjectLocations(Set<CantonWeb> cantonWebs, Long projectId, String jobId, Boolean updateAllLocationsIndicators) throws GeneralAppException {
         Project project = this.getById(projectId);
-        // recupero el proyecto
         LocationToActivateDesativate locationsToActivateDesactive = this.setLocationsInProject(project, List.copyOf(cantonWebs));
+        int index = 1;
         for (IndicatorExecution indicatorExecution : project.getIndicatorExecutions()) {
-            this.indicatorExecutionService.updateIndicatorExecutionsLocations(indicatorExecution, locationsToActivateDesactive.locationsToActivate, locationsToActivateDesactive.locationsToDissable);
+            this.indicatorExecutionService.updateIndicatorExecutionsLocations(indicatorExecution, updateAllLocationsIndicators? locationsToActivateDesactive.locationsToActivate: new HashSet<>(), locationsToActivateDesactive.locationsToDissable);
+            int progress = 20 + (int) (80 * ((double) index / project.getIndicatorExecutions().size()));
+            JobStatusService.updateJob(jobId,  progress, "Actualizando lugares de ejecución");
+            index++;
         }
     }
+
     public LocationToActivateDesativate setLocationsInProject(Project project, List<CantonWeb> cantonsWeb) {
         Set<Canton> locationsToActivate = new HashSet<>();
         Set<Canton> locationsToDissable = new HashSet<>();
@@ -423,7 +432,7 @@ public class ProjectService {
 
         public ProjectWeb getWebById(Long id) {
             Project project = this.projectDao.findWithData(id);
-            return this.modelWebTransformationService.projectToProjectWeb(project);
+            return this.modelWebTransformationService.projectWithAllDataToProjectWeb(project);
         }
 
         public List<ProjectWeb> getWebByIds(List<Long> ids) {

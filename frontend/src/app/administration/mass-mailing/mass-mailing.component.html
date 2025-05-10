@@ -3,43 +3,31 @@
         <p-toast></p-toast>
         <p-messages></p-messages>
         <div class="card px-6 py-6">
-            <h3 class="page-title">Envío Masivo de correos</h3>
-            <p-toolbar styleClass="mb-4 p-fluid">
-                <form [formGroup]="periodForm" class="w-full">
-                    <div class="fluid">
-                        <div class="field grid">
-                            <label for="periodI" class="col-12 mb-2" style="width:100px; color: white;">Año:</label>
-                            <div class="">
-                                <p-dropdown id="periodI" [options]="periods" optionLabel="year"
-                                            [filter]="true"
-                                            formControlName="selectedPeriod"
-s
-                                ></p-dropdown>
-                            </div>
-
-                        </div>
-                    </div>
-                </form>
-
-            </p-toolbar>
-
+            <h3 class="page-title mb-5">Envío Masivo de correos</h3>
             <p-fieldset>
                 <ng-template pTemplate="header">Recordatorios</ng-template>
                 <div class="grid">
                     <div class="col-6 border_div text-primary"><h5>Descripción</h5></div>
                     <div class="col-6 border_div text-primary"><h5>Enviar</h5></div>
 
-                    <div class="col-6 border_div">Enviar recordatorio de reporte a socios</div>
+                    <div class="col-6 border_div flex align-items-center">Enviar recordatorio de reporte a socios</div>
                     <div class="col-6 border_div">
                         <p-button label="Enviar recordatorio a Socios" icon="pi pi-file-excel"
                                   (onClick)="sendRecordatoryToPartners()"
                                   styleClass="p-button-success mb-2"></p-button>
                     </div>
 
-                    <div class="col-6 border_div">Enviar recordatorio de reporte a colegas de Implementación directa</div>
+                    <div class="col-6 border_div flex align-items-center">Enviar recordatorio de reporte a colegas de Implementación directa</div>
                     <div class="col-6 border_div">
                         <p-button label="Enviar recordatorio Implementación Directa" icon="pi pi-file-excel"
                                   (onClick)="sendRecordatoryToId()"
+                                  styleClass="p-button-success mb-2"></p-button>
+                    </div>
+
+                    <div class="col-6 border_div flex align-items-center">Enviar recordatorio de reporte a colegas Mánagers de Resultados</div>
+                    <div class="col-6 border_div">
+                        <p-button label="Enviar recordatorio a Mánagers de Resultados" icon="pi pi-file-excel"
+                                  (onClick)="sendRecordatoryToResultManagers()"
                                   styleClass="p-button-success mb-2"></p-button>
                     </div>
 
@@ -52,17 +40,31 @@ s
                     <div class="col-6 border_div text-primary"><h5>Descripción</h5></div>
                     <div class="col-6 border_div text-primary"><h5>Enviar</h5></div>
 
-                    <div class="col-6 border_div">Enviar alerta de retrasos a socios</div>
+                    <div class="col-6 border_div flex align-items-center">Enviar alerta de retrasos a Mánagers de Proyecto</div>
                     <div class="col-6 border_div">
-                        <p-button label="Enviar alerta de retrasos a socios" icon="pi pi-file-excel"
+                        <p-button label="Enviar alerta de retrasos a Mánagers de Proyecto" icon="pi pi-file-excel"
+                                  (onClick)="sendAlertToProjectManagers()"
+                                  styleClass="p-button-success mb-2"></p-button>
+                    </div>
+
+                    <div class="col-6 border_div flex align-items-center">Enviar alerta de retrasos a Socios</div>
+                    <div class="col-6 border_div">
+                        <p-button label="Enviar alerta de retrasos a Socios" icon="pi pi-file-excel"
                                   (onClick)="sendAlertToPartners()"
                                   styleClass="p-button-success mb-2"></p-button>
                     </div>
 
-                    <div class="col-6 border_div">Enviar alerta de retrasos a colegas de Implementación Directa</div>
+                    <div class="col-6 border_div flex align-items-center">Enviar alerta de retrasos a colegas de Implementación Directa</div>
                     <div class="col-6 border_div">
                         <p-button label="Enviar alerta de retrasos a colegas de Implementación Directa" icon="pi pi-file-excel"
                                   (onClick)="sendAlertToId()"
+                                  styleClass="p-button-success mb-2"></p-button>
+                    </div>
+
+                    <div class="col-6 border_div flex align-items-center">Enviar alerta de retrasos a Mánagers de Resultados</div>
+                    <div class="col-6 border_div">
+                        <p-button label="Enviar alerta de retrasos a Mánagers de Resultados" icon="pi pi-file-excel"
+                                  (onClick)="sendAlertToResultManagers()"
                                   styleClass="p-button-success mb-2"></p-button>
                     </div>
 

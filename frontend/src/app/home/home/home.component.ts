@@ -6,6 +6,7 @@ import {UtilsService} from "../../services/utils.service";
 import {PeriodService} from "../../services/period.service";
 import {MessageService} from "primeng/api";
 import {Period} from "../../shared/model/OsmosysModel";
+import { StandardDissagregationsService } from 'src/app/services/standardDissagregations.service';
 
 @Component({
     selector: 'app-home',
@@ -30,15 +31,17 @@ export class HomeComponent implements OnInit {
         private utilsService: UtilsService,
         private periodService: PeriodService,
         private versionCheckService: VersionCheckService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private standardDissagregationsService: StandardDissagregationsService,
 
     ) {
     }
 
     ngOnInit(): void {
+        this.standardDissagregationsService.loadcache();
         this.loadPeriods();
         this.versionCheckService.checkVersion(environment.versionCheckURL);
-
+        //getValueByKey
     }
 
     loadUsers() {

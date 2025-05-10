@@ -466,8 +466,7 @@
 <form [formGroup]="formTargets" (ngSubmit)="saveTargets()">
     <p-dialog [(visible)]="showTargetDialog" [modal]="true" styleClass="p-fluid" [closable]="false">
         <ng-template pTemplate="header">
-            {{formTargets.get('indicatorType').value === 'GENERAL' ? 'META INDICADOR GENERAL' : 'META INDICADOR
-            PRODUCTO'}}
+            {{formTargets.get('indicatorType').value === 'GENERAL' ? 'META INDICADOR GENERAL' : 'META INDICADOR PRODUCTO'}}
         </ng-template>
         <ng-template pTemplate="content">
             <p-messages></p-messages>
@@ -618,6 +617,88 @@
                 </div>
 
             </div>
+            <!--Opciones de desagregación-->
+            <p-panel  *ngIf="formPerformanceIndicator.get('indicator').value" class="col-12" header="Desagregaciones *"  [toggleable]="true">
+                <div class="p-fluid grid formgrid">
+                    <p-panel
+                        *ngIf="indicatorHasDissagregationType(formPerformanceIndicator.get('indicator').value, 'TIPO_POBLACION')"
+                        class="col-6" header="Tipos de Población" >
+
+                        <div class="field-checkbox col-12 md:col-12"
+                             *ngFor="let option of populationTypeSelectOptions
+                             ">
+                            <!--suppress AngularInvalidExpressionResultType -->
+                            <p-checkbox name="grouppopulationTypeOptions"
+                                        [value]="option.value"
+                                        [formControl]="$any(formPerformanceIndicator.controls['populationTypeOptions'])"
+
+                            >
+                            </p-checkbox>
+                            <label [for]="option.label">{{option.label}} [grupo: {{option.title}} ]</label>
+                        </div>
+                    </p-panel>
+
+                    <p-panel 
+                        *ngIf="indicatorHasDissagregationType(formPerformanceIndicator.get('indicator').value, 'GENERO')"
+                        class="col-6" header="Género" >
+                        <div class="field-checkbox col-12 md:col-12"
+                             *ngFor="let option of genderSelectOptions">
+                            <!--suppress AngularInvalidExpressionResultType -->
+                            <p-checkbox name="groupgenderOptions"
+                                        [value]="option.value"
+                                        [formControl]="$any(formPerformanceIndicator).controls['genderOptions']"
+                            >
+                            </p-checkbox>
+                            <label [for]="option.label">{{option.label}} [grupo: {{option.title}} ]</label>
+                        </div>
+                    </p-panel>
+
+                    <p-panel 
+                        *ngIf="indicatorHasDissagregationType(formPerformanceIndicator.get('indicator').value, 'EDAD')"
+                        class="col-6" header="Edad" >
+                        <div class="field-checkbox col-12 md:col-12"
+                             *ngFor="let option of ageSelectOptions">
+                            <!--suppress AngularInvalidExpressionResultType -->
+                            <p-checkbox name="group2"
+                                        [value]="option.value"
+                                        [formControl]="$any(formPerformanceIndicator.controls['ageOptions'])"
+                            >
+                            </p-checkbox>
+                            <label [for]="option.label">{{option.label}} [grupo: {{option.title}}]</label>
+                        </div>
+                    </p-panel>
+                    <p-panel 
+                    *ngIf="indicatorHasDissagregationType(formPerformanceIndicator.get('indicator').value, 'DIVERSIDAD')"
+                        class="col-6" header="Diversidad" >
+                        <div class="field-checkbox col-12 md:col-12"
+                             *ngFor="let option of diversitySelectOptions">
+                            <!--suppress AngularInvalidExpressionResultType -->
+                            <p-checkbox name="groupdiversityOptions"
+                                        [value]="option.value"
+                                        [formControl]="$any(formPerformanceIndicator).controls['diversityOptions']"
+                            >
+                            </p-checkbox>
+                            <label [for]="option.label">{{option.label}} [grupo: {{option.title}}]</label>
+                        </div>
+                    </p-panel>
+                    <p-panel 
+                        *ngIf="indicatorHasDissagregationType(formPerformanceIndicator.get('indicator').value, 'PAIS_ORIGEN')"
+                        class="col-6" header="País de Origen" >
+                        <div class="field-checkbox col-12 md:col-12"
+                             *ngFor="let option of countryOfOriginSelectOptions">
+                            <!--suppress AngularInvalidExpressionResultType -->
+                            <p-checkbox name="groupgenderOptions"
+                                        [value]="option.value"
+                                        [formControl]="$any(formPerformanceIndicator).controls['countryOfOriginOptions']"
+                            >
+                            </p-checkbox>
+                            <label [for]="option.label">{{option.label}} [grupo: {{option.title}}]</label>
+                        </div>
+                    </p-panel>
+                </div>
+            
+            </p-panel>
+                <!--Fin Opciones de desagregación-->
             <div class="field col-12 md-12"
                 *ngIf="indicatorHasLocationDissagregation(formPerformanceIndicator.get('indicator').value)">
                 <p-panel header="Lugares de ejecución" [toggleable]="true">

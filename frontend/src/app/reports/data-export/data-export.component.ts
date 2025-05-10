@@ -238,4 +238,21 @@ export class DataExportComponent implements OnInit {
     setReport(reportName: string) {
         this.periodForm.get('selectedReport').patchValue(reportName);
     }
+
+    generateResultManagersReport(){
+        const period:Period=this.periodForm.get('selectedPeriod').value
+        let reportObservable = null;
+        reportObservable = this.reportsService.getAllResultManagersIndicatorsValidationReportByPeriodId(period.id);
+        reportObservable.subscribe((response: HttpResponse<Blob>) => {
+            this.utilsService.downloadFileResponse(response);
+        }, error => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Error al Generar el Reporte',
+                detail: error.error.message,
+                life: 3000
+            });
+        });
+
+    }
 }

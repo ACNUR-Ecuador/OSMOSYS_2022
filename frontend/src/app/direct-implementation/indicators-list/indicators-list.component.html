@@ -99,6 +99,12 @@
                                             [field]="col.field" [showMenu]="false"
                                             [matchMode]="'userFilter'">
                             </p-columnFilter>
+                            <p-columnFilter *ngSwitchCase="'late'"
+                                            type="boolean"
+                                            [field]="col.field" [showMenu]="false"
+                                            [matchMode]="'lateStateFilter'">
+                            </p-columnFilter>
+                
                         </th>
                         <th>
 

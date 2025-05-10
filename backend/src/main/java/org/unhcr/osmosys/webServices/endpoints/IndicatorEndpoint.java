@@ -8,6 +8,7 @@ import org.jboss.logging.Logger;
 import org.unhcr.osmosys.model.CoreIndicator;
 import org.unhcr.osmosys.services.CoreIndicatorService;
 import org.unhcr.osmosys.services.IndicatorService;
+import org.unhcr.osmosys.services.JobStatusService;
 import org.unhcr.osmosys.services.dataImport.IndicatorsImportService;
 import org.unhcr.osmosys.webServices.model.CoreIndicatorWeb;
 import org.unhcr.osmosys.webServices.model.ImportFileWeb;
@@ -22,6 +23,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.io.ByteArrayOutputStream;
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 
 @Path("/indicators")
@@ -53,6 +55,24 @@ public class IndicatorEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Long update(IndicatorWeb indicatorWeb) throws GeneralAppException {
         return this.indicatorService.update(indicatorWeb);
+    }
+
+    @Path("/asyncUpdate")
+    @PUT
+    @Secured
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response asyncUpdate(IndicatorWeb indicatorWeb) throws GeneralAppException {
+        String jobId = JobStatusService.createJob();
+        // Inicia un hilo para procesar la tarea asíncrona
+        new Thread(() -> {
+            try {
+                Long result = this.indicatorService.update(indicatorWeb, jobId);
+                JobStatusService.finalizeJob(jobId, result);
+            } catch (GeneralAppException ex) {
+
+            }
+        }).start();
+        return Response.ok(Collections.singletonMap("jobId", jobId)).build();
     }
 
     @Path("/")

@@ -28,6 +28,7 @@ import {PercentPipe} from "@angular/common";
 import {
     DirectImplementationPerformanceIndicatorFormComponent
 } from "../../indicator-forms/direct-implementation-performance-indicator-form/direct-implementation-performance-indicator-form.component";
+import { LateStatePipe } from 'src/app/shared/pipes/late-state.pipe';
 
 @Component({
   selector: 'app-indicators-list',
@@ -54,7 +55,7 @@ export class IndicatorsListComponent implements OnInit {
                 private officeOrganizationPipe: OfficeOrganizationPipe,
                 private monthPipe: MonthPipe,
                 private monthListPipe: MonthListPipe,
-                private booleanYesNoPipe: BooleanYesNoPipe,
+                private lateStatePipe: LateStatePipe,
                 private userService: UserService,
                 private userPipe: UserPipe,
                 public utilsService: UtilsService,
@@ -105,7 +106,7 @@ export class IndicatorsListComponent implements OnInit {
             {field: 'target', header: 'Meta', type: ColumnDataType.numeric},
             {field: 'totalExecution', header: 'Ejecución Total', type: ColumnDataType.numeric},
             {field: 'executionPercentage', header: 'Porcentaje de ejecución', type: ColumnDataType.numeric,pipeRef: this.percentPipe},
-            {field: 'late', header: 'Atrasado', type: ColumnDataType.boolean, pipeRef: this.booleanYesNoPipe},
+            {field: 'late', header: 'Atrasado', type: ColumnDataType.boolean, pipeRef: this.lateStatePipe},
             {field: 'lastReportedMonth', header: 'Último mes reportado', type: ColumnDataType.text, pipeRef: this.monthPipe},
             {field: 'lateMonths', header: 'Meses Retrasado', type: ColumnDataType.text, pipeRef: this.monthListPipe},
             {field: 'supervisorUser', header: 'Supervisor', type: ColumnDataType.text, pipeRef: this.userPipe},
@@ -138,6 +139,9 @@ export class IndicatorsListComponent implements OnInit {
         });
         this.filterService.register('userFilter', (value, filter): boolean => {
             return this.filterUtilsService.generalFilter(value, ['name'], filter);
+        });
+        this.filterService.register('lateStateFilter', (value, filter): boolean => {
+            return this.filterUtilsService.lateStateFilter(value, filter);
         });
     }
 

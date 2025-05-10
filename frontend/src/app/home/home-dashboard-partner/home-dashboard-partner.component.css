@@ -1,0 +1,17 @@
+/* Asegúrate de que el contenedor ocupe todo el espacio deseado */
+.iframe-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;  /* o 100% si su contenedor padre tiene altura definida */
+    overflow: hidden;
+  }
+  
+  /* Estilos para que el iframe ocupe el 100% del contenedor */
+  .iframe-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 600;
+    border: none;
+  }

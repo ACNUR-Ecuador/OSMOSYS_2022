@@ -2,7 +2,7 @@ export const environment = {
     production: true,
     hmr: false,
     locale: 'es',
-    base_url: 'https://backend.osmosys.unhcr.org:8443/osmosys_slv/api',
+    base_url: 'https://backend.osmosys.unhcr.org/osmosys_slv/api',
     app_code: 'OSMOSYS_SLV',
     versionCheckURL : 'https://osmosys.unhcr.org/slv/version.json',
     loginPhoto : 'unhcr_photo_ec.png',

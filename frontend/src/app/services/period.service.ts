@@ -28,7 +28,7 @@ export class PeriodService {
     }
 
     public update(period: Period): Observable<number> {
-        return this.http.put<number>(`${mainServiceUrl}`, period);
+        return this.http.put<number>(`${mainServiceUrl}/asyncUpdate`, period);
     }
 
     public getByState(state: EnumsState): Observable<Period[]> {

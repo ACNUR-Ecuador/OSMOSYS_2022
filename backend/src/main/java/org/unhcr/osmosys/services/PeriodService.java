@@ -3,6 +3,7 @@ package org.unhcr.osmosys.services;
 import com.sagatechs.generics.exceptions.GeneralAppException;
 import com.sagatechs.generics.persistence.model.State;
 import org.apache.commons.collections4.CollectionUtils;
+import org.jboss.ejb3.annotation.TransactionTimeout;
 import org.jboss.logging.Logger;
 import org.unhcr.osmosys.daos.PeriodDao;
 import org.unhcr.osmosys.model.GeneralIndicator;
@@ -21,6 +22,7 @@ import javax.ws.rs.core.Response;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -124,6 +126,11 @@ public class PeriodService {
     }
 
     public Long update(PeriodWeb periodWeb) throws GeneralAppException {
+        return update(periodWeb, null);
+    }
+
+    @TransactionTimeout(value = 80000, unit = TimeUnit.SECONDS)
+    public Long update(PeriodWeb periodWeb, String jobId) throws GeneralAppException {
         if (periodWeb == null) {
             throw new GeneralAppException("No se puede actualizar un period null", Response.Status.BAD_REQUEST);
         }
@@ -131,12 +138,15 @@ public class PeriodService {
             throw new GeneralAppException("No se puede crear un period sin id", Response.Status.BAD_REQUEST);
         }
 
+        JobStatusService.updateJob(jobId, 3, "Configurando desagregaciones del año");
         Period period = this.periodDao.getWithDissagregationOptionsById(periodWeb.getId());
 
 
         //********************************************age***************/
         Set<Long> optionsIdsWeb = periodWeb.getPeriodAgeDissagregationOptions().stream().map(StandardDissagregationOptionWeb::getId).collect(Collectors.toSet());
         Set<Long> optionsIds = period.getPeriodAgeDissagregationOptions().stream().map(option -> option.getDissagregationOption().getId()).collect(Collectors.toSet());
+        JobStatusService.updateJob(jobId, 6, "Configurando desagregaciones del año - Edad");
+
         //los nuevos
         Collection<Long> newOptions = CollectionUtils.subtract(optionsIdsWeb, optionsIds);
         for (Long newOption : newOptions) {
@@ -169,6 +179,7 @@ public class PeriodService {
         optionsIdsWeb = periodWeb.getPeriodGenderDissagregationOptions().stream().map(StandardDissagregationOptionWeb::getId).collect(Collectors.toSet());
         optionsIds = period.getPeriodGenderDissagregationOptions().stream().map(option -> option.getDissagregationOption().getId()).collect(Collectors.toSet());
         //los nuevos
+        JobStatusService.updateJob(jobId, 9, "Configurando desagregaciones del año - Genero");
         newOptions = CollectionUtils.subtract(optionsIdsWeb, optionsIds);
         for (Long newOption : newOptions) {
             GenderDissagregationOption option = (GenderDissagregationOption) this.standardDissagregationOptionService.getById(newOption);
@@ -201,6 +212,7 @@ public class PeriodService {
         optionsIds = period.getPeriodPopulationTypeDissagregationOptions().stream().map(option -> option.getDissagregationOption().getId()).collect(Collectors.toSet());
         //los nuevos
         newOptions = CollectionUtils.subtract(optionsIdsWeb, optionsIds);
+        JobStatusService.updateJob(jobId, 12, "Configurando desagregaciones del año - Tipos de población");
         for (Long newOption : newOptions) {
             PopulationTypeDissagregationOption option = (PopulationTypeDissagregationOption) this.standardDissagregationOptionService.getById(newOption);
             PeriodPopulationTypeDissagregationOption newPeriodPopulationTypeOption = new PeriodPopulationTypeDissagregationOption(period, option);
@@ -233,6 +245,7 @@ public class PeriodService {
         optionsIds = period.getPeriodDiversityDissagregationOptions().stream().map(option -> option.getDissagregationOption().getId()).collect(Collectors.toSet());
         //los nuevos
         newOptions = CollectionUtils.subtract(optionsIdsWeb, optionsIds);
+        JobStatusService.updateJob(jobId, 15, "Configurando desagregaciones del año - Diversidad");
         for (Long newOption : newOptions) {
             DiversityDissagregationOption option = (DiversityDissagregationOption) this.standardDissagregationOptionService.getById(newOption);
             PeriodDiversityDissagregationOption newPeriodDiversityOption = new PeriodDiversityDissagregationOption(period, option);
@@ -264,6 +277,7 @@ public class PeriodService {
         optionsIds = period.getPeriodCountryOfOriginDissagregationOptions().stream().map(option -> option.getDissagregationOption().getId()).collect(Collectors.toSet());
         //los nuevos
         newOptions = CollectionUtils.subtract(optionsIdsWeb, optionsIds);
+        JobStatusService.updateJob(jobId, 18, "Configurando desagregaciones del año - Países de origen");
         for (Long newOption : newOptions) {
             CountryOfOriginDissagregationOption option = (CountryOfOriginDissagregationOption) this.standardDissagregationOptionService.getById(newOption);
             PeriodCountryOfOriginDissagregationOption newPeriodCountryOfOriginOption = new PeriodCountryOfOriginDissagregationOption(period, option);
@@ -314,7 +328,7 @@ public class PeriodService {
 
             }
         }
-        this.indicatorExecutionService.updateAllIndicatorExecutionsDissagregationsByPeriod(period);
+        this.indicatorExecutionService.updateAllIndicatorExecutionsDissagregationsByPeriod(period, jobId);
 
 
         return period.getId();

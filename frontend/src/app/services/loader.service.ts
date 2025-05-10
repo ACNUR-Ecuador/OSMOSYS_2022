@@ -2,6 +2,8 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 import {Loader} from '../shared/model/loader.model';
+import { LogService } from './log.service';
+
 
 @Injectable({
     providedIn: 'root'
@@ -15,9 +17,7 @@ export class LoaderService {
      */
     loadingMap: Map<string, boolean> = new Map<string, boolean>();
 
-    constructor() {
-
-    }
+    constructor(private logService: LogService) {}
 
     /**
      * Sets the loadingSub property value based on the following:
@@ -29,8 +29,8 @@ export class LoaderService {
      * @param url {string}
      */
     setLoading(loading: boolean, url: string): void {
-        // console.log('service loading: ' + loading);
-        //  console.log('service url: ' + url);
+        // log('service loading: ' + loading);
+        //  log('service url: ' + url);
         if (!url) {
             throw new Error('The request URL must be provided to the LoadingService.setLoading function');
         }
@@ -42,7 +42,22 @@ export class LoaderService {
         }
         if (this.loadingMap.size === 0) {
             this.loader.next({id: 'global', status: false});
+            this.logService.log('hideLoader 1');
+
         }
+    }
+
+    /**
+     * Update progress
+     * @param {string} url
+     * @param {number} progress
+     */
+    public updateProgress(url: string, progress: number, statusText?: string): void {
+        if (progress >= 100) {
+            progress = undefined;
+        }
+        this.loader.next({ id: 'global', status: true, progress: progress, statusText: statusText });
+
     }
 
     /**
@@ -59,5 +74,6 @@ export class LoaderService {
      */
     public hideLoader(id: string = 'global'): void {
         this.loader.next({id, status: false});
+        this.logService.log('hideLoader');
     }
 }

@@ -26,6 +26,7 @@ import { TagPeriodTagAsignationsListPipe } from './pipes/tag-period-tag-asignati
 import { PercentagePipe } from './pipes/percentage.pipe';
 import { ResultManagerExecutionPipe } from './pipes/result-manager-execution.pipe';
 import { CantonsPipe } from './pipes/cantons.pipe';
+import { LateStatePipe } from './pipes/late-state.pipe';
 
 
 
@@ -55,7 +56,8 @@ import { CantonsPipe } from './pipes/cantons.pipe';
         TagPeriodTagAsignationsListPipe,
         PercentagePipe,
         ResultManagerExecutionPipe,
-        CantonsPipe
+        CantonsPipe,
+        LateStatePipe
     ],
     imports: [
         CommonModule

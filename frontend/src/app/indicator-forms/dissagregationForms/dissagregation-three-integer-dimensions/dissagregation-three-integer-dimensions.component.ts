@@ -254,7 +254,12 @@ export class DissagregationThreeIntegerDimensionsComponent implements OnInit, On
                             if (key === 'provincia') {
                                 return comparisonValues[key] === Col.location['provincia'].description
                             } else if (key === 'canton') {
-                                return comparisonValues[key] === Col.location.name
+                                if(Col.location.name.includes("--")){
+                                    const compoundName=comparisonValues['provincia']+" -- "+comparisonValues[key]
+                                    return compoundName === Col.location.name
+                                }else{
+                                    return comparisonValues[key] === Col.location.name
+                                }
                             } else {
                                 return comparisonValues[key] === Col[key].name
                             }

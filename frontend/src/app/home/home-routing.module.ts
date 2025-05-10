@@ -6,12 +6,14 @@ import {
     HomeDashboardDirectImplementationComponent
 } from "./home-dashboard-direct-implementation/home-dashboard-direct-implementation.component";
 import {AboutUsComponent} from "./about-us/about-us.component";
+import { HomeDashboardPartnerComponent } from './home-dashboard-partner/home-dashboard-partner.component';
 
 const routes: Routes = [{
     path: '',
     children: [
         {path: 'home', component: HomeComponent},
         {path: 'homeDashboardFocalPoint', component: HomeDashboardFocalPointComponent},
+        {path: 'homeDashboardPartner', component: HomeDashboardPartnerComponent},
         {path: 'homeDashboardDirectImplementation', component: HomeDashboardDirectImplementationComponent},
         {path: 'about-us', component: AboutUsComponent},
     ]

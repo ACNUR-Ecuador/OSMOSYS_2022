@@ -3,12 +3,44 @@
         <img id="footer-logo" [src]="'assets/images/logo_osmosys_blue.png'" alt="osmosys"/>
         <!--<span class="footer-copyright">&#169; Hecho con amor en el -salvador</span>-->
     </div>
-    <span (click)="showDialog = true" class="footer-copyright hover:surface-hover transition-colors transition-duration-150 cursor-pointer">V 5.0.9</span>
-    <span class="footer-copyright">&#169; UNHCR -Hecho en El Salvador y Ecuador-  2024</span> 
+    <span (click)="showDialog = true" class="footer-copyright hover:surface-hover transition-colors transition-duration-150 cursor-pointer">V 5.1.1</span>
+    <span class="footer-copyright">&#169; UNHCR -  2025</span> 
     
     <p-dialog header="Change log" [(visible)]="showDialog" [modal]="true" [style]="{width: '50vw'}" (onHide)="showDialog = false">
-        <h5 style="margin-top: 1rem;">Versión 5.0.9 - 2025-03-07 </h5>
+        <h5 style="margin-top: 1rem;">Versión 5.1.1 - 2025-04-28</h5>
         <ul>
+            <li>Se quita el campo de selección de Años en la pantalla de Envío de correos masivos.</li>
+            <li>Se agrega el código del Indicador dentro de la auditoría de Proyectos.</li>
+            <li>Se agrega la columna de de regla de Agregación en el reporte de validación de indicadores.</li>
+            <li>Se agrega un mensaje de aviso en la pantalla de de Mánagers de resultado cuando el Indicador no tiene Tipo de Población como desagregación.</li>
+            <li>El usuario de ACNUR con rol Responsable de Proyecto ahora tiene accesos a la Administración de Indicadores Socios.</li>
+            <li>Se corrige la importación de valores para indicadores con una sola desagregación de Lugar.</li>
+            <li>Se cambia el correo de referencia de Ayuda en la página de Login.</li>
+            <li>Se corrige el error existente de envío de correos de alertas cuando el año actual no tiene un Indicador General Asocioado.</li>
+            <li>Se incorpora el parámetro de configuración global PROGRAMS_EMAIL como dirección de correo electrónico predeterminada para las respuestas (replies) de los correos enviados por el sistema.</li>
+            <li>Se corrige la opción que permite agregar o no un nuevo lugar a todos los indicadores de un proyecto existente al añadir nuevos lugares de Ejecución.</li>
+            <li>Se corrige la generación de reportes para tags.</li>
+            <li>Se corrigen los tipos de población a validar por año en la pantalla de mánager de resultados.</li>
+            <li>Se agregan parámetros de configuración global para habilitar o deshabilitar el envío de correos masivos de alertas y recordatorios de manera automática.</li>
+            <li>Se corrige el botón de estado en el formulario de edición de Indicadores.</li>
+            <li>Se implementa la funcionalidad que permite seleccionar las desagregaciones para un indicador dentro de un proyecto.</li>
+            <li>Se agrega una columna de Tags en los reportes, dentro de la sección de Exportación de Datos.</li>
+            <li>Se implementa una barra de progreso en la pantalla de Loading que indica el estado del proceso de actualización para los Años, Proyectos e Indicadores.</li>
+            <li>Se han añadido los mensajes de los correos masivos como parámetros de configuración global, lo que permite a los administradores editarlos según sea necesario.</li>
+            <li>Se han actualizado los mensajes y destinatarios de los correos de recordatorio y alertas por retraso.</li>
+            <li>Se han creado nuevos parámetros de configuración global que especifican el día de envío de los recordatorios y el límite máximo para la verificación de indicadores por parte de los Managers de Resultados.</li>
+            <li>Se ha actualizado la lógica de estados en la pantalla del Manager de Resultados, alineada con el límite máximo de reporte.</li>
+            <li>Se han añadido nuevos correos de alerta y recordatorio para los Managers de Resultados.</li>
+            <li>Se ha creado un nuevo reporte en la sección de Exportación de Datos, que detalla las verificaciones de indicadores realizadas por los Managers de Resultados.</li>
+            <li>Se agrega un botón en la pantalla de Mánager de Resultado para generar un reporte de la Validación de Indicadores realizado por el usuario actual.</li>
+        </ul>        
+        <h5 style="margin-top: 1rem;">Versión 5.0.9 - 2025-03-26 </h5>
+        <ul>
+            <li>Se añade una leyenda que indica el estado del reporte sobre el valor de Ejecución mensual en el panel de resumen de indicadores.</li>
+            <li>Se corrigen los valores en la columna "Atrasado" en la tabla de Indicadores de reporte para Implementación directa</li>
+            <li>Se agrega la columna de Tags en la generación de reportes para Cátalogo de Indicadores.</li>
+            <li>Se corrige la Auditoría para Bloqueo de Mes Masivo.</li>
+            <li>Se corrige el cálulo de valores en la generación de reportes para Tags.</li>
             <li>Se corrigen los valores de la columna "Desagregaciones" en el reporte anual de Proyecto.</li>
             <li>Se corrige el despliegue de la tabla de reporte de valores trimestrales al extender la fecha final de un proyecto.</li>
         </ul>

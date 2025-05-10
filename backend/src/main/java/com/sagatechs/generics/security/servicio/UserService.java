@@ -147,25 +147,15 @@ public class UserService implements Serializable {
         for (RoleAssigment userRoleAssigment : user.getRoleAssigments()) {
             this.roleAssigmentDao.save(userRoleAssigment);
         }
-
+        String message= this.appConfigurationService.findValorByClave(AppConfigurationKey.NEW_USER_NOTIFICATION_EMAIL);
         // send email
-        String message = "<p>Bienvenid@:</p>" +
-                "<p>Se ha creado un nuevo usuario para su acceso Osmosys.</p>" +
-                "<p>Puede acceder al sistema utilizando los siguientes datos:</p>"+
-                "<p>Direcci&oacute;n: <a href=\""+this.appConfigurationService.getAppUrl()+"\">" + this.appConfigurationService.getAppUrl() + "</a> (Se recomienda el uso de Google Chrome)</p>" +
-                "<p>Nombre de usuario: " + user.getUsername() + "</p>" +
-                "<p>Contrase&ntilde;a: " + password + "</p>" +
-                "<p>&nbsp;</p>" +
+        message=message.replace("%username%",user.getUsername())
+                .replace("%password%",password);
 
-                "<p>Al ingresar al sistema, comprende y acepta que la informaci&oacute;n presentada es de uso interno de la organización y no ha de ser reproducida/compartida con otros actores sin consentimiento por escrito por parte del equipo de IM-ACNUR.</p>" +
-                "<p>&nbsp;</p>" +
-                "<p>Si necesitas ayuda por favor cont&aacute;ctate con la Unidad de Gesti&oacute;n de la Informaci&oacute;n con <a href=\"\\&quot;mailto:"+this.appConfigurationService.findValorByClave(AppConfigurationKey.IM_EMAIL)+"\\&quot;\">"+this.appConfigurationService.findValorByClave(AppConfigurationKey.IM_EMAIL)+".</a></p>";
-
-        // todo quitar email
         this.asyncService.sendEmail(
                 user.getEmail(), null
                 //"salazart@unhcr.org"
-                , "Bienvenid@ a OSMOSYS ACNUR",
+                , "Bienvenido/a a OSMOSYS ACNUR",
 
                 message
         );
@@ -581,7 +571,7 @@ public class UserService implements Serializable {
                     "<p>&nbsp;</p>";
             LOGGER.debug("------------------llamo");
             this.asyncService.sendEmail(user.getEmail(), null,
-                    "Bienvenid@ al Sistema de Monitoreo de Programas.",
+                    "Bienvenido/a al Sistema de Monitoreo de Programas.",
                     message);
         }
         LOGGER.debug("------------llamo termino");
@@ -674,6 +664,9 @@ public class UserService implements Serializable {
 
     public List<User> getActiveResultManagerUsers() {
         return this.userDao.getActiveResultManagerUsers();
+    }
+    public List<User> getActiveResponsableAndAlternsDirectImplementationUsers(Long periodId) {
+        return this.userDao.getActiveResponsableAndAlternsDirectImplementationUsers(periodId);
     }
 
 

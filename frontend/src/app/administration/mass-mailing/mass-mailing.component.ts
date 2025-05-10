@@ -63,7 +63,7 @@ export class MassMailingComponent implements OnInit {
         this.emailService.recordatoryPartners().subscribe({
             next: value => {
                 this.messageService.add({
-                    severity: 'sucess',
+                    severity: 'success',
                     summary: 'Correos enviados',
                     life: 3000
                 });
@@ -82,7 +82,27 @@ export class MassMailingComponent implements OnInit {
         this.emailService.recordatoryId().subscribe({
             next: value => {
                 this.messageService.add({
-                    severity: 'sucess',
+                    severity: 'success',
+                    summary: 'Correos enviados',
+                    life: 3000
+                });
+            }, error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al enviar',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+    }
+
+    sendRecordatoryToResultManagers() {
+
+        this.emailService.recordatoryResultManagers().subscribe({
+            next: value => {
+                this.messageService.add({
+                    severity: 'success',
                     summary: 'Correos enviados',
                     life: 3000
                 });
@@ -101,7 +121,44 @@ export class MassMailingComponent implements OnInit {
         this.emailService.alertPartners().subscribe({
             next: value => {
                 this.messageService.add({
-                    severity: 'sucess',
+                    severity: 'success',
+                    summary: 'Correos enviados',
+                    life: 3000
+                });
+            }, error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al enviar',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+    }
+
+    sendAlertToProjectManagers() {
+        this.emailService.alertProjectManagers().subscribe({
+            next: value => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Correos enviados',
+                    life: 3000
+                });
+            }, error: err => {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error al enviar',
+                    detail: err.error.message,
+                    life: 3000
+                });
+            }
+        });
+    }
+    sendAlertToResultManagers() {
+        this.emailService.alertResultManagers().subscribe({
+            next: value => {
+                this.messageService.add({
+                    severity: 'success',
                     summary: 'Correos enviados',
                     life: 3000
                 });
@@ -120,7 +177,7 @@ export class MassMailingComponent implements OnInit {
         this.emailService.alertsId().subscribe({
             next: value => {
                 this.messageService.add({
-                    severity: 'sucess',
+                    severity: 'success',
                     summary: 'Correos enviados',
                     life: 3000
                 });

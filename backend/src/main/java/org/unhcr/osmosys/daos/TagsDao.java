@@ -56,12 +56,40 @@ public class TagsDao extends GenericDaoJpa<Tags, Long> {
                 " p.id = :periodId" +
                 " and o.state=:state " +
                 " and p.state=:state ";
-        Query q = getEntityManager().createQuery(jpql, Statement.class);
+        Query q = getEntityManager().createQuery(jpql, Tags.class);
         q.setParameter("state", state);
         q.setParameter("periodId", periodId);
         return q.getResultList();
 
     }
+    public List<Tags> getTagsByIndicatorIdAndPeriodId(Long indicatorId, Long periodId) throws GeneralAppException {
+        State state=State.ACTIVO;
+        String jpql = "SELECT DISTINCT o" +
+                " FROM Tags o" +
+                " left outer join fetch o.periodTagAssignations psa " +
+                " left outer join fetch o.indicatorTagAssignations ita " +
+                " left outer join fetch ita.indicator i " +
+                " left outer join fetch  psa.period p  " +
+                " left outer join fetch p.periodPopulationTypeDissagregationOptions " +
+                " left outer join fetch p.periodGenderDissagregationOptions " +
+                " left outer join fetch p.periodDiversityDissagregationOptions " +
+                " left outer join fetch p.periodCountryOfOriginDissagregationOptions " +
+                " left outer join fetch p.periodAgeDissagregationOptions "+
+                " WHERE " +
+                " p.id = :periodId" +
+                " and o.state=:state " +
+                " and i.id=:indicatorId " +
+                " and ita.state=:state " +
+                " and i.state=:state " +
+                " and p.state=:state ";
+        Query q = getEntityManager().createQuery(jpql, Tags.class);
+        q.setParameter("state", state);
+        q.setParameter("periodId", periodId);
+        q.setParameter("indicatorId", indicatorId);
+        return q.getResultList();
+
+    }
+
 
 
 
